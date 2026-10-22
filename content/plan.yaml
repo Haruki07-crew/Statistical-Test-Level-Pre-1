@@ -1734,55 +1734,55 @@ chapters:
   - id: contingency-table
     title: 分割表
     importance: A
-    status: planned
+    status: verified
   - id: two-by-two-table
     title: 2×2分割表
     importance: A
-    status: planned
+    status: verified
   - id: relative-risk
     title: 相対リスク
     importance: A
-    status: planned
+    status: verified
   - id: risk-difference
     title: リスク差
     importance: B
-    status: planned
+    status: verified
   - id: odds-ratio-interval
     title: オッズ比の推定と区間推定
     importance: A
-    status: planned
+    status: verified
   - id: sampling-schemes
     title: 分割表の標本抽出モデル
     importance: A
-    status: planned
+    status: verified
   - id: yates-correction
     title: イェーツの連続修正
     importance: B
-    status: planned
+    status: verified
   - id: mcnemar-test
     title: マクネマー検定
     importance: A
-    status: planned
+    status: verified
   - id: loglinear-model
     title: 対数線形モデル
     importance: A
-    status: planned
+    status: verified
   - id: hierarchical-loglinear-model
     title: 階層モデル
     importance: B
-    status: planned
+    status: verified
   - id: simpsons-paradox
     title: シンプソンのパラドックス
     importance: A
-    status: planned
+    status: verified
   - id: mantel-haenszel-test
     title: マンテル・ヘンツェル検定
     importance: A
-    status: planned
+    status: verified
   - id: mantel-haenszel-estimator
     title: マンテル・ヘンツェル共通オッズ比推定量
     importance: B
-    status: planned
+    status: verified
   - id: ordinal-contingency-table
     title: 順序カテゴリの分割表
     importance: C
@@ -1790,7 +1790,7 @@ chapters:
   - id: three-way-table
     title: 3元分割表
     importance: B
-    status: planned
+    status: verified
   - id: residual-analysis-contingency
     title: 分割表の残差分析
     importance: C
