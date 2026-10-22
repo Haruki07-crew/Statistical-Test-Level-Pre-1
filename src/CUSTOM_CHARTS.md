@@ -42,3 +42,4 @@
 | residual-pattern | 残差 対 予測値のプロット | pattern: none\|funnel\|curve\|autocorr, strength(1), n(80) |
 | dw-sim | AR(1)誤差の回帰残差とダービン・ワトソン比 | phi(0.5), n(30) |
 | studentized-range | スチューデント化された範囲の分布と上側α点 | k(3), df(9), alpha(0.05) |
+| iv-scatter | 内生性のある回帰で最小二乗法と操作変数法の直線を比較 | rho(0.6), strength(1), n(200), beta(1) |

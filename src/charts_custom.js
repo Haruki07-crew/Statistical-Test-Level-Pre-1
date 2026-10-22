@@ -4,7 +4,7 @@
   var Charts = root.Charts, Dist = root.Dist;
   // 乱数を使う図には「もう一度」ボタンを付ける
   var RANDOM = ['clt-sim', 'lln-path', 'ci-coverage', 'poisson-process', 'random-walk', 'regression-residual', 'qq-plot', 'bias-variance',
-    'pca-axes', 'dendrogram', 'residual-pattern', 'dw-sim', 'kmeans-steps', 'acf-plot', 'ar-sim', 'km-curve', 'mcmc-trace', 'inverse-transform', 'rejection-sampling', 'bootstrap-hist'];
+    'pca-axes', 'dendrogram', 'residual-pattern', 'dw-sim', 'iv-scatter', 'kmeans-steps', 'acf-plot', 'ar-sim', 'km-curve', 'mcmc-trace', 'inverse-transform', 'rejection-sampling', 'bootstrap-hist'];
   function reg(id, fn) { Charts.registerCustom(id, fn, RANDOM.indexOf(id) >= 0); }
 
   // ---------- 小さな道具 ----------
@@ -364,6 +364,23 @@
     a.chart('', { data: { datasets: [a.lineDs('残差（時間順）', pts(ts, r), c.c1, { pointRadius: 2.5 }), a.lineDs('0', [{ x: 1, y: 0 }, { x: n, y: 0 }], c.c2, { borderDash: [5, 4] })] },
       options: opts(a, c, { ymin: null, xmin: 1, xmax: n, xTitle: '時点 t', yTitle: '残差' }) });
     a.info.textContent = 'ダービン・ワトソン比 d = ' + a.fmt(d, 3) + '　残差のラグ1自己相関 r₁ = ' + a.fmt(r1, 3) + '　2(1−r₁) = ' + a.fmt(2 * (1 - r1), 3) + '（φ = ' + a.fmt(phi) + '）';
+  });
+  // iv-scatter: { rho, strength, n, beta } 内生性のある回帰で、最小二乗法と操作変数法の直線を比べる
+  reg('iv-scatter', function (a, p, c) {
+    var rho = num(p.rho, 0.6), st = num(p.strength, 1), n = Math.round(num(p.n, 200)), b = num(p.beta, 1), xs = [], ys = [], zs = [];
+    for (var i = 0; i < n; i++) {
+      var z = a.normal(), u = a.normal(), v = rho * u + Math.sqrt(Math.max(0, 1 - rho * rho)) * a.normal(), x = st * z + v;
+      zs.push(z); xs.push(x); ys.push(b * x + u);
+    }
+    var mx = mean(xs), my = mean(ys), mz = mean(zs), sxx = 0, sxy = 0, szx = 0, szy = 0;
+    for (i = 0; i < n; i++) { sxx += (xs[i] - mx) * (xs[i] - mx); sxy += (xs[i] - mx) * (ys[i] - my); szx += (zs[i] - mz) * (xs[i] - mx); szy += (zs[i] - mz) * (ys[i] - my); }
+    var bo = sxy / sxx, bi = szy / szx, x0 = Math.min.apply(null, xs), x1 = Math.max.apply(null, xs);
+    var line = function (sl) { return [{ x: x0, y: my + sl * (x0 - mx) }, { x: x1, y: my + sl * (x1 - mx) }]; };
+    a.chart('tall', { data: { datasets: [{ type: 'scatter', label: 'データ', data: pts(xs, ys), backgroundColor: c.fill, borderColor: c.c1, pointRadius: 2.2 },
+      a.lineDs('真の傾き β = ' + a.fmt(b), line(b), c.fg, { borderDash: [5, 4], borderWidth: 1.5 }),
+      a.lineDs('最小二乗法', line(bo), c.c2, { borderWidth: 2.5 }), a.lineDs('操作変数法', line(bi), c.c3, { borderWidth: 2.5 })] },
+    options: opts(a, c, { legend: true, ymin: null, xTitle: 'x（内生的な説明変数）', yTitle: 'y' }) });
+    a.info.textContent = '最小二乗推定 ' + a.fmt(bo, 3) + '（理論上の偏り ρ/(strength²+1) = ' + a.fmt(rho / (st * st + 1), 3) + '）　操作変数推定 s_zy/s_zx = ' + a.fmt(bi, 3) + '（真値 ' + a.fmt(b) + '）';
   });
   // qq-plot: { dist: norm|t|expon|unif, n, df } 正規Q-Qプロット
   reg('qq-plot', function (a, p, c) {
