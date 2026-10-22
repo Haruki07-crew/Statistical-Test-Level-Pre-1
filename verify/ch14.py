@@ -574,6 +574,66 @@ while alive.any():
 check(T, "シミュレーション 上の壁到達率 ≈ 4/19（10万本、許容 0.006）", abs((pos_ == 3).mean() - 4 / 19) < 0.006, (pos_ == 3).mean())
 check(T, "シミュレーション 平均終了回数 ≈ 35/19（10万本、許容 0.02）", abs(tcount.mean() - 35 / 19) < 0.02, tcount.mean())
 
+# ================= 重要度Cの用語 =================
+print("\n--- 重要度Cの用語 ---")
+from scipy.linalg import expm as _expm
+rngC = np.random.default_rng(20261023)
+
+T = "positive-recurrence"
+pp, qq = .4, .6
+pin = [(1 / 3) * (2 / 3) ** n for n in range(200)]
+check(T, "例 π_n=(1/3)(2/3)^n: π0=0.3333, π1=0.2222, π2=0.1481, Σ=1", close(pin[0], .3333) and close(pin[1], .2222) and close(pin[2], .1481) and close(sum(pin), 1, 1e-12), pin[:3])
+check(T, "釣り合い π_n p=π_{n+1} q と 0 での釣り合い π0=qπ0+qπ1", all(abs(pin[n] * pp - pin[n + 1] * qq) < 1e-15 for n in range(50)) and abs(pin[0] - (qq * pin[0] + qq * pin[1])) < 1e-15, "")
+# 有限打ち切りの推移行列で定常分布
+K = 200
+Pm = np.zeros((K, K))
+for i in range(K):
+    Pm[i, min(i + 1, K - 1)] += pp
+    Pm[i, max(i - 1, 0)] += qq
+w, v = np.linalg.eig(Pm.T)
+st = np.real(v[:, np.argmin(abs(w - 1))]); st = st / st.sum()
+check(T, "打ち切り行列（200状態）の定常分布が π_n と一致", np.allclose(st[:10], pin[:10], atol=1e-10), st[:3])
+nret = 100000
+x = np.zeros(nret, int); tt = np.zeros(nret, int); alive = np.ones(nret, bool)
+while alive.any():
+    idx = np.where(alive)[0]
+    step = np.where(rngC.random(idx.size) < pp, 1, -1)
+    x[idx] = np.maximum(x[idx] + step, 0)
+    tt[idx] += 1
+    alive[idx] = x[idx] != 0
+mret = tt.mean()
+check(T, "sim 状態0の平均再帰時間 ≈ 3（10万回, 許容 0.05）", abs(mret - 3) < .05, mret)
+check(T, "m0=1/π0=3", close(1 / pin[0], 3, 1e-12), 3)
+
+T = "continuous-time-markov-chain"
+la, mu = 0.2, 1.0
+Q = np.array([[-la, la], [mu, -mu]])
+check(T, "Q の各行の和 0", np.allclose(Q.sum(1), 0), Q.sum(1))
+pi0 = mu / (la + mu)
+check(T, "π0=0.8333, π1=0.1667, πQ=0", close(pi0, .8333) and close(1 - pi0, .1667) and np.allclose(np.array([pi0, 1 - pi0]) @ Q, 0), pi0)
+P1 = _expm(Q)
+check(T, "e^{-1.2}=0.3012, p00(1)=0.8835（式と expm(Q) の両方）", close(np.exp(-1.2), .3012) and close(pi0 + la / (la + mu) * np.exp(-1.2), .8835) and close(P1[0, 0], .8835), (np.exp(-1.2), P1[0, 0]))
+ts, l_, m_ = sp.symbols("t lambda mu", positive=True)
+Qs = sp.Matrix([[-l_, l_], [m_, -m_]])
+p00 = m_ / (l_ + m_) + l_ / (l_ + m_) * sp.exp(-(l_ + m_) * ts)
+Pt = sp.Matrix([[p00, 1 - p00], [1 - (l_ / (l_ + m_) + m_ / (l_ + m_) * sp.exp(-(l_ + m_) * ts)), l_ / (l_ + m_) + m_ / (l_ + m_) * sp.exp(-(l_ + m_) * ts)]])
+check(T, "sympy P'(t)=P(t)Q=QP(t), P(0)=I", sp.simplify(Pt.diff(ts) - Pt * Qs) == sp.zeros(2) and sp.simplify(Pt.diff(ts) - Qs * Pt) == sp.zeros(2) and sp.simplify(Pt.subs(ts, 0)) == sp.eye(2), "一致")
+check(T, "P(s+t)=P(s)P(t)（s=0.7, t=1.3）", np.allclose(_expm(2.0 * Q), _expm(.7 * Q) @ _expm(1.3 * Q)), "")
+check(T, "t 大で p00→0.8333", close(_expm(50 * Q)[0, 0], pi0, 1e-10), _expm(50 * Q)[0, 0])
+# sim: 滞在時間が指数分布の交代過程で時刻1の状態
+ns = 200000
+state = np.zeros(ns, int); tcur = np.zeros(ns)
+alive = np.ones(ns, bool)
+while alive.any():
+    idx = np.where(alive)[0]
+    rate = np.where(state[idx] == 0, la, mu)
+    tcur[idx] += rngC.exponential(1 / rate)
+    done = tcur[idx] > 1
+    alive[idx[done]] = False
+    state[idx[~done]] = 1 - state[idx[~done]]
+p00s = (state == 0).mean()
+check(T, "sim p00(1)≈0.8835（20万本, 許容 0.004）", abs(p00s - .8835) < .004, p00s)
+
 # ================= まとめ =================
 ok = sum(results); ng = len(results) - ok
 print(f"\n合計: OK {ok} / NG {ng}")

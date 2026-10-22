@@ -615,6 +615,136 @@ cnts = Counter(map(tuple, np.argsort(np.argsort(rng.exponential(size=(200000, 4)
 dev = max(abs(c / 200000 - 1 / 24) for c in cnts.values())
 check(T, "sim 順位ベクトルは N! 通り等確率（N=4, 指数分布20万回, 各 1/24 ±0.003）", dev < .003 and len(cnts) == 24, dev)
 
+# ================= 重要度Cの用語 =================
+print("\n--- 重要度Cの用語 ---")
+rngC = np.random.default_rng(20261023)
+
+T = "asymptotic-relative-efficiency"
+sg = sp.symbols("sigma", positive=True)
+fNs = sp.exp(-xs ** 2 / (2 * sg ** 2)) / (sp.sqrt(2 * sp.pi) * sg)
+int_f2 = sp.simplify(sp.integrate(fNs ** 2, (xs, -sp.oo, sp.oo)))
+check(T, "sympy 正規 ∫f²=1/(2√π σ), f(m)=1/(√(2π)σ)", sp.simplify(int_f2 - 1 / (2 * sp.sqrt(sp.pi) * sg)) == 0 and sp.simplify(fNs.subs(xs, 0) - 1 / (sp.sqrt(2 * sp.pi) * sg)) == 0, int_f2)
+check(T, "sympy 12σ²(∫f²)²=3/π, 4σ²f(m)²=2/π（σ によらない）", sp.simplify(12 * sg ** 2 * int_f2 ** 2 - 3 / sp.pi) == 0 and sp.simplify(4 * sg ** 2 * fNs.subs(xs, 0) ** 2 - 2 / sp.pi) == 0, "一致")
+check(T, "3/π≈0.955, 2/π≈0.637", close(3 / pi, .955, 5e-4) and close(2 / pi, .637, 5e-4), (3 / pi, 2 / pi))
+bL = sp.symbols("b", positive=True)
+fLs = sp.exp(-sp.Abs(xs) / bL) / (2 * bL)
+i2 = 2 * sp.integrate((sp.exp(-xs / bL) / (2 * bL)) ** 2, (xs, 0, sp.oo))
+check(T, "sympy ラプラス（尺度 b）: 順位 12·2b²·(∫f²)²=1.5, 符号 4·2b²·f(0)²=2", sp.simplify(12 * 2 * bL ** 2 * i2 ** 2 - sp.Rational(3, 2)) == 0 and sp.simplify(4 * 2 * bL ** 2 * (1 / (2 * bL)) ** 2 - 2) == 0, (i2,))
+check(T, "例 100/(3/π)=104.7→105, 100/0.6366=100/(2/π)=157.1→158", close(100 / (3 / pi), 104.7, .05) and close(100 / (2 / pi), 157.1, .05) and close(100 / .6366, 157.1, .05) and int(np.ceil(100 / (3 / pi))) == 105 and int(np.ceil(100 / (2 / pi))) == 158, (100 / (3 / pi), 100 / (2 / pi)))
+check(T, "例 約1.6倍（π/2=1.571）、ラプラスで符号検定は 100/2=50 人", close(pi / 2, 1.6, .05) and 100 / 2 == 50, pi / 2)
+check(T, "中央値検定の順位和検定に対する効率 (2/π)/(3/π)=2/3", close((2 / pi) / (3 / pi), 2 / 3, 1e-12), 2 / 3)
+# 近接対立での検出力 sim（正規, n_t=100 と n_W=105 で同程度）: 省略せず簡単に確認
+nsim = 4000
+def pw(nn, test):
+    d = 0.25  # 平均差（σ=1）、各群 nn
+    x = rngC.normal(0, 1, (nsim, nn)); yv = rngC.normal(d, 1, (nsim, nn))
+    if test == "t":
+        return (stats.ttest_ind(yv, x, axis=1, alternative="greater").pvalue < .05).mean()
+    allv = np.concatenate([x, yv], 1)
+    rk = stats.rankdata(allv, axis=1)
+    W = rk[:, nn:].sum(1)
+    mu = nn * (2 * nn + 1) / 2; sd = np.sqrt(nn * nn * (2 * nn + 1) / 12)
+    return ((W - mu) / sd > stats.norm.ppf(.95)).mean()
+pt_, pw_ = pw(100, "t"), pw(105, "w")
+check(T, "sim 正規: t 検定 n=100 と順位和 n=105 の検出力がほぼ同じ（各4000回, 許容 0.04）", abs(pt_ - pw_) < .04, (pt_, pw_))
+
+T = "median-test"
+A_ = np.array([12, 15, 9, 20, 18, 14, 22, 17, 25, 19]); B_ = np.array([8, 11, 13, 10, 16, 7, 12, 9, 14, 6])
+M_ = np.median(np.concatenate([A_, B_]))
+tab = np.array([[(A_ > M_).sum(), (A_ <= M_).sum()], [(B_ > M_).sum(), (B_ <= M_).sum()]])
+check(T, "例 M=13.5、表 [[8,2],[2,8]]", M_ == 13.5 and tab.tolist() == [[8, 2], [2, 8]], (M_, tab.tolist()))
+c0 = stats.chi2_contingency(tab, correction=False); c1 = stats.chi2_contingency(tab, correction=True)
+check(T, "例 期待度数すべて5、χ²=7.2, p=0.0073", np.all(c0.expected_freq == 5) and close(c0.statistic, 7.2, 1e-10) and close(c0.pvalue, .0073), (c0.statistic, c0.pvalue))
+check(T, "例 イェーツ χ²=5.0, p=0.0253", close(c1.statistic, 5.0, 1e-10) and close(c1.pvalue, .0253), (c1.statistic, c1.pvalue))
+fe = stats.fisher_exact(tab)
+hy = stats.hypergeom(20, 10, 10)
+p_hy = sum(hy.pmf(k) for k in range(11) if hy.pmf(k) <= hy.pmf(8) * (1 + 1e-9))
+check(T, "例 フィッシャー両側 p=0.0230（scipy・超幾何の直接計算）", close(fe.pvalue, .0230) and close(p_hy, .0230), (fe.pvalue, p_hy))
+mt = stats.median_test(A_, B_, ties="below", correction=False)
+check(T, "scipy median_test（ties=below）と一致", close(mt.statistic, 7.2, 1e-10) and mt.median == 13.5, mt.statistic)
+
+T = "kolmogorov-smirnov-two-sample"
+X_ = np.array([3.1, 4.5, 2.8, 5.0, 4.2, 3.9, 4.8, 5.5]); Y_ = np.array([2.1, 2.9, 3.3, 1.8, 2.6, 3.7, 2.4, 3.0])
+def Dstat(x, y):
+    g = np.concatenate([x, y])
+    return max(abs((x <= v).mean() - (y <= v).mean()) for v in g)
+check(T, "例 x=3.7 で F8=2/8, G8=1、D=0.75", (X_ <= 3.7).mean() == .25 and (Y_ <= 3.7).mean() == 1 and close(Dstat(X_, Y_), .75, 1e-12), Dstat(X_, Y_))
+check(T, "例 漸近の棄却限界 1.358√(16/64)=0.679, 1.358 は K の 0.95 分位", close(1.358 * sqrt(16 / 64), .679, 5e-4) and close(stats.kstwobign.ppf(.95), 1.358, 5e-4), stats.kstwobign.ppf(.95))
+# 正確な分布：合併16個の並び C(16,8)=12870 通りを全数え上げ
+Dcnt = Counter()
+for S in combinations(range(16), 8):
+    s = set(S); fx = gy = 0; dm = 0
+    for i in range(16):
+        if i in s: fx += 1
+        else: gy += 1
+        dm = max(dm, abs(fx - gy))
+    Dcnt[dm] += 1
+tot = sum(Dcnt.values())
+pe75 = sum(v for k, v in Dcnt.items() if k >= 6) / tot; pe625 = sum(v for k, v in Dcnt.items() if k >= 5) / tot
+check(T, "全数え上げ（12870通り）P(D≥0.75)=0.0186, P(D≥0.625)=0.0870", tot == 12870 and close(pe75, .0186) and close(pe625, .0870), (pe75, pe625))
+ks = stats.ks_2samp(X_, Y_, method="exact")
+check(T, "scipy ks_2samp exact p=0.0186", close(ks.pvalue, .0186) and close(ks.statistic, .75, 1e-12), ks.pvalue)
+lam = sqrt(64 / 16) * .75
+pas = 2 * sum((-1) ** (j - 1) * np.exp(-2 * j * j * lam * lam) for j in range(1, 101))
+check(T, "漸近 p=2Σ(−1)^{j−1}e^{−2j²λ²}, λ=1.5 → 0.0222（kstwobign とも）", close(pas, .0222) and close(stats.kstwobign.sf(lam), pas, 1e-12), pas)
+check(T, "m=n=8 の5%棄却域は D≥0.75（0.0186≤0.05<0.0870）", pe75 <= .05 < pe625, "")
+# 帰無分布が F によらない（sim）
+d1 = [Dstat(rngC.normal(size=8), rngC.normal(size=8)) for _ in range(20000)]
+d2 = [Dstat(rngC.exponential(size=8), rngC.exponential(size=8)) for _ in range(20000)]
+r1, r2 = np.mean(np.array(d1) >= .75 - 1e-9), np.mean(np.array(d2) >= .75 - 1e-9)
+check(T, "sim 正規・指数とも P(D≥0.75)≈0.0186（各2万回, 許容 0.004）", abs(r1 - pe75) < .004 and abs(r2 - pe75) < .004, (r1, r2))
+
+T = "runs-test"
+seq = "G" * 5 + "B" * 3 + "G" * 6 + "B" * 4 + "G" * 2
+def nruns(s):
+    return 1 + sum(s[i] != s[i - 1] for i in range(1, len(s)))
+n1_, n2_ = seq.count("G"), seq.count("B"); N_ = n1_ + n2_
+check(T, "例 n1=13, n2=7, R=5", (n1_, n2_, nruns(seq)) == (13, 7, 5), (n1_, n2_, nruns(seq)))
+ER = 2 * n1_ * n2_ / N_ + 1; VR = 2 * n1_ * n2_ * (2 * n1_ * n2_ - N_) / (N_ ** 2 * (N_ - 1))
+check(T, "例 E[R]=10.1, V[R]=3.879, √V=1.970", close(ER, 10.1, 1e-12) and close(VR, 3.879, 5e-4) and close(sqrt(VR), 1.970, 5e-4), (ER, VR, sqrt(VR)))
+z0 = (5 - ER) / sqrt(VR); z1 = (5.5 - ER) / sqrt(VR)
+check(T, "例 z=−2.589, p=0.0048; 連続修正 z=−2.335, p=0.0098", close(z0, -2.589, 5e-4) and close(stats.norm.cdf(z0), .0048) and close(z1, -2.335, 5e-4) and close(stats.norm.cdf(z1), .0098), (z0, stats.norm.cdf(z0), z1, stats.norm.cdf(z1)))
+Rc = Counter()
+for Bpos in combinations(range(20), 7):
+    s = ["G"] * 20
+    for i in Bpos: s[i] = "B"
+    Rc[nruns(s)] += 1
+totR = sum(Rc.values())
+pR5 = sum(v for k, v in Rc.items() if k <= 5) / totR
+check(T, "全数え上げ（C(20,7)=77520通り）P(R≤5)=0.0095", totR == 77520 and close(pR5, .0095), pR5)
+mR = sum(k * v for k, v in Rc.items()) / totR; vR = sum(k * k * v for k, v in Rc.items()) / totR - mR ** 2
+check(T, "全数え上げの平均・分散が E[R]・V[R] の式と一致", close(mR, ER, 1e-10) and close(vR, VR, 1e-10), (mR, vR))
+ok_ = all(Rc[2 * k] == 2 * comb(n1_ - 1, k - 1) * comb(n2_ - 1, k - 1) for k in range(1, 8))
+check(T, "P(R=2k)=2C(n1−1,k−1)C(n2−1,k−1)/C(N,n1) が全数え上げと一致", ok_, {k: Rc[2 * k] for k in range(1, 8)})
+check(T, "隣が異なる確率 2n1n2/{N(N−1)}×(N−1)+1 = E[R]", close(1 + (N_ - 1) * 2 * n1_ * n2_ / (N_ * (N_ - 1)), ER, 1e-12), "")
+
+T = "jonckheere-terpstra-test"
+G3 = [np.array([3.2, 4.1, 2.8, 3.6]), np.array([4.0, 4.9, 3.9, 5.3]), np.array([5.1, 6.0, 4.7, 5.6])]
+def Uij(a, b):
+    return sum((x < y) + .5 * (x == y) for x in a for y in b)
+U12, U13, U23 = Uij(G3[0], G3[1]), Uij(G3[0], G3[2]), Uij(G3[1], G3[2])
+check(T, "例 U=14, 16, 13, J=43", (U12, U13, U23) == (14, 16, 13), (U12, U13, U23))
+nn_ = [4, 4, 4]; NN = 12
+EJ = (NN ** 2 - sum(k * k for k in nn_)) / 4; VJ = (NN ** 2 * (2 * NN + 3) - sum(k * k * (2 * k + 3) for k in nn_)) / 72
+zJ = (43 - EJ) / sqrt(VJ)
+check(T, "例 E[J]=24, V[J]=46.67, √V=6.831, z=2.781, p=0.0027", EJ == 24 and close(VJ, 46.67, 5e-3) and close(sqrt(VJ), 6.831, 5e-4) and close(zJ, 2.781, 5e-4) and close(stats.norm.sf(zJ), .0027), (VJ, zJ, stats.norm.sf(zJ)))
+allv = np.concatenate(G3)
+Jc = Counter()
+for a in combinations(range(12), 4):
+    rest = [i for i in range(12) if i not in a]
+    for b in combinations(rest, 4):
+        c = [i for i in rest if i not in b]
+        g = [allv[list(a)], allv[list(b)], allv[c]]
+        Jc[Uij(g[0], g[1]) + Uij(g[0], g[2]) + Uij(g[1], g[2])] += 1
+totJ = sum(Jc.values())
+pJ = sum(v for k, v in Jc.items() if k >= 43) / totJ
+check(T, "全数え上げ（34650通り）正確な上側 p=0.0020", totJ == 34650 and close(pJ, .0020), pJ)
+mJ = sum(k * v for k, v in Jc.items()) / totJ; vJ = sum(k * k * v for k, v in Jc.items()) / totJ - mJ ** 2
+check(T, "全数え上げの平均・分散が E[J]・V[J] の式と一致", close(mJ, EJ, 1e-9) and close(vJ, VJ, 1e-9), (mJ, vJ))
+kw = stats.kruskal(*G3)
+check(T, "同じデータのクラスカル・ウォリス p=0.0296", close(kw.pvalue, .0296), kw.pvalue)
+check(T, "異なる群どうしの組は (N²−Σn²)/2=48 組", (NN ** 2 - 48) // 2 == 4 * 4 * 3, "48")
+
 # ================= 集計 =================
 nok, nng = sum(results), len(results) - sum(results)
 print(f"\n合計: OK {nok} / NG {nng}")

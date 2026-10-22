@@ -514,6 +514,117 @@ xs = ch[0]["params"]["x"]; yL = ch[0]["params"]["series"][0]["y"]
 check(T, "図1 L=ρ/(1−ρ)（許容0.005）、0.5→1, 0.9→9", all(abs(a / (1 - a) - b) <= .005 + 1e-9 for a, b in zip(xs, yL)), yL)
 check(T, "図2 geom p=0.2=1−ρ（ρ=0.8 は例1と整合）, start=0", ch[1]["params"] == {"p": 0.2, "start": 0}, ch[1]["params"])
 
+# ================= 重要度Cの用語 =================
+print("\n--- 重要度Cの用語 ---")
+from itertools import product as _product
+rngC = np.random.default_rng(20261023)
+
+T = "counting-process"
+arr = np.array([0.8, 1.5, 1.9, 3.2, 4.6])
+Nt = lambda t: int((arr <= t).sum())
+check(T, "例 N(2)=3, N(4)−N(2)=1, N(5)−N(3)=2", (Nt(2), Nt(4) - Nt(2), Nt(5) - Nt(3)) == (3, 1, 2), (Nt(2), Nt(4) - Nt(2), Nt(5) - Nt(3)))
+check(T, "例 P(N(2)=3)=e^{−2.4}2.4³/3!=0.2090", close(stats.poisson.pmf(3, 2.4), .2090) and close(exp(-2.4) * 2.4 ** 3 / 6, .2090), stats.poisson.pmf(3, 2.4))
+check(T, "{N(t)≥n}={S_n≤t}: P(N(2)≥3)=P(Ga(3,λ) ≤2)", close(stats.poisson.sf(2, 2.4), stats.gamma.cdf(2, 3, scale=1 / 1.2), 1e-12), stats.poisson.sf(2, 2.4))
+gaps = rngC.exponential(1 / 1.2, (200000, 12)).cumsum(1)
+n2 = (gaps <= 2).sum(1)
+check(T, "sim 指数間隔から作る N(2) で P(N(2)=3)≈0.2090（20万本, 許容 0.004）", abs((n2 == 3).mean() - .2090) < .004, (n2 == 3).mean())
+
+T = "pure-birth-process"
+lam_, tt_ = .5, 2.0
+q_ = exp(-lam_ * tt_)
+check(T, "例 e^{−1}=0.3679, E[X(2)]=2.718, P(X=1)=0.3679, P(X≥3)=(1−0.3679)²=0.3996", close(q_, .3679) and close(exp(1), 2.718, 5e-4) and close((1 - q_) ** 2, .3996), (q_, (1 - q_) ** 2))
+check(T, "幾何分布（台1..）の平均 1/e^{−λt}=e^{λt}", close(stats.geom.mean(q_), exp(1), 1e-12), stats.geom.mean(q_))
+check(T, "例 1/0.5+1/1+1/1.5=3.667", close(1 / .5 + 1 / 1 + 1 / 1.5, 3.667, 5e-4), 1 / .5 + 1 + 1 / 1.5)
+ts_, ls_ = sp.symbols("t lambda", positive=True)
+nn = sp.symbols("n", integer=True, positive=True)
+Pn = lambda k: sp.exp(-ls_ * ts_) * (1 - sp.exp(-ls_ * ts_)) ** (k - 1)
+fw = all(sp.simplify(sp.diff(Pn(k), ts_) - (-k * ls_ * Pn(k) + ((k - 1) * ls_ * Pn(k - 1) if k > 1 else 0))) == 0 for k in range(1, 7))
+check(T, "sympy 前進方程式 P_n'=−nλP_n+(n−1)λP_{n−1} を満たす（n=1..6）", fw, "")
+# 打ち切り生成行列の expm
+from scipy.linalg import expm as _expm
+Kb = 120
+Qb = np.zeros((Kb, Kb))
+for i in range(Kb - 1):
+    Qb[i, i] = -(i + 1) * lam_; Qb[i, i + 1] = (i + 1) * lam_
+Pb = _expm(Qb * tt_)[0]
+check(T, "打ち切り生成行列 expm の P(X(2)=n) が幾何分布と一致", np.allclose(Pb[:20], [q_ * (1 - q_) ** k for k in range(20)], atol=1e-10), Pb[:3])
+nsb = 100000
+xb = np.ones(nsb); tb = np.zeros(nsb); al = np.ones(nsb, bool)
+while al.any():
+    idx = np.where(al)[0]
+    tb[idx] += rngC.exponential(1 / (lam_ * xb[idx]))
+    d = tb[idx] > tt_
+    al[idx[d]] = False
+    xb[idx[~d]] += 1
+check(T, "sim 平均個数≈2.72（10万本, 許容 0.03）, P(X(2)≥3)≈0.400（許容 0.006）", abs(xb.mean() - exp(1)) < .03 and abs((xb >= 3).mean() - .3996) < .006, (xb.mean(), (xb >= 3).mean()))
+t4 = sum(rngC.exponential(1 / (lam_ * k), nsb) for k in (1, 2, 3))
+check(T, "sim 1→4 の平均時間≈3.667（10万本, 許容 0.03）", abs(t4.mean() - 11 / 3) < .03, t4.mean())
+
+T = "compound-poisson-process"
+us, lt = sp.symbols("u lt", positive=True)
+EY, EY2, c3 = sp.symbols("EY EY2 c3")
+MYp = 1 + EY * us + EY2 * us ** 2 / 2 + c3 * us ** 3  # M_Y の u=0 まわりの展開
+Ms = sp.exp(lt * (MYp - 1))
+m1v = sp.diff(Ms, us).subs(us, 0); m2v = sp.diff(Ms, us, 2).subs(us, 0)
+check(T, "sympy MGF 微分: E[S]=λtE[Y], V[S]=λtE[Y²]", sp.simplify(m1v - lt * EY) == 0 and sp.simplify(m2v - m1v ** 2 - lt * EY2) == 0, (m1v, sp.expand(m2v - m1v ** 2)))
+ES = 36 * 20; VS = 36 * (10 ** 2 + 20 ** 2)
+zc = (900 - ES) / sqrt(VS)
+check(T, "例 E[S]=720, V[S]=18000, SD=134.16, z=1.342, P=0.0899", ES == 720 and VS == 18000 and close(sqrt(VS), 134.16, 5e-3) and close(zc, 1.342, 5e-4) and close(stats.norm.sf(zc), .0899), (sqrt(VS), zc, stats.norm.sf(zc)))
+Nn = rngC.poisson(36, 1000000)
+Ssim = np.where(Nn > 0, rngC.gamma(np.maximum(4 * Nn, 1), 5.0), 0.0)
+ps_ = (Ssim > 900).mean()
+check(T, "sim ガンマ（形4・尺度5: 平均20, SD10）で E≈720, V≈18000（相対1%）, P(S>900)≈0.094（100万本, 許容 0.002）", abs(Ssim.mean() / 720 - 1) < .01 and abs(Ssim.var() / 18000 - 1) < .01 and abs(ps_ - .094) < .002, (Ssim.mean(), Ssim.var(), ps_))
+
+T = "mmc-queue"
+def mmc(lam, mu, c):
+    a = lam / mu; rho = a / c
+    p0 = 1 / (sum(a ** k / factorial(k) for k in range(c)) + a ** c / (factorial(c) * (1 - rho)))
+    C = a ** c / (factorial(c) * (1 - rho)) * p0
+    Lq = C * rho / (1 - rho); Wq = C / (c * mu - lam)
+    return dict(p0=p0, C=C, Lq=Lq, Wq=Wq, W=Wq + 1 / mu, L=Lq + a)
+r = mmc(6, 4, 2)
+check(T, "例 π0=1/7=0.1429, C=4.5/7=0.6429", close(r["p0"], 1 / 7, 1e-12) and close(r["C"], 4.5 / 7, 1e-12) and close(r["p0"], .1429) and close(r["C"], .6429), (r["p0"], r["C"]))
+check(T, "例 Lq=1.929, Wq=0.3214h=19.3分, W=34.3分, L=3.429", close(r["Lq"], 1.929, 5e-4) and close(r["Wq"], .3214) and close(r["Wq"] * 60, 19.3, .05) and close(r["W"] * 60, 34.3, .05) and close(r["L"], 3.429, 5e-4), r)
+check(T, "リトル Lq=λWq, L=λW", close(r["Lq"], 6 * r["Wq"], 1e-12) and close(r["L"], 6 * r["W"], 1e-12), "")
+# 定常分布を打ち切り生成行列で
+Kq = 400
+Qq = np.zeros((Kq, Kq))
+for n in range(Kq):
+    if n + 1 < Kq: Qq[n, n + 1] = 6
+    if n > 0: Qq[n, n - 1] = min(n, 2) * 4
+    Qq[n, n] = -Qq[n].sum()
+A_ = np.vstack([Qq.T, np.ones(Kq)]); bvec = np.zeros(Kq + 1); bvec[-1] = 1
+piq = np.linalg.lstsq(A_, bvec, rcond=None)[0]
+check(T, "打ち切り生成行列の定常分布で π0, P(N≥2), L が一致", close(piq[0], 1 / 7, 1e-9) and close(piq[2:].sum(), r["C"], 1e-9) and close((np.arange(Kq) * piq).sum(), r["L"], 1e-8), (piq[0], piq[2:].sum()))
+r1 = mmc(6, 8, 1); r2 = mmc(3, 4, 1)
+check(T, "比較 M/M/1(μ=8): Wq=22.5分, W=30分; M/M/1×2(λ=3): Wq=45分", close(r1["Wq"] * 60, 22.5, 1e-9) and close(r1["W"] * 60, 30, 1e-9) and close(r2["Wq"] * 60, 45, 1e-9), (r1["Wq"] * 60, r1["W"] * 60, r2["Wq"] * 60))
+lq, mq = sp.symbols("lambda mu", positive=True)
+rq = lq / mq
+p0s = 1 / (1 + rq / (1 - rq))
+check(T, "sympy c=1 で π0=1−ρ, C=ρ", sp.simplify(p0s - (1 - rq)) == 0 and sp.simplify(rq / (1 - rq) * p0s - rq) == 0, "")
+
+T = "reflection-principle"
+cnt = 0; cnt6 = 0; cntb = 0
+for st in _product((1, -1), repeat=10):
+    s = np.cumsum(st)
+    if s.max() >= 4: cnt += 1
+    if s[-1] == 2 and s.max() >= 4: cntb += 1
+    if s[-1] == 6: cnt6 += 1
+check(T, "例 P(S10≥4)=176/1024, P(S10=4)=120/1024", sum(comb(10, k) for k in range(7, 11)) == 176 and comb(10, 7) == 120, 176)
+check(T, "例 (2·176−120)/1024=232/1024=0.2266、全 2^10 通りの数え上げも 232", 2 * 176 - 120 == 232 and cnt == 232 and close(232 / 1024, .2266), cnt)
+check(T, "例 終点2で途中4に達する道=終点6の道=C(10,8)=45", cntb == 45 and cnt6 == 45 and comb(10, 8) == 45, (cntb, cnt6))
+okall = True
+for n in range(1, 13):
+    paths = np.array(list(_product((1, -1), repeat=n))).cumsum(1)
+    mx = np.maximum(paths.max(1), 0); en = paths[:, -1]
+    for m in range(1, n + 1):
+        lhs = (mx >= m).sum(); rhs = 2 * (en >= m).sum() - (en == m).sum()
+        if lhs != rhs or rhs != (en >= m).sum() + (en > m).sum(): okall = False
+        for b in range(-n, m):
+            if ((mx >= m) & (en == b)).sum() != (en == 2 * m - b).sum(): okall = False
+check(T, "全数え上げ（n=1..12, 全 m, b）で道の対応と P(max≥m) の式が成立", okall, "")
+check(T, "BM: 2P(W(1)≥1)=2×0.1587=0.3173", close(2 * stats.norm.sf(1), .3173) and close(stats.norm.sf(1), .1587), 2 * stats.norm.sf(1))
+
 print()
 print(f"OK {sum(results)} / NG {len(results) - sum(results)}")
 

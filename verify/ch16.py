@@ -647,5 +647,31 @@ xg = np.array(p["x"], float)
 check(T, "図 2本の直線 1.5+1.6x, 1.0+3.1x", allclose(1.5 + 1.6 * xg, p["series"][0]["y"], 1e-9) and allclose(1.0 + 3.1 * xg, p["series"][1]["y"], 1e-9), "一致")
 check(T, "図 キャプション 傾きの差 1.5、約2倍（3.1/1.6）", close(3.1 - 1.6, 1.5, 1e-12) and close(3.1 / 1.6, 2, 0.1), 3.1 / 1.6)
 
+# ================= 重要度Cの用語 =================
+print("\n--- 重要度Cの用語 ---")
+T = "partial-f-test"
+oneC = np.ones(8)
+x1C = np.array([1, 2, 2, 3, 4, 4, 5, 6], float); x2C = np.array([3, 2, 4, 3, 5, 4, 6, 5], float); yC = np.array([4, 6, 9, 7, 11, 10, 14, 13], float)  # 共通データ（8店舗）
+fF = ols(np.column_stack([oneC, x1C, x2C]), yC); fR = ols(np.column_stack([oneC, x2C]), yC)
+check(T, "例 S_e(F)=4.7738（自由度5）, S_e(R)=13.4167（自由度6）", close(fF["Se"], 4.7738) and close(fR["Se"], 13.4167) and fF["n"] - fF["k"] == 5 and fR["n"] - fR["k"] == 6, (fF["Se"], fR["Se"]))
+Fp = (fR["Se"] - fF["Se"]) / (fF["Se"] / 5)
+check(T, "例 追加平方和 8.6429, V_e=0.9548, F=9.052", close(fR["Se"] - fF["Se"], 8.6429) and close(fF["Se"] / 5, .9548) and close(Fp, 9.052, 5e-4), Fp)
+check(T, "例 F0.05(1,5)=6.608, p=0.0298", close(stats.f.ppf(.95, 1, 5), 6.608, 5e-4) and close(stats.f.sf(Fp, 1, 5), .0298), (stats.f.ppf(.95, 1, 5), stats.f.sf(Fp, 1, 5)))
+check(T, "例 √F=3.009=広告費の t 値, F=t²", close(np.sqrt(Fp), 3.009, 5e-4) and close(fF["t"][1], np.sqrt(Fp), 1e-10) and close(fF["t"][1] ** 2, Fp, 1e-9), fF["t"][1])
+check(T, "例 6.608=2.571²（t0.025(5)）", close(stats.t.ppf(.975, 5) ** 2, stats.f.ppf(.95, 1, 5), 1e-9) and close(stats.t.ppf(.975, 5), 2.571, 5e-4), stats.t.ppf(.975, 5))
+FR2 = (fF["R2"] - fR["R2"]) / ((1 - fF["R2"]) / 5)
+check(T, "例 R_F²=0.9428, R_R²=0.8393, R² 版 F=9.05（同値）", close(fF["R2"], .9428) and close(fR["R2"], .8393) and close(FR2, Fp, 1e-9), (fF["R2"], fR["R2"], FR2))
+f0 = ols(np.column_stack([oneC]), yC)
+Fall = ((f0["Se"] - fF["Se"]) / 2) / (fF["Se"] / 5)
+check(T, "q=p（全部外す）で回帰全体の F（R²/p / (1−R²)/(n−p−1)）と一致", close(Fall, (fF["R2"] / 2) / ((1 - fF["R2"]) / 5), 1e-9), Fall)
+rngP = np.random.default_rng(20261023)
+Xs_ = np.column_stack([oneC, x1C, x2C])
+Ysim = (Xs_[:, [0, 2]] @ np.array([1.0, 2.0]))[None, :] + rngP.normal(size=(50000, 8))
+bF = np.linalg.lstsq(Xs_, Ysim.T, rcond=None)[0]; bR = np.linalg.lstsq(Xs_[:, [0, 2]], Ysim.T, rcond=None)[0]
+SeF = ((Ysim.T - Xs_ @ bF) ** 2).sum(0); SeR = ((Ysim.T - Xs_[:, [0, 2]] @ bR) ** 2).sum(0)
+Fs = (SeR - SeF) / (SeF / 5)
+rej = (Fs > stats.f.ppf(.95, 1, 5)).mean()
+check(T, "sim H0 のもと F~F(1,5): 棄却率≈0.05（5万回, 許容 0.004）", abs(rej - .05) < .004 and np.all(SeR - SeF >= -1e-9), rej)
+
 print()
 print(f"OK {sum(results)} / NG {len(results) - sum(results)}")
