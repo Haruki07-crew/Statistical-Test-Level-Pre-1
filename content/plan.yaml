@@ -1139,19 +1139,19 @@ chapters:
   - id: weighted-least-squares
     title: 加重最小二乗法
     importance: A
-    status: planned
+    status: verified
   - id: generalized-least-squares
     title: 一般化最小二乗法
     importance: A
-    status: planned
+    status: verified
   - id: ridge-regression
     title: リッジ回帰
     importance: A
-    status: planned
+    status: verified
   - id: lasso
     title: Lasso
     importance: A
-    status: planned
+    status: verified
   - id: elastic-net
     title: エラスティックネット
     importance: C
@@ -1159,43 +1159,43 @@ chapters:
   - id: regularization
     title: 正則化
     importance: A
-    status: planned
+    status: verified
   - id: bias-in-penalized-estimation
     title: 罰則付き推定量のバイアス
     importance: B
-    status: planned
+    status: verified
   - id: nonlinear-regression
     title: 非線形回帰
     importance: B
-    status: planned
+    status: verified
   - id: polynomial-regression
     title: 多項式回帰
     importance: B
-    status: planned
+    status: verified
   - id: quantile-regression
     title: 分位点回帰
     importance: B
-    status: planned
+    status: verified
   - id: instrumental-variable-method
     title: 操作変数法
     importance: A
-    status: planned
+    status: verified
   - id: endogeneity
     title: 内生性
     importance: A
-    status: planned
+    status: verified
   - id: two-stage-least-squares
     title: 二段階最小二乗法
     importance: B
-    status: planned
+    status: verified
   - id: variable-selection
     title: 変数選択
     importance: A
-    status: planned
+    status: verified
   - id: omitted-variable-bias
     title: 欠落変数バイアス
     importance: B
-    status: planned
+    status: verified
   - id: principal-component-regression
     title: 主成分回帰
     importance: C
