@@ -792,67 +792,67 @@ chapters:
   - id: markov-property
     title: マルコフ性
     importance: A
-    status: planned
+    status: verified
   - id: markov-chain
     title: マルコフ連鎖
     importance: A
-    status: planned
+    status: verified
   - id: transition-probability-matrix
     title: 推移確率行列
     importance: A
-    status: planned
+    status: verified
   - id: n-step-transition-probability
     title: n段階推移確率
     importance: A
-    status: planned
+    status: verified
   - id: chapman-kolmogorov-equation
     title: チャップマン・コルモゴロフ方程式
     importance: A
-    status: planned
+    status: verified
   - id: stationary-distribution
     title: 定常分布
     importance: A
-    status: planned
+    status: verified
   - id: irreducibility
     title: 既約性
     importance: A
-    status: planned
+    status: verified
   - id: communicating-class
     title: 到達可能性と状態の類
     importance: B
-    status: planned
+    status: verified
   - id: periodicity
     title: 周期と非周期
     importance: A
-    status: planned
+    status: verified
   - id: recurrence-and-transience
     title: 再帰と過渡
     importance: A
-    status: planned
+    status: verified
   - id: absorbing-state
     title: 吸収状態
     importance: A
-    status: planned
+    status: verified
   - id: ergodicity
     title: エルゴード性
     importance: A
-    status: planned
+    status: verified
   - id: detailed-balance
     title: 詳細つり合い条件
     importance: A
-    status: planned
+    status: verified
   - id: limiting-distribution
     title: 極限分布
     importance: B
-    status: planned
+    status: verified
   - id: absorption-probability
     title: 吸収確率・平均吸収時間
     importance: B
-    status: planned
+    status: verified
   - id: first-passage-time
     title: 初到達時間・平均再帰時間
     importance: B
-    status: planned
+    status: verified
   - id: positive-recurrence
     title: 正再帰と零再帰
     importance: C
