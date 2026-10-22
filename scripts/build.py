@@ -109,7 +109,7 @@ def main():
             "aliases": [str(a) for a in fm.get("aliases") or []], "chapter": fm["chapter"],
             "importance": fm["importance"], "tags": [str(t) for t in fm.get("tags") or []],
             "related": fm.get("related") or [], "charts": fm.get("charts") or [],
-            "html": render_body(body), "text": plain_text(body),
+            "html": render_body(body),  # 検索用の本文テキストはファイルサイズ節約のため app.js で html から作る
         }
     chapters = []
     for ch in plan["chapters"]:

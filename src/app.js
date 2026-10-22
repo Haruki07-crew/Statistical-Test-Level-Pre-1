@@ -42,6 +42,14 @@
     s = s.toLowerCase().replace(/[ァ-ヶ]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0x60); });
     return s.replace(/[\s　・･\-‐‑‒–—―−]/g, '');
   }
+  // 本文の html から検索用のプレーンテキストを作る（数式は落とす）
+  function plainFromHtml(h) {
+    return h.replace(/<span class="math-inline">[\s\S]*?<\/span>/g, ' ').replace(/<div class="math-display">[\s\S]*?<\/div>/g, ' ')
+      .replace(/<h2>[\s\S]*?<\/h2>/g, ' ').replace(/<[^>]+>/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&')
+      .replace(/\s+/g, ' ').trim();
+  }
+  Object.keys(TERMS).forEach(function (id) { TERMS[id].text = plainFromHtml(TERMS[id].html); });
+
   var INDEX = ORDER.map(function (id) {
     var p = PLAN[id], t = TERMS[id];
     return {

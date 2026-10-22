@@ -7,6 +7,8 @@ const data = JSON.parse(html.match(/<script type="application\/json" id="data">(
 const grab = (name) => { const s = app.indexOf('function ' + name); let d = 0, i = app.indexOf('{', s); for (; i < app.length; i++) { if (app[i] === '{') d++; else if (app[i] === '}' && --d === 0) break; } return app.slice(s, i + 1); };
 const norm = new Function(grab('norm') + '; return norm;')();
 const scoreEntry = new Function(grab('scoreEntry') + '; return scoreEntry;')();
+const plainFromHtml = new Function(grab('plainFromHtml') + '; return plainFromHtml;')();
+for (const t of Object.values(data.terms)) t.text = plainFromHtml(t.html);
 const T = data.terms, ids = data.chapters.flatMap(c => c.terms.map(t => t));
 const INDEX = ids.map(p => { const t = T[p.id]; return { id: p.id, names: [p.title].concat(t ? [t.title, ...t.aliases] : []).map(norm), reading: t ? norm(t.reading) : '', en: t ? norm(t.en) : '', tags: t ? t.tags.map(norm) : [], text: t ? norm(t.text) : '' }; });
 const search = q => INDEX.map(e => ({ id: e.id, s: scoreEntry(e, norm(q)) })).filter(r => r.s).sort((a, b) => b.s - a.s);
