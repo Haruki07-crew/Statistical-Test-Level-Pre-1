@@ -57,3 +57,5 @@
 補足：points-2d は points の各要素に group を付けるか、ラベルの先頭を「[行]」「[列]」のように書くと、種類ごとに色が変わる。
 | missing-scatter | 欠測メカニズム（MCAR/MAR/MNAR）と観測値だけの平均の偏り | mechanism: mcar\|mar\|mnar, rho(0.6), n(200) |
 | credible-hpd | 等裾の信用区間と HPD 区間の比較 | dist: beta\|gamma, a, b（beta）または shape, rate（gamma）, level(0.95) |
+| box-muller | 一様乱数と、ボックス・ミュラー変換後の正規乱数の散布図 | n(1000) |
+| gibbs-path | 2変量正規分布でのギブスサンプリングの軌跡 | rho(0.8), iters(30), init(2) |

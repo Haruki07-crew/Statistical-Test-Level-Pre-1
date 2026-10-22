@@ -4,7 +4,7 @@
   var Charts = root.Charts, Dist = root.Dist;
   // 乱数を使う図には「もう一度」ボタンを付ける
   var RANDOM = ['clt-sim', 'lln-path', 'ci-coverage', 'poisson-process', 'random-walk', 'regression-residual', 'qq-plot', 'bias-variance',
-    'pca-axes', 'dendrogram', 'residual-pattern', 'dw-sim', 'iv-scatter', 'missing-scatter', 'discriminant-boundary', 'fisher-projection', 'knn-boundary', 'svm-margin', 'kmeans-steps', 'acf-plot', 'ar-sim', 'km-curve', 'mcmc-trace', 'inverse-transform', 'rejection-sampling', 'bootstrap-hist'];
+    'pca-axes', 'dendrogram', 'residual-pattern', 'dw-sim', 'iv-scatter', 'missing-scatter', 'box-muller', 'gibbs-path', 'discriminant-boundary', 'fisher-projection', 'knn-boundary', 'svm-margin', 'kmeans-steps', 'acf-plot', 'ar-sim', 'km-curve', 'mcmc-trace', 'inverse-transform', 'rejection-sampling', 'bootstrap-hist'];
   function reg(id, fn) { Charts.registerCustom(id, fn, RANDOM.indexOf(id) >= 0); }
 
   // ---------- 小さな道具 ----------
@@ -967,6 +967,47 @@
       a.lineDs('95%信用区間', pts(xs, xs.map(function (t, k) { return t >= ci[0] && t <= ci[1] ? post2[k] : null; })), c.c1, { fill: 'origin', backgroundColor: c.fill, borderWidth: 0 })];
     a.chart('', { data: { datasets: ds }, options: opts(a, c, { legend: true, xmin: lo, xmax: hi, ymax: cap, xTitle: 'パラメータ' }) });
     a.info.textContent = info + '　95%信用区間 [' + a.fmt(ci[0]) + ', ' + a.fmt(ci[1]) + ']';
+  });
+
+  // box-muller: { n } 一様乱数 (U1, U2) とボックス・ミュラー変換後の (Z1, Z2)
+  reg('box-muller', function (a, p, c) {
+    var n = Math.round(num(p.n, 1000)), U = [], Z = [], col = [];
+    for (var i = 0; i < n; i++) {
+      var u1 = a.rand() || 1e-12, u2 = a.rand(), r = Math.sqrt(-2 * Math.log(u1));
+      U.push({ x: u1, y: u2 }); Z.push({ x: r * Math.cos(2 * Math.PI * u2), y: r * Math.sin(2 * Math.PI * u2) });
+    }
+    // U1 が小さい（半径が大きい）点を目立つ色にして対応を見せる
+    var pick = function (arr, f) { return arr.filter(function (_, i) { return f(U[i]); }); };
+    var inner = function (u) { return u.x >= 0.1; }, outer = function (u) { return u.x < 0.1; };
+    var pair = document.createElement('div'); pair.className = 'chart-pair side'; a.el.appendChild(pair);
+    var mk = function () { var w = document.createElement('div'), cv = document.createElement('canvas'); w.className = 'chart-canvas'; w.appendChild(cv); pair.appendChild(w); return cv; };
+    if (!a.chartjs) throw new Error('グラフ用ライブラリを読み込み中です');
+    var C1 = new root.Chart(mk().getContext('2d'), { data: { datasets: [{ type: 'scatter', label: 'U1 ≥ 0.1', data: pick(U, inner), backgroundColor: c.fill, borderColor: c.c1, pointRadius: 1.8 }, { type: 'scatter', label: 'U1 < 0.1', data: pick(U, outer), backgroundColor: c.c2, pointRadius: 2.4 }] },
+      options: opts(a, c, { legend: true, xmin: 0, xmax: 1, ymax: 1, xTitle: 'U1（半径を決める）', yTitle: 'U2（角度を決める）' }) });
+    var C2 = new root.Chart(mk().getContext('2d'), { data: { datasets: [{ type: 'scatter', label: '変換後（U1 ≥ 0.1）', data: pick(Z, inner), backgroundColor: c.fill, borderColor: c.c1, pointRadius: 1.8 }, { type: 'scatter', label: '変換後（U1 < 0.1）', data: pick(Z, outer), backgroundColor: c.c2, pointRadius: 2.4 }] },
+      options: opts(a, c, { legend: true, xmin: -4, xmax: 4, ymin: -4, ymax: 4, xTitle: 'Z1', yTitle: 'Z2' }) });
+    a._track(C1); a._track(C2);
+    var zs = Z.map(function (q) { return q.x; }), m = mean(zs);
+    a.info.textContent = 'Z1 の平均 ' + a.fmt(m, 3) + '，標準偏差 ' + a.fmt(sd(zs), 3) + '（理論値 0 と 1）　U1 が小さい点ほど半径 √(−2 log U1) が大きく、外側に出る';
+  });
+  // gibbs-path: { rho, iters, init } 2変量正規分布でのギブスサンプリングの軌跡
+  reg('gibbs-path', function (a, p, c) {
+    var rho = num(p.rho, 0.8), N = Math.round(num(p.iters, 30)), y = num(p.init, 2), x = 0, s = Math.sqrt(1 - rho * rho), path = [{ x: -2.5, y: y }];
+    x = -2.5;
+    for (var i = 0; i < N; i++) {
+      x = rho * y + s * a.normal(); path.push({ x: x, y: y });
+      y = rho * x + s * a.normal(); path.push({ x: x, y: y });
+    }
+    var P = plane(a, c, -3.5, 3.5, -3.5, 3.5, 320), ctx = P.ctx, L = [[1, 0], [rho, s]];
+    [1, 2].forEach(function (k) {
+      ctx.strokeStyle = c.faint; ctx.lineWidth = 1; ctx.setLineDash([4, 4]); ctx.beginPath();
+      for (var t = 0; t <= 100; t++) { var th = 2 * Math.PI * t / 100, u = k * Math.cos(th), v = k * Math.sin(th), px = L[0][0] * u, py = L[1][0] * u + L[1][1] * v; t ? ctx.lineTo(P.X(px), P.Y(py)) : ctx.moveTo(P.X(px), P.Y(py)); }
+      ctx.stroke(); ctx.setLineDash([]);
+    });
+    ctx.strokeStyle = c.c1; ctx.lineWidth = 1.4; ctx.beginPath();
+    path.forEach(function (q, k) { k ? ctx.lineTo(P.X(q.x), P.Y(q.y)) : ctx.moveTo(P.X(q.x), P.Y(q.y)); }); ctx.stroke();
+    path.forEach(function (q, k) { if (k % 2 === 0) dot(P, q.x, q.y, k === 0 ? c.c2 : c.c1, k === 0 ? 5 : 2.5); });
+    a.info.textContent = 'ρ = ' + a.fmt(rho) + '：x と y を交互に条件付き分布から引くので、軌跡は軸に平行な階段になる。|ρ| が 1 に近いほど一歩が小さく、分布全体を回るのに時間がかかる（点線は等高線、赤い点が出発点）';
   });
 
   // credible-hpd: { dist: beta|gamma, a, b（beta）／shape, rate（gamma）, level } 等裾区間と HPD 区間

@@ -403,7 +403,8 @@
         ctx.font = '12px ' + colors().font;
         return { canvas: cv, ctx: ctx, w: w, h: h };
       },
-      redraw: function () { f.redraw(); }
+      redraw: function () { f.redraw(); },
+      _track: function (ch) { f.charts.push(ch); }
     };
   }
 
