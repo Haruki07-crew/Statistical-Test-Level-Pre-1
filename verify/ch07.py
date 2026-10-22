@@ -264,5 +264,100 @@ check(T, "例2 シミュ P(|4p̂-π|≥0.05)≈0.0023（二項で40万回、許�
 d = rng.integers(1, 7, (20000, 1000)).mean(axis=1)
 check(T, "例1 シミュ P(|X̄-3.5|≥0.2) ≤ 0.0729 かつ ≈0.0002（許容0.0005）", (np.abs(d - 3.5) >= 0.2).mean() < 0.0005, (np.abs(d - 3.5) >= 0.2).mean())
 
+
+# ######################################################################
+# ================= 重要度Cの用語 =================
+# 主張値は本文の表示桁で丸めて一致するか（cc：表示桁の 0.5 単位 + extra）。
+# 乱数は専用の Generator（seed=20261023+章番号）を使い、許容誤差を各チェックに明記。
+def _dec(s):
+    s = str(s)
+    return len(s.split(".")[1]) if "." in s else 0
+
+
+def cc(term, what, x, s, extra=0.0):
+    tol = 0.5 * 10 ** (-_dec(s)) * (1 + 1e-9) + extra
+    check(term, f"{what} = {s}", abs(float(x) - float(s)) <= tol, round(float(x), _dec(s) + 3))
+
+
+def mcC(term, what, est, target, tol):
+    check(term, f"{what}（シミュ、許容±{tol}）", abs(float(est) - target) <= tol, round(float(est), 5))
+
+rngC = np.random.default_rng(20261023 + 7)
+
+# ================= convergence-in-mean-square =================
+T = "convergence-in-mean-square"
+cc(T, "サイコロ σ²", np.var(np.arange(1, 7)), "2.9166667")
+cc(T, "MSE(n=100)=35/12/100", 35 / 12 / 100, "0.0292")
+cc(T, "チェビシェフ上限 (35/1200)/0.5²", 35 / 1200 / 0.25, "0.1167")
+_x, _m, _c = sp.symbols("x m c", real=True)
+_Xn, _mu, _v = sp.symbols("X mu v", real=True)
+# E[(X-c)^2] = V + (E-c)^2 を E[X]=mu, E[X^2]=v+mu^2 で確認
+check(T, "E[(X-c)²]=V+(E-c)² （sympy）", sp.expand((_v + _mu**2) - 2 * _c * _mu + _c**2 - (_v + (_mu - _c)**2)) == 0, "")
+nn = sp.symbols("n", positive=True)
+check(T, "反例 E[X_n²]=n²·(1/n)=n", sp.simplify(nn**2 * (1 / nn) - nn) == 0, "")
+check(T, "反例 P(|X_n|≥ε)=1/n→0", sp.limit(1 / nn, nn, sp.oo) == 0, "")
+D = rngC.integers(1, 7, (200000, 100)).mean(1)
+mcC(T, "E[(X̄100-3.5)²]≈0.0292", ((D - 3.5)**2).mean(), 0.0292, 0.0004)
+check(T, "シミュ P(|X̄100-3.5|≥0.5) ≤ 0.1167", (np.abs(D - 3.5) >= 0.5).mean() <= 0.1167, (np.abs(D - 3.5) >= 0.5).mean())
+
+# ================= lindeberg-levy-clt =================
+T = "lindeberg-levy-clt"
+from fractions import Fraction as _Fr
+from math import comb as _comb, factorial as _fact
+
+
+def irwin_hall_cdf(x, n=12):
+    x = _Fr(x)
+    s = sum((-1)**k * _comb(n, k) * (x - k)**n for k in range(0, int(x) + 1))
+    return s / _fact(n)
+
+
+cc(T, "和の期待値 12×1/2", 12 * 0.5, "6")
+cc(T, "和の分散 12×1/12", 12 * (1 / 12), "1")
+for zz, ex, nm in [(1, "0.1607", "0.1587"), (2, "0.0223", "0.0228"), (_Fr(5, 2), "0.0056", "0.0062")]:
+    pe = 1 - irwin_hall_cdf(6 + zz)
+    cc(T, f"P(Z>{float(zz)}) 正確（アーウィン・ホール）", float(pe), ex)
+    cc(T, f"P(Z>{float(zz)}) 正規近似", stats.norm.sf(float(zz)), nm)
+U = rngC.random((200000, 12)).sum(1) - 6
+mcC(T, "P(Z>1)≈0.1607", (U > 1).mean(), 0.1607, 0.003)
+tt = sp.symbols("t", real=True)
+check(T, "{1-t²/(2n)}ⁿ → e^{-t²/2}（sympy）", sp.simplify(sp.limit((1 - tt**2 / (2 * nn))**nn, nn, sp.oo) - sp.exp(-tt**2 / 2)) == 0, "")
+check(T, "N(0,1) の特性関数 e^{-t²/2}（数値積分 t=1.3）",
+      abs(__import__("scipy.integrate", fromlist=["quad"]).quad(lambda x: np.cos(1.3 * x) * stats.norm.pdf(x), -40, 40)[0] - exp(-1.3**2 / 2)) < 1e-10, "")
+
+# ================= berry-esseen-theorem =================
+T = "berry-esseen-theorem"
+pp = sp.symbols("p", positive=True)
+rho_s = pp * (1 - pp)**3 + (1 - pp) * pp**3
+check(T, "ベルヌーイ ρ=p(1-p){p²+(1-p)²}（sympy）", sp.simplify(rho_s - pp * (1 - pp) * (pp**2 + (1 - pp)**2)) == 0, "")
+
+
+def be_ratio(p):
+    return p * (1 - p) * (p**2 + (1 - p)**2) / (p * (1 - p))**1.5
+
+
+def be_sup(n, p):
+    s = sqrt(n * p * (1 - p))
+    k = np.arange(0, n + 1)
+    zk = (k - n * p) / s
+    Fk = stats.binom.cdf(k, n, p)
+    Fl = np.concatenate([[0.0], Fk[:-1]])  # 左極限
+    Ph = stats.norm.cdf(zk)
+    return max(np.max(np.abs(Fk - Ph)), np.max(np.abs(Fl - Ph)))
+
+
+cc(T, "p=0.5 ρ/σ³", be_ratio(0.5), "1")
+cc(T, "p=0.5 n=100 上限 0.4748/10", 0.4748 * be_ratio(0.5) / 10, "0.0475")
+cc(T, "p=0.5 n=100 実際の最大誤差", be_sup(100, 0.5), "0.0398")
+cc(T, "p=0.1 ρ", 0.1 * 0.9 * (0.01 + 0.81), "0.0738")
+cc(T, "p=0.1 σ³", (0.09)**1.5, "0.027")
+cc(T, "p=0.1 ρ/σ³", be_ratio(0.1), "2.733")
+cc(T, "p=0.1 n=100 上限", 0.4748 * be_ratio(0.1) / 10, "0.1298")
+cc(T, "p=0.1 n=100 実際の最大誤差", be_sup(100, 0.1), "0.0832")
+cc(T, "p=0.1 n=400 上限", 0.4748 * be_ratio(0.1) / 20, "0.0649")
+cc(T, "p=0.1 n=400 実際の最大誤差", be_sup(400, 0.1), "0.0420")
+check(T, "実際の誤差 ≤ 上限（4ケース）", all(be_sup(n, p) <= 0.4748 * be_ratio(p) / sqrt(n) for n, p in [(100, .5), (100, .1), (400, .1), (400, .5)]), "")
+
+
 print()
 print(f"合計: OK {sum(results)} / NG {len(results) - sum(results)}")

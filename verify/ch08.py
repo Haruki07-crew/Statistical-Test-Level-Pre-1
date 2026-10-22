@@ -550,5 +550,92 @@ check(T, "図 10/√10=3.1623", close(10 / sqrt(10), 3.1623), 10 / sqrt(10))
 Zp = rng.normal(50, 10, (200000, 10)).mean(axis=1)
 check(T, "シミュ 標本平均の SD≈3.1623（許容0.02）", abs(Zp.std() - 3.1623) < 0.02, Zp.std())
 
+
+# ######################################################################
+# ================= 重要度Cの用語 =================
+# 主張値は本文の表示桁で丸めて一致するか（cc：表示桁の 0.5 単位 + extra）。
+# 乱数は専用の Generator（seed=20261023+章番号）を使い、許容誤差を各チェックに明記。
+def _dec(s):
+    s = str(s)
+    return len(s.split(".")[1]) if "." in s else 0
+
+
+def cc(term, what, x, s, extra=0.0):
+    tol = 0.5 * 10 ** (-_dec(s)) * (1 + 1e-9) + extra
+    check(term, f"{what} = {s}", abs(float(x) - float(s)) <= tol, round(float(x), _dec(s) + 3))
+
+
+def mcC(term, what, est, target, tol):
+    check(term, f"{what}（シミュ、許容±{tol}）", abs(float(est) - target) <= tol, round(float(est), 5))
+
+rngC = np.random.default_rng(20261023 + 8)
+
+# ================= complete-statistic =================
+T = "complete-statistic"
+pp, nn = sp.symbols("p n", positive=True)
+tt = sp.symbols("t", integer=True, nonnegative=True)
+n0 = 10
+ET = sum(sp.binomial(n0, k) * pp**k * (1 - pp)**(n0 - k) * k * (n0 - k) for k in range(n0 + 1))
+check(T, "E[T(n-T)]=n(n-1)p(1-p)（n=10, sympy）", sp.expand(ET - n0 * (n0 - 1) * pp * (1 - pp)) == 0, "")
+for n1 in (3, 7):
+    E1 = sum(sp.binomial(n1, k) * pp**k * (1 - pp)**(n1 - k) * k * (n1 - k) for k in range(n1 + 1))
+    check(T, f"E[T(n-T)]=n(n-1)p(1-p)（n={n1}）", sp.expand(E1 - n1 * (n1 - 1) * pp * (1 - pp)) == 0, "")
+cc(T, "τ̂=3·7/(10·9)", 3 * 7 / 90, "0.2333")
+cc(T, "代入 0.3×0.7", 0.21, "0.21")
+Eplug = sum(sp.binomial(n0, k) * pp**k * (1 - pp)**(n0 - k) * sp.Rational(k, n0) * (1 - sp.Rational(k, n0)) for k in range(n0 + 1))
+check(T, "E[p̂(1-p̂)]=p(1-p)(1-1/n)（n=10）", sp.expand(Eplug - pp * (1 - pp) * (1 - sp.Rational(1, n0))) == 0, "")
+cc(T, "p=0.5 で 0.25(1-1/10)", 0.25 * 0.9, "0.225")
+r = sp.symbols("r", positive=True)
+gs = sp.symbols("g0:4")
+lhs = sum(gs[k] * sp.binomial(3, k) * pp**k * (1 - pp)**(3 - k) for k in range(4))
+rhs = (1 - pp)**3 * sum(gs[k] * sp.binomial(3, k) * r**k for k in range(4))
+check(T, "E[g(T)]=(1-p)ⁿΣg(t)C(n,t)rᵗ（n=3, r=p/(1-p)）", sp.simplify(lhs - rhs.subs(r, pp / (1 - pp))) == 0, "")
+X = rngC.normal(1.7, 1, (200000, 2))
+mcC(T, "N(θ,1) で E[X1-X2]=0", (X[:, 0] - X[:, 1]).mean(), 0.0, 0.01)
+check(T, "X1-X2 は0でない（SD≈√2）", abs((X[:, 0] - X[:, 1]).std() - sqrt(2)) < 0.01, (X[:, 0] - X[:, 1]).std())
+# UMVUE τ̂ の分散 > クラメール・ラオ下限（p=0.3, n=10）
+k = np.arange(11); pk = stats.binom.pmf(k, 10, 0.3)
+tau = k * (10 - k) / 90
+vt = (pk * tau**2).sum() - (pk * tau).sum()**2
+cr = (1 - 2 * 0.3)**2 * 0.3 * 0.7 / 10
+check(T, "τ̂ は不偏（p=0.3, n=10）", abs((pk * tau).sum() - 0.21) < 1e-12, (pk * tau).sum())
+check(T, "V[τ̂] > CR下限 (1-2p)²p(1-p)/n（p=0.3, n=10）", vt > cr, (vt, cr))
+
+# ================= observed-fisher-information =================
+T = "observed-fisher-information"
+xs = np.array([-0.4, 0.8, 1.2, 2.1, 7.5])
+th, xx = sp.symbols("theta x", real=True)
+lf = -sp.log(sp.pi) - sp.log(1 + (xx - th)**2)
+u = sp.symbols("u", real=True)
+check(T, "-d²/dθ² log f = 2(1-u²)/(1+u²)²（sympy）",
+      sp.simplify((-sp.diff(lf, th, 2)).subs(xx, th + u) - 2 * (1 - u**2) / (1 + u**2)**2) == 0, "")
+from scipy.optimize import minimize_scalar
+nll = lambda t: np.sum(np.log1p((xs - t)**2))
+res = minimize_scalar(nll, bounds=(0, 3), method="bounded", options={"xatol": 1e-10})
+grid = np.linspace(-5, 12, 17001)
+check(T, "θ̂ は全域最大（格子 -5〜12）", abs(grid[np.argmin([nll(g) for g in grid])] - res.x) < 2e-3, res.x)
+cc(T, "θ̂", res.x, "1.109")
+uu = xs - res.x
+J = np.sum(2 * (1 - uu**2) / (1 + uu**2)**2)
+cc(T, "J(θ̂)", J, "3.184")
+cc(T, "SE 1/√J", 1 / sqrt(J), "0.560")
+Ic = __import__("scipy.integrate", fromlist=["quad"]).quad(lambda x: (2 * x / (1 + x**2))**2 * stats.cauchy.pdf(x), -np.inf, np.inf)[0]
+cc(T, "コーシー位置 I=1/2（数値積分）", Ic, "0.5")
+cc(T, "nI", 5 * Ic, "2.5")
+cc(T, "SE 1/√2.5", 1 / sqrt(2.5), "0.632")
+h = 1e-4
+Jnum = (nll(res.x + h) - 2 * nll(res.x) + nll(res.x - h)) / h**2
+check(T, "J(θ̂) は対数尤度の数値2階微分と一致", abs(Jnum - J) < 1e-4, Jnum)
+C = rngC.standard_cauchy((200000, 5))
+EJ = np.mean(np.sum(2 * (1 - C**2) / (1 + C**2)**2, 1))
+mcC(T, "E_θ[J(θ)]=nI=2.5（真値で評価）", EJ, 2.5, 0.01)
+lam = sp.symbols("lambda", positive=True)
+xsym = sp.symbols("x1:5", positive=True)
+lp = sum(x * sp.log(lam) - lam for x in xsym)
+lh = sum(xsym) / 4
+Jp = (-sp.diff(lp, lam, 2)).subs(lam, lh)
+check(T, "ポアソン J(λ̂)=Σx/λ̂²=n/x̄（n=4）", sp.simplify(Jp - 4 / lh) == 0, "")
+
+
 print()
 print(f"合計: OK {sum(results)} / NG {len(results) - sum(results)}")

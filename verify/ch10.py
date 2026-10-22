@@ -470,5 +470,44 @@ sn = np.sort(pn, axis=1)
 anyrej = (sn <= np.arange(1, m_ + 1) / m_ * q_).any(axis=1)
 check(T, "シミュ 全帰無仮説が真なら FDR=FWER≈q=0.05（許容0.002）", abs(anyrej.mean() - .05) < .002, anyrej.mean())
 
+
+# ######################################################################
+# ================= 重要度Cの用語 =================
+# 主張値は本文の表示桁で丸めて一致するか（cc：表示桁の 0.5 単位 + extra）。
+# 乱数は専用の Generator（seed=20261023+章番号）を使い、許容誤差を各チェックに明記。
+def _dec(s):
+    s = str(s)
+    return len(s.split(".")[1]) if "." in s else 0
+
+
+def cc(term, what, x, s, extra=0.0):
+    tol = 0.5 * 10 ** (-_dec(s)) * (1 + 1e-9) + extra
+    check(term, f"{what} = {s}", abs(float(x) - float(s)) <= tol, round(float(x), _dec(s) + 3))
+
+
+def mcC(term, what, est, target, tol):
+    check(term, f"{what}（シミュ、許容±{tol}）", abs(float(est) - target) <= tol, round(float(est), 5))
+
+rngC = np.random.default_rng(20261023 + 10)
+
+# ================= randomized-test =================
+T = "randomized-test"
+b = stats.binom(20, 0.5)
+cc(T, "P(T≥15)", b.sf(14), "0.0207")
+cc(T, "P(T≥14)", b.sf(13), "0.0577")
+cc(T, "P(T=14)", b.pmf(14), "0.0370")
+g = (0.05 - b.sf(14)) / b.pmf(14)
+cc(T, "γ（正確）", g, "0.7928")
+size = b.sf(14) + g * b.pmf(14)
+check(T, "サイズ = 0.05", abs(size - 0.05) < 1e-12, size)
+b7 = stats.binom(20, 0.7)
+cc(T, "p=0.7 で P(T≥15)", b7.sf(14), "0.4164")
+cc(T, "p=0.7 で P(T=14)", b7.pmf(14), "0.1916")
+cc(T, "無作為化検定の検出力", b7.sf(14) + g * b7.pmf(14), "0.5683")
+Tn = rngC.binomial(20, 0.5, 400000)
+rej = (Tn >= 15) | ((Tn == 14) & (rngC.random(400000) < g))
+mcC(T, "無作為化検定の棄却率 ≈0.05", rej.mean(), 0.05, 0.002)
+
+
 print()
 print(f"合計: OK {sum(results)} / NG {len(results) - sum(results)}")

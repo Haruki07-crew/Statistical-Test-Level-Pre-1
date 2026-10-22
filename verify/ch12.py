@@ -508,6 +508,75 @@ Zs = (X1 / 500 - X2 / 500) / np.sqrt(ph * (1 - ph) * (2 / 500))
 rr = (np.abs(Zs) >= 1.959964).mean()
 check(T, "sim H0 下の両側5%棄却率≈0.05（20万回, 許容±0.003）", abs(rr - .05) <= .003, rr)
 
+
+
+# ######################################################################
+# ================= 重要度Cの用語 =================
+# 主張値は本文の表示桁で丸めて一致するか（cc：表示桁の 0.5 単位 + extra）。
+# 乱数は専用の Generator（seed=20261023+章番号）を使い、許容誤差を各チェックに明記。
+def _dec(s):
+    s = str(s)
+    return len(s.split(".")[1]) if "." in s else 0
+
+
+def cc(term, what, x, s, extra=0.0):
+    tol = 0.5 * 10 ** (-_dec(s)) * (1 + 1e-9) + extra
+    check(term, f"{what} = {s}", abs(float(x) - float(s)) <= tol, round(float(x), _dec(s) + 3))
+
+
+def mcC(term, what, est, target, tol):
+    check(term, f"{what}（シミュ、許容±{tol}）", abs(float(est) - target) <= tol, round(float(est), 5))
+
+rngC = np.random.default_rng(20261023 + 12)
+
+# ================= variance-stabilizing-transform =================
+T = "variance-stabilizing-transform"
+pp, lam, rr = sp.symbols("p lambda r", positive=True)
+g = sp.asin(sp.sqrt(pp))
+check(T, "d/dp arcsin√p = 1/(2√(p(1-p)))", sp.simplify(sp.diff(g, pp) - 1 / (2 * sp.sqrt(pp * (1 - pp)))) == 0, "")
+check(T, "{g'(p)}²·p(1-p)/n = 1/(4n)", sp.simplify(sp.diff(g, pp)**2 * pp * (1 - pp) - sp.Rational(1, 4)) == 0, "")
+check(T, "ポアソン {(√λ)'}²·λ = 1/4", sp.simplify(sp.diff(sp.sqrt(lam), lam)**2 * lam - sp.Rational(1, 4)) == 0, "")
+check(T, "相関 {(atanh r)'}²·(1-r²)² = 1", sp.simplify(sp.diff(sp.atanh(rr), rr)**2 * (1 - rr**2)**2 - 1) == 0, "")
+check(T, "2arcsin√p なら分散 1/n", sp.simplify(sp.diff(2 * g, pp)**2 * pp * (1 - pp) - 1) == 0, "")
+for p, sv in [(0.1, "0.0018"), (0.3, "0.0042"), (0.5, "0.0050")]:
+    cc(T, f"p(1-p)/50（p={p}）", p * (1 - p) / 50, sv)
+cc(T, "比 0.0050/0.0018", 0.25 / 0.09, "2.8", 0.0)
+k = np.arange(51)
+for p, sv in [(0.1, 0.0057), (0.3, 0.0051), (0.5, 0.0051)]:
+    w = stats.binom.pmf(k, 50, p); a = np.arcsin(np.sqrt(k / 50))
+    ex = (w * a**2).sum() - (w * a).sum()**2
+    cc(T, f"V[arcsin√p̂] 正確計算（p={p}）", ex, f"{sv:.4f}")
+    Bs = rngC.binomial(50, p, 200000)
+    # 推定分散の標準誤差は約 2e-5 → 許容 8e-5（表示桁の丸め 5e-5 + 1.5SE）
+    mcC(T, f"V[arcsin√p̂] 20万回（p={p}）≈{sv}", np.arcsin(np.sqrt(Bs / 50)).var(), sv, 8e-5)
+cc(T, "1/(4·50)", 1 / 200, "0.005")
+a1, a2 = np.arcsin(sqrt(0.30)), np.arcsin(sqrt(0.24))
+cc(T, "差 arcsin√0.30-arcsin√0.24", a1 - a2, "0.06767")
+cc(T, "分母 √(2/(4·500))", sqrt(2 / 2000), "0.03162")
+Zv = (a1 - a2) / sqrt(2 / 2000)
+cc(T, "Z", Zv, "2.140")
+cc(T, "両側 p値", 2 * stats.norm.sf(Zv), "0.032")
+ph = 270 / 1000
+cc(T, "通常の2標本比率 z", (0.30 - 0.24) / sqrt(ph * (1 - ph) * (2 / 500)), "2.137")
+
+# ================= dispersion-test =================
+T = "dispersion-test"
+d = np.array([1, 7, 2, 10, 3, 0, 8, 12, 2, 4, 9, 2])
+cc(T, "x̄", d.mean(), "5.0")
+cc(T, "偏差平方和", ((d - d.mean())**2).sum(), "176")
+cc(T, "s²", d.var(ddof=1), "16.0")
+cc(T, "分散指数", d.var(ddof=1) / d.mean(), "3.2")
+Dv = ((d - d.mean())**2).sum() / d.mean()
+cc(T, "D", Dv, "35.2")
+check(T, "D = (n-1)s²/x̄", abs(Dv - 11 * d.var(ddof=1) / d.mean()) < 1e-12, "")
+check(T, "D = ピアソンの χ²（期待度数 x̄）", abs(Dv - (((d - d.mean())**2) / d.mean()).sum()) < 1e-12, "")
+cc(T, "χ²_0.05(11)", stats.chi2.isf(0.05, 11), "19.675")
+cc(T, "p値", stats.chi2.sf(Dv, 11), "0.0002")
+P = rngC.poisson(5.0, (200000, 12))
+Ds = ((P - P.mean(1, keepdims=True))**2).sum(1) / P.mean(1)
+mcC(T, "H0 下 P(D>19.675)≈0.05（λ=5, n=12）", (Ds > 19.675).mean(), 0.05, 0.004)
+mcC(T, "H0 下 E[D]≈n-1=11", Ds.mean(), 11, 0.05)
+
 # ================= 集計 =================
 nok, nng = sum(results), len(results) - sum(results)
 print(f"\n合計: OK {nok} / NG {nng}")

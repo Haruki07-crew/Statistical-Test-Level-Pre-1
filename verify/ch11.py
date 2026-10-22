@@ -563,5 +563,114 @@ Fb = (n1 + n2 - p3 - 1) / (p3 * (n1 + n2 - 2)) * T2b
 ks = stats.kstest(Fb, F(p3, n1 + n2 - p3 - 1).cdf).statistic
 check(T, "シミュ 2標本 T² の変換 ~F(3,18)（KS<0.007, 6万回）", ks < 0.007, ks)
 
+
+# ######################################################################
+# ================= 重要度Cの用語 =================
+# 主張値は本文の表示桁で丸めて一致するか（cc：表示桁の 0.5 単位 + extra）。
+# 乱数は専用の Generator（seed=20261023+章番号）を使い、許容誤差を各チェックに明記。
+def _dec(s):
+    s = str(s)
+    return len(s.split(".")[1]) if "." in s else 0
+
+
+def cc(term, what, x, s, extra=0.0):
+    tol = 0.5 * 10 ** (-_dec(s)) * (1 + 1e-9) + extra
+    check(term, f"{what} = {s}", abs(float(x) - float(s)) <= tol, round(float(x), _dec(s) + 3))
+
+
+def mcC(term, what, est, target, tol):
+    check(term, f"{what}（シミュ、許容±{tol}）", abs(float(est) - target) <= tol, round(float(est), 5))
+
+rngC = np.random.default_rng(20261023 + 11)
+
+# ================= bartlett-test / one-way-test-variance-equality-levene =================
+# 本文は要約値のみ。要約値（s²・z̄・外れ値 12.0）をすべて満たす 0.1 刻みのデータを1組構成して使う。
+L1 = np.array([9.9, 10.0, 10.0, 10.1, 10.2, 10.3])
+L2 = np.array([9.7, 9.8, 10.0, 10.1, 10.4, 10.5])
+L3 = np.array([9.9, 9.9, 10.0, 10.1, 10.1, 12.0])
+T = "bartlett-test"
+s2 = np.array([g.var(ddof=1) for g in (L1, L2, L3)])
+for i, sv in enumerate(["0.0217", "0.1017", "0.6747"]):
+    cc(T, f"s{i+1}²（構成データ）", s2[i], sv)
+sp2 = 5 * s2.sum() / 15
+cc(T, "s_p²", sp2, "0.2660")
+cc(T, "s_p²（本文の丸め値から）", 5 * (0.0217 + 0.1017 + 0.6747) / 15, "0.2660")
+num = 15 * log(sp2) - 5 * np.log(s2).sum()
+cc(T, "分子", num, "12.694")
+Cb = 1 + (3 / 5 - 1 / 15) / 6
+cc(T, "C", Cb, "1.0889")
+Bv = num / Cb
+cc(T, "B", Bv, "11.658")
+cc(T, "χ²_0.05(2)", stats.chi2.isf(0.05, 2), "5.991")
+cc(T, "p値", stats.chi2.sf(Bv, 2), "0.0029")
+rb = stats.bartlett(L1, L2, L3)
+check(T, "scipy.stats.bartlett と一致", abs(rb.statistic - Bv) < 1e-9, rb.statistic)
+check(T, "分子 ≥ 0（log の凹性）", num >= 0, num)
+# H0 下で B ~ χ²(2)（正規、n_i=6）
+G = rngC.normal(0, 1, (100000, 3, 6))
+S2 = G.var(axis=2, ddof=1)
+Bs = (15 * np.log(S2.mean(1)) - 5 * np.log(S2).sum(1)) / Cb
+mcC(T, "H0 下 P(B>5.991)≈0.05（正規, 10万回）", (Bs > 5.991).mean(), 0.05, 0.004)
+
+T = "one-way-test-variance-equality-levene"
+zb = [np.abs(g - g.mean()).mean() for g in (L1, L2, L3)]
+for i, sv in enumerate(["0.1167", "0.2500", "0.5556"]):
+    cc(T, f"z̄{i+1}（構成データ）", zb[i], sv)
+cc(T, "外れ値 12.0 の偏差", 12.0 - L3.mean(), "1.6667")
+groups = [np.abs(g - g.mean()) for g in (L1, L2, L3)]
+allz = np.concatenate(groups)
+ssb = sum(6 * (gz.mean() - allz.mean())**2 for gz in groups)
+ssw = sum(((gz - gz.mean())**2).sum() for gz in groups)
+Wv = (ssb / 2) / (ssw / 15)
+cc(T, "W（分散分析の式）", Wv, "2.710")
+rl = stats.levene(L1, L2, L3, center="mean")
+check(T, "scipy.stats.levene(center=mean) と一致", abs(rl.statistic - Wv) < 1e-9, rl.statistic)
+cc(T, "F_0.05(2,15)", stats.f.isf(0.05, 2, 15), "3.682")
+cc(T, "p値", rl.pvalue, "0.099")
+cc(T, "ブラウン・フォーサイス p値", stats.levene(L1, L2, L3, center="median").pvalue, "0.567")
+cc(T, "f_oneway(z) の p値", stats.f_oneway(*groups).pvalue, "0.099")
+
+# ================= preliminary-test-problem =================
+T = "preliminary-test-problem"
+R = 200000
+n1, n2 = 10, 30
+X1 = rngC.normal(0, 1.5, (R, n1)); X2 = rngC.normal(0, 1.0, (R, n2))
+m1, m2 = X1.mean(1), X2.mean(1)
+v1, v2 = X1.var(1, ddof=1), X2.var(1, ddof=1)
+spool = ((n1 - 1) * v1 + (n2 - 1) * v2) / (n1 + n2 - 2)
+tp = (m1 - m2) / np.sqrt(spool * (1 / n1 + 1 / n2))
+rp = np.abs(tp) > stats.t.isf(0.025, n1 + n2 - 2)
+se2 = v1 / n1 + v2 / n2
+tw = (m1 - m2) / np.sqrt(se2)
+dfw = se2**2 / ((v1 / n1)**2 / (n1 - 1) + (v2 / n2)**2 / (n2 - 1))
+rw = np.abs(tw) > stats.t.isf(0.025, dfw)
+Fv = v1 / v2
+pF = 2 * np.minimum(stats.f.cdf(Fv, n1 - 1, n2 - 1), stats.f.sf(Fv, n1 - 1, n2 - 1))
+accF = pF > 0.05
+r2 = np.where(accF, rp, rw)
+# モンテカルロ標準誤差 ≈0.0007 → 許容 0.003（表示桁の丸め込み）
+mcC(T, "常にプール t の第1種の過誤 ≈0.107", rp.mean(), 0.107, 0.003)
+mcC(T, "常にウェルチの第1種の過誤 ≈0.051", rw.mean(), 0.051, 0.003)
+mcC(T, "二段階の手順 ≈0.081", r2.mean(), 0.081, 0.003)
+mcC(T, "F 検定が等分散を棄却しない割合 ≈0.64", accF.mean(), 0.64, 0.01)
+check(T, "全体の確率 = 2つの和の分解", abs(r2.mean() - ((accF & rp).mean() + (~accF & rw).mean())) < 1e-12, "")
+
+# ================= normality-test =================
+T = "normality-test"
+JB = 100 / 6 * (0.8**2 + 0.9**2 / 4)
+cc(T, "括弧内 0.8²+0.9²/4", 0.8**2 + 0.9**2 / 4, "0.8425")
+cc(T, "JB", JB, "14.042")
+cc(T, "χ²_0.05(2)", stats.chi2.isf(0.05, 2), "5.991")
+cc(T, "p値", stats.chi2.sf(JB, 2), "0.0009")
+y = rngC.gamma(3, 1, 100)
+Sk = stats.skew(y); Ku = stats.kurtosis(y, fisher=False)
+check(T, "JB の式 = scipy.stats.jarque_bera", abs(len(y) / 6 * (Sk**2 + (Ku - 3)**2 / 4) - stats.jarque_bera(y).statistic) < 1e-9, "")
+check(T, "シャピロ・ウィルク W ≤ 1", stats.shapiro(y).statistic <= 1, stats.shapiro(y).statistic)
+Z = rngC.normal(size=(20000, 2000))
+sk = stats.skew(Z, axis=1); ku = stats.kurtosis(Z, axis=1)
+mcC(T, "V[歪度]≈6/n（n=2000, 2万回、比）", sk.var() / (6 / 2000), 1.0, 0.04)
+mcC(T, "V[超過尖度]≈24/n（n=2000、比）", ku.var() / (24 / 2000), 1.0, 0.06)
+
+
 print()
 print(f"合計: OK {sum(results)} / NG {len(results) - sum(results)}")

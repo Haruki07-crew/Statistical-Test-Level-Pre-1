@@ -299,7 +299,7 @@ chapters:
   - id: convergence-in-mean-square
     title: 平均二乗収束
     importance: C
-    status: planned
+    status: verified
   - id: weak-law-of-large-numbers
     title: 大数の弱法則
     importance: A
@@ -335,11 +335,11 @@ chapters:
   - id: lindeberg-levy-clt
     title: リンデバーグ・レヴィの中心極限定理
     importance: C
-    status: planned
+    status: verified
   - id: berry-esseen-theorem
     title: ベリー・エッセンの定理
     importance: C
-    status: planned
+    status: verified
 - 'no': 8
   title: 統計的推定の基礎
   terms:
@@ -410,7 +410,7 @@ chapters:
   - id: complete-statistic
     title: 完備統計量
     importance: C
-    status: planned
+    status: verified
   - id: exponential-family
     title: 指数型分布族
     importance: B
@@ -418,7 +418,7 @@ chapters:
   - id: observed-fisher-information
     title: 観測情報量
     importance: C
-    status: planned
+    status: verified
 - 'no': 9
   title: 区間推定
   terms:
@@ -481,11 +481,11 @@ chapters:
   - id: clopper-pearson-interval
     title: クロッパー・ピアソン区間
     importance: C
-    status: planned
+    status: verified
   - id: likelihood-based-confidence-interval
     title: 尤度に基づく信頼区間
     importance: C
-    status: planned
+    status: verified
   - id: confidence-interval-test-duality
     title: 信頼区間と検定の対応
     importance: B
@@ -572,7 +572,7 @@ chapters:
   - id: randomized-test
     title: 無作為化検定
     importance: C
-    status: planned
+    status: verified
 - 'no': 11
   title: 正規分布に関する検定
   terms:
@@ -611,7 +611,7 @@ chapters:
   - id: bartlett-test
     title: バートレット検定
     importance: C
-    status: planned
+    status: verified
   - id: test-ci-relationship-mean-difference
     title: 母平均の差の検定と信頼区間の関係
     importance: B
@@ -631,11 +631,11 @@ chapters:
   - id: preliminary-test-problem
     title: 予備検定の問題
     importance: C
-    status: planned
+    status: verified
   - id: normality-test
     title: 正規性の検定
     importance: C
-    status: planned
+    status: verified
   - id: hotelling-t2
     title: ホテリングのT二乗検定
     importance: B
@@ -643,7 +643,7 @@ chapters:
   - id: one-way-test-variance-equality-levene
     title: ルビーン検定
     importance: C
-    status: planned
+    status: verified
 - 'no': 12
   title: 一般の分布に関する検定法
   terms:
@@ -698,7 +698,7 @@ chapters:
   - id: variance-stabilizing-transform
     title: 分散安定化変換
     importance: C
-    status: planned
+    status: verified
   - id: poisson-two-sample-test
     title: 2標本ポアソン比較
     importance: B
@@ -710,7 +710,7 @@ chapters:
   - id: dispersion-test
     title: 分散検定（過分散の検定）
     importance: C
-    status: planned
+    status: verified
 - 'no': 13
   title: ノンパラメトリック法
   terms:

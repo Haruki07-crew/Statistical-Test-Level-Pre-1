@@ -576,5 +576,95 @@ inci = np.mean((mm - tq(.025, 9) * sd_ / sqrt(10) <= 12) & (12 <= mm + tq(.025, 
 check(T, "シミュ 受容 ⇔ 区間が μ を含む（20万回で完全一致）", acc == inci, (acc, inci))
 mc(T, "受容確率 = 0.95", acc, 0.95, 0.002)
 
+
+# ######################################################################
+# ================= 重要度Cの用語 =================
+# 主張値は本文の表示桁で丸めて一致するか（cc：表示桁の 0.5 単位 + extra）。
+# 乱数は専用の Generator（seed=20261023+章番号）を使い、許容誤差を各チェックに明記。
+def _dec(s):
+    s = str(s)
+    return len(s.split(".")[1]) if "." in s else 0
+
+
+def cc(term, what, x, s, extra=0.0):
+    tol = 0.5 * 10 ** (-_dec(s)) * (1 + 1e-9) + extra
+    check(term, f"{what} = {s}", abs(float(x) - float(s)) <= tol, round(float(x), _dec(s) + 3))
+
+
+def mcC(term, what, est, target, tol):
+    check(term, f"{what}（シミュ、許容±{tol}）", abs(float(est) - target) <= tol, round(float(est), 5))
+
+rngC = np.random.default_rng(20261023 + 9)
+from scipy.optimize import brentq
+
+# ================= clopper-pearson-interval =================
+T = "clopper-pearson-interval"
+n, x = 20, 2
+pL, pU = stats.beta.ppf(0.025, x, n - x + 1), stats.beta.ppf(0.975, x + 1, n - x)
+cc(T, "例1 p_L=B_0.025(2,19)", pL, "0.0123")
+cc(T, "例1 p_U=B_0.975(3,18)", pU, "0.3170")
+cc(T, "p_L は P(X≥2|p_L)=0.025 の解", brentq(lambda p: stats.binom.sf(x - 1, n, p) - 0.025, 1e-9, 0.5), "0.0123")
+cc(T, "p_U は P(X≤2|p_U)=0.025 の解", brentq(lambda p: stats.binom.cdf(x, n, p) - 0.025, 0.01, 0.99), "0.3170")
+bt = stats.binomtest(2, 20).proportion_ci(0.95, method="exact")
+check(T, "scipy binomtest(exact) と一致", abs(bt.low - pL) < 1e-9 and abs(bt.high - pU) < 1e-9, (bt.low, bt.high))
+wi = stats.binomtest(2, 20).proportion_ci(0.95, method="wilson")
+cc(T, "ウィルソン下限", wi.low, "0.0279")
+cc(T, "ウィルソン上限", wi.high, "0.3010")
+check(T, "CP 区間 ⊃ ウィルソン区間", pL < wi.low and pU > wi.high, "")
+
+
+def cp(k, n, a=0.05):
+    lo = 0.0 if k == 0 else stats.beta.ppf(a / 2, k, n - k + 1)
+    hi = 1.0 if k == n else stats.beta.ppf(1 - a / 2, k + 1, n - k)
+    return lo, hi
+
+
+kk = np.arange(21)
+cov = sum(stats.binom.pmf(k, 20, 0.1) for k in kk if cp(k, 20)[0] <= 0.1 <= cp(k, 20)[1])
+cc(T, "p=0.1 の被覆確率", cov, "0.989")
+covs = [sum(stats.binom.pmf(k, 20, p) for k in kk if cp(k, 20)[0] <= p <= cp(k, 20)[1]) for p in np.linspace(0.01, 0.99, 99)]
+check(T, "被覆確率 ≥ 0.95（n=20, p=0.01..0.99）", min(covs) >= 0.95, min(covs))
+cc(T, "例2 p_U=1-0.025^(1/50)", 1 - 0.025**(1 / 50), "0.0711")
+check(T, "例2 x=0 の p_U がベータ分位点と一致", abs(cp(0, 50)[1] - (1 - 0.025**(1 / 50))) < 1e-12, cp(0, 50)[1])
+cc(T, "片側95% 上限 1-0.05^(1/50)", 1 - 0.05**(1 / 50), "0.0582")
+cc(T, "3の法則 3/50", 3 / 50, "0.06")
+B = rngC.binomial(20, 0.1, 200000)
+lo = np.array([cp(k, 20)[0] for k in range(21)]); hi = np.array([cp(k, 20)[1] for k in range(21)])
+mcC(T, "被覆率 p=0.1 ≈0.989", ((lo[B] <= 0.1) & (0.1 <= hi[B])).mean(), 0.989, 0.002)
+
+# ================= likelihood-based-confidence-interval =================
+T = "likelihood-based-confidence-interval"
+ll = lambda p: 2 * log(p) + 18 * log(1 - p)
+cc(T, "ℓ(0.1)", ll(0.1), "-6.5017")
+cc(T, "χ²_0.05(1)", stats.chi2.isf(0.05, 1), "3.841")
+cc(T, "閾値 ℓ(p̂)-3.841/2", ll(0.1) - stats.chi2.isf(0.05, 1) / 2, "-8.4224")
+q = stats.chi2.isf(0.05, 1)
+f = lambda p: 2 * (ll(0.1) - ll(p)) - q
+L1, U1 = brentq(f, 1e-6, 0.1), brentq(f, 0.1, 0.99)
+cc(T, "区間下端", L1, "0.0174")
+cc(T, "区間上端", U1, "0.2779")
+check(T, "非対称（右側が長い）", U1 - 0.1 > 0.1 - L1, (0.1 - L1, U1 - 0.1))
+se = sqrt(0.1 * 0.9 / 20)
+cc(T, "ワルド下端", 0.1 - stats.norm.isf(0.025) * se, "-0.0315")
+cc(T, "ワルド上端", 0.1 + stats.norm.isf(0.025) * se, "0.2315")
+cc(T, "CP 下端", stats.beta.ppf(0.025, 2, 19), "0.0123")
+cc(T, "CP 上端", stats.beta.ppf(0.975, 3, 18), "0.3170")
+cc(T, "3.841/2", q / 2, "1.921")
+cc(T, "e^{-1.921}", exp(-q / 2), "0.147")
+cc(T, "6.635/2", stats.chi2.isf(0.01, 1) / 2, "3.317")
+cc(T, "χ²_0.01(1)", stats.chi2.isf(0.01, 1), "6.635")
+# 変換不変：logit 尺度で同じ区間
+lg = lambda p: log(p / (1 - p))
+ll_eta = lambda e: ll(1 / (1 + exp(-e)))
+fe = lambda e: 2 * (ll(0.1) - ll_eta(e)) - q
+check(T, "変換不変（logit 尺度で解いた端点 = g(端点)）", abs(brentq(fe, -8, lg(0.1)) - lg(L1)) < 1e-8 and abs(brentq(fe, lg(0.1), 3) - lg(U1)) < 1e-8, "")
+# ウィルクス：被覆率 n=200 程度で ≈0.95（p=0.3）
+Bn = rngC.binomial(200, 0.3, 200000)
+ph = np.clip(Bn / 200, 1e-12, 1 - 1e-12)
+ll_v = lambda k, p: k * np.log(p) + (200 - k) * np.log(1 - p)
+lr = 2 * (ll_v(Bn, ph) - ll_v(Bn, 0.3))
+mcC(T, "2{ℓ(p̂)-ℓ(p)}≤3.841 の割合≈0.95（n=200, p=0.3）", (lr <= q).mean(), 0.95, 0.006)
+
+
 print()
 print(f"合計: OK {sum(results)} / NG {len(results) - sum(results)}")
