@@ -1801,71 +1801,71 @@ chapters:
   - id: missing-data-mechanism
     title: 欠測メカニズム
     importance: A
-    status: planned
+    status: verified
   - id: mcar
     title: 完全にランダムな欠測
     importance: A
-    status: planned
+    status: verified
   - id: mar
     title: ランダムな欠測
     importance: A
-    status: planned
+    status: verified
   - id: mnar
     title: 非ランダムな欠測
     importance: A
-    status: planned
+    status: verified
   - id: complete-case-analysis
     title: 完全ケース分析
     importance: B
-    status: planned
+    status: verified
   - id: single-imputation
     title: 単一代入法
     importance: B
-    status: planned
+    status: verified
   - id: multiple-imputation
     title: 多重代入法
     importance: A
-    status: planned
+    status: verified
   - id: rubins-rules
     title: ルービンの規則
     importance: A
-    status: planned
+    status: verified
   - id: em-algorithm
     title: EMアルゴリズム
     importance: A
-    status: planned
+    status: verified
   - id: censored-data
     title: 打ち切りデータ
     importance: A
-    status: planned
+    status: verified
   - id: truncated-data
     title: 切断データ
     importance: B
-    status: planned
+    status: verified
   - id: kaplan-meier-estimator
     title: カプラン・マイヤー推定量
     importance: A
-    status: planned
+    status: verified
   - id: greenwood-formula
     title: グリーンウッドの公式
     importance: B
-    status: planned
+    status: verified
   - id: log-rank-test
     title: ログランク検定
     importance: A
-    status: planned
+    status: verified
   - id: cox-proportional-hazards-model
     title: 比例ハザードモデル
     importance: A
-    status: planned
+    status: verified
   - id: partial-likelihood
     title: 部分尤度
     importance: B
-    status: planned
+    status: verified
   - id: hazard-ratio
     title: ハザード比
     importance: B
-    status: planned
+    status: verified
   - id: nelson-aalen-estimator
     title: ネルソン・アーレン推定量
     importance: C
