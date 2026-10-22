@@ -346,67 +346,67 @@ chapters:
   - id: point-estimation
     title: 点推定と推定量
     importance: B
-    status: planned
+    status: verified
   - id: unbiased-estimator
     title: 不偏推定量
     importance: A
-    status: planned
+    status: verified
   - id: consistent-estimator
     title: 一致推定量
     importance: A
-    status: planned
+    status: verified
   - id: efficient-estimator
     title: 有効推定量
     importance: A
-    status: planned
+    status: verified
   - id: mean-squared-error
     title: 平均二乗誤差
     importance: A
-    status: planned
+    status: verified
   - id: likelihood-function
     title: 尤度関数・対数尤度
     importance: A
-    status: planned
+    status: verified
   - id: maximum-likelihood-estimator
     title: 最尤推定量
     importance: A
-    status: planned
+    status: verified
   - id: score-function
     title: スコア関数
     importance: A
-    status: planned
+    status: verified
   - id: fisher-information
     title: フィッシャー情報量
     importance: A
-    status: planned
+    status: verified
   - id: cramer-rao-inequality
     title: クラメール・ラオの不等式
     importance: A
-    status: planned
+    status: verified
   - id: sufficient-statistic
     title: 十分統計量
     importance: A
-    status: planned
+    status: verified
   - id: factorization-theorem
     title: ネイマンの分解定理
     importance: A
-    status: planned
+    status: verified
   - id: method-of-moments
     title: モーメント法
     importance: A
-    status: planned
+    status: verified
   - id: asymptotic-normality-of-mle
     title: 最尤推定量の漸近正規性
     importance: A
-    status: planned
+    status: verified
   - id: invariance-of-mle
     title: 最尤推定量の不変性
     importance: B
-    status: planned
+    status: verified
   - id: rao-blackwell-theorem
     title: ラオ・ブラックウェルの定理
     importance: B
-    status: planned
+    status: verified
   - id: complete-statistic
     title: 完備統計量
     importance: C
@@ -414,7 +414,7 @@ chapters:
   - id: exponential-family
     title: 指数型分布族
     importance: B
-    status: planned
+    status: verified
   - id: observed-fisher-information
     title: 観測情報量
     importance: C
