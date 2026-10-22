@@ -1470,55 +1470,55 @@ chapters:
   - id: hierarchical-clustering
     title: 階層的クラスタリング
     importance: A
-    status: planned
+    status: verified
   - id: dendrogram
     title: デンドログラム
     importance: A
-    status: planned
+    status: verified
   - id: single-linkage
     title: 最短距離法
     importance: A
-    status: planned
+    status: verified
   - id: complete-linkage
     title: 最長距離法
     importance: A
-    status: planned
+    status: verified
   - id: average-linkage
     title: 群平均法
     importance: A
-    status: planned
+    status: verified
   - id: ward-method
     title: ウォード法
     importance: A
-    status: planned
+    status: verified
   - id: centroid-method
     title: 重心法
     importance: B
-    status: planned
+    status: verified
   - id: lance-williams-formula
     title: ランス・ウィリアムズの更新式
     importance: B
-    status: planned
+    status: verified
   - id: k-means-method
     title: k-means法
     importance: A
-    status: planned
+    status: verified
   - id: non-hierarchical-clustering
     title: 非階層的クラスタリング
     importance: B
-    status: planned
+    status: verified
   - id: distance-measures
     title: 距離（ユークリッド・マンハッタン・ミンコフスキー）
     importance: A
-    status: planned
+    status: verified
   - id: similarity-measures
     title: 類似度
     importance: B
-    status: planned
+    status: verified
   - id: number-of-clusters
     title: クラスター数の決め方
     importance: B
-    status: planned
+    status: verified
   - id: mixture-model-clustering
     title: 混合モデルによるクラスタリング
     importance: C
