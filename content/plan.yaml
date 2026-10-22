@@ -1659,11 +1659,11 @@ chapters:
   - id: time-series
     title: 時系列データ
     importance: B
-    status: planned
+    status: verified
   - id: weak-stationarity
     title: 弱定常性
     importance: A
-    status: planned
+    status: verified
   - id: strict-stationarity
     title: 強定常性
     importance: C
@@ -1671,63 +1671,63 @@ chapters:
   - id: autocovariance-autocorrelation
     title: 自己共分散・自己相関
     importance: A
-    status: planned
+    status: verified
   - id: correlogram
     title: コレログラム
     importance: B
-    status: planned
+    status: verified
   - id: partial-autocorrelation
     title: 偏自己相関
     importance: A
-    status: planned
+    status: verified
   - id: white-noise
     title: ホワイトノイズ
     importance: A
-    status: planned
+    status: verified
   - id: ar-model
     title: ARモデル
     importance: A
-    status: planned
+    status: verified
   - id: ma-model
     title: MAモデル
     importance: A
-    status: planned
+    status: verified
   - id: arma-model
     title: ARMAモデル
     importance: A
-    status: planned
+    status: verified
   - id: arima-model
     title: ARIMAモデル
     importance: A
-    status: planned
+    status: verified
   - id: yule-walker-equations
     title: ユール・ウォーカー方程式
     importance: A
-    status: planned
+    status: verified
   - id: stationarity-condition
     title: 定常条件
     importance: A
-    status: planned
+    status: verified
   - id: invertibility
     title: 反転可能性
     importance: B
-    status: planned
+    status: verified
   - id: unit-root
     title: 単位根
     importance: A
-    status: planned
+    status: verified
   - id: spectrum
     title: スペクトル
     importance: B
-    status: planned
+    status: verified
   - id: seasonal-adjustment
     title: 季節調整
     importance: B
-    status: planned
+    status: verified
   - id: forecasting
     title: 予測
     importance: B
-    status: planned
+    status: verified
 - 'no': 28
   title: 分割表
   terms:
