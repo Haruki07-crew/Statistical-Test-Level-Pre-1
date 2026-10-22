@@ -138,27 +138,27 @@ chapters:
   - id: change-of-variables
     title: 変数変換とヤコビアン
     importance: A
-    status: planned
+    status: verified
   - id: log-transformation
     title: 対数変換
     importance: B
-    status: planned
+    status: verified
   - id: power-transformation
     title: べき乗変換
     importance: C
-    status: planned
+    status: verified
   - id: box-cox-transformation
     title: Box-Cox変換
     importance: B
-    status: planned
+    status: verified
   - id: logit-logistic-transformation
     title: ロジット変換・ロジスティック変換
     importance: A
-    status: planned
+    status: verified
   - id: probit-transformation
     title: プロビット変換
     importance: B
-    status: planned
+    status: verified
 - 'no': 5
   title: 離散型分布
   terms:
