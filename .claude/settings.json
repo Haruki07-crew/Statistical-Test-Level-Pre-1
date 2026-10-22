@@ -1,0 +1,41 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Edit",
+      "WebSearch",
+      "WebFetch",
+      "Bash(python3 -m venv .venv)",
+      "Bash(.venv/bin/python *)",
+      "Bash(.venv/bin/pip install *)",
+      "Bash(node --version)",
+      "Bash(node --check *)",
+      "Bash(node verify/*)",
+      "Bash(git init -b main)",
+      "Bash(git branch -M main)",
+      "Bash(git status)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git log *)",
+      "Bash(git diff *)",
+      "Bash(git remote -v)",
+      "Bash(git push origin main)",
+      "Bash(touch *)",
+      "Bash(git push -u origin main)",
+      "Bash(git remote add origin https://github.com/Haruki07-crew/Statistical-Test-Level-Pre-1.git)",
+      "Bash(ls *)",
+      "Bash(mkdir *)",
+      "Bash(cp *)",
+      "Bash(mv *)",
+      "Bash(wc *)",
+      "Bash(du *)"
+    ],
+    "deny": [
+      "Bash(sudo *)",
+      "Bash(rm -rf *)",
+      "Bash(git push --force *)",
+      "Bash(git push -f *)",
+      "Bash(git reset --hard *)"
+    ]
+  }
+}
