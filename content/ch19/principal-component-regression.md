@@ -7,7 +7,7 @@ aliases: [PCR, 主成分得点による回帰]
 chapter: 19
 importance: C
 tags: [多重共線性, 主成分分析, 次元削減, 縮小推定]
-related: [multicollinearity, principal-component-analysis, principal-component-score, ridge-regression, contribution-ratio, partial-least-squares]
+related: [multicollinearity, principal-component-analysis, principal-component-score, ridge-regression, contribution-ratio, cross-validation]
 ---
 
 ## 一言でいうと
