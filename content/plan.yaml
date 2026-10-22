@@ -717,51 +717,51 @@ chapters:
   - id: rank-and-ties
     title: 順位と同順位（タイ）
     importance: A
-    status: planned
+    status: verified
   - id: nonparametric-methods-overview
     title: ノンパラメトリック法の特徴
     importance: B
-    status: planned
+    status: verified
   - id: sign-test
     title: 符号検定
     importance: A
-    status: planned
+    status: verified
   - id: wilcoxon-signed-rank-test
     title: ウィルコクソンの符号付き順位検定
     importance: A
-    status: planned
+    status: verified
   - id: wilcoxon-rank-sum-test
     title: ウィルコクソンの順位和検定
     importance: A
-    status: planned
+    status: verified
   - id: mann-whitney-u-test
     title: マン・ホイットニーのU検定
     importance: A
-    status: planned
+    status: verified
   - id: kruskal-wallis-test
     title: クラスカル・ウォリス検定
     importance: A
-    status: planned
+    status: verified
   - id: friedman-test
     title: フリードマン検定
     importance: A
-    status: planned
+    status: verified
   - id: spearman-rank-correlation
     title: スピアマンの順位相関係数
     importance: A
-    status: planned
+    status: verified
   - id: kendall-rank-correlation
     title: ケンドールの順位相関係数
     importance: A
-    status: planned
+    status: verified
   - id: permutation-test
     title: 並べ替え検定
     importance: A
-    status: planned
+    status: verified
   - id: normal-approximation-rank-tests
     title: 順位統計量の正規近似
     importance: B
-    status: planned
+    status: verified
   - id: asymptotic-relative-efficiency
     title: 漸近相対効率
     importance: C
@@ -781,7 +781,7 @@ chapters:
   - id: concordant-discordant-pairs
     title: 一致対・不一致対
     importance: B
-    status: planned
+    status: verified
   - id: jonckheere-terpstra-test
     title: ヨンクヒール・タプストラ検定
     importance: C

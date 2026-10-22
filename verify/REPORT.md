@@ -132,3 +132,14 @@
   - `content/ch12/two-sample-proportion-test.md` 図1キャプション：「x を 2.14 に合わせると…右片側 p 値は約 0.016、両側 p 値はその2倍の約 0.033」→「約 0.032」（x=2.14 での両側は 2×0.01618=0.0324。本文の p 値 0.0326 は Z=2.137 での値で不変）
 - 検算スクリプト側の修正: 200×0.55==110 の浮動小数点比較を許容つきに。KS の分布非依存性の確認を2標本 KS（初回 0.0102、p≈0.01 の偶然の外れ）から、各標本を kstwo(10) と比べる1標本 KS に変更
 - 検算対象外: 定性的な記述（現場での使われ方、「5」は経験的な目安、ピアソンの統計量のほうが近似がよいという一般論、チャーノフ・レーマンの結果の証明（シミュレーションで傍証のみ）、KS が裾のずれに感度が低いこと、UMP 性）。なお custom 図 `obs-exp-bar` と `ks-ecdf` は `src/` に描画関数が見当たらなかった（params の値の整合のみ確認）
+
+## 第13章（ノンパラメトリック法）
+
+- スクリプト: `verify/ch13.py`（実行: `.venv/bin/python verify/ch13.py`）
+- 対象: sign-test, wilcoxon-signed-rank-test, wilcoxon-rank-sum-test, mann-whitney-u-test, kruskal-wallis-test, friedman-test, spearman-rank-correlation, kendall-rank-correlation, concordant-discordant-pairs, rank-and-ties, permutation-test, normal-approximation-rank-tests, nonparametric-methods-overview（13ファイル）
+- 結果: **OK 200 / NG 0**（初回 OK 198 / NG 2）
+- 方法: 全通りの数え上げ（符号 2⁸・2⁹、群分け C(9,4)・C(13,6)・C(8,4)、C(20,10) は DP、KW の 34650 通り、フリードマンの (3!)⁵=7776 通り、並べ替え 6!・10!、ケンドールの n=10 は転倒数分布）で全例の正確な p 値（7/256、26/512、7/126、0.0446、47/1716、48/34650、66/7776、63/720、0.0008、98/720、0.0022、2/70、8/256）を再計算。scipy.stats（wilcoxon exact/approx、mannwhitneyu exact/asymptotic、ranksums、kruskal、friedmanchisquare、spearmanr、kendalltau exact、permutation_test、ttest_ind/1samp、f_oneway、binomtest）とも一致。正規近似・χ² 近似の z と p 値（連続修正あり/なし、タイ補正あり/なし）。bar-data 6図（T+ n=8 の37値、W・U の21値、フリードマン Q の12値、r_s n=6 の36値、ケンドール S の16値、並べ替え分布32値、一致対の内訳、平均順位、外れ値での p 値）を再計算し完全一致。sympy（E[T+]・V[T+]、タイ群の2乗和の減少 (t³−t)/12、Cov(Ri,Rj)=−(N+1)/12 と V[W]、U のタイ補正式＝C 倍、E[H]=k−1（一般の n_j）、H・Q の2つの形の一致、k=2 で H=Z²・Q=符号検定の Z²、E[Q]=k−1、V[r_s]=1/(n−1)、V[S]・V[τ]、順位の E・V、ARE：正規 3/π・2/π、ラプラス 1.5・2、放物線密度で下限 108/125）。分散公式は小さい n の全数え上げでも確認。ケンドールの共分散 ±1/3 は 3! 通りで確認。乱数シミュレーション（seed=20261023）：U/(n1n2) の不偏性（10万回、±0.003）、2変量正規で τ=2/π·arcsin ρ（40万組、±0.005）、順位ベクトルの 4! 通り等確率（20万回、±0.003）、|γ|≥|τb|≥|τa|（ランダム表300件）、タイありの V[R] 公式（300件）
+- 本文の修正:
+  - `content/ch13/wilcoxon-signed-rank-test.md` 図キャプション：「右端の T+≥32 の4本の合計」→「5本の合計」（T+=32,33,34,35,36 の5本で 2+2+1+1+1=7 通り）
+- 検算スクリプト側の修正: 8/256=0.03125 を「0.0313」とする表示は四捨五入として正しいので、許容を 5.01e-5 に
+- 検算対象外: 定性的な記述（現場での使われ方、正規近似が使える標本サイズの目安、0.864 が「任意の分布での下限」であることの証明（下限を与える密度での値のみ確認）、ケンドールの正規近似がスピアマンより良いという一般論、交換可能性が崩れる場合の議論、図のスライダー挙動）
