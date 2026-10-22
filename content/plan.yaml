@@ -1533,63 +1533,63 @@ chapters:
   - id: factor-analysis-model
     title: 因子分析モデル
     importance: A
-    status: planned
+    status: verified
   - id: common-factor-unique-factor
     title: 共通因子と独自因子
     importance: A
-    status: planned
+    status: verified
   - id: factor-loading
     title: 因子負荷量
     importance: A
-    status: planned
+    status: verified
   - id: communality
     title: 共通性
     importance: A
-    status: planned
+    status: verified
   - id: factor-rotation
     title: 因子回転
     importance: A
-    status: planned
+    status: verified
   - id: varimax-rotation
     title: バリマックス回転
     importance: B
-    status: planned
+    status: verified
   - id: promax-rotation
     title: プロマックス回転
     importance: B
-    status: planned
+    status: verified
   - id: number-of-factors
     title: 因子数の決め方
     importance: B
-    status: planned
+    status: verified
   - id: factor-score
     title: 因子得点
     importance: B
-    status: planned
+    status: verified
   - id: maximum-likelihood-factor-analysis
     title: 因子分析の最尤法
     importance: B
-    status: planned
+    status: verified
   - id: graphical-model
     title: グラフィカルモデル
     importance: A
-    status: planned
+    status: verified
   - id: undirected-graphical-model
     title: 無向グラフィカルモデル
     importance: A
-    status: planned
+    status: verified
   - id: precision-matrix
     title: 精度行列
     importance: A
-    status: planned
+    status: verified
   - id: covariance-selection
     title: 共分散選択
     importance: B
-    status: planned
+    status: verified
   - id: directed-acyclic-graph
     title: 有向非巡回グラフ
     importance: B
-    status: planned
+    status: verified
   - id: graphical-lasso
     title: グラフィカルLasso
     importance: C
