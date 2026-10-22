@@ -121,3 +121,14 @@
   - `content/ch11/welch-test.md` 例2：20万回シミュレーションの棄却率「約17.4%・約5.2%」→「約17.6%・約5.3%」（200万回で 0.1755・0.0531。旧値はいずれも MC 標準誤差の約2倍低かった）
 - 検算スクリプト側の修正: プールの例3「≈10.13」は 10.125 の四捨五入で正しく、許容 5e-3 の浮動小数点境界の問題だったので許容を 5.01e-3 に。artanh=½log((1+r)/(1−r)) は sympy の simplify が 0 に簡約できなかったため数値格子（199点）で確認
 - 検算対象外: 定性的な記述（現場での使われ方、予備検定の問題点、ベーレンス・フィッシャー問題に正確な解がないこと、F 検定・χ² 検定が正規性に敏感という一般論（t(5) 母集団の1例で水準 0.147 を確認したのみ）、図のスライダー挙動）
+
+## 第12章（適合度検定・分割表・比率とポアソンの検定）
+
+- スクリプト: `verify/ch12.py`（実行: `.venv/bin/python verify/ch12.py`）
+- 対象: binomial-test, chi-square-approximation-condition, degrees-of-freedom-gof, expected-frequency, g-statistic, goodness-of-fit-test, homogeneity-test, independence-test, kolmogorov-smirnov-test, pearson-chi-square-statistic, poisson-parameter-test, poisson-two-sample-test, proportion-test, two-sample-proportion-test（14ファイル）
+- 結果: **OK 211 / NG 0**（初回 OK 209 / NG 2）
+- 方法: scipy.stats（chisquare・chi2_contingency（連続修正あり/なし、lambda_="log-likelihood"）・power_divergence・binomtest・fisher_exact・kstest(exact)・kstwo・kstwobign）で全具体例の期待度数・寄与・統計量・自由度・棄却限界・p値を再計算。二項検定の両側 p 値は2倍法と「確率の小さい順に足す方法」（binomtest と一致）の両方、p0=0.5 で両者が一致すること（n=5..30 全x）、実サイズ≤α。ポアソンの P(T≥t)=P(χ²_{2t}≤2nλ0)、調整済み標準化残差 ±2.31、2×2 公式とイェーツ、|O−E|=|ad−bc|/n、(O−E) の行和・列和=0（ランダム表）、コルモゴロフ分布の級数と kstwobign の一致・漸近5%/1%点。sympy（k=2 での χ²=Z²、G の2次近似 2(E+δ)log(1+δ/E)=2δ+δ²/E+O(δ³)、自由度 (rc−1)−(r−1)−(c−1) と r(c−1)−(c−1)、条件付き二項分布の導出、H0 で p0=t1/(t1+t2)）。charts の params（obs-exp-bar の observed/expected、mosaic の表から計算される統計量 7.11・8.43・4.566、ks-ecdf のデータ、Bin(25,0.5455) の F(17)・P(X≥18)、各 pdf-cdf のキャプションの F(x)）も本文と照合。乱数シミュレーション（seed=20261023、許容誤差は各チェックに明記）：G と X² の5%棄却率（20万回、±0.004/±0.003）、行和固定・総数固定での χ²(2) の棄却率（10万回、±0.004）、ポアソン適合度で生データ平均を使うと統計量が χ²(3) と χ²(4) の間（平均 3.03）・グループ化 MLE なら水準どおり（5000回、±0.012）、KS の D10 が一様・指数で同じ kstwo(10) に従う（5万回、KS<0.0073）、母数推定時の KS が極端に保守的（棄却率 0.00005）、ポアソンの再生性、合計で条件付けた二項分布、比率の z 検定のサイズ
+- 本文の修正:
+  - `content/ch12/two-sample-proportion-test.md` 図1キャプション：「x を 2.14 に合わせると…右片側 p 値は約 0.016、両側 p 値はその2倍の約 0.033」→「約 0.032」（x=2.14 での両側は 2×0.01618=0.0324。本文の p 値 0.0326 は Z=2.137 での値で不変）
+- 検算スクリプト側の修正: 200×0.55==110 の浮動小数点比較を許容つきに。KS の分布非依存性の確認を2標本 KS（初回 0.0102、p≈0.01 の偶然の外れ）から、各標本を kstwo(10) と比べる1標本 KS に変更
+- 検算対象外: 定性的な記述（現場での使われ方、「5」は経験的な目安、ピアソンの統計量のほうが近似がよいという一般論、チャーノフ・レーマンの結果の証明（シミュレーションで傍証のみ）、KS が裾のずれに感度が低いこと、UMP 性）。なお custom 図 `obs-exp-bar` と `ks-ecdf` は `src/` に描画関数が見当たらなかった（params の値の整合のみ確認）

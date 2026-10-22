@@ -13,7 +13,7 @@ charts:
     dist: norm
     params: { mu: 0, sigma: 1 }
     x: { min: -4, max: 4 }
-    caption: 検定統計量 Z の帰無分布 N(0,1)。x を例1の 2.14 に合わせると F(x)≈0.984 で、右片側 p 値は約 0.016、両側 p 値はその2倍の約 0.033。
+    caption: 検定統計量 Z の帰無分布 N(0,1)。x を例1の 2.14 に合わせると F(x)≈0.984 で、右片側 p 値は約 0.016、両側 p 値はその2倍の約 0.032。
   - type: custom
     id: mosaic
     params: { table: [[150, 350], [120, 380]], rowLabels: ["新デザイン", "旧デザイン"], colLabels: ["クリック", "なし"] }

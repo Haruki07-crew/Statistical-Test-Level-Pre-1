@@ -650,51 +650,51 @@ chapters:
   - id: proportion-test
     title: 母比率の検定
     importance: A
-    status: planned
+    status: verified
   - id: binomial-test
     title: 二項検定
     importance: A
-    status: planned
+    status: verified
   - id: poisson-parameter-test
     title: ポアソン分布の母数の検定
     importance: A
-    status: planned
+    status: verified
   - id: two-sample-proportion-test
     title: 2標本の比率の差の検定
     importance: A
-    status: planned
+    status: verified
   - id: goodness-of-fit-test
     title: 適合度検定
     importance: A
-    status: planned
+    status: verified
   - id: pearson-chi-square-statistic
     title: ピアソンのカイ二乗統計量
     importance: A
-    status: planned
+    status: verified
   - id: independence-test
     title: 独立性の検定
     importance: A
-    status: planned
+    status: verified
   - id: homogeneity-test
     title: 同質性の検定
     importance: B
-    status: planned
+    status: verified
   - id: g-statistic
     title: 尤度比検定統計量（G統計量）
     importance: A
-    status: planned
+    status: verified
   - id: expected-frequency
     title: 期待度数
     importance: B
-    status: planned
+    status: verified
   - id: degrees-of-freedom-gof
     title: 適合度検定の自由度（推定母数の影響）
     importance: A
-    status: planned
+    status: verified
   - id: chi-square-approximation-condition
     title: カイ二乗近似の条件
     importance: B
-    status: planned
+    status: verified
   - id: variance-stabilizing-transform
     title: 分散安定化変換
     importance: C
@@ -702,11 +702,11 @@ chapters:
   - id: poisson-two-sample-test
     title: 2標本ポアソン比較
     importance: B
-    status: planned
+    status: verified
   - id: kolmogorov-smirnov-test
     title: コルモゴロフ・スミルノフ検定
     importance: B
-    status: planned
+    status: verified
   - id: dispersion-test
     title: 分散検定（過分散の検定）
     importance: C
