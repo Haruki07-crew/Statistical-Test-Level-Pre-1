@@ -579,35 +579,35 @@ chapters:
   - id: z-test-known-variance
     title: 母平均の検定（分散既知）
     importance: A
-    status: planned
+    status: verified
   - id: one-sample-t-test
     title: 1標本t検定
     importance: A
-    status: planned
+    status: verified
   - id: two-sample-t-test
     title: 2標本t検定
     importance: A
-    status: planned
+    status: verified
   - id: pooled-variance
     title: プールした分散
     importance: A
-    status: planned
+    status: verified
   - id: welch-test
     title: ウェルチの検定
     importance: A
-    status: planned
+    status: verified
   - id: paired-t-test
     title: 対応のあるt検定
     importance: A
-    status: planned
+    status: verified
   - id: chi-square-test-variance
     title: 母分散のカイ二乗検定
     importance: A
-    status: planned
+    status: verified
   - id: f-test-equal-variances
     title: 等分散のF検定
     importance: A
-    status: planned
+    status: verified
   - id: bartlett-test
     title: バートレット検定
     importance: C
@@ -615,19 +615,19 @@ chapters:
   - id: test-ci-relationship-mean-difference
     title: 母平均の差の検定と信頼区間の関係
     importance: B
-    status: planned
+    status: verified
   - id: test-correlation-coefficient
     title: 母相関係数の検定
     importance: B
-    status: planned
+    status: verified
   - id: fisher-z-transformation
     title: フィッシャーのz変換
     importance: B
-    status: planned
+    status: verified
   - id: power-of-t-test
     title: t検定の検出力
     importance: B
-    status: planned
+    status: verified
   - id: preliminary-test-problem
     title: 予備検定の問題
     importance: C
@@ -639,7 +639,7 @@ chapters:
   - id: hotelling-t2
     title: ホテリングのT二乗検定
     importance: B
-    status: planned
+    status: verified
   - id: one-way-test-variance-equality-levene
     title: ルビーン検定
     importance: C
