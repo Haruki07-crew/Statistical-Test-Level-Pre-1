@@ -1348,51 +1348,51 @@ chapters:
   - id: principal-component-analysis
     title: 主成分分析
     importance: A
-    status: planned
+    status: verified
   - id: principal-component
     title: 主成分
     importance: A
-    status: planned
+    status: verified
   - id: eigenvalue-and-eigenvector
     title: 固有値と固有ベクトル
     importance: A
-    status: planned
+    status: verified
   - id: contribution-ratio
     title: 寄与率
     importance: A
-    status: planned
+    status: verified
   - id: cumulative-contribution-ratio
     title: 累積寄与率
     importance: A
-    status: planned
+    status: verified
   - id: principal-component-loading
     title: 主成分負荷量
     importance: A
-    status: planned
+    status: verified
   - id: principal-component-score
     title: 主成分得点
     importance: A
-    status: planned
+    status: verified
   - id: pca-on-correlation-matrix
     title: 相関行列からの主成分分析
     importance: A
-    status: planned
+    status: verified
   - id: scree-plot
     title: スクリープロット
     importance: B
-    status: planned
+    status: verified
   - id: kaiser-criterion
     title: カイザー基準
     importance: B
-    status: planned
+    status: verified
   - id: singular-value-decomposition
     title: 特異値分解
     importance: B
-    status: planned
+    status: verified
   - id: lagrange-multiplier-pca
     title: ラグランジュ乗数法による導出
     importance: B
-    status: planned
+    status: verified
   - id: biplot
     title: バイプロット
     importance: C

@@ -84,7 +84,7 @@ $$
 
 | 組 | 計算 | $\Delta$ |
 |---|---|---|
-| C–AB | $\frac{1\cdot2}{3}\cdot\|(1,3)-(1,0)\|^2=\frac23\cdot 9$ | 6 |
+| C–AB | $\frac{1\cdot2}{3}\cdot(0^2+3^2)=\frac23\cdot 9$ | 6 |
 | D–AB | $\frac23\cdot(25+16)$ | 27.333 |
 | E–AB | $\frac23\cdot(36+36)$ | 48 |
 | C–D, C–E | 段1と同じ | 13, 22.5 |

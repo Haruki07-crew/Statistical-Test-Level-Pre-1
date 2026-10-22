@@ -13,7 +13,7 @@ charts:
     id: bar-data
     params:
       labels: [第1, 第2, 第3, 第4]
-      values: [3614.96, 664.34, 91.51, 25.08]
+      values: [3614.95, 664.33, 91.51, 25.08]
       xlabel: 特異値の番号
       ylabel: 特異値の2乗 d²
       cumulative: true
