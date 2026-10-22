@@ -3,7 +3,7 @@ id: hierarchical-bayes-model
 title: 階層ベイズモデル
 reading: かいそうべいずもでる
 en: Hierarchical Bayesian model
-aliases: [階層ベイズ, 階層モデル, ハイパー事前分布]
+aliases: [階層ベイズ, ベイズ階層モデル, ハイパー事前分布]
 chapter: 31
 importance: B
 tags: [ベイズ推論, ハイパーパラメータ, 縮小推定, 変量効果]
