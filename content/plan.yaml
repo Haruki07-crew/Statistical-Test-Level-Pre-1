@@ -867,7 +867,7 @@ chapters:
   - id: stochastic-process
     title: 確率過程
     importance: B
-    status: planned
+    status: verified
   - id: counting-process
     title: 計数過程
     importance: C
@@ -875,35 +875,35 @@ chapters:
   - id: poisson-process
     title: ポアソン過程
     importance: A
-    status: planned
+    status: verified
   - id: interarrival-time
     title: 到着時間間隔
     importance: A
-    status: planned
+    status: verified
   - id: superposition-thinning-poisson
     title: ポアソン過程の合成と間引き
     importance: B
-    status: planned
+    status: verified
   - id: random-walk
     title: ランダムウォーク
     importance: A
-    status: planned
+    status: verified
   - id: gambler-ruin-problem
     title: 破産問題
     importance: A
-    status: planned
+    status: verified
   - id: brownian-motion
     title: ブラウン運動
     importance: A
-    status: planned
+    status: verified
   - id: martingale
     title: マルチンゲール
     importance: B
-    status: planned
+    status: verified
   - id: birth-death-process
     title: 出生死滅過程
     importance: A
-    status: planned
+    status: verified
   - id: pure-birth-process
     title: 純出生過程
     importance: C
@@ -911,19 +911,19 @@ chapters:
   - id: queueing-theory
     title: 待ち行列理論
     importance: B
-    status: planned
+    status: verified
   - id: mm1-queue
     title: M/M/1待ち行列
     importance: A
-    status: planned
+    status: verified
   - id: traffic-intensity
     title: 利用率（トラフィック強度）
     importance: A
-    status: planned
+    status: verified
   - id: littles-law
     title: リトルの公式
     importance: B
-    status: planned
+    status: verified
   - id: compound-poisson-process
     title: 複合ポアソン過程
     importance: C
@@ -931,7 +931,7 @@ chapters:
   - id: independent-stationary-increments
     title: 独立増分性・定常増分性
     importance: B
-    status: planned
+    status: verified
   - id: mmc-queue
     title: M/M/c待ち行列
     importance: C
