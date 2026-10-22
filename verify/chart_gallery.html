@@ -1490,7 +1490,7 @@ body{overflow:auto} .g{display:grid;grid-template-columns:1fr 1fr;gap:12px;paddi
   // svm-margin: { gap, n } マージン最大の分離直線とサポートベクトル
   reg('svm-margin', function (a, p, c) {
     var gap = num(p.gap, 1), n = Math.round(num(p.n, 30)), D = [];
-    for (var i = 0; i < n; i++) { var g = i % 2 ? 1 : -1, u = a.normal(), v = a.normal(); D.push([u + g * (0.9 + gap / 2) * 0.7071 + 0.8, v + g * (0.9 + gap / 2) * 0.7071 + 0.8, g]); }
+    for (var i = 0; i < n; i++) { var g = i % 2 ? 1 : -1, u = a.normal(), v = a.normal(); D.push([0.6 * u + g * (0.9 + gap / 2) * 0.7071 + 0.8, 0.6 * v + g * (0.9 + gap / 2) * 0.7071 + 0.8, g]); }
     // 向き θ を細かく試し、射影したときの2群のすきまが最大になる向きを探す（2次元なのでこれで最適解に十分近い）
     var best = { m: -Infinity };
     for (var t = 0; t < 3600; t++) {
@@ -1520,6 +1520,23 @@ body{overflow:auto} .g{display:grid;grid-template-columns:1fr 1fr;gap:12px;paddi
       if (sv) { ctx.strokeStyle = c.fg; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(P.X(q[0]), P.Y(q[1]), 8, 0, 2 * Math.PI); ctx.stroke(); }
     });
     a.info.textContent = sep ? 'マージン（境界から最も近い点までの距離）= ' + a.fmt(best.m, 3) + '　丸で囲んだ点がサポートベクトル（破線上の点）' : '2群が重なっていて直線では分離できない（ハードマージンでは解がない。ソフトマージンでは一部のはみ出しを許して境界を決める）。実線は重なりが最小の向き';
+  });
+
+  // minkowski-ball: { p } ミンコフスキー距離で原点から1の点の集まり（単位円）
+  reg('minkowski-ball', function (a, p, c) {
+    var q = Math.max(1, num(p.p, 2)), P = plane(a, c, -1.4, 1.4, -1.4, 1.4, 300), ctx = P.ctx;
+    var curve = function (pp, col, dash, lw) {
+      ctx.strokeStyle = col; ctx.setLineDash(dash); ctx.lineWidth = lw; ctx.beginPath();
+      for (var t = 0; t <= 400; t++) {
+        var th = 2 * Math.PI * t / 400, cs = Math.cos(th), sn = Math.sin(th), r = isFinite(pp) ? Math.pow(Math.pow(Math.abs(cs), pp) + Math.pow(Math.abs(sn), pp), -1 / pp) : 1 / Math.max(Math.abs(cs), Math.abs(sn));
+        t ? ctx.lineTo(P.X(r * cs), P.Y(r * sn)) : ctx.moveTo(P.X(r * cs), P.Y(r * sn));
+      }
+      ctx.stroke(); ctx.setLineDash([]);
+    };
+    curve(1, c.faint, [3, 3], 1); curve(2, c.faint, [3, 3], 1); curve(Infinity, c.faint, [3, 3], 1);
+    curve(q, c.c1, [], 2.5);
+    ctx.strokeStyle = c.line; ctx.beginPath(); ctx.moveTo(P.X(-1.4), P.Y(0)); ctx.lineTo(P.X(1.4), P.Y(0)); ctx.moveTo(P.X(0), P.Y(-1.4)); ctx.lineTo(P.X(0), P.Y(1.4)); ctx.stroke();
+    a.info.textContent = 'p = ' + a.fmt(q, 2) + '（実線）　点線は p = 1（マンハッタン：ひし形）、p = 2（ユークリッド：円）、p = ∞（チェビシェフ：正方形）　点 (1,1) までの距離 = ' + a.fmt(Math.pow(2, 1 / q), 4);
   });
 
   // ---------- 第2章 ----------
@@ -2150,8 +2167,8 @@ body{overflow:auto} .g{display:grid;grid-template-columns:1fr 1fr;gap:12px;paddi
 </script><script>
 window.onerror=function(m){document.getElementById('err').textContent+=m+'\n'};
 var origErr=console.error;console.error=function(e){document.getElementById('err').textContent+='ERR '+(e&&e.message||e)+'\n';origErr.apply(console,arguments)};
-[['bayes-area',{}],['joint-marginal',{}],['mean-inequality',{}],['bar-data',{labels:['PC1','PC2','PC3','PC4'],values:[2.5,0.9,0.4,0.2],cumulative:true}],['line-data',{x:[1,2,3,4],series:[{label:'a',y:[1,3,2,4]}]}],['obs-exp-bar',{}],['ks-ecdf',{}],['studentized-range',{}],['points-2d',{points:[{label:'国語',x:0.8,y:0.4},{label:'数学',x:0.7,y:-0.6}],arrows:1,circle:1,xlabel:'PC1',ylabel:'PC2'}],['graph-diagram',{nodes:['X1','X2','X3','X4'],edges:[[0,1],[1,2],[2,3],[0,2]]}],['discriminant-boundary',{}],['fisher-projection',{}],['mahalanobis-contour',{}],['knn-boundary',{}],['svm-margin',{}],['mgf-curve',{}],['logistic-curve',{}],['box-cox',{}],['clt-sim',{}],['lln-path',{}],['ci-coverage',{}],['power-curve',{}],['markov-chain',{}],['poisson-process',{}],['random-walk',{lower:-10,upper:10,start:0}],['regression-residual',{outlier:-6}],['residual-pattern',{}],['dw-sim',{}],['iv-scatter',{}],['qq-plot',{}],['ridge-lasso-path',{}],['bias-variance',{}],['pca-axes',{}],['dendrogram',{}],['kmeans-steps',{}],['roc-curve',{}],['acf-plot',{pacf:1}],['ar-sim',{}],['mosaic',{}],['km-curve',{groups:2}],['prior-posterior',{}],['mcmc-trace',{}],['inverse-transform',{}],['rejection-sampling',{}],['bootstrap-hist',{}]].forEach(function(it){var d=document.createElement('div');d.innerHTML='<h3>'+it[0]+'</h3>';document.getElementById('g').appendChild(d);
+[['bayes-area',{}],['joint-marginal',{}],['mean-inequality',{}],['bar-data',{labels:['PC1','PC2','PC3','PC4'],values:[2.5,0.9,0.4,0.2],cumulative:true}],['line-data',{x:[1,2,3,4],series:[{label:'a',y:[1,3,2,4]}]}],['obs-exp-bar',{}],['ks-ecdf',{}],['studentized-range',{}],['points-2d',{points:[{label:'国語',x:0.8,y:0.4},{label:'数学',x:0.7,y:-0.6}],arrows:1,circle:1,xlabel:'PC1',ylabel:'PC2'}],['graph-diagram',{nodes:['X1','X2','X3','X4'],edges:[[0,1],[1,2],[2,3],[0,2]]}],['discriminant-boundary',{}],['fisher-projection',{}],['mahalanobis-contour',{}],['knn-boundary',{}],['svm-margin',{}],['minkowski-ball',{}],['mgf-curve',{}],['logistic-curve',{}],['box-cox',{}],['clt-sim',{}],['lln-path',{}],['ci-coverage',{}],['power-curve',{}],['markov-chain',{}],['poisson-process',{}],['random-walk',{lower:-10,upper:10,start:0}],['regression-residual',{outlier:-6}],['residual-pattern',{}],['dw-sim',{}],['iv-scatter',{}],['qq-plot',{}],['ridge-lasso-path',{}],['bias-variance',{}],['pca-axes',{}],['dendrogram',{}],['kmeans-steps',{}],['roc-curve',{}],['acf-plot',{pacf:1}],['ar-sim',{}],['mosaic',{}],['km-curve',{groups:2}],['prior-posterior',{}],['mcmc-trace',{}],['inverse-transform',{}],['rejection-sampling',{}],['bootstrap-hist',{}]].forEach(function(it){var d=document.createElement('div');d.innerHTML='<h3>'+it[0]+'</h3>';document.getElementById('g').appendChild(d);
 Charts.render(d,{type:'custom',id:it[0],params:it[1],caption:it[0]});
 var m=d.querySelector('.chart-missing');if(m)document.getElementById('err').textContent+=it[0]+': '+m.textContent+'\n';});
-document.getElementById('err').textContent+='done '+45+'\n';
+document.getElementById('err').textContent+='done '+46+'\n';
 </script></body></html>

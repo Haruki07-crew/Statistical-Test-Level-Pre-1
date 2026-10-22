@@ -331,6 +331,23 @@
     a.info.textContent = sep ? 'マージン（境界から最も近い点までの距離）= ' + a.fmt(best.m, 3) + '　丸で囲んだ点がサポートベクトル（破線上の点）' : '2群が重なっていて直線では分離できない（ハードマージンでは解がない。ソフトマージンでは一部のはみ出しを許して境界を決める）。実線は重なりが最小の向き';
   });
 
+  // minkowski-ball: { p } ミンコフスキー距離で原点から1の点の集まり（単位円）
+  reg('minkowski-ball', function (a, p, c) {
+    var q = Math.max(1, num(p.p, 2)), P = plane(a, c, -1.4, 1.4, -1.4, 1.4, 300), ctx = P.ctx;
+    var curve = function (pp, col, dash, lw) {
+      ctx.strokeStyle = col; ctx.setLineDash(dash); ctx.lineWidth = lw; ctx.beginPath();
+      for (var t = 0; t <= 400; t++) {
+        var th = 2 * Math.PI * t / 400, cs = Math.cos(th), sn = Math.sin(th), r = isFinite(pp) ? Math.pow(Math.pow(Math.abs(cs), pp) + Math.pow(Math.abs(sn), pp), -1 / pp) : 1 / Math.max(Math.abs(cs), Math.abs(sn));
+        t ? ctx.lineTo(P.X(r * cs), P.Y(r * sn)) : ctx.moveTo(P.X(r * cs), P.Y(r * sn));
+      }
+      ctx.stroke(); ctx.setLineDash([]);
+    };
+    curve(1, c.faint, [3, 3], 1); curve(2, c.faint, [3, 3], 1); curve(Infinity, c.faint, [3, 3], 1);
+    curve(q, c.c1, [], 2.5);
+    ctx.strokeStyle = c.line; ctx.beginPath(); ctx.moveTo(P.X(-1.4), P.Y(0)); ctx.lineTo(P.X(1.4), P.Y(0)); ctx.moveTo(P.X(0), P.Y(-1.4)); ctx.lineTo(P.X(0), P.Y(1.4)); ctx.stroke();
+    a.info.textContent = 'p = ' + a.fmt(q, 2) + '（実線）　点線は p = 1（マンハッタン：ひし形）、p = 2（ユークリッド：円）、p = ∞（チェビシェフ：正方形）　点 (1,1) までの距離 = ' + a.fmt(Math.pow(2, 1 / q), 4);
+  });
+
   // ---------- 第2章 ----------
   // mgf-curve: { family: poisson|binom|norm|expon, lambda, n, p, mu, sigma, rate } M(t) と t=0 の接線
   reg('mgf-curve', function (a, p, c) {

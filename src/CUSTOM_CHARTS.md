@@ -50,3 +50,4 @@
 | mahalanobis-contour | マハラノビス距離の楕円とユークリッド距離の円 | rho(0.7), sx(1), sy(1) |
 | knn-boundary | k近傍法の判別領域 | k(5), n(60) |
 | svm-margin | マージン最大の分離直線とサポートベクトル | gap(1：負で重なる), n(30) |
+| minkowski-ball | ミンコフスキー距離の単位円 | p(2) |

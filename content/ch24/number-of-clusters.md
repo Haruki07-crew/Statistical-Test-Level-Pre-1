@@ -3,11 +3,11 @@ id: number-of-clusters
 title: クラスター数の決め方
 reading: くらすたーすうのきめかた
 en: Choosing the number of clusters
-aliases: [エルボー法, シルエット係数, シルエット分析, ギャップ統計量]
+aliases: [クラスター数のエルボー法, シルエット係数, シルエット分析, ギャップ統計量]
 chapter: 24
 importance: B
 tags: [クラスター分析, モデル選択, 評価指標]
-related: [k-means-method, dendrogram, ward-method, non-hierarchical-clustering, scree-plot, information-criteria]
+related: [k-means-method, dendrogram, ward-method, non-hierarchical-clustering, scree-plot, bic]
 charts:
   - type: custom
     id: line-data
