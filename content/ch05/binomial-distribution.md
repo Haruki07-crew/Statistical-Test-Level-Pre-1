@@ -3,7 +3,7 @@ id: binomial-distribution
 title: 二項分布
 reading: にこうぶんぷ
 en: Binomial distribution
-aliases: [Bin]
+aliases: [Bin, "Bin(n, p)", Binomial distribution]
 chapter: 5
 importance: A
 tags: [離散型分布, 再生性, 正規近似, ポアソン近似]

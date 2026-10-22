@@ -165,39 +165,39 @@ chapters:
   - id: bernoulli-distribution
     title: ベルヌーイ試行・ベルヌーイ分布
     importance: A
-    status: planned
+    status: verified
   - id: binomial-distribution
     title: 二項分布
     importance: A
-    status: planned
+    status: verified
   - id: hypergeometric-distribution
     title: 超幾何分布
     importance: A
-    status: planned
+    status: verified
   - id: finite-population-correction
     title: 有限母集団修正
     importance: B
-    status: planned
+    status: verified
   - id: fisher-exact-test
     title: フィッシャーの正確検定
     importance: B
-    status: planned
+    status: verified
   - id: poisson-distribution
     title: ポアソン分布
     importance: A
-    status: planned
+    status: verified
   - id: geometric-distribution
     title: 幾何分布と無記憶性
     importance: A
-    status: planned
+    status: verified
   - id: negative-binomial-distribution
     title: 負の二項分布
     importance: A
-    status: planned
+    status: verified
   - id: multinomial-distribution
     title: 多項分布
     importance: A
-    status: planned
+    status: verified
 - 'no': 6
   title: 連続型分布と標本分布
   terms:
