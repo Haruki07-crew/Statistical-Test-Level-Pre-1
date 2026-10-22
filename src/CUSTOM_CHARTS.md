@@ -37,3 +37,5 @@
 | inverse-transform | 逆関数法 | dist（連続分布名）, n(1000), その分布のパラメータ（例 rate: 1） |
 | rejection-sampling | 棄却法（ベータ分布） | a(2), b(5), n(600) |
 | bootstrap-hist | ブートストラップ分布 | n(20), B(1000), stat: mean\|median |
+| obs-exp-bar | 観測度数と期待度数の棒、カイ二乗適合度 | labels, observed: [...], expected: [...], ddof（推定した母数の数, 0） |
+| ks-ecdf | 経験分布関数と理論分布、KS統計量 | data: [...], dist（連続分布名）, その分布のパラメータ |

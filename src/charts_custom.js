@@ -71,6 +71,38 @@
     a.chart('', { data: { datasets: ds }, options: opts(a, c, { legend: ds.length > 1, ymin: p.ymin != null ? p.ymin : null, xTitle: p.xlabel, yTitle: p.ylabel }) });
   });
 
+  // ---------- 第12章 ----------
+  // obs-exp-bar: { labels, observed, expected, ddof } 観測度数と期待度数、カイ二乗適合度
+  reg('obs-exp-bar', function (a, p, c) {
+    var O = (p.observed || []).map(Number), E = (p.expected || []).map(Number), L = p.labels || O.map(function (_, i) { return String(i + 1); });
+    var contrib = O.map(function (o, i) { return Math.pow(o - E[i], 2) / E[i]; }), chi = contrib.reduce(function (s, v) { return s + v; }, 0);
+    var df = O.length - 1 - num(p.ddof, 0), pv = df > 0 ? 1 - Dist.cdf('chi2', chi, { df: df }) : NaN;
+    var ds = [barDs('観測度数 O', O, c, { barPercentage: 0.8, categoryPercentage: 0.8 }),
+      barDs('期待度数 E', E, c, { backgroundColor: c.fill2, borderColor: c.c2, barPercentage: 0.8, categoryPercentage: 0.8 })];
+    a.chart('', { data: { labels: L, datasets: ds }, options: opts(a, c, { xType: 'category', legend: true, yTitle: '度数' }) });
+    a.info.textContent = '各セルの (O−E)²/E = ' + contrib.map(function (v) { return a.fmt(v, 3); }).join(', ') + '　χ² = ' + a.fmt(chi, 3) + '（自由度 ' + df + '，p値 = ' + a.fmt(pv) + '）';
+  });
+  // ks-ecdf: { data: [...], dist, その分布のパラメータ } 経験分布関数と理論分布、KS統計量
+  reg('ks-ecdf', function (a, p, c) {
+    var dn = p.dist || 'norm', q = distParams(dn, p), x = sorted((p.data || []).map(Number)), n = x.length;
+    if (!n) { a.info.textContent = 'data がありません'; return; }
+    var D = 0, at = x[0], yl = 0, yh = 0;
+    x.forEach(function (v, i) {
+      var F = Dist.cdf(dn, v, q), d1 = (i + 1) / n - F, d2 = F - i / n;
+      if (d1 > D) { D = d1; at = v; yl = F; yh = (i + 1) / n; }
+      if (d2 > D) { D = d2; at = v; yl = i / n; yh = F; }
+    });
+    var lo = Math.min(x[0], Dist.quantile(dn, 0.005, q)), hi = Math.max(x[n - 1], Dist.quantile(dn, 0.995, q)), xs = a.linspace(lo, hi, 241);
+    var step = [{ x: lo, y: 0 }]; x.forEach(function (v, i) { step.push({ x: v, y: i / n }, { x: v, y: (i + 1) / n }); }); step.push({ x: hi, y: 1 });
+    a.chart('', { data: { datasets: [a.lineDs('経験分布関数 Fn(x)', step, c.c1), a.lineDs('理論の F(x)', pts(xs, xs.map(function (v) { return Dist.cdf(dn, v, q); })), c.c2, { borderDash: [6, 4] }),
+      a.lineDs('最大のずれ D', [{ x: at, y: yl }, { x: at, y: yh }], c.fg, { borderWidth: 3 })] },
+    options: opts(a, c, { legend: true, xmin: lo, xmax: hi, ymax: 1, xTitle: 'x' }) });
+    // 漸近分布（スティーブンスの補正付き）による p 値の近似
+    var t = (Math.sqrt(n) + 0.12 + 0.11 / Math.sqrt(n)) * D, pv = 0;
+    for (var k = 1; k < 100; k++) pv += 2 * Math.pow(-1, k - 1) * Math.exp(-2 * k * k * t * t);
+    a.info.textContent = 'D = ' + a.fmt(D) + '（x = ' + a.fmt(at) + ' で最大）　n = ' + n + '　p値 ≈ ' + a.fmt(Math.min(1, Math.max(0, pv))) + '（漸近近似）';
+  });
+
   // ---------- 第2章 ----------
   // mgf-curve: { family: poisson|binom|norm|expon, lambda, n, p, mu, sigma, rate } M(t) と t=0 の接線
   reg('mgf-curve', function (a, p, c) {
