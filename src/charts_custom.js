@@ -969,6 +969,25 @@
     a.info.textContent = info + '　95%信用区間 [' + a.fmt(ci[0]) + ', ' + a.fmt(ci[1]) + ']';
   });
 
+  // credible-hpd: { dist: beta|gamma, a, b（beta）／shape, rate（gamma）, level } 等裾区間と HPD 区間
+  reg('credible-hpd', function (a, p, c) {
+    var dn = p.dist === 'gamma' ? 'gamma' : 'beta', lv = num(p.level, 0.95);
+    var q = dn === 'beta' ? { a: num(p.a, 16), b: num(p.b, 8) } : { shape: num(p.shape, 23), scale: 1 / num(p.rate, 6) };
+    var et = [Dist.quantile(dn, (1 - lv) / 2, q), Dist.quantile(dn, (1 + lv) / 2, q)], best = null;
+    for (var i = 0; i <= 400; i++) {
+      var pl = (1 - lv) * i / 400, l = Dist.quantile(dn, pl, q), u = Dist.quantile(dn, pl + lv, q);
+      if (isFinite(l) && isFinite(u) && (!best || u - l < best[1] - best[0])) best = [l, u];
+    }
+    var r = dn === 'beta' ? [0, 1] : [0, Dist.quantile(dn, 0.999, q)], xs = a.linspace(r[0] + 1e-6, r[1] - (dn === 'beta' ? 1e-6 : 0), 301), f = xs.map(function (x) { return Dist.pdf(dn, x, q); });
+    var cap = Math.max.apply(null, f.filter(isFinite)) * 1.1;
+    var band = function (iv) { return pts(xs, xs.map(function (x, k) { return x >= iv[0] && x <= iv[1] ? f[k] : null; })); };
+    a.chart('', { data: { datasets: [a.lineDs('事後密度', pts(xs, f), c.c1),
+      a.lineDs('HPD 区間', band(best), c.c1, { fill: 'origin', backgroundColor: c.fill, borderWidth: 0 }),
+      a.lineDs('等裾区間の端', [{ x: et[0], y: 0 }, { x: et[0], y: cap }, { x: NaN, y: NaN }, { x: et[1], y: cap }, { x: et[1], y: 0 }], c.c2, { borderDash: [5, 4], borderWidth: 1.5 })] },
+    options: opts(a, c, { legend: true, xmin: r[0], xmax: r[1], ymax: cap, xTitle: 'パラメータ' }) });
+    a.info.textContent = Math.round(lv * 100) + '% 等裾区間 [' + a.fmt(et[0]) + ', ' + a.fmt(et[1]) + ']（幅 ' + a.fmt(et[1] - et[0]) + '）　HPD 区間 [' + a.fmt(best[0]) + ', ' + a.fmt(best[1]) + ']（幅 ' + a.fmt(best[1] - best[0]) + '、両端の密度がそろう）';
+  });
+
   // ---------- 第32章 ----------
   // mcmc-trace: { target: norm|normmix, step, iters, burnin } ランダムウォーク型メトロポリス法
   reg('mcmc-trace', function (a, p, c) {

@@ -14,7 +14,7 @@ charts:
     params: { p: 0.785, n: 2000, paths: 5 }
     sliders:
       - { param: n, label: "乱数の個数 n", min: 100, max: 10000, step: 100 }
-      - { param: paths, label: "試行の本数", min: 1, max: 10, step: 1 }
+      - { param: paths, label: "試行の本数", min: 1, max: 5, step: 1 }
     caption: 単位正方形に点を打ち、四分円に入った割合（π/4 ≈ 0.785 の推定値）の推移を5回分描いたもの。どの線も 0.785 に近づくが、ぶれ幅は 1/√n の速さでしか小さくならない。
 ---
 

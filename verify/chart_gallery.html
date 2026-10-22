@@ -1884,11 +1884,11 @@ body{overflow:auto} .g{display:grid;grid-template-columns:1fr 1fr;gap:12px;paddi
     var deg = Math.round(num(p.degree, 3)), noise = num(p.noise, 0.3), n = Math.round(num(p.n, 20)), rand = a.rand, z = a.normal;
     var f = function (x) { return Math.sin(Math.PI * x); };
     var design = function (x, d) { var r = []; for (var k = 0; k <= d; k++) r.push(Math.pow(x, k)); return r; };
-    var tx = a.linspace(-1, 1, 101), tr = [], te = [], fits = [];
-    for (var d = 1; d <= 9; d++) { tr.push(0); te.push(0); }
+    var tx = a.linspace(-1, 1, 101), tr = [], te = [], fits = [], D = Math.min(12, Math.max(9, deg));
+    for (var d = 1; d <= D; d++) { tr.push(0); te.push(0); }
     for (var rep = 0; rep < 20; rep++) {
       var xs = [], ys = []; for (var i = 0; i < n; i++) { var x = 2 * rand() - 1; xs.push(x); ys.push(f(x) + noise * z()); }
-      for (d = 1; d <= 9; d++) {
+      for (d = 1; d <= D; d++) {
         var b = lsq(xs.map(function (x) { return design(x, d); }), ys, 1e-9);
         var pr = function (x) { return design(x, d).reduce(function (s, v, k) { return s + v * b[k]; }, 0); };
         tr[d - 1] += mean(xs.map(function (x, i) { return Math.pow(ys[i] - pr(x), 2); })) / 20;
@@ -1899,9 +1899,9 @@ body{overflow:auto} .g{display:grid;grid-template-columns:1fr 1fr;gap:12px;paddi
     var ds = fits.map(function (fp) { return a.lineDs('', fp, c.fill, { borderWidth: 1, borderColor: c.c3 }); });
     ds.push(a.lineDs('真の関数', pts(tx, tx.map(f)), c.c2, { borderWidth: 2.5 }));
     a.chart('short', { data: { datasets: ds }, options: opts(a, c, { ymin: -2, ymax: 2, xmin: -1, xmax: 1, xTitle: 'x（' + deg + '次多項式を8つのデータセットに当てはめ）' }) });
-    var ks = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    var ks = []; for (d = 1; d <= D; d++) ks.push(d);
     a.chart('short', { data: { datasets: [a.lineDs('訓練誤差', pts(ks, tr), c.c1, { pointRadius: 3 }), a.lineDs('テスト誤差（期待予測誤差）', pts(ks, te), c.c2, { pointRadius: 3 })] },
-      options: opts(a, c, { legend: true, xmin: 1, xmax: 9, ymax: Math.min(1.5, Math.max.apply(null, te) * 1.1), xTitle: '多項式の次数' }) });
+      options: opts(a, c, { legend: true, xmin: 1, xmax: D, ymax: Math.min(1.5, Math.max.apply(null, te) * 1.1), xTitle: '多項式の次数' }) });
     a.info.textContent = '次数を上げると訓練誤差は下がり続けるが、テスト誤差は途中から上がる（過学習）。最小は ' + (te.indexOf(Math.min.apply(null, te)) + 1) + ' 次';
   });
 
@@ -2160,6 +2160,25 @@ body{overflow:auto} .g{display:grid;grid-template-columns:1fr 1fr;gap:12px;paddi
     a.info.textContent = info + '　95%信用区間 [' + a.fmt(ci[0]) + ', ' + a.fmt(ci[1]) + ']';
   });
 
+  // credible-hpd: { dist: beta|gamma, a, b（beta）／shape, rate（gamma）, level } 等裾区間と HPD 区間
+  reg('credible-hpd', function (a, p, c) {
+    var dn = p.dist === 'gamma' ? 'gamma' : 'beta', lv = num(p.level, 0.95);
+    var q = dn === 'beta' ? { a: num(p.a, 16), b: num(p.b, 8) } : { shape: num(p.shape, 23), scale: 1 / num(p.rate, 6) };
+    var et = [Dist.quantile(dn, (1 - lv) / 2, q), Dist.quantile(dn, (1 + lv) / 2, q)], best = null;
+    for (var i = 0; i <= 400; i++) {
+      var pl = (1 - lv) * i / 400, l = Dist.quantile(dn, pl, q), u = Dist.quantile(dn, pl + lv, q);
+      if (isFinite(l) && isFinite(u) && (!best || u - l < best[1] - best[0])) best = [l, u];
+    }
+    var r = dn === 'beta' ? [0, 1] : [0, Dist.quantile(dn, 0.999, q)], xs = a.linspace(r[0] + 1e-6, r[1] - (dn === 'beta' ? 1e-6 : 0), 301), f = xs.map(function (x) { return Dist.pdf(dn, x, q); });
+    var cap = Math.max.apply(null, f.filter(isFinite)) * 1.1;
+    var band = function (iv) { return pts(xs, xs.map(function (x, k) { return x >= iv[0] && x <= iv[1] ? f[k] : null; })); };
+    a.chart('', { data: { datasets: [a.lineDs('事後密度', pts(xs, f), c.c1),
+      a.lineDs('HPD 区間', band(best), c.c1, { fill: 'origin', backgroundColor: c.fill, borderWidth: 0 }),
+      a.lineDs('等裾区間の端', [{ x: et[0], y: 0 }, { x: et[0], y: cap }, { x: NaN, y: NaN }, { x: et[1], y: cap }, { x: et[1], y: 0 }], c.c2, { borderDash: [5, 4], borderWidth: 1.5 })] },
+    options: opts(a, c, { legend: true, xmin: r[0], xmax: r[1], ymax: cap, xTitle: 'パラメータ' }) });
+    a.info.textContent = Math.round(lv * 100) + '% 等裾区間 [' + a.fmt(et[0]) + ', ' + a.fmt(et[1]) + ']（幅 ' + a.fmt(et[1] - et[0]) + '）　HPD 区間 [' + a.fmt(best[0]) + ', ' + a.fmt(best[1]) + ']（幅 ' + a.fmt(best[1] - best[0]) + '、両端の密度がそろう）';
+  });
+
   // ---------- 第32章 ----------
   // mcmc-trace: { target: norm|normmix, step, iters, burnin } ランダムウォーク型メトロポリス法
   reg('mcmc-trace', function (a, p, c) {
@@ -2213,8 +2232,8 @@ body{overflow:auto} .g{display:grid;grid-template-columns:1fr 1fr;gap:12px;paddi
 </script><script>
 window.onerror=function(m){document.getElementById('err').textContent+=m+'\n'};
 var origErr=console.error;console.error=function(e){document.getElementById('err').textContent+='ERR '+(e&&e.message||e)+'\n';origErr.apply(console,arguments)};
-[['bayes-area',{}],['joint-marginal',{}],['mean-inequality',{}],['bar-data',{labels:['PC1','PC2','PC3','PC4'],values:[2.5,0.9,0.4,0.2],cumulative:true}],['line-data',{x:[1,2,3,4],series:[{label:'a',y:[1,3,2,4]}]}],['obs-exp-bar',{}],['ks-ecdf',{}],['studentized-range',{}],['points-2d',{points:[{label:'国語',x:0.8,y:0.4},{label:'数学',x:0.7,y:-0.6}],arrows:1,circle:1,xlabel:'PC1',ylabel:'PC2'}],['graph-diagram',{nodes:['X1','X2','X3','X4'],edges:[[0,1],[1,2],[2,3],[0,2]]}],['graph-network',{}],['discriminant-boundary',{}],['fisher-projection',{}],['mahalanobis-contour',{}],['knn-boundary',{}],['svm-margin',{}],['minkowski-ball',{}],['rotation-angle',{}],['missing-scatter',{}],['mgf-curve',{}],['logistic-curve',{}],['box-cox',{}],['clt-sim',{}],['lln-path',{}],['ci-coverage',{}],['power-curve',{}],['markov-chain',{}],['poisson-process',{}],['random-walk',{lower:-10,upper:10,start:0}],['regression-residual',{outlier:-6}],['residual-pattern',{}],['dw-sim',{}],['iv-scatter',{}],['qq-plot',{}],['ridge-lasso-path',{}],['bias-variance',{}],['pca-axes',{}],['dendrogram',{}],['kmeans-steps',{}],['roc-curve',{}],['acf-plot',{pacf:1}],['ar-sim',{}],['mosaic',{}],['km-curve',{groups:2}],['prior-posterior',{}],['mcmc-trace',{}],['inverse-transform',{}],['rejection-sampling',{}],['bootstrap-hist',{}]].forEach(function(it){var d=document.createElement('div');d.innerHTML='<h3>'+it[0]+'</h3>';document.getElementById('g').appendChild(d);
+[['bayes-area',{}],['joint-marginal',{}],['mean-inequality',{}],['bar-data',{labels:['PC1','PC2','PC3','PC4'],values:[2.5,0.9,0.4,0.2],cumulative:true}],['line-data',{x:[1,2,3,4],series:[{label:'a',y:[1,3,2,4]}]}],['obs-exp-bar',{}],['ks-ecdf',{}],['studentized-range',{}],['points-2d',{points:[{label:'国語',x:0.8,y:0.4},{label:'数学',x:0.7,y:-0.6}],arrows:1,circle:1,xlabel:'PC1',ylabel:'PC2'}],['graph-diagram',{nodes:['X1','X2','X3','X4'],edges:[[0,1],[1,2],[2,3],[0,2]]}],['graph-network',{}],['discriminant-boundary',{}],['fisher-projection',{}],['mahalanobis-contour',{}],['knn-boundary',{}],['svm-margin',{}],['minkowski-ball',{}],['rotation-angle',{}],['missing-scatter',{}],['mgf-curve',{}],['logistic-curve',{}],['box-cox',{}],['clt-sim',{}],['lln-path',{}],['ci-coverage',{}],['power-curve',{}],['markov-chain',{}],['poisson-process',{}],['random-walk',{lower:-10,upper:10,start:0}],['regression-residual',{outlier:-6}],['residual-pattern',{}],['dw-sim',{}],['iv-scatter',{}],['qq-plot',{}],['ridge-lasso-path',{}],['bias-variance',{}],['pca-axes',{}],['dendrogram',{}],['kmeans-steps',{}],['roc-curve',{}],['acf-plot',{pacf:1}],['ar-sim',{}],['mosaic',{}],['km-curve',{groups:2}],['prior-posterior',{}],['credible-hpd',{}],['mcmc-trace',{}],['inverse-transform',{}],['rejection-sampling',{}],['bootstrap-hist',{}]].forEach(function(it){var d=document.createElement('div');d.innerHTML='<h3>'+it[0]+'</h3>';document.getElementById('g').appendChild(d);
 Charts.render(d,{type:'custom',id:it[0],params:it[1],caption:it[0]});
 var m=d.querySelector('.chart-missing');if(m)document.getElementById('err').textContent+=it[0]+': '+m.textContent+'\n';});
-document.getElementById('err').textContent+='done '+49+'\n';
+document.getElementById('err').textContent+='done '+50+'\n';
 </script></body></html>

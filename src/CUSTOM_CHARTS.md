@@ -56,3 +56,4 @@
 
 補足：points-2d は points の各要素に group を付けるか、ラベルの先頭を「[行]」「[列]」のように書くと、種類ごとに色が変わる。
 | missing-scatter | 欠測メカニズム（MCAR/MAR/MNAR）と観測値だけの平均の偏り | mechanism: mcar\|mar\|mnar, rho(0.6), n(200) |
+| credible-hpd | 等裾の信用区間と HPD 区間の比較 | dist: beta\|gamma, a, b（beta）または shape, rate（gamma）, level(0.95) |

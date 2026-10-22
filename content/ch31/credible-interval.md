@@ -22,6 +22,13 @@ charts:
     sliders:
       - { param: n, label: "標本サイズ n", min: 1, max: 100, step: 1 }
     caption: 事後分布が正規分布なら左右対称なので、等裾信用区間とHPD区間は一致し、μₙ ± 1.96τₙ になる。
+  - type: custom
+    id: credible-hpd
+    params: { dist: beta, a: 16, b: 8, level: 0.95 }
+    sliders:
+      - { param: a, label: "a（事後分布 Be(a, b)）", min: 1, max: 40, step: 1 }
+      - { param: b, label: "b", min: 1, max: 40, step: 1 }
+    caption: 塗った範囲が HPD 区間、点線が等裾区間の両端。初期値は Be(16, 8)。a と b の差を大きくして分布を歪めるほど、2つの区間のずれと幅の差が大きくなる。
 ---
 
 ## 一言でいうと
