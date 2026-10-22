@@ -53,3 +53,5 @@
 | minkowski-ball | ミンコフスキー距離の単位円 | p(2) |
 | graph-network | graph-diagram と同じ（edgeLabels で辺のラベル、layout: line\|circle\|triangle） | nodes, edges, edgeLabels, directed, layout |
 | rotation-angle | 因子負荷量を固定して座標軸を回す（バリマックス基準を表示） | loadings: [[a,b],...], labels, angle(0, 度) |
+
+補足：points-2d は points の各要素に group を付けるか、ラベルの先頭を「[行]」「[列]」のように書くと、種類ごとに色が変わる。

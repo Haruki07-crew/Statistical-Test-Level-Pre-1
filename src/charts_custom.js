@@ -148,10 +148,12 @@
     [-lim, -lim / 2, lim / 2, lim].forEach(function (v) { ctx.fillText(a.fmt(v, 2), cx - 4, Y(v)); });
     if (p.circle) { ctx.strokeStyle = c.faint; ctx.setLineDash([4, 4]); ctx.beginPath(); ctx.arc(cx, cy, S, 0, 2 * Math.PI); ctx.stroke(); ctx.setLineDash([]); }
     ctx.font = '12px ' + c.font;
-    var boxes = [];
+    var boxes = [], groups = [], pal = [c.c1, c.c2, c.c3, c.muted];
+    // 点の種類（q.group か、ラベル先頭の [行] などの印）ごとに色を変える
+    var grp = function (q) { var m = /^\[(.+?)\]/.exec(String(q.label || '')); var g = q.group != null ? String(q.group) : (m ? m[1] : ''); if (groups.indexOf(g) < 0) groups.push(g); return groups.indexOf(g); };
     P.forEach(function (q, i) {
-      var x = X(xs[i]), y = Y(ys[i]);
-      ctx.strokeStyle = c.c1; ctx.fillStyle = c.c1; ctx.lineWidth = 1.6;
+      var x = X(xs[i]), y = Y(ys[i]), col = pal[grp(q) % 4];
+      ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = 1.6;
       if (p.arrows) drawArrow(ctx, cx, cy, x, y, 8);
       else { ctx.beginPath(); ctx.arc(x, y, 4, 0, 2 * Math.PI); ctx.fill(); }
     });
