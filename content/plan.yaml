@@ -1407,51 +1407,51 @@ chapters:
   - id: linear-discriminant-analysis
     title: 線形判別分析
     importance: A
-    status: planned
+    status: verified
   - id: fisher-linear-discriminant-function
     title: フィッシャーの線形判別関数
     importance: A
-    status: planned
+    status: verified
   - id: mahalanobis-distance
     title: マハラノビス距離
     importance: A
-    status: planned
+    status: verified
   - id: quadratic-discriminant-analysis
     title: 二次判別分析
     importance: B
-    status: planned
+    status: verified
   - id: bayes-discriminant-rule
     title: ベイズ判別ルール
     importance: A
-    status: planned
+    status: verified
   - id: misclassification-rate
     title: 誤判別率
     importance: A
-    status: planned
+    status: verified
   - id: confusion-matrix
     title: 混同行列
     importance: A
-    status: planned
+    status: verified
   - id: sensitivity-and-specificity
     title: 感度と特異度
     importance: A
-    status: planned
+    status: verified
   - id: roc-curve-and-auc
     title: ROC曲線とAUC
     importance: A
-    status: planned
+    status: verified
   - id: precision-recall-f-measure
     title: 適合率・再現率・F値
     importance: B
-    status: planned
+    status: verified
   - id: k-nearest-neighbors
     title: k近傍法
     importance: B
-    status: planned
+    status: verified
   - id: support-vector-machine
     title: サポートベクターマシン
     importance: B
-    status: planned
+    status: verified
   - id: kernel-method
     title: カーネル法
     importance: C
