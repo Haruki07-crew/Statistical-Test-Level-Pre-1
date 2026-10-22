@@ -4,7 +4,7 @@
   var Charts = root.Charts, Dist = root.Dist;
   // 乱数を使う図には「もう一度」ボタンを付ける
   var RANDOM = ['clt-sim', 'lln-path', 'ci-coverage', 'poisson-process', 'random-walk', 'regression-residual', 'qq-plot', 'bias-variance',
-    'pca-axes', 'dendrogram', 'kmeans-steps', 'acf-plot', 'ar-sim', 'km-curve', 'mcmc-trace', 'inverse-transform', 'rejection-sampling', 'bootstrap-hist'];
+    'pca-axes', 'dendrogram', 'residual-pattern', 'dw-sim', 'kmeans-steps', 'acf-plot', 'ar-sim', 'km-curve', 'mcmc-trace', 'inverse-transform', 'rejection-sampling', 'bootstrap-hist'];
   function reg(id, fn) { Charts.registerCustom(id, fn, RANDOM.indexOf(id) >= 0); }
 
   // ---------- 小さな道具 ----------
@@ -305,6 +305,35 @@
     ];
     a.chart('tall', { data: { datasets: ds }, options: opts(a, c, { legend: true, ymin: null, xmin: 0, xmax: 17, xTitle: 'x', yTitle: 'y' }) });
     a.info.textContent = '右端の点：てこ比 h = ' + a.fmt(h[n - 1], 3) + '（平均 2/n = ' + a.fmt(2 / n, 3) + '）　クックの距離 D = ' + a.fmt(cook[n - 1], 3) + '　傾き ' + a.fmt(bh[1], 3) + '（除くと ' + a.fmt(bh2[1], 3) + '）';
+  });
+  // residual-pattern: { pattern: none|funnel|curve|autocorr, strength, n } 残差 対 予測値のプロット
+  reg('residual-pattern', function (a, p, c) {
+    var pat = p.pattern || 'none', k = num(p.strength, 1), n = Math.round(num(p.n, 80)), xs = [], ys = [], e = 0;
+    for (var i = 0; i < n; i++) {
+      var x = 10 * (i + 0.5) / n, z = a.normal(), err;
+      if (pat === 'funnel') err = z * (0.3 + k * 0.25 * x);
+      else if (pat === 'autocorr') { e = Math.min(0.95, 0.3 * k) * e + z; err = e; }
+      else err = z;
+      var y = 2 + 1.5 * x + err + (pat === 'curve' ? k * 0.15 * Math.pow(x - 5, 2) : 0);
+      xs.push(x); ys.push(y);
+    }
+    var b = lsq(xs.map(function (x) { return [1, x]; }), ys), fit = xs.map(function (x) { return b[0] + b[1] * x; }), res = ys.map(function (y, i) { return y - fit[i]; });
+    var fmin = Math.min.apply(null, fit), fmax = Math.max.apply(null, fit);
+    a.chart('', { data: { datasets: [{ type: 'scatter', label: '残差', data: pts(fit, res), backgroundColor: c.c1, pointRadius: 3 }, a.lineDs('0', [{ x: fmin, y: 0 }, { x: fmax, y: 0 }], c.c2, { borderDash: [5, 4] })] },
+      options: opts(a, c, { ymin: null, xmin: fmin, xmax: fmax, xTitle: '予測値 ŷ', yTitle: '残差 e' }) });
+    a.info.textContent = { none: '問題なし：0のまわりに一様な帯', funnel: '不均一分散：予測値が大きいほど残差が広がる（漏斗形）', curve: '非線形性：残差がU字を描く（2次の項などが必要）', autocorr: '系列相関：隣り合う残差が同じ符号になりやすい（並びの順に見る）' }[pat] || '';
+  });
+  // dw-sim: { phi, n } AR(1) 誤差をもつ回帰の残差とダービン・ワトソン比
+  reg('dw-sim', function (a, p, c) {
+    var phi = num(p.phi, 0.5), n = Math.round(num(p.n, 30)), e = 0, ts = [], ys = [];
+    for (var t = 1; t <= n; t++) { e = phi * e + a.normal(); ts.push(t); ys.push(1 + 0.5 * t + e); }
+    var b = lsq(ts.map(function (t) { return [1, t]; }), ys), r = ys.map(function (y, i) { return y - b[0] - b[1] * ts[i]; });
+    var num1 = 0, den = 0, c1 = 0;
+    for (var i = 0; i < n; i++) { den += r[i] * r[i]; if (i) { num1 += Math.pow(r[i] - r[i - 1], 2); c1 += r[i] * r[i - 1]; } }
+    var d = num1 / den, r1 = c1 / den;
+    a.chart('', { data: { datasets: [a.lineDs('残差（時間順）', pts(ts, r), c.c1, { pointRadius: 2.5 }), a.lineDs('0', [{ x: 1, y: 0 }, { x: n, y: 0 }], c.c2, { borderDash: [5, 4] })] },
+      options: opts(a, c, { ymin: null, xmin: 1, xmax: n, xTitle: '時点 t', yTitle: '残差' }) });
+    a.info.textContent = 'ダービン・ワトソン比 d = ' + a.fmt(d, 3) + '　残差のラグ1自己相関 r₁ = ' + a.fmt(r1, 3) + '　2(1−r₁) = ' + a.fmt(2 * (1 - r1), 3) + '（φ = ' + a.fmt(phi) + '）';
   });
   // qq-plot: { dist: norm|t|expon|unif, n, df } 正規Q-Qプロット
   reg('qq-plot', function (a, p, c) {

@@ -39,3 +39,5 @@
 | bootstrap-hist | ブートストラップ分布 | n(20), B(1000), stat: mean\|median |
 | obs-exp-bar | 観測度数と期待度数の棒、カイ二乗適合度 | labels, observed: [...], expected: [...], ddof（推定した母数の数, 0） |
 | ks-ecdf | 経験分布関数と理論分布、KS統計量 | data: [...], dist（連続分布名）, その分布のパラメータ |
+| residual-pattern | 残差 対 予測値のプロット | pattern: none\|funnel\|curve\|autocorr, strength(1), n(80) |
+| dw-sim | AR(1)誤差の回帰残差とダービン・ワトソン比 | phi(0.5), n(30) |
