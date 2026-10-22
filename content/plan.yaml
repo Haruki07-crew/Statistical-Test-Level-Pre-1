@@ -279,23 +279,23 @@ chapters:
   - id: markov-inequality
     title: マルコフの不等式
     importance: B
-    status: planned
+    status: verified
   - id: chebyshev-inequality
     title: チェビシェフの不等式
     importance: A
-    status: planned
+    status: verified
   - id: convergence-in-probability
     title: 確率収束
     importance: A
-    status: planned
+    status: verified
   - id: almost-sure-convergence
     title: 概収束
     importance: B
-    status: planned
+    status: verified
   - id: convergence-in-distribution
     title: 分布収束
     importance: A
-    status: planned
+    status: verified
   - id: convergence-in-mean-square
     title: 平均二乗収束
     importance: C
@@ -303,35 +303,35 @@ chapters:
   - id: weak-law-of-large-numbers
     title: 大数の弱法則
     importance: A
-    status: planned
+    status: verified
   - id: strong-law-of-large-numbers
     title: 大数の強法則
     importance: B
-    status: planned
+    status: verified
   - id: central-limit-theorem
     title: 中心極限定理
     importance: A
-    status: planned
+    status: verified
   - id: slutsky-theorem
     title: スラツキーの定理
     importance: A
-    status: planned
+    status: verified
   - id: continuous-mapping-theorem
     title: 連続写像定理
     importance: B
-    status: planned
+    status: verified
   - id: delta-method
     title: デルタ法
     importance: A
-    status: planned
+    status: verified
   - id: continuity-correction
     title: 連続修正
     importance: A
-    status: planned
+    status: verified
   - id: law-of-small-numbers
     title: 少数の法則
     importance: B
-    status: planned
+    status: verified
   - id: lindeberg-levy-clt
     title: リンデバーグ・レヴィの中心極限定理
     importance: C

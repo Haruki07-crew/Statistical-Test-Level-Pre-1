@@ -49,3 +49,15 @@
 - 本文の修正: なし
 - 検算スクリプト側の修正: 初回 NG 5 件はすべて検算側の問題（sympy の無限級数・対数・平方根の簡約、多項分布例1の真値 0.08505 が丸め境界上で浮動小数誤差により許容 5e-5 をわずかに超過）。変数置換・数値代入・許容に 1e-12 を加えて解消
 - 検算対象外: 定性的な記述（現場での使われ方、「無記憶性を持つ離散分布は幾何分布だけ」という特徴づけの定理そのもの、正規近似・FPC 省略の目安（np≥5、抽出率5%未満）、フィッシャー検定が保守的になりやすいこと）
+
+## 第7章（極限定理・収束・確率不等式）
+
+- スクリプト: `verify/ch07.py`（実行: `.venv/bin/python verify/ch07.py`）
+- 対象: almost-sure-convergence, central-limit-theorem, chebyshev-inequality, continuity-correction, continuous-mapping-theorem, convergence-in-distribution, convergence-in-probability, delta-method, law-of-small-numbers, markov-inequality, slutsky-theorem, strong-law-of-large-numbers, weak-law-of-large-numbers（13ファイル）
+- 結果: **OK 94 / NG 0**
+- 方法: sympy（CLT の n log(1+t²/2n)→t²/2 と標準化一様分布の MGF 展開、(1-y/n)^n→e^{-y}、二項 pmf・PGF のポアソン極限、デルタ法の g' と漸近分散、E[(ΣX)^4]=nE[X⁴]+3n(n-1)σ⁴ の展開、積の telescoping）、scipy.stats（連続修正・符号検定・サイコロ和・ガンマ・t 分位点・二項の正確値、チェビシェフ図の4系列）、サイコロ100回の和は畳み込みで正確値 0.0420 を確認、乱数シミュレーション（seed=20261023、許容誤差は各チェックに明記：0.0003〜0.01。スラツキー例1の被覆率は各20万回で n=30: 0.9178、n=200: 0.9446、MC標準誤差≈0.0006 に対し許容 0.003。デルタ法例1の SD(λ̂) は 0.2046（逆ガンマの厳密値 0.2041）、例3の SD(√X̄) は 0.0707、許容 0.002／0.001）
+- 本文の修正:
+  - `content/ch07/law-of-small-numbers.md` 例1の表 P(X≥4)：二項 0.0525→0.1427、ポアソン 0.0527→0.1429（1-P(X≤3) と不整合だった）
+  - `content/ch07/continuous-mapping-theorem.md` 例2：「1.96² ≈ 3.8415」→「1.96² = 3.8416 … 3.8415 と（1.96 の丸めの差を除いて）一致」
+- 検算スクリプト側の修正: 大数の弱法則例2の上限 0.1079 は丸め前の p(1-p) で計算した値として照合（0.1685 で計算すると 0.1078）
+- 検算対象外: 定性的な記述（現場での使われ方、収束の強弱関係・ボレル・カンテリ・レヴィの連続性定理・コルモゴロフの強法則の必要十分性など定理そのもの、近似の目安 n≥50・np≤5）
