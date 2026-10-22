@@ -309,7 +309,7 @@ check(T, "Δ = 14.107, 7.636, 0, 1.998", allclose(dl, [14.107, 7.636, 0, 1.998],
 check(T, "exp(−Δ/2) = 0.0009, 0.0220, 1, 0.3683", allclose(ex, [0.0009, 0.0220, 1, 0.3683]), np.round(ex, 5))
 check(T, "合計 1.3911、2次の重み 0.7189", close(ex.sum(), 1.3911) and close(1 / 1.3911, 0.7189), ex.sum())
 check(T, "赤池ウェイト 0.0006, 0.0158, 0.7189, 0.2647", allclose(w, [0.0006, 0.0158, 0.7189, 0.2647]), np.round(w, 5))
-check(T, "証拠比 2次/3次 = 2.715", close(w[2] / w[3], 2.715, 5e-4) and close(0.7189 / 0.2647, 2.715, 5e-4), w[2] / w[3])
+check(T, "証拠比 2次/3次 ≈ 2.72（本文修正後）", close(w[2] / w[3], 2.72, 5e-3) and close(0.7189 / 0.2647, 2.72, 5e-3), (w[2] / w[3], 0.7189 / 0.2647))
 bics = np.array([res[d]["BIC"] for d in D])
 db = bics - bics.min()
 wb = np.exp(-db / 2) / np.exp(-db / 2).sum()

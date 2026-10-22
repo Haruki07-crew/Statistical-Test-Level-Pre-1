@@ -1880,51 +1880,51 @@ chapters:
   - id: model-selection
     title: モデル選択
     importance: B
-    status: planned
+    status: verified
   - id: aic
     title: AIC
     importance: A
-    status: planned
+    status: verified
   - id: bic
     title: BIC
     importance: A
-    status: planned
+    status: verified
   - id: kullback-leibler-divergence
     title: カルバック・ライブラー情報量
     importance: A
-    status: planned
+    status: verified
   - id: expected-log-likelihood
     title: 平均対数尤度
     importance: B
-    status: planned
+    status: verified
   - id: cross-validation
     title: 交差検証法
     importance: A
-    status: planned
+    status: verified
   - id: leave-one-out-cv
     title: 一個抜き交差検証
     importance: B
-    status: planned
+    status: verified
   - id: overfitting
     title: 過学習
     importance: A
-    status: planned
+    status: verified
   - id: bias-variance-tradeoff
     title: バイアス・バリアンスのトレードオフ
     importance: A
-    status: planned
+    status: verified
   - id: mallows-cp
     title: マローズのCp
     importance: A
-    status: planned
+    status: verified
   - id: information-criteria-comparison
     title: 情報量規準によるモデル比較
     importance: B
-    status: planned
+    status: verified
   - id: generalization-error
     title: 汎化誤差
     importance: B
-    status: planned
+    status: verified
   - id: training-test-split
     title: 訓練データとテストデータ
     importance: C
