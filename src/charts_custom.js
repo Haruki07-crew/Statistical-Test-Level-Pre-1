@@ -103,6 +103,36 @@
     a.info.textContent = 'D = ' + a.fmt(D) + '（x = ' + a.fmt(at) + ' で最大）　n = ' + n + '　p値 ≈ ' + a.fmt(Math.min(1, Math.max(0, pv))) + '（漸近近似）';
   });
 
+  // ---------- 第20章 ----------
+  // スチューデント化された範囲 q(k, df) の分布関数（数値積分）
+  function phiFast(x) { var t = 1 / (1 + 0.3275911 * Math.abs(x) / Math.SQRT2), y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x / 2); return x >= 0 ? 0.5 * (1 + y) : 0.5 * (1 - y); }
+  function rangeCdf(w, k) {
+    if (w <= 0) return 0;
+    var n = 160, lo = -8, h = 16 / n, s = 0;
+    for (var i = 0; i <= n; i++) { var z = lo + i * h, v = k * Dist.special.normPdf(z) * Math.pow(Math.max(0, phiFast(z) - phiFast(z - w)), k - 1); s += v * (i === 0 || i === n ? 1 : (i % 2 ? 4 : 2)); }
+    return s * h / 3;
+  }
+  function srangeCdf(q, k, df) {
+    if (q <= 0) return 0;
+    var lc = (df / 2) * Math.log(df) - (df / 2 - 1) * Math.LN2 - Dist.special.lgamma(df / 2), smax = 1 + 10 / Math.sqrt(df), n = 120, h = smax / n, s = 0;
+    for (var i = 1; i <= n; i++) { var x = i * h, g = Math.exp(lc + (df - 1) * Math.log(x) - df * x * x / 2); s += g * rangeCdf(q * x, k) * (i === n ? 1 : (i % 2 ? 4 : 2)); }
+    return Math.min(1, s * h / 3);
+  }
+  Charts._srangeCdf = srangeCdf;
+  // studentized-range: { k, df, alpha } スチューデント化された範囲の分布と上側 α 点
+  reg('studentized-range', function (a, p, c) {
+    var k = Math.max(2, Math.round(num(p.k, 3))), df = Math.max(1, Math.round(num(p.df, 9))), al = num(p.alpha, 0.05);
+    var lo = 0, hi = 12;
+    for (var it = 0; it < 40; it++) { var mid = (lo + hi) / 2; if (srangeCdf(mid, k, df) < 1 - al) lo = mid; else hi = mid; }
+    var qa = (lo + hi) / 2, xmax = Math.max(6, qa * 1.6), xs = a.linspace(0, xmax, 81), F = xs.map(function (x) { return srangeCdf(x, k, df); });
+    var f = xs.map(function (x, i) { var j = Math.min(Math.max(i, 1), xs.length - 2); return i === 0 ? 0 : Math.max(0, (F[j + 1] - F[j - 1]) / (xs[j + 1] - xs[j - 1])); });
+    a.chart('', { data: { datasets: [a.lineDs('q(k, df) の密度', pts(xs, f), c.c1, { tension: 0.3 }),
+      a.lineDs('上側 α', pts(xs, xs.map(function (x, i) { return x >= qa ? f[i] : null; })), c.c2, { fill: 'origin', backgroundColor: c.fill2, borderWidth: 0, tension: 0.3 }),
+      a.lineDs('q_α', [{ x: qa, y: 0 }, { x: qa, y: Math.max.apply(null, f) }], c.c2, { borderDash: [5, 4], borderWidth: 1.5 })] },
+    options: opts(a, c, { legend: true, xmin: 0, xmax: xmax, xTitle: 'q' }) });
+    a.info.textContent = 'k = ' + k + '，自由度 ' + df + ' の上側 ' + a.fmt(al) + ' 点 q = ' + a.fmt(qa, 3) + '（数値積分による値）';
+  });
+
   // ---------- 第2章 ----------
   // mgf-curve: { family: poisson|binom|norm|expon, lambda, n, p, mu, sigma, rate } M(t) と t=0 の接線
   reg('mgf-curve', function (a, p, c) {

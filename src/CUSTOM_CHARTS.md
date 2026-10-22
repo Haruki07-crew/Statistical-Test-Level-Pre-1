@@ -41,3 +41,4 @@
 | ks-ecdf | 経験分布関数と理論分布、KS統計量 | data: [...], dist（連続分布名）, その分布のパラメータ |
 | residual-pattern | 残差 対 予測値のプロット | pattern: none\|funnel\|curve\|autocorr, strength(1), n(80) |
 | dw-sim | AR(1)誤差の回帰残差とダービン・ワトソン比 | phi(0.5), n(30) |
+| studentized-range | スチューデント化された範囲の分布と上側α点 | k(3), df(9), alpha(0.05) |
