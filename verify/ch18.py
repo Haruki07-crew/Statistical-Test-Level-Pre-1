@@ -673,6 +673,94 @@ freq = np.array([(ystar <= -1).mean(), ((ystar > -1) & (ystar <= 1)).mean(), (ys
 check(T, "潜在変数 Y*=0.8x+ε を閾値 −1, 1 で区切ると x=1 の確率（40万回、許容 0.004）", np.all(np.abs(freq - olog(np.array([1.0]))[:, 0]) < 0.004), (r4(freq), r4(olog(np.array([1.0]))[:, 0])))
 check(T, "パラメータ数 (K−1)+p=3 < (K−1)(p+1)=4（K=3,p=1）", (3 - 1) + 1 == 3 and (3 - 1) * 2 == 4, "3<4")
 
+
+# =====================================================================
+# 重要度Cの用語（tobit-model, offset-term）
+# 乱数は seed=20261023+18
+# =====================================================================
+rngC = np.random.default_rng(20261023 + 18)
+
+T = "tobit-model"
+Phi5, phi5 = stats.norm.cdf(.5), stats.norm.pdf(.5)
+check(T, "Φ(0.5)=0.6915、P(y=0)=0.3085、φ(0.5)=0.3521", close(Phi5, .6915) and close(1 - Phi5, .3085) and close(phi5, .3521), (Phi5, phi5))
+Ey = Phi5 * 1 + 2 * phi5
+check(T, "E[y]=1.3956", close(Ey, 1.3956), Ey)
+Eyp = 1 + 2 * phi5 / Phi5
+check(T, "E[y|y>0]=2.0183", close(Eyp, 2.0183), Eyp)
+check(T, "限界効果 0.6915×0.5=0.3457", close(Phi5 * .5, .3457), Phi5 * .5)
+from scipy.integrate import quad as quadC
+Eint = quadC(lambda u: max(u, 0) * stats.norm.pdf(u, 1, 2), -30, 30, points=[0])[0]
+check(T, "E[max(0,Y*)] を数値積分（Y*~N(1,2²)）でも 1.3956", close(Eint, Ey, 1e-8), Eint)
+mu_s, s_s, xb = sp.symbols("mu sigma x", positive=True)
+z_s = mu_s / s_s
+Phi_s = lambda t: (1 + sp.erf(t / sp.sqrt(2))) / 2
+phi_s = lambda t: sp.exp(-t ** 2 / 2) / sp.sqrt(2 * sp.pi)
+EY_s = Phi_s(z_s) * mu_s + s_s * phi_s(z_s)
+check(T, "∂E[y]/∂(xᵀβ)=Φ(z)（sympy）→ 限界効果 Φ(z)β_j", sp.simplify(sp.diff(EY_s, mu_s) - Phi_s(z_s)) == 0, "差=0")
+ys_ = rngC.normal(1, 2, 1_000_000)
+yo = np.maximum(ys_, 0)
+check(T, "乱数 100万点：P(y=0)、E[y]、E[y|y>0]（許容 0.003, 0.006, 0.006）",
+      abs((yo == 0).mean() - .3085) < .003 and abs(yo.mean() - Ey) < .006 and abs(yo[yo > 0].mean() - Eyp) < .006,
+      ((yo == 0).mean(), yo.mean(), yo[yo > 0].mean()))
+# 最尤推定（尤度の式）でパラメータを復元、正の値だけの OLS は 0 方向に偏る
+nT = 5000
+xt = rngC.uniform(-2, 2, nT)
+yst = 0.5 + 1.0 * xt + rngC.normal(0, 1, nT)
+yt = np.maximum(yst, 0)
+
+
+def nll_tobit(th):
+    b0, b1, ls = th
+    sg = np.exp(ls)
+    m = b0 + b1 * xt
+    pos = yt > 0
+    return -(np.sum(stats.norm.logsf(m[~pos] / sg)) + np.sum(stats.norm.logpdf((yt[pos] - m[pos]) / sg) - ls))
+
+
+rT = optimize.minimize(nll_tobit, [0, 0.5, 0], method="Nelder-Mead", options=dict(xatol=1e-8, fatol=1e-10, maxiter=5000))
+check(T, "乱数 n=5000：本文の尤度の最尤推定で (0.5, 1.0, σ=1) を復元（±0.08）", np.all(np.abs(np.r_[rT.x[:2], np.exp(rT.x[2])] - [.5, 1, 1]) < .08), r4(np.r_[rT.x[:2], np.exp(rT.x[2])]))
+pos = yt > 0
+bpos = np.polyfit(xt[pos], yt[pos], 1)[0]
+ball = np.polyfit(xt, yt, 1)[0]
+check(T, "乱数 正の値だけ・0を含めた OLS の傾きはともに 1 より 0 側", 0 < bpos < .9 and 0 < ball < .9, (bpos, ball))
+
+T = "offset-term"
+tO = np.array([50, 100, 200, 400], float)
+yO = np.array([6, 10, 14, 24], float)
+
+
+def pois_fit(X, y, off):
+    b = np.zeros(X.shape[1]); b[0] = np.log(y.sum() / np.exp(off).sum())
+    for _ in range(100):
+        mu = np.exp(X @ b + off)
+        b = b + np.linalg.solve(X.T @ (mu[:, None] * X), X.T @ (y - mu))
+    mu = np.exp(X @ b + off)
+    dev = 2 * np.sum(y * np.log(y / mu) - (y - mu))
+    return b, mu, dev, np.linalg.inv(X.T @ (mu[:, None] * X))
+
+
+b1o, mu1o, dev1o, _ = pois_fit(np.ones((4, 1)), yO, np.log(tO))
+check(T, "e^β̂0=54/750=0.072、β̂0=−2.6311", close(np.exp(b1o[0]), .072, 1e-12) and close(b1o[0], -2.6311), b1o)
+check(T, "当てはめ値 3.6, 7.2, 14.4, 28.8", allclose(mu1o, [3.6, 7.2, 14.4, 28.8], 1e-10), r4(mu1o))
+check(T, "逸脱度 3.1598（自由度3）", close(dev1o, 3.1598), dev1o)
+X2o = np.column_stack([np.ones(4), np.log(tO)])
+b2o, mu2o, dev2o, cov2o = pois_fit(X2o, yO, np.zeros(4))
+check(T, "γ̂=0.6553（SE 0.1910）、逸脱度 0.0972", close(b2o[1], .6553) and close(sqrt(cov2o[1, 1]), .1910) and close(dev2o, .0972), (b2o, sqrt(cov2o[1, 1]), dev2o))
+rO = optimize.minimize(lambda b: -np.sum(yO * (b[0] + b[1] * np.log(tO)) - np.exp(b[0] + b[1] * np.log(tO))), [0, 1], method="BFGS", options=dict(gtol=1e-10))
+check(T, "γ̂ を scipy.optimize の最尤推定でも確認", close(rO.x[1], b2o[1], 1e-5), rO.x)
+check(T, "逸脱度の差 3.0626、χ²(1) で p=0.0801 >0.05", close(dev1o - dev2o, 3.0626) and close(stats.chi2.sf(dev1o - dev2o, 1), .0801), (dev1o - dev2o, stats.chi2.sf(dev1o - dev2o, 1)))
+check(T, "切片のみのとき e^β̂0=Σy/Σt（スコア方程式 Σ(y−t e^β)=0）", close(np.sum(yO - tO * np.exp(b1o[0])), 0, 1e-9), "ok")
+check(T, "log μ=log t+xβ ⇔ μ/t=exp(xβ)（ばく露 2 倍で期待件数 2 倍）", close(np.exp(np.log(200) + b1o[0]) / np.exp(np.log(100) + b1o[0]), 2, 1e-12), "ok")
+# 乱数：比例モデルから生成すると γ̂≈1
+tt_ = rngC.uniform(10, 500, 3000)
+yy_o = rngC.poisson(0.072 * tt_)
+Xs_ = np.column_stack([np.ones(3000), np.log(tt_)])
+bsim = np.array([np.log(yy_o.sum() / tt_.sum()), 1.0])
+for _ in range(100):
+    mu_ = np.exp(Xs_ @ bsim)
+    bsim = bsim + np.linalg.solve(Xs_.T @ (mu_[:, None] * Xs_), Xs_.T @ (yy_o - mu_))
+check(T, "乱数 比例モデルから生成すると log t の係数≈1（±0.06）", abs(bsim[1] - 1) < .06, bsim)
+
 # ================= 集計 =================
 n_ok = sum(results)
 n_ng = len(results) - n_ok

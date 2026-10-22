@@ -841,6 +841,113 @@ check(T, "chart: 変数増加法の経路（停止後は全変数の値で補完
 bp = [aics[()], aics[("x1",)]] + bpath[::-1]
 check(T, "chart: 変数減少法の経路（x1 単独は外した後の候補）", allclose(series(c, 2), bp, 5e-4), r4(bp, 3))
 
+
+# =====================================================================
+# 重要度Cの用語（elastic-net, principal-component-regression, spline-regression）
+# 乱数は seed=20261023+19
+# =====================================================================
+rngC = np.random.default_rng(20261023 + 19)
+x1C = np.array([-2., -1, 0, 1, 2]); x2C = np.array([-2., 0, -1, 1, 2]); yC = np.array([-3.9, -1.2, -0.6, 1.8, 3.9])
+XC = np.column_stack([x1C, x2C]); GC = XC.T @ XC; gC = XC.T @ yC
+bOC = np.linalg.solve(GC, gC)
+
+T = "elastic-net"
+check(T, "XᵀX=[[10,9],[9,10]]、Xᵀy=(18.6,18.0)、OLS (1.2632,0.6632)", allclose(GC, [[10, 9], [9, 10]], 1e-12) and allclose(gC, [18.6, 18.0], 1e-10) and allclose(bOC, [1.2632, .6632]), r4(bOC))
+L1, L2 = 10.0, 5.0
+rhs = gC - L1 * np.ones(2)
+check(T, "右辺 (8.6, 8.0)、行列 [[15,9],[9,15]]、det=144", allclose(rhs, [8.6, 8.0], 1e-10) and allclose(GC + L2 * np.eye(2), [[15, 9], [9, 15]], 1e-12) and close(np.linalg.det(GC + L2 * np.eye(2)), 144, 1e-9), r4(rhs))
+bEN = np.linalg.solve(GC + L2 * np.eye(2), rhs)
+check(T, "β̂_EN=(0.3958, 0.2958)、両方正（仮定と整合）", allclose(bEN, [.3958, .2958]) and np.all(bEN > 0), r4(bEN))
+fEN = lambda b, l1, l2: 0.5 * np.sum((yC - XC @ b) ** 2) + l1 * np.sum(np.abs(b)) + 0.5 * l2 * b @ b
+
+
+def cd_en(X, y, l1, l2, iters=100000):
+    b = np.zeros(X.shape[1]); nrm = (X ** 2).sum(0)
+    for _ in range(iters):
+        bo = b.copy()
+        for j in range(X.shape[1]):
+            r = y - X @ b + X[:, j] * b[j]
+            zj = X[:, j] @ r
+            b[j] = np.sign(zj) * max(abs(zj) - l1, 0) / (nrm[j] + l2)
+        if np.max(np.abs(b - bo)) < 1e-14:
+            break
+    return b
+
+
+check(T, "座標降下法（目的関数を直接最小化）でも同じ解", allclose(cd_en(XC, yC, L1, L2), bEN, 1e-9), r4(cd_en(XC, yC, L1, L2)))
+gridv = np.linspace(-0.5, 1.5, 401)
+fg = np.array([[fEN(np.array([a, b]), L1, L2) for b in gridv] for a in gridv])
+check(T, "格子探索で目的関数の最小は解より小さくならない", fg.min() >= fEN(bEN, L1, L2) - 1e-12, (fg.min(), fEN(bEN, L1, L2)))
+bL10 = cd_en(XC, yC, 10, 0)
+check(T, "同じ λ1=10 の Lasso (0.7368, 0.1368)、比 約5.4", allclose(bL10, [.7368, .1368]) and close(bL10[0] / bL10[1], 5.4, .05), (r4(bL10), bL10[0] / bL10[1]))
+check(T, "エラスティックネットの比 約1.34", close(bEN[0] / bEN[1], 1.34, 5e-3), bEN[0] / bEN[1])
+check(T, "λ2=0 で Lasso、λ1=0 でリッジ（λ=5 → (0.8125,0.7125)）", allclose(cd_en(XC, yC, 0, 5), [.8125, .7125], 1e-9), r4(cd_en(XC, yC, 0, 5)))
+# 直交計画の公式
+XlC = 0.5 * np.array([[1, 1, 1], [1, -1, -1], [-1, 1, -1], [-1, -1, 1]], float)
+ylC = np.array([3.0, 0.6, -0.4, -2.2]); ylC = ylC - ylC.mean()
+bo_ = XlC.T @ ylC
+okorth = True
+for l1, l2 in [(1, 1), (0.5, 2), (2, 0.3), (2.5, 4)]:
+    form = np.sign(bo_) * np.maximum(np.abs(bo_) - l1, 0) / (1 + l2)
+    num = optimize.minimize(lambda b: 0.5 * np.sum((ylC - XlC @ b) ** 2) + l1 * np.sum(np.abs(b)) + 0.5 * l2 * b @ b, np.zeros(3), method="Nelder-Mead",
+                            options=dict(xatol=1e-10, fatol=1e-14, maxiter=20000)).x
+    okorth &= np.allclose(form, num, atol=1e-5) and np.allclose(form, cd_en(XlC, ylC, l1, l2), atol=1e-10)
+check(T, "直交計画 XᵀX=I で sign(b)(|b|−λ1)₊/(1+λ2)（4組の (λ1,λ2) で数値最小化と一致）", okorth, "ok")
+check(T, "chart ridge-lasso-path method=lasso", chart(T, "ridge-lasso-path")["params"]["method"] == "lasso", chart(T, "ridge-lasso-path")["params"])
+
+T = "principal-component-regression"
+ev, V = np.linalg.eigh(GC)
+ev, V = ev[::-1], V[:, ::-1]
+V = V * np.sign(V[0])  # 第1成分を (1,1)/√2、第2成分を (1,−1)/√2 の向きに
+check(T, "固有値 19, 1、v1=(1,1)/√2、v2=(1,−1)/√2", allclose(ev, [19, 1], 1e-10) and allclose(V[:, 0], np.ones(2) / sqrt(2), 1e-10) and allclose(V[:, 1], [1 / sqrt(2), -1 / sqrt(2)], 1e-10), ev)
+z1 = XC @ V[:, 0]
+g1 = z1 @ yC / (z1 @ z1)
+check(T, "γ̂1=1.3621（z'y/z'z と v'X'y/λ が一致）", close(g1, 1.3621) and close(g1, V[:, 0] @ gC / ev[0], 1e-12), g1)
+bP = g1 * V[:, 0]
+check(T, "β̂_PCR=(0.9632, 0.9632)", allclose(bP, [.9632, .9632]), r4(bP))
+bP2 = sum((V[:, k] @ gC / ev[k]) * V[:, k] for k in range(2))
+check(T, "m=p なら OLS に一致", allclose(bP2, bOC, 1e-12), r4(bP2))
+vO = np.linalg.inv(GC)[0, 0]
+vP = (np.outer(V[:, 0], V[:, 0]) / ev[0])[0, 0]
+check(T, "分散 10/19=0.5263σ²、(1/2)/19=0.0263σ²、比 1/20", close(vO, .5263) and close(vP, .0263) and close(vP / vO, 1 / 20, 1e-12), (vO, vP))
+rssO = np.sum((yC - XC @ bOC) ** 2); rssP = np.sum((yC - XC @ bP) ** 2)
+check(T, "残差平方和 0.0284 → 0.2084、y の平方和 35.46", close(rssO, .0284) and close(rssP, .2084) and close(yC @ yC, 35.46, 1e-10), (rssO, rssP))
+check(T, "OLS の共分散 σ²Σv_kv_kᵀ/λ_k = σ²(XᵀX)⁻¹", np.allclose(sum(np.outer(V[:, k], V[:, k]) / ev[k] for k in range(2)), np.linalg.inv(GC), atol=1e-12), "ok")
+check(T, "リッジは各方向を λ_k/(λ_k+λ) 倍（λ=1）", np.allclose(np.linalg.solve(GC + np.eye(2), gC), sum(ev[k] / (ev[k] + 1) * (V[:, k] @ gC / ev[k]) * V[:, k] for k in range(2)), atol=1e-12), "ok")
+# 乱数：β=(1,0.8)、σ=0.3 で PCR の分散と偏り
+Rp = 200000
+Ysim = XC @ np.array([1, .8]) + rngC.normal(0, .3, (Rp, 5))
+BP_ = (Ysim @ z1 / (z1 @ z1))[:, None] * V[:, 0][None, :]
+check(T, "乱数 PCR の分散≈0.0263σ²（相対 ±2%）、平均≈(0.9,0.9)（偏り、±0.002）", abs(BP_[:, 0].var() / (vP * .09) - 1) < .02 and np.all(np.abs(BP_.mean(0) - .9) < .002), (BP_[:, 0].var() / .09, BP_.mean(0)))
+
+T = "spline-regression"
+xs_ = np.arange(1, 9, dtype=float)
+ys_ = np.array([2.0, 3.1, 3.9, 5.2, 5.4, 5.9, 6.1, 6.6])
+Xsp = np.column_stack([np.ones(8), xs_, np.maximum(xs_ - 4, 0)])
+bsp = ols(Xsp, ys_)
+check(T, "f̂=0.9636+1.0318x−0.6655(x−4)₊", allclose(bsp, [.9636, 1.0318, -.6655]), r4(bsp))
+check(T, "x>4 の傾き 0.3664（=1.0318−0.6655 を丸め前で計算）", close(bsp[1] + bsp[2], .3664), bsp[1] + bsp[2])
+rss_sp = np.sum((ys_ - Xsp @ bsp) ** 2)
+bl_ = ols(np.column_stack([np.ones(8), xs_]), ys_)
+rss_l = np.sum((ys_ - np.column_stack([np.ones(8), xs_]) @ bl_) ** 2)
+check(T, "直線 0.6357x+1.9143、RSS 1.2214 → 0.0616", allclose(bl_, [1.9143, .6357]) and close(rss_l, 1.2214) and close(rss_sp, .0616), (r4(bl_), rss_l, rss_sp))
+Fsp = (rss_l - rss_sp) / (rss_sp / 5)
+check(T, "部分 F=94.08、p=0.0002", close(Fsp, 94.08, 5e-3) and close(stats.f.sf(Fsp, 1, 5), .0002), (Fsp, stats.f.sf(Fsp, 1, 5)))
+check(T, "丸めた RSS での F も 94.1", close((1.2214 - .0616) / (.0616 / 5), 94.14, 5e-3), (1.2214 - .0616) / (.0616 / 5))
+bq = ols(np.column_stack([np.ones(8), xs_, xs_ ** 2]), ys_)
+rss_q = np.sum((ys_ - np.column_stack([np.ones(8), xs_, xs_ ** 2]) @ bq) ** 2)
+check(T, "2次式の RSS 0.2155 > 0.0616", close(rss_q, .2155) and rss_q > rss_sp, rss_q)
+fh = lambda x: bsp[0] + bsp[1] * x + bsp[2] * np.maximum(x - 4, 0)
+check(T, "x=4 で連続（左右極限の差 0）", close(fh(4 - 1e-9), fh(4 + 1e-9), 1e-8), (fh(4 - 1e-9), fh(4 + 1e-9)))
+# 3次の切断べき基底は 2 階微分まで連続、3 階微分が θ だけ跳ぶ（sympy）
+xx_, kk_, th_ = sp.symbols("x kappa theta", real=True)
+bas = th_ * (xx_ - kk_) ** 3
+okc = all(sp.simplify(sp.diff(bas, xx_, r).subs(xx_, kk_)) == 0 for r in range(3)) and sp.diff(bas, xx_, 3) == 6 * th_
+check(T, "θ(x−κ)³₊：κ で 0〜2 階微分が 0 から連続、3 階微分が 6θ 跳ぶ（d!θ）", okc, "ok")
+check(T, "パラメータ数 d+1+K（3次・K=2 なら 6、切断べき基底の列数）", np.linalg.matrix_rank(np.column_stack([np.ones(20), *[np.linspace(0, 10, 20) ** p for p in (1, 2, 3)], *[np.maximum(np.linspace(0, 10, 20) - k, 0) ** 3 for k in (3, 7)]])) == 6, 6)
+c = chart(T, "line-data")
+check(T, "chart x=1..8、観測値と当てはめ値", c["params"]["x"] == list(range(1, 9)) and allclose(series(c, 0), ys_, 1e-12) and allclose(series(c, 1), Xsp @ bsp), r4(Xsp @ bsp))
+
 # =====================================================================
 ok = sum(results); ng = len(results) - ok
 print(f"\n合計: OK {ok} / NG {ng}")

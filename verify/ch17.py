@@ -597,5 +597,111 @@ ch = charts(T)
 check(T, "図1 residual-pattern funnel", ch[0]["params"]["pattern"] == "funnel", ch[0]["params"])
 check(T, "図2 line-data = 例1 の残差", allclose(dh["e"], ch[1]["params"]["series"][0]["y"]) and ch[1]["params"]["x"] == list(range(1, 9)), ch[1]["params"]["series"][0]["y"])
 
+
+# =====================================================================
+# 重要度Cの用語（dfbetas, breusch-pagan-test, robust-standard-error）
+# 乱数は seed=20261023+17
+# =====================================================================
+rngC = np.random.default_rng(20261023 + 17)
+
+T = "dfbetas"
+xC = np.array([1, 2, 3, 4, 5, 6, 7, 12], float)
+yC = np.array([3, 5, 6, 9, 10, 13, 14, 20], float)
+dC = diag_all(xC, yC)
+XtXiC = np.linalg.inv(dC["X"].T @ dC["X"])
+check(T, "全データの直線 2.0833+1.5833x", allclose(dC["b"], [2.0833, 1.5833]), r4(dC["b"]))
+check(T, "c00=0.4226, c11=0.0119", close(XtXiC[0, 0], .4226) and close(XtXiC[1, 1], .0119), (XtXiC[0, 0], XtXiC[1, 1]))
+b8 = dC["bdel"][7]
+s8 = sqrt(dC["s2i"][7])
+check(T, "店8除外の直線 1.0000+1.8929x、s(8)=0.5278", allclose(b8, [1.0, 1.8929]) and close(s8, .5278), (r4(b8), s8))
+dfb = np.array([(dC["b"] - dC["bdel"][i]) / (sqrt(dC["s2i"][i]) * np.sqrt(np.diag(XtXiC))) for i in range(8)])  # 行 i, 列 j
+check(T, "DFBETAS_{1,8}=-5.3748、分子 -0.3095、分母 0.0576", close(dfb[7, 1], -5.3748) and close(dC["b"][1] - b8[1], -.3095) and close(s8 * sqrt(XtXiC[1, 1]), .0576),
+      (dfb[7, 1], dC["b"][1] - b8[1], s8 * sqrt(XtXiC[1, 1])))
+check(T, "DFBETAS_{0,8}=3.1573（切片の差 1.0833）", close(dfb[7, 0], 3.1573) and close(dC["b"][0] - b8[0], 1.0833), (dfb[7, 0], dC["b"][0] - b8[0]))
+check(T, "目安 2/√8=0.7071、超えるのは店8だけ（傾き）、他の最大は店1の 0.4353", close(2 / sqrt(8), .7071) and np.sum(np.abs(dfb[:, 1]) > 2 / sqrt(8)) == 1
+      and int(np.argmax(np.abs(dfb[:7, 1]))) == 0 and close(dfb[0, 1], .4353), r4(dfb[:, 1]))
+check(T, "符号：傾きを下げ（負）、切片を上げる（正）", dfb[7, 1] < 0 and dfb[7, 0] > 0, (dfb[7, 0], dfb[7, 1]))
+ok_upd = all(np.allclose(dC["b"] - dC["bdel"][i], XtXiC @ dC["X"][i] * dC["e"][i] / (1 - dC["h"][i]), atol=1e-12) for i in range(8))
+check(T, "係数変化の公式 β̂−β̂(i)=(XᵀX)⁻¹x_i e_i/(1−h_ii)（全8点で当てはめ直しと一致）", ok_upd, "max差<1e-12")
+cC = charts(T)[0]["params"]
+check(T, "chart bar-data 店1〜8 の傾き DFBETAS", cC["labels"] == [str(i) for i in range(1, 9)] and allclose(cC["values"], dfb[:, 1]), r4(dfb[:, 1]))
+check(T, "caption の −5.37・±0.71", close(dfb[7, 1], -5.37, 5e-3) and close(2 / sqrt(8), .71, 5e-3), "ok")
+
+T = "breusch-pagan-test"
+xB = np.arange(1, 9, dtype=float)
+yB = np.array([2.1, 3.8, 6.4, 7.2, 11.5, 10.4, 16.8, 13.0])
+dB = diag_all(xB, yB)
+check(T, "ŷ=0.4571+1.8762x", allclose(dB["b"], [.4571, 1.8762]), r4(dB["b"]))
+e2B = dB["e"] ** 2
+gB, ugB = fit(dB["X"], e2B)
+R2B = 1 - ugB @ ugB / np.sum((e2B - e2B.mean()) ** 2)
+check(T, "補助回帰 ê²=-2.6321+1.1898x、R²=0.6269", allclose(gB, [-2.6321, 1.1898]) and close(R2B, .6269), (r4(gB), R2B))
+LMB = 8 * R2B
+check(T, "LM=nR²=5.0150 > χ²_0.05(1)=3.8415、p=0.0251", close(LMB, 5.0150, 5e-4) and close(stats.chi2.isf(.05, 1), 3.8415) and close(stats.chi2.sf(LMB, 1), .0251) and LMB > 3.8415,
+      (LMB, stats.chi2.sf(LMB, 1)))
+sig2B = e2B.sum() / 8
+gg = e2B / sig2B
+gfB, _ = fit(dB["X"], gg)
+ESS = np.sum((dB["X"] @ gfB - gg.mean()) ** 2)
+check(T, "もとの版（ESS/2）= 4.0123、p=0.0452", close(ESS / 2, 4.0123, 5e-4) and close(stats.chi2.sf(ESS / 2, 1), .0452), (ESS / 2, stats.chi2.sf(ESS / 2, 1)))
+# 残差そのものの回帰は無意味（説明変数と直交）
+check(T, "OLS 残差は説明変数と直交（Xᵀe=0）", np.allclose(dB["X"].T @ dB["e"], 0, atol=1e-10), dB["X"].T @ dB["e"])
+# 乱数：H0 下で nR² ≈ χ²(1)（n=200、2万回、棄却率 0.05±0.008）
+nS, RS = 200, 20000
+xS = rngC.uniform(1, 10, nS)
+XS = np.column_stack([np.ones(nS), xS])
+PS = XS @ np.linalg.solve(XS.T @ XS, XS.T)
+YS = 1 + 2 * xS + rngC.normal(size=(RS, nS))
+ES = YS - YS @ PS.T
+E2 = ES ** 2
+F2 = E2 @ PS.T
+R2S = 1 - ((E2 - F2) ** 2).sum(1) / ((E2 - E2.mean(1, keepdims=True)) ** 2).sum(1)
+rej0 = np.mean(nS * R2S > stats.chi2.isf(.05, 1))
+check(T, "乱数 H0（均一分散, n=200）で棄却率≈0.05（±0.008）", abs(rej0 - .05) < .008, rej0)
+YS1 = 1 + 2 * xS + rngC.normal(size=(RS, nS)) * (0.3 * xS)
+ES1 = YS1 - YS1 @ PS.T
+E21 = ES1 ** 2
+F21 = E21 @ PS.T
+R2S1 = 1 - ((E21 - F21) ** 2).sum(1) / ((E21 - E21.mean(1, keepdims=True)) ** 2).sum(1)
+check(T, "乱数 分散が x に比例して増えると棄却率が高い（>0.5）", np.mean(nS * R2S1 > 3.8415) > .5, np.mean(nS * R2S1 > 3.8415))
+
+T = "robust-standard-error"
+XR, eR, hR = dB["X"], dB["e"], dB["h"]
+xc = xB - xB.mean()
+Sxx = xc @ xc
+meat = np.sum(xc ** 2 * eR ** 2)
+check(T, "S_xx=42、Σ(x−x̄)²e²=145.5755", close(Sxx, 42, 1e-12) and close(meat, 145.5755), (Sxx, meat))
+XtXiR = np.linalg.inv(XR.T @ XR)
+VH0 = XtXiR @ (XR.T * eR ** 2) @ XR @ XtXiR
+check(T, "HC0 分散 0.08253、SE 0.2873（サンドイッチ行列と単回帰の式が一致）", close(VH0[1, 1], .08253, 5e-6) and close(meat / Sxx ** 2, VH0[1, 1], 1e-12) and close(sqrt(VH0[1, 1]), .2873),
+      (VH0[1, 1], sqrt(VH0[1, 1])))
+seN = sqrt(dB["s2"] * XtXiR[1, 1])
+seH1 = sqrt(VH0[1, 1] * 8 / 6)
+VH3 = XtXiR @ (XR.T * (eR / (1 - hR)) ** 2) @ XR @ XtXiR
+seH3 = sqrt(VH3[1, 1])
+ses = [seN, sqrt(VH0[1, 1]), seH1, seH3]
+check(T, "SE 表 0.2940 / 0.2873 / 0.3317 / 0.4469", allclose(ses, [.2940, .2873, .3317, .4469]), r4(ses))
+tv = [dB["b"][1] / s for s in ses]
+check(T, "t 値 6.38 / 6.53 / 5.66 / 4.20", allclose(tv, [6.38, 6.53, 5.66, 4.20], 5e-3), [round(t, 3) for t in tv])
+check(T, "t_0.025(6)=2.4469、すべて有意", close(stats.t.isf(.025, 6), 2.4469) and min(tv) > 2.4469, stats.t.isf(.025, 6))
+check(T, "HC3 は通常の約1.5倍（0.4469/0.2940=1.52）", close(seH3 / seN, 1.52, 5e-3), seH3 / seN)
+sg = 1.7
+check(T, "均一分散なら中央が σ²XᵀX になり σ²(XᵀX)⁻¹ に戻る", np.allclose(XtXiR @ (sg * XR.T @ XR) @ XtXiR, sg * XtXiR, atol=1e-12), "ok")
+# 乱数：不均一分散で HC0 の平均が真の分散に近づく（n=400、2万回、相対 ±5%）
+nR_, RR_ = 400, 20000
+xr = rngC.uniform(1, 10, nR_)
+Xr = np.column_stack([np.ones(nR_), xr])
+Ar = np.linalg.solve(Xr.T @ Xr, Xr.T)  # (2,n)
+sd_r = 0.3 * xr
+Vtrue = (Ar * sd_r ** 2) @ Ar.T
+Yr = 1 + 2 * xr + rngC.normal(size=(RR_, nR_)) * sd_r
+Br = Yr @ Ar.T
+Er = Yr - Br @ Xr.T
+hc0 = (Er ** 2) @ (Ar[1] ** 2)
+check(T, "乱数 HC0 の平均≈真の V[β̂1]（相対 ±5%）、通常の SE は過小", abs(hc0.mean() / Vtrue[1, 1] - 1) < .05 and abs(Br[:, 1].var() / Vtrue[1, 1] - 1) < .05,
+      (hc0.mean(), Vtrue[1, 1], Br[:, 1].var()))
+s2r = (Er ** 2).sum(1) / (nR_ - 2)
+check(T, "乱数 推定値は不偏（平均 2±0.005）", abs(Br[:, 1].mean() - 2) < .005, Br[:, 1].mean())
+
 print()
 print(f"OK {sum(results)} / NG {len(results) - sum(results)}")

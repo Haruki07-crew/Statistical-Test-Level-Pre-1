@@ -793,6 +793,99 @@ sev = [2 / sqrt(k) for k in range(1, 11)]
 check(T, "chart2 σ/√r（小数4桁）", allclose(c[1]["params"]["series"][0]["y"], sev, 5e-5) and c[1]["params"]["x"] == list(range(1, 11)),
       r(sev, 4))
 
+
+# =====================================================================
+# 重要度Cの用語（studentized-range-distribution, effect-size-eta-squared）
+# 乱数は seed=20261023+20
+# =====================================================================
+rngC = np.random.default_rng(20261023 + 20)
+from scipy.integrate import quad as quadC
+
+T = "studentized-range-distribution"
+qs = [stats.studentized_range.isf(.05, k, 9) for k in (2, 3, 4, 5)]
+check(T, "q_0.05(k,9) = 3.199, 3.948, 4.415, 4.755", allclose(qs, [3.199, 3.948, 4.415, 4.755]), r(qs))
+tq = stats.t.isf(.025, 9)
+check(T, "k=2: √2·t_0.025(9)=1.4142×2.2622=3.199（一致）", close(sqrt(2) * tq, 3.199) and close(tq, 2.2622, 5e-5) and close(qs[0], sqrt(2) * tq, 1e-5), (tq, sqrt(2) * tq, qs[0]))
+q320 = stats.studentized_range.isf(.05, 3, 20)
+check(T, "q_0.05(3,20)=3.578", close(q320, 3.578), q320)
+
+
+def Wcdf(w, k):
+    return k * quadC(lambda x: stats.norm.pdf(x) * (stats.norm.cdf(x + w) - stats.norm.cdf(x)) ** (k - 1), -12, 12)[0]
+
+
+from scipy.optimize import brentq as brentqC
+qinf = brentqC(lambda w: Wcdf(w, 3) - .95, 2, 5)
+check(T, "ν→∞: 3.314、積分式で P(W≤3.314)=0.950", close(qinf, 3.314) and close(Wcdf(3.314, 3), .950), (qinf, Wcdf(3.314, 3)))
+check(T, "scipy の大きい ν（10⁵）も 3.314 に近づく", close(stats.studentized_range.isf(.05, 3, 1e5), 3.314, 1e-3), stats.studentized_range.isf(.05, 3, 1e5))
+okW = all(close(Wcdf(w, k), stats.studentized_range.cdf(w, k, 1e5), 1e-3) for k in (2, 3, 5) for w in (1, 2.5, 4))
+check(T, "範囲の分布関数の積分式＝scipy（ν 大）", okW, "ok")
+seq = sqrt(2.333 / 4)
+check(T, "テューキー例: √(V_E/n)=0.7638、q=4.5/0.7638=5.892", close(seq, .7638) and close(4.5 / seq, 5.892), (seq, 4.5 / seq))
+VEx = 21 / 9
+pq_ = stats.studentized_range.sf(4.5 / sqrt(VEx / 4), 3, 9)
+check(T, "P(Q>5.892)=0.0062、3.948 を超える", close(pq_, .0062) and 4.5 / sqrt(VEx / 4) > qs[1], pq_)
+# 乱数：定義どおり W/S を作って上側5%点（ν=9）
+M = 400000
+Z = rngC.normal(size=(M, 3))
+Wn = Z.max(1) - Z.min(1)
+Sn = np.sqrt(rngC.chisquare(9, M) / 9)
+Qn = Wn / Sn
+check(T, "乱数 40万回：P(Q>3.948)≈0.05（±0.002）、P(W≤3.314)≈0.95（±0.002）", abs((Qn > 3.948).mean() - .05) < .002 and abs((Wn <= 3.314).mean() - .95) < .002,
+      ((Qn > 3.948).mean(), (Wn <= 3.314).mean()))
+# 一元配置の群平均から作る Q（k=3, n=4）
+Yg = rngC.normal(0, 1, (100000, 3, 4))
+mg = Yg.mean(2)
+VEg = ((Yg - mg[:, :, None]) ** 2).sum((1, 2)) / 9
+Qg = (mg.max(1) - mg.min(1)) / np.sqrt(VEg / 4)
+check(T, "乱数 10万回：(max ȳ−min ȳ)/√(V_E/n) の棄却率≈0.05（±0.003）", abs((Qg > qs[1]).mean() - .05) < .003, (Qg > qs[1]).mean())
+check(T, "分母に √(2V_E/n) を使うと √2 倍ずれる", close(4.5 / sqrt(2 * VEx / 4) * sqrt(2), 4.5 / sqrt(VEx / 4), 1e-12), "ok")
+cs = charts(T)[0]
+pr_ = cs["params"]
+sl = {s["param"]: s for s in cs["sliders"]}
+check(T, "chart params k=3, df=9, alpha=0.05（本文の例）、スライダー範囲内", pr_ == {"k": 3, "df": 9, "alpha": 0.05} and all(sl[p]["min"] <= pr_[p] <= sl[p]["max"] for p in ("k", "df")), pr_)
+check(T, "k を増やすと q が大きく、ν を増やすと小さく", all(np.diff(qs) > 0) and stats.studentized_range.isf(.05, 3, 60) < q320 < qs[1], "ok")
+
+T = "effect-size-eta-squared"
+gE = [[18, 21, 20, 17], [22, 24, 23, 25], [19, 20, 22, 19]]
+allE = np.concatenate([np.array(x, float) for x in gE])
+SA = sum(4 * (np.mean(x) - allE.mean()) ** 2 for x in gE)
+SE = sum(np.sum((np.array(x) - np.mean(x)) ** 2) for x in gE)
+ST = np.sum((allE - allE.mean()) ** 2)
+VE_ = SE / 9
+FE = (SA / 2) / VE_
+check(T, "S_A=44.667, S_E=21.000, S_T=65.667, V_E=2.333, F=9.571", allclose([SA, SE, ST, VE_, FE], [44.667, 21, 65.667, 2.333, 9.571]), r([SA, SE, ST, VE_, FE]))
+eta2 = SA / ST
+rho = (SA - 2 * VE_) / ST
+om2 = (SA - 2 * VE_) / (ST + VE_)
+check(T, "η²=0.680、純変動 40.000、ρ_A=0.609、ω²=0.588", close(eta2, .680) and close(SA - 2 * VE_, 40, 1e-9) and close(rho, .609) and close(om2, .588), r([eta2, rho, om2]))
+check(T, "F から η²=2F/(2F+9)=19.142/28.142=0.680", close(2 * FE / (2 * FE + 9), eta2, 1e-12) and close(2 * FE, 19.142) and close(2 * FE + 9, 28.142), 2 * FE / (2 * FE + 9))
+Dm = np.column_stack([np.ones(12), np.repeat([0, 1, 0], 4), np.repeat([0, 0, 1], 4)])
+bd = np.linalg.lstsq(Dm, allE, rcond=None)[0]
+R2d = 1 - np.sum((allE - Dm @ bd) ** 2) / ST
+check(T, "ダミー変数回帰の R² = η²", close(R2d, eta2, 1e-12), R2d)
+FF, pa, pe = sp.symbols("F phi_A phi_E", positive=True)
+check(T, "η²=φ_A F/(φ_A F+φ_E)（sympy、S_A=φ_A F V_E, S_E=φ_E V_E）", sp.simplify((pa * FF * sp.Symbol("V", positive=True)) / (pa * FF * sp.Symbol("V", positive=True) + pe * sp.Symbol("V", positive=True)) - (pa * FF) / (pa * FF + pe)) == 0, "恒等式")
+check(T, "pingouin 不使用：scipy f_oneway の F と一致", close(stats.f_oneway(*gE).statistic, FE, 1e-9), stats.f_oneway(*gE).statistic)
+# 乱数：E[S_A − φ_A V_E] = n Σα²（純変動は効果の分の不偏推定）、η² は過大
+al_ = np.array([-1.5, 1.5, 0.0])
+YE = al_[None, :, None] + rngC.normal(0, 1.5, (200000, 3, 4))
+mE = YE.mean(2); gmE = YE.mean((1, 2))
+SAs = 4 * ((mE - gmE[:, None]) ** 2).sum(1)
+SEs = ((YE - mE[:, :, None]) ** 2).sum((1, 2))
+pure = SAs - 2 * SEs / 9
+check(T, "乱数 E[S_A−φ_A V_E]=nΣα²=18（±0.15）", abs(pure.mean() - 18) < .15, pure.mean())
+pop_eta = 18 / 12 / (18 / 12 + 1.5 ** 2)
+check(T, "乱数 η² の平均は母集団の値より大、ω² は近い", (SAs / (SAs + SEs)).mean() > pop_eta + .03 and abs((pure / (SAs + SEs + SEs / 9)).mean() - pop_eta) < (SAs / (SAs + SEs)).mean() - pop_eta,
+      ((SAs / (SAs + SEs)).mean(), (pure / (SAs + SEs + SEs / 9)).mean(), pop_eta))
+# 偏 η² の合計が 1 を超えうる例（二元配置、繰り返し 2、効果大）
+YA = np.array([[[10, 10.4], [20, 20.2]], [[30, 30.3], [40, 39.9]]])  # [A][B][rep]
+gm = YA.mean()
+SA2 = 4 * np.sum((YA.mean((1, 2)) - gm) ** 2)
+SB2 = 4 * np.sum((YA.mean((0, 2)) - gm) ** 2)
+SE2 = np.sum((YA - YA.mean(2, keepdims=True)) ** 2)
+check(T, "偏 η² の合計が 1 を超える例（S_A/(S_A+S_E)+S_B/(S_B+S_E)>1）", SA2 / (SA2 + SE2) + SB2 / (SB2 + SE2) > 1, SA2 / (SA2 + SE2) + SB2 / (SB2 + SE2))
+
 # =====================================================================
 n_ok = sum(results)
 n_ng = len(results) - n_ok
