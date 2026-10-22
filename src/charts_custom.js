@@ -4,7 +4,7 @@
   var Charts = root.Charts, Dist = root.Dist;
   // 乱数を使う図には「もう一度」ボタンを付ける
   var RANDOM = ['clt-sim', 'lln-path', 'ci-coverage', 'poisson-process', 'random-walk', 'regression-residual', 'qq-plot', 'bias-variance',
-    'pca-axes', 'dendrogram', 'residual-pattern', 'dw-sim', 'iv-scatter', 'kmeans-steps', 'acf-plot', 'ar-sim', 'km-curve', 'mcmc-trace', 'inverse-transform', 'rejection-sampling', 'bootstrap-hist'];
+    'pca-axes', 'dendrogram', 'residual-pattern', 'dw-sim', 'iv-scatter', 'discriminant-boundary', 'fisher-projection', 'knn-boundary', 'svm-margin', 'kmeans-steps', 'acf-plot', 'ar-sim', 'km-curve', 'mcmc-trace', 'inverse-transform', 'rejection-sampling', 'bootstrap-hist'];
   function reg(id, fn) { Charts.registerCustom(id, fn, RANDOM.indexOf(id) >= 0); }
 
   // ---------- 小さな道具 ----------
@@ -196,6 +196,139 @@
       ctx.fillStyle = c.fg; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(String(N[i]), q[0], q[1]);
     });
     a.info.textContent = p.directed ? '矢印は直接の影響（親 → 子）' : '辺がない2頂点は、他のすべての変数を与えたもとで条件付き独立';
+  });
+
+  // ---------- 第23章 ----------
+  // 座標平面（軸つき）を描く道具
+  function plane(a, c, xmin, xmax, ymin, ymax, height) {
+    var cv = a.canvas(height || 320), ctx = cv.ctx, W = cv.w, H = cv.h, pad = 30;
+    var sc = Math.min((W - 2 * pad) / (xmax - xmin), (H - 2 * pad) / (ymax - ymin)), ox = (W - sc * (xmax - xmin)) / 2, oy = (H - sc * (ymax - ymin)) / 2;
+    var X = function (v) { return ox + (v - xmin) * sc; }, Y = function (v) { return H - oy - (v - ymin) * sc; };
+    ctx.strokeStyle = c.line; ctx.lineWidth = 1; ctx.strokeRect(X(xmin), Y(ymax), (xmax - xmin) * sc, (ymax - ymin) * sc);
+    ctx.fillStyle = c.muted; ctx.font = '11px ' + c.font; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    for (var t = Math.ceil(xmin); t <= xmax; t++) if (t % Math.max(1, Math.round((xmax - xmin) / 8)) === 0) ctx.fillText(String(t), X(t), Y(ymin) + 3);
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    for (t = Math.ceil(ymin); t <= ymax; t++) if (t % Math.max(1, Math.round((ymax - ymin) / 8)) === 0) ctx.fillText(String(t), X(xmin) - 3, Y(t));
+    return { ctx: ctx, X: X, Y: Y, sc: sc, W: W, H: H, xmin: xmin, xmax: xmax, ymin: ymin, ymax: ymax };
+  }
+  function dot(P, x, y, col, r, shape) {
+    var ctx = P.ctx; ctx.fillStyle = col; ctx.strokeStyle = col;
+    if (shape === 'x') { ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(P.X(x) - r, P.Y(y) - r); ctx.lineTo(P.X(x) + r, P.Y(y) + r); ctx.moveTo(P.X(x) - r, P.Y(y) + r); ctx.lineTo(P.X(x) + r, P.Y(y) - r); ctx.stroke(); }
+    else { ctx.beginPath(); ctx.arc(P.X(x), P.Y(y), r, 0, 2 * Math.PI); ctx.fill(); }
+  }
+  function shade(P, f, col1, col2) {
+    var ctx = P.ctx, step = 6;
+    for (var px = P.X(P.xmin); px < P.X(P.xmax); px += step) for (var py = P.Y(P.ymax); py < P.Y(P.ymin); py += step) {
+      var x = P.xmin + (px + step / 2 - P.X(P.xmin)) / P.sc, y = P.ymax - (py + step / 2 - P.Y(P.ymax)) / P.sc;
+      ctx.fillStyle = f(x, y) ? col2 : col1; ctx.fillRect(px, py, step, step);
+    }
+  }
+  function twoGroups(a, n, d1, d2, rho, ratio) {
+    var G = [[], []], s = Math.sqrt(ratio || 1);
+    for (var i = 0; i < n; i++) {
+      var g = i % 2, u = a.normal(), v = rho * u + Math.sqrt(1 - rho * rho) * a.normal(), k = g ? s : 1;
+      G[g].push([(g ? d1 : 0) + k * u, (g ? d2 : 0) + k * v]);
+    }
+    return G;
+  }
+  // discriminant-boundary: { delta, rho, ratio, prior, n } 2つの正規分布のベイズ判別境界（ratio=1 で線形、それ以外は二次）
+  reg('discriminant-boundary', function (a, p, c) {
+    var dl = num(p.delta, 2), rho = num(p.rho, 0.5), ratio = num(p.ratio, 1), pr = num(p.prior, 0.5), n = Math.round(num(p.n, 60));
+    var G = twoGroups(a, n, dl, 0, rho, ratio), det = 1 - rho * rho;
+    var q = function (x, y, s2) { return (x * x - 2 * rho * x * y + y * y) / (det * s2); };
+    var score = function (x, y) { // log f2 + log π2 − log f1 − log π1
+      return -0.5 * q(x - dl, y, ratio) - Math.log(ratio) + 0.5 * q(x, y, 1) + Math.log(pr / (1 - pr));
+    };
+    var lim = Math.max(4, dl + 3), P = plane(a, c, -3.5, lim, -3.5, 3.5, 300);
+    shade(P, function (x, y) { return score(x, y) > 0; }, c.fill, c.fill2);
+    G[0].forEach(function (q2) { dot(P, q2[0], q2[1], c.c1, 3); });
+    G[1].forEach(function (q2) { dot(P, q2[0], q2[1], c.c2, 4, 'x'); });
+    var err = 0; G[0].forEach(function (q2) { if (score(q2[0], q2[1]) > 0) err++; }); G[1].forEach(function (q2) { if (score(q2[0], q2[1]) <= 0) err++; });
+    a.info.textContent = (ratio === 1 ? '共分散が等しいので境界は直線（線形判別）' : '共分散が異なるので境界は二次曲線（二次判別）') + '　群2の事前確率 ' + a.fmt(pr) + '　この標本の誤判別 ' + err + '/' + n + '（● 群1，× 群2，背景色＝判別される群）';
+  });
+  // fisher-projection: { angle（度）, rho, delta, n } 射影の向きと、射影した値の2群の分布
+  reg('fisher-projection', function (a, p, c) {
+    var ang = num(p.angle, 0) * Math.PI / 180, rho = num(p.rho, 0.6), dl = num(p.delta, 2), n = Math.round(num(p.n, 60)), G = twoGroups(a, n, dl, 0, rho, 1);
+    var w = [Math.cos(ang), Math.sin(ang)], J = function (v) { var num1 = Math.pow(v[0] * dl, 2), den = v[0] * v[0] + 2 * rho * v[0] * v[1] + v[1] * v[1]; return num1 / den; };
+    var opt = [1 / (1 - rho * rho) * dl, -rho / (1 - rho * rho) * dl], on = Math.hypot(opt[0], opt[1]); opt = [opt[0] / on, opt[1] / on];
+    var P = plane(a, c, -3.5, dl + 3.5, -3.5, 3.5, 260), ctx = P.ctx, mx = dl / 2;
+    G[0].forEach(function (q) { dot(P, q[0], q[1], c.c1, 3); });
+    G[1].forEach(function (q) { dot(P, q[0], q[1], c.c2, 4, 'x'); });
+    ctx.strokeStyle = c.fg; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(P.X(mx - 4 * w[0]), P.Y(-4 * w[1])); ctx.lineTo(P.X(mx + 4 * w[0]), P.Y(4 * w[1])); ctx.stroke();
+    ctx.setLineDash([5, 4]); ctx.strokeStyle = c.c3; ctx.beginPath(); ctx.moveTo(P.X(mx - 4 * opt[0]), P.Y(-4 * opt[1])); ctx.lineTo(P.X(mx + 4 * opt[0]), P.Y(4 * opt[1])); ctx.stroke(); ctx.setLineDash([]);
+    var proj = G.map(function (g) { return g.map(function (q) { return q[0] * w[0] + q[1] * w[1]; }); }), all = proj[0].concat(proj[1]);
+    var lo = Math.min.apply(null, all) - 0.5, hi = Math.max.apply(null, all) + 0.5;
+    a.chart('short', { data: { datasets: [barDs('群1を射影', a.hist(proj[0], 24, lo, hi), c), barDs('群2を射影', a.hist(proj[1], 24, lo, hi), c, { backgroundColor: c.fill2, borderColor: c.c2 })] },
+      options: opts(a, c, { legend: true, xmin: lo, xmax: hi, xTitle: '射影した値 w′x' }) });
+    a.info.textContent = '群間／群内の比 J(w) = ' + a.fmt(J(w), 3) + '（最大値 ' + a.fmt(J(opt), 3) + ' は点線の向き S⁻¹d：角度 ' + a.fmt(Math.atan2(opt[1], opt[0]) * 180 / Math.PI, 1) + '°）';
+  });
+  // mahalanobis-contour: { rho, sx, sy } マハラノビス距離 1,2,3 の楕円とユークリッド距離の円
+  reg('mahalanobis-contour', function (a, p, c) {
+    var rho = num(p.rho, 0.7), sx = num(p.sx, 1), sy = num(p.sy, 1), lim = 3.6 * Math.max(sx, sy), P = plane(a, c, -lim, lim, -lim, lim, 320), ctx = P.ctx;
+    var L = [[sx, 0], [rho * sy, sy * Math.sqrt(1 - rho * rho)]];
+    [1, 2, 3].forEach(function (k) {
+      ctx.strokeStyle = c.c1; ctx.lineWidth = 2; ctx.beginPath();
+      for (var t = 0; t <= 100; t++) { var th = 2 * Math.PI * t / 100, u = k * Math.cos(th), v = k * Math.sin(th), x = L[0][0] * u, y = L[1][0] * u + L[1][1] * v; t ? ctx.lineTo(P.X(x), P.Y(y)) : ctx.moveTo(P.X(x), P.Y(y)); }
+      ctx.stroke();
+      ctx.strokeStyle = c.faint; ctx.lineWidth = 1; ctx.setLineDash([4, 4]); ctx.beginPath(); ctx.arc(P.X(0), P.Y(0), k * P.sc, 0, 2 * Math.PI); ctx.stroke(); ctx.setLineDash([]);
+    });
+    var md = function (x, y) { var a1 = x / sx, b1 = y / sy; return Math.sqrt((a1 * a1 - 2 * rho * a1 * b1 + b1 * b1) / (1 - rho * rho)); };
+    var pts2 = [[1.5, 1.5, 'A'], [1.5, -1.5, 'B']];
+    ctx.font = '12px ' + c.font;
+    pts2.forEach(function (q) { dot(P, q[0], q[1], c.c2, 5); ctx.fillStyle = c.fg; ctx.textAlign = 'left'; ctx.textBaseline = 'bottom'; ctx.fillText(q[2], P.X(q[0]) + 6, P.Y(q[1]) - 4); });
+    a.info.textContent = '実線＝マハラノビス距離 1,2,3，点線＝ユークリッド距離 1,2,3　A(1.5, 1.5)：ユークリッド ' + a.fmt(Math.hypot(1.5, 1.5), 3) + '，マハラノビス ' + a.fmt(md(1.5, 1.5), 3) + '　B(1.5, −1.5)：ユークリッド ' + a.fmt(Math.hypot(1.5, 1.5), 3) + '，マハラノビス ' + a.fmt(md(1.5, -1.5), 3);
+  });
+  // knn-boundary: { k, n } k近傍法の判別領域
+  reg('knn-boundary', function (a, p, c) {
+    var k = Math.max(1, Math.round(num(p.k, 5))), n = Math.round(num(p.n, 60)), G = twoGroups(a, n, 1.6, 1.2, 0, 1), D = [];
+    G.forEach(function (g, gi) { g.forEach(function (q) { D.push([q[0], q[1], gi]); }); });
+    var P = plane(a, c, -3, 4.5, -3, 4.2, 300);
+    var cls = function (x, y) {
+      var d = D.map(function (q) { return [Math.pow(q[0] - x, 2) + Math.pow(q[1] - y, 2), q[2]]; }).sort(function (u, v) { return u[0] - v[0]; });
+      var s = 0; for (var i = 0; i < k; i++) s += d[i][1]; return s > k / 2;
+    };
+    shade(P, cls, c.fill, c.fill2);
+    G[0].forEach(function (q) { dot(P, q[0], q[1], c.c1, 3); });
+    G[1].forEach(function (q) { dot(P, q[0], q[1], c.c2, 4, 'x'); });
+    var err = 0; D.forEach(function (q, i) {
+      var d = D.map(function (r, j) { return [j === i ? Infinity : Math.pow(r[0] - q[0], 2) + Math.pow(r[1] - q[1], 2), r[2]]; }).sort(function (u, v) { return u[0] - v[0]; });
+      var s = 0; for (var t = 0; t < k; t++) s += d[t][1]; if ((s > k / 2 ? 1 : 0) !== q[2]) err++;
+    });
+    a.info.textContent = 'k = ' + k + '：k が小さいと境界は入り組み（過学習）、大きいとなめらかになる　一つ抜き誤判別 ' + err + '/' + D.length;
+  });
+  // svm-margin: { gap, n } マージン最大の分離直線とサポートベクトル
+  reg('svm-margin', function (a, p, c) {
+    var gap = num(p.gap, 1), n = Math.round(num(p.n, 30)), D = [];
+    for (var i = 0; i < n; i++) { var g = i % 2 ? 1 : -1, u = a.normal(), v = a.normal(); D.push([0.6 * u + g * (0.9 + gap / 2) * 0.7071 + 0.8, 0.6 * v + g * (0.9 + gap / 2) * 0.7071 + 0.8, g]); }
+    // 向き θ を細かく試し、射影したときの2群のすきまが最大になる向きを探す（2次元なのでこれで最適解に十分近い）
+    var best = { m: -Infinity };
+    for (var t = 0; t < 3600; t++) {
+      var th = 2 * Math.PI * t / 3600, w = [Math.cos(th), Math.sin(th)], lo = Infinity, hi = -Infinity;
+      D.forEach(function (q) { var z = q[0] * w[0] + q[1] * w[1]; if (q[2] > 0) lo = Math.min(lo, z); else hi = Math.max(hi, z); });
+      if ((lo - hi) / 2 > best.m) best = { m: (lo - hi) / 2, w: w, b: (lo + hi) / 2 };
+    }
+    var P = plane(a, c, -3.5, 5, -3.5, 5, 320), ctx = P.ctx, w = best.w;
+    var line = function (off, col, dash, lw) {
+      ctx.strokeStyle = col; ctx.lineWidth = lw; ctx.setLineDash(dash);
+      var c0 = best.b + off, x1 = -10, x2 = 10;
+      ctx.beginPath();
+      if (Math.abs(w[1]) > 1e-6) { ctx.moveTo(P.X(x1), P.Y((c0 - w[0] * x1) / w[1])); ctx.lineTo(P.X(x2), P.Y((c0 - w[0] * x2) / w[1])); }
+      else { ctx.moveTo(P.X(c0 / w[0]), P.Y(-10)); ctx.lineTo(P.X(c0 / w[0]), P.Y(10)); }
+      ctx.save(); ctx.beginPath(); ctx.rect(P.X(P.xmin), P.Y(P.ymax), (P.xmax - P.xmin) * P.sc, (P.ymax - P.ymin) * P.sc); ctx.clip();
+      ctx.beginPath();
+      if (Math.abs(w[1]) > 1e-6) { ctx.moveTo(P.X(x1), P.Y((c0 - w[0] * x1) / w[1])); ctx.lineTo(P.X(x2), P.Y((c0 - w[0] * x2) / w[1])); }
+      else { ctx.moveTo(P.X(c0 / w[0]), P.Y(-10)); ctx.lineTo(P.X(c0 / w[0]), P.Y(10)); }
+      ctx.stroke(); ctx.restore(); ctx.setLineDash([]);
+    };
+    var sep = best.m > 0;
+    line(0, c.fg, [], 2);
+    if (sep) { line(best.m, c.muted, [5, 4], 1.2); line(-best.m, c.muted, [5, 4], 1.2); }
+    D.forEach(function (q) {
+      var z = q[0] * w[0] + q[1] * w[1] - best.b, sv = sep && Math.abs(Math.abs(z) - best.m) < 1e-6 + best.m * 0.01;
+      dot(P, q[0], q[1], q[2] > 0 ? c.c2 : c.c1, q[2] > 0 ? 4 : 3, q[2] > 0 ? 'x' : null);
+      if (sv) { ctx.strokeStyle = c.fg; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(P.X(q[0]), P.Y(q[1]), 8, 0, 2 * Math.PI); ctx.stroke(); }
+    });
+    a.info.textContent = sep ? 'マージン（境界から最も近い点までの距離）= ' + a.fmt(best.m, 3) + '　丸で囲んだ点がサポートベクトル（破線上の点）' : '2群が重なっていて直線では分離できない（ハードマージンでは解がない。ソフトマージンでは一部のはみ出しを許して境界を決める）。実線は重なりが最小の向き';
   });
 
   // ---------- 第2章 ----------

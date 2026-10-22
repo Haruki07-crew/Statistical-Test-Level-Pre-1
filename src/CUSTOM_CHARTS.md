@@ -45,3 +45,8 @@
 | iv-scatter | 内生性のある回帰で最小二乗法と操作変数法の直線を比較 | rho(0.6), strength(1), n(200), beta(1) |
 | points-2d | ラベル付きの点（負荷量プロット・得点の散布図） | points: [{label, x, y}], arrows: 1 で原点から矢印, circle: 1 で単位円, xlabel, ylabel |
 | graph-diagram | 無向グラフ・有向グラフ（グラフィカルモデル、パス図） | nodes: [...], edges: [[i, j], ...]（0始まり）, directed: 1 で矢印, weights: [...]（辺のラベル）, layout: circle\|line |
+| discriminant-boundary | 2つの正規分布のベイズ判別境界（線形／二次） | delta(2), rho(0.5), ratio(1：共分散の倍率、1以外で二次), prior(0.5：群2の事前確率), n(60) |
+| fisher-projection | フィッシャーの判別：射影の向きと射影値の分布 | angle(0, 度), rho(0.6), delta(2), n(60) |
+| mahalanobis-contour | マハラノビス距離の楕円とユークリッド距離の円 | rho(0.7), sx(1), sy(1) |
+| knn-boundary | k近傍法の判別領域 | k(5), n(60) |
+| svm-margin | マージン最大の分離直線とサポートベクトル | gap(1：負で重なる), n(30) |
