@@ -2010,31 +2010,31 @@ chapters:
   - id: uniform-random-number
     title: 一様乱数
     importance: A
-    status: planned
+    status: verified
   - id: linear-congruential-generator
     title: 線形合同法
     importance: B
-    status: planned
+    status: verified
   - id: inverse-transform-sampling
     title: 逆関数法
     importance: A
-    status: planned
+    status: verified
   - id: rejection-sampling
     title: 棄却法
     importance: A
-    status: planned
+    status: verified
   - id: box-muller-method
     title: ボックス・ミュラー法
     importance: A
-    status: planned
+    status: verified
   - id: monte-carlo-integration
     title: モンテカルロ積分
     importance: A
-    status: planned
+    status: verified
   - id: importance-sampling
     title: 重点サンプリング
     importance: A
-    status: planned
+    status: verified
   - id: variance-reduction
     title: 分散減少法
     importance: C
@@ -2042,31 +2042,31 @@ chapters:
   - id: mcmc
     title: マルコフ連鎖モンテカルロ法
     importance: A
-    status: planned
+    status: verified
   - id: metropolis-hastings
     title: メトロポリス・ヘイスティングス法
     importance: A
-    status: planned
+    status: verified
   - id: gibbs-sampling
     title: ギブスサンプリング
     importance: A
-    status: planned
+    status: verified
   - id: burn-in-convergence
     title: バーンインと収束診断
     importance: B
-    status: planned
+    status: verified
   - id: bootstrap
     title: ブートストラップ法
     importance: A
-    status: planned
+    status: verified
   - id: bootstrap-confidence-interval
     title: ブートストラップ信頼区間
     importance: B
-    status: planned
+    status: verified
   - id: jackknife
     title: ジャックナイフ法
     importance: A
-    status: planned
+    status: verified
   - id: permutation-simulation
     title: モンテカルロ検定
     importance: C

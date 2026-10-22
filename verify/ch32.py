@@ -113,15 +113,14 @@ EZ4 = k4 + 3 * k2 ** 2
 check(T, "例2 E[Z]=0, V[Z]=1, 超過尖度 −0.1, E[Z^4]=2.9（キュムラント）", k2 == 1 and k4 == sp.Rational(-1, 10) and EZ4 == sp.Rational(29, 10), EZ4)
 rng = np.random.default_rng(1)
 Z = rng.random((100000, 12)).sum(1) - 6
-# 再現されない（default_rng(1) で 平均0.0011・分散0.9960・4次2.865）→ モンテカルロ誤差 3SE で妥当性を確認
-se_v = math.sqrt((2.9 - 1) / 1e5)
-se_4 = math.sqrt(float(sp.Rational(29, 10)) * 0 + 96.0 / 1e5)  # V[Z^4]≈E[Z^8]−9 ≈ 96（正規近似）
-check(T, "例2 シード1: 平均0.001 は 0 の 3SE（0.0095）以内", abs(0.001) <= 3 * math.sqrt(1 / 1e5), 0.001)
-check(T, "例2 シード1: 分散0.997 は 1 の 3SE 以内", abs(0.997 - 1) <= 3 * se_v, se_v)
-check(T, "例2 シード1: 4次モーメント2.883 は 2.9 の 3SE 以内", abs(2.883 - 2.9) <= 3 * se_4, se_4)
-check(T, "例2 再計算（default_rng(1)）でも 平均・分散・4次が本文値と 3SE 以内",
-      abs(Z.mean() - 0.001) <= 3 * math.sqrt(1 / 1e5) and abs(Z.var() - 0.997) <= 3 * se_v and abs((Z ** 4).mean() - 2.883) <= 3 * se_4,
+# 本文の旧値（分散0.997・4次2.883）は default_rng(1) で再現できなかったため、再現値 0.996・2.865 に修正済み
+se_v = math.sqrt((2.9 - 1) / 1e5)  # 標本分散の SE ≈ √((μ4−σ⁴)/n)
+se_4 = math.sqrt(96.0 / 1e5)  # V[Z^4]≈E[Z^8]−9 ≈ 96（正規近似）
+check(T, "例2 シード1 10^5組: 平均0.001・分散0.996・4次2.865（default_rng(1) で再現）",
+      close(Z.mean(), 0.001, 5e-4) and close(Z.var(), 0.996, 5e-4) and close((Z ** 4).mean(), 2.865, 5e-4),
       (round(Z.mean(), 4), round(Z.var(), 4), round((Z ** 4).mean(), 4)))
+check(T, "例2 シード1の値が理論値 0, 1, 2.9 のモンテカルロ誤差 3SE 以内",
+      abs(Z.mean()) <= 3 * math.sqrt(1 / 1e5) and abs(Z.var() - 1) <= 3 * se_v and abs((Z ** 4).mean() - 2.9) <= 3 * se_4, (se_v, se_4))
 check(T, "例2 |Z|≤6", np.abs(Z).max() <= 6, np.abs(Z).max())
 c = charts(T)[0]
 check(T, "chart clt-sim base unif n=12（例2と同じ）", c["params"]["base"] == "unif" and c["params"]["n"] == 12, c["params"])
