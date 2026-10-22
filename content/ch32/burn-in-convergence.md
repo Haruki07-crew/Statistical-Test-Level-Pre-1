@@ -3,7 +3,7 @@ id: burn-in-convergence
 title: バーンインと収束診断
 reading: ばーんいんとしゅうそくしんだん
 en: Burn-in and convergence diagnostics
-aliases: [バーンイン, 稼働検査期間, 有効標本数, "effective sample size", ESS, Rハット, "Gelman-Rubin統計量", シニング]
+aliases: [バーンイン, バーンイン期間, 有効標本数, "effective sample size", ESS, Rハット, "Gelman-Rubin統計量", シニング]
 chapter: 32
 importance: B
 tags: [シミュレーション, MCMC, 自己相関]

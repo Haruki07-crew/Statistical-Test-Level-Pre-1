@@ -1943,59 +1943,59 @@ chapters:
   - id: prior-distribution
     title: 事前分布
     importance: A
-    status: planned
+    status: verified
   - id: posterior-distribution
     title: 事後分布
     importance: A
-    status: planned
+    status: verified
   - id: conjugate-prior
     title: 共役事前分布
     importance: A
-    status: planned
+    status: verified
   - id: beta-binomial-model
     title: ベータ・二項モデル
     importance: A
-    status: planned
+    status: verified
   - id: gamma-poisson-model
     title: ガンマ・ポアソンモデル
     importance: A
-    status: planned
+    status: verified
   - id: normal-normal-model
     title: 正規・正規モデル
     importance: A
-    status: planned
+    status: verified
   - id: noninformative-prior
     title: 無情報事前分布
     importance: B
-    status: planned
+    status: verified
   - id: jeffreys-prior
     title: ジェフリーズの事前分布
     importance: B
-    status: planned
+    status: verified
   - id: posterior-mean-map
     title: 事後平均とMAP推定
     importance: A
-    status: planned
+    status: verified
   - id: credible-interval
     title: 信用区間
     importance: A
-    status: planned
+    status: verified
   - id: predictive-distribution
     title: 予測分布
     importance: A
-    status: planned
+    status: verified
   - id: bayes-factor
     title: ベイズファクター
     importance: B
-    status: planned
+    status: verified
   - id: marginal-likelihood
     title: 周辺尤度
     importance: B
-    status: planned
+    status: verified
   - id: hierarchical-bayes-model
     title: 階層ベイズモデル
     importance: B
-    status: planned
+    status: verified
   - id: empirical-bayes
     title: 経験ベイズ法
     importance: C
