@@ -167,19 +167,23 @@
     ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText(p.ylabel || '', cx + 6, 4);
   });
   // graph-diagram: { nodes: [...], edges: [[i, j], ...], directed: 1 で矢印, weights: [...]（辺のラベル、省略可）, layout: circle|line }
-  reg('graph-diagram', function (a, p, c) {
+  reg('graph-diagram', graphDiagram);
+  // graph-network: graph-diagram と同じ（edgeLabels を辺のラベル、layout: triangle は circle として扱う）
+  reg('graph-network', function (a, p, c) { graphDiagram(a, Object.assign({}, p, { weights: p.weights || p.edgeLabels, layout: p.layout === 'line' ? 'line' : 'circle' }), c); });
+  function graphDiagram(a, p, c) {
     var N = p.nodes || ['X1', 'X2', 'X3'], E = p.edges || [], K = N.length, cv = a.canvas(240), ctx = cv.ctx, W = cv.w, H = cv.h, r = 22;
     var pos = N.map(function (_, i) {
       if (p.layout === 'line') return [40 + (W - 80) * (K === 1 ? 0.5 : i / (K - 1)), H / 2];
-      var t = -Math.PI / 2 + 2 * Math.PI * i / K, R = Math.min(W, H) / 2 - 36;
+      var t = -Math.PI / 2 + 2 * Math.PI * i / K, R = Math.min(W, H) / 2 - 42;
       return [W / 2 + R * Math.cos(t), H / 2 + R * Math.sin(t)];
     });
     ctx.lineWidth = 1.8; ctx.font = '12px ' + c.font;
+    var rad = N.map(function (lab) { return Math.max(r, ctx.measureText(String(lab)).width / 2 + 9); });
     E.forEach(function (e, k) {
       var i = e[0], j = e[1], dx = pos[j][0] - pos[i][0], dy = pos[j][1] - pos[i][1], d = Math.hypot(dx, dy), ux = dx / d, uy = dy / d;
       var bend = p.layout === 'line' && Math.abs(j - i) > 1 ? -40 : 0;
       ctx.strokeStyle = c.muted; ctx.fillStyle = c.muted;
-      var x1 = pos[i][0] + ux * r, y1 = pos[i][1] + uy * r, x2 = pos[j][0] - ux * r, y2 = pos[j][1] - uy * r;
+      var x1 = pos[i][0] + ux * rad[i], y1 = pos[i][1] + uy * rad[i], x2 = pos[j][0] - ux * rad[j], y2 = pos[j][1] - uy * rad[j];
       if (bend) {
         ctx.beginPath(); ctx.moveTo(pos[i][0], pos[i][1] - r); ctx.quadraticCurveTo((pos[i][0] + pos[j][0]) / 2, pos[i][1] + 2 * bend, pos[j][0], pos[j][1] - r); ctx.stroke();
         if (p.directed) drawArrow(ctx, pos[j][0] - 6, pos[j][1] - r - 10, pos[j][0], pos[j][1] - r, 8);
@@ -192,11 +196,11 @@
     });
     pos.forEach(function (q, i) {
       ctx.fillStyle = c.surface; ctx.strokeStyle = c.c1; ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.arc(q[0], q[1], r, 0, 2 * Math.PI); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.arc(q[0], q[1], rad[i], 0, 2 * Math.PI); ctx.fill(); ctx.stroke();
       ctx.fillStyle = c.fg; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(String(N[i]), q[0], q[1]);
     });
     a.info.textContent = p.directed ? '矢印は直接の影響（親 → 子）' : '辺がない2頂点は、他のすべての変数を与えたもとで条件付き独立';
-  });
+  }
 
   // ---------- 第23章 ----------
   // 座標平面（軸つき）を描く道具
@@ -346,6 +350,24 @@
     curve(q, c.c1, [], 2.5);
     ctx.strokeStyle = c.line; ctx.beginPath(); ctx.moveTo(P.X(-1.4), P.Y(0)); ctx.lineTo(P.X(1.4), P.Y(0)); ctx.moveTo(P.X(0), P.Y(-1.4)); ctx.lineTo(P.X(0), P.Y(1.4)); ctx.stroke();
     a.info.textContent = 'p = ' + a.fmt(q, 2) + '（実線）　点線は p = 1（マンハッタン：ひし形）、p = 2（ユークリッド：円）、p = ∞（チェビシェフ：正方形）　点 (1,1) までの距離 = ' + a.fmt(Math.pow(2, 1 / q), 4);
+  });
+
+  // rotation-angle: { loadings: [[a, b], ...], labels, angle（度） } 因子負荷量を固定して座標軸を回し、バリマックス基準を表示
+  reg('rotation-angle', function (a, p, c) {
+    var L = p.loadings || [[0.8, 0.2], [0.7, 0.3], [0.2, 0.8], [0.3, 0.7]], lab = p.labels || L.map(function (_, i) { return 'x' + (i + 1); });
+    var th = num(p.angle, 0) * Math.PI / 180, cs = Math.cos(th), sn = Math.sin(th);
+    var R = L.map(function (r) { return [r[0] * cs + r[1] * sn, -r[0] * sn + r[1] * cs]; }), m = L.length;
+    var V = [0, 1].reduce(function (s, k) { var s2 = 0, s4 = 0; R.forEach(function (r) { s2 += r[k] * r[k]; s4 += Math.pow(r[k], 4); }); return s + s4 / m - Math.pow(s2 / m, 2); }, 0);
+    var P = plane(a, c, -1.1, 1.1, -1.1, 1.1, 300), ctx = P.ctx;
+    ctx.strokeStyle = c.line; ctx.beginPath(); ctx.moveTo(P.X(-1.1), P.Y(0)); ctx.lineTo(P.X(1.1), P.Y(0)); ctx.moveTo(P.X(0), P.Y(-1.1)); ctx.lineTo(P.X(0), P.Y(1.1)); ctx.stroke();
+    ctx.lineWidth = 2;
+    [[cs, sn, '第1因子（回転後）', c.c2], [-sn, cs, '第2因子（回転後）', c.c3]].forEach(function (ax) {
+      ctx.strokeStyle = ax[3]; ctx.beginPath(); ctx.moveTo(P.X(-ax[0]), P.Y(-ax[1])); ctx.lineTo(P.X(ax[0]), P.Y(ax[1])); ctx.stroke();
+      ctx.fillStyle = ax[3]; ctx.font = '11px ' + c.font; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom'; ctx.fillText(ax[2], P.X(ax[0] * 0.95), P.Y(ax[1] * 0.95) - 4);
+    });
+    ctx.font = '12px ' + c.font;
+    L.forEach(function (r, i) { dot(P, r[0], r[1], c.c1, 4); ctx.fillStyle = c.fg; ctx.textAlign = 'left'; ctx.textBaseline = 'bottom'; ctx.fillText(String(lab[i]), P.X(r[0]) + 6, P.Y(r[1]) - 2); });
+    a.info.textContent = '回転角 ' + a.fmt(num(p.angle, 0)) + '°　回転後の負荷量：' + R.map(function (r, i) { return lab[i] + ' (' + a.fmt(r[0], 3) + ', ' + a.fmt(r[1], 3) + ')'; }).join('，') + '　バリマックス基準 V = ' + a.fmt(V, 4) + '（共通性は回転で変わらない）';
   });
 
   // ---------- 第2章 ----------

@@ -51,3 +51,5 @@
 | knn-boundary | k近傍法の判別領域 | k(5), n(60) |
 | svm-margin | マージン最大の分離直線とサポートベクトル | gap(1：負で重なる), n(30) |
 | minkowski-ball | ミンコフスキー距離の単位円 | p(2) |
+| graph-network | graph-diagram と同じ（edgeLabels で辺のラベル、layout: line\|circle\|triangle） | nodes, edges, edgeLabels, directed, layout |
+| rotation-angle | 因子負荷量を固定して座標軸を回す（バリマックス基準を表示） | loadings: [[a,b],...], labels, angle(0, 度) |
