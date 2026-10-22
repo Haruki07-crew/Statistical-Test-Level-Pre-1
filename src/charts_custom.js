@@ -4,7 +4,7 @@
   var Charts = root.Charts, Dist = root.Dist;
   // 乱数を使う図には「もう一度」ボタンを付ける
   var RANDOM = ['clt-sim', 'lln-path', 'ci-coverage', 'poisson-process', 'random-walk', 'regression-residual', 'qq-plot', 'bias-variance',
-    'pca-axes', 'dendrogram', 'residual-pattern', 'dw-sim', 'iv-scatter', 'discriminant-boundary', 'fisher-projection', 'knn-boundary', 'svm-margin', 'kmeans-steps', 'acf-plot', 'ar-sim', 'km-curve', 'mcmc-trace', 'inverse-transform', 'rejection-sampling', 'bootstrap-hist'];
+    'pca-axes', 'dendrogram', 'residual-pattern', 'dw-sim', 'iv-scatter', 'missing-scatter', 'discriminant-boundary', 'fisher-projection', 'knn-boundary', 'svm-margin', 'kmeans-steps', 'acf-plot', 'ar-sim', 'km-curve', 'mcmc-trace', 'inverse-transform', 'rejection-sampling', 'bootstrap-hist'];
   function reg(id, fn) { Charts.registerCustom(id, fn, RANDOM.indexOf(id) >= 0); }
 
   // ---------- 小さな道具 ----------
@@ -370,6 +370,28 @@
     ctx.font = '12px ' + c.font;
     L.forEach(function (r, i) { dot(P, r[0], r[1], c.c1, 4); ctx.fillStyle = c.fg; ctx.textAlign = 'left'; ctx.textBaseline = 'bottom'; ctx.fillText(String(lab[i]), P.X(r[0]) + 6, P.Y(r[1]) - 2); });
     a.info.textContent = '回転角 ' + a.fmt(num(p.angle, 0)) + '°　回転後の負荷量：' + R.map(function (r, i) { return lab[i] + ' (' + a.fmt(r[0], 3) + ', ' + a.fmt(r[1], 3) + ')'; }).join('，') + '　バリマックス基準 V = ' + a.fmt(V, 4) + '（共通性は回転で変わらない）';
+  });
+
+  // ---------- 第29章 ----------
+  // missing-scatter: { mechanism: mcar|mar|mnar, rho, n } 欠測の仕組みと、観測値だけの平均の偏り
+  reg('missing-scatter', function (a, p, c) {
+    var mech = p.mechanism || 'mcar', rho = num(p.rho, 0.6), n = Math.round(num(p.n, 200)), obs = [], mis = [], ys = [];
+    for (var i = 0; i < n; i++) {
+      var x = a.normal(), y = rho * x + Math.sqrt(1 - rho * rho) * a.normal(), pm;
+      if (mech === 'mar') pm = x > 0 ? 0.8 : 0.2;
+      else if (mech === 'mnar') pm = y > 0 ? 0.8 : 0.2;
+      else pm = 0.5;
+      ys.push(y);
+      (a.rand() < pm ? mis : obs).push({ x: x, y: y });
+    }
+    var mAll = mean(ys), mObs = mean(obs.map(function (q) { return q.y; }));
+    a.chart('tall', { data: { datasets: [{ type: 'scatter', label: '観測された Y', data: obs, backgroundColor: c.c1, pointRadius: 3 },
+      { type: 'scatter', label: '欠測した Y（本当は見えない）', data: mis, backgroundColor: c.fill, borderColor: c.faint, pointRadius: 3 },
+      a.lineDs('Y の真の平均', [{ x: -3.5, y: mAll }, { x: 3.5, y: mAll }], c.fg, { borderDash: [5, 4], borderWidth: 1.5 }),
+      a.lineDs('観測値だけの平均', [{ x: -3.5, y: mObs }, { x: 3.5, y: mObs }], c.c2, { borderWidth: 2 })] },
+    options: opts(a, c, { legend: true, ymin: -3.5, ymax: 3.5, xmin: -3.5, xmax: 3.5, xTitle: 'X（常に観測）', yTitle: 'Y' }) });
+    a.info.textContent = { mcar: 'MCAR：欠測は X とも Y とも無関係', mar: 'MAR：X が大きいと欠測しやすい（X で条件付ければ無視できる）', mnar: 'MNAR：Y 自身が大きいと欠測しやすい' }[mech] +
+      '　真の平均 ' + a.fmt(mAll, 3) + '，観測値だけの平均 ' + a.fmt(mObs, 3) + '（欠測 ' + mis.length + '/' + n + '）';
   });
 
   // ---------- 第2章 ----------

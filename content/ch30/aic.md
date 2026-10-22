@@ -21,7 +21,7 @@ charts:
     id: bias-variance
     params: { degree: 3, noise: 0.3, n: 20 }
     sliders:
-      - { param: degree, label: "多項式の次数", min: 1, max: 12, step: 1 }
+      - { param: degree, label: "多項式の次数", min: 1, max: 9, step: 1 }
     caption: 次数を上げると訓練誤差（手元のデータへの当てはまり）は下がり続けるが、新しいデータでの誤差は途中から上がる。AIC は訓練データだけから後者を推定しようとする規準。
 ---
 

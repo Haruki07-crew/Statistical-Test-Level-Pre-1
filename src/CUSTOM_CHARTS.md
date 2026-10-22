@@ -55,3 +55,4 @@
 | rotation-angle | 因子負荷量を固定して座標軸を回す（バリマックス基準を表示） | loadings: [[a,b],...], labels, angle(0, 度) |
 
 補足：points-2d は points の各要素に group を付けるか、ラベルの先頭を「[行]」「[列]」のように書くと、種類ごとに色が変わる。
+| missing-scatter | 欠測メカニズム（MCAR/MAR/MNAR）と観測値だけの平均の偏り | mechanism: mcar\|mar\|mnar, rho(0.6), n(200) |
