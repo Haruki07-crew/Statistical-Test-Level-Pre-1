@@ -330,6 +330,11 @@
     for (i = 0; i < n; i++) { var a = xs[i] - mx, b = ys[i] - my; sxx += a * a; syy += b * b; sxy += a * b; }
     return { r: sxy / Math.sqrt(sxx * syy), b1: sxy / sxx, b0: my - (sxy / sxx) * mx, mx: mx, my: my };
   }
+  function ranks(v) {
+    var idx = v.map(function (x, i) { return i; }).sort(function (a, b) { return v[a] - v[b]; }), r = new Array(v.length);
+    idx.forEach(function (i, k) { r[i] = k + 1; });
+    return r;
+  }
   function resid(ys, zs) { var f = corr(zs, ys); return ys.map(function (y, i) { return y - f.b0 - f.b1 * zs[i]; }); }
 
   types.scatter = function (f) {
@@ -339,7 +344,7 @@
     if (model === 'bvnorm') {
       var rho = q.rho != null ? q.rho : 0.5;
       for (i = 0; i < n; i++) { var a = z(), b = z(); xs.push(a); ys.push(rho * a + Math.sqrt(1 - rho * rho) * b); }
-      info = '母相関 ρ = ' + fmt(rho, 3) + '　標本相関 r = ' + fmt(corr(xs, ys).r, 3) + '（n = ' + n + '）';
+      info = '母相関 ρ = ' + fmt(rho, 3) + '　標本相関 r = ' + fmt(corr(xs, ys).r, 3) + '　順位相関 rₛ = ' + fmt(corr(ranks(xs), ranks(ys)).r, 3) + '（n = ' + n + '）';
     } else if (model === 'spurious') {
       var ca = q.a != null ? q.a : 1, cb = q.b != null ? q.b : 1;
       for (i = 0; i < n; i++) { var zz = z(); zs.push(zz); xs.push(ca * zz + z()); ys.push(cb * zz + z()); }
