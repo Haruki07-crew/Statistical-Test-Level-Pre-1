@@ -1281,63 +1281,63 @@ chapters:
   - id: simple-random-sampling
     title: 単純無作為抽出
     importance: A
-    status: planned
+    status: verified
   - id: horvitz-thompson-estimator
     title: ホルビッツ・トンプソン推定量
     importance: A
-    status: planned
+    status: verified
   - id: inclusion-probability
     title: 包含確率
     importance: A
-    status: planned
+    status: verified
   - id: stratified-sampling
     title: 層化抽出法
     importance: A
-    status: planned
+    status: verified
   - id: proportional-allocation
     title: 比例配分
     importance: A
-    status: planned
+    status: verified
   - id: neyman-allocation
     title: ネイマン配分
     importance: A
-    status: planned
+    status: verified
   - id: cluster-sampling
     title: 集落抽出法
     importance: A
-    status: planned
+    status: verified
   - id: two-stage-sampling
     title: 二段抽出法
     importance: A
-    status: planned
+    status: verified
   - id: systematic-sampling
     title: 系統抽出法
     importance: B
-    status: planned
+    status: verified
   - id: ratio-estimation
     title: 比推定
     importance: A
-    status: planned
+    status: verified
   - id: regression-estimation
     title: 回帰推定
     importance: B
-    status: planned
+    status: verified
   - id: design-effect
     title: 計画効果
     importance: B
-    status: planned
+    status: verified
   - id: sampling-and-nonsampling-error
     title: 標本誤差と非標本誤差
     importance: A
-    status: planned
+    status: verified
   - id: probability-proportional-to-size-sampling
     title: 確率比例抽出法
     importance: B
-    status: planned
+    status: verified
   - id: nonresponse-bias
     title: 無回答バイアス
     importance: B
-    status: planned
+    status: verified
   - id: sampling-weight
     title: 標本ウェイト
     importance: C
