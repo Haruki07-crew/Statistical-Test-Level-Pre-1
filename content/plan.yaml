@@ -1076,51 +1076,51 @@ chapters:
   - id: logistic-regression
     title: ロジスティック回帰
     importance: A
-    status: planned
+    status: verified
   - id: odds-and-odds-ratio
     title: オッズとオッズ比
     importance: A
-    status: planned
+    status: verified
   - id: generalized-linear-model
     title: 一般化線形モデル
     importance: A
-    status: planned
+    status: verified
   - id: link-function
     title: リンク関数
     importance: A
-    status: planned
+    status: verified
   - id: exponential-dispersion-family
     title: 指数分散型分布族
     importance: B
-    status: planned
+    status: verified
   - id: probit-model
     title: プロビットモデル
     importance: B
-    status: planned
+    status: verified
   - id: poisson-regression
     title: ポアソン回帰
     importance: A
-    status: planned
+    status: verified
   - id: deviance
     title: 逸脱度
     importance: A
-    status: planned
+    status: verified
   - id: logistic-likelihood-estimation
     title: ロジスティック回帰の最尤推定
     importance: B
-    status: planned
+    status: verified
   - id: iteratively-reweighted-least-squares
     title: 反復重み付き最小二乗法
     importance: B
-    status: planned
+    status: verified
   - id: multinomial-logit-model
     title: 多項ロジットモデル
     importance: B
-    status: planned
+    status: verified
   - id: ordered-logit-model
     title: 順序ロジットモデル
     importance: B
-    status: planned
+    status: verified
   - id: tobit-model
     title: トービットモデル
     importance: C
@@ -1128,7 +1128,7 @@ chapters:
   - id: overdispersion
     title: 過分散
     importance: B
-    status: planned
+    status: verified
   - id: offset-term
     title: オフセット項
     importance: C
