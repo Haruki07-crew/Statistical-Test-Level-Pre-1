@@ -1,7 +1,11 @@
 /* カスタム図（charts.js の registerCustom で登録）。パラメータの一覧は src/CUSTOM_CHARTS.md */
 (function (root) {
   'use strict';
-  var Charts = root.Charts, Dist = root.Dist, reg = Charts.registerCustom;
+  var Charts = root.Charts, Dist = root.Dist;
+  // 乱数を使う図には「もう一度」ボタンを付ける
+  var RANDOM = ['clt-sim', 'lln-path', 'ci-coverage', 'poisson-process', 'random-walk', 'regression-residual', 'qq-plot', 'bias-variance',
+    'pca-axes', 'dendrogram', 'kmeans-steps', 'acf-plot', 'ar-sim', 'km-curve', 'mcmc-trace', 'inverse-transform', 'rejection-sampling', 'bootstrap-hist'];
+  function reg(id, fn) { Charts.registerCustom(id, fn, RANDOM.indexOf(id) >= 0); }
 
   // ---------- 小さな道具 ----------
   function num(v, d) { return v == null || v === '' || isNaN(Number(v)) ? d : Number(v); }

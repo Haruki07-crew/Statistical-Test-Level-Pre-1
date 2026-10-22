@@ -47,7 +47,7 @@ def load_plan():
 def custom_chart_ids():
     ids = set()
     for p in (ROOT / "src").glob("charts*.js"):
-        ids |= set(re.findall(r"registerCustom\(\s*['\"]([\w-]+)['\"]", p.read_text(encoding="utf-8")))
+        ids |= set(re.findall(r"(?:registerCustom|\breg)\(\s*['\"]([\w-]+)['\"]", p.read_text(encoding="utf-8")))
     return ids
 
 

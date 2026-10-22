@@ -4,6 +4,7 @@
   var Dist = root.Dist;
   var live = [];       // 表示中の図
   var customs = {};    // カスタム図の登録先
+  var randomIds = {};  // 乱数を使うカスタム図（「もう一度」ボタンを付ける）
 
   // ---------- 共通の道具 ----------
   function colors() {
@@ -119,7 +120,7 @@
       scales: {
         x: { type: opt.xType || 'linear', min: opt.xmin, max: opt.xmax, grid: { color: c.grid }, ticks: tick, border: { color: c.line },
           title: { display: !!opt.xTitle, text: opt.xTitle, color: c.muted } },
-        y: { min: opt.ymin != null ? opt.ymin : 0, max: opt.ymax, grid: { color: c.grid }, ticks: tick, border: { color: c.line },
+        y: { min: opt.ymin === undefined ? 0 : (opt.ymin === null ? undefined : opt.ymin), max: opt.ymax, grid: { color: c.grid }, ticks: tick, border: { color: c.line },
           title: { display: !!opt.yTitle, text: opt.yTitle, color: c.muted } }
       }
     };
@@ -419,6 +420,7 @@
       (root.requestAnimationFrame || setTimeout)(function () { pending = false; f.redraw(); });
     };
     if (typ && typ.controls) typ.controls(f, schedule);
+    if (spec.type === 'custom' && randomIds[spec.id]) types.scatter.controls(f, schedule);
     f.paramSliders(schedule);
     f.redraw();
     if (spec.type === 'custom' && root.ResizeObserver) {
@@ -434,7 +436,7 @@
     live = [];
   }
   function redrawAll() { live.forEach(function (f) { f.redraw(); }); }
-  function registerCustom(id, fn) { customs[id] = fn; }
+  function registerCustom(id, fn, random) { customs[id] = fn; if (random) randomIds[id] = true; }
 
   root.Charts = { _rng: mulberry32, _normal: normalRng, render: render, destroyAll: destroyAll, redrawAll: redrawAll, registerCustom: registerCustom, has: function (id) { return !!customs[id]; } };
 
