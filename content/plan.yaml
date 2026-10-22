@@ -946,63 +946,63 @@ chapters:
   - id: multiple-regression-model
     title: 重回帰モデル
     importance: A
-    status: planned
+    status: verified
   - id: least-squares-method
     title: 最小二乗法
     importance: A
-    status: planned
+    status: verified
   - id: normal-equations
     title: 正規方程式
     importance: A
-    status: planned
+    status: verified
   - id: hat-matrix
     title: ハット行列
     importance: A
-    status: planned
+    status: verified
   - id: gauss-markov-theorem
     title: ガウス・マルコフの定理
     importance: A
-    status: planned
+    status: verified
   - id: coefficient-of-determination
     title: 決定係数
     importance: A
-    status: planned
+    status: verified
   - id: adjusted-r-squared
     title: 自由度調整済み決定係数
     importance: A
-    status: planned
+    status: verified
   - id: regression-coefficient-t-test
     title: 回帰係数のt検定
     importance: A
-    status: planned
+    status: verified
   - id: overall-f-test-regression
     title: 回帰全体のF検定
     importance: A
-    status: planned
+    status: verified
   - id: standardized-partial-regression-coefficient
     title: 標準化偏回帰係数
     importance: B
-    status: planned
+    status: verified
   - id: multicollinearity
     title: 多重共線性
     importance: A
-    status: planned
+    status: verified
   - id: variance-inflation-factor
     title: 分散拡大要因
     importance: A
-    status: planned
+    status: verified
   - id: dummy-variable
     title: ダミー変数
     importance: B
-    status: planned
+    status: verified
   - id: interaction-term
     title: 交互作用項
     importance: B
-    status: planned
+    status: verified
   - id: confidence-and-prediction-interval-regression
     title: 回帰の信頼区間と予測区間
     importance: B
-    status: planned
+    status: verified
   - id: partial-f-test
     title: 部分F検定
     importance: C
