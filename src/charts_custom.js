@@ -693,11 +693,11 @@
     var deg = Math.round(num(p.degree, 3)), noise = num(p.noise, 0.3), n = Math.round(num(p.n, 20)), rand = a.rand, z = a.normal;
     var f = function (x) { return Math.sin(Math.PI * x); };
     var design = function (x, d) { var r = []; for (var k = 0; k <= d; k++) r.push(Math.pow(x, k)); return r; };
-    var tx = a.linspace(-1, 1, 101), tr = [], te = [], fits = [];
-    for (var d = 1; d <= 9; d++) { tr.push(0); te.push(0); }
+    var tx = a.linspace(-1, 1, 101), tr = [], te = [], fits = [], D = Math.min(12, Math.max(9, deg));
+    for (var d = 1; d <= D; d++) { tr.push(0); te.push(0); }
     for (var rep = 0; rep < 20; rep++) {
       var xs = [], ys = []; for (var i = 0; i < n; i++) { var x = 2 * rand() - 1; xs.push(x); ys.push(f(x) + noise * z()); }
-      for (d = 1; d <= 9; d++) {
+      for (d = 1; d <= D; d++) {
         var b = lsq(xs.map(function (x) { return design(x, d); }), ys, 1e-9);
         var pr = function (x) { return design(x, d).reduce(function (s, v, k) { return s + v * b[k]; }, 0); };
         tr[d - 1] += mean(xs.map(function (x, i) { return Math.pow(ys[i] - pr(x), 2); })) / 20;
@@ -708,9 +708,9 @@
     var ds = fits.map(function (fp) { return a.lineDs('', fp, c.fill, { borderWidth: 1, borderColor: c.c3 }); });
     ds.push(a.lineDs('真の関数', pts(tx, tx.map(f)), c.c2, { borderWidth: 2.5 }));
     a.chart('short', { data: { datasets: ds }, options: opts(a, c, { ymin: -2, ymax: 2, xmin: -1, xmax: 1, xTitle: 'x（' + deg + '次多項式を8つのデータセットに当てはめ）' }) });
-    var ks = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    var ks = []; for (d = 1; d <= D; d++) ks.push(d);
     a.chart('short', { data: { datasets: [a.lineDs('訓練誤差', pts(ks, tr), c.c1, { pointRadius: 3 }), a.lineDs('テスト誤差（期待予測誤差）', pts(ks, te), c.c2, { pointRadius: 3 })] },
-      options: opts(a, c, { legend: true, xmin: 1, xmax: 9, ymax: Math.min(1.5, Math.max.apply(null, te) * 1.1), xTitle: '多項式の次数' }) });
+      options: opts(a, c, { legend: true, xmin: 1, xmax: D, ymax: Math.min(1.5, Math.max.apply(null, te) * 1.1), xTitle: '多項式の次数' }) });
     a.info.textContent = '次数を上げると訓練誤差は下がり続けるが、テスト誤差は途中から上がる（過学習）。最小は ' + (te.indexOf(Math.min.apply(null, te)) + 1) + ' 次';
   });
 
