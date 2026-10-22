@@ -765,19 +765,19 @@ chapters:
   - id: asymptotic-relative-efficiency
     title: 漸近相対効率
     importance: C
-    status: planned
+    status: verified
   - id: median-test
     title: 中央値検定
     importance: C
-    status: planned
+    status: verified
   - id: kolmogorov-smirnov-two-sample
     title: 2標本コルモゴロフ・スミルノフ検定
     importance: C
-    status: planned
+    status: verified
   - id: runs-test
     title: ラン検定
     importance: C
-    status: planned
+    status: verified
   - id: concordant-discordant-pairs
     title: 一致対・不一致対
     importance: B
@@ -785,7 +785,7 @@ chapters:
   - id: jonckheere-terpstra-test
     title: ヨンクヒール・タプストラ検定
     importance: C
-    status: planned
+    status: verified
 - 'no': 14
   title: マルコフ連鎖
   terms:
@@ -856,11 +856,11 @@ chapters:
   - id: positive-recurrence
     title: 正再帰と零再帰
     importance: C
-    status: planned
+    status: verified
   - id: continuous-time-markov-chain
     title: 連続時間マルコフ連鎖
     importance: C
-    status: planned
+    status: verified
 - 'no': 15
   title: 確率過程の基礎
   terms:
@@ -871,7 +871,7 @@ chapters:
   - id: counting-process
     title: 計数過程
     importance: C
-    status: planned
+    status: verified
   - id: poisson-process
     title: ポアソン過程
     importance: A
@@ -907,7 +907,7 @@ chapters:
   - id: pure-birth-process
     title: 純出生過程
     importance: C
-    status: planned
+    status: verified
   - id: queueing-theory
     title: 待ち行列理論
     importance: B
@@ -927,7 +927,7 @@ chapters:
   - id: compound-poisson-process
     title: 複合ポアソン過程
     importance: C
-    status: planned
+    status: verified
   - id: independent-stationary-increments
     title: 独立増分性・定常増分性
     importance: B
@@ -935,11 +935,11 @@ chapters:
   - id: mmc-queue
     title: M/M/c待ち行列
     importance: C
-    status: planned
+    status: verified
   - id: reflection-principle
     title: 反射原理
     importance: C
-    status: planned
+    status: verified
 - 'no': 16
   title: 重回帰分析
   terms:
@@ -1006,7 +1006,7 @@ chapters:
   - id: partial-f-test
     title: 部分F検定
     importance: C
-    status: planned
+    status: verified
 - 'no': 17
   title: 回帰診断法
   terms:
