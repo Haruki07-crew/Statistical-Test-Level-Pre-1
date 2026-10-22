@@ -1458,7 +1458,7 @@ window.MathJax = {
   reg('markov-chain', function (a, p, c) {
     var P = p.P || [[0.7, 0.3], [0.4, 0.6]], K = P.length, L = p.labels || P.map(function (_, i) { return String(i + 1); });
     var steps = Math.round(num(p.steps, 20)), start = Math.round(num(p.start, 0));
-    var cv = a.canvas(240), ctx = cv.ctx, W = cv.w, H = cv.h, cx = W / 2, cy = H / 2, R = Math.min(W, H) / 2 - 48, r = 22;
+    var cv = a.canvas(260), ctx = cv.ctx, W = cv.w, H = cv.h, cx = W / 2, cy = H / 2, R = Math.min(W, H) / 2 - 66, r = 22;
     var pos = P.map(function (_, i) { var t = -Math.PI / 2 + 2 * Math.PI * i / K; return K === 2 ? [cx + (i ? 1 : -1) * Math.min(R * 1.4, W / 3), cy] : [cx + R * Math.cos(t), cy + R * Math.sin(t)]; });
     ctx.lineWidth = 1.4; ctx.font = '12px ' + c.font;
     for (var i = 0; i < K; i++) for (var j = 0; j < K; j++) {
@@ -1468,7 +1468,7 @@ window.MathJax = {
         var ang = Math.atan2(pos[i][1] - cy, pos[i][0] - cx) || (i ? 0 : Math.PI), lx = pos[i][0] + Math.cos(ang) * (r + 12), ly = pos[i][1] + Math.sin(ang) * (r + 12);
         ctx.beginPath(); ctx.arc(lx, ly, 13, 0, 2 * Math.PI); ctx.stroke();
         ctx.fillStyle = c.fg; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText(a.fmt(pr, 3), pos[i][0] + Math.cos(ang) * (r + 36), pos[i][1] + Math.sin(ang) * (r + 36));
+        ctx.fillText(a.fmt(pr, 3), pos[i][0] + Math.cos(ang) * (r + 32), pos[i][1] + Math.sin(ang) * (r + 32));
         continue;
       }
       var dx = pos[j][0] - pos[i][0], dy = pos[j][1] - pos[i][1], d = Math.sqrt(dx * dx + dy * dy), ux = dx / d, uy = dy / d, ox = -uy * 7, oy = ux * 7;
