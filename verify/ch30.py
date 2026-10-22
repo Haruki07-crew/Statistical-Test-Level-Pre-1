@@ -484,6 +484,125 @@ check(T, "非負性（ランダムな離散分布 1万組）", bool(np.all(np.su
 ch = front(T)["charts"][0]
 check(T, "pdf の真の分布 N(0,1)", ch["compare"][0]["params"] == {"mu": 0, "sigma": 1}, ch["compare"][0]["params"])
 
+# ================================================================ 重要度Cの用語
+xc_ = np.arange(1, 9, dtype=float)
+yc_ = np.array([2.2, 3.3, 3.8, 3.7, 4.9, 4.8, 4.3, 4.4])
+
+# ---------------------------------------------------------------- training-test-split
+T = "training-test-split"
+te_ = np.isin(xc_, [3, 6])
+tr_ = ~te_
+trm_, tem_, coef_, pred_ = [], [], [], []
+for d_ in range(4):
+    b_ = np.polyfit(xc_[tr_], yc_[tr_], d_)
+    coef_.append(b_[::-1])
+    pred_.append(np.polyval(b_, xc_[te_]))
+    trm_.append(np.mean((yc_[tr_] - np.polyval(b_, xc_[tr_])) ** 2))
+    tem_.append(np.mean((yc_[te_] - np.polyval(b_, xc_[te_])) ** 2))
+check(T, "2次式（訓練6点）1.3373+1.0380x−0.0833x²", allclose(coef_[2], [1.3373, 1.0380, -0.0833]), np.round(coef_[2], 4).tolist())
+check(T, "テストの予測値 3.7013, 4.5653", allclose(pred_[2], [3.7013, 4.5653]), np.round(pred_[2], 4).tolist())
+check(T, "2次のテスト MSE 0.0324", close(tem_[2], 0.0324), tem_[2])
+check(T, "表 訓練 MSE 0.7733/0.2549/0.0883/0.0877", allclose(trm_, [0.7733, 0.2549, 0.0883, 0.0877]), np.round(trm_, 4).tolist())
+check(T, "表 テスト MSE 0.5000/0.2546/0.0324/0.0391", allclose(tem_, [0.5, 0.2546, 0.0324, 0.0391]), np.round(tem_, 4).tolist())
+check(T, "訓練誤差は単調減少で3次が最小、テスト誤差は2次が最小", bool(np.all(np.diff(trm_) < 0)) and int(np.argmin(tem_)) == 2, None)
+c_ = charts(T, "line-data")[0]
+sr_ = series(c_)
+check(T, "chart line-data x=0..3・2系列＝表の値",
+      c_["params"]["x"] == [0, 1, 2, 3] and allclose(sr_["訓練データの平均二乗誤差"], np.round(trm_, 4), 1e-9) and allclose(sr_["テストデータの平均二乗誤差"], np.round(tem_, 4), 1e-9), sr_)
+# 乱数：テスト誤差は固定した f̂ の汎化誤差の不偏推定、訓練誤差は過小
+f2_ = np.polyfit(xc_[tr_], yc_[tr_], 2)
+mu_true = np.polyval(np.polyfit(xc_, yc_, 2), xc_)
+sig_ = 0.3
+gen_ = np.mean((mu_true - np.polyval(f2_, xc_)) ** 2) + sig_ ** 2
+tests_ = []
+trains_, gens_ = [], []
+for _ in range(20000):
+    ynew = mu_true + rng.normal(0, sig_, 8)
+    tests_.append(np.mean((ynew[te_] - np.polyval(f2_, xc_[te_])) ** 2))
+    bb = np.polyfit(xc_[tr_], ynew[tr_], 2)
+    trains_.append(np.mean((ynew[tr_] - np.polyval(bb, xc_[tr_])) ** 2))
+    gens_.append(np.mean((mu_true[tr_] - np.polyval(bb, xc_[tr_])) ** 2) + sig_ ** 2)
+gen_te = np.mean((mu_true[te_] - np.polyval(f2_, xc_[te_])) ** 2) + sig_ ** 2
+check(T, "乱数2万回：固定 f̂ のテスト MSE の平均 = その f̂ の（テスト点での）汎化誤差（3SE）",
+      abs(np.mean(tests_) - gen_te) < 3 * np.std(tests_) / math.sqrt(20000), (round(np.mean(tests_), 4), round(gen_te, 4)))
+check(T, "乱数2万回：訓練誤差の平均 < 汎化誤差の平均（楽観的な偏り、理論 σ²(n−p)/n=0.045 vs 0.135）",
+      np.mean(trains_) < np.mean(gens_) and abs(np.mean(trains_) - sig_ ** 2 * 3 / 6) < 0.002 and abs(np.mean(gens_) - sig_ ** 2 * 9 / 6) < 0.003,
+      (round(np.mean(trains_), 4), round(np.mean(gens_), 4)))
+
+# ---------------------------------------------------------------- aicc
+T = "aicc"
+aic_c, cor_c = [], []
+for d_ in range(4):
+    b_ = np.polyfit(xc_, yc_, d_)
+    Se_ = np.sum((yc_ - np.polyval(b_, xc_)) ** 2)
+    k_ = d_ + 2
+    aic_c.append(8 * math.log(Se_ / 8) + 8 * (L2PI + 1) + 2 * k_)
+    cor_c.append(2 * k_ * (k_ + 1) / (8 - k_ - 1))
+aicc_c = np.array(aic_c) + np.array(cor_c)
+check(T, "AIC 23.727/17.256/9.621/11.618（aic.md の値と一致）", allclose(aic_c, [23.727, 17.256, 9.621, 11.618], 5e-4)
+      and charts("aic", "bar-data")[0]["params"]["values"] == [23.727, 17.256, 9.621, 11.618], np.round(aic_c, 3).tolist())
+check(T, "補正項 2.400/6.000/13.333/30.000（2次は 40/3）", allclose(cor_c, [2.4, 6, 13.333, 30], 5e-4) and close(40 / 3, 13.333, 5e-4), np.round(cor_c, 3).tolist())
+check(T, "AICc 26.127/23.256/22.954/41.618", allclose(aicc_c, [26.127, 23.256, 22.954, 41.618], 5e-4), np.round(aicc_c, 3).tolist())
+check(T, "AICc でも2次最小、1次との差 0.302、AIC の差 7.635",
+      int(np.argmin(aicc_c)) == 2 and close(round(aicc_c[1], 3) - round(aicc_c[2], 3), 0.302, 1e-9) and close(round(aic_c[1], 3) - round(aic_c[2], 3), 7.635, 1e-9), None)
+kk_, nn_ = sp.symbols("k n", positive=True)
+check(T, "AIC+2k(k+1)/(n−k−1) = −2ℓ+2kn/(n−k−1)（sympy）", sp.simplify(2 * kk_ + 2 * kk_ * (kk_ + 1) / (nn_ - kk_ - 1) - 2 * kk_ * nn_ / (nn_ - kk_ - 1)) == 0, None)
+check(T, "n→∞ で補正項→0（sympy）", sp.limit(2 * kk_ * (kk_ + 1) / (nn_ - kk_ - 1), nn_, sp.oo) == 0, None)
+c_ = charts(T, "line-data")[0]
+sr_ = series(c_)
+check(T, "chart line-data＝表の AIC・AICc", c_["params"]["x"] == [0, 1, 2, 3] and allclose(sr_["AIC"], np.round(aic_c, 3), 1e-9) and allclose(sr_["AICc"], np.round(aicc_c, 3), 1e-9), sr_)
+# 正規線形回帰で、AICc が期待 KL の偏り（−2倍）を正確に与えることを乱数で確認：
+# E[−2ℓ(θ̂) を新データで評価] − E[−2ℓ(θ̂)] = 2kn/(n−k−1)（k=p+1）
+Xd_ = np.vander(xc_, 3, increasing=True)
+mu_t = Xd_ @ np.array([1.3, 1.0, -0.08])
+gap_ = []
+for _ in range(40000):
+    yo = mu_t + rng.normal(0, 0.3, 8)
+    bh = np.linalg.lstsq(Xd_, yo, rcond=None)[0]
+    s2h = np.mean((yo - Xd_ @ bh) ** 2)
+    in_ = 8 * math.log(2 * math.pi * s2h) + 8
+    out_ = 8 * math.log(2 * math.pi * s2h) + (8 * 0.09 + np.sum((mu_t - Xd_ @ bh) ** 2)) / s2h
+    gap_.append(out_ - in_)
+check(T, "乱数4万回（2次, n=8, k=4）：偏り×2 の平均≈2kn/(n−k−1)=21.333（AIC の 8 ではない、相対 3%）",
+      abs(np.mean(gap_) / (2 * 4 * 8 / 3) - 1) < 0.03, round(float(np.mean(gap_)), 3))
+
+# ---------------------------------------------------------------- tic-ebic
+T = "tic-ebic"
+zt_ = np.array([-3.1, -0.8, -0.4, -0.2, 0.0, 0.1, 0.3, 0.5, 0.9, 2.7])
+muh_ = zt_.mean()
+s2h_ = np.mean((zt_ - muh_) ** 2)
+m2l_ = len(zt_) * (L2PI + math.log(s2h_) + 1)
+check(T, "μ̂=0、σ̂²=1.89", close(muh_, 0, 1e-12) and close(s2h_, 1.89, 1e-12), (muh_, s2h_))
+check(T, "−2ℓ=34.745、AIC=38.745（scipy の対数密度の和でも）",
+      close(m2l_, 34.745, 5e-4) and close(m2l_ + 4, 38.745, 5e-4) and close(-2 * stats.norm(0, math.sqrt(s2h_)).logpdf(zt_).sum(), m2l_, 1e-9), m2l_)
+kap_ = np.mean((zt_ - muh_) ** 4) / s2h_ ** 2
+sc_ = np.array([(zt_ - muh_) / s2h_, -1 / (2 * s2h_) + (zt_ - muh_) ** 2 / (2 * s2h_ ** 2)])
+I_ = sc_ @ sc_.T / len(zt_)
+J_ = np.array([[1 / s2h_, 0], [0, 1 / (2 * s2h_ ** 2)]])
+trIJ_ = float(np.trace(I_ @ np.linalg.inv(J_)))
+check(T, "κ̂=4.106、tr=1+(κ̂−1)/2=2.553", close(kap_, 4.106, 5e-4) and close(1 + (kap_ - 1) / 2, 2.553, 5e-4), kap_)
+check(T, "スコアから直接作った Î, Ĵ で tr(ÎĴ⁻¹)=1+(κ̂−1)/2（μ̂ 分が1）",
+      close(trIJ_, 1 + (kap_ - 1) / 2, 1e-9) and close(I_[0, 0] / J_[0, 0], 1, 1e-9), trIJ_)
+check(T, "TIC=39.850、罰則 5.106（正規なら 4）", close(m2l_ + 2 * trIJ_, 39.850, 5e-4) and close(2 * trIJ_, 5.106, 5e-4), m2l_ + 2 * trIJ_)
+# 記号計算：正規モデルのスコア・ヘッセ行列から tr(IJ⁻¹)=1+(κ−1)/2（3次モーメントは非対角で寄与しない）
+zz, mm = sp.symbols("z mu", real=True)
+vv = sp.symbols("v", positive=True)
+lf = -sp.log(2 * sp.pi * vv) / 2 - (zz - mm) ** 2 / (2 * vv)
+gs = [sp.diff(lf, p) for p in (mm, vv)]
+Hs = sp.Matrix(2, 2, lambda i, j: -sp.diff(lf, (mm, vv)[i], (mm, vv)[j]))
+m3, m4 = sp.symbols("m3 m4", real=True)
+# E[(z−μ)]=0, E[(z−μ)²]=v, E[(z−μ)^3]=m3, E[(z−μ)^4]=m4 を代入
+def Eg(expr):
+    e = sp.expand(expr.subs(zz, mm + sp.Symbol("w")))
+    pol = sp.Poly(e, sp.Symbol("w"))
+    mom = {0: 1, 1: 0, 2: vv, 3: m3, 4: m4}
+    return sp.simplify(sum(cf * mom[mon[0]] for mon, cf in zip(pol.monoms(), pol.coeffs())))
+Im = sp.Matrix(2, 2, lambda i, j: Eg(gs[i] * gs[j]))
+Jm = sp.Matrix(2, 2, lambda i, j: Eg(Hs[i, j]))
+trs = sp.simplify((Im * Jm.inv()).trace())
+check(T, "tr(IJ⁻¹)=1+(κ−1)/2, κ=m4/v²（sympy）", sp.simplify(trs - (1 + (m4 / vv ** 2 - 1) / 2)) == 0, trs)
+check(T, "正規なら κ=3 で tr=2=k（I=J）", sp.simplify(trs.subs(m4, 3 * vv ** 2) - 2) == 0 and sp.simplify((Im - Jm).subs({m4: 3 * vv ** 2, m3: 0})) == sp.zeros(2, 2), None)
+
 # ================================================================ 集計
 ok = sum(results)
 ng = len(results) - ok

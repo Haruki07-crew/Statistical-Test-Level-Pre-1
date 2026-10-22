@@ -444,6 +444,67 @@ check(T, "chart caption：d²/7 = 固有値、累積割合 = 累積寄与率、�
 v_raw = np.linalg.svd(X, full_matrices=False)[2][0]
 check(T, "よくある間違い：中心化しない第1右特異ベクトルは平均ベクトルの方向に近い（cos>0.99）、h1 とは不一致", abs(v_raw @ mean / np.linalg.norm(mean)) > 0.99 and not allclose(np.abs(v_raw), np.abs(HS[:, 0]), 1e-3), abs(v_raw @ mean / np.linalg.norm(mean)))
 
+# ================================================================ 重要度Cの用語
+# 共通データ：上の 8人×4教科 X（主成分分析の項目と同じ）を標準化して使う。
+T = "biplot"
+Zb = (X - mean) / sd
+Ub, db, Vtb = np.linalg.svd(Zb, full_matrices=False)
+Vb = Vtb.T.copy()
+sgn = np.sign(Vb.sum(0))
+sgn[1] = np.sign(Vb[0, 1])  # 第2軸は国語が正の向き（本文の図の向き）
+Vb, Ub = Vb * sgn, Ub * sgn
+Gb = math.sqrt(n - 1) * Ub[:, :2]
+Hb = Vb[:, :2] * db[:2] / math.sqrt(n - 1)
+cbp = chart(T, "points-2d")["params"]["points"]
+Pg = np.array([[q["x"], q["y"]] for q in cbp if q["group"] == "生徒"])
+Ph = np.array([[q["x"], q["y"]] for q in cbp if q["group"] == "教科"])
+check(T, "chart 生徒の点 = √(n−1)U₂（α=0、小数第4位）", allclose(Pg, Gb, 5e-5), r(Gb))
+check(T, "chart 教科の点 = V₂D₂/√(n−1)（小数第4位）", allclose(Ph, Hb, 5e-5), r(Hb))
+check(T, "H = 相関行列の主成分負荷量（√λ_k h_k）", allclose(Hb, Vb[:, :2] * np.sqrt(np.linalg.eigvalsh(R)[::-1][:2]), 1e-10), "一致")
+check(T, "どの α でも GH' = X₂（α=0, 0.5, 1）", all(allclose((Ub[:, :2] * db[:2] ** a) @ (Vb[:, :2] * db[:2] ** (1 - a)).T,
+      (Ub[:, :2] * db[:2]) @ Vb[:, :2].T, 1e-10) for a in (0, 0.5, 1)) and allclose(Gb @ Hb.T, (Ub[:, :2] * db[:2]) @ Vb[:, :2].T, 1e-10), "成立")
+ip_m = Gb[2] @ Hb[2]
+ip_k = Gb[2] @ Hb[0]
+check(T, "g₃=(−0.1860,−1.8363)、h_数学=(0.9114,−0.3975)（小数第4位）", allclose(Gb[2], [-0.1860, -1.8363], 5e-5) and allclose(Hb[2], [0.9114, -0.3975], 5e-5), (r(Gb[2]), r(Hb[2])))
+check(T, "内積 0.560（本文の4桁の値で計算しても 0.560）", close(ip_m, 0.560, 5e-4) and close(-0.1860 * 0.9114 + -1.8363 * -0.3975, 0.560, 5e-4), r(ip_m))
+check(T, "数学の平均 71.625、SD 13.648、71.625+0.560×13.648≈79.27、実際 78", close(mean[2], 71.625, 1e-12) and close(sd[2], 13.648, 5e-4)
+      and close(mean[2] + ip_m * sd[2], 79.27, 5e-3) and close(71.625 + 0.560 * 13.648, 79.27, 5e-3) and X[2, 2] == 78, r(mean[2] + ip_m * sd[2]))
+check(T, "国語 −0.892 → 62.42 点、実際 60", close(ip_k, -0.892, 5e-4) and close(mean[0] + ip_k * sd[0], 62.42, 5e-3) and X[2, 0] == 60, (r(ip_k), r(mean[0] + ip_k * sd[0])))
+cum2 = (db[:2] ** 2).sum() / (db ** 2).sum()
+check(T, "累積寄与率 0.9697、失う割合 ≈3.0%", close(cum2, 0.9697) and close(1 - cum2, 0.030, 5e-4), r(cum2))
+check(T, "国語・英語の矢印の内積 0.951、相関 0.902", close(Hb[0] @ Hb[1], 0.951, 5e-4) and close(R[0, 1], 0.902, 5e-4), (r(Hb[0] @ Hb[1]), r(R[0, 1])))
+check(T, "図の読み：国語・英語は右上、数学・理科は右下、生徒3・6は下、生徒4は右端", (Hb[:2] > 0).all() and (Hb[2:, 0] > 0).all() and (Hb[2:, 1] < 0).all()
+      and Gb[2, 1] < -1 and Gb[5, 1] < -1 and np.argmax(Gb[:, 0]) == 3, "成立")
+
+T = "low-rank-approximation"
+Al = np.array([[4.0, 0.0], [3.0, -5.0]])
+check(T, "例1 A'A=[[25,−15],[−15,25]]、固有値 40,10", allclose(Al.T @ Al, [[25, -15], [-15, 25]], 1e-12) and allclose(np.linalg.eigvalsh(Al.T @ Al)[::-1], [40, 10], 1e-10), r(Al.T @ Al))
+dl = np.linalg.svd(Al, compute_uv=False)
+check(T, "例1 d1=√40≈6.325、d2=√10≈3.162", allclose(dl, [math.sqrt(40), math.sqrt(10)], 1e-12) and allclose(dl, [6.325, 3.162], 5e-4), r(dl))
+v1l = np.array([1, -1]) / math.sqrt(2)
+u1l = Al @ v1l / dl[0]
+check(T, "例1 v1=(1,−1)/√2 は A'A の固有ベクトル、u1=(1,2)/√5", allclose(Al.T @ Al @ v1l, 40 * v1l, 1e-12) and allclose(u1l, np.array([1, 2]) / math.sqrt(5), 1e-12), r(u1l))
+A1l = dl[0] * np.outer(u1l, v1l)
+check(T, "例1 A1=[[2,−2],[4,−4]]", allclose(A1l, [[2, -2], [4, -4]], 1e-12), r(A1l))
+check(T, "例1 誤差 A−A1=[[2,2],[−1,−1]]、2乗和 10=d2²、‖A‖²=50、80%", allclose(Al - A1l, [[2, 2], [-1, -1]], 1e-12) and close(((Al - A1l) ** 2).sum(), 10, 1e-10)
+      and close((Al ** 2).sum(), 50, 1e-12) and close(dl[0] ** 2 / 50, 0.8, 1e-12), r(((Al - A1l) ** 2).sum()))
+check(T, "例1 スペクトルノルムの誤差 = d2", close(np.linalg.norm(Al - A1l, 2), dl[1], 1e-10), r(np.linalg.norm(Al - A1l, 2)))
+okr = True
+for _ in range(2000):
+    B1 = np.outer(rng.normal(size=2), rng.normal(size=2))
+    okr &= ((Al - B1) ** 2).sum() >= 10 - 1e-9 and np.linalg.norm(Al - B1, 2) >= dl[1] - 1e-9
+check(T, "例1 乱数の階数1行列 2000個はどれも誤差 ≥ 10（フロベニウス）かつ ≥ d2（スペクトル）", okr, "成立")
+d2l = db ** 2
+check(T, "例2 標準化データの全2乗和 28、特異値の2乗 22.751, 4.401, 0.708, 0.140", close((Zb ** 2).sum(), 28, 1e-10) and allclose(d2l, [22.751, 4.401, 0.708, 0.140], 5e-4), r(d2l))
+e1 = d2l[1:].sum()
+e2 = d2l[2:].sum()
+check(T, "例2 階数1の誤差 5.249（18.7%）、階数2の誤差 0.848（3.0%）", close(e1, 5.249, 5e-4) and close(e1 / 28, 0.187, 5e-4) and close(e2, 0.848, 5e-4) and close(e2 / 28, 0.030, 5e-4), (r(e1), r(e2)))
+Xm2 = (Ub[:, :2] * db[:2]) @ Vb[:, :2].T
+check(T, "例2 階数2近似の誤差2乗和 = d3²+d4²（直接計算）", close(((Zb - Xm2) ** 2).sum(), e2, 1e-10), r(((Zb - Xm2) ** 2).sum()))
+cols = min((((Zb - Zb[:, list(c)] @ np.linalg.lstsq(Zb[:, list(c)], Zb, rcond=None)[0]) ** 2).sum() for c in [(0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3)]))
+check(T, "よくある間違い：元の2列を選んで回帰で再現する最良の誤差 > 階数2近似の誤差", cols > e2, (r(cols), r(e2)))
+check(T, "累積寄与率 = Σ_{k≤m} d_k² / Σ d_k²（相関行列の固有値と一致）", allclose(d2l / 7, np.linalg.eigvalsh(R)[::-1], 1e-10), "一致")
+
 # ----------------------------------------------------------------
 ok = sum(results)
 ng = len(results) - ok

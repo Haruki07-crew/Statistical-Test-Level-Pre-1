@@ -536,6 +536,72 @@ check(T, "ソフトマージン（C=100、SLSQP）: ξ=0 で w=(2/3,2/3), b=−5
 sm = chart(T, "svm-margin")["params"]
 check(T, "charts svm-margin の params がスライダー範囲内", -0.5 <= sm["gap"] <= 2, sm)
 
+# ================================================================ 重要度Cの用語
+def r(x, d=4):
+    return np.round(np.asarray(x, float), d).tolist()
+
+
+T = "kernel-method"
+xk = np.array([1.0, 2.0])
+yk = np.array([3.0, 1.0])
+phi = lambda v: np.array([v[0] ** 2, math.sqrt(2) * v[0] * v[1], v[1] ** 2])
+check(T, "x'y=5、(x'y)²=25", close(xk @ yk, 5, 1e-12) and close((xk @ yk) ** 2, 25, 1e-12), (xk @ yk) ** 2)
+check(T, "φ(x)=(1,2√2,4)、φ(y)=(9,3√2,1)、内積 9+12+4=25", allclose(phi(xk), [1, 2 * math.sqrt(2), 4], 1e-12) and allclose(phi(yk), [9, 3 * math.sqrt(2), 1], 1e-12)
+      and close(phi(xk) @ phi(yk), 25, 1e-10), r(phi(xk) @ phi(yk)))
+a1s, a2s, b1s, b2s = sp.symbols("a1 a2 b1 b2", real=True)
+check(T, "sympy：(a'b)² = φ(a)'φ(b)（恒等式）", sp.expand((a1s * b1s + a2s * b2s) ** 2 - (a1s ** 2 * b1s ** 2 + 2 * a1s * a2s * b1s * b2s + a2s ** 2 * b2s ** 2)) == 0, "恒等的に0")
+d2k = ((xk - yk) ** 2).sum()
+check(T, "‖x−y‖²=5、σ=1 で e^{−2.5}≈0.0821、σ=2 で e^{−0.625}≈0.5353", close(d2k, 5, 1e-12) and close(math.exp(-d2k / 2), 0.0821) and close(math.exp(-d2k / 8), 0.5353), (r(math.exp(-d2k / 2)), r(math.exp(-d2k / 8))))
+check(T, "γ=1/(2σ²) の流儀で同じ値", close(math.exp(-(1 / (2 * 4)) * d2k), math.exp(-d2k / 8), 1e-15), "一致")
+okpsd = True
+for _ in range(200):
+    P = rng.normal(size=(8, 2))
+    Dg = ((P[:, None] - P[None]) ** 2).sum(2)
+    for Kmat in (np.exp(-Dg / 2), (P @ P.T + 1) ** 3):
+        okpsd &= np.linalg.eigvalsh(Kmat).min() > -1e-8
+check(T, "ガウス・多項式カーネルのグラム行列は半正定値（乱数200組、許容 −1e-8）", okpsd, "成立")
+Pbad = rng.normal(size=(8, 2))
+Kbad = -((Pbad[:, None] - Pbad[None]) ** 2).sum(2)
+check(T, "よくある間違い：K=−‖x−y‖² は半正定値でない（カーネルにならない）", np.linalg.eigvalsh(Kbad).min() < -1e-6, r(np.linalg.eigvalsh(Kbad).min()))
+x1d = np.array([-0.5, 0.5, -2, 2])
+g1d = np.array([0, 0, 1, 1])
+thr_ok = any(((x1d > t) == g1d).all() or ((x1d < t) == g1d).all() for t in np.linspace(-3, 3, 601))
+check(T, "1次元 ±0.5 vs ±2 はしきい値1本で分けられず、x²=1 で分けられる", (not thr_ok) and (((x1d ** 2) > 1) == g1d).all(), "成立")
+
+T = "decision-tree"
+gini = lambda c: 1 - sum((x / sum(c)) ** 2 for x in c)
+ent = lambda c: -sum((x / sum(c)) * math.log2(x / sum(c)) for x in c if x > 0)
+check(T, "親ノード ジニ 0.5、エントロピー 1（2クラス半々で最大）", close(gini([5, 5]), 0.5, 1e-12) and close(ent([5, 5]), 1, 1e-12)
+      and all(gini([k, 10 - k]) <= 0.5 + 1e-12 and ent([k, 10 - k]) <= 1 + 1e-12 for k in range(11)), "")
+gA = 0.5 * gini([4, 1]) + 0.5 * gini([1, 4])
+check(T, "分け方A：子 0.32、加重平均 0.32、減少量 0.18", close(gini([4, 1]), 0.32, 1e-12) and close(gA, 0.32, 1e-12) and close(0.5 - gA, 0.18, 1e-12), r(0.5 - gA))
+gB = 0.3 * gini([3, 0]) + 0.7 * gini([2, 5])
+check(T, "分け方B：右 20/49≈0.408、加重平均 0.286、減少量 0.214", close(gini([2, 5]), 20 / 49, 1e-12) and close(20 / 49, 0.408, 5e-4)
+      and close(gB, 0.286, 5e-4) and close(0.5 - gB, 0.214, 5e-4), (r(gini([2, 5])), r(gB), r(0.5 - gB)))
+iA = 1 - ent([4, 1])
+iB = 1 - 0.7 * ent([2, 5])
+check(T, "情報利得 A: 1−0.722=0.278、B: 1−0.7×0.863≈0.396 → B を選ぶ", close(ent([4, 1]), 0.722, 5e-4) and close(iA, 0.278, 5e-4)
+      and close(ent([2, 5]), 0.863, 5e-4) and close(iB, 0.396, 5e-4) and iB > iA and 0.5 - gB > 0.5 - gA, (r(iA), r(iB)))
+
+T = "naive-bayes-classifier"
+sp_ = 0.4 * 0.5 * 0.2
+hm_ = 0.6 * 0.05 * 0.01
+check(T, "迷惑 0.04、通常 0.0003、事後確率 0.04/0.0403≈0.9926", close(sp_, 0.04, 1e-15) and close(hm_, 0.0003, 1e-15) and close(sp_ / (sp_ + hm_), 0.9926), r(sp_ / (sp_ + hm_)))
+sp2, hm2 = sp_ * 0.1, hm_ * 0.4
+check(T, "「会議」を加えると 0.004/(0.004+0.00012)≈0.9709", close(sp2, 0.004, 1e-15) and close(hm2, 0.00012, 1e-15) and close(sp2 / (sp2 + hm2), 0.9709), r(sp2 / (sp2 + hm2)))
+lp = math.log(0.4) + math.log(0.5) + math.log(0.2) + math.log(0.1)
+lh = math.log(0.6) + math.log(0.05) + math.log(0.01) + math.log(0.4)
+check(T, "対数の和で比べても同じ事後確率（ロジスティック変換）", close(1 / (1 + math.exp(lh - lp)), sp2 / (sp2 + hm2), 1e-12), "一致")
+check(T, "ラプラス平滑化 (0+1)/(30+2)=0.03125", close((0 + 1) / (30 + 2), 0.03125, 1e-15), 1 / 32)
+# 正規分布のナイーブベイズ = 共分散行列が対角の QDA（乱数で確認）
+mu_a, mu_b = np.array([0.0, 1.0]), np.array([1.5, -0.5])
+sd_a, sd_b = np.array([1.0, 2.0]), np.array([0.7, 1.2])
+pts = rng.normal(size=(500, 2)) * 2
+nb = lambda x, m, s: stats.norm.logpdf(x, m, s).sum(1)
+qd = lambda x, m, s: stats.multivariate_normal(m, np.diag(s ** 2)).logpdf(x)
+check(T, "正規分布のナイーブベイズ = 対角共分散の二次判別（乱数500点、許容1e-10）",
+      allclose(nb(pts, mu_a, sd_a) - nb(pts, mu_b, sd_b), qd(pts, mu_a, sd_a) - qd(pts, mu_b, sd_b), 1e-10), "一致")
+
 # ---------------------------------------------------------------- まとめ
 ok = sum(results)
 ng = len(results) - ok

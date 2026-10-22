@@ -757,6 +757,77 @@ gn = charts(t, "graph-network")[0]["params"]
 check(t, "charts graph-network 気温→アイス売上, 気温→熱中症搬送（有向）", gn["nodes"] == ["気温", "アイス売上", "熱中症搬送"]
       and gn["edges"] == [[0, 1], [0, 2]] and gn["directed"] == 1, gn["edges"])
 
+# ================================================================ 重要度Cの用語
+t = "graphical-lasso"
+Sg3 = np.array([[1, 0.6, 0.4], [0.6, 1, 0.5], [0.4, 0.5, 1.0]])
+
+
+def glasso_admm(S, lam, rho=1.0, iters=20000):
+    """対角に罰則をかけない graphical lasso を ADMM で解く（自作）。"""
+    p = len(S)
+    Zq, Uq = np.eye(p), np.zeros((p, p))
+    M = lam * (1 - np.eye(p))
+    for _ in range(iters):
+        w, Q = np.linalg.eigh(rho * (Zq - Uq) - S)
+        Xq = Q @ np.diag((w + np.sqrt(w ** 2 + 4 * rho)) / (2 * rho)) @ Q.T
+        A = Xq + Uq
+        Zq = np.sign(A) * np.maximum(np.abs(A) - M / rho, 0)
+        Uq = Uq + Xq - Zq
+    return Zq
+
+
+def glasso_obj(Om, S, lam):
+    return np.linalg.slogdet(Om)[1] - np.trace(S @ Om) - lam * np.abs(Om[~np.eye(len(S), dtype=bool)]).sum()
+
+
+def kkt(Om, S, lam, tol=1e-6):
+    W = np.linalg.inv(Om)
+    ok = allclose(np.diag(W), np.diag(S), tol)
+    for j in range(3):
+        for k in range(j + 1, 3):
+            if abs(Om[j, k]) > 1e-8:
+                ok &= abs(W[j, k] - (S[j, k] + lam * np.sign(Om[j, k]))) < tol
+            else:
+                ok &= abs(W[j, k] - S[j, k]) <= lam + tol
+    return bool(ok)
+
+
+pc3 = lambda O: [-O[a, b] / math.sqrt(O[a, a] * O[b, b]) for a, b in [(0, 1), (1, 2), (0, 2)]]
+check(t, "標本偏相関 0.504, 0.355, 0.144（共分散選択の項目と同じ S）", allclose(pc3(np.linalg.inv(Sg3)), [0.504, 0.355, 0.144], 5e-4), r(pc3(np.linalg.inv(Sg3))))
+check(t, "λ=0 なら Ω̂ = S⁻¹", allclose(glasso_admm(Sg3, 0.0, iters=3000), np.linalg.inv(Sg3), 1e-8), "一致")
+O2 = glasso_admm(Sg3, 0.2)
+W2 = np.linalg.inv(O2)
+check(t, "λ=0.2：辺はすべて残り Ŵ 非対角 0.4, 0.3, 0.2（s−0.2）", np.all(np.abs(O2[np.triu_indices(3, 1)]) > 1e-3) and allclose([W2[0, 1], W2[1, 2], W2[0, 2]], [0.4, 0.3, 0.2], 1e-6), r([W2[0, 1], W2[1, 2], W2[0, 2]]))
+check(t, "λ=0.2：偏相関 0.364, 0.245, 0.092", allclose(pc3(O2), [0.364, 0.245, 0.092], 5e-4), r(pc3(O2)))
+O4 = glasso_admm(Sg3, 0.4)
+W4 = np.linalg.inv(O4)
+check(t, "λ=0.4：ω̂13=0、ŵ12=0.2、ŵ23=0.1、ŵ13=0.02", abs(O4[0, 2]) < 1e-8 and allclose([W4[0, 1], W4[1, 2], W4[0, 2]], [0.2, 0.1, 0.02], 1e-6), r([W4[0, 1], W4[1, 2], W4[0, 2]]))
+check(t, "λ=0.4：|0.02−0.4|=0.38 ≤ 0.4、偏相関 0.199, 0.098", close(abs(W4[0, 2] - 0.4), 0.38, 1e-6) and allclose(pc3(O4)[:2], [0.199, 0.098], 5e-4), r(pc3(O4)))
+O5 = glasso_admm(Sg3, 0.5)
+check(t, "λ=0.5：辺 1-2 だけが残り偏相関 0.1", abs(O5[0, 1]) > 1e-3 and abs(O5[1, 2]) < 1e-8 and abs(O5[0, 2]) < 1e-8 and close(pc3(O5)[0], 0.1, 1e-6), r(pc3(O5)))
+O6 = glasso_admm(Sg3, 0.6)
+O7 = glasso_admm(Sg3, 0.75)
+check(t, "λ≥0.6（=max|s_jk|）で辺なし（λ=0.6, 0.75）", all(np.all(np.abs(O[np.triu_indices(3, 1)]) < 1e-8) for O in (O6, O7)), "成立")
+check(t, "KKT 条件 ŵ=s+λ·sign(ω̂)（非0）、|ŵ−s|≤λ（0）が λ=0.2, 0.4, 0.5, 0.6 で成立（許容1e-6）",
+      all(kkt(O, Sg3, l) for O, l in [(O2, 0.2), (O4, 0.4), (O5, 0.5), (O6, 0.6)]), "成立")
+check(t, "本文の式の符号：正の相関では ω̂<0 なので ŵ = s − λ（= s + λ·sign(ω̂)）", O2[0, 1] < 0 and close(W2[0, 1], Sg3[0, 1] + 0.2 * np.sign(O2[0, 1]), 1e-6), r(O2[0, 1]))
+okopt = True
+for _ in range(500):
+    Pm = O4 + 0.05 * (lambda E: E + E.T)(rng.normal(size=(3, 3)))
+    if np.linalg.eigvalsh(Pm).min() > 0:
+        okopt &= glasso_obj(Pm, Sg3, 0.4) <= glasso_obj(O4, Sg3, 0.4) + 1e-10
+check(t, "λ=0.4 の解の近傍 500 点で目的関数が解を超えない（乱数）", okopt, "成立")
+lam_b = (0.1 + math.sqrt(0.41)) / 2
+lsym = sp.symbols("lam", positive=True)
+roots = sp.solve(sp.Eq((sp.Rational(6, 10) - lsym) * (sp.Rational(5, 10) - lsym), sp.Rational(4, 10) - lsym), lsym)
+check(t, "境目 (0.6−λ)(0.5−λ)=0.4−λ の正の解 λ≈0.370", len(roots) == 1 and close(float(roots[0]), 0.370, 5e-4) and close(lam_b, float(roots[0]), 1e-12), r(lam_b))
+Ob1, Ob2 = glasso_admm(Sg3, lam_b - 0.005), glasso_admm(Sg3, lam_b + 0.005)
+check(t, "ADMM：λ=境目−0.005 では ω̂13≠0、境目+0.005 では ω̂13=0", abs(Ob1[0, 2]) > 1e-4 and abs(Ob2[0, 2]) < 1e-8, (r(Ob1[0, 2]), r(Ob2[0, 2])))
+gnp = charts(t, "graph-network")[0]["params"]
+check(t, "charts graph-network：辺 [0,1],[1,2]、ラベル 0.199, 0.098（λ=0.4 の偏相関）", gnp["nodes"] == ["X1", "X2", "X3"] and gnp["edges"] == [[0, 1], [1, 2]]
+      and allclose([float(v) for v in gnp["edgeLabels"]], pc3(O4)[:2], 5e-4) and gnp["directed"] == 0, gnp["edgeLabels"])
+check(t, "よくある間違い：Σ̂ の 1-3 成分は 0 でない（0.02）、残った偏相関は標本値より小さい", W4[0, 2] > 0.01 and all(a < b for a, b in zip(pc3(O4)[:2], pc3(np.linalg.inv(Sg3))[:2])), "成立")
+
 # ================================================================ 集計
 okn = sum(results)
 ngn = len(results) - okn

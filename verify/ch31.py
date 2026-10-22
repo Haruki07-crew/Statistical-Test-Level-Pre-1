@@ -567,6 +567,79 @@ for f in sorted((ROOT / "content" / "ch31").glob("*.md")):
                 bad.append((f.stem, sl["param"], v))
 check("全体", "各スライダーの初期値が min〜max の範囲内", not bad, bad)
 
+# ================================================================ 重要度Cの用語
+# ---------------------------------------------------------------- empirical-bayes
+T = "empirical-bayes"
+yb_ = np.array([62, 55, 70, 58, 65.0])
+s2e_ = 16.0
+muh_ = yb_.mean()
+ss_ = np.sum((yb_ - muh_) ** 2)
+s2_ = ss_ / 4
+t2_ = s2_ - s2e_
+B_ = s2e_ / s2_
+th_ = B_ * muh_ + (1 - B_) * yb_
+check(T, "μ̂=62、Σ(ȳ−μ̂)²=138、s²=34.5、τ̂²=18.5", close(muh_, 62, 1e-12) and close(ss_, 138, 1e-12) and close(s2_, 34.5, 1e-12) and close(t2_, 18.5, 1e-12), (muh_, ss_, s2_, t2_))
+check(T, "B̂=16/34.5≈0.4638、σ²/(σ²+τ̂²) と同じ", close(B_, 0.4638) and close(s2e_ / (s2e_ + t2_), B_, 1e-12), B_)
+check(T, "平均55の学校 0.4638×62+0.5362×55≈58.246", close(th_[1], 58.246, 5e-4) and close(0.4638 * 62 + 0.5362 * 55, 58.246, 5e-3), th_[1])
+check(T, "5校の推定値 62.000, 58.246, 66.290, 59.855, 63.609", allclose(th_, [62, 58.246, 66.290, 59.855, 63.609], 5e-4), np.round(th_, 3).tolist())
+check(T, "どれも 62 の方へ約46%（=B̂）引き寄せられる", allclose((yb_ - th_)[yb_ != 62] / (yb_ - 62)[yb_ != 62], np.full(4, B_), 1e-12) and round(B_ * 100) == 46, B_)
+# 周辺分布 N(μ, τ²+σ²)（sympy の積分）
+th_s, yv = sp.symbols("theta y", real=True)
+mu_s = sp.symbols("mu", real=True)
+t_s, sg_s = sp.symbols("tau sigma", positive=True)
+marg = sp.integrate(sp.exp(-(yv - th_s) ** 2 / (2 * sg_s ** 2) - (th_s - mu_s) ** 2 / (2 * t_s ** 2)) / (2 * sp.pi * sg_s * t_s), (th_s, -sp.oo, sp.oo))
+tgt = sp.exp(-(yv - mu_s) ** 2 / (2 * (t_s ** 2 + sg_s ** 2))) / sp.sqrt(2 * sp.pi * (t_s ** 2 + sg_s ** 2))
+rat_ = [sp.N((marg / tgt).subs({yv: a, mu_s: b, t_s: c, sg_s: d}), 30) for a, b, c, d in [(55, 62, 4.3, 4), (1, -2, 0.5, 3), (7, 7, 2, 1)]]
+check(T, "周辺分布 ȳ_j ~ N(μ, τ²+σ²)（sympy で積分し、3点で密度比=1）", all(abs(v - 1) < 1e-20 for v in rat_), [float(v) for v in rat_])
+# 周辺尤度の最大化（第2種最尤）でも：μ̂=62、τ̂²=Σ/J−σ²=11.6
+nll_ = lambda p: -stats.norm(p[0], math.sqrt(max(p[1], 0) + s2e_)).logpdf(yb_).sum()
+opt_ = optimize.minimize(nll_, [60, 10], method="Nelder-Mead", options={"xatol": 1e-8, "fatol": 1e-10})
+check(T, "参考：周辺尤度の最大化なら μ̂=62、τ̂²=138/5−16=11.6（モーメント法の 18.5 と別の値）", allclose(opt_.x, [62, 11.6], 1e-3), np.round(opt_.x, 4).tolist())
+# 乱数：モーメント推定 E[s²]=τ²+σ² の不偏性
+th_r = rng.normal(62, math.sqrt(18.5), (200000, 5))
+yr_ = th_r + rng.normal(0, 4, (200000, 5))
+s2r_ = yr_.var(1, ddof=1)
+check(T, "乱数20万回：E[s²]≈τ²+σ²=34.5（許容 0.15≈4SE）", abs(s2r_.mean() - 34.5) < 0.15, round(float(s2r_.mean()), 3))
+Br_ = 16 / np.maximum(s2r_, 16)
+ebr_ = Br_[:, None] * yr_.mean(1, keepdims=True) + (1 - Br_[:, None]) * yr_
+check(T, "乱数：経験ベイズの全体二乗誤差 < 生の平均（スタインの現象）",
+      ((ebr_ - th_r) ** 2).sum(1).mean() < ((yr_ - th_r) ** 2).sum(1).mean(), (round(float(((ebr_ - th_r) ** 2).sum(1).mean()), 2), round(float(((yr_ - th_r) ** 2).sum(1).mean()), 2)))
+
+# ---------------------------------------------------------------- bayes-decision-theory
+T = "bayes-decision-theory"
+pri_ = 0.1
+pD_ = pri_ * 0.6 + (1 - pri_) * 0.1
+post1_ = pri_ * 0.6 / pD_
+post0_ = pri_ * 0.4 / (1 - pD_)
+loss_ = lambda q: (100 * q, 20 * (1 - q))  # (出荷, 廃棄)
+check(T, "P(欠陥)=0.15、P(不良|欠陥)=0.06/0.15=0.4", close(pD_, 0.15, 1e-12) and close(post1_, 0.4, 1e-12), post1_)
+check(T, "欠陥あり：出荷 40、廃棄 12 → 廃棄", allclose(loss_(post1_), [40, 12], 1e-9) and np.argmin(loss_(post1_)) == 1, loss_(post1_))
+check(T, "欠陥なし：P=0.04/0.85≈0.0471、出荷 4.706、廃棄 19.059 → 出荷",
+      close(post0_, 0.0471) and allclose(loss_(post0_), [4.706, 19.059], 5e-4) and np.argmin(loss_(post0_)) == 0, loss_(post0_))
+br_ = pD_ * min(loss_(post1_)) + (1 - pD_) * min(loss_(post0_))
+check(T, "ベイズリスク 0.15×12+0.85×4.706=5.800", close(br_, 5.8, 1e-9) and close(0.15 * 12 + 0.85 * 4.706, 5.8, 5e-4), br_)
+check(T, "検査なし：出荷 10 < 廃棄 18 で出荷、差 4.2", allclose(loss_(pri_), [10, 18], 1e-9) and close(min(loss_(pri_)) - br_, 4.2, 1e-9), loss_(pri_))
+check(T, "閾値 20/(100+20)≈0.1667（両損失が等しい事後確率）", close(optimize.brentq(lambda q: 100 * q - 20 * (1 - q), 0, 1), 20 / 120, 1e-12) and close(20 / 120, 0.1667), 20 / 120)
+# 全ての決定方式（4通り）のベイズリスクを直接計算して最小が 5.8
+rules_ = {}
+for aD in (0, 1):
+    for aN in (0, 1):
+        rk = 0
+        for bad, pb_ in ((1, pri_), (0, 1 - pri_)):
+            pdef = 0.6 if bad else 0.1
+            for found, pf in ((1, pdef), (0, 1 - pdef)):
+                a = aD if found else aN
+                rk += pb_ * pf * ((100 if (bad and a == 0) else 0) + (20 if (not bad and a == 1) else 0))
+        rules_[(aD, aN)] = rk
+check(T, "4通りの決定方式のリスク関数を事前分布で平均：最小は（欠陥→廃棄, なし→出荷）で 5.8", min(rules_, key=rules_.get) == (1, 0) and close(rules_[(1, 0)], 5.8, 1e-9), rules_)
+# 損失と点推定：二乗→平均、絶対→中央値（Ga(3,1) で数値確認）
+gd_ = stats.gamma(3)
+gq = np.linspace(0.5, 6, 5501)
+e2 = [gd_.expect(lambda t: (t - a) ** 2) for a in gq[::50]]
+e1 = [gd_.expect(lambda t: abs(t - a)) for a in gq[::50]]
+check(T, "Ga(3,1)：二乗損失の最小は平均 3、絶対損失の最小は中央値 2.674（格子 0.05）",
+      abs(gq[::50][int(np.argmin(e2))] - 3) <= 0.05 and abs(gq[::50][int(np.argmin(e1))] - gd_.median()) <= 0.05, (gq[::50][int(np.argmin(e2))], gq[::50][int(np.argmin(e1))], gd_.median()))
+
 # ================================================================ 集計
 ok = sum(results)
 ng = len(results) - ok

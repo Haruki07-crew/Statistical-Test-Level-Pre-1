@@ -1396,11 +1396,11 @@ chapters:
   - id: biplot
     title: バイプロット
     importance: C
-    status: planned
+    status: verified
   - id: low-rank-approximation
     title: 低ランク近似
     importance: C
-    status: planned
+    status: verified
 - 'no': 23
   title: 判別分析
   terms:
@@ -1455,15 +1455,15 @@ chapters:
   - id: kernel-method
     title: カーネル法
     importance: C
-    status: planned
+    status: verified
   - id: decision-tree
     title: 決定木
     importance: C
-    status: planned
+    status: verified
   - id: naive-bayes-classifier
     title: ナイーブベイズ分類器
     importance: C
-    status: planned
+    status: verified
 - 'no': 24
   title: クラスター分析
   terms:
@@ -1522,11 +1522,11 @@ chapters:
   - id: mixture-model-clustering
     title: 混合モデルによるクラスタリング
     importance: C
-    status: planned
+    status: verified
   - id: standardization-before-clustering
     title: 標準化と変数の尺度
     importance: C
-    status: planned
+    status: verified
 - 'no': 25
   title: 因子分析・グラフィカルモデル
   terms:
@@ -1593,7 +1593,7 @@ chapters:
   - id: graphical-lasso
     title: グラフィカルLasso
     importance: C
-    status: planned
+    status: verified
 - 'no': 26
   title: その他の多変量解析手法
   terms:
@@ -1608,7 +1608,7 @@ chapters:
   - id: nonmetric-mds
     title: 非計量MDS
     importance: C
-    status: planned
+    status: verified
   - id: canonical-correlation-analysis
     title: 正準相関分析
     importance: A
@@ -1636,7 +1636,7 @@ chapters:
   - id: multiple-correspondence-analysis
     title: 多重コレスポンデンス分析
     importance: C
-    status: planned
+    status: verified
   - id: structural-equation-modeling
     title: 構造方程式モデリング
     importance: A
@@ -1652,7 +1652,7 @@ chapters:
   - id: goodness-of-fit-indices
     title: 適合度指標
     importance: C
-    status: planned
+    status: verified
 - 'no': 27
   title: 時系列解析
   terms:

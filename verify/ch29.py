@@ -698,6 +698,88 @@ lh_ = np.log((d1 / 4800) / (d0 / 4000))
 se10 = math.sqrt(1 / 120 + 1 / 200)
 check(T, "乱数 log HR の SD ≈ √(1/d1+1/d0)（件数120・200, 2万回, 許容 3%）", abs(np.std(lh_) / se10 - 1) < 0.03, (np.std(lh_), se10))
 
+# ================================================================ 重要度Cの用語
+# ---------------------------------------------------------------- nelson-aalen-estimator
+T = "nelson-aalen-estimator"
+tt_ = np.array([2, 3, 4, 4, 6, 7, 9, 11, 12, 14])
+ev_ = np.array([1, 0, 1, 1, 1, 0, 1, 0, 1, 0])
+rows_ = []
+H_, S_, V_ = 0.0, 1.0, 0.0
+for u_ in sorted(set(tt_[ev_ == 1])):
+    nj_ = int((tt_ >= u_).sum())
+    dj_ = int(((tt_ == u_) & (ev_ == 1)).sum())
+    H_ += dj_ / nj_
+    S_ *= 1 - dj_ / nj_
+    V_ += dj_ / nj_ ** 2
+    rows_.append((u_, nj_, dj_, dj_ / nj_, H_, math.exp(-H_), S_, -math.log(S_), V_))
+R_ = np.array(rows_, float)
+check(T, "表の t・n_j・d_j（2,4,6,9,12 / 10,8,6,4,2 / 1,2,1,1,1）",
+      R_[:, 0].tolist() == [2, 4, 6, 9, 12] and R_[:, 1].tolist() == [10, 8, 6, 4, 2] and R_[:, 2].tolist() == [1, 2, 1, 1, 1], R_[:, :3].tolist())
+check(T, "表の d_j/n_j", allclose(R_[:, 3], [0.1, 0.25, 0.1667, 0.25, 0.5]), np.round(R_[:, 3], 4).tolist())
+check(T, "表の Ĥ(t_(j))", allclose(R_[:, 4], [0.1, 0.35, 0.5167, 0.7667, 1.2667]), np.round(R_[:, 4], 4).tolist())
+check(T, "表の e^{−Ĥ}", allclose(R_[:, 5], [0.9048, 0.7047, 0.5965, 0.4646, 0.2818]), np.round(R_[:, 5], 4).tolist())
+check(T, "表の Ŝ_KM（kaplan-meier-estimator の値 0.9,0.675,0.5625,0.4219,0.2109 と一致）",
+      allclose(R_[:, 6], [0.9, 0.675, 0.5625, 0.4219, 0.2109]), np.round(R_[:, 6], 4).tolist())
+km_ = (ROOT / "content" / "ch29" / "kaplan-meier-estimator.md").read_text(encoding="utf-8")
+check(T, "kaplan-meier-estimator.md と同じデータ列・同じ推定値", "2,\\ 3^+,\\ 4,\\ 4,\\ 6,\\ 7^+,\\ 9,\\ 11^+,\\ 12,\\ 14^+" in km_
+      and all(s in km_ for s in ["0.6750", "0.5625", "0.4219", "0.2109"]), None)
+check(T, "t=12 の分散の各項 0.01, 0.03125, 0.02778, 0.0625, 0.25、和 0.3815、SE 0.618",
+      allclose(R_[:, 2] / R_[:, 1] ** 2, [0.01, 0.03125, 0.02778, 0.0625, 0.25], 5e-6) and close(V_, 0.3815) and close(math.sqrt(V_), 0.618, 5e-4), (V_, math.sqrt(V_)))
+check(T, "e^{−Ĥ} ≥ Ŝ_KM（全時刻）、差は t=12 で最大", bool(np.all(R_[:, 5] >= R_[:, 6])) and int(np.argmax(R_[:, 5] - R_[:, 6])) == 4, np.round(R_[:, 5] - R_[:, 6], 4).tolist())
+check(T, "log(1−x) < −x（0<x<1, sympy で差の導関数が負・x→0 で 0）",
+      (lambda xx: sp.simplify(sp.diff(sp.log(1 - xx) + xx, xx) + xx / (1 - xx)) == 0)(sp.symbols("x", positive=True)), None)
+check(T, "累積ハザードは 1 を超えうる（1.267）", close(H_, 1.2667) and H_ > 1, H_)
+c_ = chart(T, "line-data")
+xp_ = c_["params"]["x"]
+na_y = [s for s in c_["params"]["series"] if s["label"].startswith("ネルソン")][0]["y"]
+lk_y = [s for s in c_["params"]["series"] if s["label"].startswith("−log")][0]["y"]
+exp_x = [0] + [v for t in [2, 4, 6, 9, 12] for v in (t, t)] + [14]
+exp_na = [0, 0] + [float(h) for h in np.round(R_[:, 4], 4) for _ in range(2)]
+exp_lk = [0, 0] + [float(h) for h in np.round(R_[:, 7], 4) for _ in range(2)]
+check(T, "chart line-data x=[0,2,2,4,4,...,12,12,14]", xp_ == exp_x, xp_)
+check(T, "chart ネルソン・アーレンの階段 y", allclose(na_y, exp_na, 1e-9), na_y)
+check(T, "chart −log(KM) の階段 y（0.1054,0.393,0.5754,0.863,1.5562）", allclose(lk_y, exp_lk, 1e-9), lk_y)
+# 乱数：指数分布（λ=0.1）＋一様打ち切りで Ĥ(t)≈λt、分散推定 Σd/n² ≈ 実際の分散
+lam_ = 0.1
+Hs_, Vs_ = [], []
+for _ in range(4000):
+    tv = rng.exponential(1 / lam_, 200)
+    cv = rng.uniform(0, 30, 200)
+    ob = np.minimum(tv, cv)
+    dd = tv <= cv
+    o = np.argsort(ob)
+    ob, dd = ob[o], dd[o]
+    nr = 200 - np.arange(200)
+    m = (ob <= 10) & dd
+    Hs_.append(np.sum(1 / nr[m]))
+    Vs_.append(np.sum(1 / nr[m] ** 2))
+Hs_ = np.array(Hs_)
+check(T, "乱数4000回（指数 λ=0.1, n=200, 打ち切りあり）：Ĥ(10) の平均≈1（許容 0.01）、分散≈平均の Σd/n²（相対 8%）",
+      abs(Hs_.mean() - 1) < 0.01 and abs(Hs_.var() / np.mean(Vs_) - 1) < 0.08, (round(Hs_.mean(), 4), round(Hs_.var(), 5), round(np.mean(Vs_), 5)))
+
+# ---------------------------------------------------------------- ignorability
+T = "ignorability"
+check(T, "回答者 A 90 人・B 50 人（回答率 0.9, 0.5）、はい 27・30（割合 0.3, 0.6）",
+      close(100 * 0.9, 90, 1e-12) and close(100 * 0.5, 50, 1e-12) and close(90 * 0.3, 27, 1e-12) and close(50 * 0.6, 30, 1e-12), None)
+check(T, "回答者全体の割合 57/140≈0.4071", close(57 / 140, 0.4071), 57 / 140)
+check(T, "グループ別 MLE 0.3, 0.6、全体 0.5×0.3+0.5×0.6=0.450", close(27 / 90, 0.3, 1e-12) and close(30 / 50, 0.6, 1e-12) and close(0.5 * 0.3 + 0.5 * 0.6, 0.45, 1e-12), None)
+# 尤度の分解：θ の MLE が φ によらない（数値最大化で確認）
+def negll_(par, phiA, phiB):
+    tA, tB = par
+    return -(27 * math.log(tA) + 63 * math.log(1 - tA) + 30 * math.log(tB) + 20 * math.log(1 - tB)
+             + 90 * math.log(phiA) + 10 * math.log(1 - phiA) + 50 * math.log(phiB) + 50 * math.log(1 - phiB))
+ests_ = [optimize.minimize(negll_, [0.5, 0.5], args=(pa, pb), bounds=[(1e-6, 1 - 1e-6)] * 2).x for pa, pb in [(0.9, 0.5), (0.5, 0.5), (0.2, 0.8)]]
+check(T, "観測データ尤度の θ の最尤値は φ の値によらず (0.3, 0.6)", all(allclose(e, [0.3, 0.6], 1e-4) for e in ests_), np.round(ests_, 5).tolist())
+# 乱数：MAR 下で多数回
+gA = rng.random((20000, 100)) < 0.3
+gB = rng.random((20000, 100)) < 0.6
+rA = rng.random((20000, 100)) < 0.9
+rB = rng.random((20000, 100)) < 0.5
+cc_mean = ((gA & rA).sum(1) + (gB & rB).sum(1)) / (rA.sum(1) + rB.sum(1))
+ml_mean = 0.5 * (gA & rA).sum(1) / rA.sum(1) + 0.5 * (gB & rB).sum(1) / rB.sum(1)
+check(T, "乱数2万回：回答者平均は≈0.407 に偏り、尤度に基づく推定は≈0.45（許容 0.003）",
+      abs(cc_mean.mean() - (0.27 + 0.30) / 1.4) < 0.003 and abs(ml_mean.mean() - 0.45) < 0.003, (round(cc_mean.mean(), 4), round(ml_mean.mean(), 4)))
+
 # ================================================================ 集計
 n_ok = sum(results)
 n_ng = len(results) - n_ok

@@ -714,6 +714,84 @@ mo = charts(T, "mosaic")[0]["params"]
 check(T, "chart bar-data=回復率6本", allclose(bd["values"], rates, 1e-12), bd["values"])
 check(T, "chart mosaic=重症度×治療 (100,300;300,100)", mo["table"] == [[100, 300], [300, 100]] and mo["rowLabels"] == ["軽症", "重症"] and mo["colLabels"] == ["治療A", "治療B"], mo["table"])
 
+# ================================================================ 重要度Cの用語
+# ---------------------------------------------------------------- ordinal-contingency-table
+T = "ordinal-contingency-table"
+xs_ = np.arange(4.0)
+ys_ = np.array([4, 6, 9, 11.0])
+ms_ = np.full(4, 40.0)
+N_ = ms_.sum()
+pb_ = ys_.sum() / N_
+num_ = (xs_ * (ys_ - ms_ * pb_)).sum()
+den_ = pb_ * (1 - pb_) * ((ms_ * xs_ ** 2).sum() - (ms_ * xs_).sum() ** 2 / N_)
+Z2_ = num_ ** 2 / den_
+check(T, "p̄=0.1875、Σx y=57、Σm x=240、分子の中身 12",
+      close(pb_, 0.1875, 1e-12) and (xs_ * ys_).sum() == 57 and (ms_ * xs_).sum() == 240 and close(num_, 12, 1e-12), num_)
+check(T, "Σm x²=560、240²/160=360、分母 30.469", (ms_ * xs_ ** 2).sum() == 560 and close(240 ** 2 / 160, 360, 1e-12) and close(den_, 30.469, 5e-4), den_)
+check(T, "Z²=4.726、p=0.0297（自由度1）", close(Z2_, 4.726, 5e-4) and close(stats.chi2.sf(Z2_, 1), 0.0297), (Z2_, stats.chi2.sf(Z2_, 1)))
+# 線形×線形連関 M²=(N−1)r² と一致（I×2 なら Z² × (N−1)/N）
+xi_ = np.repeat(xs_, 40)
+yi_ = np.concatenate([np.r_[np.ones(int(k)), np.zeros(40 - int(k))] for k in ys_])
+rr_ = np.corrcoef(xi_, yi_)[0, 1]
+check(T, "M²=(N−1)r² = Z²×(N−1)/N（I×2 表での関係）", close((N_ - 1) * rr_ ** 2, Z2_ * (N_ - 1) / N_, 1e-9), (N_ - 1) * rr_ ** 2)
+# 回帰の傾きの検定に相当：Z = 傾き / SE（帰無仮説下の分散）
+b_ = np.sum((xi_ - xi_.mean()) * (yi_ - yi_.mean())) / np.sum((xi_ - xi_.mean()) ** 2)
+se0_ = math.sqrt(pb_ * (1 - pb_) / np.sum((xi_ - xi_.mean()) ** 2))
+check(T, "Z²=(傾き/帰無仮説下の SE)²", close((b_ / se0_) ** 2, Z2_, 1e-9), b_)
+chi_, e_ = pearson(np.c_[ys_, ms_ - ys_])
+check(T, "通常のカイ二乗 4.759、自由度3、p=0.190", close(chi_, 4.759, 5e-4) and close(stats.chi2.sf(chi_, 3), 0.190, 5e-4), (chi_, stats.chi2.sf(chi_, 3)))
+check(T, "χ² の分解：χ²=Z²（傾向, 自由度1）＋残り（自由度2, 非負）", chi_ - Z2_ >= 0, chi_ - Z2_)
+# 乱数：傾向がある母集団で、傾向性検定の検出力 > 通常のカイ二乗の検出力
+pp_ = np.array([0.1, 0.15, 0.225, 0.275])
+yy_ = rng.binomial(40, pp_, size=(20000, 4)).astype(float)
+pbs_ = yy_.sum(1) / 160
+okm_ = (pbs_ > 0) & (pbs_ < 1)
+yy_, pbs_ = yy_[okm_], pbs_[okm_]
+zz_ = ((xs_ * (yy_ - 40 * pbs_[:, None])).sum(1)) ** 2 / (pbs_ * (1 - pbs_) * 200)
+ee_ = 40 * pbs_[:, None]
+cc_ = (((yy_ - ee_) ** 2 / ee_) + (((40 - yy_) - (40 - ee_)) ** 2 / (40 - ee_))).sum(1)
+pw1_, pw3_ = np.mean(zz_ > stats.chi2.ppf(0.95, 1)), np.mean(cc_ > stats.chi2.ppf(0.95, 3))
+check(T, "乱数2万回（本文の割合に近い直線的傾向）：検出力 傾向性検定 > 通常のカイ二乗", pw1_ > pw3_ + 0.05, (round(pw1_, 3), round(pw3_, 3)))
+pn_ = np.full(4, 0.1875)
+yy_ = rng.binomial(40, pn_, size=(20000, 4)).astype(float)
+pbs_ = yy_.sum(1) / 160
+zz_ = ((xs_ * (yy_ - 40 * pbs_[:, None])).sum(1)) ** 2 / (pbs_ * (1 - pbs_) * 200)
+check(T, "乱数2万回（H0）：Z² の棄却率≈0.05（許容 0.006）", abs(np.mean(zz_ > stats.chi2.ppf(0.95, 1)) - 0.05) < 0.006, np.mean(zz_ > stats.chi2.ppf(0.95, 1)))
+
+# ---------------------------------------------------------------- residual-analysis-contingency
+T = "residual-analysis-contingency"
+tb_ = np.array([[10, 30, 40], [25, 35, 20], [40, 25, 15]], float)
+chi_, E_ = pearson(tb_)
+nn_ = tb_.sum()
+rp_ = tb_.sum(1, keepdims=True) / nn_
+cp_ = tb_.sum(0, keepdims=True) / nn_
+ep_ = (tb_ - E_) / np.sqrt(E_)
+d_ = (tb_ - E_) / np.sqrt(E_ * (1 - rp_) * (1 - cp_))
+check(T, "表は contingency-table と同じ（各行80、列 75/90/75、計240）、期待度数 25,30,25",
+      tb_.sum(1).tolist() == [80] * 3 and tb_.sum(0).tolist() == [75, 90, 75] and allclose(E_, np.tile([25, 30, 25], (3, 1)), 1e-12), E_[0])
+check(T, "20代・現金 e=−3.000、分母 3.385、d=−4.431",
+      close(ep_[0, 0], -3, 1e-12) and close(math.sqrt(25 * 2 / 3 * (1 - 75 / 240)), 3.385, 5e-4) and close(d_[0, 0], -4.431, 5e-4), d_[0, 0])
+check(T, "全セルの調整済み標準化残差の表", allclose(d_, [[-4.431, 0, 4.431], [0, 1.414, -1.477], [4.431, -1.414, -2.954]], 5e-4), np.round(d_, 3).tolist())
+check(T, "Σe²=χ²（ピアソン残差の二乗和）", close((ep_ ** 2).sum(), chi_, 1e-9), chi_)
+check(T, "|d|>1.96 のセルは4つ（20代現金・スマホ、60代現金・スマホ）",
+      sorted(map(tuple, np.argwhere(np.abs(d_) > 1.96).tolist())) == [(0, 0), (0, 2), (2, 0), (2, 2)], np.argwhere(np.abs(d_) > 1.96).tolist())
+zb_ = stats.norm.ppf(1 - 0.05 / 18)
+check(T, "ボンフェローニ（9セル両側）基準 2.773、4セルとも超える", close(zb_, 2.773, 5e-4) and int((np.abs(d_) > zb_).sum()) == 4, zb_)
+t22_ = np.array([[30, 20], [15, 35]], float)
+c22_, E22_ = pearson(t22_)
+d22_ = (t22_ - E22_) / np.sqrt(E22_ * (1 - t22_.sum(1, keepdims=True) / 100) * (1 - t22_.sum(0, keepdims=True) / 100))
+check(T, "2×2 表：|d| は全セル等しく d²=補正なし χ²（任意の表 30,20/15,35）", allclose(np.abs(d22_), np.full((2, 2), abs(d22_[0, 0])), 1e-9) and close(d22_[0, 0] ** 2, c22_, 1e-9), (d22_[0, 0] ** 2, c22_))
+# 乱数：独立の帰無仮説下で d の分散≈1、e の分散<1
+pr_ = np.outer([1 / 3] * 3, [75 / 240, 90 / 240, 75 / 240]).ravel()
+sims_ = rng.multinomial(240, pr_, size=40000).reshape(-1, 3, 3).astype(float)
+rs_ = sims_.sum(2, keepdims=True)
+cs_ = sims_.sum(1, keepdims=True)
+Es_ = rs_ * cs_ / 240
+ds_ = (sims_ - Es_) / np.sqrt(Es_ * (1 - rs_ / 240) * (1 - cs_ / 240))
+es_ = (sims_ - Es_) / np.sqrt(Es_)
+check(T, "乱数4万表（H0）：d の分散≈1（許容 0.03）、e の分散 <1（≈(1−r)(1−c)）",
+      bool(np.all(np.abs(ds_.var(0) - 1) < 0.03)) and bool(np.all(np.abs(es_.var(0) - (1 - rp_) * (1 - cp_)) < 0.03)), (np.round(ds_.var(0), 3).tolist(), np.round(es_.var(0), 3).tolist()))
+
 # ----------------------------------------------------------------
 ok = sum(results)
 ng = len(results) - ok

@@ -632,6 +632,123 @@ la = rng.laplace(scale=1 / math.sqrt(2), size=nS)
 check(T, "ラプラスと一様の混合でもキュムラントは加法的 κ=Σq⁴κ_j（45°、許容0.05）",
       close(exkurt((la + s1) / math.sqrt(2)), 0.25 * 3 + 0.25 * -1.2, 0.05), "")
 
+# ================================================================ 重要度Cの用語
+T = "nonmetric-mds"
+
+
+def pava(y):
+    """単調回帰（隣接違反の併合）。"""
+    blocks = [[v, 1] for v in y]
+    i = 0
+    while i < len(blocks) - 1:
+        if blocks[i][0] > blocks[i + 1][0]:
+            v = (blocks[i][0] * blocks[i][1] + blocks[i + 1][0] * blocks[i + 1][1]) / (blocks[i][1] + blocks[i + 1][1])
+            blocks[i] = [v, blocks[i][1] + blocks[i + 1][1]]
+            del blocks[i + 1]
+            i = max(i - 1, 0)
+        else:
+            i += 1
+    return np.concatenate([[v] * w for v, w in blocks])
+
+
+def stress_1d(pos):
+    A_, B_, C_, D_ = pos
+    d = np.abs(np.array([A_ - B_, B_ - C_, A_ - C_, C_ - D_, B_ - D_, A_ - D_]))
+    dh = pava(d)
+    return d, dh, math.sqrt(((d - dh) ** 2).sum() / (d ** 2).sum())
+
+
+dn, dhn, stn = stress_1d([0, 1, 1.8, 4])
+check(T, "距離 (1, 0.8, 1.8, 2.2, 3, 4)", allclose(dn, [1, 0.8, 1.8, 2.2, 3, 4], 1e-12), r(dn))
+check(T, "単調回帰のディスパリティ (0.9, 0.9, 1.8, 2.2, 3, 4)", allclose(dhn, [0.9, 0.9, 1.8, 2.2, 3, 4], 1e-12), r(dhn))
+check(T, "分母 34.72、Stress=√(0.02/34.72)≈0.024", close((dn ** 2).sum(), 34.72, 1e-10) and close(((dn - dhn) ** 2).sum(), 0.02, 1e-12) and close(stn, 0.024, 5e-4), r(stn))
+okiso = True
+for _ in range(300):
+    yv = rng.normal(size=6)
+    fit = pava(yv)
+    okiso &= bool(np.all(np.diff(fit) >= -1e-12))
+    for _ in range(20):
+        zv = np.sort(rng.normal(size=6))
+        okiso &= ((yv - zv) ** 2).sum() >= ((yv - fit) ** 2).sum() - 1e-12
+check(T, "PAVA の結果は単調で、ランダムな単調列より2乗誤差が小さい（乱数300×20）", okiso, "成立")
+_, _, st0 = stress_1d([0, 0.85, 1.8, 4])
+check(T, "B を A 側へ寄せて B と C を離す（B=0.85）と順序が完全に守られ Stress=0", st0 < 1e-12, st0)
+_, _, stc = stress_1d([0, 1, 2.05, 4])
+check(T, "（参考）D を固定して C だけ右へ動かすと順序は守れない（BC>AB と CD>AC が両立しない）", stc > 0, r(stc))
+check(T, "ストレスは配置の拡大縮小で不変", close(stress_1d(3 * np.array([0, 1, 1.8, 4]))[2], stn, 1e-12), "成立")
+
+T = "multiple-correspondence-analysis"
+Nm = np.array([[30, 15, 5], [20, 20, 20], [10, 15, 35]])
+Zi = np.array([np.r_[np.eye(3)[i], np.eye(3)[j]] for i in range(3) for j in range(3) for _ in range(Nm[i, j])])
+
+
+def ca_svd(M):
+    Pq = M / M.sum()
+    rq, cq = Pq.sum(1), Pq.sum(0)
+    Sq = (Pq - np.outer(rq, cq)) / np.sqrt(np.outer(rq, cq))
+    Uq, sq, Vtq = np.linalg.svd(Sq, full_matrices=False)
+    return rq, cq, Uq, sq, Vtq
+
+
+check(T, "指示行列 170×6、各行の1は Q=2 個", Zi.shape == (170, 6) and np.all(Zi.sum(1) == 2), Zi.shape)
+_, cz, Uz, sz, Vtz = ca_svd(Zi)
+lz = sz ** 2
+check(T, "固有値 0.7196, 0.5316, 0.4684, 0.2804, 0, 0、合計 2=(J−Q)/Q", allclose(lz, [0.7196, 0.5316, 0.4684, 0.2804, 0, 0], 5e-5) and close(lz.sum(), (6 - 2) / 2, 1e-10), r(lz))
+_, _, _, gq, _ = ca_svd(Nm.astype(float))
+check(T, "分割表の γ=(0.4393, 0.0632)、(1±γ)/2 が指示行列の固有値", allclose(gq[:2], [0.4393, 0.0632], 5e-5)
+      and allclose(np.sort(lz[:4])[::-1], np.sort(np.r_[(1 + gq[:2]) / 2, (1 - gq[:2]) / 2])[::-1], 1e-10), r(gq[:2]))
+check(T, "(1+0.4393)/2=0.7196、(1+0.0632)/2=0.5316（丸め値で計算）", close((1 + 0.4393) / 2, 0.7196, 1e-4) and close((1 + 0.0632) / 2, 0.5316, 1e-12), "")
+check(T, "生の寄与率 0.7196/2 = 36.0%", close(lz[0] / lz.sum(), 0.360, 5e-4), r(lz[0] / lz.sum()))
+Q = 2
+lt = (Q / (Q - 1)) ** 2 * (lz[lz > 1 / Q] - 1 / Q) ** 2
+check(T, "ベンゼクリ補正 0.1929, 0.0040 = γ_k²、補正後の第1軸 ≈98%", allclose(lt, [0.1929, 0.0040], 5e-5) and allclose(lt, gq[:2] ** 2, 1e-10)
+      and close(lt[0] / lt.sum(), 0.98, 5e-3), (r(lt), r(lt[0] / lt.sum())))
+_, _, _, sb, _ = ca_svd(Zi.T @ Zi)
+check(T, "バート行列の固有値 = 指示行列の固有値の2乗", allclose(sb ** 2, lz ** 2, 1e-10), r(sb ** 2))
+Qs = 3
+Zr = np.column_stack([np.eye(J)[rng.integers(0, J, 50)] for J in (2, 3, 4)])
+_, _, _, sr, _ = ca_svd(Zr)
+check(T, "乱数の Q=3（J=9）でも全イナーシャ = (J−Q)/Q = 2", close((sr ** 2).sum(), (9 - Qs) / Qs, 1e-10), r((sr ** 2).sum()))
+colc = Vtz[0] / np.sqrt(cz) * sz[0]
+if colc[0] > 0:
+    colc = -colc
+check(T, "第1軸：20代とコーヒーが負、60代と緑茶が正（符号は連動して反転）", colc[0] < 0 and colc[3] < 0 and colc[2] > 0 and colc[5] > 0, r(colc, 3))
+
+T = "goodness-of-fit-indices"
+Sf = np.array([[1, .48, .42, .40], [.48, 1, .56, .40], [.42, .56, 1, .35], [.40, .40, .35, 1]])
+nf, pf, dff = 200, 4, 2
+
+
+def Ffit(th):
+    Sig = np.outer(th[:4], th[:4]) + np.diag(np.exp(th[4:]))
+    return np.linalg.slogdet(Sig)[1] + np.trace(Sf @ np.linalg.inv(Sig)) - np.linalg.slogdet(Sf)[1] - pf
+
+
+of = optimize.minimize(Ffit, np.r_[[0.6] * 4, np.log([0.5] * 4)], method="BFGS", options={"gtol": 1e-12})
+lf, psf = of.x[:4], np.exp(of.x[4:])
+Sh = np.outer(lf, lf) + np.diag(psf)
+chi = (nf - 1) * of.fun
+check(T, "最尤推定 λ̂=(0.630,0.779,0.695,0.536)、ψ̂=(0.603,0.393,0.516,0.713)（SEM の項目と同じ）", allclose(np.abs(lf), [0.630, 0.779, 0.695, 0.536], 5e-4) and allclose(psf, [0.603, 0.393, 0.516, 0.713], 5e-4), (r(lf, 3), r(psf, 3)))
+chi0 = -(nf - 1) * np.linalg.slogdet(Sf)[1]
+check(T, "χ²=2.845、df=2、χ0²=199×(−log|S|)=187.105、df0=6、p=0.241", close(chi, 2.845, 5e-4) and dff == 10 - 8 and close(chi0, 187.105, 5e-4)
+      and 4 * 3 // 2 == 6 and close(stats.chi2.sf(chi, dff), 0.241, 5e-4), (r(chi), r(chi0), r(stats.chi2.sf(chi, dff))))
+rmsea = math.sqrt(max(chi - dff, 0) / (dff * (nf - 1)))
+cfi = 1 - max(chi - dff, 0) / max(chi0 - 6, chi - dff, 0)
+tli = (chi0 / 6 - chi / dff) / (chi0 / 6 - 1)
+check(T, "RMSEA≈0.046、CFI=1−0.845/181.105≈0.995", close(rmsea, 0.046, 5e-4) and close(chi - dff, 0.845, 5e-4) and close(chi0 - 6, 181.105, 5e-4) and close(cfi, 0.995, 5e-4), (r(rmsea), r(cfi)))
+check(T, "TLI=(31.184−1.423)/30.184≈0.986", close(chi0 / 6, 31.184, 5e-4) and close(chi / 2, 1.423, 5e-4) and close(chi0 / 6 - 1, 30.184, 5e-4) and close(tli, 0.986, 5e-4), r(tli))
+Ag = np.linalg.inv(Sh) @ Sf
+gfi = 1 - np.trace((Ag - np.eye(4)) @ (Ag - np.eye(4))) / np.trace(Ag @ Ag)
+agfi = 1 - pf * (pf + 1) / (2 * dff) * (1 - gfi)
+check(T, "GFI 0.993（0.99269）、AGFI=1−(20/4)(1−0.99269)≈0.963", close(gfi, 0.993, 5e-4) and close(gfi, 0.99269, 5e-5) and close(agfi, 0.963, 5e-4)
+      and close(1 - 5 * (1 - 0.99269), 0.963, 5e-4), (r(gfi, 5), r(agfi)))
+dsh = np.sqrt(np.diag(Sh))
+res = Sf - Sh / np.outer(dsh, dsh)
+srmr = math.sqrt(np.mean(res[np.tril_indices(4)] ** 2))
+check(T, "SRMR 0.023（下三角10個、対角含む）", close(srmr, 0.023, 5e-4), r(srmr))
+check(T, "目安：RMSEA≤0.05、CFI・TLI≥0.95、SRMR≤0.08、GFI≥0.9 をすべて満たす", rmsea <= 0.05 and cfi >= 0.95 and tli >= 0.95 and srmr <= 0.08 and gfi >= 0.9, "成立")
+check(T, "χ²≤df なら RMSEA=0、CFI=1（max の働き）", math.sqrt(max(1.5 - 2, 0) / (2 * 199)) == 0 and 1 - max(1.5 - 2, 0) / max(chi0 - 6, 1.5 - 2, 0) == 1, "成立")
+
 # ================================================================
 ok_n = sum(results)
 ng_n = len(results) - ok_n

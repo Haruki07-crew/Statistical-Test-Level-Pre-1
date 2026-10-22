@@ -634,6 +634,94 @@ check(T, "chart bar-data の値 = σ̂²_(i)・ラベル順 2,4,5,7,12",
       allclose(c["params"]["values"], jack(lambda v: v.var())[1], 1e-12) and c["params"]["labels"] == [f"{int(v)}を除く" for v in xj], c["params"]["values"])
 check(T, "chart caption の 11.6, 3.25", "11.6" in c["caption"] and "3.25" in c["caption"], None)
 
+# ================================================================ 重要度Cの用語
+# ---------------------------------------------------------------- variance-reduction
+T = "variance-reduction"
+E_ = math.e
+s2v_ = (E_ ** 2 - 1) / 2 - (E_ - 1) ** 2
+cov_a = E_ - (E_ - 1) ** 2
+check(T, "σ²=V[e^U]≈0.2420（数値積分とも）", close(s2v_, 0.2420) and close(integrate.quad(lambda u: (math.exp(u) - (E_ - 1)) ** 2, 0, 1)[0], s2v_, 1e-10), s2v_)
+check(T, "Cov(e^U,e^{1−U})=e−(e−1)²≈−0.2342", close(cov_a, -0.2342) and close(integrate.quad(lambda u: math.exp(u) * math.exp(1 - u), 0, 1)[0] - (E_ - 1) ** 2, cov_a, 1e-10), cov_a)
+check(T, "1組の分散 0.003912、評価回数をそろえると 0.007825/n、約1/31",
+      close((s2v_ + cov_a) / 2, 0.003912, 5e-7) and close(s2v_ + cov_a, 0.007825, 5e-7) and round(s2v_ / (s2v_ + cov_a)) == 31, ((s2v_ + cov_a) / 2, s2v_ / (s2v_ + cov_a)))
+cov_c = 1 - (E_ - 1) / 2
+cst = cov_c / (1 / 12)
+rho_ = cov_c / math.sqrt(s2v_ / 12)
+check(T, "Cov(e^U,U)=1−(e−1)/2≈0.1409、c*≈1.6903、ρ≈0.9918", close(cov_c, 0.1409) and close(cst, 1.6903) and close(rho_, 0.9918), (cov_c, cst, rho_))
+check(T, "σ²(1−ρ²)≈0.003940、約1/61", close(s2v_ * (1 - rho_ ** 2), 0.003940, 5e-7) and round(1 / (1 - rho_ ** 2)) == 61, (s2v_ * (1 - rho_ ** 2), 1 / (1 - rho_ ** 2)))
+u_s = sp.symbols("u", positive=True)
+check(T, "sympy：∫e^u=e−1、E[e^{2U}]=(e²−1)/2、E[U e^U]=1",
+      sp.simplify(sp.integrate(sp.exp(u_s), (u_s, 0, 1)) - (sp.E - 1)) == 0 and sp.simplify(sp.integrate(sp.exp(2 * u_s), (u_s, 0, 1)) - (sp.E ** 2 - 1) / 2) == 0
+      and sp.integrate(u_s * sp.exp(u_s), (u_s, 0, 1)) == 1, None)
+# 対照変量の分散公式・制御変量の最小分散（記号）
+a_, b_, c_, s_ = sp.symbols("a b c s", real=True)
+check(T, "V[(h1+h2)/2]=(σ²+Cov)/2（V 等しい場合, sympy）", sp.simplify((a_ + a_ + 2 * b_) / 4 - (a_ + b_) / 2) == 0, None)
+vc_ = a_ - 2 * c_ * b_ + c_ ** 2 * s_
+cs_ = sp.solve(sp.diff(vc_, c_), c_)[0]
+check(T, "制御変量：c*=Cov/V[C]、V_min=σ²−Cov²/V[C]=σ²(1−ρ²)（sympy）", sp.simplify(cs_ - b_ / s_) == 0 and sp.simplify(vc_.subs(c_, cs_) - a_ * (1 - b_ ** 2 / (a_ * s_))) == 0, cs_)
+# 乱数
+rg_ = np.random.default_rng(20261024)
+nrep, n_ = 20000, 100
+U_ = rg_.random((nrep, n_))
+plain_ = np.exp(U_).mean(1)
+anti_ = ((np.exp(U_[:, :50]) + np.exp(1 - U_[:, :50])) / 2).mean(1)
+ctrl_ = (np.exp(U_) - cst * (U_ - 0.5)).mean(1)
+check(T, "乱数（n=100, 2万回）：3推定量とも不偏（3SE）",
+      all(abs(v.mean() - (E_ - 1)) < 3 * v.std() / math.sqrt(nrep) for v in (plain_, anti_, ctrl_)), [round(v.mean(), 5) for v in (plain_, anti_, ctrl_)])
+check(T, "乱数：分散 単純 0.2420/n、対照 0.007825/n、制御 0.003940/n（相対 5%）",
+      abs(plain_.var() * n_ / s2v_ - 1) < 0.05 and abs(anti_.var() * n_ / (s2v_ + cov_a) - 1) < 0.05 and abs(ctrl_.var() * n_ / (s2v_ * (1 - rho_ ** 2)) - 1) < 0.05,
+      [round(v.var() * n_, 6) for v in (plain_, anti_, ctrl_)])
+# 単調でない h で対照変量が逆効果になる例：h(u)=(u−1/2)²
+h_ = lambda u: (u - 0.5) ** 2
+vh = integrate.quad(lambda u: h_(u) ** 2, 0, 1)[0] - (1 / 12) ** 2
+ch_ = integrate.quad(lambda u: h_(u) * h_(1 - u), 0, 1)[0] - (1 / 12) ** 2
+check(T, "非単調 h=(u−1/2)²：Cov(h(U),h(1−U))=V>0 で対照変量は評価回数をそろえると分散2倍", close(ch_, vh, 1e-12) and close((vh + ch_) / vh, 2, 1e-9), (vh, ch_))
+
+# ---------------------------------------------------------------- permutation-simulation
+T = "permutation-simulation"
+obs_ = np.array([10, 2, 3, 2, 9, 4])
+tob_ = float(((obs_ - 5) ** 2).sum() / 5)
+check(T, "t_obs=(25+9+4+9+16+1)/5=12.8", close(tob_, 12.8, 1e-12) and ((obs_ - 5) ** 2).tolist() == [25, 9, 4, 9, 16, 1], tob_)
+check(T, "自由度5のカイ二乗近似 p=0.0253", close(stats.chi2.sf(12.8, 5), 0.0253), stats.chi2.sf(12.8, 5))
+Xm_ = np.random.default_rng(2026).multinomial(30, [1 / 6] * 6, size=9999)
+ssq_ = ((Xm_ - 5) ** 2).sum(1)
+cnt_ = int((ssq_ >= 64).sum())  # 整数で比較（T_b ≥ 12.8 ⇔ Σ(n−5)² ≥ 64）
+check(T, "default_rng(2026) で 9999 回：T_b≥12.8 は 285 回（再現）", cnt_ == 285, cnt_)
+ph_ = (1 + cnt_) / (9999 + 1)
+check(T, "p̂=(1+285)/10000=0.0286、MC 誤差 0.0017", close(ph_, 0.0286, 1e-12) and close(math.sqrt(0.0286 * 0.9714 / 9999), 0.0017, 5e-5), (ph_, math.sqrt(0.0286 * 0.9714 / 9999)))
+# 正確な p 値（多項分布の全列挙）と比べて MC 誤差内か
+from math import factorial as _fac
+
+
+def _comps(total, parts):
+    if parts == 1:
+        yield (total,)
+        return
+    for v in range(total + 1):
+        for rest in _comps(total - v, parts - 1):
+            yield (v,) + rest
+
+
+exact_ = 0
+for cc in _comps(30, 6):
+    if sum((v - 5) ** 2 for v in cc) >= 64:
+        w = _fac(30)
+        for v in cc:
+            w //= _fac(v)
+        exact_ += w
+exact_ /= 6 ** 30
+check(T, "多項分布の全列挙による正確な p 値と p̂ の差がモンテカルロ誤差の3倍以内", abs(ph_ - exact_) < 3 * 0.0017, round(exact_, 5))
+check(T, "p̂≤0.05 で棄却", ph_ <= 0.05, ph_)
+# +1 の効果：H0 下で P(p̂≤α)≤α（B=19, α=0.05 で正確に 0.05）
+rg2_ = np.random.default_rng(20261025)
+rej = 0
+NS = 20000
+for _ in range(NS):
+    tt = (((rg2_.multinomial(30, [1 / 6] * 6, size=20) - 5) ** 2).sum(1))
+    t0, tb = tt[0], tt[1:]
+    rej += (1 + np.sum(tb >= t0)) / 20 <= 0.05
+check(T, "乱数 H0（B=19, 2万回）：P(p̂≤0.05)≤0.05（離散でタイがあるので以下、許容 +0.005）", rej / NS <= 0.055, rej / NS)
+
 # ================================================================ 集計
 nok = sum(results)
 print(f"\n合計: OK {nok} / NG {len(results) - nok}")

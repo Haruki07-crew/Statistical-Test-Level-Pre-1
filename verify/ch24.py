@@ -793,6 +793,65 @@ for _ in range(500):
     okc &= abs(np.corrcoef(s_, t_)[0, 1] - sc @ tc / np.linalg.norm(sc) / np.linalg.norm(tc)) < 1e-12
 check(T, "乱数 500組で 相関係数 = 中心化ベクトルのコサイン（許容 1e-12）", okc, "成立")
 
+# ================================================================ 重要度Cの用語
+from scipy import stats as _st, optimize as _opt
+T = "mixture-model-clustering"
+mp = front(T)["charts"][0]["params"]
+check(T, "chart normmix params = 本文（π1=0.6, N(0,1²), N(4,1.5²)）", mp == {"w": 0.6, "mu1": 0, "sigma1": 1, "mu2": 4, "sigma2": 1.5}, mp)
+mc = lambda x: (0.6 * _st.norm.pdf(x, 0, 1), 0.4 * _st.norm.pdf(x, 4, 1.5))
+a_, b_ = mc(1)
+check(T, "x=1：f1=0.2420、f2=0.0360、0.1452 と 0.0144、γ1≈0.910", close(_st.norm.pdf(1), 0.2420) and close(_st.norm.pdf(1, 4, 1.5), 0.0360)
+      and close(a_, 0.1452) and close(b_, 0.0144) and close(a_ / (a_ + b_), 0.910, 5e-4), (r(a_), r(b_), r(a_ / (a_ + b_))))
+a_, b_ = mc(2)
+check(T, "x=2：f1=0.0540、f2=0.1093、0.0324 と 0.0437、γ1≈0.426（クラスター2）", close(_st.norm.pdf(2), 0.0540) and close(_st.norm.pdf(2, 4, 1.5), 0.1093)
+      and close(a_, 0.0324) and close(b_, 0.0437) and close(a_ / (a_ + b_), 0.426, 5e-4) and a_ < b_, r(a_ / (a_ + b_)))
+a_, b_ = mc(3)
+check(T, "x=3：γ1≈0.030", close(a_ / (a_ + b_), 0.030, 5e-4), r(a_ / (a_ + b_)))
+bd = lambda s2, w=0.6: _opt.brentq(lambda x: w * _st.norm.pdf(x) - (1 - w) * _st.norm.pdf(x, 4, s2), 0, 4)
+s2g = np.round(np.arange(0.5, 3.0001, 0.1), 1)
+bds = np.array([bd(s) for s in s2g])
+imin = int(np.argmin(bds))
+check(T, "caption：境目は σ₂≈2.2 まで左へ動き、それ以上でわずかに右へ戻る（σ₂ 0.1刻み）", np.all(np.diff(bds[:imin + 1]) < 0) and np.all(np.diff(bds[imin:]) > 0)
+      and close(s2g[imin], 2.2, 1e-9) and bds[-1] - bds[imin] < 0.05, (r(bds[[0, 10, imin, -1]]), s2g[imin]))
+check(T, "π1 を変えると山の高さの比が変わる（x=0 と x=4 の密度比が π1/(1−π1) に比例して増える）",
+      all((w * _st.norm.pdf(0) / ((1 - w) * _st.norm.pdf(0, 4, 1.5))) < (w2 * _st.norm.pdf(0) / ((1 - w2) * _st.norm.pdf(0, 4, 1.5))) for w, w2 in [(0.3, 0.6), (0.6, 0.9)]), "成立")
+# EM を1回まわして、Eステップの負担率がベイズの定理そのものであることを確認（乱数、seed固定）
+zz = rng.random(4000) < 0.6
+xm = np.where(zz, rng.normal(0, 1, 4000), rng.normal(4, 1.5, 4000))
+th = [0.5, -1.0, 1.0, 5.0, 1.0]
+for _ in range(300):
+    w, m1, s1, m2, s2 = th
+    g1 = w * _st.norm.pdf(xm, m1, s1)
+    g = g1 / (g1 + (1 - w) * _st.norm.pdf(xm, m2, s2))
+    w = g.mean(); m1 = (g * xm).sum() / g.sum(); m2 = ((1 - g) * xm).sum() / (1 - g).sum()
+    s1 = math.sqrt((g * (xm - m1) ** 2).sum() / g.sum()); s2 = math.sqrt(((1 - g) * (xm - m2) ** 2).sum() / (1 - g).sum())
+    th = [w, m1, s1, m2, s2]
+check(T, "EM（n=4000, seed固定）で真値 (0.6, 0, 1, 4, 1.5) を回復（許容 0.1）", allclose(th, [0.6, 0, 1, 4, 1.5], 0.1), r(th))
+# 分散共通・等方で σ→0 なら負担率は 0/1（k-means）
+xq = 1.9
+gs = [0.5 * _st.norm.pdf(xq, 0, s) / (0.5 * _st.norm.pdf(xq, 0, s) + 0.5 * _st.norm.pdf(xq, 4, s)) for s in (1, 0.3, 0.1)]
+check(T, "共通分散 σ→0 で負担率→0/1（k-means の極限、x=1.9 で γ1→1）", gs[0] < gs[1] < gs[2] and gs[2] > 0.999, r(gs))
+
+T = "standardization-before-clustering"
+Ac, Bc, Cc = np.array([30, 400.0]), np.array([32, 500.0]), np.array([50, 420.0])
+dAB, dAC = np.linalg.norm(Ac - Bc), np.linalg.norm(Ac - Cc)
+check(T, "生の距離 d(A,B)≈100.02、d(A,C)≈28.28 → C が近い", close(dAB, 100.02, 5e-3) and close(dAC, 28.28, 5e-3) and dAC < dAB, (r(dAB), r(dAC)))
+sdc = np.array([10, 100.0])
+zAB, zAC = np.linalg.norm((Ac - Bc) / sdc), np.linalg.norm((Ac - Cc) / sdc)
+check(T, "標準化後 d(A,B)≈1.020、d(A,C)≈2.010 → B が近い", close(zAB, 1.020, 5e-4) and close(zAC, 2.010, 5e-4) and zAB < zAC, (r(zAB), r(zAC)))
+Xs = rng.normal(size=(30, 3)) * [1, 50, 0.1] + [5, 300, 2]
+Zs = (Xs - Xs.mean(0)) / Xs.std(0, ddof=1)
+Dz = squareform(pdist(Zs))
+Dse = squareform(pdist(Xs, "seuclidean", V=Xs.var(0, ddof=1)))
+check(T, "標準化後のユークリッド距離 = 標準化ユークリッド距離 = 対角マハラノビス（乱数、許容1e-10）",
+      allclose(Dz, Dse, 1e-10) and close(np.sqrt(((Xs[0] - Xs[1]) ** 2 / Xs.var(0, ddof=1)).sum()), Dz[0, 1], 1e-10), "一致")
+Xu = Xs * [100, 0.01, 1000]  # 単位の変更
+Zu = (Xu - Xu.mean(0)) / Xu.std(0, ddof=1)
+check(T, "単位を変えても標準化後の距離は不変、生の距離は変わる", allclose(squareform(pdist(Zu)), Dz, 1e-10) and not allclose(squareform(pdist(Xu)) / squareform(pdist(Xu)).max(), squareform(pdist(Xs)) / squareform(pdist(Xs)).max(), 1e-3), "成立")
+check(T, "平均を引くだけでは距離は変わらない", allclose(squareform(pdist(Xs - Xs.mean(0))), squareform(pdist(Xs)), 1e-9), "成立")
+mm = (Xs - Xs.min(0)) / (Xs.max(0) - Xs.min(0))
+check(T, "最小最大正規化で各変数の範囲が [0,1]", allclose(mm.min(0), [0] * 3, 1e-12) and allclose(mm.max(0), [1] * 3, 1e-12), "成立")
+
 # ---------------------------------------------------------------- 集計
 print()
 print(f"OK {sum(results)} / NG {len(results) - sum(results)}")

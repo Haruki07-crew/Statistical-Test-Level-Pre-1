@@ -782,6 +782,35 @@ for pp in [charts(T, "ar-sim")[0]["params"]]:
     ok &= all(s["min"] <= pp[s["param"]] <= s["max"] for s in charts(T, "ar-sim")[0]["sliders"])
 check(T, "charts ar-sim φ=0.7 がスライダー範囲内", ok, "")
 
+# ================================================================ 重要度Cの用語
+# ---------------------------------------------------------------- strict-stationarity
+T = "strict-stationarity"
+check(T, "U(-a,a) の分散 a²/3 で a=√3 なら平均0・分散1（sympy）",
+      (lambda a_, u_: sp.simplify(sp.integrate(u_ ** 2 / (2 * a_), (u_, -a_, a_)) - a_ ** 2 / 3) == 0
+       and sp.integrate(u_ / (2 * sp.sqrt(3)), (u_, -sp.sqrt(3), sp.sqrt(3))) == 0
+       and sp.integrate(u_ ** 2 / (2 * sp.sqrt(3)), (u_, -sp.sqrt(3), sp.sqrt(3))) == 1)(sp.symbols("a", positive=True), sp.symbols("u", real=True)), "")
+check(T, "P(Z>1.8)≈0.0359、√3≈1.7321<1.8 なので一様側は0",
+      close(stats.norm.sf(1.8), 0.0359) and close(math.sqrt(3), 1.7321) and math.sqrt(3) < 1.8 and stats.uniform(-math.sqrt(3), 2 * math.sqrt(3)).sf(1.8) == 0,
+      (round(stats.norm.sf(1.8), 6), round(math.sqrt(3), 6)))
+# 乱数：交互に N(0,1)・U(-√3,√3) の系列。平均0・分散1・自己共分散0（弱定常）だが P(X>1.8) が奇偶で違う
+nsim_ = 400000
+odd_ = rng.standard_normal(nsim_)
+even_ = rng.uniform(-math.sqrt(3), math.sqrt(3), nsim_)
+xs_ = np.empty(2 * nsim_)
+xs_[0::2], xs_[1::2] = odd_, even_
+g1_ = np.mean(xs_[:-1] * xs_[1:])
+check(T, "乱数80万点：奇偶とも平均≈0・分散≈1、γ(1)≈0（許容 0.01）",
+      abs(odd_.mean()) < 0.01 and abs(even_.mean()) < 0.01 and abs(odd_.var() - 1) < 0.01 and abs(even_.var() - 1) < 0.01 and abs(g1_) < 0.01,
+      (round(odd_.var(), 4), round(even_.var(), 4), round(g1_, 4)))
+check(T, "乱数：P(X>1.8) 奇数≈0.0359（許容 0.002）、偶数=0",
+      abs(np.mean(odd_ > 1.8) - 0.0359) < 0.002 and np.mean(even_ > 1.8) == 0, (np.mean(odd_ > 1.8), np.mean(even_ > 1.8)))
+# コーシーの i.i.d.：標本平均が安定しない（平均が存在しない）
+cm_ = [np.mean(rng.standard_cauchy(10 ** k)) for k in (2, 4, 6)]
+check(T, "コーシー i.i.d.：x̄_n も Cauchy(0,1)（n=10 の平均20万個の四分位範囲≈2、許容 0.1≈5SE）で平均に収束しない",
+      abs(np.subtract(*np.percentile(rng.standard_cauchy((200000, 10)).mean(1), [75, 25])) - 2) < 0.1, r(cm_))
+check(T, "コーシー：E|X|=∞（∫_0^M x/(π(1+x²))dx = log(1+M²)/(2π) が発散, sympy）",
+      sp.limit(sp.integrate(sp.Symbol("x") / (sp.pi * (1 + sp.Symbol("x") ** 2)), (sp.Symbol("x"), 0, sp.Symbol("M", positive=True))), sp.Symbol("M", positive=True), sp.oo) == sp.oo, "")
+
 # ================================================================
 ok_n = sum(results)
 ng_n = len(results) - ok_n
