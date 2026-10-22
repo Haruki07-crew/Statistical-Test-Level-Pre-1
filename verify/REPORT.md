@@ -61,3 +61,16 @@
   - `content/ch07/continuous-mapping-theorem.md` 例2：「1.96² ≈ 3.8415」→「1.96² = 3.8416 … 3.8415 と（1.96 の丸めの差を除いて）一致」
 - 検算スクリプト側の修正: 大数の弱法則例2の上限 0.1079 は丸め前の p(1-p) で計算した値として照合（0.1685 で計算すると 0.1078）
 - 検算対象外: 定性的な記述（現場での使われ方、収束の強弱関係・ボレル・カンテリ・レヴィの連続性定理・コルモゴロフの強法則の必要十分性など定理そのもの、近似の目安 n≥50・np≤5）
+
+## 第6章（連続型分布・標本分布・非心分布）
+
+- スクリプト: `verify/ch06.py`（実行: `.venv/bin/python verify/ch06.py`）
+- 対象: uniform-distribution, normal-distribution, standard-normal-distribution, exponential-distribution, gamma-distribution, beta-distribution, lognormal-distribution, cauchy-distribution, chi-squared-distribution, t-distribution, f-distribution, t-statistic, normal-mixture-distribution, bivariate-normal-distribution, multivariate-normal-distribution, noncentral-chi-squared-distribution, noncentral-t-distribution, noncentral-f-distribution（18ファイル）
+- 結果: **OK 222 / NG 0**（初回 OK 210 / NG 12）
+- 方法: sympy（各分布の MGF の導出と1・2階微分による E・V、キュムラント、標準正規の偶数次モーメントと漸化式・級数係数、Z² の密度、ベータの E・V・最頻値、ガンマ・対数正規の最頻値、2変量正規の平方完成と MGF の偏微分、混合正規の MGF から E・V、非心χ²の MGF 微分と再生性）、scipy（MGF・特性関数の数値積分／QAWF、全具体例の確率・分位点、t/F/χ² の表の値、ttest_ind_from_stats、ncx2・nct・ncf による検出力の表の再計算と「80%に必要な最小サイズ」の確認）、混合正規の例は山 159.44・168.86、谷 166.27 を格子探索で確認、乱数シミュレーション（seed=20261023、KS 統計量 0.005〜0.015 や確率±0.003〜0.015 など許容誤差は各チェックに明記）で再生性・分布の構成（t, F, χ², コーシー, 非心分布, 順序統計量, 一元配置の F）を確認
+- 本文の修正:
+  - `content/ch06/noncentral-f-distribution.md` 例：「各群15区画程度が必要」→「各群14区画以上が必要」（r=13 で 0.7922、r=14 で 0.8255）
+  - `content/ch06/noncentral-chi-squared-distribution.md` 例1：「棄却限界は 1.96²=3.841」→「χ²_0.05(1)=3.841（≈1.96²）」（1.96²=3.8416）
+  - `content/ch06/standard-normal-distribution.md` 試験のポイント：「1.96²≈3.841」→「1.96²≈3.84」
+- 検算スクリプト側の修正: 初回 NG のうち本文由来は2件（上記の1・3番目。2番目は同じ理由で併せて修正）、残り 10 件は検算側の問題（実行前に、scipy の kstest に分布名文字列と args を渡すとエラーになる件は凍結分布の cdf を渡して回避。t>0 の MGF 数値積分のオーバーフロー → 対数密度で計算・有限上限、sympy の Piecewise、丸め境界 0.02835、χ²(9) の区間は表示値 2.700 ではなく正確な分位点で計算された値、χ² 上側点の「おおよそ1.8〜2倍」は最小 1.778 のため 1.75 以上を許容、t(1) の平均は積分の発散で確認、比較の許容 1e-9 が厳しすぎ、混合正規のシミュ平均の許容を 0.05→0.07（標準誤差 0.0137 の約5倍））
+- 検算対象外: 定性的な記述（現場での使われ方、無記憶性をもつ連続分布が指数分布だけという特徴づけ、多変量正規の同値な定義、グラフの見た目の説明）

@@ -204,75 +204,75 @@ chapters:
   - id: normal-distribution
     title: 正規分布
     importance: A
-    status: planned
+    status: verified
   - id: standard-normal-distribution
     title: 標準正規分布
     importance: A
-    status: planned
+    status: verified
   - id: uniform-distribution
     title: 一様分布
     importance: B
-    status: planned
+    status: verified
   - id: exponential-distribution
     title: 指数分布
     importance: A
-    status: planned
+    status: verified
   - id: gamma-distribution
     title: ガンマ分布
     importance: A
-    status: planned
+    status: verified
   - id: beta-distribution
     title: ベータ分布
     importance: A
-    status: planned
+    status: verified
   - id: cauchy-distribution
     title: コーシー分布
     importance: B
-    status: planned
+    status: verified
   - id: lognormal-distribution
     title: 対数正規分布
     importance: B
-    status: planned
+    status: verified
   - id: bivariate-normal-distribution
     title: 2変量正規分布
     importance: A
-    status: planned
+    status: verified
   - id: multivariate-normal-distribution
     title: 多変量正規分布
     importance: A
-    status: planned
+    status: verified
   - id: normal-mixture-distribution
     title: 混合正規分布
     importance: B
-    status: planned
+    status: verified
   - id: chi-squared-distribution
     title: カイ二乗分布
     importance: A
-    status: planned
+    status: verified
   - id: noncentral-chi-squared-distribution
     title: 非心カイ二乗分布
     importance: B
-    status: planned
+    status: verified
   - id: t-distribution
     title: t分布
     importance: A
-    status: planned
+    status: verified
   - id: t-statistic
     title: t統計量
     importance: A
-    status: planned
+    status: verified
   - id: noncentral-t-distribution
     title: 非心t分布
     importance: B
-    status: planned
+    status: verified
   - id: f-distribution
     title: F分布
     importance: A
-    status: planned
+    status: verified
   - id: noncentral-f-distribution
     title: 非心F分布
     importance: B
-    status: planned
+    status: verified
 - 'no': 7
   title: 極限定理、漸近理論
   terms:
