@@ -584,13 +584,11 @@ check(T, "平均55の学校 0.4638×62+0.5362×55≈58.246", close(th_[1], 58.24
 check(T, "5校の推定値 62.000, 58.246, 66.290, 59.855, 63.609", allclose(th_, [62, 58.246, 66.290, 59.855, 63.609], 5e-4), np.round(th_, 3).tolist())
 check(T, "どれも 62 の方へ約46%（=B̂）引き寄せられる", allclose((yb_ - th_)[yb_ != 62] / (yb_ - 62)[yb_ != 62], np.full(4, B_), 1e-12) and round(B_ * 100) == 46, B_)
 # 周辺分布 N(μ, τ²+σ²)（sympy の積分）
-th_s, yv = sp.symbols("theta y", real=True)
-mu_s = sp.symbols("mu", real=True)
+e_s, d_s = sp.symbols("e d", real=True)  # e=θ−μ, d=ȳ−μ（位置をずらして積分）
 t_s, sg_s = sp.symbols("tau sigma", positive=True)
-marg = sp.integrate(sp.exp(-(yv - th_s) ** 2 / (2 * sg_s ** 2) - (th_s - mu_s) ** 2 / (2 * t_s ** 2)) / (2 * sp.pi * sg_s * t_s), (th_s, -sp.oo, sp.oo))
-tgt = sp.exp(-(yv - mu_s) ** 2 / (2 * (t_s ** 2 + sg_s ** 2))) / sp.sqrt(2 * sp.pi * (t_s ** 2 + sg_s ** 2))
-rat_ = [sp.N((marg / tgt).subs({yv: a, mu_s: b, t_s: c, sg_s: d}), 30) for a, b, c, d in [(55, 62, 4.3, 4), (1, -2, 0.5, 3), (7, 7, 2, 1)]]
-check(T, "周辺分布 ȳ_j ~ N(μ, τ²+σ²)（sympy で積分し、3点で密度比=1）", all(abs(v - 1) < 1e-20 for v in rat_), [float(v) for v in rat_])
+marg = sp.integrate(sp.exp(-(d_s - e_s) ** 2 / (2 * sg_s ** 2) - e_s ** 2 / (2 * t_s ** 2)) / (2 * sp.pi * sg_s * t_s), (e_s, -sp.oo, sp.oo))
+tgt = sp.exp(-d_s ** 2 / (2 * (t_s ** 2 + sg_s ** 2))) / sp.sqrt(2 * sp.pi * (t_s ** 2 + sg_s ** 2))
+check(T, "周辺分布 ȳ_j ~ N(μ, τ²+σ²)（sympy 積分）", sp.simplify(marg / tgt) == 1, None)
 # 周辺尤度の最大化（第2種最尤）でも：μ̂=62、τ̂²=Σ/J−σ²=11.6
 nll_ = lambda p: -stats.norm(p[0], math.sqrt(max(p[1], 0) + s2e_)).logpdf(yb_).sum()
 opt_ = optimize.minimize(nll_, [60, 10], method="Nelder-Mead", options={"xatol": 1e-8, "fatol": 1e-10})

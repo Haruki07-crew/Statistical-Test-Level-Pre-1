@@ -1667,7 +1667,7 @@ chapters:
   - id: strict-stationarity
     title: 強定常性
     importance: C
-    status: planned
+    status: verified
   - id: autocovariance-autocorrelation
     title: 自己共分散・自己相関
     importance: A
@@ -1786,7 +1786,7 @@ chapters:
   - id: ordinal-contingency-table
     title: 順序カテゴリの分割表
     importance: C
-    status: planned
+    status: verified
   - id: three-way-table
     title: 3元分割表
     importance: B
@@ -1794,7 +1794,7 @@ chapters:
   - id: residual-analysis-contingency
     title: 分割表の残差分析
     importance: C
-    status: planned
+    status: verified
 - 'no': 29
   title: 不完全データの統計処理
   terms:
@@ -1869,11 +1869,11 @@ chapters:
   - id: nelson-aalen-estimator
     title: ネルソン・アーレン推定量
     importance: C
-    status: planned
+    status: verified
   - id: ignorability
     title: 無視可能性
     importance: C
-    status: planned
+    status: verified
 - 'no': 30
   title: モデル選択
   terms:
@@ -1928,15 +1928,15 @@ chapters:
   - id: training-test-split
     title: 訓練データとテストデータ
     importance: C
-    status: planned
+    status: verified
   - id: aicc
     title: 補正AIC
     importance: C
-    status: planned
+    status: verified
   - id: tic-ebic
     title: TICと一般化情報量規準
     importance: C
-    status: planned
+    status: verified
 - 'no': 31
   title: ベイズ法
   terms:
@@ -1999,11 +1999,11 @@ chapters:
   - id: empirical-bayes
     title: 経験ベイズ法
     importance: C
-    status: planned
+    status: verified
   - id: bayes-decision-theory
     title: ベイズ決定理論
     importance: C
-    status: planned
+    status: verified
 - 'no': 32
   title: シミュレーション
   terms:
@@ -2038,7 +2038,7 @@ chapters:
   - id: variance-reduction
     title: 分散減少法
     importance: C
-    status: planned
+    status: verified
   - id: mcmc
     title: マルコフ連鎖モンテカルロ法
     importance: A
@@ -2070,4 +2070,4 @@ chapters:
   - id: permutation-simulation
     title: モンテカルロ検定
     importance: C
-    status: planned
+    status: verified
