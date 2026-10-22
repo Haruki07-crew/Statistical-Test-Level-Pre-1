@@ -266,7 +266,7 @@ a { color: var(--accent); }
 .body .sec[data-sec="summary"] p { font-size: 1.05rem; }
 .body .sec[data-sec="mistake"] li { list-style: none; margin-left: -1.2em; padding: 8px 12px; background: var(--bg); border-radius: 8px; border-left: 3px solid var(--imp-a); }
 .math-display { overflow-x: auto; overflow-y: hidden; margin: 1em 0; padding: 4px 0; max-width: 100%; }
-.math-inline { white-space: nowrap; }
+m { font-style: normal; white-space: nowrap; }
 mjx-container[display="true"] { margin: .4em 0 !important; }
 mjx-container { max-width: 100%; }
 .math-display mjx-container { overflow-x: auto; overflow-y: hidden; }

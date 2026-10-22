@@ -16,6 +16,7 @@ from scipy import stats, integrate
 ROOT = Path(__file__).resolve().parent.parent
 results = []
 rng = np.random.default_rng(20261023)
+np.set_printoptions(legacy="1.25")
 
 
 def check(term, what, ok, value):
@@ -30,6 +31,8 @@ def close(x, claim, tol=5e-5):
 def allclose(xs, claims, tol=5e-5):
     xs = np.asarray(xs, float).ravel()
     claims = np.asarray(claims, float).ravel()
+    if claims.size == 1:
+        claims = np.full(xs.shape, claims[0])
     return xs.shape == claims.shape and bool(np.all(np.abs(xs - claims) <= tol + 1e-9))
 
 
@@ -123,8 +126,9 @@ T = "ar-model"
 ph, s2 = sp.symbols("phi sigma2", real=True)
 # AR(1) 公式（sympy：ψ_j=φ^j の等比級数）
 j = sp.symbols("j", integer=True, nonnegative=True)
-g0 = sp.simplify(sp.summation(ph ** (2 * j), (j, 0, sp.oo)).args[0][0] * s2) if False else None
 g0_sym = s2 / (1 - ph ** 2)
+check(T, "AR(1) Σφ^{2j}σ²=σ²/(1−φ²)（sympy、|φ|<1）",
+      sp.simplify(sp.summation(sp.Rational(3, 5) ** (2 * j), (j, 0, sp.oo)) - sp.Rational(25, 16)) == 0, "")
 ok = all(close(acvf([p], [], 0)[0], float(g0_sym.subs({ph: p, s2: 1})), 1e-9) for p in [-0.9, -0.3, 0.2, 0.6, 0.95])
 check(T, "AR(1) γ(0)=σ²/(1−φ²) を ψ 重みの和と照合（5値）", ok, "")
 ok = all(allclose(acvf([p], [], 6)[1:] / acvf([p], [], 6)[0], [p ** h for h in range(1, 7)], 1e-9) for p in [-0.7, 0.4, 0.9])
@@ -157,7 +161,7 @@ check(T, "例2 特性根 1.1736, −2.8403（√1.45 の式とも一致）",
 rts = np.roots([0.5, -0.4, 1])
 check(T, "例3 φ1²+4φ2=−1.84、根 0.4±1.3565i、|z|=√2=1.4142",
       close(0.16 - 2, -1.84, 1e-12) and allclose(sorted(rts.imag), [-1.3565, 1.3565]) and allclose(rts.real, [0.4, 0.4])
-      and allclose(abs(rts), [1.4142, 1.4142]), r(rts))
+      and allclose(abs(rts), [1.4142, 1.4142]), str(np.round(rts, 4)))
 w = math.acos(0.4 / (2 * math.sqrt(0.5)))
 check(T, "例3 cosω=0.2828, ω=1.2840, 周期 2π/ω=4.89",
       close(0.4 / (2 * math.sqrt(0.5)), 0.2828) and close(w, 1.2840) and close(2 * math.pi / w, 4.89, 5e-3), (round(w, 4), round(2 * math.pi / w, 3)))
@@ -433,11 +437,12 @@ def triangle(p1, p2):
 grid = [(a, b) for a in np.arange(-2.3, 2.31, 0.037) for b in np.arange(-1.3, 1.31, 0.029)]
 mism = sum(stat_roots(a, b) != triangle(a, b) for a, b in grid if abs(b) > 1e-9)
 check(T, "AR(2) 三角形の条件 ⇔ 根がすべて単位円の外（格子 約1万点）", mism == 0, mism)
-check(T, "三角形の頂点 (0,1),(2,−1),(−2,−1)",
-      all(abs(a + b - 1) < 1e-12 or abs(b - a - 1) < 1e-12 or abs(abs(b) - 1) < 1e-12 for a, b in [(0, 1), (2, -1), (-2, -1)])
-      and (0 + 1 == 1 and 1 - 0 == 1) and (2 - 1 == 1 and -1 == -1) and (-1 + 2 == 1), "")
+vert = [(0, 1), (2, -1), (-2, -1)]
+check(T, "三角形の頂点 (0,1),(2,−1),(−2,−1)：3本の境界線の交点",
+      [(a + b == 1) + (b - a == 1) + (b == -1) for a, b in vert] == [2, 2, 2], "")
 check(T, "例1 根 1.1736, −2.8403、λ=0.8521, −0.3521",
-      allclose(sorted(1 / np.roots([-0.3, -0.5, 1]).real), [-0.3521, 0.8521]) and allclose(np.roots([1, -0.5, -0.3]), [0.8521, -0.3521]), "")
+      allclose(sorted(np.roots([-0.3, -0.5, 1]).real), [-2.8403, 1.1736]) and allclose(sorted(1 / np.roots([-0.3, -0.5, 1]).real), [-0.3521, 0.8521])
+      and allclose(sorted(np.roots([1, -0.5, -0.3]).real), [-0.3521, 0.8521]), "")
 check(T, "例1 √1.45=1.2042", close(math.sqrt(1.45), 1.2042), "")
 rts = np.sort(np.roots([-0.2, -0.9, 1]).real)
 check(T, "例2 根 0.9221, −5.4221", allclose(rts, [-5.4221, 0.9221]), r(rts))
@@ -516,12 +521,6 @@ check(T, "例3 指数平滑 α=1+θ=0.3、予測 50→50.6→50.72", close(1 + (
 # ARIMA(0,1,1) 予測 = 指数平滑（乱数）
 e = rng.normal(size=300)
 X = np.cumsum(e + np.r_[0, -0.7 * e[:-1]])
-eps_hat = 0.0
-fa = []
-fe = X[0]
-ses = [fe]
-for t_ in range(1, 300):
-    pass
 # ARIMA 側：X̂_{t+1}=X_t+θ ε_t,  ε_t = X_t − X̂_t ; 指数平滑：S_{t+1}=αX_t+(1−α)S_t, 同じ初期値
 xa = X[0]
 xs_ = X[0]
@@ -644,7 +643,7 @@ rv = np.array([0.15, -0.10, 0.08, 0.05, -0.12])
 terms = rv ** 2 / (100 - np.arange(1, 6))
 Q = 100 * 102 * terms.sum()
 check(T, "例2 各項 0.000227, 0.000102, 0.0000660, 0.0000260, 0.000152",
-      allclose(terms, [0.000227, 0.000102, 0.0000660, 0.0000260, 0.000152], 5e-7), terms)
+      allclose(terms, [0.000227, 0.000102, 0.0000660, 0.0000260, 0.000152], 5e-7), r(terms, 7))
 check(T, "例2 Q=5.844", close(Q, 5.844, 5e-4), round(Q, 4))
 check(T, "例2 χ²(5) 上側5%点 11.070、p 値 0.322", close(stats.chi2.ppf(0.95, 5), 11.070, 5e-4) and close(stats.chi2.sf(Q, 5), 0.322, 5e-4),
       (round(stats.chi2.ppf(0.95, 5), 4), round(stats.chi2.sf(Q, 5), 4)))

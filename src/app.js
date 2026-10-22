@@ -44,7 +44,7 @@
   }
   // 本文の html から検索用のプレーンテキストを作る（数式は落とす）
   function plainFromHtml(h) {
-    return h.replace(/<span class="math-inline">[\s\S]*?<\/span>/g, ' ').replace(/<div class="math-display">[\s\S]*?<\/div>/g, ' ')
+    return h.replace(/<m>[\s\S]*?<\/m>/g, ' ').replace(/<div class="math-display">[\s\S]*?<\/div>/g, ' ')
       .replace(/<h2>[\s\S]*?<\/h2>/g, ' ').replace(/<[^>]+>/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&')
       .replace(/\s+/g, ' ').trim();
   }

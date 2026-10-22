@@ -57,7 +57,7 @@ def restore_math(h, store):
         kind, tex = store[m.group(0)]
         if kind == "D":
             return "\\$"
-        return f'<span class="math-inline">${html.escape(tex, quote=False)}$</span>'
+        return f'<m>${html.escape(tex, quote=False)}$</m>'  # 短いタグでサイズを節約（CSS では m 要素として扱う）
 
     return re.sub(r"MATHX\d{5}[ID]X", rep, h)
 
