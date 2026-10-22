@@ -1210,63 +1210,63 @@ chapters:
   - id: one-way-anova
     title: 一元配置分散分析
     importance: A
-    status: planned
+    status: verified
   - id: sum-of-squares-decomposition
     title: 平方和の分解
     importance: A
-    status: planned
+    status: verified
   - id: two-way-anova-with-replication
     title: 二元配置分散分析（繰り返しあり）
     importance: A
-    status: planned
+    status: verified
   - id: two-way-anova-without-replication
     title: 二元配置分散分析（繰り返しなし）
     importance: A
-    status: planned
+    status: verified
   - id: main-effect-and-interaction
     title: 主効果と交互作用
     importance: A
-    status: planned
+    status: verified
   - id: fixed-and-random-effects
     title: 母数模型と変量模型
     importance: B
-    status: planned
+    status: verified
   - id: expected-mean-square
     title: 期待平均平方
     importance: B
-    status: planned
+    status: verified
   - id: fisher-three-principles
     title: フィッシャーの3原則
     importance: A
-    status: planned
+    status: verified
   - id: randomized-block-design
     title: 乱塊法
     importance: A
-    status: planned
+    status: verified
   - id: latin-square-design
     title: ラテン方格法
     importance: A
-    status: planned
+    status: verified
   - id: orthogonal-array
     title: 直交表
     importance: A
-    status: planned
+    status: verified
   - id: factorial-design
     title: 要因計画
     importance: B
-    status: planned
+    status: verified
   - id: split-plot-design
     title: 分割法
     importance: B
-    status: planned
+    status: verified
   - id: confounding
     title: 交絡
     importance: B
-    status: planned
+    status: verified
   - id: tukey-multiple-comparison
     title: テューキーの多重比較
     importance: A
-    status: planned
+    status: verified
   - id: studentized-range-distribution
     title: スチューデント化された範囲の分布
     importance: C
