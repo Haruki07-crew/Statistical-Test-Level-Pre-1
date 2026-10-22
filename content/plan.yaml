@@ -1013,27 +1013,27 @@ chapters:
   - id: residual
     title: 残差
     importance: A
-    status: planned
+    status: verified
   - id: standardized-residual
     title: 標準化残差
     importance: A
-    status: planned
+    status: verified
   - id: studentized-residual
     title: スチューデント化残差
     importance: A
-    status: planned
+    status: verified
   - id: leverage
     title: てこ比
     importance: A
-    status: planned
+    status: verified
   - id: cooks-distance
     title: クックの距離
     importance: A
-    status: planned
+    status: verified
   - id: dffits
     title: DFFITS
     importance: B
-    status: planned
+    status: verified
   - id: dfbetas
     title: DFBETAS
     importance: C
@@ -1041,27 +1041,27 @@ chapters:
   - id: outlier-and-influential-point
     title: 外れ値と影響点
     importance: A
-    status: planned
+    status: verified
   - id: residual-plot
     title: 残差プロット
     importance: A
-    status: planned
+    status: verified
   - id: normal-qq-plot
     title: 正規Q-Qプロット
     importance: A
-    status: planned
+    status: verified
   - id: heteroscedasticity
     title: 不均一分散
     importance: A
-    status: planned
+    status: verified
   - id: serial-correlation
     title: 系列相関
     importance: A
-    status: planned
+    status: verified
   - id: durbin-watson-statistic
     title: ダービン・ワトソン比
     importance: A
-    status: planned
+    status: verified
   - id: breusch-pagan-test
     title: ブルーシュ・ペイガン検定
     importance: C
