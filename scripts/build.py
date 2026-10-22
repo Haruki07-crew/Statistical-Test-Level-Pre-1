@@ -123,7 +123,7 @@ def main():
 
     tpl = (SRC / "template.html").read_text(encoding="utf-8")
     css = (SRC / "app.css").read_text(encoding="utf-8")
-    js = "\n".join((SRC / f).read_text(encoding="utf-8") for f in ("dist.js", "charts.js", "app.js"))
+    js = "\n".join((SRC / f).read_text(encoding="utf-8") for f in ("dist.js", "charts.js", "charts_custom.js", "app.js"))
     out = tpl.replace("{{CSS}}", css).replace("{{DATA}}", data_json).replace("{{JS}}", js.replace("</script", "<\\/script"))
     OUT.parent.mkdir(exist_ok=True)
     OUT.write_text(out, encoding="utf-8")

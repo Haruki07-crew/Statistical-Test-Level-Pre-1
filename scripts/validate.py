@@ -45,10 +45,10 @@ def load_plan():
 
 
 def custom_chart_ids():
-    p = ROOT / "src" / "charts.js"
-    if not p.exists():
-        return set()
-    return set(re.findall(r"registerCustom\(\s*['\"]([\w-]+)['\"]", p.read_text(encoding="utf-8")))
+    ids = set()
+    for p in (ROOT / "src").glob("charts*.js"):
+        ids |= set(re.findall(r"registerCustom\(\s*['\"]([\w-]+)['\"]", p.read_text(encoding="utf-8")))
+    return ids
 
 
 def split_front(text):

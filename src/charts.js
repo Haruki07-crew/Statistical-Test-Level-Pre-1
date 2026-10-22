@@ -59,6 +59,13 @@
     return vals.map(function (v) { return (v == null || !isFinite(v)) ? (cap ? cap : null) : (cap && v > cap ? cap : v); });
   }
 
+  // ヒストグラム（密度に換算）。戻り値は Chart.js の {x, y} 点の配列
+  function hist(vals, bins, lo, hi) {
+    var w = (hi - lo) / bins, cnt = new Array(bins).fill(0), n = 0;
+    vals.forEach(function (v) { var k = Math.floor((v - lo) / w); if (k >= 0 && k < bins) cnt[k]++; n++; });
+    return cnt.map(function (c, k) { return { x: lo + (k + 0.5) * w, y: c / (n * w) }; });
+  }
+
   // 閉じた形の期待値と分散（存在しなければ null）
   function moments(dist, q) {
     var G = function (x) { return Math.exp(Dist.special.lgamma(x)); };
@@ -370,7 +377,12 @@
     return {
       el: f.plot, info: f.info, seed: f.seed, rand: mulberry32(f.seed), colors: colors, fmt: fmt,
       chartjs: hasChartJs(), baseOptions: baseOptions, lineDs: lineDs, linspace: linspace, Dist: Dist,
-      chart: function (cls, config) { return f.chart(f.canvas(cls), config); },
+      normal: normalRng(mulberry32(f.seed + 7)),
+      hist: hist,
+      chart: function (cls, config) {
+        if (!hasChartJs()) throw new Error('グラフ用ライブラリを読み込み中です（オフラインでは表示できません）');
+        return f.chart(f.canvas(cls), config);
+      },
       canvas: function (height) {
         var wrap = el('div', 'chart-canvas');
         wrap.style.height = (height || 260) + 'px';
@@ -424,7 +436,7 @@
   function redrawAll() { live.forEach(function (f) { f.redraw(); }); }
   function registerCustom(id, fn) { customs[id] = fn; }
 
-  root.Charts = { render: render, destroyAll: destroyAll, redrawAll: redrawAll, registerCustom: registerCustom, has: function (id) { return !!customs[id]; } };
+  root.Charts = { _rng: mulberry32, _normal: normalRng, render: render, destroyAll: destroyAll, redrawAll: redrawAll, registerCustom: registerCustom, has: function (id) { return !!customs[id]; } };
 
   // ---------- カスタム図 ----------
 
