@@ -698,7 +698,7 @@ Yr = 1 + 2 * xr + rngC.normal(size=(RR_, nR_)) * sd_r
 Br = Yr @ Ar.T
 Er = Yr - Br @ Xr.T
 hc0 = (Er ** 2) @ (Ar[1] ** 2)
-check(T, "乱数 HC0 の平均≈真の V[β̂1]（相対 ±5%）、通常の SE は過小", abs(hc0.mean() / Vtrue[1, 1] - 1) < .05 and abs(Br[:, 1].var() / Vtrue[1, 1] - 1) < .05,
+check(T, "乱数 HC0 の平均≈真の V[β̂1]≈β̂1 の標本分散（n=400、2万回、相対 ±5%）", abs(hc0.mean() / Vtrue[1, 1] - 1) < .05 and abs(Br[:, 1].var() / Vtrue[1, 1] - 1) < .05,
       (hc0.mean(), Vtrue[1, 1], Br[:, 1].var()))
 s2r = (Er ** 2).sum(1) / (nR_ - 2)
 check(T, "乱数 推定値は不偏（平均 2±0.005）", abs(Br[:, 1].mean() - 2) < .005, Br[:, 1].mean())

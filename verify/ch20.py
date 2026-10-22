@@ -859,7 +859,7 @@ eta2 = SA / ST
 rho = (SA - 2 * VE_) / ST
 om2 = (SA - 2 * VE_) / (ST + VE_)
 check(T, "η²=0.680、純変動 40.000、ρ_A=0.609、ω²=0.588", close(eta2, .680) and close(SA - 2 * VE_, 40, 1e-9) and close(rho, .609) and close(om2, .588), r([eta2, rho, om2]))
-check(T, "F から η²=2F/(2F+9)=19.142/28.142=0.680", close(2 * FE / (2 * FE + 9), eta2, 1e-12) and close(2 * FE, 19.142) and close(2 * FE + 9, 28.142), 2 * FE / (2 * FE + 9))
+check(T, "F から η²=2F/(2F+9)=0.680（本文は丸めた F=9.571 で 19.142/28.142）", close(2 * FE / (2 * FE + 9), eta2, 1e-12) and close(2 * 9.571, 19.142, 1e-9) and close(2 * 9.571 + 9, 28.142, 1e-9) and close(19.142 / 28.142, .680), 2 * FE / (2 * FE + 9))
 Dm = np.column_stack([np.ones(12), np.repeat([0, 1, 0], 4), np.repeat([0, 0, 1], 4)])
 bd = np.linalg.lstsq(Dm, allE, rcond=None)[0]
 R2d = 1 - np.sum((allE - Dm @ bd) ** 2) / ST

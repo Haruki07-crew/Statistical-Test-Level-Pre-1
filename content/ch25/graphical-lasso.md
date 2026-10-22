@@ -40,7 +40,7 @@ $\lambda\ge0$ は罰則の強さです。$\lambda=0$ なら $\hat\Omega=S^{-1}$�
 
 - $\log\det\Omega-\mathrm{tr}(S\Omega)$ は、多変量正規分布の対数尤度（定数と $n/2$ を除く）です。
 - 罰則 $\lambda\sum|\omega_{jk}|$ は回帰の Lasso と同じL1罰則で、小さな成分をちょうど0にする働きがあります。$\omega_{jk}=0$ は「他の変数を与えたとき $X_j$ と $X_k$ は条件付き独立」を意味するので、辺の選択と推定が同時にできます。
-- 最適解では $\hat W=\hat\Omega^{-1}$ が次を満たします：$\hat\omega_{jk}\ne0$ の組では $\hat w_{jk}=s_{jk}-\lambda\,\mathrm{sign}(\hat\omega_{jk})$、$\hat\omega_{jk}=0$ の組では $|\hat w_{jk}-s_{jk}|\le\lambda$。
+- 最適解では $\hat W=\hat\Omega^{-1}$ が次を満たします：$\hat\omega_{jk}\ne0$ の組では $\hat w_{jk}=s_{jk}+\lambda\,\mathrm{sign}(\hat\omega_{jk})$、$\hat\omega_{jk}=0$ の組では $|\hat w_{jk}-s_{jk}|\le\lambda$。
 - $\lambda\ge\max_{j\ne k}|s_{jk}|$ なら、非対角成分はすべて0（辺なし）になります。
 - 共分散選択が辺を1本ずつ検定で外すのに対し、グラフィカルLassoは $\lambda$ の大きさで全体の辺の数を一度に調整します。$n<p$ でも推定できるのも利点です。
 

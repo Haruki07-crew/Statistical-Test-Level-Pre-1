@@ -905,7 +905,7 @@ sd2 = (nh * dw_ ** 2).sum()
 deff = nh.sum() * sd2 / (nh * dw_).sum() ** 2
 check(T, "Σd²=13166.7、計画効果 1.053、有効標本 42.7", close(sd2, 13166.7, 0.05) and close(deff, 1.053, 5e-4) and close(nh.sum() / deff, 42.7, .05), (sd2, deff, nh.sum() / deff))
 check(T, "無回答調整後の営業ウェイト 250/12=20.833（=16.667×15/12）", close(250 / 12, 20.833, 5e-4) and close(dw_[1] * 15 / 12, 250 / 12, 1e-12), 250 / 12)
-check(T, "比例配分なら全員 N/n で、重みなし平均と一致", np.allclose(np.array([24, 15, 6]) / np.array([400, 250, 100]), 45 / 750) and close(1 + 0, 1), "ok")
+check(T, "比例配分なら全員 N/n で、重みなし平均と一致", np.allclose(np.array([24, 15, 6]) / np.array([400, 250, 100]), 45 / 750) and close(np.sum(np.array([24, 15, 6]) * yb) / 45, np.sum(Nh * yb) / 750, 1e-12), "ok")
 # 乱数：不等確率抽出（層化）で HT 推定量は不偏、重みなしは偏る
 pop = [rngC.normal(m, 8, N) for m, N in zip(yb, Nh)]
 Ytot = sum(p.sum() for p in pop)
@@ -917,7 +917,7 @@ for _ in range(R):
     hj.append(ht[-1] / sum(d * n for d, n in zip(dw_, nh)))
     unw.append(np.concatenate(smp).mean())
 ht, unw = np.array(ht), np.array(unw)
-seht = ht.std() / sqrt(R)
+seht = ht.std() / math.sqrt(R)
 check(T, "乱数 2万回：Ŷ=Σd y の平均＝母集団総計（4SE 以内）、重みなし平均は過大", abs(ht.mean() - Ytot) < 4 * seht and unw.mean() - Ytot / Nh.sum() > 3,
       (ht.mean(), Ytot, unw.mean(), Ytot / Nh.sum()))
 # キッシュの計画効果：層内で値が同質（分散が等しい）なら、Σd y/Σd の分散 / 単純無作為の分散 ≈ deff
@@ -929,7 +929,7 @@ for _ in range(R):
     wmK.append(sum(d * s.sum() for d, s in zip(dw_, smp)) / 750)
     srsK.append(rngC.choice(allK, 45, replace=False).mean())
 ratioK = np.var(wmK) / np.var(srsK)
-check(T, "乱数 層の平均が同じとき 分散比≈キッシュの 1.053（±0.05）", abs(ratioK - deff) < .05, ratioK)
+check(T, "乱数 層の平均が同じとき 分散比≈キッシュの 1.053（有限母集団修正込みの正確値 1.057、±0.05）", abs(ratioK - deff) < .05, ratioK)
 
 # ================= 集計 =================
 nok = sum(results)

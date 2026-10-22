@@ -1037,7 +1037,7 @@ chapters:
   - id: dfbetas
     title: DFBETAS
     importance: C
-    status: planned
+    status: verified
   - id: outlier-and-influential-point
     title: 外れ値と影響点
     importance: A
@@ -1065,11 +1065,11 @@ chapters:
   - id: breusch-pagan-test
     title: ブルーシュ・ペイガン検定
     importance: C
-    status: planned
+    status: verified
   - id: robust-standard-error
     title: 頑健標準誤差
     importance: C
-    status: planned
+    status: verified
 - 'no': 18
   title: 質的回帰
   terms:
@@ -1124,7 +1124,7 @@ chapters:
   - id: tobit-model
     title: トービットモデル
     importance: C
-    status: planned
+    status: verified
   - id: overdispersion
     title: 過分散
     importance: B
@@ -1132,7 +1132,7 @@ chapters:
   - id: offset-term
     title: オフセット項
     importance: C
-    status: planned
+    status: verified
 - 'no': 19
   title: 回帰分析その他
   terms:
@@ -1155,7 +1155,7 @@ chapters:
   - id: elastic-net
     title: エラスティックネット
     importance: C
-    status: planned
+    status: verified
   - id: regularization
     title: 正則化
     importance: A
@@ -1199,11 +1199,11 @@ chapters:
   - id: principal-component-regression
     title: 主成分回帰
     importance: C
-    status: planned
+    status: verified
   - id: spline-regression
     title: スプライン回帰
     importance: C
-    status: planned
+    status: verified
 - 'no': 20
   title: 分散分析と実験計画法
   terms:
@@ -1270,11 +1270,11 @@ chapters:
   - id: studentized-range-distribution
     title: スチューデント化された範囲の分布
     importance: C
-    status: planned
+    status: verified
   - id: effect-size-eta-squared
     title: 効果量と寄与率
     importance: C
-    status: planned
+    status: verified
 - 'no': 21
   title: 標本調査法
   terms:
@@ -1341,7 +1341,7 @@ chapters:
   - id: sampling-weight
     title: 標本ウェイト
     importance: C
-    status: planned
+    status: verified
 - 'no': 22
   title: 主成分分析
   terms:
