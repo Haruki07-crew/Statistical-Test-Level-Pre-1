@@ -43,3 +43,5 @@
 | dw-sim | AR(1)誤差の回帰残差とダービン・ワトソン比 | phi(0.5), n(30) |
 | studentized-range | スチューデント化された範囲の分布と上側α点 | k(3), df(9), alpha(0.05) |
 | iv-scatter | 内生性のある回帰で最小二乗法と操作変数法の直線を比較 | rho(0.6), strength(1), n(200), beta(1) |
+| points-2d | ラベル付きの点（負荷量プロット・得点の散布図） | points: [{label, x, y}], arrows: 1 で原点から矢印, circle: 1 で単位円, xlabel, ylabel |
+| graph-diagram | 無向グラフ・有向グラフ（グラフィカルモデル、パス図） | nodes: [...], edges: [[i, j], ...]（0始まり）, directed: 1 で矢印, weights: [...]（辺のラベル）, layout: circle\|line |

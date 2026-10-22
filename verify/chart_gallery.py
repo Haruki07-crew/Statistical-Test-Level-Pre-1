@@ -8,7 +8,7 @@ for f in ("charts.js", "charts_custom.js"):
     ids += re.findall(r"(?:registerCustom|reg)\(\s*'([\w-]+)'", (src / f).read_text(encoding="utf-8"))
 extra = {"bar-data": "{labels:['PC1','PC2','PC3','PC4'],values:[2.5,0.9,0.4,0.2],cumulative:true}",
          "line-data": "{x:[1,2,3,4],series:[{label:'a',y:[1,3,2,4]}]}", "acf-plot": "{pacf:1}", "km-curve": "{groups:2}",
-         "random-walk": "{lower:-10,upper:10,start:0}", "regression-residual": "{outlier:-6}"}
+         "random-walk": "{lower:-10,upper:10,start:0}", "regression-residual": "{outlier:-6}", "points-2d": "{points:[{label:'国語',x:0.8,y:0.4},{label:'数学',x:0.7,y:-0.6}],arrows:1,circle:1,xlabel:'PC1',ylabel:'PC2'}", "graph-diagram": "{nodes:['X1','X2','X3','X4'],edges:[[0,1],[1,2],[2,3],[0,2]]}"}
 js = "\n".join((src / f).read_text(encoding="utf-8") for f in ("dist.js", "charts.js", "charts_custom.js"))
 items = ",".join(f"['{i}',{extra.get(i, '{}')}]" for i in ids)
 html = f"""<!doctype html><html><head><meta charset=utf-8><style>{(src/'app.css').read_text(encoding='utf-8')}

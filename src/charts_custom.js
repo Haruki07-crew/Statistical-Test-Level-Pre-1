@@ -133,6 +133,71 @@
     a.info.textContent = 'k = ' + k + '，自由度 ' + df + ' の上側 ' + a.fmt(al) + ' 点 q = ' + a.fmt(qa, 3) + '（数値積分による値）';
   });
 
+  // ---------- 第22・25章 ----------
+  // points-2d: { points: [{label, x, y}], arrows: 1, circle: 1, xlabel, ylabel } ラベル付きの点（負荷量プロット・得点の散布図）
+  reg('points-2d', function (a, p, c) {
+    var P = p.points || [], xs = P.map(function (q) { return Number(q.x); }), ys = P.map(function (q) { return Number(q.y); });
+    var lim = Math.max(p.circle ? 1.1 : 0, Math.max.apply(null, xs.concat(ys).map(Math.abs).concat([0.1])) * 1.15);
+    var cv = a.canvas(320), ctx = cv.ctx, W = cv.w, H = cv.h, pad = 34, S = Math.min(W - 2 * pad, H - 2 * pad) / (2 * lim), cx = W / 2, cy = H / 2;
+    var X = function (v) { return cx + v * S; }, Y = function (v) { return cy - v * S; };
+    ctx.strokeStyle = c.line; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(X(-lim), cy); ctx.lineTo(X(lim), cy); ctx.moveTo(cx, Y(-lim)); ctx.lineTo(cx, Y(lim)); ctx.stroke();
+    ctx.fillStyle = c.muted; ctx.font = '11px ' + c.font; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    [-lim, -lim / 2, lim / 2, lim].forEach(function (v) { ctx.fillText(a.fmt(v, 2), X(v), cy + 4); });
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    [-lim, -lim / 2, lim / 2, lim].forEach(function (v) { ctx.fillText(a.fmt(v, 2), cx - 4, Y(v)); });
+    if (p.circle) { ctx.strokeStyle = c.faint; ctx.setLineDash([4, 4]); ctx.beginPath(); ctx.arc(cx, cy, S, 0, 2 * Math.PI); ctx.stroke(); ctx.setLineDash([]); }
+    ctx.font = '12px ' + c.font;
+    var boxes = [];
+    P.forEach(function (q, i) {
+      var x = X(xs[i]), y = Y(ys[i]);
+      ctx.strokeStyle = c.c1; ctx.fillStyle = c.c1; ctx.lineWidth = 1.6;
+      if (p.arrows) drawArrow(ctx, cx, cy, x, y, 8);
+      else { ctx.beginPath(); ctx.arc(x, y, 4, 0, 2 * Math.PI); ctx.fill(); }
+    });
+    // ラベルは重ならないよう、ぶつかったら縦にずらす
+    P.forEach(function (q, i) {
+      var lab = q.label != null ? String(q.label) : '', w = ctx.measureText(lab).width, right = xs[i] >= 0;
+      var lx = X(xs[i]) + (right ? 5 : -5 - w), ly = Y(ys[i]) + (ys[i] >= 0 ? -17 : 3), dir = ys[i] >= 0 ? -1 : 1;
+      for (var t = 0; t < 12 && boxes.some(function (b) { return lx < b[0] + b[2] && lx + w > b[0] && ly < b[1] + 14 && ly + 14 > b[1]; }); t++) ly += dir * 14;
+      boxes.push([lx, ly, w]);
+      ctx.fillStyle = c.fg; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText(lab, lx, ly);
+    });
+    ctx.fillStyle = c.muted; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom'; ctx.fillText(p.xlabel || '', W - 6, cy - 4);
+    ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText(p.ylabel || '', cx + 6, 4);
+  });
+  // graph-diagram: { nodes: [...], edges: [[i, j], ...], directed: 1 で矢印, weights: [...]（辺のラベル、省略可）, layout: circle|line }
+  reg('graph-diagram', function (a, p, c) {
+    var N = p.nodes || ['X1', 'X2', 'X3'], E = p.edges || [], K = N.length, cv = a.canvas(240), ctx = cv.ctx, W = cv.w, H = cv.h, r = 22;
+    var pos = N.map(function (_, i) {
+      if (p.layout === 'line') return [40 + (W - 80) * (K === 1 ? 0.5 : i / (K - 1)), H / 2];
+      var t = -Math.PI / 2 + 2 * Math.PI * i / K, R = Math.min(W, H) / 2 - 36;
+      return [W / 2 + R * Math.cos(t), H / 2 + R * Math.sin(t)];
+    });
+    ctx.lineWidth = 1.8; ctx.font = '12px ' + c.font;
+    E.forEach(function (e, k) {
+      var i = e[0], j = e[1], dx = pos[j][0] - pos[i][0], dy = pos[j][1] - pos[i][1], d = Math.hypot(dx, dy), ux = dx / d, uy = dy / d;
+      var bend = p.layout === 'line' && Math.abs(j - i) > 1 ? -40 : 0;
+      ctx.strokeStyle = c.muted; ctx.fillStyle = c.muted;
+      var x1 = pos[i][0] + ux * r, y1 = pos[i][1] + uy * r, x2 = pos[j][0] - ux * r, y2 = pos[j][1] - uy * r;
+      if (bend) {
+        ctx.beginPath(); ctx.moveTo(pos[i][0], pos[i][1] - r); ctx.quadraticCurveTo((pos[i][0] + pos[j][0]) / 2, pos[i][1] + 2 * bend, pos[j][0], pos[j][1] - r); ctx.stroke();
+        if (p.directed) drawArrow(ctx, pos[j][0] - 6, pos[j][1] - r - 10, pos[j][0], pos[j][1] - r, 8);
+      } else if (p.directed) drawArrow(ctx, x1, y1, x2, y2, 9);
+      else { ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+      if (p.weights && p.weights[k] != null) {
+        ctx.fillStyle = c.fg; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(String(p.weights[k]), (pos[i][0] + pos[j][0]) / 2 - uy * 12, (pos[i][1] + pos[j][1]) / 2 + ux * 12 + bend);
+      }
+    });
+    pos.forEach(function (q, i) {
+      ctx.fillStyle = c.surface; ctx.strokeStyle = c.c1; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(q[0], q[1], r, 0, 2 * Math.PI); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = c.fg; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(String(N[i]), q[0], q[1]);
+    });
+    a.info.textContent = p.directed ? '矢印は直接の影響（親 → 子）' : '辺がない2頂点は、他のすべての変数を与えたもとで条件付き独立';
+  });
+
   // ---------- 第2章 ----------
   // mgf-curve: { family: poisson|binom|norm|expon, lambda, n, p, mu, sigma, rate } M(t) と t=0 の接線
   reg('mgf-curve', function (a, p, c) {
