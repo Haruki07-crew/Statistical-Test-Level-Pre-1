@@ -1600,11 +1600,11 @@ chapters:
   - id: multidimensional-scaling
     title: 多次元尺度構成法
     importance: A
-    status: planned
+    status: verified
   - id: classical-mds
     title: 古典的MDS
     importance: B
-    status: planned
+    status: verified
   - id: nonmetric-mds
     title: 非計量MDS
     importance: C
@@ -1612,27 +1612,27 @@ chapters:
   - id: canonical-correlation-analysis
     title: 正準相関分析
     importance: A
-    status: planned
+    status: verified
   - id: canonical-variate
     title: 正準変量と正準相関係数
     importance: A
-    status: planned
+    status: verified
   - id: correspondence-analysis
     title: コレスポンデンス分析
     importance: A
-    status: planned
+    status: verified
   - id: quantification-theory
     title: 数量化理論
     importance: A
-    status: planned
+    status: verified
   - id: quantification-type-1
     title: 数量化I類
     importance: B
-    status: planned
+    status: verified
   - id: quantification-type-3
     title: 数量化III類
     importance: B
-    status: planned
+    status: verified
   - id: multiple-correspondence-analysis
     title: 多重コレスポンデンス分析
     importance: C
@@ -1640,15 +1640,15 @@ chapters:
   - id: structural-equation-modeling
     title: 構造方程式モデリング
     importance: A
-    status: planned
+    status: verified
   - id: path-analysis
     title: パス解析
     importance: B
-    status: planned
+    status: verified
   - id: independent-component-analysis
     title: 独立成分分析
     importance: B
-    status: planned
+    status: verified
   - id: goodness-of-fit-indices
     title: 適合度指標
     importance: C
