@@ -1,0 +1,2073 @@
+chapters:
+- 'no': 1
+  title: 事象と確率
+  terms:
+  - id: conditional-probability
+    title: 条件付き確率と乗法定理
+    importance: A
+    status: verified
+  - id: law-of-total-probability
+    title: 全確率の公式
+    importance: B
+    status: verified
+  - id: independence-of-events
+    title: 事象の独立
+    importance: A
+    status: verified
+  - id: bayes-theorem
+    title: ベイズの定理
+    importance: A
+    status: verified
+  - id: conditional-independence
+    title: 条件付き独立
+    importance: A
+    status: verified
+- 'no': 2
+  title: 確率分布と母関数
+  terms:
+  - id: cumulative-distribution-function
+    title: 累積分布関数
+    importance: A
+    status: planned
+  - id: survival-function
+    title: 生存関数
+    importance: B
+    status: planned
+  - id: hazard-function
+    title: ハザード関数
+    importance: A
+    status: planned
+  - id: joint-probability-function
+    title: 同時確率関数
+    importance: A
+    status: planned
+  - id: marginal-distribution
+    title: 周辺分布
+    importance: A
+    status: planned
+  - id: marginal-probability-function
+    title: 周辺確率関数
+    importance: B
+    status: planned
+  - id: conditional-probability-function
+    title: 条件付き確率関数
+    importance: A
+    status: planned
+  - id: joint-probability-density-function
+    title: 同時確率密度関数
+    importance: A
+    status: planned
+  - id: marginal-probability-density-function
+    title: 周辺確率密度関数
+    importance: B
+    status: planned
+  - id: conditional-probability-density-function
+    title: 条件付き確率密度関数
+    importance: A
+    status: planned
+  - id: moment-generating-function
+    title: モーメント母関数
+    importance: A
+    status: planned
+  - id: probability-generating-function
+    title: 確率母関数
+    importance: A
+    status: planned
+  - id: characteristic-function
+    title: 特性関数
+    importance: B
+    status: planned
+- 'no': 3
+  title: 分布の特性値
+  terms:
+  - id: expectation-variance-properties
+    title: 期待値と分散の性質
+    importance: A
+    status: planned
+  - id: quantile-function
+    title: 分位点関数
+    importance: B
+    status: planned
+  - id: coefficient-of-variation
+    title: 変動係数
+    importance: B
+    status: planned
+  - id: covariance-and-correlation
+    title: 共分散と相関係数
+    importance: A
+    status: planned
+  - id: spurious-correlation
+    title: 擬似相関
+    importance: B
+    status: planned
+  - id: partial-correlation-coefficient
+    title: 偏相関係数
+    importance: A
+    status: planned
+  - id: conditional-expectation
+    title: 条件付き期待値
+    importance: A
+    status: planned
+  - id: conditional-variance
+    title: 条件付き分散
+    importance: A
+    status: planned
+  - id: skewness-kurtosis
+    title: 歪度と尖度
+    importance: B
+    status: planned
+  - id: weighted-geometric-harmonic-mean
+    title: 加重平均・幾何平均・調和平均
+    importance: B
+    status: planned
+  - id: mean-vector
+    title: 期待値ベクトル
+    importance: B
+    status: planned
+  - id: variance-covariance-matrix
+    title: 分散共分散行列
+    importance: A
+    status: planned
+  - id: correlation-matrix
+    title: 相関係数行列
+    importance: B
+    status: planned
+- 'no': 4
+  title: 変数変換
+  terms:
+  - id: change-of-variables
+    title: 変数変換とヤコビアン
+    importance: A
+    status: planned
+  - id: log-transformation
+    title: 対数変換
+    importance: B
+    status: planned
+  - id: power-transformation
+    title: べき乗変換
+    importance: C
+    status: planned
+  - id: box-cox-transformation
+    title: Box-Cox変換
+    importance: B
+    status: planned
+  - id: logit-logistic-transformation
+    title: ロジット変換・ロジスティック変換
+    importance: A
+    status: planned
+  - id: probit-transformation
+    title: プロビット変換
+    importance: B
+    status: planned
+- 'no': 5
+  title: 離散型分布
+  terms:
+  - id: bernoulli-distribution
+    title: ベルヌーイ試行・ベルヌーイ分布
+    importance: A
+    status: planned
+  - id: binomial-distribution
+    title: 二項分布
+    importance: A
+    status: planned
+  - id: hypergeometric-distribution
+    title: 超幾何分布
+    importance: A
+    status: planned
+  - id: finite-population-correction
+    title: 有限母集団修正
+    importance: B
+    status: planned
+  - id: fisher-exact-test
+    title: フィッシャーの正確検定
+    importance: B
+    status: planned
+  - id: poisson-distribution
+    title: ポアソン分布
+    importance: A
+    status: planned
+  - id: geometric-distribution
+    title: 幾何分布と無記憶性
+    importance: A
+    status: planned
+  - id: negative-binomial-distribution
+    title: 負の二項分布
+    importance: A
+    status: planned
+  - id: multinomial-distribution
+    title: 多項分布
+    importance: A
+    status: planned
+- 'no': 6
+  title: 連続型分布と標本分布
+  terms:
+  - id: normal-distribution
+    title: 正規分布
+    importance: A
+    status: planned
+  - id: standard-normal-distribution
+    title: 標準正規分布
+    importance: A
+    status: planned
+  - id: uniform-distribution
+    title: 一様分布
+    importance: B
+    status: planned
+  - id: exponential-distribution
+    title: 指数分布
+    importance: A
+    status: planned
+  - id: gamma-distribution
+    title: ガンマ分布
+    importance: A
+    status: planned
+  - id: beta-distribution
+    title: ベータ分布
+    importance: A
+    status: planned
+  - id: cauchy-distribution
+    title: コーシー分布
+    importance: B
+    status: planned
+  - id: lognormal-distribution
+    title: 対数正規分布
+    importance: B
+    status: planned
+  - id: bivariate-normal-distribution
+    title: 2変量正規分布
+    importance: A
+    status: planned
+  - id: multivariate-normal-distribution
+    title: 多変量正規分布
+    importance: A
+    status: planned
+  - id: normal-mixture-distribution
+    title: 混合正規分布
+    importance: B
+    status: planned
+  - id: chi-squared-distribution
+    title: カイ二乗分布
+    importance: A
+    status: planned
+  - id: noncentral-chi-squared-distribution
+    title: 非心カイ二乗分布
+    importance: B
+    status: planned
+  - id: t-distribution
+    title: t分布
+    importance: A
+    status: planned
+  - id: t-statistic
+    title: t統計量
+    importance: A
+    status: planned
+  - id: noncentral-t-distribution
+    title: 非心t分布
+    importance: B
+    status: planned
+  - id: f-distribution
+    title: F分布
+    importance: A
+    status: planned
+  - id: noncentral-f-distribution
+    title: 非心F分布
+    importance: B
+    status: planned
+- 'no': 7
+  title: 極限定理、漸近理論
+  terms:
+  - id: markov-inequality
+    title: マルコフの不等式
+    importance: B
+    status: planned
+  - id: chebyshev-inequality
+    title: チェビシェフの不等式
+    importance: A
+    status: planned
+  - id: convergence-in-probability
+    title: 確率収束
+    importance: A
+    status: planned
+  - id: almost-sure-convergence
+    title: 概収束
+    importance: B
+    status: planned
+  - id: convergence-in-distribution
+    title: 分布収束
+    importance: A
+    status: planned
+  - id: convergence-in-mean-square
+    title: 平均二乗収束
+    importance: C
+    status: planned
+  - id: weak-law-of-large-numbers
+    title: 大数の弱法則
+    importance: A
+    status: planned
+  - id: strong-law-of-large-numbers
+    title: 大数の強法則
+    importance: B
+    status: planned
+  - id: central-limit-theorem
+    title: 中心極限定理
+    importance: A
+    status: planned
+  - id: slutsky-theorem
+    title: スラツキーの定理
+    importance: A
+    status: planned
+  - id: continuous-mapping-theorem
+    title: 連続写像定理
+    importance: B
+    status: planned
+  - id: delta-method
+    title: デルタ法
+    importance: A
+    status: planned
+  - id: continuity-correction
+    title: 連続修正
+    importance: A
+    status: planned
+  - id: law-of-small-numbers
+    title: 少数の法則
+    importance: B
+    status: planned
+  - id: lindeberg-levy-clt
+    title: リンデバーグ・レヴィの中心極限定理
+    importance: C
+    status: planned
+  - id: berry-esseen-theorem
+    title: ベリー・エッセンの定理
+    importance: C
+    status: planned
+- 'no': 8
+  title: 統計的推定の基礎
+  terms:
+  - id: point-estimation
+    title: 点推定と推定量
+    importance: B
+    status: planned
+  - id: unbiased-estimator
+    title: 不偏推定量
+    importance: A
+    status: planned
+  - id: consistent-estimator
+    title: 一致推定量
+    importance: A
+    status: planned
+  - id: efficient-estimator
+    title: 有効推定量
+    importance: A
+    status: planned
+  - id: mean-squared-error
+    title: 平均二乗誤差
+    importance: A
+    status: planned
+  - id: likelihood-function
+    title: 尤度関数・対数尤度
+    importance: A
+    status: planned
+  - id: maximum-likelihood-estimator
+    title: 最尤推定量
+    importance: A
+    status: planned
+  - id: score-function
+    title: スコア関数
+    importance: A
+    status: planned
+  - id: fisher-information
+    title: フィッシャー情報量
+    importance: A
+    status: planned
+  - id: cramer-rao-inequality
+    title: クラメール・ラオの不等式
+    importance: A
+    status: planned
+  - id: sufficient-statistic
+    title: 十分統計量
+    importance: A
+    status: planned
+  - id: factorization-theorem
+    title: ネイマンの分解定理
+    importance: A
+    status: planned
+  - id: method-of-moments
+    title: モーメント法
+    importance: A
+    status: planned
+  - id: asymptotic-normality-of-mle
+    title: 最尤推定量の漸近正規性
+    importance: A
+    status: planned
+  - id: invariance-of-mle
+    title: 最尤推定量の不変性
+    importance: B
+    status: planned
+  - id: rao-blackwell-theorem
+    title: ラオ・ブラックウェルの定理
+    importance: B
+    status: planned
+  - id: complete-statistic
+    title: 完備統計量
+    importance: C
+    status: planned
+  - id: exponential-family
+    title: 指数型分布族
+    importance: B
+    status: planned
+  - id: observed-fisher-information
+    title: 観測情報量
+    importance: C
+    status: planned
+- 'no': 9
+  title: 区間推定
+  terms:
+  - id: confidence-interval
+    title: 信頼区間
+    importance: A
+    status: planned
+  - id: confidence-coefficient
+    title: 信頼係数
+    importance: A
+    status: planned
+  - id: pivotal-quantity
+    title: ピボット量
+    importance: A
+    status: planned
+  - id: ci-mean-known-variance
+    title: 母平均の区間推定（分散既知）
+    importance: A
+    status: planned
+  - id: ci-mean-unknown-variance
+    title: 母平均の区間推定（分散未知）
+    importance: A
+    status: planned
+  - id: ci-variance
+    title: 母分散の区間推定
+    importance: A
+    status: planned
+  - id: ci-proportion
+    title: 母比率の区間推定
+    importance: A
+    status: planned
+  - id: wald-confidence-interval
+    title: ワルド型信頼区間
+    importance: A
+    status: planned
+  - id: wilson-interval
+    title: ウィルソン区間（スコア区間）
+    importance: B
+    status: planned
+  - id: ci-two-sample-mean-difference
+    title: 2標本の母平均の差の区間推定
+    importance: A
+    status: planned
+  - id: ci-paired-difference
+    title: 対応のある場合の区間推定
+    importance: B
+    status: planned
+  - id: ci-variance-ratio
+    title: 母分散比の区間推定
+    importance: B
+    status: planned
+  - id: required-sample-size
+    title: 必要な標本サイズ
+    importance: A
+    status: planned
+  - id: ci-two-sample-proportion
+    title: 2標本の母比率の差の区間推定
+    importance: B
+    status: planned
+  - id: clopper-pearson-interval
+    title: クロッパー・ピアソン区間
+    importance: C
+    status: planned
+  - id: likelihood-based-confidence-interval
+    title: 尤度に基づく信頼区間
+    importance: C
+    status: planned
+  - id: confidence-interval-test-duality
+    title: 信頼区間と検定の対応
+    importance: B
+    status: planned
+- 'no': 10
+  title: 検定の基礎と検定法の導出
+  terms:
+  - id: null-and-alternative-hypothesis
+    title: 帰無仮説と対立仮説
+    importance: A
+    status: planned
+  - id: type-i-and-ii-errors
+    title: 第1種の過誤・第2種の過誤
+    importance: A
+    status: planned
+  - id: significance-level
+    title: 有意水準
+    importance: A
+    status: planned
+  - id: p-value
+    title: p値
+    importance: A
+    status: planned
+  - id: rejection-region
+    title: 棄却域
+    importance: A
+    status: planned
+  - id: power-function
+    title: 検出力・検出力関数
+    importance: A
+    status: planned
+  - id: one-sided-two-sided-test
+    title: 片側検定と両側検定
+    importance: B
+    status: planned
+  - id: neyman-pearson-lemma
+    title: ネイマン・ピアソンの補題
+    importance: A
+    status: planned
+  - id: uniformly-most-powerful-test
+    title: 一様最強力検定
+    importance: A
+    status: planned
+  - id: monotone-likelihood-ratio
+    title: 単調尤度比
+    importance: B
+    status: planned
+  - id: likelihood-ratio-test
+    title: 尤度比検定
+    importance: A
+    status: planned
+  - id: wilks-theorem
+    title: ウィルクスの定理
+    importance: A
+    status: planned
+  - id: wald-test
+    title: ワルド検定
+    importance: A
+    status: planned
+  - id: score-test
+    title: スコア検定
+    importance: A
+    status: planned
+  - id: multiple-testing
+    title: 多重検定の問題
+    importance: A
+    status: planned
+  - id: bonferroni-correction
+    title: ボンフェローニ補正
+    importance: A
+    status: planned
+  - id: holm-method
+    title: ホルム法
+    importance: B
+    status: planned
+  - id: false-discovery-rate
+    title: 偽発見率
+    importance: B
+    status: planned
+  - id: sample-size-determination-test
+    title: 検定のための標本サイズ設計
+    importance: B
+    status: planned
+  - id: randomized-test
+    title: 無作為化検定
+    importance: C
+    status: planned
+- 'no': 11
+  title: 正規分布に関する検定
+  terms:
+  - id: z-test-known-variance
+    title: 母平均の検定（分散既知）
+    importance: A
+    status: planned
+  - id: one-sample-t-test
+    title: 1標本t検定
+    importance: A
+    status: planned
+  - id: two-sample-t-test
+    title: 2標本t検定
+    importance: A
+    status: planned
+  - id: pooled-variance
+    title: プールした分散
+    importance: A
+    status: planned
+  - id: welch-test
+    title: ウェルチの検定
+    importance: A
+    status: planned
+  - id: paired-t-test
+    title: 対応のあるt検定
+    importance: A
+    status: planned
+  - id: chi-square-test-variance
+    title: 母分散のカイ二乗検定
+    importance: A
+    status: planned
+  - id: f-test-equal-variances
+    title: 等分散のF検定
+    importance: A
+    status: planned
+  - id: bartlett-test
+    title: バートレット検定
+    importance: C
+    status: planned
+  - id: test-ci-relationship-mean-difference
+    title: 母平均の差の検定と信頼区間の関係
+    importance: B
+    status: planned
+  - id: test-correlation-coefficient
+    title: 母相関係数の検定
+    importance: B
+    status: planned
+  - id: fisher-z-transformation
+    title: フィッシャーのz変換
+    importance: B
+    status: planned
+  - id: power-of-t-test
+    title: t検定の検出力
+    importance: B
+    status: planned
+  - id: preliminary-test-problem
+    title: 予備検定の問題
+    importance: C
+    status: planned
+  - id: normality-test
+    title: 正規性の検定
+    importance: C
+    status: planned
+  - id: hotelling-t2
+    title: ホテリングのT二乗検定
+    importance: B
+    status: planned
+  - id: one-way-test-variance-equality-levene
+    title: ルビーン検定
+    importance: C
+    status: planned
+- 'no': 12
+  title: 一般の分布に関する検定法
+  terms:
+  - id: proportion-test
+    title: 母比率の検定
+    importance: A
+    status: planned
+  - id: binomial-test
+    title: 二項検定
+    importance: A
+    status: planned
+  - id: poisson-parameter-test
+    title: ポアソン分布の母数の検定
+    importance: A
+    status: planned
+  - id: two-sample-proportion-test
+    title: 2標本の比率の差の検定
+    importance: A
+    status: planned
+  - id: goodness-of-fit-test
+    title: 適合度検定
+    importance: A
+    status: planned
+  - id: pearson-chi-square-statistic
+    title: ピアソンのカイ二乗統計量
+    importance: A
+    status: planned
+  - id: independence-test
+    title: 独立性の検定
+    importance: A
+    status: planned
+  - id: homogeneity-test
+    title: 同質性の検定
+    importance: B
+    status: planned
+  - id: g-statistic
+    title: 尤度比検定統計量（G統計量）
+    importance: A
+    status: planned
+  - id: expected-frequency
+    title: 期待度数
+    importance: B
+    status: planned
+  - id: degrees-of-freedom-gof
+    title: 適合度検定の自由度（推定母数の影響）
+    importance: A
+    status: planned
+  - id: chi-square-approximation-condition
+    title: カイ二乗近似の条件
+    importance: B
+    status: planned
+  - id: variance-stabilizing-transform
+    title: 分散安定化変換
+    importance: C
+    status: planned
+  - id: poisson-two-sample-test
+    title: 2標本ポアソン比較
+    importance: B
+    status: planned
+  - id: kolmogorov-smirnov-test
+    title: コルモゴロフ・スミルノフ検定
+    importance: B
+    status: planned
+  - id: dispersion-test
+    title: 分散検定（過分散の検定）
+    importance: C
+    status: planned
+- 'no': 13
+  title: ノンパラメトリック法
+  terms:
+  - id: rank-and-ties
+    title: 順位と同順位（タイ）
+    importance: A
+    status: planned
+  - id: nonparametric-methods-overview
+    title: ノンパラメトリック法の特徴
+    importance: B
+    status: planned
+  - id: sign-test
+    title: 符号検定
+    importance: A
+    status: planned
+  - id: wilcoxon-signed-rank-test
+    title: ウィルコクソンの符号付き順位検定
+    importance: A
+    status: planned
+  - id: wilcoxon-rank-sum-test
+    title: ウィルコクソンの順位和検定
+    importance: A
+    status: planned
+  - id: mann-whitney-u-test
+    title: マン・ホイットニーのU検定
+    importance: A
+    status: planned
+  - id: kruskal-wallis-test
+    title: クラスカル・ウォリス検定
+    importance: A
+    status: planned
+  - id: friedman-test
+    title: フリードマン検定
+    importance: A
+    status: planned
+  - id: spearman-rank-correlation
+    title: スピアマンの順位相関係数
+    importance: A
+    status: planned
+  - id: kendall-rank-correlation
+    title: ケンドールの順位相関係数
+    importance: A
+    status: planned
+  - id: permutation-test
+    title: 並べ替え検定
+    importance: A
+    status: planned
+  - id: normal-approximation-rank-tests
+    title: 順位統計量の正規近似
+    importance: B
+    status: planned
+  - id: asymptotic-relative-efficiency
+    title: 漸近相対効率
+    importance: C
+    status: planned
+  - id: median-test
+    title: 中央値検定
+    importance: C
+    status: planned
+  - id: kolmogorov-smirnov-two-sample
+    title: 2標本コルモゴロフ・スミルノフ検定
+    importance: C
+    status: planned
+  - id: runs-test
+    title: ラン検定
+    importance: C
+    status: planned
+  - id: concordant-discordant-pairs
+    title: 一致対・不一致対
+    importance: B
+    status: planned
+  - id: jonckheere-terpstra-test
+    title: ヨンクヒール・タプストラ検定
+    importance: C
+    status: planned
+- 'no': 14
+  title: マルコフ連鎖
+  terms:
+  - id: markov-property
+    title: マルコフ性
+    importance: A
+    status: planned
+  - id: markov-chain
+    title: マルコフ連鎖
+    importance: A
+    status: planned
+  - id: transition-probability-matrix
+    title: 推移確率行列
+    importance: A
+    status: planned
+  - id: n-step-transition-probability
+    title: n段階推移確率
+    importance: A
+    status: planned
+  - id: chapman-kolmogorov-equation
+    title: チャップマン・コルモゴロフ方程式
+    importance: A
+    status: planned
+  - id: stationary-distribution
+    title: 定常分布
+    importance: A
+    status: planned
+  - id: irreducibility
+    title: 既約性
+    importance: A
+    status: planned
+  - id: communicating-class
+    title: 到達可能性と状態の類
+    importance: B
+    status: planned
+  - id: periodicity
+    title: 周期と非周期
+    importance: A
+    status: planned
+  - id: recurrence-and-transience
+    title: 再帰と過渡
+    importance: A
+    status: planned
+  - id: absorbing-state
+    title: 吸収状態
+    importance: A
+    status: planned
+  - id: ergodicity
+    title: エルゴード性
+    importance: A
+    status: planned
+  - id: detailed-balance
+    title: 詳細つり合い条件
+    importance: A
+    status: planned
+  - id: limiting-distribution
+    title: 極限分布
+    importance: B
+    status: planned
+  - id: absorption-probability
+    title: 吸収確率・平均吸収時間
+    importance: B
+    status: planned
+  - id: first-passage-time
+    title: 初到達時間・平均再帰時間
+    importance: B
+    status: planned
+  - id: positive-recurrence
+    title: 正再帰と零再帰
+    importance: C
+    status: planned
+  - id: continuous-time-markov-chain
+    title: 連続時間マルコフ連鎖
+    importance: C
+    status: planned
+- 'no': 15
+  title: 確率過程の基礎
+  terms:
+  - id: stochastic-process
+    title: 確率過程
+    importance: B
+    status: planned
+  - id: counting-process
+    title: 計数過程
+    importance: C
+    status: planned
+  - id: poisson-process
+    title: ポアソン過程
+    importance: A
+    status: planned
+  - id: interarrival-time
+    title: 到着時間間隔
+    importance: A
+    status: planned
+  - id: superposition-thinning-poisson
+    title: ポアソン過程の合成と間引き
+    importance: B
+    status: planned
+  - id: random-walk
+    title: ランダムウォーク
+    importance: A
+    status: planned
+  - id: gambler-ruin-problem
+    title: 破産問題
+    importance: A
+    status: planned
+  - id: brownian-motion
+    title: ブラウン運動
+    importance: A
+    status: planned
+  - id: martingale
+    title: マルチンゲール
+    importance: B
+    status: planned
+  - id: birth-death-process
+    title: 出生死滅過程
+    importance: A
+    status: planned
+  - id: pure-birth-process
+    title: 純出生過程
+    importance: C
+    status: planned
+  - id: queueing-theory
+    title: 待ち行列理論
+    importance: B
+    status: planned
+  - id: mm1-queue
+    title: M/M/1待ち行列
+    importance: A
+    status: planned
+  - id: traffic-intensity
+    title: 利用率（トラフィック強度）
+    importance: A
+    status: planned
+  - id: littles-law
+    title: リトルの公式
+    importance: B
+    status: planned
+  - id: compound-poisson-process
+    title: 複合ポアソン過程
+    importance: C
+    status: planned
+  - id: independent-stationary-increments
+    title: 独立増分性・定常増分性
+    importance: B
+    status: planned
+  - id: mmc-queue
+    title: M/M/c待ち行列
+    importance: C
+    status: planned
+  - id: reflection-principle
+    title: 反射原理
+    importance: C
+    status: planned
+- 'no': 16
+  title: 重回帰分析
+  terms:
+  - id: multiple-regression-model
+    title: 重回帰モデル
+    importance: A
+    status: planned
+  - id: least-squares-method
+    title: 最小二乗法
+    importance: A
+    status: planned
+  - id: normal-equations
+    title: 正規方程式
+    importance: A
+    status: planned
+  - id: hat-matrix
+    title: ハット行列
+    importance: A
+    status: planned
+  - id: gauss-markov-theorem
+    title: ガウス・マルコフの定理
+    importance: A
+    status: planned
+  - id: coefficient-of-determination
+    title: 決定係数
+    importance: A
+    status: planned
+  - id: adjusted-r-squared
+    title: 自由度調整済み決定係数
+    importance: A
+    status: planned
+  - id: regression-coefficient-t-test
+    title: 回帰係数のt検定
+    importance: A
+    status: planned
+  - id: overall-f-test-regression
+    title: 回帰全体のF検定
+    importance: A
+    status: planned
+  - id: standardized-partial-regression-coefficient
+    title: 標準化偏回帰係数
+    importance: B
+    status: planned
+  - id: multicollinearity
+    title: 多重共線性
+    importance: A
+    status: planned
+  - id: variance-inflation-factor
+    title: 分散拡大要因
+    importance: A
+    status: planned
+  - id: dummy-variable
+    title: ダミー変数
+    importance: B
+    status: planned
+  - id: interaction-term
+    title: 交互作用項
+    importance: B
+    status: planned
+  - id: confidence-and-prediction-interval-regression
+    title: 回帰の信頼区間と予測区間
+    importance: B
+    status: planned
+  - id: partial-f-test
+    title: 部分F検定
+    importance: C
+    status: planned
+- 'no': 17
+  title: 回帰診断法
+  terms:
+  - id: residual
+    title: 残差
+    importance: A
+    status: planned
+  - id: standardized-residual
+    title: 標準化残差
+    importance: A
+    status: planned
+  - id: studentized-residual
+    title: スチューデント化残差
+    importance: A
+    status: planned
+  - id: leverage
+    title: てこ比
+    importance: A
+    status: planned
+  - id: cooks-distance
+    title: クックの距離
+    importance: A
+    status: planned
+  - id: dffits
+    title: DFFITS
+    importance: B
+    status: planned
+  - id: dfbetas
+    title: DFBETAS
+    importance: C
+    status: planned
+  - id: outlier-and-influential-point
+    title: 外れ値と影響点
+    importance: A
+    status: planned
+  - id: residual-plot
+    title: 残差プロット
+    importance: A
+    status: planned
+  - id: normal-qq-plot
+    title: 正規Q-Qプロット
+    importance: A
+    status: planned
+  - id: heteroscedasticity
+    title: 不均一分散
+    importance: A
+    status: planned
+  - id: serial-correlation
+    title: 系列相関
+    importance: A
+    status: planned
+  - id: durbin-watson-statistic
+    title: ダービン・ワトソン比
+    importance: A
+    status: planned
+  - id: breusch-pagan-test
+    title: ブルーシュ・ペイガン検定
+    importance: C
+    status: planned
+  - id: robust-standard-error
+    title: 頑健標準誤差
+    importance: C
+    status: planned
+- 'no': 18
+  title: 質的回帰
+  terms:
+  - id: logistic-regression
+    title: ロジスティック回帰
+    importance: A
+    status: planned
+  - id: odds-and-odds-ratio
+    title: オッズとオッズ比
+    importance: A
+    status: planned
+  - id: generalized-linear-model
+    title: 一般化線形モデル
+    importance: A
+    status: planned
+  - id: link-function
+    title: リンク関数
+    importance: A
+    status: planned
+  - id: exponential-dispersion-family
+    title: 指数分散型分布族
+    importance: B
+    status: planned
+  - id: probit-model
+    title: プロビットモデル
+    importance: B
+    status: planned
+  - id: poisson-regression
+    title: ポアソン回帰
+    importance: A
+    status: planned
+  - id: deviance
+    title: 逸脱度
+    importance: A
+    status: planned
+  - id: logistic-likelihood-estimation
+    title: ロジスティック回帰の最尤推定
+    importance: B
+    status: planned
+  - id: iteratively-reweighted-least-squares
+    title: 反復重み付き最小二乗法
+    importance: B
+    status: planned
+  - id: multinomial-logit-model
+    title: 多項ロジットモデル
+    importance: B
+    status: planned
+  - id: ordered-logit-model
+    title: 順序ロジットモデル
+    importance: B
+    status: planned
+  - id: tobit-model
+    title: トービットモデル
+    importance: C
+    status: planned
+  - id: overdispersion
+    title: 過分散
+    importance: B
+    status: planned
+  - id: offset-term
+    title: オフセット項
+    importance: C
+    status: planned
+- 'no': 19
+  title: 回帰分析その他
+  terms:
+  - id: weighted-least-squares
+    title: 加重最小二乗法
+    importance: A
+    status: planned
+  - id: generalized-least-squares
+    title: 一般化最小二乗法
+    importance: A
+    status: planned
+  - id: ridge-regression
+    title: リッジ回帰
+    importance: A
+    status: planned
+  - id: lasso
+    title: Lasso
+    importance: A
+    status: planned
+  - id: elastic-net
+    title: エラスティックネット
+    importance: C
+    status: planned
+  - id: regularization
+    title: 正則化
+    importance: A
+    status: planned
+  - id: bias-in-penalized-estimation
+    title: 罰則付き推定量のバイアス
+    importance: B
+    status: planned
+  - id: nonlinear-regression
+    title: 非線形回帰
+    importance: B
+    status: planned
+  - id: polynomial-regression
+    title: 多項式回帰
+    importance: B
+    status: planned
+  - id: quantile-regression
+    title: 分位点回帰
+    importance: B
+    status: planned
+  - id: instrumental-variable-method
+    title: 操作変数法
+    importance: A
+    status: planned
+  - id: endogeneity
+    title: 内生性
+    importance: A
+    status: planned
+  - id: two-stage-least-squares
+    title: 二段階最小二乗法
+    importance: B
+    status: planned
+  - id: variable-selection
+    title: 変数選択
+    importance: A
+    status: planned
+  - id: omitted-variable-bias
+    title: 欠落変数バイアス
+    importance: B
+    status: planned
+  - id: principal-component-regression
+    title: 主成分回帰
+    importance: C
+    status: planned
+  - id: spline-regression
+    title: スプライン回帰
+    importance: C
+    status: planned
+- 'no': 20
+  title: 分散分析と実験計画法
+  terms:
+  - id: one-way-anova
+    title: 一元配置分散分析
+    importance: A
+    status: planned
+  - id: sum-of-squares-decomposition
+    title: 平方和の分解
+    importance: A
+    status: planned
+  - id: two-way-anova-with-replication
+    title: 二元配置分散分析（繰り返しあり）
+    importance: A
+    status: planned
+  - id: two-way-anova-without-replication
+    title: 二元配置分散分析（繰り返しなし）
+    importance: A
+    status: planned
+  - id: main-effect-and-interaction
+    title: 主効果と交互作用
+    importance: A
+    status: planned
+  - id: fixed-and-random-effects
+    title: 母数模型と変量模型
+    importance: B
+    status: planned
+  - id: expected-mean-square
+    title: 期待平均平方
+    importance: B
+    status: planned
+  - id: fisher-three-principles
+    title: フィッシャーの3原則
+    importance: A
+    status: planned
+  - id: randomized-block-design
+    title: 乱塊法
+    importance: A
+    status: planned
+  - id: latin-square-design
+    title: ラテン方格法
+    importance: A
+    status: planned
+  - id: orthogonal-array
+    title: 直交表
+    importance: A
+    status: planned
+  - id: factorial-design
+    title: 要因計画
+    importance: B
+    status: planned
+  - id: split-plot-design
+    title: 分割法
+    importance: B
+    status: planned
+  - id: confounding
+    title: 交絡
+    importance: B
+    status: planned
+  - id: tukey-multiple-comparison
+    title: テューキーの多重比較
+    importance: A
+    status: planned
+  - id: studentized-range-distribution
+    title: スチューデント化された範囲の分布
+    importance: C
+    status: planned
+  - id: effect-size-eta-squared
+    title: 効果量と寄与率
+    importance: C
+    status: planned
+- 'no': 21
+  title: 標本調査法
+  terms:
+  - id: simple-random-sampling
+    title: 単純無作為抽出
+    importance: A
+    status: planned
+  - id: horvitz-thompson-estimator
+    title: ホルビッツ・トンプソン推定量
+    importance: A
+    status: planned
+  - id: inclusion-probability
+    title: 包含確率
+    importance: A
+    status: planned
+  - id: stratified-sampling
+    title: 層化抽出法
+    importance: A
+    status: planned
+  - id: proportional-allocation
+    title: 比例配分
+    importance: A
+    status: planned
+  - id: neyman-allocation
+    title: ネイマン配分
+    importance: A
+    status: planned
+  - id: cluster-sampling
+    title: 集落抽出法
+    importance: A
+    status: planned
+  - id: two-stage-sampling
+    title: 二段抽出法
+    importance: A
+    status: planned
+  - id: systematic-sampling
+    title: 系統抽出法
+    importance: B
+    status: planned
+  - id: ratio-estimation
+    title: 比推定
+    importance: A
+    status: planned
+  - id: regression-estimation
+    title: 回帰推定
+    importance: B
+    status: planned
+  - id: design-effect
+    title: 計画効果
+    importance: B
+    status: planned
+  - id: sampling-and-nonsampling-error
+    title: 標本誤差と非標本誤差
+    importance: A
+    status: planned
+  - id: probability-proportional-to-size-sampling
+    title: 確率比例抽出法
+    importance: B
+    status: planned
+  - id: nonresponse-bias
+    title: 無回答バイアス
+    importance: B
+    status: planned
+  - id: sampling-weight
+    title: 標本ウェイト
+    importance: C
+    status: planned
+- 'no': 22
+  title: 主成分分析
+  terms:
+  - id: principal-component-analysis
+    title: 主成分分析
+    importance: A
+    status: planned
+  - id: principal-component
+    title: 主成分
+    importance: A
+    status: planned
+  - id: eigenvalue-and-eigenvector
+    title: 固有値と固有ベクトル
+    importance: A
+    status: planned
+  - id: contribution-ratio
+    title: 寄与率
+    importance: A
+    status: planned
+  - id: cumulative-contribution-ratio
+    title: 累積寄与率
+    importance: A
+    status: planned
+  - id: principal-component-loading
+    title: 主成分負荷量
+    importance: A
+    status: planned
+  - id: principal-component-score
+    title: 主成分得点
+    importance: A
+    status: planned
+  - id: pca-on-correlation-matrix
+    title: 相関行列からの主成分分析
+    importance: A
+    status: planned
+  - id: scree-plot
+    title: スクリープロット
+    importance: B
+    status: planned
+  - id: kaiser-criterion
+    title: カイザー基準
+    importance: B
+    status: planned
+  - id: singular-value-decomposition
+    title: 特異値分解
+    importance: B
+    status: planned
+  - id: lagrange-multiplier-pca
+    title: ラグランジュ乗数法による導出
+    importance: B
+    status: planned
+  - id: biplot
+    title: バイプロット
+    importance: C
+    status: planned
+  - id: low-rank-approximation
+    title: 低ランク近似
+    importance: C
+    status: planned
+- 'no': 23
+  title: 判別分析
+  terms:
+  - id: linear-discriminant-analysis
+    title: 線形判別分析
+    importance: A
+    status: planned
+  - id: fisher-linear-discriminant-function
+    title: フィッシャーの線形判別関数
+    importance: A
+    status: planned
+  - id: mahalanobis-distance
+    title: マハラノビス距離
+    importance: A
+    status: planned
+  - id: quadratic-discriminant-analysis
+    title: 二次判別分析
+    importance: B
+    status: planned
+  - id: bayes-discriminant-rule
+    title: ベイズ判別ルール
+    importance: A
+    status: planned
+  - id: misclassification-rate
+    title: 誤判別率
+    importance: A
+    status: planned
+  - id: confusion-matrix
+    title: 混同行列
+    importance: A
+    status: planned
+  - id: sensitivity-and-specificity
+    title: 感度と特異度
+    importance: A
+    status: planned
+  - id: roc-curve-and-auc
+    title: ROC曲線とAUC
+    importance: A
+    status: planned
+  - id: precision-recall-f-measure
+    title: 適合率・再現率・F値
+    importance: B
+    status: planned
+  - id: k-nearest-neighbors
+    title: k近傍法
+    importance: B
+    status: planned
+  - id: support-vector-machine
+    title: サポートベクターマシン
+    importance: B
+    status: planned
+  - id: kernel-method
+    title: カーネル法
+    importance: C
+    status: planned
+  - id: decision-tree
+    title: 決定木
+    importance: C
+    status: planned
+  - id: naive-bayes-classifier
+    title: ナイーブベイズ分類器
+    importance: C
+    status: planned
+- 'no': 24
+  title: クラスター分析
+  terms:
+  - id: hierarchical-clustering
+    title: 階層的クラスタリング
+    importance: A
+    status: planned
+  - id: dendrogram
+    title: デンドログラム
+    importance: A
+    status: planned
+  - id: single-linkage
+    title: 最短距離法
+    importance: A
+    status: planned
+  - id: complete-linkage
+    title: 最長距離法
+    importance: A
+    status: planned
+  - id: average-linkage
+    title: 群平均法
+    importance: A
+    status: planned
+  - id: ward-method
+    title: ウォード法
+    importance: A
+    status: planned
+  - id: centroid-method
+    title: 重心法
+    importance: B
+    status: planned
+  - id: lance-williams-formula
+    title: ランス・ウィリアムズの更新式
+    importance: B
+    status: planned
+  - id: k-means-method
+    title: k-means法
+    importance: A
+    status: planned
+  - id: non-hierarchical-clustering
+    title: 非階層的クラスタリング
+    importance: B
+    status: planned
+  - id: distance-measures
+    title: 距離（ユークリッド・マンハッタン・ミンコフスキー）
+    importance: A
+    status: planned
+  - id: similarity-measures
+    title: 類似度
+    importance: B
+    status: planned
+  - id: number-of-clusters
+    title: クラスター数の決め方
+    importance: B
+    status: planned
+  - id: mixture-model-clustering
+    title: 混合モデルによるクラスタリング
+    importance: C
+    status: planned
+  - id: standardization-before-clustering
+    title: 標準化と変数の尺度
+    importance: C
+    status: planned
+- 'no': 25
+  title: 因子分析・グラフィカルモデル
+  terms:
+  - id: factor-analysis-model
+    title: 因子分析モデル
+    importance: A
+    status: planned
+  - id: common-factor-unique-factor
+    title: 共通因子と独自因子
+    importance: A
+    status: planned
+  - id: factor-loading
+    title: 因子負荷量
+    importance: A
+    status: planned
+  - id: communality
+    title: 共通性
+    importance: A
+    status: planned
+  - id: factor-rotation
+    title: 因子回転
+    importance: A
+    status: planned
+  - id: varimax-rotation
+    title: バリマックス回転
+    importance: B
+    status: planned
+  - id: promax-rotation
+    title: プロマックス回転
+    importance: B
+    status: planned
+  - id: number-of-factors
+    title: 因子数の決め方
+    importance: B
+    status: planned
+  - id: factor-score
+    title: 因子得点
+    importance: B
+    status: planned
+  - id: maximum-likelihood-factor-analysis
+    title: 因子分析の最尤法
+    importance: B
+    status: planned
+  - id: graphical-model
+    title: グラフィカルモデル
+    importance: A
+    status: planned
+  - id: undirected-graphical-model
+    title: 無向グラフィカルモデル
+    importance: A
+    status: planned
+  - id: precision-matrix
+    title: 精度行列
+    importance: A
+    status: planned
+  - id: covariance-selection
+    title: 共分散選択
+    importance: B
+    status: planned
+  - id: directed-acyclic-graph
+    title: 有向非巡回グラフ
+    importance: B
+    status: planned
+  - id: graphical-lasso
+    title: グラフィカルLasso
+    importance: C
+    status: planned
+- 'no': 26
+  title: その他の多変量解析手法
+  terms:
+  - id: multidimensional-scaling
+    title: 多次元尺度構成法
+    importance: A
+    status: planned
+  - id: classical-mds
+    title: 古典的MDS
+    importance: B
+    status: planned
+  - id: nonmetric-mds
+    title: 非計量MDS
+    importance: C
+    status: planned
+  - id: canonical-correlation-analysis
+    title: 正準相関分析
+    importance: A
+    status: planned
+  - id: canonical-variate
+    title: 正準変量と正準相関係数
+    importance: A
+    status: planned
+  - id: correspondence-analysis
+    title: コレスポンデンス分析
+    importance: A
+    status: planned
+  - id: quantification-theory
+    title: 数量化理論
+    importance: A
+    status: planned
+  - id: quantification-type-1
+    title: 数量化I類
+    importance: B
+    status: planned
+  - id: quantification-type-3
+    title: 数量化III類
+    importance: B
+    status: planned
+  - id: multiple-correspondence-analysis
+    title: 多重コレスポンデンス分析
+    importance: C
+    status: planned
+  - id: structural-equation-modeling
+    title: 構造方程式モデリング
+    importance: A
+    status: planned
+  - id: path-analysis
+    title: パス解析
+    importance: B
+    status: planned
+  - id: independent-component-analysis
+    title: 独立成分分析
+    importance: B
+    status: planned
+  - id: goodness-of-fit-indices
+    title: 適合度指標
+    importance: C
+    status: planned
+- 'no': 27
+  title: 時系列解析
+  terms:
+  - id: time-series
+    title: 時系列データ
+    importance: B
+    status: planned
+  - id: weak-stationarity
+    title: 弱定常性
+    importance: A
+    status: planned
+  - id: strict-stationarity
+    title: 強定常性
+    importance: C
+    status: planned
+  - id: autocovariance-autocorrelation
+    title: 自己共分散・自己相関
+    importance: A
+    status: planned
+  - id: correlogram
+    title: コレログラム
+    importance: B
+    status: planned
+  - id: partial-autocorrelation
+    title: 偏自己相関
+    importance: A
+    status: planned
+  - id: white-noise
+    title: ホワイトノイズ
+    importance: A
+    status: planned
+  - id: ar-model
+    title: ARモデル
+    importance: A
+    status: planned
+  - id: ma-model
+    title: MAモデル
+    importance: A
+    status: planned
+  - id: arma-model
+    title: ARMAモデル
+    importance: A
+    status: planned
+  - id: arima-model
+    title: ARIMAモデル
+    importance: A
+    status: planned
+  - id: yule-walker-equations
+    title: ユール・ウォーカー方程式
+    importance: A
+    status: planned
+  - id: stationarity-condition
+    title: 定常条件
+    importance: A
+    status: planned
+  - id: invertibility
+    title: 反転可能性
+    importance: B
+    status: planned
+  - id: unit-root
+    title: 単位根
+    importance: A
+    status: planned
+  - id: spectrum
+    title: スペクトル
+    importance: B
+    status: planned
+  - id: seasonal-adjustment
+    title: 季節調整
+    importance: B
+    status: planned
+  - id: forecasting
+    title: 予測
+    importance: B
+    status: planned
+- 'no': 28
+  title: 分割表
+  terms:
+  - id: contingency-table
+    title: 分割表
+    importance: A
+    status: planned
+  - id: two-by-two-table
+    title: 2×2分割表
+    importance: A
+    status: planned
+  - id: relative-risk
+    title: 相対リスク
+    importance: A
+    status: planned
+  - id: risk-difference
+    title: リスク差
+    importance: B
+    status: planned
+  - id: odds-ratio-interval
+    title: オッズ比の推定と区間推定
+    importance: A
+    status: planned
+  - id: sampling-schemes
+    title: 分割表の標本抽出モデル
+    importance: A
+    status: planned
+  - id: yates-correction
+    title: イェーツの連続修正
+    importance: B
+    status: planned
+  - id: mcnemar-test
+    title: マクネマー検定
+    importance: A
+    status: planned
+  - id: loglinear-model
+    title: 対数線形モデル
+    importance: A
+    status: planned
+  - id: hierarchical-loglinear-model
+    title: 階層モデル
+    importance: B
+    status: planned
+  - id: simpsons-paradox
+    title: シンプソンのパラドックス
+    importance: A
+    status: planned
+  - id: mantel-haenszel-test
+    title: マンテル・ヘンツェル検定
+    importance: A
+    status: planned
+  - id: mantel-haenszel-estimator
+    title: マンテル・ヘンツェル共通オッズ比推定量
+    importance: B
+    status: planned
+  - id: ordinal-contingency-table
+    title: 順序カテゴリの分割表
+    importance: C
+    status: planned
+  - id: three-way-table
+    title: 3元分割表
+    importance: B
+    status: planned
+  - id: residual-analysis-contingency
+    title: 分割表の残差分析
+    importance: C
+    status: planned
+- 'no': 29
+  title: 不完全データの統計処理
+  terms:
+  - id: missing-data-mechanism
+    title: 欠測メカニズム
+    importance: A
+    status: planned
+  - id: mcar
+    title: 完全にランダムな欠測
+    importance: A
+    status: planned
+  - id: mar
+    title: ランダムな欠測
+    importance: A
+    status: planned
+  - id: mnar
+    title: 非ランダムな欠測
+    importance: A
+    status: planned
+  - id: complete-case-analysis
+    title: 完全ケース分析
+    importance: B
+    status: planned
+  - id: single-imputation
+    title: 単一代入法
+    importance: B
+    status: planned
+  - id: multiple-imputation
+    title: 多重代入法
+    importance: A
+    status: planned
+  - id: rubins-rules
+    title: ルービンの規則
+    importance: A
+    status: planned
+  - id: em-algorithm
+    title: EMアルゴリズム
+    importance: A
+    status: planned
+  - id: censored-data
+    title: 打ち切りデータ
+    importance: A
+    status: planned
+  - id: truncated-data
+    title: 切断データ
+    importance: B
+    status: planned
+  - id: kaplan-meier-estimator
+    title: カプラン・マイヤー推定量
+    importance: A
+    status: planned
+  - id: greenwood-formula
+    title: グリーンウッドの公式
+    importance: B
+    status: planned
+  - id: log-rank-test
+    title: ログランク検定
+    importance: A
+    status: planned
+  - id: cox-proportional-hazards-model
+    title: 比例ハザードモデル
+    importance: A
+    status: planned
+  - id: partial-likelihood
+    title: 部分尤度
+    importance: B
+    status: planned
+  - id: hazard-ratio
+    title: ハザード比
+    importance: B
+    status: planned
+  - id: nelson-aalen-estimator
+    title: ネルソン・アーレン推定量
+    importance: C
+    status: planned
+  - id: ignorability
+    title: 無視可能性
+    importance: C
+    status: planned
+- 'no': 30
+  title: モデル選択
+  terms:
+  - id: model-selection
+    title: モデル選択
+    importance: B
+    status: planned
+  - id: aic
+    title: AIC
+    importance: A
+    status: planned
+  - id: bic
+    title: BIC
+    importance: A
+    status: planned
+  - id: kullback-leibler-divergence
+    title: カルバック・ライブラー情報量
+    importance: A
+    status: planned
+  - id: expected-log-likelihood
+    title: 平均対数尤度
+    importance: B
+    status: planned
+  - id: cross-validation
+    title: 交差検証法
+    importance: A
+    status: planned
+  - id: leave-one-out-cv
+    title: 一個抜き交差検証
+    importance: B
+    status: planned
+  - id: overfitting
+    title: 過学習
+    importance: A
+    status: planned
+  - id: bias-variance-tradeoff
+    title: バイアス・バリアンスのトレードオフ
+    importance: A
+    status: planned
+  - id: mallows-cp
+    title: マローズのCp
+    importance: A
+    status: planned
+  - id: information-criteria-comparison
+    title: 情報量規準によるモデル比較
+    importance: B
+    status: planned
+  - id: generalization-error
+    title: 汎化誤差
+    importance: B
+    status: planned
+  - id: training-test-split
+    title: 訓練データとテストデータ
+    importance: C
+    status: planned
+  - id: aicc
+    title: 補正AIC
+    importance: C
+    status: planned
+  - id: tic-ebic
+    title: TICと一般化情報量規準
+    importance: C
+    status: planned
+- 'no': 31
+  title: ベイズ法
+  terms:
+  - id: prior-distribution
+    title: 事前分布
+    importance: A
+    status: planned
+  - id: posterior-distribution
+    title: 事後分布
+    importance: A
+    status: planned
+  - id: conjugate-prior
+    title: 共役事前分布
+    importance: A
+    status: planned
+  - id: beta-binomial-model
+    title: ベータ・二項モデル
+    importance: A
+    status: planned
+  - id: gamma-poisson-model
+    title: ガンマ・ポアソンモデル
+    importance: A
+    status: planned
+  - id: normal-normal-model
+    title: 正規・正規モデル
+    importance: A
+    status: planned
+  - id: noninformative-prior
+    title: 無情報事前分布
+    importance: B
+    status: planned
+  - id: jeffreys-prior
+    title: ジェフリーズの事前分布
+    importance: B
+    status: planned
+  - id: posterior-mean-map
+    title: 事後平均とMAP推定
+    importance: A
+    status: planned
+  - id: credible-interval
+    title: 信用区間
+    importance: A
+    status: planned
+  - id: predictive-distribution
+    title: 予測分布
+    importance: A
+    status: planned
+  - id: bayes-factor
+    title: ベイズファクター
+    importance: B
+    status: planned
+  - id: marginal-likelihood
+    title: 周辺尤度
+    importance: B
+    status: planned
+  - id: hierarchical-bayes-model
+    title: 階層ベイズモデル
+    importance: B
+    status: planned
+  - id: empirical-bayes
+    title: 経験ベイズ法
+    importance: C
+    status: planned
+  - id: bayes-decision-theory
+    title: ベイズ決定理論
+    importance: C
+    status: planned
+- 'no': 32
+  title: シミュレーション
+  terms:
+  - id: uniform-random-number
+    title: 一様乱数
+    importance: A
+    status: planned
+  - id: linear-congruential-generator
+    title: 線形合同法
+    importance: B
+    status: planned
+  - id: inverse-transform-sampling
+    title: 逆関数法
+    importance: A
+    status: planned
+  - id: rejection-sampling
+    title: 棄却法
+    importance: A
+    status: planned
+  - id: box-muller-method
+    title: ボックス・ミュラー法
+    importance: A
+    status: planned
+  - id: monte-carlo-integration
+    title: モンテカルロ積分
+    importance: A
+    status: planned
+  - id: importance-sampling
+    title: 重点サンプリング
+    importance: A
+    status: planned
+  - id: variance-reduction
+    title: 分散減少法
+    importance: C
+    status: planned
+  - id: mcmc
+    title: マルコフ連鎖モンテカルロ法
+    importance: A
+    status: planned
+  - id: metropolis-hastings
+    title: メトロポリス・ヘイスティングス法
+    importance: A
+    status: planned
+  - id: gibbs-sampling
+    title: ギブスサンプリング
+    importance: A
+    status: planned
+  - id: burn-in-convergence
+    title: バーンインと収束診断
+    importance: B
+    status: planned
+  - id: bootstrap
+    title: ブートストラップ法
+    importance: A
+    status: planned
+  - id: bootstrap-confidence-interval
+    title: ブートストラップ信頼区間
+    importance: B
+    status: planned
+  - id: jackknife
+    title: ジャックナイフ法
+    importance: A
+    status: planned
+  - id: permutation-simulation
+    title: モンテカルロ検定
+    importance: C
+    status: planned
