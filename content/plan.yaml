@@ -496,79 +496,79 @@ chapters:
   - id: null-and-alternative-hypothesis
     title: 帰無仮説と対立仮説
     importance: A
-    status: planned
+    status: verified
   - id: type-i-and-ii-errors
     title: 第1種の過誤・第2種の過誤
     importance: A
-    status: planned
+    status: verified
   - id: significance-level
     title: 有意水準
     importance: A
-    status: planned
+    status: verified
   - id: p-value
     title: p値
     importance: A
-    status: planned
+    status: verified
   - id: rejection-region
     title: 棄却域
     importance: A
-    status: planned
+    status: verified
   - id: power-function
     title: 検出力・検出力関数
     importance: A
-    status: planned
+    status: verified
   - id: one-sided-two-sided-test
     title: 片側検定と両側検定
     importance: B
-    status: planned
+    status: verified
   - id: neyman-pearson-lemma
     title: ネイマン・ピアソンの補題
     importance: A
-    status: planned
+    status: verified
   - id: uniformly-most-powerful-test
     title: 一様最強力検定
     importance: A
-    status: planned
+    status: verified
   - id: monotone-likelihood-ratio
     title: 単調尤度比
     importance: B
-    status: planned
+    status: verified
   - id: likelihood-ratio-test
     title: 尤度比検定
     importance: A
-    status: planned
+    status: verified
   - id: wilks-theorem
     title: ウィルクスの定理
     importance: A
-    status: planned
+    status: verified
   - id: wald-test
     title: ワルド検定
     importance: A
-    status: planned
+    status: verified
   - id: score-test
     title: スコア検定
     importance: A
-    status: planned
+    status: verified
   - id: multiple-testing
     title: 多重検定の問題
     importance: A
-    status: planned
+    status: verified
   - id: bonferroni-correction
     title: ボンフェローニ補正
     importance: A
-    status: planned
+    status: verified
   - id: holm-method
     title: ホルム法
     importance: B
-    status: planned
+    status: verified
   - id: false-discovery-rate
     title: 偽発見率
     importance: B
-    status: planned
+    status: verified
   - id: sample-size-determination-test
     title: 検定のための標本サイズ設計
     importance: B
-    status: planned
+    status: verified
   - id: randomized-test
     title: 無作為化検定
     importance: C
