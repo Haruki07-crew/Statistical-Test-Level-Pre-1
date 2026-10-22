@@ -425,59 +425,59 @@ chapters:
   - id: confidence-interval
     title: 信頼区間
     importance: A
-    status: planned
+    status: verified
   - id: confidence-coefficient
     title: 信頼係数
     importance: A
-    status: planned
+    status: verified
   - id: pivotal-quantity
     title: ピボット量
     importance: A
-    status: planned
+    status: verified
   - id: ci-mean-known-variance
     title: 母平均の区間推定（分散既知）
     importance: A
-    status: planned
+    status: verified
   - id: ci-mean-unknown-variance
     title: 母平均の区間推定（分散未知）
     importance: A
-    status: planned
+    status: verified
   - id: ci-variance
     title: 母分散の区間推定
     importance: A
-    status: planned
+    status: verified
   - id: ci-proportion
     title: 母比率の区間推定
     importance: A
-    status: planned
+    status: verified
   - id: wald-confidence-interval
     title: ワルド型信頼区間
     importance: A
-    status: planned
+    status: verified
   - id: wilson-interval
     title: ウィルソン区間（スコア区間）
     importance: B
-    status: planned
+    status: verified
   - id: ci-two-sample-mean-difference
     title: 2標本の母平均の差の区間推定
     importance: A
-    status: planned
+    status: verified
   - id: ci-paired-difference
     title: 対応のある場合の区間推定
     importance: B
-    status: planned
+    status: verified
   - id: ci-variance-ratio
     title: 母分散比の区間推定
     importance: B
-    status: planned
+    status: verified
   - id: required-sample-size
     title: 必要な標本サイズ
     importance: A
-    status: planned
+    status: verified
   - id: ci-two-sample-proportion
     title: 2標本の母比率の差の区間推定
     importance: B
-    status: planned
+    status: verified
   - id: clopper-pearson-interval
     title: クロッパー・ピアソン区間
     importance: C
@@ -489,7 +489,7 @@ chapters:
   - id: confidence-interval-test-duality
     title: 信頼区間と検定の対応
     importance: B
-    status: planned
+    status: verified
 - 'no': 10
   title: 検定の基礎と検定法の導出
   terms:
