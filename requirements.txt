@@ -1,0 +1,5 @@
+pyyaml
+markdown
+numpy
+scipy
+sympy
