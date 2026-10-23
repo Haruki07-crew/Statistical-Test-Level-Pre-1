@@ -222,3 +222,59 @@ questions:
       $x=5$ で線形予測子は $-1+0.4\times5=1$ なので
       $$\frac{dp}{dx}=0.4\,\phi(1)=0.4\times0.2420=0.0968$$
       係数 $0.4$ そのものは確率の変化量ではなく、密度 $\phi$ を掛けて初めて確率の変化率になります。
+
+  - id: q04-sum-of-random-variables-1
+    term: sum-of-random-variables
+    level: 基本
+    type: choice
+    question: |
+      それぞれ独立な2つの確率変数の和について、和が**同じ分布族に入らない**ものはどれか。
+      （$B(n,p)$ は二項分布、$Po(\lambda)$ はポアソン分布、$N(\mu,\sigma^2)$ は正規分布、$\chi^2(k)$ はカイ二乗分布）
+    choices:
+      - '$B(5,\,0.3)+B(4,\,0.5)$'
+      - '$Po(1)+Po(2)$'
+      - '$N(0,\,1)+N(1,\,4)$'
+      - '$\chi^2(2)+\chi^2(3)$'
+    answer: 0
+    hint: |
+      再生性の表で、和が同じ族になるための条件がついている分布はどれか。
+    explanation: |
+      二項分布の再生性 $B(m,p)+B(n,p)=B(m+n,p)$ は**成功確率 $p$ が共通**のときだけ成り立ちます。$p=0.3$ と $0.5$ では和は二項分布になりません（平均 $3.5$、分散 $2.05$ で、$B(9,p)$ の平均と分散の関係を満たさない）。
+      ほかはそれぞれ $Po(3)$、$N(1,\,5)$、$\chi^2(5)$ になります。
+
+  - id: q04-sum-of-random-variables-2
+    term: sum-of-random-variables
+    level: 標準
+    type: numeric
+    question: |
+      $X, Y$ は独立にどちらも一様分布 $U(0,1)$ に従う。$Z=X+Y$ について $P(0.5<Z<1.5)$ を小数第2位まで求めよ。
+    answer: 0.75
+    tolerance: 0.005
+    hint: |
+      畳み込みで $Z$ の密度を求めると、$0<z<2$ で $z=1$ を頂点とする三角形になる。
+    explanation: |
+      畳み込み $f_Z(z)=\int f_X(x)f_Y(z-x)\,dx$ より、$f_Z(z)=z\ (0<z\le1)$、$f_Z(z)=2-z\ (1<z<2)$ です。
+      両端の三角形の面積はそれぞれ $\tfrac12(0.5)^2=0.125$ なので
+      $$P(0.5<Z<1.5)=1-0.125-0.125=0.75$$
+
+  - id: q04-sum-of-random-variables-3
+    term: sum-of-random-variables
+    level: 応用
+    type: derivation
+    question: |
+      $X, Y$ は独立で、それぞれレート $\lambda_1,\ \lambda_2$（$\lambda_1\ne\lambda_2$）の指数分布（密度 $\lambda e^{-\lambda x},\ x>0$）に従う。
+      畳み込みを使って $Z=X+Y$ の密度 $f_Z(z)\ (z>0)$ を求めよ。
+    steps:
+      - |
+        $f_Z(z)=\displaystyle\int_0^z \lambda_1e^{-\lambda_1x}\,\lambda_2e^{-\lambda_2(z-x)}\,dx$（$x>0$ かつ $z-x>0$ なので積分範囲は $0<x<z$）。
+      - |
+        $=\lambda_1\lambda_2e^{-\lambda_2z}\displaystyle\int_0^z e^{-(\lambda_1-\lambda_2)x}\,dx=\lambda_1\lambda_2e^{-\lambda_2z}\cdot\frac{1-e^{-(\lambda_1-\lambda_2)z}}{\lambda_1-\lambda_2}$。
+      - |
+        整理して $f_Z(z)=\dfrac{\lambda_1\lambda_2}{\lambda_2-\lambda_1}\left(e^{-\lambda_1z}-e^{-\lambda_2z}\right)$。
+    answer: '$f_Z(z)=\dfrac{\lambda_1\lambda_2}{\lambda_2-\lambda_1}\left(e^{-\lambda_1 z}-e^{-\lambda_2 z}\right)\quad(z>0)$'
+    hint: |
+      $f_X(x)f_Y(z-x)$ が0でないのは $0<x<z$ のときだけ。指数部分をまとめて $x$ で積分する。
+    explanation: |
+      $$f_Z(z)=\int_0^z\lambda_1e^{-\lambda_1x}\lambda_2e^{-\lambda_2(z-x)}dx=\frac{\lambda_1\lambda_2}{\lambda_2-\lambda_1}\left(e^{-\lambda_1z}-e^{-\lambda_2z}\right)$$
+      $\int_0^\infty f_Z(z)\,dz=\frac{\lambda_1\lambda_2}{\lambda_2-\lambda_1}\left(\frac1{\lambda_1}-\frac1{\lambda_2}\right)=1$ で密度になっていることが確かめられます。
+      期待値は $1/\lambda_1+1/\lambda_2$ です。$\lambda_1=\lambda_2=\lambda$ の極限では $\lambda^2ze^{-\lambda z}$（形状2のガンマ分布）になり、レートが異なる指数分布の和はガンマ分布になりません。

@@ -125,4 +125,27 @@ rho = 0.5 * 0.5 ** 3 + 0.5 * 0.5 ** 3
 sig3 = 0.5 ** 3
 q.num("q07-berry-esseen-theorem-1", 0.4748 * rho / sig3 / np.sqrt(100))
 
+# --- 二項分布・ポアソン分布の正規近似（用語の見直しで追加） ---
+import numpy as _np
+from scipy import stats as _st
+_cands = [(40, 0.2), (20, 0.1), (200, 0.02), (30, 0.9)]
+_okc = [n * p >= 5 and n * (1 - p) >= 5 for n, p in _cands]
+q.check("q07-normal-approximation-binomial-poisson-1", _okc == [True, False, False, False], "目安を満たすのは B(40,0.2) だけ")
+q.check("q07-normal-approximation-binomial-poisson-2", abs(_st.norm.cdf(1.55) - 0.9394) < 5e-5, "Φ(1.55)=0.9394")
+q.num("q07-normal-approximation-binomial-poisson-2", 1 - _st.norm.cdf((115.5 - 100) / 10))
+q.check("q07-normal-approximation-binomial-poisson-2", abs(_st.poisson.sf(115, 100) - 0.063) < 0.0005 and abs(_st.norm.sf(1.6) - 0.055) < 0.0005, "正確値 約0.063、連続修正なし 約0.055")
+_n, _p = 2500, 0.02
+_zz = (40.5 - _n * _p) / _np.sqrt(_n * _p * (1 - _p))
+q.check("q07-normal-approximation-binomial-poisson-3", abs(_zz + 1.357) < 0.001 and abs(_st.norm.cdf(1.36) - 0.9131) < 5e-5, "z=-1.357、Φ(1.36)=0.9131")
+q.num("q07-normal-approximation-binomial-poisson-3", 1 - 0.9131)
+q.check("q07-normal-approximation-binomial-poisson-3", abs(_st.norm.cdf(_zz) - 0.087) < 0.001 and abs(_st.binom.cdf(40, _n, _p) - 0.084) < 0.0005, "丸めない z でも 0.087、正確値 約0.084")
+
+# --- 極値分布（用語の見直しで追加） ---
+_H = sum(1 / k for k in range(1, 1001))
+q.num("q07-extreme-value-distribution-1", _np.log(1000) + _np.euler_gamma)
+q.check("q07-extreme-value-distribution-1", abs(_H - 7.4855) < 1e-4 and abs(_st.gumbel_r.mean() - _np.euler_gamma) < 1e-12, "正確な E[M]=H_1000=7.4855、グンベルの平均=γ")
+_xg = _np.array([-2.0, -0.5, -0.1])
+_lim = [(1 + x / 10 ** 6) ** (10 ** 6) for x in _xg]
+q.check("q07-extreme-value-distribution-2", _np.allclose(_lim, _np.exp(_xg), atol=1e-5) and _np.allclose(_np.exp(-(-_xg) ** 1), _st.weibull_max(1).cdf(_xg)), "U(0,1) の最大値の極限 e^x（x<0）はワイブル型 α=1")
+
 q.done()

@@ -164,4 +164,8 @@ kn = [2, 4, 6, 8]; xg = np.linspace(0, 10, 50)
 B = np.column_stack([xg ** d for d in range(4)] + [np.maximum(xg - k, 0) ** 3 for k in kn])
 q.num("q19-spline-regression-1", np.linalg.matrix_rank(B))
 
+# --- ニューラルネットワーク（用語の見直しで追加） ---
+_p, _H = 5, 10
+q.num("q19-neural-network-model-1", _p * _H + _H + _H + 1)
+
 q.done()

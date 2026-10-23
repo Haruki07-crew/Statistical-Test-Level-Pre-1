@@ -177,4 +177,27 @@ q.num("q08-exponential-family-2", float(sp.diff(A, eta, 2).subs(eta, sp.log(3)))
 lam_hat = 30 / 10
 q.num("q08-observed-fisher-information-1", 30 / lam_hat ** 2)
 
+# --- 順序統計量（用語の見直しで追加） ---
+from fractions import Fraction as _F
+from math import comb as _comb
+_E = _F(2, 5)
+q.check("q08-order-statistics-1", abs(stats.beta(2, 3).mean() - 0.4) < 1e-12 and _E == _F(2, 5), "正解 E[X_(2)]=2/5（Beta(2,3)）")
+q.check("q08-order-statistics-1", all(w != _E for w in [_F(1, 2), _F(3, 5), _F(1, 5)]), "誤答 1/2, 3/5, 1/5 は正解と異なる")
+_p = sum(_comb(5, j) * 0.4 ** j * 0.6 ** (5 - j) for j in range(3, 6))
+q.num("q08-order-statistics-2", _p)
+q.check("q08-order-statistics-2", abs(stats.beta(3, 3).cdf(0.4) - _p) < 1e-12, "Beta(3,3) の分布関数とも一致")
+_xx = sp.Symbol("x", positive=True)
+_e2 = sp.integrate(_xx * 6 * (1 - sp.exp(-_xx)) * sp.exp(-2 * _xx), (_xx, 0, sp.oo))
+q.num("q08-order-statistics-3", float(_e2))
+_sim = np.sort(rng.exponential(1, size=(300000, 3)), axis=1)[:, 1].mean()
+q.check("q08-order-statistics-3", _e2 == sp.Rational(5, 6) and abs(_sim - 5 / 6) < 0.01, "密度の積分 5/6、モンテカルロも一致")
+
+# --- 標準誤差（用語の見直しで追加） ---
+_sm = [rng.normal(0, 3, size=(20000, n)) for n in (25, 100)]
+_se = [s.mean(axis=1).std() for s in _sm]
+_sd = [s.std(axis=1, ddof=1).mean() for s in _sm]
+q.check("q08-standard-error-1", abs(_se[1] / _se[0] - 0.5) < 0.03 and abs(_sd[1] / _sd[0] - 1) < 0.03, f"n を4倍で SE 比 {_se[1]/_se[0]:.3f}、s の比 {_sd[1]/_sd[0]:.3f}")
+q.num("q08-standard-error-2", np.sqrt(6 ** 2 / 40 + 7.5 ** 2 / 50))
+q.check("q08-standard-error-2", abs(np.sqrt(36 / 40) + np.sqrt(56.25 / 50) - 2.010) < 0.001, "誤った足し方は 2.010")
+
 q.done()

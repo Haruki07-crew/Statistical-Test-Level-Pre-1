@@ -1,0 +1,554 @@
+chapter: 25
+questions:
+  - id: q25-factor-analysis-model-1
+    term: factor-analysis-model
+    level: 基本
+    type: numeric
+    question: |
+      標準化した3変数に1因子モデル $x_j=\lambda_jf+\varepsilon_j$（直交因子の仮定）を当てはめ、因子負荷量 $\lambda=(0.9,\ 0.8,\ 0.6)$ を得た。
+      モデルが再現する $x_1$ と $x_3$ の相関係数を小数第2位まで求めよ。
+    answer: 0.54
+    tolerance: 0.005
+    hint: |
+      $\Sigma=\Lambda\Lambda^\top+\Psi$ で、$\Psi$ は対角行列なので非対角成分には効かない。
+    explanation: |
+      非対角成分は $\sigma_{13}=\lambda_1\lambda_3$ なので
+      $$\mathrm{Corr}[x_1,x_3]=0.9\times0.6=0.54$$
+      変数どうしの相関は、すべて共通因子を通じて生まれます。
+
+  - id: q25-factor-analysis-model-2
+    term: factor-analysis-model
+    level: 標準
+    type: numeric
+    question: |
+      2因子の直交因子モデルで、変数 $x_1$ の因子負荷量が $(0.5,\ 0.4)$、独自分散が $\psi_1=0.3$ である。$V[x_1]$ を小数第2位まで求めよ。
+    answer: 0.71
+    tolerance: 0.005
+    hint: |
+      $\sigma_{jj}=\sum_k\lambda_{jk}^2+\psi_j$。
+    explanation: |
+      $$V[x_1]=0.5^2+0.4^2+0.3=0.25+0.16+0.30=0.71$$
+      共通性 $0.41$ と独自分散 $0.30$ の和です。
+
+  - id: q25-factor-analysis-model-3
+    term: factor-analysis-model
+    level: 応用
+    type: numeric
+    question: |
+      標準化した3変数の相関係数が $r_{12}=0.56,\ r_{13}=0.48,\ r_{23}=0.42$ で、1因子モデル（負荷量はすべて正）がちょうど当てはまっている。$x_1$ の因子負荷量 $\lambda_1$ を小数第2位まで求めよ。
+    answer: 0.8
+    tolerance: 0.005
+    hint: |
+      1因子モデルでは $r_{ij}=\lambda_i\lambda_j$。3つの式を組み合わせて $\lambda_1^2$ を取り出す。
+    explanation: |
+      $$\frac{r_{12}\,r_{13}}{r_{23}}=\frac{\lambda_1\lambda_2\cdot\lambda_1\lambda_3}{\lambda_2\lambda_3}=\lambda_1^2=\frac{0.56\times0.48}{0.42}=0.64$$
+      より $\lambda_1=0.80$ です。同様に $\lambda_2=0.7$、$\lambda_3=0.6$ と求まり、独自分散は $1-\lambda_j^2$ です。
+
+  - id: q25-common-factor-unique-factor-1
+    term: common-factor-unique-factor
+    level: 基本
+    type: truefalse
+    question: |
+      直交因子モデルでは独自因子どうしが無相関と仮定するので、異なる変数どうしの共分散はすべて共通因子によって説明される。
+    answer: true
+    hint: |
+      $\mathrm{Cov}[x_i,x_j]$ を $\Lambda\boldsymbol{f}+\boldsymbol{\varepsilon}$ から展開する。
+    explanation: |
+      $i\ne j$ について $\mathrm{Cov}[\varepsilon_i,\varepsilon_j]=0$、$\mathrm{Cov}[f_k,\varepsilon_j]=0$ なので
+      $$\mathrm{Cov}[x_i,x_j]=\sum_k\lambda_{ik}\lambda_{jk}$$
+      となり、共通因子の部分だけで決まります。独自因子は各変数の分散（対角成分）にだけ効きます。
+
+  - id: q25-common-factor-unique-factor-2
+    term: common-factor-unique-factor
+    level: 標準
+    type: numeric
+    question: |
+      標準化した変数 $x_j$ の共通性が $h_j^2=0.6$ である。独自分散 $\psi_j=0.4$ のうち、特殊因子の分散が $0.15$、測定誤差の分散が $0.25$ と分けられるとき、$x_j$ の分散のうち測定誤差以外が占める割合（信頼性）を小数第2位まで求めよ。
+    answer: 0.75
+    tolerance: 0.005
+    hint: |
+      分散 $1$ を「共通性＋特殊因子＋誤差」に分ける。
+    explanation: |
+      $$1=\underbrace{0.6}_{h_j^2}+\underbrace{0.15}_{\text{特殊因子}}+\underbrace{0.25}_{\text{誤差}}$$
+      誤差以外は $0.6+0.15=0.75$ です。共通性は信頼性の下限になります（独自因子のすべてが誤差とは限らないため）。
+
+  - id: q25-factor-loading-1
+    term: factor-loading
+    level: 基本
+    type: numeric
+    question: |
+      直交因子モデルで、変数 $x_j$（分散 $4$、標準化していない）の第1因子に対する負荷量（共分散）が $\lambda_{j1}=1.2$ である。$x_j$ と第1因子の相関係数を小数第2位まで求めよ。
+    answer: 0.6
+    tolerance: 0.005
+    hint: |
+      $\lambda_{jk}=\mathrm{Cov}[x_j,f_k]$、$V[f_k]=1$。相関は標準偏差で割る。
+    explanation: |
+      $$\mathrm{Corr}[x_j,f_1]=\frac{\mathrm{Cov}[x_j,f_1]}{\sqrt{V[x_j]V[f_1]}}=\frac{1.2}{\sqrt4\times1}=0.60$$
+      変数を標準化していれば、負荷量そのものが相関係数になります。
+
+  - id: q25-factor-loading-2
+    term: factor-loading
+    level: 標準
+    type: choice
+    question: |
+      斜交因子モデルで、変数 $x_1$ の因子パターン（負荷量）が $(0.7,\ 0.1)$、因子間相関行列が $\Phi=\begin{pmatrix}1&0.4\\0.4&1\end{pmatrix}$ である。
+      $x_1$（標準化済み）と2つの因子との相関（因子構造）の組はどれか。
+    choices:
+      - '$(0.74,\ 0.38)$'
+      - '$(0.70,\ 0.10)$'
+      - '$(0.79,\ -0.21)$'
+      - '$(0.38,\ 0.74)$'
+    answer: 0
+    hint: |
+      因子構造 $=\Lambda\Phi$。行ベクトル $(0.7,\ 0.1)$ に $\Phi$ を右から掛ける。
+    explanation: |
+      $$(0.7,\ 0.1)\begin{pmatrix}1&0.4\\0.4&1\end{pmatrix}=(0.7+0.04,\ 0.28+0.1)=(0.74,\ 0.38)$$
+      $(0.70,0.10)$ は因子パターンそのもの、$(0.79,-0.21)$ は $\Phi^{-1}$ を掛けた誤りです。
+      パターンでは第2因子の係数は $0.1$ と小さくても、因子どうしに相関があるので、第2因子との相関は $0.38$ になります。
+
+  - id: q25-factor-loading-3
+    term: factor-loading
+    level: 標準
+    type: numeric
+    question: |
+      標準化した変数に2因子の直交因子モデルを当てはめ、$x_1$ の負荷量 $(0.8,\ 0.3)$、$x_2$ の負荷量 $(0.6,\ 0.5)$ を得た。モデルが再現する $x_1$ と $x_2$ の相関係数を小数第2位まで求めよ。
+    answer: 0.63
+    tolerance: 0.005
+    hint: |
+      $\mathrm{Corr}[x_1,x_2]=\sum_k\lambda_{1k}\lambda_{2k}$（負荷行列の行どうしの内積）。
+    explanation: |
+      $$0.8\times0.6+0.3\times0.5=0.48+0.15=0.63$$
+
+  - id: q25-communality-1
+    term: communality
+    level: 基本
+    type: numeric
+    question: |
+      標準化した変数の2因子（直交）の負荷量が $(0.6,\ 0.5)$ である。独自分散 $\psi$ を小数第2位まで求めよ。
+    answer: 0.39
+    tolerance: 0.005
+    hint: |
+      共通性 $h^2=\sum_k\lambda_k^2$、標準化した変数では $h^2+\psi=1$。
+    explanation: |
+      $$h^2=0.36+0.25=0.61,\qquad \psi=1-0.61=0.39$$
+
+  - id: q25-communality-2
+    term: communality
+    level: 標準
+    type: numeric
+    question: |
+      斜交因子モデルで、標準化した変数 $x_1$ の因子パターンが $(0.7,\ 0.1)$、因子間相関が $0.4$ である。$x_1$ の共通性を小数第3位まで求めよ。
+    answer: 0.556
+    tolerance: 0.001
+    hint: |
+      斜交因子では共通性は $\boldsymbol{\lambda}^\top\Phi\boldsymbol{\lambda}$（$\Lambda\Phi\Lambda^\top$ の対角成分）。負荷量の2乗和ではない。
+    explanation: |
+      $$h^2=0.7^2+0.1^2+2\times0.7\times0.1\times0.4=0.49+0.01+0.056=0.556$$
+      2乗和だけの $0.50$ では、因子間相関による部分 $0.056$ を落としてしまいます。
+
+  - id: q25-communality-3
+    term: communality
+    level: 応用
+    type: truefalse
+    question: |
+      直交因子モデルの負荷行列 $\Lambda$ を直交回転 $\Lambda^*=\Lambda T$ しても、各変数の共通性は変わらない。
+    answer: true
+    hint: |
+      共通性は $\Lambda\Lambda^\top$ の対角成分。$\Lambda^*\Lambda^{*\top}$ を計算する。
+    explanation: |
+      $$\Lambda^*\Lambda^{*\top}=\Lambda TT^\top\Lambda^\top=\Lambda\Lambda^\top$$
+      なので対角成分（共通性）も変わりません。行ベクトルの長さは回転で変わらない、と幾何的にも理解できます。
+
+  - id: q25-factor-rotation-1
+    term: factor-rotation
+    level: 基本
+    type: truefalse
+    question: |
+      因子負荷行列を直交回転すると負荷量が変わるので、モデルが再現する分散共分散行列 $\Lambda\Lambda^\top+\Psi$ も変わる。
+    answer: false
+    hint: |
+      $T$ が直交行列なら $TT^\top=I$。
+    explanation: |
+      $(\Lambda T)(\Lambda T)^\top+\Psi=\Lambda\Lambda^\top+\Psi$ なので、再現される $\Sigma$ は回転で変わりません。
+      データからは回転前後の解を区別できない（回転の不定性）ため、解釈しやすい回転を選べるのです。
+
+  - id: q25-factor-rotation-2
+    term: factor-rotation
+    level: 標準
+    type: numeric
+    question: |
+      ある変数の2因子の負荷量が $(0.8,\ 0.4)$ である。
+      $T=\begin{pmatrix}\cos\theta&-\sin\theta\\\sin\theta&\cos\theta\end{pmatrix}$、$\theta=30^\circ$ で $\Lambda^*=\Lambda T$ と回転したとき、回転後の第1因子の負荷量を小数第3位まで求めよ。
+    answer: 0.893
+    tolerance: 0.001
+    hint: |
+      行ベクトル $(0.8,\ 0.4)$ に $T$ を右から掛ける。第1成分は $0.8\cos\theta+0.4\sin\theta$。
+    explanation: |
+      $$0.8\cos30^\circ+0.4\sin30^\circ=0.8\times0.8660+0.4\times0.5=0.893$$
+      第2成分は $-0.8\times0.5+0.4\times0.866=-0.054$ です。回転後はほぼ第1因子だけで説明される（単純構造に近い）形になり、2乗和 $0.80$ は変わりません。
+
+  - id: q25-factor-rotation-3
+    term: factor-rotation
+    level: 応用
+    type: truefalse
+    question: |
+      直交回転では、全因子の寄与（負荷量の2乗の総和）は変わらないが、因子ごとの寄与（負荷行列の各列の2乗和）は一般に変わる。
+    answer: true
+    hint: |
+      総和は $\mathrm{tr}(\Lambda\Lambda^\top)$、列ごとの和は $\Lambda^\top\Lambda$ の対角成分。
+    explanation: |
+      総和は $\mathrm{tr}(\Lambda T T^\top\Lambda^\top)=\mathrm{tr}(\Lambda\Lambda^\top)$ で不変です。
+      一方、列ごとの2乗和は $T^\top\Lambda^\top\Lambda T$ の対角成分で、$T$ によって変わります。回転すると、各因子への寄与の配分が変わるので、回転後の因子寄与率は回転前と一致しません。
+
+  - id: q25-varimax-rotation-1
+    term: varimax-rotation
+    level: 標準
+    type: numeric
+    question: |
+      4変数・2因子の負荷行列
+      $$\Lambda=\begin{pmatrix}0.8&0\\0.7&0\\0&0.6\\0&0.5\end{pmatrix}$$
+      について、（正規化しない）バリマックス基準
+      $V=\sum_k\Bigl\{\frac1p\sum_j\lambda_{jk}^4-\bigl(\frac1p\sum_j\lambda_{jk}^2\bigr)^2\Bigr\}$
+      の値を小数第3位まで求めよ。
+    answer: 0.107
+    tolerance: 0.001
+    hint: |
+      列ごとに「負荷量の2乗」の分散（$p$ で割る）を計算して足す。
+    explanation: |
+      第1列：2乗は $0.64,\ 0.49,\ 0,\ 0$、平均 $0.2825$、4乗の平均 $(0.4096+0.2401)/4=0.1624$ で、分散は $0.1624-0.2825^2=0.0826$。
+      第2列：2乗は $0,0,0.36,0.25$、平均 $0.1525$、4乗の平均 $0.0480$ で、分散は $0.0480-0.1525^2=0.0248$。
+      $$V=0.0826+0.0248=0.107$$
+      各列で大きい負荷と0に近い負荷がはっきり分かれるほど $V$ は大きくなります。
+
+  - id: q25-varimax-rotation-2
+    term: varimax-rotation
+    level: 基本
+    type: truefalse
+    question: |
+      バリマックス回転は斜交回転の一種で、回転後の因子どうしに相関を許す。
+    answer: false
+    hint: |
+      バリマックス基準を最大にするときの $T$ は、どんな行列の中から選ぶか。
+    explanation: |
+      バリマックス回転は**直交回転**で、$T$ を直交行列に限るので、回転後も因子どうしは無相関のままです。
+      因子間の相関を許す斜交回転の代表はプロマックス回転で、バリマックス解を出発点に使います。
+
+  - id: q25-promax-rotation-1
+    term: promax-rotation
+    level: 基本
+    type: numeric
+    question: |
+      プロマックス回転で、べき指数 $k=3$ として目標行列を作る。バリマックス解の負荷量 $a=-0.6$ に対応する目標の値 $p=a|a|^{k-1}$ を小数第3位まで求めよ。
+    answer: -0.216
+    tolerance: 0.001
+    hint: |
+      符号を保ったまま絶対値を3乗する。
+    explanation: |
+      $$p=-0.6\times0.6^2=-0.216$$
+      小さい負荷量ほど相対的に強く縮む（例：$0.2\to0.008$）ので、大小の差が強調された目標になります。
+
+  - id: q25-promax-rotation-2
+    term: promax-rotation
+    level: 標準
+    type: truefalse
+    question: |
+      プロマックス回転を行うと因子間に相関が生じるので、各変数の共通性（$\Lambda\Phi\Lambda^\top$ の対角成分）は回転前のバリマックス解と変わる。
+    answer: false
+    hint: |
+      $\Lambda=AU$、$\Phi=(U^\top U)^{-1}$ を $\Lambda\Phi\Lambda^\top$ に代入する。
+    explanation: |
+      $$\Lambda\Phi\Lambda^\top=AU(U^\top U)^{-1}U^\top A^\top=AA^\top$$
+      なので、共通性も再現される $\Sigma$ もバリマックス解と同じです。斜交回転は「どの軸で表すか」を変えるだけで、モデルの当てはまりは変わりません。
+
+  - id: q25-number-of-factors-1
+    term: number-of-factors
+    level: 標準
+    type: numeric
+    question: |
+      5変数の因子分析で、適合度検定の自由度 $d=\{(p-m)^2-(p+m)\}/2$ が $0$ 以上となる最大の因子数 $m$ を答えよ。
+    answer: 2
+    tolerance: 0.4
+    hint: |
+      $m=1,2,3$ と順に代入する。
+    explanation: |
+      $p=5$ のとき
+      $$m=1:\ \frac{16-6}{2}=5,\qquad m=2:\ \frac{9-7}{2}=1,\qquad m=3:\ \frac{4-8}{2}=-2$$
+      なので、$d\ge0$ となる最大の $m$ は $2$ です。変数が少ないと、取れる因子数には上限があります。
+
+  - id: q25-number-of-factors-2
+    term: number-of-factors
+    level: 基本
+    type: choice
+    question: |
+      最尤法で $m$ 因子モデルの適合度検定を有意水準 $5\%$ で順に行い、p 値が $m=1$ で $0.001$、$m=2$ で $0.02$、$m=3$ で $0.31$、$m=4$ で $0.64$ であった。この手順で選ぶ因子数はどれか。
+    choices:
+      - '$3$'
+      - '$2$'
+      - '$1$'
+      - '$4$'
+    answer: 0
+    hint: |
+      帰無仮説は「$m$ 因子モデルで十分」。初めて棄却されなくなる $m$ を選ぶ。
+    explanation: |
+      $m=1,2$ では p 値が $0.05$ 未満で「その因子数では足りない」と棄却されます。$m=3$ で初めて棄却されないので $m=3$ を選びます。
+      p 値が最大の $m=4$ を選ぶのは誤りです。因子を増やすほど当てはまりは良くなるので、足りる最小の数を選びます。
+
+  - id: q25-factor-score-1
+    term: factor-score
+    level: 標準
+    type: numeric
+    question: |
+      標準化した2変数の1因子モデルで、負荷量 $\Lambda=(0.8,\ 0.6)^\top$、独自分散 $\Psi=\mathrm{diag}(0.36,\ 0.64)$ である。
+      観測値 $\boldsymbol{x}=(1,\ 0.5)^\top$ の因子得点を回帰法 $\hat f=(1+\Lambda^\top\Psi^{-1}\Lambda)^{-1}\Lambda^\top\Psi^{-1}\boldsymbol{x}$ で求め、小数第3位まで答えよ。
+    answer: 0.806
+    tolerance: 0.001
+    hint: |
+      $\Lambda^\top\Psi^{-1}\Lambda=\sum_j\lambda_j^2/\psi_j$、$\Lambda^\top\Psi^{-1}\boldsymbol{x}=\sum_j\lambda_jx_j/\psi_j$ を先に計算する。
+    explanation: |
+      $$\Lambda^\top\Psi^{-1}\Lambda=\frac{0.64}{0.36}+\frac{0.36}{0.64}=2.340,\qquad \Lambda^\top\Psi^{-1}\boldsymbol{x}=\frac{0.8}{0.36}+\frac{0.6\times0.5}{0.64}=2.691$$
+      $$\hat f_{\mathrm R}=\frac{2.691}{1+2.340}=0.806$$
+      バートレット法なら $2.691/2.340=1.150$ です。
+
+  - id: q25-factor-score-2
+    term: factor-score
+    level: 応用
+    type: truefalse
+    question: |
+      1因子モデルでは、回帰法の因子得点はバートレット法の因子得点に $1$ より小さい正の定数を掛けたもので、絶対値が小さくなる（0に縮む）。
+    answer: true
+    hint: |
+      $c=\Lambda^\top\Psi^{-1}\Lambda>0$ とおいて、2つの公式を比べる。
+    explanation: |
+      $c=\Lambda^\top\Psi^{-1}\Lambda$ とすると
+      $$\hat f_{\mathrm R}=\frac{1}{1+c}\Lambda^\top\Psi^{-1}\boldsymbol{x},\qquad \hat f_{\mathrm B}=\frac1c\Lambda^\top\Psi^{-1}\boldsymbol{x}$$
+      なので $\hat f_{\mathrm R}=\dfrac{c}{1+c}\hat f_{\mathrm B}$、$0<c/(1+c)<1$ です。回帰法は条件付き期待値なので、事前の平均0の方向へ縮みます（偏りはあるが平均2乗誤差は小さい）。
+
+  - id: q25-maximum-likelihood-factor-analysis-1
+    term: maximum-likelihood-factor-analysis
+    level: 標準
+    type: numeric
+    question: |
+      $n=200$、$p=6$ 変数に最尤法で $m=2$ 因子モデルを当てはめ、乖離度の最小値 $F(\hat\Lambda,\hat\Psi)=0.05$ を得た。
+      バートレットの補正をした統計量 $T=\bigl(n-1-\frac{2p+5}{6}-\frac{2m}{3}\bigr)F$ を小数第2位まで求めよ。
+    answer: 9.74
+    tolerance: 0.005
+    hint: |
+      補正係数は $199-\frac{17}{6}-\frac43$。
+    explanation: |
+      $$T=\Bigl(199-\frac{17}{6}-\frac{4}{3}\Bigr)\times0.05=194.83\times0.05=9.74$$
+      自由度は $\{(6-2)^2-(6+2)\}/2=4$ で、$\chi^2_4$ の上側5%点 $9.49$ を超えるので、5%水準では「2因子では足りない」と判断されます（p 値は約 $0.045$）。
+
+  - id: q25-maximum-likelihood-factor-analysis-2
+    term: maximum-likelihood-factor-analysis
+    level: 基本
+    type: truefalse
+    question: |
+      因子分析の最尤法では、独自分散の推定値が $0$ になったり、制約がなければ負になったりする不適解（ヘイウッドケース）が起こりうる。
+    answer: true
+    hint: |
+      共通性の推定値が1（標準化した変数の分散）を超えようとするとどうなるか。
+    explanation: |
+      推定の結果、共通性が1に達する（または超える）と独自分散 $\psi_j=1-h_j^2$ が0以下になります。これをヘイウッドケースといい、標本が小さい・因子数が多すぎる・変数が少ないときに起こりやすくなります。
+      不適解が出たら、因子数やモデルを見直します。
+
+  - id: q25-graphical-model-1
+    term: graphical-model
+    level: 基本
+    type: truefalse
+    question: |
+      多変量正規分布で、精度行列の成分 $\omega_{ij}=0$ ならば、$X_i$ と $X_j$ は無相関である。
+    answer: false
+    hint: |
+      $\omega_{ij}=0$ が意味するのは「他の変数を与えたときの」独立。
+    explanation: |
+      $\omega_{ij}=0$ は、残りの変数を与えたときの条件付き独立（偏相関0）です。
+      例えば $X_1\to X_2\to X_3$ のように $X_2$ を介してつながっていれば、$\omega_{13}=0$ でも $X_1$ と $X_3$ には相関があります。無相関は $\Sigma$ の成分 $\sigma_{ij}=0$ で表されます。
+
+  - id: q25-graphical-model-2
+    term: graphical-model
+    level: 標準
+    type: choice
+    question: |
+      3変数の無向グラフィカルモデルで、辺が $X_1-X_2$ と $X_2-X_3$ の2本だけである。このグラフから読み取れる条件付き独立はどれか。
+    choices:
+      - '$X_1\perp X_3\mid X_2$'
+      - '$X_1\perp X_3$'
+      - '$X_1\perp X_2\mid X_3$'
+      - '$X_2\perp X_3\mid X_1$'
+    answer: 0
+    hint: |
+      $X_1$ から $X_3$ への道はすべてどの頂点を通るか（分離）。
+    explanation: |
+      $X_1$ と $X_3$ を結ぶ道は必ず $X_2$ を通るので、$X_2$ が両者を分離し、$X_1\perp X_3\mid X_2$ です。
+      条件を付けない $X_1\perp X_3$ は一般に成り立ちません（$X_2$ を通じて相関する）。辺のある組（$X_1$-$X_2$、$X_2$-$X_3$）の独立はグラフからは言えません。
+
+  - id: q25-undirected-graphical-model-1
+    term: undirected-graphical-model
+    level: 標準
+    type: choice
+    question: |
+      4変数の無向グラフで、辺が $1-2,\ 2-3,\ 3-4,\ 2-4$ の4本である。大域的マルコフ性から導かれるものはどれか。
+    choices:
+      - '$X_1\perp(X_3,X_4)\mid X_2$'
+      - '$X_1\perp X_3\mid X_4$'
+      - '$X_3\perp X_4\mid X_2$'
+      - '$X_1\perp X_4$'
+    answer: 0
+    hint: |
+      頂点2を取り除くと、グラフはどう分かれるか。
+    explanation: |
+      頂点2を取り除くと、1 は {3,4} から切り離されるので、$X_1\perp(X_3,X_4)\mid X_2$ です。
+      $X_4$ だけを条件にしても 1-2-3 の道が残るので $X_1\perp X_3\mid X_4$ は言えません。3 と 4 は辺で直接結ばれ、$X_1\perp X_4$ も 1-2-4 の道があるので言えません。
+
+  - id: q25-undirected-graphical-model-2
+    term: undirected-graphical-model
+    level: 基本
+    type: numeric
+    question: |
+      4変数のガウス型グラフィカルモデルで、辺が $1-2,\ 2-3,\ 3-4,\ 2-4$ の4本である。精度行列の非対角成分（上三角、$i<j$）のうち、0 に制約されるものはいくつか。
+    answer: 2
+    tolerance: 0.4
+    hint: |
+      4変数の組は全部で $\binom42$ 通り。辺のない組が0になる。
+    explanation: |
+      組は $\binom42=6$ 通りで、辺は4本なので、辺のない組 $(1,3)$ と $(1,4)$ の $2$ つで $\omega_{ij}=0$ です。
+
+  - id: q25-precision-matrix-1
+    term: precision-matrix
+    level: 基本
+    type: numeric
+    question: |
+      精度行列の成分が $\omega_{11}=2,\ \omega_{22}=2,\ \omega_{12}=-1$ である。$X_1$ と $X_2$ の偏相関係数（他の変数をすべて与えたもの）を小数第2位まで求めよ。
+    answer: 0.5
+    tolerance: 0.005
+    hint: |
+      $\rho_{12\cdot\text{rest}}=-\omega_{12}/\sqrt{\omega_{11}\omega_{22}}$。符号に注意。
+    explanation: |
+      $$\rho_{12\cdot\text{rest}}=-\frac{-1}{\sqrt{2\times2}}=0.50$$
+      精度行列の非対角成分が負なら、偏相関は正になります。
+
+  - id: q25-precision-matrix-2
+    term: precision-matrix
+    level: 標準
+    type: numeric
+    question: |
+      3変数の相関行列が
+      $$\Sigma=\begin{pmatrix}1&0.5&0.25\\0.5&1&0.5\\0.25&0.5&1\end{pmatrix}$$
+      である。$X_3$ を与えたときの $X_1$ と $X_2$ の偏相関係数を小数第3位まで求めよ。
+    answer: 0.447
+    tolerance: 0.001
+    hint: |
+      3変数なら $\rho_{12\cdot3}=\dfrac{r_{12}-r_{13}r_{23}}{\sqrt{(1-r_{13}^2)(1-r_{23}^2)}}$。精度行列からも求められる。
+    explanation: |
+      $$\rho_{12\cdot3}=\frac{0.5-0.25\times0.5}{\sqrt{(1-0.0625)(1-0.25)}}=\frac{0.375}{0.8385}=0.447$$
+      精度行列は $\Omega=\frac{1}{0.75}\begin{pmatrix}1&-0.5&0\\-0.5&1.25&-0.5\\0&-0.5&1\end{pmatrix}$ で、$-\omega_{12}/\sqrt{\omega_{11}\omega_{22}}=0.5/\sqrt{1.25}=0.447$ と一致します。なお $\omega_{13}=0$ なので $X_1\perp X_3\mid X_2$ です。
+
+  - id: q25-precision-matrix-3
+    term: precision-matrix
+    level: 応用
+    type: numeric
+    question: |
+      $\boldsymbol{X}\sim N_3(\boldsymbol{0},\Sigma)$、$\Sigma=\begin{pmatrix}1&0.5&0.25\\0.5&1&0.5\\0.25&0.5&1\end{pmatrix}$ のとき、$X_1,X_3$ を与えたときの $X_2$ の条件付き分散 $V[X_2\mid X_1,X_3]$ を小数第2位まで求めよ。
+    answer: 0.6
+    tolerance: 0.005
+    hint: |
+      $V[X_i\mid X_{-i}]=1/\omega_{ii}$。
+    explanation: |
+      精度行列の $(2,2)$ 成分は $\omega_{22}=1.25/0.75=1.667$ なので
+      $$V[X_2\mid X_1,X_3]=\frac{1}{\omega_{22}}=0.60$$
+      両隣の変数を知ると、$X_2$ の分散は $1$ から $0.6$ に減ります。
+
+  - id: q25-covariance-selection-1
+    term: covariance-selection
+    level: 標準
+    type: numeric
+    question: |
+      $n=100$ の4変数データで、2本の辺を取り除いた共分散選択モデルを当てはめたところ、$|\hat\Sigma|/|S|=1.04$ であった。逸脱度 $n\log(|\hat\Sigma|/|S|)$ を小数第2位まで求めよ。
+    answer: 3.92
+    tolerance: 0.005
+    hint: |
+      自然対数を使う。逸脱度は自由度（0とおいた成分の数）のカイ二乗分布と比べる。
+    explanation: |
+      $$\mathrm{dev}=100\log1.04=3.92$$
+      自由度は $2$ で、$\chi^2_2$ の上側5%点 $5.99$ より小さいので、2本の辺を取り除いたモデルは棄却されません。
+
+  - id: q25-covariance-selection-2
+    term: covariance-selection
+    level: 応用
+    type: numeric
+    question: |
+      3変数の標本相関行列が $s_{12}=0.6,\ s_{13}=0.4,\ s_{23}=0.5$（対角は1）である。$\omega_{13}=0$（$X_1\perp X_3\mid X_2$）とする共分散選択モデルの最尤推定値 $\hat\sigma_{13}$ を小数第2位まで求めよ。
+    answer: 0.3
+    tolerance: 0.005
+    hint: |
+      辺のある組と対角では標本の値を再現し、$\hat\sigma_{13}$ は偏相関 $\rho_{13\cdot2}=0$ となるように決まる。
+    explanation: |
+      $\hat\sigma_{12}=0.6$、$\hat\sigma_{23}=0.5$、対角は1のままです。$\rho_{13\cdot2}=0$ の条件は $\hat\sigma_{13}-\hat\sigma_{12}\hat\sigma_{23}=0$ なので
+      $$\hat\sigma_{13}=0.6\times0.5=0.30$$
+      標本の値 $0.4$ は、$X_2$ を通じた相関だけでは説明しきれない部分を含んでいたことになります。
+
+  - id: q25-directed-acyclic-graph-1
+    term: directed-acyclic-graph
+    level: 標準
+    type: numeric
+    question: |
+      2値（0/1）の4変数 $A,B,C,D$ の DAG が $A\to B,\ A\to C,\ B\to D,\ C\to D$ である。因子分解 $f(a)f(b\mid a)f(c\mid a)f(d\mid b,c)$ に必要な自由なパラメータ（確率）の数を答えよ。
+    answer: 9
+    tolerance: 0.4
+    hint: |
+      2値変数の条件付き分布は、親の値の組み合わせごとに1つの確率で決まる。
+    explanation: |
+      $A$：親なしで $1$。$B$、$C$：親 $A$ の2通りごとに1つで各 $2$。$D$：親 $(B,C)$ の4通りごとに1つで $4$。
+      $$1+2+2+4=9$$
+      制約のない同時分布では $2^4-1=15$ 個必要なので、DAG の構造によってパラメータが減ります。
+
+  - id: q25-directed-acyclic-graph-2
+    term: directed-acyclic-graph
+    level: 標準
+    type: choice
+    question: |
+      DAG $X\to Z\leftarrow Y$（$X$ と $Y$ がともに $Z$ の親で、$X,Y$ の間に矢印はない）について正しいものはどれか。
+    choices:
+      - '$X$ と $Y$ は独立だが、$Z$ を与えると一般に独立でなくなる'
+      - '$X$ と $Y$ は $Z$ を与えたとき独立になる'
+      - '$X$ と $Y$ は一般に独立でない'
+      - '$Z$ を与えても与えなくても $X$ と $Y$ は独立'
+    answer: 0
+    hint: |
+      因子分解 $f(x)f(y)f(z\mid x,y)$ を $z$ について積分する場合と、$z$ を固定する場合を比べる。
+    explanation: |
+      $f(x,y)=\int f(x)f(y)f(z\mid x,y)\,dz=f(x)f(y)$ なので $X\perp Y$ です。
+      一方 $Z$ を与えると、例えば $Z=X+Y+e$ の値を知れば「$X$ が大きければ $Y$ は小さい」と推測でき、条件付きでは従属になります（合流点・選択バイアス）。
+      $X\to Z\to Y$ の連鎖とは逆の振る舞いです。
+
+  - id: q25-directed-acyclic-graph-3
+    term: directed-acyclic-graph
+    level: 応用
+    type: numeric
+    question: |
+      DAG $X_1\to X_2\to X_3$ の線形構造方程式モデル
+      $X_1=e_1,\ X_2=0.5X_1+e_2,\ X_3=0.4X_2+e_3$（$e_1,e_2,e_3$ は独立、分散はいずれも1）
+      で、$X_1$ と $X_3$ の相関係数を小数第3位まで求めよ。
+    answer: 0.183
+    tolerance: 0.001
+    hint: |
+      $\mathrm{Cov}[X_1,X_3]$ は経路の係数の積。$V[X_2]$、$V[X_3]$ を順に求める。
+    explanation: |
+      $V[X_1]=1$、$V[X_2]=0.25+1=1.25$、$V[X_3]=0.16\times1.25+1=1.2$。
+      $\mathrm{Cov}[X_1,X_3]=0.4\times0.5\times V[X_1]=0.2$ なので
+      $$\mathrm{Corr}[X_1,X_3]=\frac{0.2}{\sqrt{1\times1.2}}=0.183$$
+      直接の矢印はなくても相関はあり、$X_2$ を与えると独立になります。
+
+  - id: q25-graphical-lasso-1
+    term: graphical-lasso
+    level: 応用
+    type: truefalse
+    question: |
+      対角に罰則をかけないグラフィカル Lasso で、罰則の強さ $\lambda$ が標本分散共分散行列の非対角成分の絶対値の最大値 $\max_{j\ne k}|s_{jk}|$ 以上なら、推定された精度行列は対角行列（辺のないグラフ）になる。
+    answer: true
+    hint: |
+      $\Omega=\mathrm{diag}(1/s_{11},\dots,1/s_{pp})$ が最適性の条件（劣勾配が0を含む）を満たすか確かめる。
+    explanation: |
+      最適性の条件は $\Omega^{-1}-S-\lambda\Gamma=O$（$\Gamma$ は $|\omega_{jk}|$ の劣勾配で、$\omega_{jk}=0$ なら $|\gamma_{jk}|\le1$）です。
+      対角の $\Omega$ では $\Omega^{-1}$ の非対角が0なので、$-s_{jk}=\lambda\gamma_{jk}$、つまり $|\gamma_{jk}|=|s_{jk}|/\lambda\le1$ が必要で、$\lambda\ge\max|s_{jk}|$ ならこれが満たされます。
+      $\lambda$ を大きくするほどグラフは疎になり、ここで辺がすべて消えます。

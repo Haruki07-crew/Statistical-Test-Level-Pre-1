@@ -156,4 +156,22 @@ runs = ["", "a", "b", "ab", "c", "ac", "bc", "abc"]
 same = [r_ or "(1)" for r_ in runs if len(r_) % 2 == 0]
 q.check("q20-confounding-2", same == ["(1)", "ab", "ac", "bc"], f"(1) と同じブロック: {same}")
 
+# --- 一部実施要因計画・不完備ブロック計画（用語の見直しで追加） ---
+def _mul(a, b):
+    return "".join(sorted(set(a) ^ set(b))) or "I"
+q.check("q20-fractional-factorial-design-1", _mul("A", "ABCD") == "BCD" and _mul("AB", "ABCD") == "CD", "A=BCD、AB=CD")
+_rel = ["ABD", "ACE", _mul("ABD", "ACE")]
+_res = min(len(w) for w in _rel)
+q.check("q20-fractional-factorial-design-2", _rel[2] == "BCDE" and _res == 3, "定義関係 I=ABD=ACE=BCDE、分解能 III")
+q.check("q20-fractional-factorial-design-2", all(r != _res for r in (4, 5, 2)), "誤答 IV/V/II は正解と異なる")
+from itertools import combinations as _cb
+_v, _b, _k = 6, 10, 3
+_r = _b * _k // _v
+_lam = _r * (_k - 1) / (_v - 1)
+q.num("q20-incomplete-block-design-1", _lam)
+_blocks = [set(map(int, s)) for s in ["012", "013", "024", "035", "045", "125", "134", "145", "234", "235"]]
+_pairs = {p: sum(1 for B in _blocks if set(p) <= B) for p in _cb(range(6), 2)}
+_reps = [sum(1 for B in _blocks if i in B) for i in range(6)]
+q.check("q20-incomplete-block-design-1", set(_pairs.values()) == {2} and set(_reps) == {5}, f"BIBD(6,10,3) の実例で r=5、λ=2")
+
 q.done()

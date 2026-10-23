@@ -67,6 +67,18 @@
   "hash": "e7839714519a211b",
   "ok": true
  },
+ "q03-moments-1": {
+  "hash": "8ecc0a83c3852466",
+  "ok": true
+ },
+ "q03-moments-2": {
+  "hash": "39a93283e47d5b3b",
+  "ok": true
+ },
+ "q03-moments-3": {
+  "hash": "b59db361e2d8b0d4",
+  "ok": true
+ },
  "q03-partial-correlation-coefficient-1": {
   "hash": "8996fbf6666a9bbd",
   "ok": true

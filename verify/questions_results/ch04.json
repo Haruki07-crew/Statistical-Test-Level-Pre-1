@@ -50,5 +50,17 @@
  "q04-probit-transformation-2": {
   "hash": "2bed2662bfb0d1df",
   "ok": true
+ },
+ "q04-sum-of-random-variables-1": {
+  "hash": "c8020b4e20f10ea6",
+  "ok": true
+ },
+ "q04-sum-of-random-variables-2": {
+  "hash": "bc52019a23f197e0",
+  "ok": true
+ },
+ "q04-sum-of-random-variables-3": {
+  "hash": "f24d80935ff0aa93",
+  "ok": true
  }
 }

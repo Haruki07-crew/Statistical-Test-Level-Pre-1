@@ -1,0 +1,150 @@
+{
+ "q25-common-factor-unique-factor-1": {
+  "hash": "173819fd7781e698",
+  "ok": true
+ },
+ "q25-common-factor-unique-factor-2": {
+  "hash": "5f87032c798fbdfc",
+  "ok": true
+ },
+ "q25-communality-1": {
+  "hash": "3826fb5d6a47d637",
+  "ok": true
+ },
+ "q25-communality-2": {
+  "hash": "bdb1247151ba706f",
+  "ok": true
+ },
+ "q25-communality-3": {
+  "hash": "adb837f4e12a089d",
+  "ok": true
+ },
+ "q25-covariance-selection-1": {
+  "hash": "f3987ae64702b33d",
+  "ok": true
+ },
+ "q25-covariance-selection-2": {
+  "hash": "eb4154fe4f46a1fa",
+  "ok": true
+ },
+ "q25-directed-acyclic-graph-1": {
+  "hash": "9b83ecc459c9adc6",
+  "ok": true
+ },
+ "q25-directed-acyclic-graph-2": {
+  "hash": "acfd247578e45be8",
+  "ok": true
+ },
+ "q25-directed-acyclic-graph-3": {
+  "hash": "dccec5e1ddda6f5e",
+  "ok": true
+ },
+ "q25-factor-analysis-model-1": {
+  "hash": "c32337356fca61c6",
+  "ok": true
+ },
+ "q25-factor-analysis-model-2": {
+  "hash": "d08b7df5cbba7ee1",
+  "ok": true
+ },
+ "q25-factor-analysis-model-3": {
+  "hash": "3dec7cfb56e73f87",
+  "ok": true
+ },
+ "q25-factor-loading-1": {
+  "hash": "8215f6121465ed2b",
+  "ok": true
+ },
+ "q25-factor-loading-2": {
+  "hash": "842333dc1c1deeae",
+  "ok": true
+ },
+ "q25-factor-loading-3": {
+  "hash": "39ea38479be0106d",
+  "ok": true
+ },
+ "q25-factor-rotation-1": {
+  "hash": "ae2fb15caff1974e",
+  "ok": true
+ },
+ "q25-factor-rotation-2": {
+  "hash": "86df10e1662628fc",
+  "ok": true
+ },
+ "q25-factor-rotation-3": {
+  "hash": "d52c0c096b6869df",
+  "ok": true
+ },
+ "q25-factor-score-1": {
+  "hash": "4dae8229fd341a5a",
+  "ok": true
+ },
+ "q25-factor-score-2": {
+  "hash": "e03e9e9332913658",
+  "ok": true
+ },
+ "q25-graphical-lasso-1": {
+  "hash": "21d13d04cd512772",
+  "ok": true
+ },
+ "q25-graphical-model-1": {
+  "hash": "9d8b4f2f076a3ae8",
+  "ok": true
+ },
+ "q25-graphical-model-2": {
+  "hash": "1a52c647f49b8605",
+  "ok": true
+ },
+ "q25-maximum-likelihood-factor-analysis-1": {
+  "hash": "15468160e4162e0f",
+  "ok": true
+ },
+ "q25-maximum-likelihood-factor-analysis-2": {
+  "hash": "36744b9f72e5ceda",
+  "ok": true
+ },
+ "q25-number-of-factors-1": {
+  "hash": "c38e41453ad7c8bf",
+  "ok": true
+ },
+ "q25-number-of-factors-2": {
+  "hash": "07db9a75d4cfc9ea",
+  "ok": true
+ },
+ "q25-precision-matrix-1": {
+  "hash": "7edfb81b57ed27df",
+  "ok": true
+ },
+ "q25-precision-matrix-2": {
+  "hash": "d00760b5abb5493b",
+  "ok": true
+ },
+ "q25-precision-matrix-3": {
+  "hash": "7082b680508c661e",
+  "ok": true
+ },
+ "q25-promax-rotation-1": {
+  "hash": "cbc9f9d7a330e2af",
+  "ok": true
+ },
+ "q25-promax-rotation-2": {
+  "hash": "4e3401b285d2eda5",
+  "ok": true
+ },
+ "q25-undirected-graphical-model-1": {
+  "hash": "a230166510a51647",
+  "ok": true
+ },
+ "q25-undirected-graphical-model-2": {
+  "hash": "bba8c129b05fb773",
+  "ok": true
+ },
+ "q25-varimax-rotation-1": {
+  "hash": "4551ac35daf30cd1",
+  "ok": true
+ },
+ "q25-varimax-rotation-2": {
+  "hash": "351c1041ba72caf0",
+  "ok": true
+ }
+}

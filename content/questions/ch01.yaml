@@ -251,3 +251,42 @@ questions:
       $$P(A\mid B\cap C)=\frac{P(A\cap B\cap C)}{P(B\cap C)}=\frac{P(A\cap B\mid C)}{P(B\mid C)}=\frac{P(A\mid C)P(B\mid C)}{P(B\mid C)}=P(A\mid C)$$
       （$P(B\cap C)>0$ より $P(C)>0,\ P(B\mid C)>0$ なので割り算できます。）
       意味は「$C$ がわかっていれば、さらに $B$ を知っても $A$ の確率は変わらない」で、条件付き独立のもう一つの言い方です。
+
+  - id: q01-inclusion-exclusion-principle-1
+    term: inclusion-exclusion-principle
+    level: 標準
+    type: numeric
+    question: |
+      1 から 210 までの整数のうち、2, 3, 7 の少なくとも1つで割り切れるものの個数を求めよ。
+    answer: 150
+    tolerance: 0.4
+    hint: |
+      「2で割り切れる」「3で割り切れる」「7で割り切れる」の3つの集合の和集合の要素数を、包除原理で求める。2つ・3つの重なりは最小公倍数で割り切れる数。
+    explanation: |
+      $A_2,A_3,A_7$ をそれぞれ 2, 3, 7 で割り切れる数の集合とすると、
+      $|A_2|=105,\ |A_3|=70,\ |A_7|=30$、
+      $|A_2\cap A_3|=35\ (6\text{の倍数}),\ |A_2\cap A_7|=15\ (14),\ |A_3\cap A_7|=10\ (21)$、
+      $|A_2\cap A_3\cap A_7|=5\ (42)$ です。
+      $$|A_2\cup A_3\cup A_7|=105+70+30-35-15-10+5=150$$
+      3つの重なりの 5 を足し戻し忘れると 145 になります。
+
+  - id: q01-inclusion-exclusion-principle-2
+    term: inclusion-exclusion-principle
+    level: 応用
+    type: choice
+    question: |
+      公正なサイコロを 5 回投げる。1, 2, 3 の目がどれも少なくとも1回は出る確率に最も近いものはどれか。
+    choices:
+      - '0.158'
+      - '0.189'
+      - '0.214'
+      - '0.969'
+    answer: 0
+    hint: |
+      余事象「1, 2, 3 のうち少なくとも1つの目が1回も出ない」の確率を包除原理で求める。$A_i$＝「目 $i$ が1回も出ない」とおく。
+    explanation: |
+      $A_i$＝「目 $i$ が1回も出ない」とすると $P(A_i)=(5/6)^5$、$P(A_i\cap A_j)=(4/6)^5$、$P(A_1\cap A_2\cap A_3)=(3/6)^5$ です。
+      $$P(A_1\cup A_2\cup A_3)=3\left(\tfrac56\right)^5-3\left(\tfrac46\right)^5+\left(\tfrac36\right)^5=1.2056-0.3951+0.0313=0.8418$$
+      求める確率はその余事象なので $1-0.8418=0.158$ です。
+      3つの重なりの項を落とすと 0.189、3つの目を独立とみなして $\{1-(5/6)^5\}^3$ とすると 0.214（実際は独立でない）、
+      「1, 2, 3 のどれかが出る」確率 $1-(1/2)^5$ と取り違えると 0.969 になります。

@@ -1,0 +1,174 @@
+{
+ "q28-cohort-and-case-control-study-1": {
+  "hash": "b64e67344e64336a",
+  "ok": true
+ },
+ "q28-cohort-and-case-control-study-2": {
+  "hash": "b70f9849622c6e03",
+  "ok": true
+ },
+ "q28-contingency-table-1": {
+  "hash": "7dfdcc85615fb74a",
+  "ok": true
+ },
+ "q28-contingency-table-2": {
+  "hash": "4cede51a7743b79f",
+  "ok": true
+ },
+ "q28-contingency-table-3": {
+  "hash": "17ba4d1cc1cb0ee3",
+  "ok": true
+ },
+ "q28-hierarchical-loglinear-model-1": {
+  "hash": "4b6f1f6462462290",
+  "ok": true
+ },
+ "q28-hierarchical-loglinear-model-2": {
+  "hash": "b853e1ee684d3f54",
+  "ok": true
+ },
+ "q28-hierarchical-loglinear-model-3": {
+  "hash": "f8f4492e887b6860",
+  "ok": true
+ },
+ "q28-loglinear-model-1": {
+  "hash": "644468ccdb418bc6",
+  "ok": true
+ },
+ "q28-loglinear-model-2": {
+  "hash": "b570c30866100e15",
+  "ok": true
+ },
+ "q28-loglinear-model-3": {
+  "hash": "225e4a5cf68be9e0",
+  "ok": true
+ },
+ "q28-mantel-haenszel-estimator-1": {
+  "hash": "4c94bd27382d55fc",
+  "ok": true
+ },
+ "q28-mantel-haenszel-estimator-2": {
+  "hash": "0f8685566c88e389",
+  "ok": true
+ },
+ "q28-mantel-haenszel-test-1": {
+  "hash": "b2401050596137e9",
+  "ok": true
+ },
+ "q28-mantel-haenszel-test-2": {
+  "hash": "f91564cc10c369ac",
+  "ok": true
+ },
+ "q28-mcnemar-test-1": {
+  "hash": "2a0ef7cdea2d6721",
+  "ok": true
+ },
+ "q28-mcnemar-test-2": {
+  "hash": "3bcbefe6265b5004",
+  "ok": true
+ },
+ "q28-mcnemar-test-3": {
+  "hash": "61ee78e615694ff9",
+  "ok": true
+ },
+ "q28-odds-ratio-interval-1": {
+  "hash": "ba90048c5a19f5dd",
+  "ok": true
+ },
+ "q28-odds-ratio-interval-2": {
+  "hash": "4cad022401280b6a",
+  "ok": true
+ },
+ "q28-odds-ratio-interval-3": {
+  "hash": "b53593d53ac29c12",
+  "ok": true
+ },
+ "q28-ordinal-contingency-table-1": {
+  "hash": "4c5147068ef35166",
+  "ok": true
+ },
+ "q28-phi-coefficient-and-association-1": {
+  "hash": "475699ee249f78f4",
+  "ok": true
+ },
+ "q28-phi-coefficient-and-association-2": {
+  "hash": "ecd16a23c0d5d766",
+  "ok": true
+ },
+ "q28-relative-risk-1": {
+  "hash": "cad4f986972bed18",
+  "ok": true
+ },
+ "q28-relative-risk-2": {
+  "hash": "8a9da78c0b543196",
+  "ok": true
+ },
+ "q28-relative-risk-3": {
+  "hash": "831509c8cdb9d37e",
+  "ok": true
+ },
+ "q28-residual-analysis-contingency-1": {
+  "hash": "883613e03ae98674",
+  "ok": true
+ },
+ "q28-residual-analysis-contingency-2": {
+  "hash": "83c398cdbe27d5cd",
+  "ok": true
+ },
+ "q28-risk-difference-1": {
+  "hash": "df6f5968870656f1",
+  "ok": true
+ },
+ "q28-risk-difference-2": {
+  "hash": "45062bf0c8fe3fc6",
+  "ok": true
+ },
+ "q28-sampling-schemes-1": {
+  "hash": "ce73cd76f9ee7b36",
+  "ok": true
+ },
+ "q28-sampling-schemes-2": {
+  "hash": "ba0900b5f033dc37",
+  "ok": true
+ },
+ "q28-sampling-schemes-3": {
+  "hash": "6f7a62007300bb42",
+  "ok": true
+ },
+ "q28-simpsons-paradox-1": {
+  "hash": "c65a2be12b196700",
+  "ok": true
+ },
+ "q28-simpsons-paradox-2": {
+  "hash": "2555d859378ffe29",
+  "ok": true
+ },
+ "q28-simpsons-paradox-3": {
+  "hash": "dee7b26f5c969846",
+  "ok": true
+ },
+ "q28-three-way-table-1": {
+  "hash": "e5b5fd09fcddbe83",
+  "ok": true
+ },
+ "q28-three-way-table-2": {
+  "hash": "934a1af053b01de4",
+  "ok": true
+ },
+ "q28-two-by-two-table-1": {
+  "hash": "60d81b0b0962cdfc",
+  "ok": true
+ },
+ "q28-two-by-two-table-2": {
+  "hash": "3527f466794428ab",
+  "ok": true
+ },
+ "q28-yates-correction-1": {
+  "hash": "9d2b0d17b9363d67",
+  "ok": true
+ },
+ "q28-yates-correction-2": {
+  "hash": "48c779346301ee78",
+  "ok": true
+ }
+}

@@ -35,6 +35,18 @@
   "hash": "e7fc595ceddaedb7",
   "ok": true
  },
+ "q20-fractional-factorial-design-1": {
+  "hash": "bb5d86da96e8b1c1",
+  "ok": true
+ },
+ "q20-fractional-factorial-design-2": {
+  "hash": "6a231860ac602162",
+  "ok": true
+ },
+ "q20-incomplete-block-design-1": {
+  "hash": "87e5819e26ecb5a2",
+  "ok": true
+ },
  "q20-latin-square-design-1": {
   "hash": "e6e9acbd29c41dc3",
   "ok": true

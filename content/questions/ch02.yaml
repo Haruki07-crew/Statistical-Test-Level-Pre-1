@@ -532,3 +532,52 @@ questions:
       $$\varphi_Y(t)=e^{2it}\varphi_X(3t)=e^{2it}\exp(3it-18t^2)=\exp(5it-18t^2)$$
       これは $N(5,\,36)$ の特性関数で、$E[Y]=3+2=5$、$V[Y]=9\times4=36$ と一致します。
       $-6t^2$ は分散を $3\times4$ とした誤り、$-36t^2$ は $\sigma^2/2$ の $1/2$ を忘れた誤りです。
+
+  - id: q02-probability-mass-and-density-function-1
+    term: probability-mass-and-density-function
+    level: 基本
+    type: truefalse
+    question: |
+      連続型確率変数の確率密度関数 $f(x)$ は確率を表すので、すべての $x$ で $0\le f(x)\le 1$ を満たさなければならない。
+    answer: false
+    hint: |
+      確率になるのは $f(x)$ の値そのものではなく、区間上の積分 $\int_a^b f(x)\,dx$。
+    explanation: |
+      密度に課される条件は $f(x)\ge0$ と $\int_{-\infty}^{\infty}f(x)\,dx=1$ だけで、値が1を超えてもかまいません。
+      たとえば一様分布 $U(0,\,0.5)$ の密度は区間 $(0,\,0.5)$ で $f(x)=2$ です。$0\le p(x)\le1$ が必要なのは離散型の確率関数のほうです。
+
+  - id: q02-probability-mass-and-density-function-2
+    term: probability-mass-and-density-function
+    level: 標準
+    type: choice
+    question: |
+      確率変数 $X$ の確率関数が $p(x)=c\left(\dfrac13\right)^x\ (x=0,1,2,\dots)$ で与えられている（$c$ は定数）。$P(X\ge2)$ はどれか。
+    choices:
+      - '$1/9$'
+      - '$2/27$'
+      - '$1/6$'
+      - '$8/9$'
+    answer: 0
+    hint: |
+      まず $\sum_{x=0}^\infty p(x)=1$ から $c$ を決める。等比級数の和を使う。
+    explanation: |
+      $\sum_{x=0}^\infty (1/3)^x=\dfrac{1}{1-1/3}=\dfrac32$ なので $c=\dfrac23$ です。
+      $$P(X\ge2)=1-p(0)-p(1)=1-\frac23-\frac29=\frac19$$
+      （$P(X\ge2)=\frac23\cdot\frac{(1/3)^2}{1-1/3}=\frac19$ と直接足してもよい。）
+      $p(2)=2/27$ だけを答えたり、$c=1$ のまま足して $1/6$ としたり、$P(X\le1)=8/9$ と取り違えたりしないよう注意します。
+
+  - id: q02-probability-mass-and-density-function-3
+    term: probability-mass-and-density-function
+    level: 応用
+    type: numeric
+    question: |
+      確率変数 $X$ の確率密度関数が $f(x)=c\,x(2-x)\ (0<x<2)$、それ以外で $0$ である。
+      定数 $c$ を定めたうえで、$P(X<0.5)$ を小数第3位まで（四捨五入）求めよ。
+    answer: 0.156
+    tolerance: 0.001
+    hint: |
+      $\int_0^2 x(2-x)\,dx$ を計算して $c$ を決め、次に $0$ から $0.5$ まで積分する。
+    explanation: |
+      $\int_0^2(2x-x^2)\,dx=\left[x^2-\tfrac{x^3}{3}\right]_0^2=4-\tfrac83=\tfrac43$ なので $c=\tfrac34$ です。
+      $$P(X<0.5)=\frac34\left[x^2-\frac{x^3}{3}\right]_0^{0.5}=\frac34\left(0.25-0.04167\right)=0.15625$$
+      よって $0.156$ です。密度は $x=1$ について対称なので、$P(X>1.5)$ も同じ値になります。

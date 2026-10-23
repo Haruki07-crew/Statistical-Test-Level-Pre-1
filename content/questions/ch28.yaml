@@ -1,0 +1,659 @@
+chapter: 28
+questions:
+  - id: q28-contingency-table-1
+    term: contingency-table
+    level: 基本
+    type: numeric
+    question: |
+      次の 2×3 分割表で、独立のもとでのセル $(2,3)$ の期待度数 $\hat E_{23}$ を小数第1位まで求めよ。
+
+      | | $B_1$ | $B_2$ | $B_3$ |
+      |---|---|---|---|
+      | $A_1$ | 30 | 20 | 10 |
+      | $A_2$ | 20 | 30 | 50 |
+    answer: 37.5
+    tolerance: 0.05
+    hint: |
+      $\hat E_{ij}=n_{i+}n_{+j}/n$。まず周辺度数を求める。
+    explanation: |
+      $n_{2+}=100$、$n_{+3}=60$、$n=160$ なので
+      $$\hat E_{23}=\frac{100\times60}{160}=37.5$$
+      観測度数50は期待度数より12.5多いことになります。
+
+  - id: q28-contingency-table-2
+    term: contingency-table
+    level: 標準
+    type: numeric
+    question: |
+      前問の 2×3 分割表について、独立性の検定のピアソンのカイ二乗統計量 $\chi^2$ を小数第2位まで求めよ。
+    answer: 22.04
+    tolerance: 0.01
+    hint: |
+      期待度数は1行目が $18.75,\ 18.75,\ 22.5$、2行目が $31.25,\ 31.25,\ 37.5$。
+    explanation: |
+      ずれ $n_{ij}-\hat E_{ij}$ は1行目 $11.25,\ 1.25,\ -12.5$、2行目 $-11.25,\ -1.25,\ 12.5$ です。
+      $$\chi^2=\frac{11.25^2}{18.75}+\frac{1.25^2}{18.75}+\frac{12.5^2}{22.5}+\frac{11.25^2}{31.25}+\frac{1.25^2}{31.25}+\frac{12.5^2}{37.5}$$
+      $$=6.75+0.0833+6.944+4.05+0.05+4.167=22.04$$
+      自由度 $(2-1)(3-1)=2$ の上側1%点 $9.21$ を大きく超えるので、独立は棄却されます。
+
+  - id: q28-contingency-table-3
+    term: contingency-table
+    level: 基本
+    type: choice
+    question: |
+      4×3 分割表で独立性のカイ二乗検定を行うときの自由度はどれか。
+    choices:
+      - '6'
+      - '12'
+      - '11'
+      - '5'
+    answer: 0
+    hint: |
+      自由度は $(I-1)(J-1)$。
+    explanation: |
+      $(4-1)(3-1)=6$ です。
+      12はセル数、11は「セル数−1」（多項分布の自由なパラメータ数）、5は $(4-1)+(3-1)$ と足してしまった誤りです。
+
+  - id: q28-two-by-two-table-1
+    term: two-by-two-table
+    level: 標準
+    type: numeric
+    question: |
+      次の 2×2 表について、連続修正をしないピアソンのカイ二乗統計量を小数第2位まで求めよ。
+
+      | | 起こった | 起こらない |
+      |---|---|---|
+      | 群1 | 40 | 60 |
+      | 群2 | 25 | 75 |
+    answer: 5.13
+    tolerance: 0.01
+    hint: |
+      $\chi^2=\dfrac{n(ad-bc)^2}{n_1n_2m_1m_2}$
+    explanation: |
+      $ad-bc=3000-1500=1500$、$n=200$、$n_1=n_2=100$、$m_1=65$、$m_2=135$ なので
+      $$\chi^2=\frac{200\times1500^2}{100\times100\times65\times135}=\frac{4.5\times10^8}{8.775\times10^7}=5.128$$
+      自由度1の上側5%点 $3.84$ を超えるので、5%水準で有意です。
+
+  - id: q28-two-by-two-table-2
+    term: two-by-two-table
+    level: 応用
+    type: truefalse
+    question: |
+      前問の表で、2群の比率の差の検定統計量 $z=(\hat p_1-\hat p_2)\big/\sqrt{\hat p(1-\hat p)(1/n_1+1/n_2)}$（$\hat p$ は2群をまとめた比率）を計算すると、$z^2$ は前問のカイ二乗統計量と一致する。
+    answer: true
+    hint: |
+      $\hat p_1=0.40$、$\hat p_2=0.25$、$\hat p=65/200=0.325$ を代入して確かめる。
+    explanation: |
+      $$z=\frac{0.15}{\sqrt{0.325\times0.675\times0.02}}=\frac{0.15}{0.06624}=2.265,\qquad z^2=5.128$$
+      で、カイ二乗統計量と一致します。一般に、プールした比率を使う $z$ 検定の両側検定と、連続修正なしの $\chi^2$ 検定は同じ結論になります。
+
+  - id: q28-relative-risk-1
+    term: relative-risk
+    level: 基本
+    type: numeric
+    question: |
+      要因あり群100人中40人、要因なし群100人中25人に出来事が起こった。相対リスク $\widehat{RR}$ を小数第2位まで求めよ。
+    answer: 1.60
+    tolerance: 0.005
+    hint: |
+      $\widehat{RR}=\dfrac{a/n_1}{c/n_2}$
+    explanation: |
+      $$\widehat{RR}=\frac{40/100}{25/100}=\frac{0.40}{0.25}=1.60$$
+      要因あり群では出来事が1.6倍起こりやすいと推定されます。オッズ比 $\dfrac{40\times75}{60\times25}=2.0$ とは値が違う点に注意します。
+
+  - id: q28-relative-risk-2
+    term: relative-risk
+    level: 標準
+    type: numeric
+    question: |
+      前問のデータ（100人中40人 対 100人中25人）について、相対リスクの近似95%信頼区間の上限を小数第2位まで求めよ。
+    answer: 2.42
+    tolerance: 0.01
+    hint: |
+      $\mathrm{SE}(\log\widehat{RR})=\sqrt{1/a-1/n_1+1/c-1/n_2}$ で対数の尺度の区間を作り、指数で戻す。
+    explanation: |
+      $$\mathrm{SE}=\sqrt{\frac1{40}-\frac1{100}+\frac1{25}-\frac1{100}}=\sqrt{0.045}=0.2121$$
+      $$\exp(\log1.6+1.96\times0.2121)=1.6\times e^{0.4158}=1.6\times1.5156=2.425$$
+      下限は $1.6\times e^{-0.4158}=1.056$ で、区間 $(1.06,\ 2.42)$ は1を含みません。
+
+  - id: q28-relative-risk-3
+    term: relative-risk
+    level: 基本
+    type: truefalse
+    question: |
+      対数変換で作った相対リスクの信頼区間 $\exp(\log\widehat{RR}\pm z_{\alpha/2}\mathrm{SE})$ は、点推定値 $\widehat{RR}$ を中心に左右対称になる。
+    answer: false
+    hint: |
+      前問の区間 $(1.06,\ 2.42)$ と点推定値 $1.6$ の距離を比べる。
+    explanation: |
+      対数の尺度では対称ですが、指数で戻すと $\widehat{RR}\times e^{\pm z\mathrm{SE}}$ という「掛け算で対称」な区間になります。
+      前問では $1.6-1.06=0.54$、$2.42-1.6=0.82$ と上側が長くなります。$RR$ の範囲が $(0,\infty)$ で1について非対称だからです。
+
+  - id: q28-risk-difference-1
+    term: risk-difference
+    level: 標準
+    type: numeric
+    question: |
+      要因あり群100人中40人、要因なし群100人中25人に出来事が起こった。リスク差の近似95%信頼区間（ワルド区間）の下限を小数第3位まで求めよ。
+    answer: 0.022
+    tolerance: 0.001
+    hint: |
+      信頼区間では、2群別々の $\hat p_1,\hat p_2$ を使った標準誤差を使う。
+    explanation: |
+      $\widehat{RD}=0.40-0.25=0.15$、
+      $$\mathrm{SE}=\sqrt{\frac{0.4\times0.6}{100}+\frac{0.25\times0.75}{100}}=\sqrt{0.004275}=0.06538$$
+      下限は $0.15-1.96\times0.06538=0.15-0.1281=0.0219\approx0.022$ です。
+
+  - id: q28-risk-difference-2
+    term: risk-difference
+    level: 基本
+    type: numeric
+    question: |
+      対照群の発症リスクが $0.20$、治療群の発症リスクが $0.12$ のとき、治療必要数 $NNT$ を小数第1位まで求めよ。
+    answer: 12.5
+    tolerance: 0.05
+    hint: |
+      $NNT=1/|RD|$
+    explanation: |
+      $RD=0.12-0.20=-0.08$ なので $NNT=1/0.08=12.5$ です。
+      約12.5人を治療すると、1人の発症を防げる計算です（実務では切り上げて13人と報告することが多い）。
+
+  - id: q28-odds-ratio-interval-1
+    term: odds-ratio-interval
+    level: 標準
+    type: numeric
+    question: |
+      2×2 表のセルが $a=12,\ b=8,\ c=6,\ d=14$ のとき、オッズ比の近似95%信頼区間（ウルフの方法）の下限を小数第3位まで求めよ。
+    answer: 0.945
+    tolerance: 0.002
+    hint: |
+      $\log\widehat{OR}$ の標準誤差は $\sqrt{1/a+1/b+1/c+1/d}$。
+    explanation: |
+      $\widehat{OR}=\dfrac{12\times14}{8\times6}=3.5$、
+      $$\mathrm{SE}=\sqrt{\frac1{12}+\frac18+\frac16+\frac1{14}}=\sqrt{0.4464}=0.6682$$
+      下限は $3.5\times e^{-1.96\times0.6682}=3.5\times0.2699=0.945$ です。
+      点推定は3.5と大きいのに、区間 $(0.945,\ 12.97)$ は1を含み、5%水準では有意になりません。
+
+  - id: q28-odds-ratio-interval-2
+    term: odds-ratio-interval
+    level: 基本
+    type: choice
+    question: |
+      2×2 表のセルが $a=0,\ b=10,\ c=5,\ d=5$ であった。すべてのセルに0.5を足す補正（ハルデン・アンスコムの補正）をしたオッズ比の推定値はどれか（小数第3位まで）。
+    choices:
+      - '0.048'
+      - '0'
+      - '0.050'
+      - '0.091'
+    answer: 0
+    hint: |
+      4つのセルすべてに0.5を足してから $ad/(bc)$ を計算する。
+    explanation: |
+      $$\widehat{OR}=\frac{0.5\times5.5}{10.5\times5.5}=\frac{0.5}{10.5}=0.0476$$
+      補正なしでは0（対数も分散も計算できない）、0のセルにだけ0.5を足すと $0.05$、1を足すと $0.091$ になります。
+
+  - id: q28-odds-ratio-interval-3
+    term: odds-ratio-interval
+    level: 応用
+    type: derivation
+    question: |
+      2×2 表の4つのセル度数 $a,b,c,d$ を、平均 $\mu_{11},\mu_{12},\mu_{21},\mu_{22}$ の独立なポアソン分布とみなして、$\log\widehat{OR}=\log a-\log b-\log c+\log d$ の分散の近似式を導け。
+    steps:
+      - 'デルタ法：$X\sim Po(\mu)$ なら $V[\log X]\approx\left(\dfrac{1}{\mu}\right)^2V[X]=\dfrac{1}{\mu}$'
+      - '4つのセルは独立なので、符号に関係なく分散を足す：$V[\log\widehat{OR}]\approx\dfrac1{\mu_{11}}+\dfrac1{\mu_{12}}+\dfrac1{\mu_{21}}+\dfrac1{\mu_{22}}$'
+      - '$\mu_{ij}$ を観測度数で置き換える'
+    answer: '$\widehat V[\log\widehat{OR}]=\dfrac1a+\dfrac1b+\dfrac1c+\dfrac1d$'
+    hint: |
+      $g(x)=\log x$ のデルタ法と、ポアソン分布の分散が平均に等しいことを使う。
+    explanation: |
+      $g(x)=\log x$ の微分は $1/x$ なので、$V[\log X]\approx V[X]/\mu^2=1/\mu$ です。独立な確率変数の和や差の分散は分散の和なので
+      $$V[\log\widehat{OR}]\approx\sum_{i,j}\frac{1}{\mu_{ij}}\ \to\ \frac1a+\frac1b+\frac1c+\frac1d$$
+      多項モデルや積二項モデルから出発しても、同じ式になります。
+
+  - id: q28-sampling-schemes-1
+    term: sampling-schemes
+    level: 標準
+    type: numeric
+    question: |
+      2つのセルの度数 $X_1\sim Po(2),\ X_2\sim Po(3)$ が独立であるとする。合計が $X_1+X_2=10$ であったという条件のもとで、$P(X_1=4\mid X_1+X_2=10)$ を小数第3位まで求めよ。
+    answer: 0.251
+    tolerance: 0.001
+    hint: |
+      独立なポアソン分布を合計で条件付けると多項分布（2セルなら二項分布）になる。
+    explanation: |
+      $X_1\mid(X_1+X_2=10)\sim Bin(10,\ 2/(2+3))=Bin(10,\ 0.4)$ なので
+      $$P(X_1=4\mid X_1+X_2=10)=\binom{10}{4}0.4^4\,0.6^6=210\times0.0256\times0.046656=0.2508$$
+      ポアソンモデルと多項モデルの関係を表す例です。
+
+  - id: q28-sampling-schemes-2
+    term: sampling-schemes
+    level: 基本
+    type: truefalse
+    question: |
+      独立（同質）の仮説のもとでの期待度数の最尤推定値は、総数だけを固定した多項モデルでは $n_{i+}n_{+j}/n$ になるが、行の合計を固定した積多項モデルでは別の式になる。
+    answer: false
+    hint: |
+      積多項モデルで、同質のもとでの共通の列割合 $\pi_j$ の最尤推定値は何か。
+    explanation: |
+      積多項モデルの同質性の仮説 $\pi_{j\mid1}=\cdots=\pi_{j\mid I}=\pi_j$ のもとで、$\hat\pi_j=n_{+j}/n$ なので期待度数は $n_{i+}\hat\pi_j=n_{i+}n_{+j}/n$ です。
+      ポアソン・多項・積多項のどのモデルでも同じ期待度数になり、同じカイ二乗統計量を使えます。
+
+  - id: q28-sampling-schemes-3
+    term: sampling-schemes
+    level: 応用
+    type: choice
+    question: |
+      3×4 分割表を、行の合計を固定した積多項モデルで扱う。このモデルの自由なパラメータの数はどれか。
+    choices:
+      - '9'
+      - '11'
+      - '12'
+      - '6'
+    answer: 0
+    hint: |
+      各行は独立な多項分布で、行ごとに「列の数−1」個の確率が自由に決められる。
+    explanation: |
+      各行で $J-1=3$ 個、それが $I=3$ 行あるので $I(J-1)=9$ です。
+      11は多項モデル（$IJ-1$）、12はポアソンモデル（$IJ$）の数、6は同質性の検定の自由度 $(I-1)(J-1)$ です（$9-(J-1)=6$）。
+
+  - id: q28-yates-correction-1
+    term: yates-correction
+    level: 標準
+    type: numeric
+    question: |
+      2×2 表のセルが $a=12,\ b=8,\ c=6,\ d=14$ のとき、イェーツの連続修正をしたカイ二乗統計量を小数第2位まで求めよ。
+    answer: 2.53
+    tolerance: 0.01
+    hint: |
+      $\chi^2_Y=\dfrac{n(|ad-bc|-n/2)^2}{n_1n_2m_1m_2}$
+    explanation: |
+      $|ad-bc|=168-48=120$、$n=40$ なので $n/2=20$、$n_1=n_2=20$、$m_1=18$、$m_2=22$ です。
+      $$\chi^2_Y=\frac{40\times100^2}{20\times20\times18\times22}=\frac{400000}{158400}=2.525$$
+      修正しないと $40\times120^2/158400=3.636$ で、5%水準の境目 $3.84$ にさらに近づきます。
+
+  - id: q28-yates-correction-2
+    term: yates-correction
+    level: 基本
+    type: truefalse
+    question: |
+      イェーツの連続修正をすると、カイ二乗統計量は大きくなり、検定は有意になりやすくなる。
+    answer: false
+    hint: |
+      修正では $|ad-bc|$ から $n/2$ を引く。
+    explanation: |
+      $|ad-bc|$ から $n/2$ を引くので統計量は小さくなり、$p$ 値は大きくなります。検定は**保守的**（有意になりにくい方向）になります。
+      前問でも $3.636$ から $2.525$ に下がりました。
+
+  - id: q28-mcnemar-test-1
+    term: mcnemar-test
+    level: 標準
+    type: numeric
+    question: |
+      同じ100人に施策の前後で賛否を聞いた。前後とも賛成50人、前賛成・後反対15人、前反対・後賛成5人、前後とも反対30人であった。連続修正をしたマクネマー検定の統計量を小数第2位まで求めよ。
+    answer: 4.05
+    tolerance: 0.01
+    hint: |
+      不一致のペア（$b=15$、$c=5$）だけを使う。修正版は $(|b-c|-1)^2/(b+c)$。
+    explanation: |
+      $$\chi^2_M=\frac{(|15-5|-1)^2}{15+5}=\frac{81}{20}=4.05$$
+      修正なしなら $100/20=5.00$ です。どちらも自由度1の上側5%点 $3.84$ を超えます。
+      前後とも同じ答えの80人は、割合の変化に影響しないので使いません。
+
+  - id: q28-mcnemar-test-2
+    term: mcnemar-test
+    level: 応用
+    type: numeric
+    question: |
+      対応のある2値データで、不一致のペアが $b=7,\ c=1$ だけであった。$b\mid(b+c)\sim Bin(b+c,\ 1/2)$ を使った正確な両側検定の $p$ 値を小数第3位まで求めよ（両側は片側の2倍とする）。
+    answer: 0.070
+    tolerance: 0.001
+    hint: |
+      $b+c=8$ のうち少ない方 $c=1$ 以下になる確率 $P(X\le1)$ を $Bin(8,1/2)$ で求め、2倍する。
+    explanation: |
+      $$P(X\le1)=\frac{\binom80+\binom81}{2^8}=\frac{9}{256}=0.0352$$
+      両側 $p$ 値は $2\times0.0352=0.0703$ です。不一致が8組しかないので、カイ二乗近似（修正なしで $36/8=4.5$）より正確検定のほうが適切です。
+
+  - id: q28-mcnemar-test-3
+    term: mcnemar-test
+    level: 基本
+    type: truefalse
+    question: |
+      マクネマー検定の統計量は、前後で同じ答えをしたペア（表の対角のセル $a,\ d$）の数が増えると小さくなる。
+    answer: false
+    hint: |
+      統計量 $(b-c)^2/(b+c)$ に $a,d$ が入っているか。
+    explanation: |
+      統計量は不一致のセル $b,c$ だけで決まり、$a,d$ がいくつでも変わりません。
+      割合の差 $(c-b)/n$ の中で $a$ は打ち消し合うためです（ただし $n$ が増えると割合の差の推定は細かくなります）。
+
+  - id: q28-loglinear-model-1
+    term: loglinear-model
+    level: 標準
+    type: numeric
+    question: |
+      2×2 表 $a=40,\ b=60,\ c=25,\ d=75$ に飽和対数線形モデル $\log\mu_{ij}=\lambda+\lambda^A_i+\lambda^B_j+\lambda^{AB}_{ij}$ を和が0の制約で当てはめた。交互作用 $\hat\lambda^{AB}_{11}$ を小数第3位まで求めよ。
+    answer: 0.173
+    tolerance: 0.001
+    hint: |
+      和が0の制約では $\lambda^{AB}_{11}=\lambda^{AB}_{22}=-\lambda^{AB}_{12}=-\lambda^{AB}_{21}$ で、$\log OR$ をこれで表す。
+    explanation: |
+      $\log OR=\log\mu_{11}-\log\mu_{12}-\log\mu_{21}+\log\mu_{22}=\lambda^{AB}_{11}-\lambda^{AB}_{12}-\lambda^{AB}_{21}+\lambda^{AB}_{22}=4\lambda^{AB}_{11}$ です（主効果は打ち消し合う）。
+      $\widehat{OR}=3000/1500=2$ なので
+      $$\hat\lambda^{AB}_{11}=\frac{\log2}{4}=0.1733$$
+      基準カテゴリの制約なら交互作用は $\log2=0.693$ そのものになります。制約で値が変わる点に注意します。
+
+  - id: q28-loglinear-model-2
+    term: loglinear-model
+    level: 標準
+    type: numeric
+    question: |
+      2×3 分割表（1行目 $30,\ 20,\ 10$、2行目 $20,\ 30,\ 50$）に独立モデルを当てはめたときの尤度比統計量 $G^2$ を小数第2位まで求めよ。
+    answer: 23.03
+    tolerance: 0.01
+    hint: |
+      期待度数は1行目 $18.75,\ 18.75,\ 22.5$、2行目 $31.25,\ 31.25,\ 37.5$。$G^2=2\sum n_{ij}\log(n_{ij}/\hat\mu_{ij})$。
+    explanation: |
+      $$G^2=2\Big(30\log\tfrac{30}{18.75}+20\log\tfrac{20}{18.75}+10\log\tfrac{10}{22.5}+20\log\tfrac{20}{31.25}+30\log\tfrac{30}{31.25}+50\log\tfrac{50}{37.5}\Big)$$
+      $$=2(14.100+1.291-8.109-8.926-1.225+14.384)=23.03$$
+      ピアソンの $\chi^2=22.04$ と近い値で、自由度はどちらも2です。
+
+  - id: q28-loglinear-model-3
+    term: loglinear-model
+    level: 基本
+    type: truefalse
+    question: |
+      対数線形モデルのパラメータに「和が0の制約」を置くか「基準カテゴリの制約」を置くかで、当てはめた期待度数 $\hat\mu_{ij}$ も変わる。
+    answer: false
+    hint: |
+      制約はパラメータを一意にするための約束である。
+    explanation: |
+      制約は同じモデルのパラメータの表し方を決めるだけで、当てはめた $\hat\mu_{ij}$ や $G^2$ は変わりません。
+      変わるのは個々の $\lambda$ の値とその解釈です（前々問の $\lambda^{AB}_{11}$ が $\log2/4$ か $\log2$ か、など）。
+
+  - id: q28-hierarchical-loglinear-model-1
+    term: hierarchical-loglinear-model
+    level: 基本
+    type: truefalse
+    question: |
+      生成元で $[AB][C]$ と書かれた階層対数線形モデルは、$\lambda,\ \lambda^A_i,\ \lambda^B_j,\ \lambda^C_k,\ \lambda^{AB}_{ij}$ の項を含む。
+    answer: true
+    hint: |
+      階層原理：高次の項を含むなら、その下位の項もすべて含む。
+    explanation: |
+      生成元 $[AB]$ は $\lambda^{AB}$ とその下位の $\lambda^A,\lambda^B$ を、$[C]$ は $\lambda^C$ を表します。定数項 $\lambda$ も常に含みます。
+      意味は「$(A,B)$ の組と $C$ が独立」です。
+
+  - id: q28-hierarchical-loglinear-model-2
+    term: hierarchical-loglinear-model
+    level: 標準
+    type: numeric
+    question: |
+      $A$ が2水準、$B$ が3水準、$C$ が4水準の3元分割表に、条件付き独立モデル $[AC][BC]$ を当てはめたときの $G^2$ の自由度を求めよ。
+    answer: 8
+    tolerance: 0.1
+    hint: |
+      自由度 = セル数 − パラメータ数。または「層ごとの独立性の自由度 × 層の数」。
+    explanation: |
+      パラメータ数は $1+(2-1)+(3-1)+(4-1)+(2-1)(4-1)+(3-1)(4-1)=1+1+2+3+3+6=16$、セル数は24なので自由度は $24-16=8$ です。
+      $K(I-1)(J-1)=4\times1\times2=8$ と一致します。
+
+  - id: q28-hierarchical-loglinear-model-3
+    term: hierarchical-loglinear-model
+    level: 応用
+    type: choice
+    question: |
+      前問の 2×3×4 表で、$[AC][BC]$ の $G^2=15.2$、$[AB][AC][BC]$ の $G^2=4.1$ であった。「$\lambda^{AB}$ は不要」を検定するときの統計量と自由度の組はどれか。
+    choices:
+      - '統計量 11.1、自由度 2'
+      - '統計量 11.1、自由度 14'
+      - '統計量 19.3、自由度 14'
+      - '統計量 11.1、自由度 6'
+    answer: 0
+    hint: |
+      入れ子のモデルでは $G^2$ の差を、自由度の差のカイ二乗分布と比べる。$[AB][AC][BC]$ の自由度は $(I-1)(J-1)(K-1)$。
+    explanation: |
+      $[AB][AC][BC]$ の自由度は $1\times2\times3=6$、$[AC][BC]$ は8なので、差は $8-6=2$（$\lambda^{AB}$ のパラメータ数 $(I-1)(J-1)=2$ と一致）。
+      統計量は $15.2-4.1=11.1$ で、自由度2のカイ二乗分布で $p\approx0.004$ なので、$\lambda^{AB}$ は必要と判断します。
+      自由度を足したり（14）、統計量を足したり（19.3）するのは誤りです。
+
+  - id: q28-simpsons-paradox-1
+    term: simpsons-paradox
+    level: 標準
+    type: numeric
+    question: |
+      治療Aは軽症20人中18人、重症80人中48人が回復し、治療Bは軽症80人中64人、重症20人中10人が回復した。層を合わせた回復率の差（Aの回復率 − Bの回復率）を小数第2位まで求めよ。
+    answer: -0.08
+    tolerance: 0.005
+    hint: |
+      層を合わせると、Aは100人中何人、Bは100人中何人が回復したか。
+    explanation: |
+      層ごとの回復率は、軽症で A $0.90$ 対 B $0.80$、重症で A $0.60$ 対 B $0.50$ と、どちらの層でもAが上です。
+      しかし合わせると A は $66/100=0.66$、B は $74/100=0.74$ で、差は $-0.08$ と逆転します。
+      Aは回復しにくい重症患者に多く使われた（重みが違う）ためで、シンプソンのパラドックスの例です。
+
+  - id: q28-simpsons-paradox-2
+    term: simpsons-paradox
+    level: 基本
+    type: choice
+    question: |
+      要因 $X$ と結果 $Y$ の関係が、第3の変数 $Z$ で層別すると併合したときと逆転した。このとき $Z$ について必ず成り立つことはどれか。
+    choices:
+      - '$Z$ は $X$ とも $Y$ とも関連している'
+      - '$Z$ は $X$ と関連しているが、$Y$ とは独立である'
+      - '$Z$ は $Y$ と関連しているが、$X$ とは独立である'
+      - '$Z$ は $X$ とも $Y$ とも独立である'
+    answer: 0
+    hint: |
+      併合した割合は $\sum_kP(Y=1\mid X=x,Z=k)P(Z=k\mid X=x)$ と書ける。
+    explanation: |
+      $Z$ が $X$ と独立なら重み $P(Z=k\mid X=x)$ が $x$ によらず同じになり、層ごとの差の加重平均がそのまま併合の差になるので逆転しません。
+      $Z$ が $Y$ と無関係なら、層ごとの回復率が同じなので重みの違いが効きません。
+      逆転には、$Z$ が両方と関連していることが必要です。
+
+  - id: q28-simpsons-paradox-3
+    term: simpsons-paradox
+    level: 応用
+    type: truefalse
+    question: |
+      2つの治療群で層 $Z$ の構成比 $P(Z=k\mid X=x)$ がまったく同じならば、すべての層で治療1の回復率が治療0より高いとき、併合した表でも必ず治療1の回復率のほうが高い。
+    answer: true
+    hint: |
+      併合した回復率の差を、層ごとの差と共通の重み $w_k$ で表す。
+    explanation: |
+      共通の重みを $w_k=P(Z=k\mid X=1)=P(Z=k\mid X=0)$ とすると
+      $$P(Y=1\mid X=1)-P(Y=1\mid X=0)=\sum_kw_k\{P(Y=1\mid X=1,Z=k)-P(Y=1\mid X=0,Z=k)\}$$
+      で、正の数の加重平均なので正です。無作為割り付けで構成比がそろえば逆転が起こらないのはこのためです。
+
+  - id: q28-mantel-haenszel-test-1
+    term: mantel-haenszel-test
+    level: 標準
+    type: numeric
+    question: |
+      2つの層の 2×2 表（行：群1・群2、列：起こった・起こらない）が次のとおりである。
+      層1：群1 $(10,\ 20)$、群2 $(5,\ 25)$。層2：群1 $(15,\ 5)$、群2 $(10,\ 10)$。
+      連続修正をしないマンテル・ヘンツェル統計量 $\chi^2_{MH}$ を小数第2位まで求めよ。
+    answer: 4.75
+    tolerance: 0.01
+    hint: |
+      層ごとに $E[a_k]=n_{1k}m_{1k}/n_k$、$V[a_k]=n_{1k}n_{2k}m_{1k}m_{2k}/\{n_k^2(n_k-1)\}$ を求めて足す。
+    explanation: |
+      層1：$E=30\times15/60=7.5$、$V=\dfrac{30\cdot30\cdot15\cdot45}{60^2\cdot59}=2.860$。
+      層2：$E=20\times25/40=12.5$、$V=\dfrac{20\cdot20\cdot25\cdot15}{40^2\cdot39}=2.404$。
+      $$\chi^2_{MH}=\frac{(25-20)^2}{2.860+2.404}=\frac{25}{5.264}=4.75$$
+      自由度1の上側5%点 $3.84$ を超えるので、「どの層でも独立」は棄却されます。
+
+  - id: q28-mantel-haenszel-test-2
+    term: mantel-haenszel-test
+    level: 基本
+    type: truefalse
+    question: |
+      マンテル・ヘンツェル検定は、層によってオッズ比が1より大きい層と小さい層が混ざっている（関連の向きが層で逆になる）場合には、関連を見逃しやすい。
+    answer: true
+    hint: |
+      分子は層ごとのずれ $a_k-E[a_k]$ を足してから2乗している。
+    explanation: |
+      向きが逆の層では $a_k-E[a_k]$ の符号が逆になり、足すと打ち消し合います。
+      マンテル・ヘンツェル検定は「どの層でも同じ向きのずれ」に検出力が高い検定で、層ごとにオッズ比が違うかどうかはブレスロー・デイ検定などで別に確かめます。
+
+  - id: q28-mantel-haenszel-estimator-1
+    term: mantel-haenszel-estimator
+    level: 標準
+    type: numeric
+    question: |
+      前問と同じ2層（層1：群1 $(10,20)$、群2 $(5,25)$、$n_1=60$／層2：群1 $(15,5)$、群2 $(10,10)$、$n_2=40$）について、共通オッズ比のマンテル・ヘンツェル推定値を小数第3位まで求めよ。
+    answer: 2.714
+    tolerance: 0.001
+    hint: |
+      $\widehat{OR}_{MH}=\sum(a_kd_k/n_k)\big/\sum(b_kc_k/n_k)$
+    explanation: |
+      $$R=\frac{10\times25}{60}+\frac{15\times10}{40}=4.167+3.75=7.917,\qquad S=\frac{20\times5}{60}+\frac{5\times10}{40}=1.667+1.25=2.917$$
+      $$\widehat{OR}_{MH}=\frac{7.917}{2.917}=2.714$$
+      層ごとのオッズ比は $2.5$ と $3.0$ で、その間の値になっています。
+
+  - id: q28-mantel-haenszel-estimator-2
+    term: mantel-haenszel-estimator
+    level: 基本
+    type: truefalse
+    question: |
+      マンテル・ヘンツェル推定量は、層ごとのオッズ比 $OR_k=a_kd_k/(b_kc_k)$ を、重み $b_kc_k/n_k$ で重み付けした加重平均として書ける。
+    answer: true
+    hint: |
+      $a_kd_k/n_k=OR_k\times(b_kc_k/n_k)$ と書き直す。
+    explanation: |
+      $R_k=a_kd_k/n_k=OR_k\,S_k$ なので
+      $$\widehat{OR}_{MH}=\frac{\sum_kOR_kS_k}{\sum_kS_k}$$
+      と、$S_k=b_kc_k/n_k$ を重みとする加重平均です。前問では重み $1.667:1.25$ で $2.5$ と $3.0$ を平均して $2.714$ になります。
+
+  - id: q28-three-way-table-1
+    term: three-way-table
+    level: 標準
+    type: numeric
+    question: |
+      2値変数 $A,B$ と層 $C$ の 2×2×2 表がある。層 $C=1$（100人）では $A,B$ が独立で $P(A=1)=P(B=1)=0.8$、層 $C=2$（100人）でも独立で $P(A=1)=P(B=1)=0.2$ であり、度数は期待どおりに出たとする。層を合わせた $A\times B$ の周辺表のオッズ比を小数第2位まで求めよ。
+    answer: 4.52
+    tolerance: 0.01
+    hint: |
+      層1の表は $(64,16;16,4)$、層2の表は $(4,16;16,64)$ になる。足し合わせてオッズ比を計算する。
+    explanation: |
+      周辺表は $a=64+4=68$、$b=16+16=32$、$c=32$、$d=4+64=68$ なので
+      $$\widehat{OR}=\frac{68\times68}{32\times32}=4.516$$
+      層の中ではどちらもオッズ比1（条件付き独立）なのに、$C$ が $A$ とも $B$ とも関連しているため、併合すると強い関連が現れます。
+
+  - id: q28-three-way-table-2
+    term: three-way-table
+    level: 基本
+    type: truefalse
+    question: |
+      3元分割表で、$A$ と $(B,C)$ が独立（同時独立 $[A][BC]$）ならば、$C$ を与えたときの $A$ と $B$ の条件付き独立と、$A$ と $B$ の周辺独立の両方が成り立つ。
+    answer: true
+    hint: |
+      $p_{ijk}=p_{i++}p_{+jk}$ から $p_{ij+}$ と $p_{ij\mid k}$ を計算する。
+    explanation: |
+      $k$ について和をとると $p_{ij+}=p_{i++}p_{+j+}$（周辺独立）。
+      層 $k$ で割ると $p_{ij\mid k}=p_{i++}\,p_{+jk}/p_{++k}=p_{i\mid k}\,p_{j\mid k}$（条件付き独立、$p_{i\mid k}=p_{i++}$）。
+      一方、条件付き独立だけでは周辺独立は出ません（前問の例）。
+
+  - id: q28-residual-analysis-contingency-1
+    term: residual-analysis-contingency
+    level: 標準
+    type: numeric
+    question: |
+      2×3 分割表（1行目 $30,\ 20,\ 10$、2行目 $20,\ 30,\ 50$）のセル $(2,3)$ の調整済み標準化残差を小数第2位まで求めよ。
+    answer: 4.22
+    tolerance: 0.01
+    hint: |
+      $\hat E_{23}=37.5$、$n_{2+}/n=100/160$、$n_{+3}/n=60/160$。
+    explanation: |
+      $$d_{23}=\frac{50-37.5}{\sqrt{37.5\times(1-0.625)\times(1-0.375)}}=\frac{12.5}{\sqrt{8.789}}=\frac{12.5}{2.965}=4.22$$
+      $|d|>1.96$ なので、このセルは独立のもとでの期待より有意に多いと判断できます。
+
+  - id: q28-residual-analysis-contingency-2
+    term: residual-analysis-contingency
+    level: 基本
+    type: truefalse
+    question: |
+      同じセルについて、ピアソン残差 $(n_{ij}-\hat E_{ij})/\sqrt{\hat E_{ij}}$ の絶対値は、調整済み標準化残差の絶対値以下になる。
+    answer: true
+    hint: |
+      調整済み残差の分母には、1より小さい因子 $(1-n_{i+}/n)(1-n_{+j}/n)$ が掛かっている。
+    explanation: |
+      調整済み残差 $=$ ピアソン残差 $\div\sqrt{(1-n_{i+}/n)(1-n_{+j}/n)}$ で、割る数は1以下なので絶対値は大きくなります。
+      前問のセルではピアソン残差 $12.5/\sqrt{37.5}=2.04$ に対し、調整済み残差は $4.22$ です。ピアソン残差は分散が1より小さいので、$\pm1.96$ の基準をそのまま当てると見逃しが増えます。
+
+  - id: q28-phi-coefficient-and-association-1
+    term: phi-coefficient-and-association
+    level: 標準
+    type: numeric
+    question: |
+      2×2 表 $a=40,\ b=60,\ c=25,\ d=75$ のファイ係数 $\phi$ を小数第3位まで求めよ。
+    answer: 0.160
+    tolerance: 0.001
+    hint: |
+      $\phi=\dfrac{ad-bc}{\sqrt{(a+b)(c+d)(a+c)(b+d)}}$
+    explanation: |
+      $$\phi=\frac{3000-1500}{\sqrt{100\times100\times65\times135}}=\frac{1500}{9367.5}=0.1601$$
+      $\chi^2=5.128$、$n=200$ から $\phi^2=\chi^2/n=0.0256$ と確かめられます。カイ二乗検定では有意でも、関連の強さは弱いことがわかります。
+
+  - id: q28-phi-coefficient-and-association-2
+    term: phi-coefficient-and-association
+    level: 基本
+    type: numeric
+    question: |
+      2×3 分割表（$n=160$）でピアソンのカイ二乗統計量が $\chi^2=22.04$ であった。クラメールの連関係数 $V$ を小数第3位まで求めよ。
+    answer: 0.371
+    tolerance: 0.001
+    hint: |
+      $V=\sqrt{\chi^2/\{n(\min(I,J)-1)\}}$
+    explanation: |
+      $\min(2,3)-1=1$ なので
+      $$V=\sqrt{\frac{22.04}{160}}=\sqrt{0.13775}=0.371$$
+      $\min(I,J)-1$ を $(I-1)(J-1)=2$ と取り違えると $0.262$ になります。
+
+  - id: q28-cohort-and-case-control-study-1
+    term: cohort-and-case-control-study
+    level: 基本
+    type: choice
+    question: |
+      症例200人と対照200人を集めて過去の喫煙歴を調べたケースコントロール研究で、データから妥当に推定できる指標はどれか。
+    choices:
+      - 'オッズ比'
+      - '喫煙者の発症リスク'
+      - '相対リスク'
+      - 'リスク差'
+    answer: 0
+    hint: |
+      研究者が症例と対照の人数（列の合計）を決めている。
+    explanation: |
+      列の合計を研究者が決めるので、行ごとの $a/(a+b)$ はリスクの推定になりません。リスクを使う相対リスク・リスク差も同様です。
+      オッズ比は行と列を入れ替えても同じ値なので、曝露のオッズ比として推定した値を発症のオッズ比として解釈できます。
+
+  - id: q28-cohort-and-case-control-study-2
+    term: cohort-and-case-control-study
+    level: 標準
+    type: numeric
+    question: |
+      曝露群の発症リスクが $p_1=0.04$、非曝露群が $p_0=0.02$ のとき、オッズ比を小数第3位まで求めよ。
+    answer: 2.042
+    tolerance: 0.001
+    hint: |
+      $OR=RR\times\dfrac{1-p_0}{1-p_1}$
+    explanation: |
+      $RR=0.04/0.02=2$ なので
+      $$OR=2\times\frac{0.98}{0.96}=2.042$$
+      発症がまれなので $OR\approx RR$ が成り立っています。$p_1=0.4,\ p_0=0.2$ なら $OR=2\times0.8/0.6=2.67$ と大きく離れます。
+
+  - id: q28-ordinal-contingency-table-1
+    term: ordinal-contingency-table
+    level: 標準
+    type: numeric
+    question: |
+      用量の3群（スコア $x=0,1,2$）にそれぞれ50人を割り当て、反応ありが $5,\ 10,\ 20$ 人であった。コクラン・アーミテージの傾向性検定の統計量 $Z^2$ を小数第2位まで求めよ。
+    answer: 12.58
+    tolerance: 0.01
+    hint: |
+      $\bar p=35/150$。分子は $\{\sum x_i(y_i-m_i\bar p)\}^2$、分母は $\bar p(1-\bar p)\{\sum m_ix_i^2-(\sum m_ix_i)^2/N\}$。
+    explanation: |
+      $m_i\bar p=11.667$ なので、分子の中身は $0+1\times(-1.667)+2\times8.333=15.0$ です。
+      分母は $0.2333\times0.7667\times\{50(0+1+4)-150^2/150\}=0.17889\times100=17.889$。
+      $$Z^2=\frac{15.0^2}{17.889}=12.58$$
+      自由度1のカイ二乗分布で強く有意で、用量とともに反応が増える傾向があると判断できます。

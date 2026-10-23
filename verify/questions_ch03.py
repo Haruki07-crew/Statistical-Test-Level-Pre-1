@@ -151,4 +151,16 @@ Rbad = np.full((3, 3), -0.6) + np.eye(3) * 1.6
 q.check("q03-correlation-matrix-2", np.linalg.eigvalsh(Rbad).min() < 0 and abs(np.ones(3) @ Rbad @ np.ones(3) + 0.6) < 1e-12,
         "最小固有値 -0.2<0、1'R1=-0.6 → ありえない（answer=false）")
 
+# --- モーメント（用語の見直しで追加） ---
+import sympy as _sp
+from scipy import stats as _st
+_x = _sp.symbols("x", real=True)
+q.check("q03-moments-1", all(1 + abs(v) ** 3 >= v ** 2 for v in [i / 100 for i in range(-1000, 1001)]), "x^2 <= 1+|x|^3（よって E|X|^3<∞ ⇒ E[X^2]<∞）")
+_m1, _m2, _m3 = 2, 5, 15
+q.num("q03-moments-2", _m3 - 3 * _m1 * _m2 + 2 * _m1 ** 3)
+_mu4 = _sp.integrate((_x - _sp.Rational(1, 2)) ** 4, (_x, 0, 1))
+_wrong = [_sp.integrate(_x ** 4, (_x, 0, 1)), _sp.Rational(1, 144), _sp.Rational(1, 16)]
+q.check("q03-moments-3", _mu4 == _sp.Rational(1, 80) and abs(_st.uniform.moment(4) - 1 / 5) < 1e-12, "正解 1/80")
+q.check("q03-moments-3", _wrong[0] == _sp.Rational(1, 5) and _sp.Rational(1, 12) ** 2 == _wrong[1] and all(w != _mu4 for w in _wrong), "誤答 1/5, 1/144, 1/16 は正解と異なる")
+
 q.done()

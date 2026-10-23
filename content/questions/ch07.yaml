@@ -583,3 +583,86 @@ questions:
       $|X-\frac12|=\frac12$ なので $\rho=\frac18$、$\sigma=\frac12$ より $\sigma^3=\frac18$、$\rho/\sigma^3=1$ です。
       $$\sup_x|F_n(x)-\Phi(x)|\le\frac{0.4748\times1}{\sqrt{100}}=0.0475$$
       誤差の上限は $1/\sqrt n$ の速さでしか小さくならず、$n$ を4倍にして半分になります。
+
+  - id: q07-normal-approximation-binomial-poisson-1
+    term: normal-approximation-binomial-poisson
+    level: 基本
+    type: choice
+    question: |
+      目安「$np\ge5$ かつ $n(1-p)\ge5$」に照らして、正規近似を使ってよいと判断できる二項分布はどれか。
+    choices:
+      - '$B(40,\ 0.2)$'
+      - '$B(20,\ 0.1)$'
+      - '$B(200,\ 0.02)$'
+      - '$B(30,\ 0.9)$'
+    answer: 0
+    hint: |
+      それぞれ $np$ と $n(1-p)$ の両方を計算する。片方だけでは足りない。
+    explanation: |
+      - $B(40,0.2)$：$np=8$、$n(1-p)=32$ で両方とも5以上。
+      - $B(20,0.1)$：$np=2$。
+      - $B(200,0.02)$：$np=4$（$n$ が大きくても $p$ が小さいと足りない。この場合はポアソン近似が向いている）。
+      - $B(30,0.9)$：$n(1-p)=3$（$p$ が1に近いと右側に歪む）。
+
+  - id: q07-normal-approximation-binomial-poisson-2
+    term: normal-approximation-binomial-poisson
+    level: 標準
+    type: numeric
+    question: |
+      あるサイトへの1日あたりの問い合わせ件数 $X$ は $Po(100)$ に従う。
+      連続修正つきの正規近似で $P(X\ge116)$ を小数第3位まで（四捨五入）求めよ。必要なら $\Phi(1.55)=0.9394$ を使ってよい。
+    answer: 0.061
+    tolerance: 0.001
+    hint: |
+      $X\approx N(\lambda,\lambda)$。整数値の「116 以上」は連続量では「115.5 以上」とみなす。
+    explanation: |
+      $X\approx N(100,\,100)$、標準偏差は $10$ です。連続修正で
+      $$P(X\ge116)\approx P\!\left(Z\ge\frac{115.5-100}{10}\right)=1-\Phi(1.55)=1-0.9394=0.0606$$
+      よって $0.061$ です（ポアソン分布の正確な値は約 $0.063$）。連続修正をしないと $z=1.6$ で約 $0.055$ になります。
+
+  - id: q07-normal-approximation-binomial-poisson-3
+    term: normal-approximation-binomial-poisson
+    level: 応用
+    type: numeric
+    question: |
+      不良率 $2\%$ の工程で製品を $2500$ 個作る。各製品が不良になるかどうかは独立とする。
+      不良品が $40$ 個以下である確率を、連続修正つきの正規近似で小数第3位まで（四捨五入）求めよ。
+      標準化した値は小数第2位に丸め、$\Phi(1.36)=0.9131$ を使ってよい。
+    answer: 0.087
+    tolerance: 0.001
+    hint: |
+      $X\sim B(2500,\ 0.02)$ の平均と分散を求め、「40 以下」を「40.5 以下」として標準化する。
+    explanation: |
+      $np=50$、$np(1-p)=50\times0.98=49$ なので標準偏差は $7$ です（$np\ge5$、$n(1-p)\ge5$ を満たす）。
+      $$P(X\le40)\approx\Phi\!\left(\frac{40.5-50}{7}\right)=\Phi(-1.357)\approx\Phi(-1.36)=1-0.9131=0.0869$$
+      よって $0.087$ です。二項分布の正確な値は約 $0.084$ です。分散を $np=50$（ポアソン近似の分散）としても大きくは変わりませんが、ここでは $np(1-p)$ を使います。
+
+  - id: q07-extreme-value-distribution-1
+    term: extreme-value-distribution
+    level: 標準
+    type: numeric
+    question: |
+      $X_1,\dots,X_{1000}$ は独立にレート1の指数分布（密度 $e^{-x},\ x>0$）に従う。最大値を $M$ とする。
+      $M-\log n$ が標準グンベル分布で近似できることを使って、$E[M]$ の近似値を小数第2位まで求めよ（$\log$ は自然対数）。
+    answer: 7.49
+    tolerance: 0.01
+    hint: |
+      $P(M-\log n\le x)=(1-e^{-x}/n)^n\to\exp(-e^{-x})$。標準グンベル分布の期待値はオイラー定数 $\gamma\approx0.5772$。
+    explanation: |
+      $P(M\le x+\log n)=\left(1-\dfrac{e^{-x}}{n}\right)^n\to\exp(-e^{-x})$ なので、$M-\log n$ は近似的に標準グンベル分布に従います。
+      $$E[M]\approx\log1000+\gamma=6.9078+0.5772=7.485\approx7.49$$
+      正確には $E[M]=1+\frac12+\cdots+\frac1{1000}=7.4855$ で、近似はほぼ一致します。最大値は $n$ が10倍になっても $\log 10\approx2.3$ しか増えません。
+
+  - id: q07-extreme-value-distribution-2
+    term: extreme-value-distribution
+    level: 基本
+    type: truefalse
+    question: |
+      一様分布 $U(0,1)$ のように値に上限がある分布からの標本の最大値は、適切に基準化すると、極値分布のうちワイブル型（III型）に分布収束する。
+    answer: true
+    hint: |
+      3つの型のうち、とる値に上限がある（$x<0$ に台がある）のはどれか。
+    explanation: |
+      $U(0,1)$ の最大値 $M_n$ について
+      $$P\{n(M_n-1)\le x\}=\left(1+\frac{x}{n}\right)^n\to e^{x}\quad(x<0)$$
+      で、これは $\alpha=1$ のワイブル型 $\exp(-(-x)^\alpha)$ です。裾が指数的に減る分布はグンベル型、べき乗で減る分布はフレシェ型になります。

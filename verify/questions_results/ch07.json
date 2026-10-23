@@ -95,6 +95,14 @@
   "hash": "0927c8b7cb0bdc62",
   "ok": true
  },
+ "q07-extreme-value-distribution-1": {
+  "hash": "28ce71dbd423677b",
+  "ok": true
+ },
+ "q07-extreme-value-distribution-2": {
+  "hash": "ba20eb1eea521c12",
+  "ok": true
+ },
  "q07-law-of-small-numbers-1": {
   "hash": "7c4bd42adf286a3a",
   "ok": true
@@ -113,6 +121,18 @@
  },
  "q07-markov-inequality-2": {
   "hash": "cdca728d40c976f5",
+  "ok": true
+ },
+ "q07-normal-approximation-binomial-poisson-1": {
+  "hash": "d36a01893be3b415",
+  "ok": true
+ },
+ "q07-normal-approximation-binomial-poisson-2": {
+  "hash": "28970f5bb8f0703c",
+  "ok": true
+ },
+ "q07-normal-approximation-binomial-poisson-3": {
+  "hash": "1accb688298a83e2",
   "ok": true
  },
  "q07-slutsky-theorem-1": {

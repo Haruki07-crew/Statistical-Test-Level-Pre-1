@@ -123,6 +123,18 @@
   "hash": "c77befe3cd03e53e",
   "ok": true
  },
+ "q08-order-statistics-1": {
+  "hash": "3bc496f779fdab40",
+  "ok": true
+ },
+ "q08-order-statistics-2": {
+  "hash": "58db2fb262ed361d",
+  "ok": true
+ },
+ "q08-order-statistics-3": {
+  "hash": "8aa1885c0e2cd702",
+  "ok": true
+ },
  "q08-point-estimation-1": {
   "hash": "d214b76027b2d58e",
   "ok": true
@@ -137,6 +149,14 @@
  },
  "q08-score-function-2": {
   "hash": "bd4fdb15a55ccfbf",
+  "ok": true
+ },
+ "q08-standard-error-1": {
+  "hash": "ff24d68b3b04a0b9",
+  "ok": true
+ },
+ "q08-standard-error-2": {
+  "hash": "831fa1dbe54a9000",
   "ok": true
  },
  "q08-sufficient-statistic-1": {

@@ -87,6 +87,14 @@
   "hash": "661ef93e69d229d0",
   "ok": true
  },
+ "q09-one-sided-confidence-limit-1": {
+  "hash": "5297676af301ea0a",
+  "ok": true
+ },
+ "q09-one-sided-confidence-limit-2": {
+  "hash": "a90a0c01d2a70bb7",
+  "ok": true
+ },
  "q09-pivotal-quantity-1": {
   "hash": "56972b873ec78f32",
   "ok": true

@@ -82,4 +82,30 @@ me = float(sp.diff(Phi, xs_).subs(xs_, 5))
 q.num("q04-probit-transformation-2", me)
 q.check("q04-probit-transformation-2", abs(stats.norm.pdf(1) - 0.2420) < 5e-5, "φ(1)=0.2420")
 
+# --- 確率変数の和（用語の見直しで追加） ---
+import numpy as _np
+import sympy as _sp
+from scipy import stats as _st
+_pmf = _np.convolve(_st.binom.pmf(range(6), 5, 0.3), _st.binom.pmf(range(5), 4, 0.5))
+_m = (_np.arange(10) * _pmf).sum()
+_p = _m / 9
+_dev = _np.abs(_pmf - _st.binom.pmf(range(10), 9, _p)).max()
+_po = _np.convolve(_st.poisson.pmf(range(40), 1), _st.poisson.pmf(range(40), 2))[:40]
+q.check("q04-sum-of-random-variables-1", _dev > 1e-3, f"B(5,0.3)+B(4,0.5) は二項分布でない（最大差 {_dev:.4f}）")
+q.check("q04-sum-of-random-variables-1", _np.abs(_po - _st.poisson.pmf(range(40), 3)).max() < 1e-12, "誤答の Po(1)+Po(2)=Po(3) は再生性が成り立つ")
+from scipy import integrate as _ig
+_conv = [_ig.quad(lambda u: _st.chi2.pdf(u, 2) * _st.chi2.pdf(z - u, 3), 0, z)[0] for z in [1.0, 4.0, 9.0]]
+q.check("q04-sum-of-random-variables-1", _np.allclose(_conv, _st.chi2.pdf([1.0, 4.0, 9.0], 5), atol=1e-8), "誤答の χ²(2)+χ²(3)=χ²(5)、N(0,1)+N(1,4)=N(1,5) は再生性")
+_z = _sp.symbols("z", positive=True)
+q.num("q04-sum-of-random-variables-2", float(_sp.integrate(_z, (_z, _sp.Rational(1, 2), 1)) + _sp.integrate(2 - _z, (_z, 1, _sp.Rational(3, 2)))))
+_rng = _np.random.default_rng(4)
+_s = _rng.random(400000) + _rng.random(400000)
+q.check("q04-sum-of-random-variables-2", abs(_np.mean((_s > 0.5) & (_s < 1.5)) - 0.75) < 0.005, "モンテカルロでも 0.75")
+_l1, _l2, _x = _sp.symbols("lambda1 lambda2 x", positive=True)
+_f = _sp.integrate(_l1 * _sp.exp(-_l1 * _x) * _l2 * _sp.exp(-_l2 * (_z - _x)), (_x, 0, _z), conds="none")
+_target = _l1 * _l2 / (_l2 - _l1) * (_sp.exp(-_l1 * _z) - _sp.exp(-_l2 * _z))
+_okd = all(abs(float((_f - _target).subs({_l1: a, _l2: b, _z: c}))) < 1e-12 for a, b, c in [(1, 2, 0.7), (0.5, 3, 2.0), (2.5, 1.2, 1.1)])
+_int1 = _sp.simplify(_sp.integrate(_target.subs({_l1: 1, _l2: 3}), (_z, 0, _sp.oo)))
+q.check("q04-sum-of-random-variables-3", _okd and _int1 == 1, "畳み込みの結果が最終式と一致し、積分が1")
+
 q.done()

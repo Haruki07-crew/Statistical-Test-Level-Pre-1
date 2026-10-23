@@ -81,4 +81,19 @@ for _ in range(100):
     ok &= abs(pABC / pBC - a) < 1e-12
 q.check("q01-conditional-independence-3", ok, "条件付き独立な分布で P(A|B∩C)=P(A|C) を数値確認")
 
+# --- 包除原理（用語の見直しで追加） ---
+import numpy as _np
+_n = sum(1 for i in range(1, 211) if i % 2 == 0 or i % 3 == 0 or i % 7 == 0)
+q.num("q01-inclusion-exclusion-principle-1", _n)
+q.check("q01-inclusion-exclusion-principle-1", 105 + 70 + 30 - 35 - 15 - 10 + 5 == _n, "包除原理の式と数え上げが一致")
+_ok = 1 - 3 * (5 / 6) ** 5 + 3 * (4 / 6) ** 5 - (1 / 2) ** 5
+_rng = _np.random.default_rng(1)
+_sim = _rng.integers(1, 7, size=(400000, 5))
+_mc = _np.mean((_sim == 1).any(axis=1) & (_sim == 2).any(axis=1) & (_sim == 3).any(axis=1))
+from itertools import product as _prod
+_exact = sum(1 for w in _prod(range(1, 7), repeat=5) if {1, 2, 3} <= set(w)) / 6 ** 5
+_wrong = [1 - 3 * (5 / 6) ** 5 + 3 * (4 / 6) ** 5, (1 - (5 / 6) ** 5) ** 3, 1 - (1 / 2) ** 5]
+q.check("q01-inclusion-exclusion-principle-2", abs(_exact - _ok) < 1e-12 and round(_ok, 3) == 0.158 and abs(_mc - _ok) < 0.005, f"正解 0.158（全列挙 {_exact:.5f}）")
+q.check("q01-inclusion-exclusion-principle-2", [round(w, 3) for w in _wrong] == [0.189, 0.214, 0.969] and all(abs(w - _ok) > 0.02 for w in _wrong), "誤答 0.189/0.214/0.969 は正解と異なる")
+
 q.done()

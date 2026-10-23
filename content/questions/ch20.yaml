@@ -498,3 +498,52 @@ questions:
       $(1)$ は高水準の文字が0個（偶数）で ABC の符号は $-$ です。同じく偶数個の $ab,\ ac,\ bc$ が同じブロックに入り、
       奇数個の $a,\ b,\ c,\ abc$ がもう一方のブロックになります。
       ブロック差は ABC の対比と一致し、ABC はブロックと区別できなくなりますが、主効果と2因子交互作用はブロック差の影響を受けません。
+
+  - id: q20-fractional-factorial-design-1
+    term: fractional-factorial-design
+    level: 基本
+    type: truefalse
+    question: |
+      4因子 A, B, C, D の $2^{4-1}$ 一部実施要因計画を生成元 $D=ABC$ で作ると、主効果 A は3因子交互作用 BCD と別名になり、2因子交互作用 AB は CD と別名になる。
+    answer: true
+    hint: |
+      定義関係 $I=ABCD$ を作り、A と AB にそれぞれ掛けて同じ文字の2乗を消す。
+    explanation: |
+      $D=ABC$ の両辺に $D$ を掛けて $I=ABCD$ です。
+      $$A\cdot ABCD=BCD,\qquad AB\cdot ABCD=CD$$
+      なので記述は正しいです。定義関係の最短の語が4文字なので分解能 IV の計画で、主効果は2因子交互作用と別名になりません。
+
+  - id: q20-fractional-factorial-design-2
+    term: fractional-factorial-design
+    level: 標準
+    type: choice
+    question: |
+      5因子 A, B, C, D, E の $2^{5-2}$ 一部実施要因計画を、生成元 $D=AB$、$E=AC$ で作った。この計画の分解能はどれか。
+    choices:
+      - '分解能 III'
+      - '分解能 IV'
+      - '分解能 V'
+      - '分解能 II'
+    answer: 0
+    hint: |
+      生成元から定義対比を2つ作り、その積も定義関係に加える（$2^2-1=3$ 語）。いちばん短い語の文字数を見る。
+    explanation: |
+      $D=AB$ から $I=ABD$、$E=AC$ から $I=ACE$、その積 $ABD\cdot ACE=A^2BCDE=BCDE$ です。定義関係は
+      $$I=ABD=ACE=BCDE$$
+      で、最短の語は3文字なので分解能 III です。たとえば A は $BD$ や $CE$ と別名になり、主効果が2因子交互作用と区別できません。積の語 $BCDE$ だけを見て IV や V としないよう注意します。
+
+  - id: q20-incomplete-block-design-1
+    term: incomplete-block-design
+    level: 標準
+    type: numeric
+    question: |
+      処理の数 $v=6$、ブロックの数 $b=10$、ブロックの大きさ $k=3$ の釣合い型不完備ブロック計画（BIBD）がある。
+      どの2つの処理も同じブロックに入る回数 $\lambda$ を求めよ。
+    answer: 2
+    tolerance: 0.4
+    hint: |
+      まず $bk=vr$ から各処理の反復数 $r$ を求め、次に $\lambda(v-1)=r(k-1)$ を使う。
+    explanation: |
+      $bk=vr$ より $r=\dfrac{10\times3}{6}=5$ です。
+      $$\lambda=\frac{r(k-1)}{v-1}=\frac{5\times2}{5}=2$$
+      ある処理を含む5つのブロックには、ほかの処理が延べ $5\times2=10$ 回入り、それが残り5つの処理に均等に2回ずつ割り振られる、と考えても同じです。フィッシャーの不等式 $b=10\ge v=6$ も満たしています。

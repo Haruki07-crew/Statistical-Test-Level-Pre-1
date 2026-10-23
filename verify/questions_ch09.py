@@ -121,4 +121,13 @@ q.check("q09-likelihood-based-confidence-interval-1", abs(hi - 3.009) < 5e-4 and
 # --- 双対性 ---
 q.check("q09-confidence-interval-test-duality-1", not (1.2 <= 4 <= 3.8) and (1.2 <= 3 <= 3.8), "4 は区間外→棄却（正しい）")
 
+# --- 片側信頼限界（用語の見直しで追加） ---
+from scipy import stats as _st
+q.check("q09-one-sided-confidence-limit-1", abs(_st.t.ppf(0.95, 15) - 1.753) < 5e-4 and abs(_st.t.ppf(0.975, 15) - 2.131) < 5e-4, "t_0.05(15)=1.753、t_0.025(15)=2.131")
+q.num("q09-one-sided-confidence-limit-1", 50 - _st.t.ppf(0.95, 15) * 8 / 4)
+q.check("q09-one-sided-confidence-limit-1", abs(50 - 2.131 * 2 - 45.74) < 0.005, "両側区間の下限 45.74")
+q.check("q09-one-sided-confidence-limit-2", abs(_st.chi2.ppf(0.05, 11) - 4.575) < 5e-4 and abs(_st.chi2.ppf(0.95, 11) - 19.675) < 5e-4, "χ² 点 4.575 / 19.675")
+q.num("q09-one-sided-confidence-limit-2", 11 * 2.5 / _st.chi2.ppf(0.05, 11))
+q.check("q09-one-sided-confidence-limit-2", abs(11 * 2.5 / 19.675 - 1.40) < 0.005, "19.675 で割ると下側限界 1.40")
+
 q.done()

@@ -157,4 +157,20 @@ wrong = [sp.exp(5 * sp.I * t - 6 * t**2), sp.exp(3 * sp.I * t - 18 * t**2), sp.e
 q.check("q02-characteristic-function-2", sp.simplify(phiY - target) == 0 and all(sp.simplify(phiY - w) != 0 for w in wrong),
         "φ_Y=exp(5it-18t^2)、誤答は一致しない")
 
+# --- 確率関数と確率密度関数（用語の見直しで追加） ---
+import sympy as _sp
+from fractions import Fraction as _F
+from scipy import stats as _st
+q.check("q02-probability-mass-and-density-function-1", abs(_st.uniform(0, 0.5).pdf(0.25) - 2) < 1e-12, "反例：U(0,0.5) の密度は 2 > 1")
+_c = 1 / (1 / (1 - _F(1, 3)))  # 等比級数の和 3/2 の逆数
+_tail = 1 - _c - _c * _F(1, 3)
+_s = sum(float(_c) * (1 / 3) ** x for x in range(2, 200))
+_wrong = [_c * _F(1, 9), sum(_F(1, 3) ** x for x in range(2, 200)), _c + _c * _F(1, 3)]
+q.check("q02-probability-mass-and-density-function-2", _tail == _F(1, 9) and abs(_s - 1 / 9) < 1e-12, "正解 1/9")
+q.check("q02-probability-mass-and-density-function-2", _wrong[0] == _F(2, 27) and abs(float(_wrong[1]) - 1 / 6) < 1e-12 and _wrong[2] == _F(8, 9), "誤答 2/27, 1/6, 8/9 の由来と正解との不一致")
+_x, _cc = _sp.symbols("x c", positive=True)
+_csol = _sp.solve(_sp.integrate(_cc * _x * (2 - _x), (_x, 0, 2)) - 1, _cc)[0]
+q.check("q02-probability-mass-and-density-function-3", _csol == _sp.Rational(3, 4), "c = 3/4")
+q.num("q02-probability-mass-and-density-function-3", float(_sp.integrate(_csol * _x * (2 - _x), (_x, 0, _sp.Rational(1, 2)))))
+
 q.done()
