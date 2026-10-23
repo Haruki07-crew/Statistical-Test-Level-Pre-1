@@ -352,6 +352,7 @@ chapters:
     title: リンデバーグ・レヴィの中心極限定理
     importance: C
     status: verified
+    see: central-limit-theorem
   - id: berry-esseen-theorem
     title: ベリー・エッセンの定理
     importance: C
@@ -443,6 +444,7 @@ chapters:
     title: 観測情報量
     importance: C
     status: verified
+    see: fisher-information
   - id: order-statistics
     title: 順序統計量
     importance: A
@@ -605,6 +607,7 @@ chapters:
     title: 検定のための標本サイズ設計
     importance: C
     status: verified
+    see: required-sample-size
   - id: randomized-test
     title: 無作為化検定
     importance: C
@@ -652,6 +655,7 @@ chapters:
     title: 母平均の差の検定と信頼区間の関係
     importance: C
     status: verified
+    see: confidence-interval-test-duality
   - id: test-correlation-coefficient
     title: 母相関係数の検定
     importance: B
@@ -680,6 +684,7 @@ chapters:
     title: ルビーン検定
     importance: C
     status: verified
+    see: bartlett-test
 - 'no': 12
   title: 一般の分布に関する検定法
   terms:
@@ -774,6 +779,7 @@ chapters:
     title: マン・ホイットニーのU検定
     importance: C
     status: verified
+    see: wilcoxon-rank-sum-test
   - id: kruskal-wallis-test
     title: クラスカル・ウォリス検定
     importance: A
@@ -810,6 +816,7 @@ chapters:
     title: 2標本コルモゴロフ・スミルノフ検定
     importance: C
     status: verified
+    see: kolmogorov-smirnov-test
   - id: runs-test
     title: ラン検定
     importance: C
@@ -829,6 +836,7 @@ chapters:
     title: マルコフ性
     importance: C
     status: verified
+    see: markov-chain
   - id: markov-chain
     title: マルコフ連鎖
     importance: A
@@ -893,6 +901,7 @@ chapters:
     title: 正再帰と零再帰
     importance: C
     status: verified
+    see: recurrence-and-transience
   - id: continuous-time-markov-chain
     title: 連続時間マルコフ連鎖
     importance: C
@@ -908,6 +917,7 @@ chapters:
     title: 計数過程
     importance: C
     status: verified
+    see: poisson-process
   - id: poisson-process
     title: ポアソン過程
     importance: A
@@ -944,10 +954,12 @@ chapters:
     title: 純出生過程
     importance: C
     status: verified
+    see: birth-death-process
   - id: queueing-theory
     title: 待ち行列理論
     importance: C
     status: verified
+    see: mm1-queue
   - id: mm1-queue
     title: M/M/1待ち行列
     importance: A
@@ -1074,6 +1086,7 @@ chapters:
     title: DFBETAS
     importance: C
     status: verified
+    see: dffits
   - id: outlier-and-influential-point
     title: 外れ値と影響点
     importance: A
@@ -1200,6 +1213,7 @@ chapters:
     title: 罰則付き推定量のバイアス
     importance: C
     status: verified
+    see: ridge-regression
   - id: nonlinear-regression
     title: 非線形回帰
     importance: B
@@ -1311,6 +1325,7 @@ chapters:
     title: スチューデント化された範囲の分布
     importance: C
     status: verified
+    see: tukey-multiple-comparison
   - id: effect-size-eta-squared
     title: 効果量と寄与率
     importance: C
@@ -1390,6 +1405,7 @@ chapters:
     title: 標本ウェイト
     importance: C
     status: verified
+    see: horvitz-thompson-estimator
 - 'no': 22
   title: 主成分分析
   terms:
@@ -1401,6 +1417,7 @@ chapters:
     title: 主成分
     importance: C
     status: verified
+    see: principal-component-analysis
   - id: eigenvalue-and-eigenvector
     title: 固有値と固有ベクトル
     importance: A
@@ -1555,6 +1572,7 @@ chapters:
     title: 非階層的クラスタリング
     importance: C
     status: verified
+    see: k-means-method
   - id: distance-measures
     title: 距離（ユークリッド・マンハッタン・ミンコフスキー）
     importance: A
@@ -1575,6 +1593,7 @@ chapters:
     title: 標準化と変数の尺度
     importance: C
     status: verified
+    see: distance-measures
 - 'no': 25
   title: 因子分析・グラフィカルモデル
   terms:
@@ -1653,6 +1672,7 @@ chapters:
     title: 古典的MDS
     importance: C
     status: verified
+    see: multidimensional-scaling
   - id: nonmetric-mds
     title: 非計量MDS
     importance: C
@@ -1685,6 +1705,7 @@ chapters:
     title: 多重コレスポンデンス分析
     importance: C
     status: verified
+    see: quantification-type-3
   - id: structural-equation-modeling
     title: 構造方程式モデリング
     importance: A
@@ -1701,6 +1722,7 @@ chapters:
     title: 適合度指標
     importance: C
     status: verified
+    see: structural-equation-modeling
 - 'no': 27
   title: 時系列解析
   terms:
@@ -1981,6 +2003,7 @@ chapters:
     title: 情報量規準によるモデル比較
     importance: C
     status: verified
+    see: model-selection
   - id: generalization-error
     title: 汎化誤差
     importance: B
@@ -1989,6 +2012,7 @@ chapters:
     title: 訓練データとテストデータ
     importance: C
     status: verified
+    see: cross-validation
   - id: aicc
     title: 補正AIC
     importance: C
@@ -1997,6 +2021,7 @@ chapters:
     title: TICと一般化情報量規準
     importance: C
     status: verified
+    see: aic
 - 'no': 31
   title: ベイズ法
   terms:
@@ -2131,6 +2156,7 @@ chapters:
     title: モンテカルロ検定
     importance: C
     status: verified
+    see: permutation-test
 - 'no': 33
   title: 統計的因果推論
   terms:

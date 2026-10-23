@@ -362,6 +362,10 @@ def main():
         if not ID_RE.match(tid):
             print(f"[ERROR] plan.yaml: id の形式が不正: {tid}")
             total_err += 1
+        see = occ[0][1].get("see")
+        if see is not None and (see not in plan_terms or see == tid):
+            print(f"[ERROR] plan.yaml: {tid} の see（統合先）'{see}' が plan.yaml にありません")
+            total_err += 1
         st = occ[0][1].get("status")
         if st not in ("planned", "written", "verified", "on_hold"):
             print(f"[ERROR] plan.yaml: {tid} の status が不正: {st}")

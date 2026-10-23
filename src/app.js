@@ -93,7 +93,7 @@
   var ORDER = [];     // 学習順の id 一覧
   CHAPTERS.forEach(function (ch) {
     ch.terms.forEach(function (t, i) {
-      PLAN[t.id] = { id: t.id, title: t.title, importance: t.importance, status: t.status, chapter: ch.no, order: i };
+      PLAN[t.id] = { id: t.id, title: t.title, importance: t.importance, status: t.status, chapter: ch.no, order: i, see: t.see || null };
       ORDER.push(t.id);
     });
   });
@@ -524,6 +524,7 @@
       (meta.length ? '<p class="term-meta">' + meta.join('　・　') + '</p>' : '') +
       '<div class="term-actions"><button type="button" class="memo-toggle"></button><button type="button" class="memo-toggle bm-toggle"></button>' +
       (p.status === 'verified' ? '<span class="pending-tag" style="border-style:solid" title="数値をPythonで検算済み">検算済み</span>' : '') + '</div>';
+    if (p.see && PLAN[p.see]) h += '<p class="see-note">この内容は「<button type="button" class="f-link" data-go="' + p.see + '">' + esc(PLAN[p.see].title) + '</button>」でまとめて解説しています。このページは補足です。</p>';
     var secs = [];
     t.html.replace(/data-sec="(\w+)"/g, function (_, k) { secs.push(k); return _; });
     if (t.charts.length && secs.indexOf('chart') < 0) secs.splice(Math.max(0, secs.indexOf('exam')), 0, 'chart');

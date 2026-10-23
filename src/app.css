@@ -530,3 +530,4 @@ textarea.note:focus { outline: none; border-color: var(--accent); box-shadow: 0 
 @media (pointer: coarse) { .q-star { width: 44px; height: 44px; } }
 .sess-timer { font-family: var(--mono); font-size: .9rem; color: var(--accent); padding: 2px 8px; border: 1px solid var(--line); border-radius: 999px; }
 .sess-timer.low { color: var(--imp-a); border-color: var(--imp-a); }
+.see-note { margin: 12px 0 0; padding: 8px 12px; border: 1px dashed var(--line); border-radius: 8px; background: var(--bg); font-size: .85rem; color: var(--muted); }

@@ -86,6 +86,9 @@ try {
   // j で次の用語
   await ev(`document.body.dispatchEvent(new KeyboardEvent('keydown', {key: 'j', bubbles: true}))`); await sleep(400);
   check('j で次の用語', await ev(`location.hash !== '#bayes-theorem'`), await ev('location.hash'));
+  // 統合候補のページに統合先の案内
+  await open('#mann-whitney-u-test', 1280, 860);
+  check('統合先の案内を表示', await ev(`document.querySelector('.see-note [data-go]')?.dataset.go === 'wilcoxon-rank-sum-test'`));
   // 問題に答える（用語ページの最初の問題）
   await open('#normal-distribution', 1280, 860);
   const answered = await ev(`(() => {

@@ -193,7 +193,8 @@ def main():
     for ch in plan["chapters"]:
         chapters.append({
             "no": ch["no"], "title": ch["title"],
-            "terms": [{"id": t["id"], "title": t["title"], "importance": t["importance"], "status": t["status"]}
+            "terms": [dict({"id": t["id"], "title": t["title"], "importance": t["importance"], "status": t["status"]},
+                           **({"see": t["see"]} if t.get("see") else {}))
                       for t in ch.get("terms") or []],
         })
     plan_ids = {t["id"] for ch in chapters for t in ch["terms"]}
