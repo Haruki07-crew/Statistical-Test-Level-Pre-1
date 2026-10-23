@@ -176,4 +176,10 @@ q.num("q29-hazard-ratio-2", 0.667 * np.exp(z975 * np.sqrt(1 / 40 + 1 / 60)))
 # --- 無視可能性 ---
 q.concept("q29-ignorability-1", "MAR＋パラメータの分離（定義）")
 
+# 校閲（review-ch27-33）で加えた値
+from scipy import stats as _st
+q.check("q29-mnar-2", abs(_st.norm.pdf(1) - 0.2420) < 5e-5 and abs(_st.norm.cdf(1) - 0.8413) < 5e-5
+        and abs(-0.2420 / 0.8413 - (-0.288)) < 0.0005, "与えた φ(1)=0.2420、Φ(1)=0.8413 で -0.288")
+_se = (7 / 12) * (1 / 56 + 2 / 24) ** 0.5
+q.check("q29-greenwood-formula-1", abs(_se - 0.18556) < 1e-5 and abs(0.185 - 0.186) <= 0.0015, "SE=0.18556、途中丸めの 0.185 も許容")
 q.done()

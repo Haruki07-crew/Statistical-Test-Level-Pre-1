@@ -1,10 +1,10 @@
 {
  "q32-bootstrap-1": {
-  "hash": "acb6dfb3802ab824",
+  "hash": "3633ab6c011c67ef",
   "ok": true
  },
  "q32-bootstrap-2": {
-  "hash": "bc32f12fc28b4828",
+  "hash": "3be2aa8eac71fef5",
   "ok": true
  },
  "q32-bootstrap-3": {
@@ -16,7 +16,7 @@
   "ok": true
  },
  "q32-box-muller-method-1": {
-  "hash": "4d28492dbf6d3b59",
+  "hash": "0c1174ad2e12d9e0",
   "ok": true
  },
  "q32-box-muller-method-2": {
@@ -24,7 +24,7 @@
   "ok": true
  },
  "q32-box-muller-method-3": {
-  "hash": "9df2ce0776f669fd",
+  "hash": "4f7be7d1f1cbb5f8",
   "ok": true
  },
  "q32-burn-in-convergence-1": {
@@ -32,15 +32,15 @@
   "ok": true
  },
  "q32-burn-in-convergence-2": {
-  "hash": "2b3eceb15450e8cc",
+  "hash": "21346ddd68780a35",
   "ok": true
  },
  "q32-gibbs-sampling-1": {
-  "hash": "a06b5b74595f977a",
+  "hash": "610b704d96991bd8",
   "ok": true
  },
  "q32-gibbs-sampling-2": {
-  "hash": "710ef3755e7bb5e9",
+  "hash": "da9cd481ab390d20",
   "ok": true
  },
  "q32-gibbs-sampling-3": {
@@ -48,7 +48,7 @@
   "ok": true
  },
  "q32-importance-sampling-1": {
-  "hash": "5335cf1f4a7de56b",
+  "hash": "180bcd319ffc436f",
   "ok": true
  },
  "q32-importance-sampling-2": {
@@ -60,7 +60,7 @@
   "ok": true
  },
  "q32-inverse-transform-sampling-1": {
-  "hash": "57492dadcbd4d797",
+  "hash": "08adbabac9819a8e",
   "ok": true
  },
  "q32-inverse-transform-sampling-2": {
@@ -72,11 +72,11 @@
   "ok": true
  },
  "q32-jackknife-1": {
-  "hash": "5a8c9dfa5827e44e",
+  "hash": "0c1bfa0000449aef",
   "ok": true
  },
  "q32-jackknife-2": {
-  "hash": "8ef0649175e22612",
+  "hash": "a8525241ab302a31",
   "ok": true
  },
  "q32-jackknife-3": {
@@ -92,7 +92,7 @@
   "ok": true
  },
  "q32-mcmc-1": {
-  "hash": "0399aaf66393fa55",
+  "hash": "a62552c2e0841c3b",
   "ok": true
  },
  "q32-mcmc-2": {
@@ -100,11 +100,11 @@
   "ok": true
  },
  "q32-metropolis-hastings-1": {
-  "hash": "fcbecc1c20495f16",
+  "hash": "73060ecba7ad1c31",
   "ok": true
  },
  "q32-metropolis-hastings-2": {
-  "hash": "cd3ffc80a658a349",
+  "hash": "68dcdf2adebf8a7a",
   "ok": true
  },
  "q32-metropolis-hastings-3": {
@@ -116,23 +116,23 @@
   "ok": true
  },
  "q32-monte-carlo-integration-2": {
-  "hash": "5021f49a790c018c",
+  "hash": "bf7b78f2782807e8",
   "ok": true
  },
  "q32-monte-carlo-integration-3": {
-  "hash": "428d3adfc5bbd489",
+  "hash": "b2786c9c47f56cc1",
   "ok": true
  },
  "q32-permutation-simulation-1": {
-  "hash": "b06b28910a61e05d",
+  "hash": "0d6ad18942da74e2",
   "ok": true
  },
  "q32-rejection-sampling-1": {
-  "hash": "e2bfd5f561ba92fb",
+  "hash": "51607327e74d78bd",
   "ok": true
  },
  "q32-rejection-sampling-2": {
-  "hash": "397115cc6811c214",
+  "hash": "1efb96702b74b93b",
   "ok": true
  },
  "q32-rejection-sampling-3": {
@@ -140,11 +140,11 @@
   "ok": true
  },
  "q32-uniform-random-number-1": {
-  "hash": "d31821566d514909",
+  "hash": "d97b2d679474afd8",
   "ok": true
  },
  "q32-uniform-random-number-2": {
-  "hash": "d1452257f13afdbe",
+  "hash": "edbebee44f9eed62",
   "ok": true
  },
  "q32-uniform-random-number-3": {
@@ -152,7 +152,7 @@
   "ok": true
  },
  "q32-variance-reduction-1": {
-  "hash": "4dc29c1ea610ada1",
+  "hash": "372a7504be3e949a",
   "ok": true
  }
 }

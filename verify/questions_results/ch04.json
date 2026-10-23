@@ -19,6 +19,10 @@
   "hash": "d9f81526dfb6e64a",
   "ok": true
  },
+ "q04-change-of-variables-4": {
+  "hash": "754874c13562e6c8",
+  "ok": true
+ },
  "q04-log-transformation-1": {
   "hash": "c50918c67f252d8c",
   "ok": true
@@ -37,6 +41,10 @@
  },
  "q04-logit-logistic-transformation-3": {
   "hash": "63d989612ba9da52",
+  "ok": true
+ },
+ "q04-logit-logistic-transformation-4": {
+  "hash": "97f3ef9f9d09f9a0",
   "ok": true
  },
  "q04-power-transformation-1": {

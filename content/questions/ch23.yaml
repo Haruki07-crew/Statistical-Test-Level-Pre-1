@@ -21,7 +21,7 @@ questions:
     question: |
       2群 $G_1:N_2(\boldsymbol{\mu}_1,\Sigma)$、$G_2:N_2(\boldsymbol{\mu}_2,\Sigma)$ で
       $$\boldsymbol{\mu}_1=\begin{pmatrix}0\\0\end{pmatrix},\quad \boldsymbol{\mu}_2=\begin{pmatrix}2\\1\end{pmatrix},\quad \Sigma=\begin{pmatrix}1&0.5\\0.5&1\end{pmatrix}$$
-      とする。線形判別関数 $z(\boldsymbol{x})=(\boldsymbol{\mu}_2-\boldsymbol{\mu}_1)^\top\Sigma^{-1}\bigl(\boldsymbol{x}-\frac{\boldsymbol{\mu}_1+\boldsymbol{\mu}_2}{2}\bigr)$ の、$\boldsymbol{x}=(1.5,\ 0)^\top$ での値を小数第2位まで求めよ。
+      とする。線形判別関数 $z(\boldsymbol{x})=(\boldsymbol{\mu}_2-\boldsymbol{\mu}_1)^\top\Sigma^{-1}\bigl(\boldsymbol{x}-\frac{\boldsymbol{\mu}_1+\boldsymbol{\mu}_2}{2}\bigr)$ の、$\boldsymbol{x}=(1.5,\ 0)^\top$ での値を小数第2位まで（四捨五入）求めよ。
     answer: 1.0
     tolerance: 0.005
     hint: |
@@ -107,7 +107,7 @@ questions:
     level: 基本
     type: numeric
     question: |
-      1変数の分布 $N(50,\ 10^2)$ に対して、点 $x=35$ のマハラノビス距離を小数第1位まで求めよ。
+      1変数の分布 $N(50,\ 10^2)$ に対して、点 $x=35$ のマハラノビス距離を小数第1位まで（四捨五入）求めよ。
     answer: 1.5
     tolerance: 0.05
     hint: |
@@ -121,7 +121,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      $\boldsymbol{\mu}=(0,0)^\top$、$\Sigma=\begin{pmatrix}4&2\\2&4\end{pmatrix}$ の分布に対して、点 $\boldsymbol{x}=(2,\ -2)^\top$ のマハラノビス距離 $D$ を小数第2位まで求めよ。
+      $\boldsymbol{\mu}=(0,0)^\top$、$\Sigma=\begin{pmatrix}4&2\\2&4\end{pmatrix}$ の分布に対して、点 $\boldsymbol{x}=(2,\ -2)^\top$ のマハラノビス距離 $D$ を小数第2位まで（四捨五入）求めよ。
     answer: 2.0
     tolerance: 0.005
     hint: |
@@ -136,7 +136,7 @@ questions:
     level: 応用
     type: numeric
     question: |
-      $\boldsymbol{X}\sim N_3(\boldsymbol{\mu},\Sigma)$ のとき、マハラノビス距離 $D(\boldsymbol{X})$ が $3$ を超える確率を小数第3位まで求めよ。
+      $\boldsymbol{X}\sim N_3(\boldsymbol{\mu},\Sigma)$ のとき、マハラノビス距離 $D(\boldsymbol{X})$ が $3$ を超える確率を小数第3位まで（四捨五入）求めよ。
       必要なら、自由度3のカイ二乗分布の上側確率 $P(\chi^2_3>x)=2\{1-\Phi(\sqrt x)\}+2\sqrt x\,\phi(\sqrt x)$ と、$1-\Phi(3)=0.00135$、$\phi(3)=0.00443$（$\phi$ は標準正規分布の密度）を用いてよい。
     answer: 0.029
     tolerance: 0.001
@@ -166,7 +166,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      1変数で $G_1:N(0,1)$、$G_2:N(0,4)$（分散4）、事前確率は等しい。ベイズ判別ルールで $G_2$ と判別されるのは $|x|>c$ の範囲である。$c$ を小数第3位まで求めよ。
+      1変数で $G_1:N(0,1)$、$G_2:N(0,4)$（分散4）、事前確率は等しい。ベイズ判別ルールで $G_2$ と判別されるのは $|x|>c$ の範囲である。$c$ を小数第3位まで（四捨五入）求めよ。
     answer: 1.36
     tolerance: 0.001
     hint: |
@@ -180,7 +180,7 @@ questions:
     level: 基本
     type: numeric
     question: |
-      2群の事前確率が $\pi_1=0.3,\ \pi_2=0.7$、ある観測値 $x$ での密度が $f_1(x)=0.5,\ f_2(x)=0.1$ である。事後確率 $P(G_1\mid x)$ を小数第3位まで求めよ。
+      2群の事前確率が $\pi_1=0.3,\ \pi_2=0.7$、ある観測値 $x$ での密度が $f_1(x)=0.5,\ f_2(x)=0.1$ である。事後確率 $P(G_1\mid x)$ を小数第3位まで（四捨五入）求めよ。
     answer: 0.682
     tolerance: 0.001
     hint: |
@@ -215,7 +215,7 @@ questions:
     type: numeric
     question: |
       1変数で $G_1:N(0,1)$、$G_2:N(2,1)$、事前確率 $\pi_1=0.75,\ \pi_2=0.25$ とする。
-      ベイズ判別ルールで $x>c$ なら $G_2$ と判別するとき、境界 $c$ を小数第3位まで求めよ。
+      ベイズ判別ルールで $x>c$ なら $G_2$ と判別するとき、境界 $c$ を小数第3位まで（四捨五入）求めよ。
     answer: 1.549
     tolerance: 0.001
     hint: |
@@ -229,7 +229,7 @@ questions:
     level: 基本
     type: numeric
     question: |
-      共通の分散共分散行列をもつ2つの多変量正規分布の間のマハラノビス距離が $\Delta=2$ である。事前確率が等しいとき、線形判別関数（しきい値0）による誤判別率 $P(2\mid1)$ を小数第3位まで求めよ。
+      共通の分散共分散行列をもつ2つの多変量正規分布の間のマハラノビス距離が $\Delta=2$ である。事前確率が等しいとき、線形判別関数（しきい値0）による誤判別率 $P(2\mid1)$ を小数第3位まで（四捨五入）求めよ。
     answer: 0.159
     tolerance: 0.001
     hint: |
@@ -245,7 +245,7 @@ questions:
     question: |
       2群 $N_2(\boldsymbol{\mu}_1,\Sigma)$、$N_2(\boldsymbol{\mu}_2,\Sigma)$ で
       $$\boldsymbol{\mu}_1-\boldsymbol{\mu}_2=\begin{pmatrix}1\\-1\end{pmatrix},\qquad \Sigma=\begin{pmatrix}1&0.6\\0.6&1\end{pmatrix}$$
-      である。事前確率が等しいとき、線形判別による誤判別率を小数第3位まで求めよ。
+      である。事前確率が等しいとき、線形判別による誤判別率を小数第3位まで（四捨五入）求めよ。
     answer: 0.132
     tolerance: 0.0015
     hint: |
@@ -274,7 +274,7 @@ questions:
     level: 基本
     type: numeric
     question: |
-      200人の判定結果が TP $=40$、FN $=10$、FP $=20$、TN $=130$ であった。誤判別率を小数第3位まで求めよ。
+      200人の判定結果が TP $=40$、FN $=10$、FP $=20$、TN $=130$ であった。誤判別率を小数第3位まで（四捨五入）求めよ。
     answer: 0.15
     tolerance: 0.001
     hint: |
@@ -314,7 +314,7 @@ questions:
     level: 基本
     type: numeric
     question: |
-      ある検査で TP $=40$、FN $=10$、FP $=20$、TN $=130$ であった。特異度を小数第3位まで求めよ。
+      ある検査で TP $=40$、FN $=10$、FP $=20$、TN $=130$ であった。特異度を小数第3位まで（四捨五入）求めよ。
     answer: 0.867
     tolerance: 0.001
     hint: |
@@ -328,7 +328,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      感度 $0.90$、特異度 $0.95$ の検査を、有病率 $2\%$ の集団に用いる。陽性と判定された人が実際に陽性である確率（陽性的中率）を小数第3位まで求めよ。
+      感度 $0.90$、特異度 $0.95$ の検査を、有病率 $2\%$ の集団に用いる。陽性と判定された人が実際に陽性である確率（陽性的中率）を小数第3位まで（四捨五入）求めよ。
     answer: 0.269
     tolerance: 0.001
     hint: |
@@ -342,7 +342,7 @@ questions:
     level: 応用
     type: numeric
     question: |
-      判別得点が陰性群で $N(0,1)$、陽性群で $N(2,1)$ に従い、得点が $t=1.5$ を超えたら陽性と判定する。ユーデン指数 $J=\text{感度}+\text{特異度}-1$ を小数第3位まで求めよ。
+      判別得点が陰性群で $N(0,1)$、陽性群で $N(2,1)$ に従い、得点が $t=1.5$ を超えたら陽性と判定する。ユーデン指数 $J=\text{感度}+\text{特異度}-1$ を小数第3位まで（四捨五入）求めよ。
     answer: 0.625
     tolerance: 0.001
     hint: |
@@ -371,7 +371,7 @@ questions:
     type: numeric
     question: |
       陽性3人の得点が $0.9,\ 0.7,\ 0.6$、陰性4人の得点が $0.8,\ 0.6,\ 0.5,\ 0.4$ であった。
-      同点を $1/2$ と数える方法で AUC を小数第3位まで求めよ。
+      同点を $1/2$ と数える方法で AUC を小数第3位まで（四捨五入）求めよ。
     answer: 0.792
     tolerance: 0.001
     hint: |
@@ -386,7 +386,7 @@ questions:
     level: 応用
     type: numeric
     question: |
-      判別得点が陰性群で $N(0,1)$、陽性群で $N(1.5,1)$ に従い、2群は独立である。AUC を小数第3位まで求めよ。
+      判別得点が陰性群で $N(0,1)$、陽性群で $N(1.5,1)$ に従い、2群は独立である。AUC を小数第3位まで（四捨五入）求めよ。
     answer: 0.856
     tolerance: 0.0015
     hint: |
@@ -402,7 +402,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      ある分類器の結果が TP $=30$、FP $=10$、FN $=20$ であった。F値（$F_1$）を小数第3位まで求めよ。
+      ある分類器の結果が TP $=30$、FP $=10$、FN $=20$ であった。F値（$F_1$）を小数第3位まで（四捨五入）求めよ。
     answer: 0.667
     tolerance: 0.001
     hint: |
@@ -461,7 +461,7 @@ questions:
     level: 基本
     type: numeric
     question: |
-      ハードマージンSVMの解が $\boldsymbol{w}=(3,\ 4)^\top$ であった。両側を合わせたマージンの幅 $2/\|\boldsymbol{w}\|$ を小数第1位まで求めよ。
+      ハードマージンSVMの解が $\boldsymbol{w}=(3,\ 4)^\top$ であった。両側を合わせたマージンの幅 $2/\|\boldsymbol{w}\|$ を小数第1位まで（四捨五入）求めよ。
     answer: 0.4
     tolerance: 0.05
     hint: |
@@ -475,7 +475,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      判別関数 $f(\boldsymbol{x})=x_1-x_2+0.5$ について、次の3点のヒンジ損失 $\max\{0,\ 1-y_if(\boldsymbol{x}_i)\}$ の合計を小数第1位まで求めよ。
+      判別関数 $f(\boldsymbol{x})=x_1-x_2+0.5$ について、次の3点のヒンジ損失 $\max\{0,\ 1-y_if(\boldsymbol{x}_i)\}$ の合計を小数第1位まで（四捨五入）求めよ。
       $(\boldsymbol{x},y)=((1,1),+1),\ ((0,2),-1),\ ((2,0.5),-1)$
     answer: 3.5
     tolerance: 0.05
@@ -520,7 +520,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      クラスAが10個、クラスBが10個のノードを、左（A8個・B2個）と右（A2個・B8個）に分けた。ジニ不純度の減少量 $\Delta$ を小数第2位まで求めよ。
+      クラスAが10個、クラスBが10個のノードを、左（A8個・B2個）と右（A2個・B8個）に分けた。ジニ不純度の減少量 $\Delta$ を小数第2位まで（四捨五入）求めよ。
     answer: 0.18
     tolerance: 0.005
     hint: |
@@ -536,7 +536,7 @@ questions:
     question: |
       メールが迷惑メール（S）である事前確率は $0.4$、通常メール（H）は $0.6$ である。2つの単語の出現（0/1）について
       $P(x_1=1\mid S)=0.8,\ P(x_2=1\mid S)=0.6,\ P(x_1=1\mid H)=0.1,\ P(x_2=1\mid H)=0.3$ とする。
-      ナイーブベイズ分類器で、両方の単語が出現したメール（$x_1=x_2=1$）が迷惑メールである事後確率を小数第3位まで求めよ。
+      ナイーブベイズ分類器で、両方の単語が出現したメール（$x_1=x_2=1$）が迷惑メールである事後確率を小数第3位まで（四捨五入）求めよ。
     answer: 0.914
     tolerance: 0.001
     hint: |
@@ -544,3 +544,56 @@ questions:
     explanation: |
       $$S:\ 0.4\times0.8\times0.6=0.192,\qquad H:\ 0.6\times0.1\times0.3=0.018$$
       $$P(S\mid\boldsymbol{x})=\frac{0.192}{0.192+0.018}=0.914$$
+
+  - id: q23-fisher-linear-discriminant-function-4
+    term: fisher-linear-discriminant-function
+    level: 応用
+    type: derivation
+    question: |
+      2群の標本平均の差を $\boldsymbol d=\bar{\boldsymbol x}_1-\bar{\boldsymbol x}_2$、プールした分散共分散行列を $S$（正定値）とする。
+      フィッシャーの基準 $\lambda(\boldsymbol a)=\dfrac{(\boldsymbol a^\top\boldsymbol d)^2}{\boldsymbol a^\top S\boldsymbol a}$ を最大にする $\boldsymbol a$ の方向と、最大値を導け。
+    steps:
+      - |
+        $\lambda(\boldsymbol a)$ は $\boldsymbol a$ の定数倍で変わらないので、方向だけが問題。対数をとって微分すると $\dfrac{2\boldsymbol d}{\boldsymbol a^\top\boldsymbol d}-\dfrac{2S\boldsymbol a}{\boldsymbol a^\top S\boldsymbol a}=\boldsymbol 0$。
+      - |
+        整理すると $S\boldsymbol a=c\,\boldsymbol d$（$c=\dfrac{\boldsymbol a^\top S\boldsymbol a}{\boldsymbol a^\top\boldsymbol d}$ はスカラー）、よって $\boldsymbol a\propto S^{-1}\boldsymbol d$。
+      - |
+        $\boldsymbol a=S^{-1}\boldsymbol d$ を代入：$\boldsymbol a^\top\boldsymbol d=\boldsymbol d^\top S^{-1}\boldsymbol d$、$\boldsymbol a^\top S\boldsymbol a=\boldsymbol d^\top S^{-1}SS^{-1}\boldsymbol d=\boldsymbol d^\top S^{-1}\boldsymbol d$。
+      - |
+        最大値 $\lambda=\dfrac{(\boldsymbol d^\top S^{-1}\boldsymbol d)^2}{\boldsymbol d^\top S^{-1}\boldsymbol d}=\boldsymbol d^\top S^{-1}\boldsymbol d$（2群の平均の間のマハラノビス距離の2乗 $D^2$）。最大であることはコーシー・シュワルツの不等式 $(\boldsymbol a^\top\boldsymbol d)^2\le(\boldsymbol a^\top S\boldsymbol a)(\boldsymbol d^\top S^{-1}\boldsymbol d)$ からわかる。
+    answer: '$\boldsymbol a\propto S^{-1}(\bar{\boldsymbol x}_1-\bar{\boldsymbol x}_2)$、最大値 $D^2=(\bar{\boldsymbol x}_1-\bar{\boldsymbol x}_2)^\top S^{-1}(\bar{\boldsymbol x}_1-\bar{\boldsymbol x}_2)$'
+    hint: |
+      $\log\lambda(\boldsymbol a)=2\log(\boldsymbol a^\top\boldsymbol d)-\log(\boldsymbol a^\top S\boldsymbol a)$ を $\boldsymbol a$ で微分する。
+    explanation: |
+      停留条件 $S\boldsymbol a\propto\boldsymbol d$ から $\boldsymbol a\propto S^{-1}\boldsymbol d$ で、そのときの値は
+      $$\lambda_{\max}=\boldsymbol d^\top S^{-1}\boldsymbol d=D^2$$
+      です。フィッシャーの線形判別は「群間の差を群内のばらつきに比べて最も大きく見せる方向」に射影する方法で、その最大の分離度がマハラノビス距離の2乗になります。
+      コーシー・シュワルツの不等式を $S^{1/2}\boldsymbol a$ と $S^{-1/2}\boldsymbol d$ に使えば、微分を使わずに最大値であることも示せます。
+      よくある間違いは、$\boldsymbol a\propto\boldsymbol d$（群内の相関や分散の違いを無視）とすること、最大値を $\sqrt{\boldsymbol d^\top S^{-1}\boldsymbol d}$ とすることです。
+
+  - id: q23-misclassification-rate-4
+    term: misclassification-rate
+    level: 応用
+    type: derivation
+    question: |
+      群1が $N_p(\boldsymbol\mu_1,\Sigma)$、群2が $N_p(\boldsymbol\mu_2,\Sigma)$ で事前確率は等しい。$\boldsymbol a=\Sigma^{-1}(\boldsymbol\mu_1-\boldsymbol\mu_2)$ として、
+      $Y=\boldsymbol a^\top\Big(\boldsymbol x-\dfrac{\boldsymbol\mu_1+\boldsymbol\mu_2}{2}\Big)>0$ なら群1と判別する。
+      マハラノビス距離 $\Delta=\sqrt{(\boldsymbol\mu_1-\boldsymbol\mu_2)^\top\Sigma^{-1}(\boldsymbol\mu_1-\boldsymbol\mu_2)}$ を使って、誤判別率 $P(2\mid1)$ を導け。
+    steps:
+      - |
+        $\boldsymbol x\sim N_p(\boldsymbol\mu_1,\Sigma)$ のとき、$Y$ は $\boldsymbol x$ の1次式なので正規分布に従う。
+      - |
+        $E[Y]=\boldsymbol a^\top\Big(\boldsymbol\mu_1-\dfrac{\boldsymbol\mu_1+\boldsymbol\mu_2}{2}\Big)=\dfrac12\boldsymbol a^\top(\boldsymbol\mu_1-\boldsymbol\mu_2)=\dfrac{\Delta^2}{2}$。
+      - |
+        $V[Y]=\boldsymbol a^\top\Sigma\boldsymbol a=(\boldsymbol\mu_1-\boldsymbol\mu_2)^\top\Sigma^{-1}\Sigma\Sigma^{-1}(\boldsymbol\mu_1-\boldsymbol\mu_2)=\Delta^2$。
+      - |
+        $P(2\mid1)=P(Y\le0)=P\Big(\dfrac{Y-\Delta^2/2}{\Delta}\le-\dfrac{\Delta}{2}\Big)=\Phi\Big(-\dfrac{\Delta}{2}\Big)$。対称性から $P(1\mid2)$ も同じ。
+    answer: '$P(2\mid1)=P(1\mid2)=\Phi\Big(-\dfrac{\Delta}{2}\Big)$'
+    hint: |
+      判別得点 $Y$ は群1のもとで正規分布に従う。その平均と分散をどちらも $\Delta^2$ で表す。
+    explanation: |
+      群1のもとで判別得点は $Y\sim N(\Delta^2/2,\ \Delta^2)$ なので
+      $$P(2\mid1)=P(Y\le0)=\Phi\Big(-\frac{\Delta}{2}\Big)$$
+      です。誤判別率は次元 $p$ や $\Sigma$ の形によらず、マハラノビス距離 $\Delta$ だけで決まり、$\Delta$ が大きいほど小さくなります。
+      実際には $\boldsymbol\mu_i,\Sigma$ を標本から推定するので、この値は母数を知っているときの理論値です。
+      よくある間違いは、$V[Y]$ を1とみなして $\Phi(-\Delta^2/2)$ とすること、また $\Phi(-\Delta)$ としきい値の位置（中点）を忘れることです。

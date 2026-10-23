@@ -6,7 +6,7 @@ questions:
     type: numeric
     question: |
       原点を通るモデル $y_i=\beta x_i+\varepsilon_i$ で、誤差は互いに無相関、$V[\varepsilon_i]=\sigma^2x_i$（$x_i>0$）とする。
-      データ $(x,y)=(1,3),\ (2,5),\ (4,10)$ から加重最小二乗推定値 $\hat\beta_W$ を小数第3位まで求めよ。
+      データ $(x,y)=(1,3),\ (2,5),\ (4,10)$ から加重最小二乗推定値 $\hat\beta_W$ を小数第3位まで（四捨五入）求めよ。
     answer: 2.571
     tolerance: 0.001
     hint: |
@@ -56,7 +56,7 @@ questions:
     question: |
       同じ量 $\mu$ を2回測定し、$y_1=10$、$y_2=14$ を得た。測定誤差の分散共分散行列は
       $\sigma^2\Omega$、$\Omega=\begin{pmatrix}1&0.5\\0.5&4\end{pmatrix}$ である。
-      モデル $\boldsymbol y=\boldsymbol1\mu+\boldsymbol\varepsilon$ の一般化最小二乗推定値 $\hat\mu_G$ を小数第2位まで求めよ。
+      モデル $\boldsymbol y=\boldsymbol1\mu+\boldsymbol\varepsilon$ の一般化最小二乗推定値 $\hat\mu_G$ を小数第2位まで（四捨五入）求めよ。
     answer: 10.5
     tolerance: 0.005
     hint: |
@@ -74,7 +74,7 @@ questions:
     type: numeric
     question: |
       標準化した2つの説明変数について $X^\top X=\begin{pmatrix}1&0.9\\0.9&1\end{pmatrix}$、$X^\top\boldsymbol y=\begin{pmatrix}1.5\\1.2\end{pmatrix}$ であった。
-      $\lambda=0.1$ のリッジ推定量 $(X^\top X+\lambda I)^{-1}X^\top\boldsymbol y$ の第2成分を小数第3位まで求めよ。
+      $\lambda=0.1$ のリッジ推定量 $(X^\top X+\lambda I)^{-1}X^\top\boldsymbol y$ の第2成分を小数第3位まで（四捨五入）求めよ。
     answer: -0.075
     tolerance: 0.001
     hint: |
@@ -170,7 +170,7 @@ questions:
     question: |
       直交計画 $X^\top X=I$ で、ある係数の最小二乗推定値が $b=2.0$ であった。目的関数
       $\frac12\|\boldsymbol y-X\boldsymbol\beta\|^2+\lambda_1\sum|\beta_j|+\frac{\lambda_2}{2}\sum\beta_j^2$、$\lambda_1=0.5$、$\lambda_2=1$
-      のエラスティックネット推定値を小数第2位まで求めよ。
+      のエラスティックネット推定値を小数第2位まで（四捨五入）求めよ。
     answer: 0.75
     tolerance: 0.005
     hint: |
@@ -185,7 +185,7 @@ questions:
     type: numeric
     question: |
       直交計画 $X^\top X=I$ のリッジ推定量 $\hat\beta_R=b/(1+\lambda)$ を考える。真の係数が $\beta=2$、誤差分散が $\sigma^2=1$ のとき、
-      平均二乗誤差 $\mathrm{MSE}(\lambda)=\dfrac{\sigma^2+\lambda^2\beta^2}{(1+\lambda)^2}$ の最小値を小数第2位まで求めよ。
+      平均二乗誤差 $\mathrm{MSE}(\lambda)=\dfrac{\sigma^2+\lambda^2\beta^2}{(1+\lambda)^2}$ の最小値を小数第2位まで（四捨五入）求めよ。
     answer: 0.8
     tolerance: 0.005
     hint: |
@@ -220,7 +220,7 @@ questions:
     type: numeric
     question: |
       ロジスティック曲線 $f(t)=\dfrac{K}{1+e^{-r(t-t_0)}}$ を当てはめ、$\hat K=100$、$\hat r=0.5$、$\hat t_0=10$ を得た。
-      $t=12$ における予測値を小数第1位まで求めよ。
+      $t=12$ における予測値を小数第1位まで（四捨五入）求めよ。
     answer: 73.1
     tolerance: 0.05
     hint: |
@@ -264,7 +264,7 @@ questions:
     type: numeric
     question: |
       $\tau=0.9$ の分位点回帰で、ある係数の値における4つの残差が $u=(2,\ -1,\ 0.5,\ -3)$ であった。
-      チェック関数の和 $\sum\rho_{0.9}(u_i)$ を小数第2位まで求めよ。ただし $\rho_\tau(u)=\tau u\ (u\ge0)$、$(\tau-1)u\ (u<0)$。
+      チェック関数の和 $\sum\rho_{0.9}(u_i)$ を小数第2位まで（四捨五入）求めよ。ただし $\rho_\tau(u)=\tau u\ (u\ge0)$、$(\tau-1)u\ (u<0)$。
     answer: 2.65
     tolerance: 0.005
     hint: |
@@ -292,7 +292,7 @@ questions:
     type: numeric
     question: |
       2値の操作変数 $z$ で群を分けたところ、$z=1$ の群では $\bar y_1=25.6$、$\bar x_1=12.8$、$z=0$ の群では $\bar y_0=22.6$、$\bar x_0=12.4$ であった。
-      単回帰 $y=\beta_0+\beta_1x+\varepsilon$ の $\beta_1$ のワルド推定値を小数第1位まで求めよ。
+      単回帰 $y=\beta_0+\beta_1x+\varepsilon$ の $\beta_1$ のワルド推定値を小数第1位まで（四捨五入）求めよ。
     answer: 7.5
     tolerance: 0.05
     hint: |
@@ -327,7 +327,7 @@ questions:
     type: numeric
     question: |
       真のモデルは $y=1+2x^*+\varepsilon$ だが、$x^*$（分散4）は測定誤差 $u$（平均0・分散1、$x^*$ と $\varepsilon$ と独立）付きの $x=x^*+u$ でしか観測できない。
-      $y$ を $x$ に単回帰した最小二乗推定量の傾きの確率極限を小数第2位まで求めよ。
+      $y$ を $x$ に単回帰した最小二乗推定量の傾きの確率極限を小数第2位まで（四捨五入）求めよ。
     answer: 1.6
     tolerance: 0.005
     hint: |
@@ -369,7 +369,7 @@ questions:
     type: numeric
     question: |
       真のモデルが $y=\beta_0+0.5x_1+2x_2+\varepsilon$ で、$V[x_1]=4$、$\mathrm{Cov}(x_1,x_2)=1.2$ である。
-      $x_2$ を落として $y$ を $x_1$ だけに単回帰したときの傾きの確率極限を小数第2位まで求めよ。
+      $x_2$ を落として $y$ を $x_1$ だけに単回帰したときの傾きの確率極限を小数第2位まで（四捨五入）求めよ。
     answer: 1.1
     tolerance: 0.005
     hint: |
@@ -477,3 +477,57 @@ questions:
       - 中間層→出力：重み $v_j$ が $10$ 個、バイアス $c$ が $1$ 個
       $$50+10+10+1=71$$
       素子数 $H$ を増やすとパラメータが急に増え、過学習しやすくなるので、正則化や早期打ち切りを併用します。
+
+  - id: q19-ridge-regression-3
+    term: ridge-regression
+    level: 標準
+    type: derivation
+    question: |
+      $S_\lambda(\boldsymbol\beta)=\|\boldsymbol y-X\boldsymbol\beta\|^2+\lambda\|\boldsymbol\beta\|^2$（$\lambda>0$）を最小にするリッジ推定量 $\hat{\boldsymbol\beta}_R$ を導け。
+      さらに直交計画 $X^\top X=I$ のとき、$\hat{\boldsymbol\beta}_R$ を最小二乗推定量 $\boldsymbol b=X^\top\boldsymbol y$ で表し、$E[\hat{\boldsymbol\beta}_R]$ を求めよ。
+    steps:
+      - |
+        展開：$S_\lambda=\boldsymbol y^\top\boldsymbol y-2\boldsymbol\beta^\top X^\top\boldsymbol y+\boldsymbol\beta^\top(X^\top X+\lambda I)\boldsymbol\beta$。
+      - |
+        勾配を0に：$\dfrac{\partial S_\lambda}{\partial\boldsymbol\beta}=-2X^\top\boldsymbol y+2(X^\top X+\lambda I)\boldsymbol\beta=\boldsymbol 0$。
+      - |
+        $X^\top X+\lambda I$ は正定値なので（$X$ がフルランクでなくても）逆行列をもち、$\hat{\boldsymbol\beta}_R=(X^\top X+\lambda I)^{-1}X^\top\boldsymbol y$。
+      - |
+        $X^\top X=I$ なら $\hat{\boldsymbol\beta}_R=\dfrac{1}{1+\lambda}X^\top\boldsymbol y=\dfrac{\boldsymbol b}{1+\lambda}$、$E[\hat{\boldsymbol\beta}_R]=\dfrac{\boldsymbol\beta}{1+\lambda}$（0 の方向に縮んだ偏りのある推定量）。
+    answer: '$\hat{\boldsymbol\beta}_R=(X^\top X+\lambda I)^{-1}X^\top\boldsymbol y$。直交計画では $\hat{\boldsymbol\beta}_R=\dfrac{\boldsymbol b}{1+\lambda}$、$E[\hat{\boldsymbol\beta}_R]=\dfrac{\boldsymbol\beta}{1+\lambda}$'
+    hint: |
+      $\partial(\boldsymbol\beta^\top A\boldsymbol\beta)/\partial\boldsymbol\beta=2A\boldsymbol\beta$（$A$ 対称）を使って、正規方程式に $\lambda I$ が加わった形を作る。
+    explanation: |
+      罰則項 $\lambda\|\boldsymbol\beta\|^2$ の勾配 $2\lambda\boldsymbol\beta$ が加わるので、正規方程式は $(X^\top X+\lambda I)\boldsymbol\beta=X^\top\boldsymbol y$ になり
+      $$\hat{\boldsymbol\beta}_R=(X^\top X+\lambda I)^{-1}X^\top\boldsymbol y$$
+      です。$\lambda I$ を足すことで、多重共線性で $X^\top X$ が逆行列をもたない（またはもちにくい）ときでも安定に解けます。
+      直交計画では各係数が一律に $\frac{1}{1+\lambda}$ 倍に縮み、偏りは生じますが分散は $\frac{\sigma^2}{(1+\lambda)^2}$ に下がります。ちょうど0にはならない点が Lasso との違いです。
+      よくある間違いは、$\lambda I$ を $X^\top\boldsymbol y$ 側に足すこと、また切片まで罰則に含めてしまうことです（通常は中心化して切片は罰しません）。
+
+  - id: q19-lasso-3
+    term: lasso
+    level: 応用
+    type: derivation
+    question: |
+      直交計画 $X^\top X=I$ で、Lasso の目的関数 $L(\boldsymbol\beta)=\frac12\|\boldsymbol y-X\boldsymbol\beta\|^2+\lambda\sum_j|\beta_j|$（$\lambda>0$）を考える。
+      最小二乗推定量を $\boldsymbol b=X^\top\boldsymbol y$ として、Lasso 推定量 $\hat\beta_j$ を $b_j$ と $\lambda$ で表せ。
+    steps:
+      - |
+        $\boldsymbol y-X\boldsymbol\beta=(\boldsymbol y-X\boldsymbol b)+X(\boldsymbol b-\boldsymbol\beta)$ で、$X^\top(\boldsymbol y-X\boldsymbol b)=\boldsymbol 0$ と $X^\top X=I$ より $\frac12\|\boldsymbol y-X\boldsymbol\beta\|^2=\frac12\|\boldsymbol y-X\boldsymbol b\|^2+\frac12\|\boldsymbol\beta-\boldsymbol b\|^2$。
+      - |
+        第1項は $\boldsymbol\beta$ によらないので、係数ごとに分かれる：$\hat\beta_j=\arg\min_{\beta}\Big\{\frac12(\beta-b_j)^2+\lambda|\beta|\Big\}$。
+      - |
+        $\beta>0$ の範囲では微分して $\beta-b_j+\lambda=0$、$\beta=b_j-\lambda$。これが正になるのは $b_j>\lambda$ のとき。同様に $\beta<0$ では $\beta=b_j+\lambda$（$b_j<-\lambda$ のとき）。
+      - |
+        $|b_j|\le\lambda$ のときはどちらの範囲にも停留点がなく、$\beta=0$ で最小（0での劣微分 $[-\lambda,\lambda]$ が $b_j$ を含む）。
+      - |
+        まとめると $\hat\beta_j=\mathrm{sign}(b_j)\,\big(|b_j|-\lambda\big)_+$（軟しきい値）。
+    answer: '$\hat\beta_j=\mathrm{sign}(b_j)\max\big(|b_j|-\lambda,\ 0\big)$（$|b_j|\le\lambda$ なら0、それ以外は絶対値を $\lambda$ だけ縮める）'
+    hint: |
+      直交計画では目的関数が $\frac12\|\boldsymbol\beta-\boldsymbol b\|^2+\lambda\sum|\beta_j|$ ＋定数 になり、係数ごとの1次元の問題に分かれる。$\beta>0$ と $\beta<0$ で場合分けする。
+    explanation: |
+      直交計画では残差平方和が $\frac12\|\boldsymbol\beta-\boldsymbol b\|^2$＋定数 と書けるので、各係数について $\frac12(\beta-b_j)^2+\lambda|\beta|$ を最小にすればよく、
+      $$\hat\beta_j=\mathrm{sign}(b_j)\,(|b_j|-\lambda)_+$$
+      となります（軟しきい値関数）。$|b_j|\le\lambda$ の係数はちょうど0になるので、Lasso は推定と変数選択を同時に行います。
+      リッジの $\frac{b_j}{1+\lambda}$（比例的に縮むが0にはならない）との違いがこの式に表れています。
+      よくある間違いは、$\lambda$ だけ縮めた結果が符号をまたぐ場合（$|b_j|<\lambda$）にも $b_j-\lambda$ を答えてしまうこと、目的関数に $\frac12$ がないときの係数（しきい値が $\lambda/2$ になる）と混同することです。

@@ -164,4 +164,34 @@ q.check("q16-confidence-and-prediction-interval-regression-2", q0(1e8) < 1e-6 an
 q.num("q16-partial-f-test-1", ((120 - 90) / 2) / (90 / 24))
 q.check("q16-partial-f-test-1", abs(stats.f.ppf(0.95, 2, 24) - 3.40) < 0.005, "F(2,24) 上側5%点 3.40")
 
+# --- 導出問題（追加） ---
+def _deriv16():
+    import numpy as _N
+    from scipy import stats as _st
+    rng = _N.random.default_rng(16)
+    n, p = 15, 3
+    X = _N.column_stack([_N.ones(n), rng.normal(size=(n, p))])
+    H = X @ _N.linalg.inv(X.T @ X) @ X.T
+    I = _N.eye(n)
+    ok = _N.allclose(H, H.T) and _N.allclose(H @ H, H) and abs(_N.trace(H) - (p + 1)) < 1e-10
+    ok &= _N.allclose((I - H) @ X, 0) and abs(_N.trace(I - H) - (n - p - 1)) < 1e-10
+    # E[ε'Aε]=σ² tr A をシミュレーションで（σ=2）
+    eps = rng.normal(0, 2, size=(200000, n))
+    Se = _N.einsum("ij,jk,ik->i", eps, I - H, eps)
+    ok &= abs(Se.mean() / (4 * (n - p - 1)) - 1) < 0.01
+    q.check("q16-hat-matrix-4", bool(ok), "H 対称・べき等・tr=p+1、(I-H)X=0、シミュレーションで E[Se]=(n-p-1)σ²")
+    beta = _N.array([1.0, 2.0, -1.0, 0.5]); sig = 1.5
+    XtXi = _N.linalg.inv(X.T @ X)
+    Y = X @ beta + rng.normal(0, sig, size=(100000, n))
+    B = Y @ X @ XtXi                     # 各行が β̂
+    ok2 = _N.allclose(B.mean(0), beta, atol=0.01)
+    ok2 &= _N.allclose(_N.cov(B.T), sig ** 2 * XtXi, atol=0.01 * sig ** 2 * _N.abs(XtXi).max())
+    R = Y - B @ X.T
+    s2 = (R ** 2).sum(1) / (n - p - 1)
+    t = (B[:, 2] - beta[2]) / _N.sqrt(s2 * XtXi[2, 2])
+    ks = _st.kstest(t, _st.t(n - p - 1).cdf).statistic
+    ok2 &= ks < 0.006
+    q.check("q16-regression-coefficient-t-test-4", bool(ok2), f"シミュレーション：E[β̂]=β、V[β̂]=σ²(X'X)^-1、t_j~t(n-p-1)（KS={ks:.4f}）")
+_deriv16()
+
 q.done()

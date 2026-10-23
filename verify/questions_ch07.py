@@ -148,4 +148,37 @@ _xg = _np.array([-2.0, -0.5, -0.1])
 _lim = [(1 + x / 10 ** 6) ** (10 ** 6) for x in _xg]
 q.check("q07-extreme-value-distribution-2", _np.allclose(_lim, _np.exp(_xg), atol=1e-5) and _np.allclose(_np.exp(-(-_xg) ** 1), _st.weibull_max(1).cdf(_xg)), "U(0,1) の最大値の極限 e^x（x<0）はワイブル型 α=1")
 
+# --- 導出問題（追加） ---
+def _deriv07():
+    import numpy as _N
+    import sympy as _S
+    from scipy import stats as _st
+    # マルコフ・チェビシェフ：いくつかの分布で上界が成り立ち、3点分布で等号
+    ok = True
+    for d in [_st.norm(0, 1), _st.expon(), _st.uniform(0, 1), _st.t(5)]:
+        m, s = d.mean(), d.std()
+        for k in (1.5, 2.0, 3.0):
+            pr = d.cdf(m - k * s) + d.sf(m + k * s)
+            ok &= pr <= 1 / k ** 2 + 1e-12
+    for d in [_st.expon(), _st.gamma(2)]:
+        for a in (0.5, 2.0, 5.0):
+            ok &= d.sf(a) <= d.mean() / a + 1e-12
+    k = 2.0
+    vals = _N.array([-k, 0.0, k]); pr = _N.array([1 / (2 * k * k), 1 - 1 / (k * k), 1 / (2 * k * k)])
+    mu = (vals * pr).sum(); sd = _N.sqrt(((vals - mu) ** 2 * pr).sum())
+    ok &= abs(mu) < 1e-12 and abs(sd - 1) < 1e-12 and abs(pr[[0, 2]].sum() - 1 / k ** 2) < 1e-12
+    q.check("q07-chebyshev-inequality-4", bool(ok), "上界 1/k² が正規・指数・一様・t で成立、3点分布で等号")
+    p = _S.symbols("p", positive=True)
+    g = _S.asin(_S.sqrt(p))
+    ok2 = _S.simplify(_S.diff(g, p) - 1 / (2 * _S.sqrt(p * (1 - p)))) == 0
+    ok2 &= _S.simplify(_S.diff(g, p) ** 2 * p * (1 - p) - _S.Rational(1, 4)) == 0
+    # シミュレーションで V[arcsin√p̂]≈1/(4n)
+    rng = _N.random.default_rng(7)
+    n = 400
+    for pp in (0.2, 0.5):
+        ph = rng.binomial(n, pp, size=200000) / n
+        ok2 &= abs(_N.var(_N.arcsin(_N.sqrt(ph))) * 4 * n - 1) < 0.03
+    q.check("q07-delta-method-4", bool(ok2), "sympy: g'(p)²p(1-p)=1/4、シミュレーションで V≈1/(4n)")
+_deriv07()
+
 q.done()

@@ -130,4 +130,26 @@ q.check("q09-one-sided-confidence-limit-2", abs(_st.chi2.ppf(0.05, 11) - 4.575) 
 q.num("q09-one-sided-confidence-limit-2", 11 * 2.5 / _st.chi2.ppf(0.05, 11))
 q.check("q09-one-sided-confidence-limit-2", abs(11 * 2.5 / 19.675 - 1.40) < 0.005, "19.675 で割ると下側限界 1.40")
 
+# --- 導出問題（追加） ---
+def _deriv09():
+    import numpy as _N
+    import sympy as _S
+    from scipy import stats as _st
+    lam, t, x = _S.symbols("lambda t x", positive=True)
+    M = _S.simplify(_S.integrate(lam * _S.exp(-lam * x) * _S.exp(t * x), (x, 0, _S.oo), conds="none"))
+    ok = _S.simplify(M - lam / (lam - t)) == 0
+    ok &= _S.simplify(M.subs(t, 2 * lam * t) - 1 / (1 - 2 * t)) == 0
+    # 正確な被覆確率：Σ X ~ Gamma(n, 1/λ) なので Q=2λΣX ~ χ²(2n)
+    ok2 = True
+    for n, L in [(5, 0.7), (12, 3.0)]:
+        G = _st.gamma(n, scale=1 / L)
+        qq = _N.linspace(0.5, 40, 50)
+        ok2 &= _N.allclose(G.cdf(qq / (2 * L)), _st.chi2(2 * n).cdf(qq))
+        lo, hi = _st.chi2(2 * n).ppf(0.025), _st.chi2(2 * n).ppf(0.975)   # 上側97.5%点・上側2.5%点
+        # λ ∈ [lo/(2S), hi/(2S)] ⇔ lo/(2λ) ≤ S ≤ hi/(2λ)
+        cover = G.cdf(hi / (2 * L)) - G.cdf(lo / (2 * L))
+        ok2 &= abs(cover - 0.95) < 1e-12
+    q.check("q09-pivotal-quantity-3", bool(ok and ok2), "sympy: M_{2λX}(t)=(1-2t)^-1、2λΣX~χ²(2n)、区間の被覆確率がちょうど0.95")
+_deriv09()
+
 q.done()

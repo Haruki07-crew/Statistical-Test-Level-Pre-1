@@ -1,10 +1,10 @@
 {
  "q18-deviance-1": {
-  "hash": "9b37a8a79286d504",
+  "hash": "ebd1969e46ecc60c",
   "ok": true
  },
  "q18-deviance-2": {
-  "hash": "ba5d3e3d9e83a4ce",
+  "hash": "b2b0ede53b76c0ca",
   "ok": true
  },
  "q18-exponential-dispersion-family-1": {
@@ -24,7 +24,7 @@
   "ok": true
  },
  "q18-iteratively-reweighted-least-squares-1": {
-  "hash": "e34d92dffadad06c",
+  "hash": "8961594bca8d68bc",
   "ok": true
  },
  "q18-link-function-1": {
@@ -32,11 +32,11 @@
   "ok": true
  },
  "q18-link-function-2": {
-  "hash": "bd7408844c3ee9cc",
+  "hash": "fe4addef13d5312f",
   "ok": true
  },
  "q18-logistic-likelihood-estimation-1": {
-  "hash": "e20ce4b9dcf0535f",
+  "hash": "0e0bae8c556afd60",
   "ok": true
  },
  "q18-logistic-likelihood-estimation-2": {
@@ -44,19 +44,23 @@
   "ok": true
  },
  "q18-logistic-regression-1": {
-  "hash": "964825ae06b626cc",
+  "hash": "22717e0159e0ea89",
   "ok": true
  },
  "q18-logistic-regression-2": {
-  "hash": "9d53be692ca37ef3",
+  "hash": "a4f0c26b9f0b3006",
   "ok": true
  },
  "q18-logistic-regression-3": {
   "hash": "636daea972ee73c0",
   "ok": true
  },
+ "q18-logistic-regression-4": {
+  "hash": "b03656418863c897",
+  "ok": true
+ },
  "q18-multinomial-logit-model-1": {
-  "hash": "09448f52ad12ed9e",
+  "hash": "a98bcb967be5c9b9",
   "ok": true
  },
  "q18-multinomial-logit-model-2": {
@@ -64,11 +68,11 @@
   "ok": true
  },
  "q18-odds-and-odds-ratio-1": {
-  "hash": "2350f0c310db0a6d",
+  "hash": "04066b0e715c036c",
   "ok": true
  },
  "q18-odds-and-odds-ratio-2": {
-  "hash": "c57b3f14c808fa3c",
+  "hash": "159283c90e789018",
   "ok": true
  },
  "q18-odds-and-odds-ratio-3": {
@@ -76,15 +80,15 @@
   "ok": true
  },
  "q18-offset-term-1": {
-  "hash": "001830c8fb258231",
+  "hash": "f90854416eb9b653",
   "ok": true
  },
  "q18-ordered-logit-model-1": {
-  "hash": "5938f9945336acbe",
+  "hash": "0ae801c36d92068f",
   "ok": true
  },
  "q18-overdispersion-1": {
-  "hash": "3416427fd729d4de",
+  "hash": "3956bda6ac324e86",
   "ok": true
  },
  "q18-overdispersion-2": {
@@ -92,11 +96,11 @@
   "ok": true
  },
  "q18-poisson-regression-1": {
-  "hash": "82d62e9d99087272",
+  "hash": "d46bc02997f09da6",
   "ok": true
  },
  "q18-poisson-regression-2": {
-  "hash": "44d9578f055e7c78",
+  "hash": "9a400fdc10e768d5",
   "ok": true
  },
  "q18-poisson-regression-3": {
@@ -104,11 +108,11 @@
   "ok": true
  },
  "q18-probit-model-1": {
-  "hash": "acadd9ee35c75fc0",
+  "hash": "d3797ec066f22fe5",
   "ok": true
  },
  "q18-tobit-model-1": {
-  "hash": "7d3eb13f2311d957",
+  "hash": "4868aca1426ab442",
   "ok": true
  }
 }

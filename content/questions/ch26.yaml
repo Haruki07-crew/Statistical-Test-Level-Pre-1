@@ -18,7 +18,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      3つの対象の距離が $d_{12}=3,\ d_{23}=2,\ d_{13}=5$ である。古典的MDSの $B=-\frac12JD^{(2)}J$ の最大固有値を小数第3位まで求めよ。
+      3つの対象の距離が $d_{12}=3,\ d_{23}=2,\ d_{13}=5$ である。古典的MDSの $B=-\frac12JD^{(2)}J$ の最大固有値を小数第3位まで（四捨五入）求めよ。
     answer: 12.667
     tolerance: 0.001
     hint: |
@@ -33,7 +33,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      古典的MDSで $B$ の固有値が $8,\ 3,\ 1,\ 0$ であった。2次元の配置の当てはまりのよさ $\sum_{m=1}^{2}\lambda_m/\sum_{\lambda_m>0}\lambda_m$ を小数第3位まで求めよ。
+      古典的MDSで $B$ の固有値が $8,\ 3,\ 1,\ 0$ であった。2次元の配置の当てはまりのよさ $\sum_{m=1}^{2}\lambda_m/\sum_{\lambda_m>0}\lambda_m$ を小数第3位まで（四捨五入）求めよ。
     answer: 0.917
     tolerance: 0.001
     hint: |
@@ -46,7 +46,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      3点 $(0,0),\ (4,0),\ (0,3)$ の距離行列（$d_{12}=4,\ d_{13}=3,\ d_{23}=5$）から作った $B=JAJ$（$A=(-\frac12d_{ij}^2)$）の $(1,1)$ 成分 $b_{11}$ を小数第3位まで求めよ。
+      3点 $(0,0),\ (4,0),\ (0,3)$ の距離行列（$d_{12}=4,\ d_{13}=3,\ d_{23}=5$）から作った $B=JAJ$（$A=(-\frac12d_{ij}^2)$）の $(1,1)$ 成分 $b_{11}$ を小数第3位まで（四捨五入）求めよ。
     answer: 2.778
     tolerance: 0.001
     hint: |
@@ -86,7 +86,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      $\boldsymbol{x}=(x_1,x_2)$ は標準化された無相関の2変数、$y$ は標準化された1変数で、$\mathrm{Corr}(x_1,y)=0.6$、$\mathrm{Corr}(x_2,y)=0.3$ である。正準相関係数を小数第3位まで求めよ。
+      $\boldsymbol{x}=(x_1,x_2)$ は標準化された無相関の2変数、$y$ は標準化された1変数で、$\mathrm{Corr}(x_1,y)=0.6$、$\mathrm{Corr}(x_2,y)=0.3$ である。正準相関係数を小数第3位まで（四捨五入）求めよ。
     answer: 0.671
     tolerance: 0.001
     hint: |
@@ -103,7 +103,7 @@ questions:
     question: |
       2変数ずつの $\boldsymbol{x},\boldsymbol{y}$ がそれぞれ標準化されていて組の中では無相関（$R_{11}=R_{22}=I$）、組の間の相関行列が
       $$R_{12}=\begin{pmatrix}0.5&0.3\\0.3&0.5\end{pmatrix}$$
-      である。第1正準相関係数を小数第2位まで求めよ。
+      である。第1正準相関係数を小数第2位まで（四捨五入）求めよ。
     answer: 0.8
     tolerance: 0.005
     hint: |
@@ -132,7 +132,7 @@ questions:
     type: numeric
     question: |
       標準化した変数の正準相関分析で、$x_1$ と第1正準変量 $U_1$ の相関（正準負荷量）が $0.9$、第1正準相関係数が $\rho_1=0.6$ である。
-      $x_1$ と $\boldsymbol{y}$ 側の第1正準変量 $V_1$ の相関（交差負荷量）を小数第2位まで求めよ。
+      $x_1$ と $\boldsymbol{y}$ 側の第1正準変量 $V_1$ の相関（交差負荷量）を小数第2位まで（四捨五入）求めよ。
     answer: 0.54
     tolerance: 0.005
     hint: |
@@ -148,7 +148,7 @@ questions:
     question: |
       $n=100$、$p=q=2$ の正準相関分析で、標本正準相関係数が $\hat\rho_1=0.5,\ \hat\rho_2=0.1$ であった。$H_0:\rho_1=\rho_2=0$ のバートレットの近似統計量
       $$\chi^2=-\Bigl(n-1-\frac{p+q+1}{2}\Bigr)\sum_j\log(1-\hat\rho_j^2)$$
-      を小数第2位まで求めよ。
+      を小数第2位まで（四捨五入）求めよ。
     answer: 28.73
     tolerance: 0.005
     hint: |
@@ -162,7 +162,7 @@ questions:
     level: 基本
     type: numeric
     question: |
-      総度数 $n=400$ の分割表で、独立性のカイ二乗統計量が $\chi^2=24$ であった。コレスポンデンス分析の全イナーシャを小数第2位まで求めよ。
+      総度数 $n=400$ の分割表で、独立性のカイ二乗統計量が $\chi^2=24$ であった。コレスポンデンス分析の全イナーシャを小数第2位まで（四捨五入）求めよ。
     answer: 0.06
     tolerance: 0.005
     hint: |
@@ -176,7 +176,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      $4\times3$ の分割表のコレスポンデンス分析で、特異値の2乗（各軸のイナーシャ）が $0.045$ と $0.015$ であった。第1軸の寄与率を小数第2位まで求めよ。
+      $4\times3$ の分割表のコレスポンデンス分析で、特異値の2乗（各軸のイナーシャ）が $0.045$ と $0.015$ であった。第1軸の寄与率を小数第2位まで（四捨五入）求めよ。
     answer: 0.75
     tolerance: 0.005
     hint: |
@@ -198,7 +198,7 @@ questions:
       | 行1 | 30 | 10 |
       | 行2 | 20 | 40 |
 
-      のコレスポンデンス分析で、ただ1つの軸の特異値 $\gamma_1$ を小数第3位まで求めよ。
+      のコレスポンデンス分析で、ただ1つの軸の特異値 $\gamma_1$ を小数第3位まで（四捨五入）求めよ。
     answer: 0.408
     tolerance: 0.001
     hint: |
@@ -244,7 +244,7 @@ questions:
     type: numeric
     question: |
       アイテム1つ（カテゴリー A, B）の数量化I類を行う。カテゴリー A の個体の外的基準が $10,\ 12,\ 14$、B の個体が $20,\ 22$ である。
-      カテゴリースコアを度数で重み付けた平均が0になるよう基準化するとき、B のスコア $x_B$ を小数第1位まで求めよ。
+      カテゴリースコアを度数で重み付けた平均が0になるよう基準化するとき、B のスコア $x_B$ を小数第1位まで（四捨五入）求めよ。
     answer: 5.4
     tolerance: 0.05
     hint: |
@@ -259,7 +259,7 @@ questions:
     level: 基本
     type: numeric
     question: |
-      数量化I類で、あるアイテムのカテゴリースコアが $-2.1,\ 0.5,\ 1.4$ であった。このアイテムのレンジを小数第1位まで求めよ。
+      数量化I類で、あるアイテムのカテゴリースコアが $-2.1,\ 0.5,\ 1.4$ であった。このアイテムのレンジを小数第1位まで（四捨五入）求めよ。
     answer: 3.5
     tolerance: 0.05
     hint: |
@@ -288,7 +288,7 @@ questions:
     question: |
       4人 × 3項目の反応行列
       $$F=\begin{pmatrix}1&1&0\\1&1&0\\0&1&1\\0&0&1\end{pmatrix}$$
-      の数量化III類で、第1軸（自明解を除いた最大の固有値）の $\rho^2$ を小数第3位まで求めよ。
+      の数量化III類で、第1軸（自明解を除いた最大の固有値）の $\rho^2$ を小数第3位まで（四捨五入）求めよ。
     answer: 0.69
     tolerance: 0.001
     hint: |
@@ -351,7 +351,7 @@ questions:
     level: 応用
     type: numeric
     question: |
-      測定方程式 $x_1=\xi+\delta_1$、$x_2=0.8\,\xi+\delta_2$（$x_1$ の負荷量を1に固定）で、$V[\xi]=2$、誤差は互いに、また $\xi$ と無相関である。モデルが再現する $\mathrm{Cov}(x_1,x_2)$ を小数第1位まで求めよ。
+      測定方程式 $x_1=\xi+\delta_1$、$x_2=0.8\,\xi+\delta_2$（$x_1$ の負荷量を1に固定）で、$V[\xi]=2$、誤差は互いに、また $\xi$ と無相関である。モデルが再現する $\mathrm{Cov}(x_1,x_2)$ を小数第1位まで（四捨五入）求めよ。
     answer: 1.6
     tolerance: 0.05
     hint: |
@@ -365,7 +365,7 @@ questions:
     level: 基本
     type: numeric
     question: |
-      標準化したパスモデル $m=ax+e_m$、$y=c'x+bm+e_y$ で、$a=0.5,\ b=0.4,\ c'=0.3$ である。$x$ から $y$ への総合効果を小数第1位まで求めよ。
+      標準化したパスモデル $m=ax+e_m$、$y=c'x+bm+e_y$ で、$a=0.5,\ b=0.4,\ c'=0.3$ である。$x$ から $y$ への総合効果を小数第1位まで（四捨五入）求めよ。
     answer: 0.5
     tolerance: 0.05
     hint: |
@@ -378,7 +378,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      標準化した3変数の相関が $r_{xm}=0.5,\ r_{xy}=0.45,\ r_{my}=0.5$ である。パスモデル $m=ax+e_m$、$y=c'x+bm+e_y$ を当てはめたときの、$x$ から $y$ への間接効果 $ab$ を小数第3位まで求めよ。
+      標準化した3変数の相関が $r_{xm}=0.5,\ r_{xy}=0.45,\ r_{my}=0.5$ である。パスモデル $m=ax+e_m$、$y=c'x+bm+e_y$ を当てはめたときの、$x$ から $y$ への間接効果 $ab$ を小数第3位まで（四捨五入）求めよ。
     answer: 0.183
     tolerance: 0.001
     hint: |
@@ -392,7 +392,7 @@ questions:
     level: 応用
     type: numeric
     question: |
-      標準化した3変数の相関が $r_{xm}=0.5,\ r_{xy}=0.45,\ r_{my}=0.5$ で、$y=c'x+bm+e_y$ のパス係数が $c'=0.267,\ b=0.367$（いずれも分数 $4/15,\ 11/30$ の値）である。誤差 $e_y$ の分散を小数第3位まで求めよ。
+      標準化した3変数の相関が $r_{xm}=0.5,\ r_{xy}=0.45,\ r_{my}=0.5$ で、$y=c'x+bm+e_y$ のパス係数が $c'=0.267,\ b=0.367$（いずれも分数 $4/15,\ 11/30$ の値）である。誤差 $e_y$ の分散を小数第3位まで（四捨五入）求めよ。
     answer: 0.697
     tolerance: 0.001
     hint: |
@@ -419,7 +419,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      $n=301$ の構造方程式モデルで、$\chi^2=30$、自由度 $\mathit{df}=8$ であった。RMSEA を小数第3位まで求めよ。
+      $n=301$ の構造方程式モデルで、$\chi^2=30$、自由度 $\mathit{df}=8$ であった。RMSEA を小数第3位まで（四捨五入）求めよ。
     answer: 0.096
     tolerance: 0.001
     hint: |
@@ -427,3 +427,29 @@ questions:
     explanation: |
       $$\mathrm{RMSEA}=\sqrt{\frac{30-8}{8\times300}}=\sqrt{0.00917}=0.096$$
       目安として $0.05$ 以下なら当てはまりがよく、$0.1$ を超えると悪いとされるので、この値はやや悪い部類です。
+
+  - id: q26-multidimensional-scaling-4
+    term: multidimensional-scaling
+    level: 応用
+    type: derivation
+    question: |
+      $n$ 個の点 $\boldsymbol x_1,\dots,\boldsymbol x_n$ は重心が原点（$\sum_i\boldsymbol x_i=\boldsymbol 0$）にあり、$X$ を $i$ 行目が $\boldsymbol x_i^\top$ の行列、$B=XX^\top$（$b_{ij}=\boldsymbol x_i^\top\boldsymbol x_j$）とする。
+      距離の2乗を並べた行列 $D^{(2)}=(d_{ij}^2)$ と中心化行列 $J=I-\frac1n\boldsymbol 1\boldsymbol 1^\top$ について、$B=-\frac12JD^{(2)}J$ を示し、$B$ から配置を復元する方法を述べよ。
+    steps:
+      - |
+        $d_{ij}^2=\|\boldsymbol x_i\|^2+\|\boldsymbol x_j\|^2-2\boldsymbol x_i^\top\boldsymbol x_j$。$\boldsymbol c=(\|\boldsymbol x_1\|^2,\dots,\|\boldsymbol x_n\|^2)^\top$ とおくと $D^{(2)}=\boldsymbol c\boldsymbol 1^\top+\boldsymbol 1\boldsymbol c^\top-2B$。
+      - |
+        $J\boldsymbol 1=\boldsymbol 0$（$\boldsymbol 1^\top J=\boldsymbol 0^\top$）なので、両側から $J$ を掛けると $\boldsymbol c\boldsymbol 1^\top$ と $\boldsymbol 1\boldsymbol c^\top$ の項が消える：$JD^{(2)}J=-2JBJ$。
+      - |
+        重心が原点なので $\boldsymbol 1^\top X=\boldsymbol 0^\top$、よって $JX=X$ で $JBJ=JXX^\top J=XX^\top=B$。したがって $B=-\frac12JD^{(2)}J$。
+      - |
+        $B$ は半正定値なので $B=V\Lambda V^\top$（$\Lambda$ は固有値 $\lambda_1\ge\lambda_2\ge\cdots\ge0$）と分解でき、$X=V\Lambda^{1/2}$ とおけば $XX^\top=B$。上位 $m$ 個の固有値・固有ベクトルを使えば $m$ 次元の配置が得られる。
+    answer: '$B=-\dfrac12JD^{(2)}J$。$B=V\Lambda V^\top$ と固有値分解して $X=V\Lambda^{1/2}$（回転・鏡映を除いて一意）'
+    hint: |
+      $d_{ij}^2$ を内積で展開し、$J$ を両側から掛けると「行だけ・列だけに依存する項」が消えることを使う。
+    explanation: |
+      距離の2乗は $D^{(2)}=\boldsymbol c\boldsymbol 1^\top+\boldsymbol 1\boldsymbol c^\top-2B$ と書け、二重中心化で前の2項が消えて
+      $$B=-\frac12JD^{(2)}J$$
+      となります（ヤング・ハウスホルダーの定理）。距離だけから内積行列 $B$ が復元でき、その固有値分解 $X=V\Lambda^{1/2}$ が古典的 MDS の配置です。
+      距離は回転・鏡映・平行移動で変わらないので、配置もその自由度を除いてしか決まりません（重心を原点に固定するのが $J$ の役割です）。
+      よくある間違いは、係数 $-\frac12$ を落とすこと、$D^{(2)}$ ではなく距離そのもの $D$ を二重中心化することです。

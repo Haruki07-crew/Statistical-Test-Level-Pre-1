@@ -150,4 +150,29 @@ yy = rng.poisson(t * np.exp(-2 + 0.5 * xx)).astype(float)
 bo = irls(np.column_stack([np.ones(2000), xx]), yy, "log", offset=np.log(t))
 q.check("q18-offset-term-1", abs(bo[0] + 2) < 0.02 and abs(bo[1] - 0.5) < 0.02, f"オフセット付きIRLSで係数を再現 {bo.round(3)}")
 
+# --- 導出問題（追加） ---
+def _deriv18():
+    import numpy as _N
+    import sympy as _S
+    eta, y = _S.symbols("eta y", real=True)
+    p = 1 / (1 + _S.exp(-eta))
+    l_orig = y * _S.log(p) + (1 - y) * _S.log(1 - p)
+    l_new = y * eta - _S.log(1 + _S.exp(eta))
+    ok = all(abs(float((l_orig - l_new).subs({eta: e, y: yy}))) < 1e-12 for e in (-2, 0.3, 1.7) for yy in (0, 1))
+    ok &= _S.simplify(_S.diff(l_new, eta) - (y - p)) == 0
+    ok &= _S.simplify(_S.diff(l_new, eta, 2) + p * (1 - p)) == 0
+    # 数値微分で勾配 X'(y-p)、ヘッセ -X'WX を確認
+    rng = _N.random.default_rng(18)
+    X = _N.column_stack([_N.ones(30), rng.normal(size=(30, 2))]); yv = rng.integers(0, 2, 30).astype(float)
+    b = _N.array([0.2, -0.5, 0.8])
+    ll = lambda bb: (yv * (X @ bb) - _N.log1p(_N.exp(X @ bb))).sum()
+    pv = 1 / (1 + _N.exp(-(X @ b)))
+    g = X.T @ (yv - pv); Hs = -(X.T * (pv * (1 - pv))) @ X
+    h = 1e-5; E = _N.eye(3)
+    gnum = _N.array([(ll(b + h * E[j]) - ll(b - h * E[j])) / (2 * h) for j in range(3)])
+    Hnum = _N.array([[(ll(b + h * E[j] + h * E[k]) - ll(b + h * E[j] - h * E[k]) - ll(b - h * E[j] + h * E[k]) + ll(b - h * E[j] - h * E[k])) / (4 * h * h) for k in range(3)] for j in range(3)])
+    ok &= _N.allclose(g, gnum, atol=1e-6) and _N.allclose(Hs, Hnum, atol=1e-3)
+    q.check("q18-logistic-regression-4", bool(ok), "sympy: ℓ=yη-log(1+e^η)、dℓ/dη=y-p、d²ℓ/dη²=-p(1-p)、数値微分で X'(y-p)、-X'WX")
+_deriv18()
+
 q.done()

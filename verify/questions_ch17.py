@@ -171,4 +171,23 @@ q.check("q17-breusch-pagan-test-1", abs(stats.chi2.sf(6, 2) - np.exp(-3)) < 1e-1
 # --- 頑健標準誤差 ---
 q.concept("q17-robust-standard-error-1", "係数はOLSのまま、分散推定だけ変える（誤り）")
 
+# --- 導出問題（追加） ---
+def _deriv17():
+    import sympy as _S
+    xs = _S.symbols("x1:6", real=True)
+    n = len(xs)
+    X = _S.Matrix([[1, xi] for xi in xs])
+    XtX = X.T * X
+    xbar = sum(xs) / n; Sxx = sum((xi - xbar) ** 2 for xi in xs)
+    ok = _S.expand(XtX.det() - n * Sxx) == 0
+    inv = XtX.inv()
+    ok_all = ok
+    for i in (0, 3):
+        h = (X[i, :] * inv * X[i, :].T)[0]
+        ok_all &= _S.simplify(h - (_S.Rational(1, n) + (xs[i] - xbar) ** 2 / Sxx)) == 0
+    H = X * inv * X.T
+    ok_all &= _S.simplify(H.trace() - 2) == 0
+    q.check("q17-leverage-4", bool(ok_all), "sympy（n=5 の記号データ）: det=nSxx、h_ii=1/n+(x_i-x̄)²/Sxx、Σh_ii=2")
+_deriv17()
+
 q.done()

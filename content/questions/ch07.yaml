@@ -666,3 +666,55 @@ questions:
       $U(0,1)$ の最大値 $M_n$ について
       $$P\{n(M_n-1)\le x\}=\left(1+\frac{x}{n}\right)^n\to e^{x}\quad(x<0)$$
       で、これは $\alpha=1$ のワイブル型 $\exp(-(-x)^\alpha)$ です。裾が指数的に減る分布はグンベル型、べき乗で減る分布はフレシェ型になります。
+
+  - id: q07-chebyshev-inequality-4
+    term: chebyshev-inequality
+    level: 標準
+    type: derivation
+    question: |
+      $X$ の期待値を $\mu$、分散を $\sigma^2>0$ とする。まず非負の確率変数 $Z$ と $a>0$ について $P(Z\ge a)\le E[Z]/a$（マルコフの不等式）を示し、
+      それを使ってチェビシェフの不等式 $P(|X-\mu|\ge k\sigma)\le\dfrac1{k^2}$（$k>0$）を導け。
+    steps:
+      - |
+        $Z\ge0$ なので $Z\ge Z\cdot\mathbf 1\{Z\ge a\}\ge a\cdot\mathbf 1\{Z\ge a\}$（$\mathbf 1$ は指示関数）。
+      - |
+        期待値をとる：$E[Z]\ge a\,P(Z\ge a)$、つまり $P(Z\ge a)\le\dfrac{E[Z]}{a}$。
+      - |
+        $Z=(X-\mu)^2$、$a=k^2\sigma^2$ とおく。$|X-\mu|\ge k\sigma\iff(X-\mu)^2\ge k^2\sigma^2$。
+      - |
+        $P(|X-\mu|\ge k\sigma)\le\dfrac{E[(X-\mu)^2]}{k^2\sigma^2}=\dfrac{\sigma^2}{k^2\sigma^2}=\dfrac1{k^2}$。
+    answer: '$P(|X-\mu|\ge k\sigma)\le\dfrac{1}{k^2}$（マルコフの不等式を $(X-\mu)^2$ に使う）'
+    hint: |
+      $Z$ を「$Z\ge a$ のときだけ $a$、それ以外は0」という変数で下から押さえる。
+    explanation: |
+      マルコフの不等式は $Z\ge a\mathbf 1\{Z\ge a\}$ の期待値をとるだけで出ます。これを $(X-\mu)^2$ に使うと
+      $$P(|X-\mu|\ge k\sigma)=P\big((X-\mu)^2\ge k^2\sigma^2\big)\le\frac{\sigma^2}{k^2\sigma^2}=\frac1{k^2}$$
+      です。分布の形を何も仮定しないかわりに評価は粗く、$k\le1$ では意味のない上界になります。
+      $k>1$ では、$X=\mu\pm k\sigma$ にそれぞれ確率 $\frac{1}{2k^2}$、$X=\mu$ に残りの確率をおく分布で等号が成り立ちます。
+      よくある間違いは、$a=k\sigma$ のまま $Z=(X-\mu)^2$ に当てはめて $1/k$ としてしまうことです。
+
+  - id: q07-delta-method-4
+    term: delta-method
+    level: 応用
+    type: derivation
+    question: |
+      $\hat p$ を $n$ 回のベルヌーイ試行の成功割合とすると、$\sqrt n(\hat p-p)\xrightarrow{d}N(0,\ p(1-p))$ である。
+      デルタ法を使って、漸近分散が $p$ によらない定数になる変換 $g$（分散安定化変換）を求め、そのときの $g(\hat p)$ の近似分散を求めよ。
+    steps:
+      - |
+        デルタ法：$\sqrt n\{g(\hat p)-g(p)\}\xrightarrow{d}N\big(0,\ g'(p)^2\,p(1-p)\big)$。
+      - |
+        漸近分散を定数 $c$ にする条件：$g'(p)^2p(1-p)=c$、つまり $g'(p)=\dfrac{\sqrt c}{\sqrt{p(1-p)}}$。
+      - |
+        $c=\dfrac14$ とすると $g'(p)=\dfrac{1}{2\sqrt{p(1-p)}}$。$\dfrac{d}{dp}\arcsin\sqrt p=\dfrac{1}{\sqrt{1-p}}\cdot\dfrac{1}{2\sqrt p}$ なので $g(p)=\arcsin\sqrt p$。
+      - |
+        よって $\sqrt n\{\arcsin\sqrt{\hat p}-\arcsin\sqrt p\}\xrightarrow{d}N(0,\tfrac14)$、$V[\arcsin\sqrt{\hat p}]\approx\dfrac{1}{4n}$。
+    answer: '$g(p)=\arcsin\sqrt p$（の定数倍）、$V[\arcsin\sqrt{\hat p}]\approx\dfrac{1}{4n}$'
+    hint: |
+      デルタ法の漸近分散 $g'(p)^2p(1-p)$ が定数になるような微分方程式を解く。
+    explanation: |
+      デルタ法の漸近分散 $g'(p)^2p(1-p)$ を定数にする $g$ を探すと、$g'(p)\propto1/\sqrt{p(1-p)}$ から
+      $$g(p)=\arcsin\sqrt p,\qquad V[\arcsin\sqrt{\hat p}]\approx\frac1{4n}$$
+      が得られます（逆正弦変換、角変換）。分散が $p$ に依存しなくなるので、比率を比べる検定や信頼区間を作りやすくなります。
+      $2\arcsin\sqrt p$ を使えば近似分散は $1/n$ で、定数倍の違いは本質ではありません。
+      よくある間違いは、$g'(p)$ ではなく $g'(p)^2$ が分散に掛かることを忘れること、また $\arcsin\sqrt p$ の微分で合成関数の $\frac{1}{2\sqrt p}$ を落とすことです。

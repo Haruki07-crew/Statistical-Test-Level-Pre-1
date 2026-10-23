@@ -707,3 +707,58 @@ questions:
     explanation: |
       $$\widehat{\mathrm{SE}}=\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}=\sqrt{\frac{36}{40}+\frac{56.25}{50}}=\sqrt{0.9+1.125}=\sqrt{2.025}=1.423$$
       それぞれの標準誤差 $0.949$ と $1.061$ を足して $2.010$ とするのは誤りです。
+
+  - id: q08-order-statistics-4
+    term: order-statistics
+    level: 応用
+    type: derivation
+    question: |
+      $X_1,\dots,X_n$ を一様分布 $U(0,\theta)$ からの i.i.d. 標本、$M=X_{(n)}=\max_iX_i$ とする。
+      $M$ の密度関数を求め、$T=\dfrac{n+1}{n}M$ が $\theta$ の不偏推定量であることを示して、$V[T]$ を求めよ。
+    steps:
+      - |
+        最大値が $m$ 以下 ⇔ 全員が $m$ 以下：$P(M\le m)=\Big(\dfrac m\theta\Big)^n$（$0<m<\theta$）。微分して $f_M(m)=\dfrac{n\,m^{n-1}}{\theta^n}$。
+      - |
+        $E[M]=\displaystyle\int_0^\theta m\cdot\frac{nm^{n-1}}{\theta^n}dm=\frac{n}{n+1}\theta$。よって $E[T]=\dfrac{n+1}{n}\cdot\dfrac{n}{n+1}\theta=\theta$（不偏）。
+      - |
+        $E[M^2]=\displaystyle\int_0^\theta m^2\cdot\frac{nm^{n-1}}{\theta^n}dm=\frac{n}{n+2}\theta^2$。
+      - |
+        $V[M]=\dfrac{n}{n+2}\theta^2-\dfrac{n^2}{(n+1)^2}\theta^2=\dfrac{n\theta^2}{(n+1)^2(n+2)}$。
+      - |
+        $V[T]=\dfrac{(n+1)^2}{n^2}V[M]=\dfrac{\theta^2}{n(n+2)}$。
+    answer: '$f_M(m)=\dfrac{nm^{n-1}}{\theta^n}\ (0<m<\theta)$、$E[T]=\theta$、$V[T]=\dfrac{\theta^2}{n(n+2)}$'
+    hint: |
+      最大値の累積分布関数は「全員が $m$ 以下」の確率なので、各 $X_i$ の累積分布関数の $n$ 乗になる。
+    explanation: |
+      $P(M\le m)=(m/\theta)^n$ を微分して $f_M(m)=nm^{n-1}/\theta^n$。積分すると $E[M]=\frac{n}{n+1}\theta$（少し小さめ）なので、$\frac{n+1}{n}$ 倍すると不偏になり、
+      $$V[T]=\frac{\theta^2}{n(n+2)}$$
+      です。モーメント推定量 $2\bar X$ の分散 $\theta^2/(3n)$ と比べると、$T$ の分散は $1/n^2$ の速さで小さくなり、はるかに精度がよいことがわかります
+      （台が母数に依存するので、クラメール・ラオの下限の議論は当てはまりません）。
+      よくある間違いは、最大値の累積分布関数を $1-(1-m/\theta)^n$（最小値の式）としてしまうこと、また $V[T]$ で係数 $\frac{(n+1)^2}{n^2}$ を2乗し忘れることです。
+
+  - id: q08-cramer-rao-inequality-4
+    term: cramer-rao-inequality
+    level: 標準
+    type: derivation
+    question: |
+      $X_1,\dots,X_n$ をポアソン分布 $Po(\lambda)$ からの i.i.d. 標本とする。1個あたりのフィッシャー情報量 $I(\lambda)$ を求め、
+      $\lambda$ の不偏推定量の分散のクラメール・ラオの下限を求めよ。また $\bar X$ がこの下限を達成すること（有効推定量であること）を示せ。
+    steps:
+      - |
+        対数尤度（1個）：$\log f(x;\lambda)=x\log\lambda-\lambda-\log x!$。
+      - |
+        2回微分：$\dfrac{\partial}{\partial\lambda}\log f=\dfrac x\lambda-1$、$\dfrac{\partial^2}{\partial\lambda^2}\log f=-\dfrac{x}{\lambda^2}$。
+      - |
+        $I(\lambda)=-E\Big[-\dfrac{X}{\lambda^2}\Big]=\dfrac{E[X]}{\lambda^2}=\dfrac1\lambda$。
+      - |
+        下限：$V[\hat\lambda]\ge\dfrac{1}{nI(\lambda)}=\dfrac{\lambda}{n}$（$\hat\lambda$ は任意の不偏推定量）。
+      - |
+        $E[\bar X]=\lambda$、$V[\bar X]=\dfrac{V[X_1]}{n}=\dfrac{\lambda}{n}$ で下限に一致するので、$\bar X$ は有効推定量。
+    answer: '$I(\lambda)=\dfrac1\lambda$、下限 $\dfrac{\lambda}{n}$。$V[\bar X]=\dfrac{\lambda}{n}$ なので $\bar X$ は有効推定量'
+    hint: |
+      $I(\lambda)=-E\big[\partial^2\log f(X;\lambda)/\partial\lambda^2\big]$ を使う。ポアソン分布では $E[X]=V[X]=\lambda$。
+    explanation: |
+      2階微分 $-x/\lambda^2$ の期待値から $I(\lambda)=1/\lambda$、$n$ 個では $nI(\lambda)=n/\lambda$ なので、下限は
+      $$V[\hat\lambda]\ge\frac{\lambda}{n}$$
+      です。$\bar X$ は不偏で分散がちょうど $\lambda/n$ なので下限を達成します（$\bar X$ は最尤推定量でもあります）。
+      よくある間違いは、下限を $1/I(\lambda)=\lambda$ として標本サイズ $n$ で割り忘れること、また情報量を $1/\lambda^2$ のまま（期待値をとり忘れて）使うことです。

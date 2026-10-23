@@ -1,6 +1,6 @@
 {
  "q21-cluster-sampling-1": {
-  "hash": "c1b2db0ed385045b",
+  "hash": "fc311743eae79a2a",
   "ok": true
  },
  "q21-cluster-sampling-2": {
@@ -12,7 +12,7 @@
   "ok": true
  },
  "q21-design-effect-2": {
-  "hash": "8abeee19fc214118",
+  "hash": "6de6ca2dd09d09b0",
   "ok": true
  },
  "q21-horvitz-thompson-estimator-1": {
@@ -20,7 +20,7 @@
   "ok": true
  },
  "q21-horvitz-thompson-estimator-2": {
-  "hash": "b9d1f101562483a9",
+  "hash": "b183d64a620840e0",
   "ok": true
  },
  "q21-horvitz-thompson-estimator-3": {
@@ -28,11 +28,11 @@
   "ok": true
  },
  "q21-inclusion-probability-1": {
-  "hash": "12f8888e4f3f9011",
+  "hash": "bff2a16cac8fcd0c",
   "ok": true
  },
  "q21-inclusion-probability-2": {
-  "hash": "c2569c1f9793f597",
+  "hash": "a73c6ea5e7091194",
   "ok": true
  },
  "q21-neyman-allocation-1": {
@@ -40,11 +40,15 @@
   "ok": true
  },
  "q21-neyman-allocation-2": {
-  "hash": "93e0c413077799ac",
+  "hash": "3b0e24d3f4734e3d",
   "ok": true
  },
  "q21-neyman-allocation-3": {
   "hash": "26df2ed1f5819e7a",
+  "ok": true
+ },
+ "q21-neyman-allocation-4": {
+  "hash": "e7cbabfddce057f7",
   "ok": true
  },
  "q21-nonresponse-bias-1": {
@@ -72,7 +76,7 @@
   "ok": true
  },
  "q21-ratio-estimation-2": {
-  "hash": "5fab1191e22574ff",
+  "hash": "0f8d6c3c4631713c",
   "ok": true
  },
  "q21-ratio-estimation-3": {
@@ -88,7 +92,7 @@
   "ok": true
  },
  "q21-sampling-and-nonsampling-error-2": {
-  "hash": "c330e68afa3f8f53",
+  "hash": "6a4b04e026c22977",
   "ok": true
  },
  "q21-sampling-weight-1": {
@@ -107,12 +111,16 @@
   "hash": "f78212147830cfd0",
   "ok": true
  },
+ "q21-simple-random-sampling-4": {
+  "hash": "ccfddd383fb9c485",
+  "ok": true
+ },
  "q21-stratified-sampling-1": {
   "hash": "b1c29b91567e698a",
   "ok": true
  },
  "q21-stratified-sampling-2": {
-  "hash": "8e7ea9501acf04ee",
+  "hash": "81a7ac74d9307902",
   "ok": true
  },
  "q21-systematic-sampling-1": {
@@ -124,7 +132,7 @@
   "ok": true
  },
  "q21-two-stage-sampling-1": {
-  "hash": "1ccd5c21f7dfb8a3",
+  "hash": "f3aafbb3e7247b90",
   "ok": true
  },
  "q21-two-stage-sampling-2": {

@@ -155,7 +155,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      1次元の5点 $0,\ 1,\ 3.2,\ 6,\ 10$ に最長距離法（距離は差の絶対値）を適用する。**2番目**の併合の高さを小数第1位まで求めよ。
+      1次元の5点 $0,\ 1,\ 3.2,\ 6,\ 10$ に最長距離法（距離は差の絶対値）を適用する。**2番目**の併合の高さを小数第1位まで（四捨五入）求めよ。
     answer: 2.8
     tolerance: 0.05
     hint: |
@@ -187,7 +187,7 @@ questions:
     question: |
       4つの対象 A, B, C, D の距離が
       $d_{AB}=2,\ d_{AC}=6,\ d_{AD}=10,\ d_{BC}=5,\ d_{BD}=9,\ d_{CD}=4$
-      である。群平均法で、最後に {A,B} と {C,D} が併合されるときの高さを小数第1位まで求めよ。
+      である。群平均法で、最後に {A,B} と {C,D} が併合されるときの高さを小数第1位まで（四捨五入）求めよ。
     answer: 7.5
     tolerance: 0.05
     hint: |
@@ -268,7 +268,7 @@ questions:
     type: numeric
     question: |
       1点ずつのクラスター $i,\ j,\ k$ の2乗ユークリッド距離が $d_{ki}=4,\ d_{kj}=10,\ d_{ij}=2$ である。
-      重心法で $i$ と $j$ を併合したあとの $d(k,\ i\cup j)$ を、ランス・ウィリアムズの更新式で求め、小数第1位まで答えよ。
+      重心法で $i$ と $j$ を併合したあとの $d(k,\ i\cup j)$ を、ランス・ウィリアムズの更新式で求め、小数第1位まで（四捨五入）答えよ。
     answer: 6.5
     tolerance: 0.05
     hint: |
@@ -318,7 +318,7 @@ questions:
     type: numeric
     question: |
       1点ずつのクラスター $i,\ j,\ k$ の2乗ユークリッド距離が $d_{ki}=8,\ d_{kj}=18,\ d_{ij}=2$ である。
-      ウォード法の係数でランス・ウィリアムズの更新式を使い、$i$ と $j$ を併合したあとの $d(k,\ i\cup j)$ を小数第3位まで求めよ。
+      ウォード法の係数でランス・ウィリアムズの更新式を使い、$i$ と $j$ を併合したあとの $d(k,\ i\cup j)$ を小数第3位まで（四捨五入）求めよ。
     answer: 16.667
     tolerance: 0.001
     hint: |
@@ -333,7 +333,7 @@ questions:
     level: 基本
     type: numeric
     question: |
-      1次元のデータ $1,\ 2,\ 4,\ 7,\ 9,\ 10$ に $k=2$ の k-means 法を適用する。初期中心を $2$ と $9$ として、割り当てと中心の更新を1回行ったあとの、小さいほうの中心を小数第3位まで求めよ。
+      1次元のデータ $1,\ 2,\ 4,\ 7,\ 9,\ 10$ に $k=2$ の k-means 法を適用する。初期中心を $2$ と $9$ として、割り当てと中心の更新を1回行ったあとの、小さいほうの中心を小数第3位まで（四捨五入）求めよ。
     answer: 2.333
     tolerance: 0.001
     hint: |
@@ -348,7 +348,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      1次元のデータ $1,\ 2,\ 4,\ 7,\ 9,\ 10$ を $\{1,2,4\}$ と $\{7,9,10\}$ の2つのクラスターに分けたとき、クラスター内平方和 $W$ を小数第3位まで求めよ。
+      1次元のデータ $1,\ 2,\ 4,\ 7,\ 9,\ 10$ を $\{1,2,4\}$ と $\{7,9,10\}$ の2つのクラスターに分けたとき、クラスター内平方和 $W$ を小数第3位まで（四捨五入）求めよ。
     answer: 9.333
     tolerance: 0.001
     hint: |
@@ -438,7 +438,7 @@ questions:
     question: |
       8項目の2値データ（1＝あり）で、2つの対象が
       $x=(1,1,0,1,0,0,1,0)$、$y=(1,0,0,1,1,0,1,0)$
-      である。ジャッカード係数を小数第2位まで求めよ。
+      である。ジャッカード係数を小数第2位まで（四捨五入）求めよ。
     answer: 0.6
     tolerance: 0.005
     hint: |
@@ -453,7 +453,7 @@ questions:
     level: 基本
     type: numeric
     question: |
-      $\boldsymbol{x}=(1,\ 2,\ 2)$、$\boldsymbol{y}=(2,\ 0,\ 1)$ のコサイン類似度を小数第3位まで求めよ。
+      $\boldsymbol{x}=(1,\ 2,\ 2)$、$\boldsymbol{y}=(2,\ 0,\ 1)$ のコサイン類似度を小数第3位まで（四捨五入）求めよ。
     answer: 0.596
     tolerance: 0.001
     hint: |
@@ -468,7 +468,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      ある点 $i$ について、同じクラスターの他の点との平均距離が $a(i)=2$、最も近い別のクラスターの点との平均距離が $b(i)=5$ であった。シルエット係数 $s(i)$ を小数第1位まで求めよ。
+      ある点 $i$ について、同じクラスターの他の点との平均距離が $a(i)=2$、最も近い別のクラスターの点との平均距離が $b(i)=5$ であった。シルエット係数 $s(i)$ を小数第1位まで（四捨五入）求めよ。
     answer: 0.6
     tolerance: 0.05
     hint: |
@@ -495,7 +495,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      混合正規分布 $0.5\,N(0,1)+0.5\,N(3,1)$ で、データ $x=1$ が第1成分（$N(0,1)$）に属する事後確率（負担率）を小数第3位まで求めよ。
+      混合正規分布 $0.5\,N(0,1)+0.5\,N(3,1)$ で、データ $x=1$ が第1成分（$N(0,1)$）に属する事後確率（負担率）を小数第3位まで（四捨五入）求めよ。
     answer: 0.818
     tolerance: 0.001
     hint: |
@@ -510,7 +510,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      2変数の標準偏差がそれぞれ $10$ と $0.5$ である。2つの対象の差が $(5,\ 1)$ のとき、標準化したデータでのユークリッド距離を小数第3位まで求めよ。
+      2変数の標準偏差がそれぞれ $10$ と $0.5$ である。2つの対象の差が $(5,\ 1)$ のとき、標準化したデータでのユークリッド距離を小数第3位まで（四捨五入）求めよ。
     answer: 2.062
     tolerance: 0.001
     hint: |
@@ -518,3 +518,31 @@ questions:
     explanation: |
       $$\sqrt{\Bigl(\frac{5}{10}\Bigr)^2+\Bigl(\frac{1}{0.5}\Bigr)^2}=\sqrt{0.25+4}=2.062$$
       標準化しないと $\sqrt{25+1}=5.10$ で、ほぼ第1変数の差だけで決まります。標準化すると、ばらつきに比べて大きな差がある第2変数が主役になります。
+
+  - id: q24-ward-method-4
+    term: ward-method
+    level: 応用
+    type: derivation
+    question: |
+      クラスター $A$（大きさ $n_A$、重心 $\bar{\boldsymbol a}$）と $B$（大きさ $n_B$、重心 $\bar{\boldsymbol b}$）を併合したときの、クラスター内平方和の増加量
+      $\Delta=W(A\cup B)-W(A)-W(B)$（$W(C)=\sum_{\boldsymbol x\in C}\|\boldsymbol x-\bar{\boldsymbol c}\|^2$）が $\Delta=\dfrac{n_An_B}{n_A+n_B}\|\bar{\boldsymbol a}-\bar{\boldsymbol b}\|^2$ と書けることを示せ。
+    steps:
+      - |
+        平方和の分解：$W(C)=\sum_{\boldsymbol x\in C}\|\boldsymbol x\|^2-n_C\|\bar{\boldsymbol c}\|^2$。
+      - |
+        $\sum\|\boldsymbol x\|^2$ の部分は併合の前後で同じなので打ち消し合い、$\Delta=n_A\|\bar{\boldsymbol a}\|^2+n_B\|\bar{\boldsymbol b}\|^2-(n_A+n_B)\|\bar{\boldsymbol m}\|^2$。
+      - |
+        併合後の重心は $\bar{\boldsymbol m}=\dfrac{n_A\bar{\boldsymbol a}+n_B\bar{\boldsymbol b}}{n_A+n_B}$ なので $(n_A+n_B)\|\bar{\boldsymbol m}\|^2=\dfrac{\|n_A\bar{\boldsymbol a}+n_B\bar{\boldsymbol b}\|^2}{n_A+n_B}$。
+      - |
+        通分：$\Delta=\dfrac{(n_A+n_B)(n_A\|\bar{\boldsymbol a}\|^2+n_B\|\bar{\boldsymbol b}\|^2)-\|n_A\bar{\boldsymbol a}+n_B\bar{\boldsymbol b}\|^2}{n_A+n_B}=\dfrac{n_An_B(\|\bar{\boldsymbol a}\|^2-2\bar{\boldsymbol a}^\top\bar{\boldsymbol b}+\|\bar{\boldsymbol b}\|^2)}{n_A+n_B}$。
+      - |
+        よって $\Delta=\dfrac{n_An_B}{n_A+n_B}\|\bar{\boldsymbol a}-\bar{\boldsymbol b}\|^2$。
+    answer: '$\Delta=\dfrac{n_An_B}{n_A+n_B}\|\bar{\boldsymbol a}-\bar{\boldsymbol b}\|^2$'
+    hint: |
+      $W(C)=\sum\|\boldsymbol x\|^2-n_C\|\bar{\boldsymbol c}\|^2$ と書くと、個々の点の項は併合の前後で消える。重心だけの計算になる。
+    explanation: |
+      個々の点の2乗和は併合で変わらないので、増加量は重心だけで決まり
+      $$\Delta=\frac{n_An_B}{n_A+n_B}\|\bar{\boldsymbol a}-\bar{\boldsymbol b}\|^2$$
+      となります。ウォード法は各段階でこの $\Delta$ が最小の組を併合します。係数 $\frac{n_An_B}{n_A+n_B}$ があるため、重心が近くても大きなクラスターどうしは併合されにくくなります。
+      1点どうし（$n_A=n_B=1$）では $\Delta=\frac12\|\boldsymbol a-\boldsymbol b\|^2$ で、ユークリッド距離の2乗の半分です。
+      よくある間違いは、係数を $\frac{1}{n_A+n_B}$ や $n_An_B$ にすること、2乗を付けずに距離そのものを使うことです。

@@ -278,3 +278,54 @@ questions:
       $$f_Z(z)=\int_0^z\lambda_1e^{-\lambda_1x}\lambda_2e^{-\lambda_2(z-x)}dx=\frac{\lambda_1\lambda_2}{\lambda_2-\lambda_1}\left(e^{-\lambda_1z}-e^{-\lambda_2z}\right)$$
       $\int_0^\infty f_Z(z)\,dz=\frac{\lambda_1\lambda_2}{\lambda_2-\lambda_1}\left(\frac1{\lambda_1}-\frac1{\lambda_2}\right)=1$ で密度になっていることが確かめられます。
       期待値は $1/\lambda_1+1/\lambda_2$ です。$\lambda_1=\lambda_2=\lambda$ の極限では $\lambda^2ze^{-\lambda z}$（形状2のガンマ分布）になり、レートが異なる指数分布の和はガンマ分布になりません。
+
+  - id: q04-logit-logistic-transformation-4
+    term: logit-logistic-transformation
+    level: 標準
+    type: derivation
+    question: |
+      $U$ が一様分布 $U(0,1)$ に従うとき、ロジット変換 $Y=\log\dfrac{U}{1-U}$ の密度関数と累積分布関数を求めよ。
+    steps:
+      - |
+        逆変換はロジスティック関数：$u=\dfrac{e^{y}}{1+e^{y}}$（$y$ は実数全体、$u\in(0,1)$ と1対1）。
+      - |
+        微分すると $\dfrac{du}{dy}=\dfrac{e^{y}}{(1+e^{y})^2}=u(1-u)>0$。
+      - |
+        変数変換の公式 $f_Y(y)=f_U(u)\left|\dfrac{du}{dy}\right|$ で、$f_U=1$ なので $f_Y(y)=\dfrac{e^{y}}{(1+e^{y})^2}$。
+      - |
+        累積分布関数は $F_Y(y)=P(U\le u(y))=u(y)=\dfrac{1}{1+e^{-y}}$。
+    answer: '$f_Y(y)=\dfrac{e^{y}}{(1+e^{y})^2}$、$F_Y(y)=\dfrac{1}{1+e^{-y}}$（$-\infty<y<\infty$、標準ロジスティック分布）'
+    hint: |
+      $y$ を $u$ について解いて逆変換を作り、$|du/dy|$ を掛ける。
+    explanation: |
+      逆変換 $u=e^y/(1+e^y)$ の導関数は $u(1-u)$ なので
+      $$f_Y(y)=\frac{e^{y}}{(1+e^{y})^2},\qquad F_Y(y)=\frac{1}{1+e^{-y}}$$
+      です。これは標準ロジスティック分布で、$f_Y(-y)=f_Y(y)$ と0について対称（期待値0）です。
+      累積分布関数がちょうどロジスティック関数になるので、ロジスティック回帰は「潜在変数にロジスティック分布の誤差がある」モデルとも読めます。
+      よくある間違いは、ヤコビアンを $dy/du=1/\{u(1-u)\}$ のまま掛けてしまうことです（掛けるのは逆変換の導関数 $du/dy$）。
+
+  - id: q04-change-of-variables-4
+    term: change-of-variables
+    level: 応用
+    type: derivation
+    question: |
+      $X,Y$ が独立に $N(0,1)$ に従う。極座標 $X=R\cos\Theta$、$Y=R\sin\Theta$（$R>0$、$0\le\Theta<2\pi$）に変換して $(R,\Theta)$ の同時密度を求め、
+      $R$ と $\Theta$ の独立性、$\Theta$ の分布、$W=R^2$ の分布を答えよ。
+    steps:
+      - |
+        $(X,Y)$ の同時密度は $f(x,y)=\dfrac{1}{2\pi}e^{-(x^2+y^2)/2}$ で、$x^2+y^2=r^2$。
+      - |
+        ヤコビアン：$\dfrac{\partial(x,y)}{\partial(r,\theta)}=\begin{vmatrix}\cos\theta&-r\sin\theta\\ \sin\theta&r\cos\theta\end{vmatrix}=r$。
+      - |
+        $g(r,\theta)=\dfrac{1}{2\pi}e^{-r^2/2}\cdot r=\underbrace{\dfrac{1}{2\pi}}_{\theta\text{ の関数}}\times\underbrace{r e^{-r^2/2}}_{r\text{ の関数}}$。積に分かれ、台も長方形なので $R$ と $\Theta$ は独立、$\Theta\sim U(0,2\pi)$。
+      - |
+        $W=R^2$ と変換：$r=\sqrt w$、$\dfrac{dr}{dw}=\dfrac{1}{2\sqrt w}$ より $f_W(w)=\sqrt w\,e^{-w/2}\cdot\dfrac{1}{2\sqrt w}=\dfrac12e^{-w/2}$（$w>0$）。
+    answer: '$g(r,\theta)=\dfrac{1}{2\pi}\,r e^{-r^2/2}$。$R$ と $\Theta$ は独立、$\Theta\sim U(0,2\pi)$、$W=R^2$ は平均2の指数分布（$=\chi^2(2)$）'
+    hint: |
+      $dx\,dy=r\,dr\,d\theta$。同時密度が $r$ の関数と $\theta$ の関数の積に分かれるかを見る。
+    explanation: |
+      ヤコビアン $r$ を掛けて
+      $$g(r,\theta)=\frac{1}{2\pi}\cdot re^{-r^2/2}\quad(r>0,\ 0\le\theta<2\pi)$$
+      となり、$\Theta\sim U(0,2\pi)$ と $R$（レイリー分布）は独立です。さらに $W=R^2=X^2+Y^2$ の密度は $\frac12e^{-w/2}$ で、
+      自由度2のカイ二乗分布（平均2の指数分布）と一致します。逆向きに使うと、一様乱数から正規乱数を作るボックス・ミュラー法になります。
+      よくある間違いは、ヤコビアン $r$ を掛け忘れて $\frac{1}{2\pi}e^{-r^2/2}$ を密度としてしまうことです（$r$ で積分しても1になりません）。

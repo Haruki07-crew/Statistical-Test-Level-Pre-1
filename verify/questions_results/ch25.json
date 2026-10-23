@@ -4,15 +4,15 @@
   "ok": true
  },
  "q25-common-factor-unique-factor-2": {
-  "hash": "5f87032c798fbdfc",
+  "hash": "7af66b596abedfcd",
   "ok": true
  },
  "q25-communality-1": {
-  "hash": "3826fb5d6a47d637",
+  "hash": "ff8b075c9b599328",
   "ok": true
  },
  "q25-communality-2": {
-  "hash": "bdb1247151ba706f",
+  "hash": "7dccdfca0c326188",
   "ok": true
  },
  "q25-communality-3": {
@@ -20,11 +20,11 @@
   "ok": true
  },
  "q25-covariance-selection-1": {
-  "hash": "f3987ae64702b33d",
+  "hash": "4cdef0a5af212153",
   "ok": true
  },
  "q25-covariance-selection-2": {
-  "hash": "eb4154fe4f46a1fa",
+  "hash": "03a38f8d9510ac90",
   "ok": true
  },
  "q25-directed-acyclic-graph-1": {
@@ -36,23 +36,23 @@
   "ok": true
  },
  "q25-directed-acyclic-graph-3": {
-  "hash": "dccec5e1ddda6f5e",
+  "hash": "87ea11e7c6572f58",
   "ok": true
  },
  "q25-factor-analysis-model-1": {
-  "hash": "c32337356fca61c6",
+  "hash": "3b384b255ab9f4c7",
   "ok": true
  },
  "q25-factor-analysis-model-2": {
-  "hash": "d08b7df5cbba7ee1",
+  "hash": "e312ad8d8f3910b3",
   "ok": true
  },
  "q25-factor-analysis-model-3": {
-  "hash": "3dec7cfb56e73f87",
+  "hash": "2eadc050a04a19fc",
   "ok": true
  },
  "q25-factor-loading-1": {
-  "hash": "8215f6121465ed2b",
+  "hash": "a4b02434155d14aa",
   "ok": true
  },
  "q25-factor-loading-2": {
@@ -60,7 +60,7 @@
   "ok": true
  },
  "q25-factor-loading-3": {
-  "hash": "39ea38479be0106d",
+  "hash": "4d93ad09c962fe96",
   "ok": true
  },
  "q25-factor-rotation-1": {
@@ -68,7 +68,7 @@
   "ok": true
  },
  "q25-factor-rotation-2": {
-  "hash": "86df10e1662628fc",
+  "hash": "86eac4704e7d4ea5",
   "ok": true
  },
  "q25-factor-rotation-3": {
@@ -76,7 +76,7 @@
   "ok": true
  },
  "q25-factor-score-1": {
-  "hash": "4dae8229fd341a5a",
+  "hash": "33b035032d6f7cc0",
   "ok": true
  },
  "q25-factor-score-2": {
@@ -96,7 +96,7 @@
   "ok": true
  },
  "q25-maximum-likelihood-factor-analysis-1": {
-  "hash": "15468160e4162e0f",
+  "hash": "a0d432db73cd3369",
   "ok": true
  },
  "q25-maximum-likelihood-factor-analysis-2": {
@@ -112,19 +112,23 @@
   "ok": true
  },
  "q25-precision-matrix-1": {
-  "hash": "7edfb81b57ed27df",
+  "hash": "f33693b059bb8a82",
   "ok": true
  },
  "q25-precision-matrix-2": {
-  "hash": "d00760b5abb5493b",
+  "hash": "3e324f8e9fe54392",
   "ok": true
  },
  "q25-precision-matrix-3": {
-  "hash": "7082b680508c661e",
+  "hash": "5635277d733ca458",
+  "ok": true
+ },
+ "q25-precision-matrix-4": {
+  "hash": "f7b0ee296d40d0ab",
   "ok": true
  },
  "q25-promax-rotation-1": {
-  "hash": "cbc9f9d7a330e2af",
+  "hash": "401f06db26260b2a",
   "ok": true
  },
  "q25-promax-rotation-2": {
@@ -140,7 +144,7 @@
   "ok": true
  },
  "q25-varimax-rotation-1": {
-  "hash": "4551ac35daf30cd1",
+  "hash": "4eca5e1f916f2b6c",
   "ok": true
  },
  "q25-varimax-rotation-2": {

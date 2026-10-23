@@ -155,4 +155,44 @@ inc = rng.normal(0, np.sqrt(4 / nsteps), (npath, nsteps)).astype(np.float32)
 mx = np.cumsum(inc, axis=1).max(axis=1)
 q.check("q15-reflection-principle-1", abs((mx >= 2).mean() - val) < 0.02, "シミュレーション（離散化）でも ≈0.317")
 
+# --- 導出問題（追加） ---
+def _deriv15():
+    import numpy as _N
+    import sympy as _S
+    p = _S.symbols("p", positive=True); i, N = _S.symbols("i N", integer=True, positive=True)
+    qq = 1 - p; r = qq / p
+    h = (1 - r ** i) / (1 - r ** N)
+    resid = _S.expand(_S.powsimp(_S.expand_power_base(_S.numer(_S.together(p * h.subs(i, i + 1) + qq * h.subs(i, i - 1) - h)), force=True), force=True))
+    ok = all(abs(float(resid.subs({p: pv, i: iv, N: 10}))) < 1e-12 for pv in (0.3, 0.4, 0.7) for iv in range(1, 10))
+    ok &= _S.simplify(h.subs(i, 0)) == 0 and _S.simplify(h.subs(i, N) - 1) == 0
+    # 線形方程式を直接解いた値と一致（p=0.4, N=10）
+    pp, NN = 0.4, 10
+    A = _N.zeros((NN + 1, NN + 1)); bb = _N.zeros(NN + 1)
+    A[0, 0] = 1; A[NN, NN] = 1; bb[NN] = 1
+    for k in range(1, NN):
+        A[k, k] = 1; A[k, k + 1] = -pp; A[k, k - 1] = -(1 - pp)
+    hv = _N.linalg.solve(A, bb)
+    rr = (1 - pp) / pp
+    ok &= _N.allclose(hv, [(1 - rr ** k) / (1 - rr ** NN) for k in range(NN + 1)])
+    ok &= _S.limit(((1 - _S.Symbol("x") ** 3) / (1 - _S.Symbol("x") ** 10)), _S.Symbol("x"), 1) == _S.Rational(3, 10)
+    q.check("q15-gambler-ruin-problem-4", bool(ok), "sympy: 漸化式と境界条件を満たす、連立方程式の解と一致、r→1 で i/N")
+    rho = _S.symbols("rho", positive=True); lam, mu = _S.symbols("lambda mu", positive=True)
+    n = _S.symbols("n", integer=True, nonnegative=True)
+    ok2 = True
+    for rv in (_S.Rational(1, 5), _S.Rational(1, 2), _S.Rational(4, 5)):   # ρ<1 の具体値で級数を厳密に計算
+        ok2 &= _S.summation(rv ** n, (n, 0, _S.oo)) == 1 / (1 - rv)
+        ok2 &= _S.summation(n * (1 - rv) * rv ** n, (n, 0, _S.oo)) == rv / (1 - rv)
+    W = (rho / (1 - rho) / lam).subs(rho, lam / mu)
+    ok2 &= _S.simplify(W - 1 / (mu - lam)) == 0
+    # 数値：λ=4, μ=5 の生成行列から定常分布を解いて比較（状態を 400 で打ち切り）
+    K = 400; Q = _N.zeros((K, K))
+    for k in range(K - 1):
+        Q[k, k + 1] = 4.0; Q[k + 1, k] = 5.0
+    Q -= _N.diag(Q.sum(1))
+    Aq = _N.vstack([Q.T, _N.ones(K)]); bq = _N.zeros(K + 1); bq[-1] = 1
+    pv = _N.linalg.lstsq(Aq, bq, rcond=None)[0]
+    ok2 &= _N.allclose(pv[:20], 0.2 * 0.8 ** _N.arange(20), atol=1e-10) and abs((_N.arange(K) * pv).sum() - 4) < 1e-6
+    q.check("q15-mm1-queue-4", bool(ok2), "sympy: p0=1-ρ、L=ρ/(1-ρ)、W=1/(μ-λ)、生成行列の定常解と一致")
+_deriv15()
+
 q.done()

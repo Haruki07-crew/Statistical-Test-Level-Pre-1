@@ -4,11 +4,11 @@
   "ok": true
  },
  "q26-canonical-correlation-analysis-2": {
-  "hash": "a7668b318b4215f7",
+  "hash": "af066181de808ca7",
   "ok": true
  },
  "q26-canonical-correlation-analysis-3": {
-  "hash": "e3d6867364d9b5b3",
+  "hash": "fecbad8632aa8a26",
   "ok": true
  },
  "q26-canonical-variate-1": {
@@ -16,31 +16,31 @@
   "ok": true
  },
  "q26-canonical-variate-2": {
-  "hash": "bb4a4a34a5c1855f",
+  "hash": "9ebf075b90ef588e",
   "ok": true
  },
  "q26-canonical-variate-3": {
-  "hash": "ec442e76baa0e929",
+  "hash": "05c2eae2072094f1",
   "ok": true
  },
  "q26-classical-mds-1": {
-  "hash": "1efe673912bb1314",
+  "hash": "df51027de0025d73",
   "ok": true
  },
  "q26-correspondence-analysis-1": {
-  "hash": "31bd486e26c9f4e1",
+  "hash": "14634b4b0b27fc99",
   "ok": true
  },
  "q26-correspondence-analysis-2": {
-  "hash": "7d5710c9fcaecdaa",
+  "hash": "7ba0b222e75dc278",
   "ok": true
  },
  "q26-correspondence-analysis-3": {
-  "hash": "78f9d3fe904d7725",
+  "hash": "186b87edcd047241",
   "ok": true
  },
  "q26-goodness-of-fit-indices-1": {
-  "hash": "f9535f66f76b3dd9",
+  "hash": "a896ab7e964b9220",
   "ok": true
  },
  "q26-independent-component-analysis-1": {
@@ -52,11 +52,15 @@
   "ok": true
  },
  "q26-multidimensional-scaling-2": {
-  "hash": "a92e6e963a580957",
+  "hash": "575d9c0c9c4bddd1",
   "ok": true
  },
  "q26-multidimensional-scaling-3": {
-  "hash": "2f4522262ce0c061",
+  "hash": "7f70dee2ea37263d",
+  "ok": true
+ },
+ "q26-multidimensional-scaling-4": {
+  "hash": "aa85cee58bfc44bf",
   "ok": true
  },
  "q26-multiple-correspondence-analysis-1": {
@@ -68,15 +72,15 @@
   "ok": true
  },
  "q26-path-analysis-1": {
-  "hash": "6e0c862e831e1216",
+  "hash": "c72797df7a051d94",
   "ok": true
  },
  "q26-path-analysis-2": {
-  "hash": "ea0d4fb231155853",
+  "hash": "31607b954764201a",
   "ok": true
  },
  "q26-path-analysis-3": {
-  "hash": "e69edf634101db01",
+  "hash": "ec3fa87c31e16d7b",
   "ok": true
  },
  "q26-quantification-theory-1": {
@@ -88,11 +92,11 @@
   "ok": true
  },
  "q26-quantification-type-1-1": {
-  "hash": "3e93b2b57fbf7cc1",
+  "hash": "e4901219ff17a979",
   "ok": true
  },
  "q26-quantification-type-1-2": {
-  "hash": "507c1f836bb49776",
+  "hash": "3eaf1a975ddb4085",
   "ok": true
  },
  "q26-quantification-type-3-1": {
@@ -100,7 +104,7 @@
   "ok": true
  },
  "q26-quantification-type-3-2": {
-  "hash": "290f000966e1df6d",
+  "hash": "daef443998cf57ce",
   "ok": true
  },
  "q26-structural-equation-modeling-1": {
@@ -112,7 +116,7 @@
   "ok": true
  },
  "q26-structural-equation-modeling-3": {
-  "hash": "4e9c41b50e8a39fd",
+  "hash": "da1fd87661ac48d5",
   "ok": true
  }
 }

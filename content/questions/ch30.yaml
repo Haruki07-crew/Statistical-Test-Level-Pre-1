@@ -19,7 +19,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      $n=50$ のデータに2つの正規線形回帰を当てはめた。モデルAは係数3個（切片を含む）で残差平方和 $S_e=200$、モデルBは係数5個で $S_e=180$ である。$\mathrm{AIC}=n\log(S_e/n)+2(p+1)$ を使い、$\mathrm{AIC}_A-\mathrm{AIC}_B$ を小数第2位まで求めよ。
+      $n=50$ のデータに2つの正規線形回帰を当てはめた。モデルAは係数3個（切片を含む）で残差平方和 $S_e=200$、モデルBは係数5個で $S_e=180$ である。$\mathrm{AIC}=n\log(S_e/n)+2(p+1)$ を使い、$\mathrm{AIC}_A-\mathrm{AIC}_B$ を小数第2位まで（四捨五入）求めよ。
     answer: 1.27
     tolerance: 0.01
     hint: |
@@ -47,7 +47,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      $n=50$、モデルA（係数3個、$S_e=200$）とモデルB（係数5個、$S_e=180$）について、$\mathrm{BIC}=n\log(S_e/n)+(p+1)\log n$ を使い、$\mathrm{BIC}_A-\mathrm{BIC}_B$ を小数第2位まで求めよ。
+      $n=50$、モデルA（係数3個、$S_e=200$）とモデルB（係数5個、$S_e=180$）について、$\mathrm{BIC}=n\log(S_e/n)+(p+1)\log n$ を使い、$\mathrm{BIC}_A-\mathrm{BIC}_B$ を小数第2位まで（四捨五入）求めよ。
     answer: -2.56
     tolerance: 0.01
     hint: |
@@ -92,7 +92,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      真の分布 $g$ が成功確率0.5のベルヌーイ分布、モデル $f$ が成功確率0.2のベルヌーイ分布のとき、$D(g\,\|\,f)$ を小数第3位まで求めよ（自然対数）。
+      真の分布 $g$ が成功確率0.5のベルヌーイ分布、モデル $f$ が成功確率0.2のベルヌーイ分布のとき、$D(g\,\|\,f)$ を小数第3位まで（四捨五入）求めよ（自然対数）。
     answer: 0.223
     tolerance: 0.001
     hint: |
@@ -106,7 +106,7 @@ questions:
     level: 応用
     type: numeric
     question: |
-      $g=N(0,1)$、$f=N(1,\ 2^2)$ のとき、$D(g\,\|\,f)$ を小数第3位まで求めよ。
+      $g=N(0,1)$、$f=N(1,\ 2^2)$ のとき、$D(g\,\|\,f)$ を小数第3位まで（四捨五入）求めよ。
     answer: 0.443
     tolerance: 0.001
     hint: |
@@ -128,7 +128,7 @@ questions:
       $D(\mathrm{Bern}(0.2)\,\|\,\mathrm{Bern}(0.5))$ を計算して比べる。
     explanation: |
       $$D(f\|g)=0.2\log\frac{0.2}{0.5}+0.8\log\frac{0.8}{0.5}=-0.1833+0.3760=0.1927$$
-      で、$D(g\|f)=0.2231$ と異なります。KL 情報量は非対称で、数学的な距離ではありません。期待値をとる分布（第1引数）が真の分布 $g$ です。
+      で、$D(g\|f)=0.2231$ と異なります。KL 情報量は非対称で、数学的な距離ではありません。AIC などで使う $D(g\|f)$ では、期待値をとる分布（第1引数）を真の分布 $g$ にとります。
 
   - id: q30-cross-validation-1
     term: cross-validation
@@ -208,7 +208,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      母平均 $\theta=2$ を、$V[\bar X]=1$ の標本平均 $\bar X$ を縮めた推定量 $\hat\theta=0.5\bar X$ で推定する。$\hat\theta$ の平均二乗誤差を小数第2位まで求めよ。
+      母平均 $\theta=2$ を、$V[\bar X]=1$ の標本平均 $\bar X$ を縮めた推定量 $\hat\theta=0.5\bar X$ で推定する。$\hat\theta$ の平均二乗誤差を小数第2位まで（四捨五入）求めよ。
     answer: 1.25
     tolerance: 0.005
     hint: |
@@ -223,7 +223,7 @@ questions:
     level: 応用
     type: numeric
     question: |
-      母平均 $\theta=2$ を、$V[\bar X]=1$ の標本平均 $\bar X$ を定数倍した推定量 $\hat\theta=c\bar X$ で推定する。平均二乗誤差を最小にする $c$ を使ったときの最小の MSE を小数第2位まで求めよ。
+      母平均 $\theta=2$ を、$V[\bar X]=1$ の標本平均 $\bar X$ を定数倍した推定量 $\hat\theta=c\bar X$ で推定する。平均二乗誤差を最小にする $c$ を使ったときの最小の MSE を小数第2位まで（四捨五入）求めよ。
     answer: 0.80
     tolerance: 0.005
     hint: |
@@ -311,7 +311,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      $n=30$、係数 $p=4$ 個（切片を含む）の回帰で、残差平方和 $S_e=100$、総平方和 $S_T=400$ であった。自由度調整済み決定係数を小数第3位まで求めよ。
+      $n=30$、係数 $p=4$ 個（切片を含む）の回帰で、残差平方和 $S_e=100$、総平方和 $S_T=400$ であった。自由度調整済み決定係数を小数第3位まで（四捨五入）求めよ。
     answer: 0.721
     tolerance: 0.001
     hint: |
@@ -357,7 +357,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      最小二乗法で当てはめた線形回帰で、ある観測の残差が $e_i=-1.2$、てこ比が $h_{ii}=0.4$ であった。この観測を除いて推定し直したモデルでの予測残差 $y_i-\hat y_{(-i)}$ を小数第1位まで求めよ。
+      最小二乗法で当てはめた線形回帰で、ある観測の残差が $e_i=-1.2$、てこ比が $h_{ii}=0.4$ であった。この観測を除いて推定し直したモデルでの予測残差 $y_i-\hat y_{(-i)}$ を小数第1位まで（四捨五入）求めよ。
     answer: -2.0
     tolerance: 0.05
     hint: |
@@ -371,7 +371,7 @@ questions:
     level: 応用
     type: numeric
     question: |
-      データ $y=3,\ 5,\ 7,\ 9$ を平均だけのモデル（切片のみの回帰）で当てはめる。一個抜き交差検証の推定値 $\mathrm{CV}_{(n)}$ を小数第2位まで求めよ。
+      データ $y=3,\ 5,\ 7,\ 9$ を平均だけのモデル（切片のみの回帰）で当てはめる。一個抜き交差検証の推定値 $\mathrm{CV}_{(n)}$ を小数第2位まで（四捨五入）求めよ。
     answer: 8.89
     tolerance: 0.01
     hint: |
@@ -386,7 +386,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      係数 $p=5$ 個の線形回帰を $n=50$ のデータに当てはめ、訓練誤差（残差の二乗の平均）が $1.80$ であった。誤差分散を $\hat\sigma^2=2$ と見積もり、楽観性 $2\sigma^2p/n$ を補正した汎化誤差（観測点と同じ $\boldsymbol x$ での予測誤差）の推定値を小数第2位まで求めよ。
+      係数 $p=5$ 個の線形回帰を $n=50$ のデータに当てはめ、訓練誤差（残差の二乗の平均）が $1.80$ であった。誤差分散を $\hat\sigma^2=2$ と見積もり、楽観性 $2\sigma^2p/n$ を補正した汎化誤差（観測点と同じ $\boldsymbol x$ での予測誤差）の推定値を小数第2位まで（四捨五入）求めよ。
     answer: 2.20
     tolerance: 0.005
     hint: |
@@ -413,7 +413,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      3つの候補モデルの AIC が $100,\ 101.5,\ 104$ であった。AIC 最小のモデルの赤池ウェイトを小数第3位まで求めよ。
+      3つの候補モデルの AIC が $100,\ 101.5,\ 104$ であった。AIC 最小のモデルの赤池ウェイトを小数第3位まで（四捨五入）求めよ。
     answer: 0.622
     tolerance: 0.001
     hint: |
@@ -440,7 +440,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      パラメータ数 $k=5$、標本の大きさ $n=20$ のとき、AICc と AIC の差 $\mathrm{AICc}-\mathrm{AIC}$ を小数第2位まで求めよ。
+      パラメータ数 $k=5$、標本の大きさ $n=20$ のとき、AICc と AIC の差 $\mathrm{AICc}-\mathrm{AIC}$ を小数第2位まで（四捨五入）求めよ。
     answer: 4.29
     tolerance: 0.01
     hint: |

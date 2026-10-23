@@ -6,7 +6,7 @@ questions:
     type: numeric
     question: |
       3つの群から各4個のデータを得た。群1：$5,7,6,6$、群2：$8,9,7,8$、群3：$10,9,11,10$。
-      一元配置分散分析の $F$ 値を求めよ（小数第1位まで）。
+      一元配置分散分析の $F$ 値を求めよ（小数第1位まで（四捨五入））。
     answer: 24
     tolerance: 0.05
     hint: |
@@ -54,7 +54,7 @@ questions:
     type: numeric
     question: |
       4群・合計24個のデータの一元配置分散分析で、総平方和が $S_T=150$、誤差平方和が $S_E=90$ であった。
-      $F$ 値を小数第2位まで求めよ。
+      $F$ 値を小数第2位まで（四捨五入）求めよ。
     answer: 4.44
     tolerance: 0.005
     hint: |
@@ -112,7 +112,7 @@ questions:
     question: |
       2×2 の繰り返しのある二元配置（各セル2回）で次のデータを得た。
       $A_1B_1$：$3,5$、$A_1B_2$：$6,8$、$A_2B_1$：$5,7$、$A_2B_2$：$12,14$。
-      交互作用A×Bの $F$ 値を小数第1位まで求めよ。
+      交互作用A×Bの $F$ 値を小数第1位まで（四捨五入）求めよ。
     answer: 4
     tolerance: 0.05
     hint: |
@@ -160,7 +160,7 @@ questions:
     type: numeric
     question: |
       2×2 のセル平均が $\mu_{11}=10$、$\mu_{12}=14$、$\mu_{21}=12$、$\mu_{22}=22$ である。
-      制約 $\sum_i(\alpha\beta)_{ij}=\sum_j(\alpha\beta)_{ij}=0$ のもとでの交互作用 $(\alpha\beta)_{22}$ を小数第1位まで求めよ。
+      制約 $\sum_i(\alpha\beta)_{ij}=\sum_j(\alpha\beta)_{ij}=0$ のもとでの交互作用 $(\alpha\beta)_{22}$ を小数第1位まで（四捨五入）求めよ。
     answer: 1.5
     tolerance: 0.05
     hint: |
@@ -221,7 +221,7 @@ questions:
     type: numeric
     question: |
       4種類の処理を5つのブロックで乱塊法により比較した。平方和は 処理 $S_\tau=36$、ブロック $S_\beta=60$、総平方和 $S_T=120$ であった。
-      処理の $F$ 値を求めよ（小数第1位まで）。
+      処理の $F$ 値を求めよ（小数第1位まで（四捨五入））。
     answer: 6
     tolerance: 0.05
     hint: |
@@ -236,7 +236,7 @@ questions:
     level: 応用
     type: numeric
     question: |
-      乱塊法の実験（処理4種類×ブロック5つ、$S_\tau=36$、$S_\beta=60$、$S_T=120$）で、ブロックを無視して一元配置分散分析を行った場合の処理の $F$ 値を小数第2位まで求めよ。
+      乱塊法の実験（処理4種類×ブロック5つ、$S_\tau=36$、$S_\beta=60$、$S_T=120$）で、ブロックを無視して一元配置分散分析を行った場合の処理の $F$ 値を小数第2位まで（四捨五入）求めよ。
     answer: 2.29
     tolerance: 0.005
     hint: |
@@ -314,7 +314,7 @@ questions:
     type: numeric
     question: |
       4群（各6個）の一元配置分散分析で $V_E=8$（自由度20）を得た。スチューデント化された範囲の上側5%点は $q_{0.05}(4,20)=3.958$ である。
-      テューキー法の HSD（有意となる平均の差の最小値）を小数第2位まで求めよ。
+      テューキー法の HSD（有意となる平均の差の最小値）を小数第2位まで（四捨五入）求めよ。
     answer: 4.57
     tolerance: 0.005
     hint: |
@@ -344,7 +344,7 @@ questions:
     type: numeric
     question: |
       $k=2$ のとき、スチューデント化された範囲 $Q=W/S$ と $t$ 分布には $Q=\sqrt2\,|T|$ の関係がある。
-      $t_{0.025}(10)=2.228$ を用いて、$q_{0.05}(2,10)$ を小数第2位まで求めよ。
+      $t_{0.025}(10)=2.228$ を用いて、$q_{0.05}(2,10)$ を小数第2位まで（四捨五入）求めよ。
     answer: 3.15
     tolerance: 0.005
     hint: |
@@ -361,7 +361,7 @@ questions:
     type: numeric
     question: |
       3群・合計33個の一元配置分散分析で、$S_A=40$、$S_T=200$ であった。
-      誤差の分を差し引いた寄与率 $\rho_A=(S_A-\phi_AV_E)/S_T$ を小数第3位まで求めよ。
+      誤差の分を差し引いた寄与率 $\rho_A=(S_A-\phi_AV_E)/S_T$ を小数第3位まで（四捨五入）求めよ。
     answer: 0.147
     tolerance: 0.001
     hint: |
@@ -377,7 +377,7 @@ questions:
     type: numeric
     question: |
       ランダムに選んだ製造ロットから各5個を測定し、一元配置の変量模型で $V_A=26$、$V_E=6$ を得た。
-      ロット間の分散成分 $\sigma_A^2$ の推定値を求めよ（小数第1位まで）。
+      ロット間の分散成分 $\sigma_A^2$ の推定値を求めよ（小数第1位まで（四捨五入））。
     answer: 4
     tolerance: 0.05
     hint: |
@@ -547,3 +547,30 @@ questions:
       $bk=vr$ より $r=\dfrac{10\times3}{6}=5$ です。
       $$\lambda=\frac{r(k-1)}{v-1}=\frac{5\times2}{5}=2$$
       ある処理を含む5つのブロックには、ほかの処理が延べ $5\times2=10$ 回入り、それが残り5つの処理に均等に2回ずつ割り振られる、と考えても同じです。フィッシャーの不等式 $b=10\ge v=6$ も満たしています。
+
+  - id: q20-one-way-anova-4
+    term: one-way-anova
+    level: 応用
+    type: derivation
+    question: |
+      一元配置モデル $y_{ij}=\mu+\alpha_i+\varepsilon_{ij}$（$i=1,\dots,k$、$j=1,\dots,n_i$、$N=\sum n_i$、$\sum_in_i\alpha_i=0$、$\varepsilon_{ij}$ は独立に平均0・分散 $\sigma^2$）で、
+      $S_E=\sum_i\sum_j(y_{ij}-\bar y_{i\cdot})^2$ と $S_A=\sum_in_i(\bar y_{i\cdot}-\bar y_{\cdot\cdot})^2$ の期待値を求めよ。
+    steps:
+      - |
+        群 $i$ の中では $y_{ij}$ は分散 $\sigma^2$ の i.i.d. なので、不偏分散の性質から $E\big[\sum_j(y_{ij}-\bar y_{i\cdot})^2\big]=(n_i-1)\sigma^2$。足して $E[S_E]=(N-k)\sigma^2$。
+      - |
+        $S_A=\sum_in_i\bar y_{i\cdot}^2-N\bar y_{\cdot\cdot}^2$ と書き直す（$\sum_in_i\bar y_{i\cdot}=N\bar y_{\cdot\cdot}$ を使う）。
+      - |
+        $\bar y_{i\cdot}\sim(\mu+\alpha_i,\ \sigma^2/n_i)$、$\bar y_{\cdot\cdot}\sim(\mu,\ \sigma^2/N)$ なので $E[\bar y_{i\cdot}^2]=(\mu+\alpha_i)^2+\dfrac{\sigma^2}{n_i}$、$E[\bar y_{\cdot\cdot}^2]=\mu^2+\dfrac{\sigma^2}{N}$。
+      - |
+        $E[S_A]=\sum_in_i(\mu+\alpha_i)^2+k\sigma^2-N\mu^2-\sigma^2$。$\sum n_i\alpha_i=0$ より $\sum_in_i(\mu+\alpha_i)^2=N\mu^2+\sum_in_i\alpha_i^2$。
+      - |
+        $E[S_A]=(k-1)\sigma^2+\sum_in_i\alpha_i^2$。よって $E[V_A]=\sigma^2+\dfrac{\sum n_i\alpha_i^2}{k-1}$、$E[V_E]=\sigma^2$。
+    answer: '$E[S_E]=(N-k)\sigma^2$、$E[S_A]=(k-1)\sigma^2+\sum_in_i\alpha_i^2$'
+    hint: |
+      $E[Z^2]=V[Z]+E[Z]^2$ を群平均と総平均に使う。$\sum_in_i\alpha_i=0$ で交差項が消える。
+    explanation: |
+      誤差平方和は群ごとの不偏分散の和なので $E[S_E]=(N-k)\sigma^2$、群間平方和は
+      $$E[S_A]=(k-1)\sigma^2+\sum_in_i\alpha_i^2$$
+      です。$H_0:\alpha_1=\cdots=\alpha_k=0$ のもとでは $E[V_A]=E[V_E]=\sigma^2$ で、$H_0$ が偽なら $V_A$ が平均的に大きくなるので、$F=V_A/V_E$ の右側を棄却域にする理由がわかります。
+      よくある間違いは、$E[\bar y_{\cdot\cdot}^2]$ の $\sigma^2/N$ を忘れて $E[S_A]$ の $\sigma^2$ の係数を $k$ にしてしまうこと、群間の自由度を $k$ とすることです。

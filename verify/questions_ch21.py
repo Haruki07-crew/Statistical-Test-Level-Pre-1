@@ -150,4 +150,34 @@ q.check("q21-nonresponse-bias-2", abs(b_small - b_large) < 0.5 and b_large > 5, 
 q.num("q21-sampling-weight-1", 5000 / 50 / 0.8)
 q.check("q21-sampling-weight-1", 40 * 5000 / 50 / 0.8 == 5000, "ウェイト合計=N_h")
 
+# --- 導出問題（追加） ---
+def _deriv21():
+    import itertools
+    import numpy as _N
+    import sympy as _S
+    from scipy import optimize as _op
+    # 全標本の列挙（N=7, n=3）で E[ȳ]=Ȳ、V[ȳ]=(1-n/N)S²/n
+    Y = _N.array([3.0, 7.0, 1.0, 4.0, 9.0, 2.0, 6.0]); N, n = len(Y), 3
+    means = _N.array([Y[list(c)].mean() for c in itertools.combinations(range(N), n)])
+    S2 = Y.var(ddof=1)
+    ok = abs(means.mean() - Y.mean()) < 1e-12 and abs(means.var() - (1 - n / N) * S2 / n) < 1e-12
+    f = _S.Rational(n, N)
+    ok &= _S.Rational(n * (n - 1), N * (N - 1)) - f ** 2 == -f * (1 - f) / (N - 1)
+    q.check("q21-simple-random-sampling-4", bool(ok), "全35標本の列挙で E[ȳ]=Ȳ、V[ȳ]=(1-n/N)S²/n、Cov[Z_i,Z_j]=-f(1-f)/(N-1)")
+    Nh = _N.array([600.0, 400.0, 1000.0]); Sh = _N.array([10.0, 20.0, 5.0]); NN = Nh.sum(); Wh = Nh / NN; nn = 80
+    V = lambda nh: (Wh ** 2 * Sh ** 2 * (1 / nh - 1 / Nh)).sum()
+    cons = {"type": "eq", "fun": lambda nh: nh.sum() - nn}
+    res = _op.minimize(V, _N.full(3, nn / 3), constraints=[cons], bounds=[(1, None)] * 3, tol=1e-14)
+    ney = nn * Nh * Sh / (Nh * Sh).sum()
+    ok2 = _N.allclose(res.x, ney, rtol=1e-4)
+    ok2 &= abs(V(ney) - ((Wh * Sh).sum() ** 2 / nn - (Wh * Sh ** 2).sum() / NN)) < 1e-12
+    # 記号でも：停留条件と V_opt
+    W1, W2, S1, S2_, n_, N_ = _S.symbols("W1 W2 S1 S2 n N", positive=True)
+    n1 = n_ * W1 * S1 / (W1 * S1 + W2 * S2_); n2 = n_ - n1
+    Vs = W1 ** 2 * S1 ** 2 * (1 / n1 - 1 / (W1 * N_)) + W2 ** 2 * S2_ ** 2 * (1 / n2 - 1 / (W2 * N_))
+    ok2 &= _S.simplify(Vs - ((W1 * S1 + W2 * S2_) ** 2 / n_ - (W1 * S1 ** 2 + W2 * S2_ ** 2) / N_)) == 0
+    ok2 &= _S.simplify(W1 ** 2 * S1 ** 2 / n1 ** 2 - W2 ** 2 * S2_ ** 2 / n2 ** 2) == 0
+    q.check("q21-neyman-allocation-4", bool(ok2), "制約付き数値最小化とネイマン配分が一致、sympy で V_opt と停留条件")
+_deriv21()
+
 q.done()

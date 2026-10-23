@@ -122,4 +122,20 @@ q.num("q12-dispersion-test-1", D)
 q.check("q12-dispersion-test-1", D > stats.chi2.ppf(0.95, 5) and abs(stats.chi2.ppf(0.95, 5) - 11.07) < 5e-3,
         "χ²(5) の上側5%点 11.07 を超える")
 
+# --- 導出問題（追加） ---
+def _deriv12():
+    import numpy as _N
+    import sympy as _S
+    E, d = _S.symbols("E d", positive=True)
+    term = (E + d) * _S.log(1 + d / E)
+    ser = _S.series(term, d, 0, 3).removeO()
+    ok = _S.simplify(ser - (d + d ** 2 / (2 * E))) == 0
+    # 数値：期待度数に近い観測で G と X² がほぼ一致、差は 3 次の大きさ
+    Ev = _N.array([25.0, 50.0, 25.0])
+    for Ov in (_N.array([27.0, 49.0, 24.0]), _N.array([30.0, 50.0, 20.0])):
+        G = 2 * (Ov * _N.log(Ov / Ev)).sum(); X2 = ((Ov - Ev) ** 2 / Ev).sum()
+        ok &= abs(G - X2) < 0.05 * X2 + 0.01
+    q.check("q12-g-statistic-3", bool(ok), "sympy: (E+d)log(1+d/E)=d+d²/(2E)+O(d³)、数値で G≈X²")
+_deriv12()
+
 q.done()

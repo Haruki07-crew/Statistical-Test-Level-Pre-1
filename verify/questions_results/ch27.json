@@ -1,14 +1,14 @@
 {
  "q27-ar-model-1": {
-  "hash": "78e550efe1eaa4c6",
+  "hash": "357983043dd5f64d",
   "ok": true
  },
  "q27-ar-model-2": {
-  "hash": "f1d5b249025ffd79",
+  "hash": "cf767b1e30fefc06",
   "ok": true
  },
  "q27-ar-model-3": {
-  "hash": "6a46d5b17887a801",
+  "hash": "e83cf33e0eb2fbba",
   "ok": true
  },
  "q27-arima-model-1": {
@@ -16,15 +16,15 @@
   "ok": true
  },
  "q27-arima-model-2": {
-  "hash": "e09b5edb73ff6199",
+  "hash": "d2e3d51f8ebd9b5e",
   "ok": true
  },
  "q27-arima-model-3": {
-  "hash": "462d6630ffcdbfe5",
+  "hash": "f81a7283641c983a",
   "ok": true
  },
  "q27-arma-model-1": {
-  "hash": "9b5cd86a1dc16150",
+  "hash": "c8bdb8bb1e327f4a",
   "ok": true
  },
  "q27-arma-model-2": {
@@ -36,7 +36,7 @@
   "ok": true
  },
  "q27-autocovariance-autocorrelation-1": {
-  "hash": "5255107a4576e32b",
+  "hash": "799ee99897ddec07",
   "ok": true
  },
  "q27-autocovariance-autocorrelation-2": {
@@ -48,7 +48,7 @@
   "ok": true
  },
  "q27-correlogram-1": {
-  "hash": "d0029a7b862b77c5",
+  "hash": "d33ff8d1f8287dd2",
   "ok": true
  },
  "q27-correlogram-2": {
@@ -56,15 +56,15 @@
   "ok": true
  },
  "q27-forecasting-1": {
-  "hash": "8fa837bc16e89396",
+  "hash": "fbffc977b0295382",
   "ok": true
  },
  "q27-forecasting-2": {
-  "hash": "cf51a9916a24604a",
+  "hash": "5fb193459a5a5517",
   "ok": true
  },
  "q27-invertibility-1": {
-  "hash": "353681227953c788",
+  "hash": "d72e513f37558dbe",
   "ok": true
  },
  "q27-invertibility-2": {
@@ -72,7 +72,7 @@
   "ok": true
  },
  "q27-ma-model-1": {
-  "hash": "68b7ec886105659f",
+  "hash": "dacca6fedb462bec",
   "ok": true
  },
  "q27-ma-model-2": {
@@ -84,19 +84,19 @@
   "ok": true
  },
  "q27-partial-autocorrelation-1": {
-  "hash": "1325caba1765e044",
+  "hash": "f01d1f44c2993034",
   "ok": true
  },
  "q27-partial-autocorrelation-2": {
-  "hash": "e07c7d83e2915846",
+  "hash": "ead21ac9a6af00bc",
   "ok": true
  },
  "q27-partial-autocorrelation-3": {
-  "hash": "bef99e23a748bd19",
+  "hash": "ad8b1ed21db40c14",
   "ok": true
  },
  "q27-seasonal-adjustment-1": {
-  "hash": "a9a1bdf633021baa",
+  "hash": "27211fd4009870bf",
   "ok": true
  },
  "q27-seasonal-adjustment-2": {
@@ -116,7 +116,7 @@
   "ok": true
  },
  "q27-state-space-model-2": {
-  "hash": "f430ff58886b246b",
+  "hash": "33e65b7af3a776e2",
   "ok": true
  },
  "q27-stationarity-condition-1": {
@@ -124,7 +124,7 @@
   "ok": true
  },
  "q27-stationarity-condition-2": {
-  "hash": "7f668f5a6cba2298",
+  "hash": "bf6e8c02bcd09110",
   "ok": true
  },
  "q27-stationarity-condition-3": {
@@ -136,7 +136,7 @@
   "ok": true
  },
  "q27-time-series-1": {
-  "hash": "eab83914fba250e1",
+  "hash": "d8fe91d8b4ac42b6",
   "ok": true
  },
  "q27-time-series-2": {
@@ -148,7 +148,7 @@
   "ok": true
  },
  "q27-unit-root-2": {
-  "hash": "1bb7bddae609510c",
+  "hash": "20cf783850ecff70",
   "ok": true
  },
  "q27-unit-root-3": {
@@ -160,7 +160,7 @@
   "ok": true
  },
  "q27-weak-stationarity-2": {
-  "hash": "ae81665a8423facd",
+  "hash": "0d5fd72c38a2d397",
   "ok": true
  },
  "q27-weak-stationarity-3": {
@@ -168,7 +168,7 @@
   "ok": true
  },
  "q27-white-noise-1": {
-  "hash": "f5a2daab481d940b",
+  "hash": "ac0b0a82c03f55a2",
   "ok": true
  },
  "q27-white-noise-2": {
@@ -180,11 +180,11 @@
   "ok": true
  },
  "q27-yule-walker-equations-1": {
-  "hash": "45fba961863a90d2",
+  "hash": "00e440d0a58711e2",
   "ok": true
  },
  "q27-yule-walker-equations-2": {
-  "hash": "eb6eaf59c8aea8f8",
+  "hash": "766b0e307c66a6b3",
   "ok": true
  },
  "q27-yule-walker-equations-3": {

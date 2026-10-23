@@ -108,4 +108,28 @@ _okd = all(abs(float((_f - _target).subs({_l1: a, _l2: b, _z: c}))) < 1e-12 for 
 _int1 = _sp.simplify(_sp.integrate(_target.subs({_l1: 1, _l2: 3}), (_z, 0, _sp.oo)))
 q.check("q04-sum-of-random-variables-3", _okd and _int1 == 1, "畳み込みの結果が最終式と一致し、積分が1")
 
+# --- 導出問題（追加） ---
+def _deriv04():
+    import sympy as _S
+    y_, u_ = _S.symbols("y u", real=True)
+    uinv = _S.exp(y_) / (1 + _S.exp(y_))
+    ok = _S.simplify(_S.log(uinv / (1 - uinv)) - y_) == 0
+    du = _S.diff(uinv, y_)
+    ok &= _S.simplify(du - uinv * (1 - uinv)) == 0
+    f = _S.exp(y_) / (1 + _S.exp(y_)) ** 2
+    ok &= _S.simplify(du - f) == 0 and _S.simplify(f.subs(y_, -y_) - f) == 0
+    ok &= _S.integrate(f, (y_, -_S.oo, _S.oo)) == 1
+    ok &= _S.simplify(_S.integrate(f.subs(y_, _S.Symbol("z")), (_S.Symbol("z"), -_S.oo, y_)) - 1 / (1 + _S.exp(-y_))) == 0
+    q.check("q04-logit-logistic-transformation-4", bool(ok), "sympy: du/dy=u(1-u)=e^y/(1+e^y)^2、積分1、F=1/(1+e^-y)")
+    r, th, w = _S.symbols("r theta w", positive=True)
+    J = _S.Matrix([r * _S.cos(th), r * _S.sin(th)]).jacobian([r, th]).det()
+    ok2 = _S.simplify(J - r) == 0
+    g = _S.exp(-(r ** 2) / 2) / (2 * _S.pi) * J
+    ok2 &= _S.simplify(_S.integrate(g, (th, 0, 2 * _S.pi), (r, 0, _S.oo)) - 1) == 0
+    ok2 &= _S.simplify(_S.integrate(g, (th, 0, 2 * _S.pi)) - r * _S.exp(-r ** 2 / 2)) == 0
+    fw = (r * _S.exp(-r ** 2 / 2)).subs(r, _S.sqrt(w)) * _S.diff(_S.sqrt(w), w)
+    ok2 &= _S.simplify(fw - _S.exp(-w / 2) / 2) == 0
+    q.check("q04-change-of-variables-4", bool(ok2), "sympy: ヤコビアン r、g が r と θ の積、f_W=e^{-w/2}/2")
+_deriv04()
+
 q.done()

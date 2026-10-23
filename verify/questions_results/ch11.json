@@ -4,7 +4,7 @@
   "ok": true
  },
  "q11-chi-square-test-variance-1": {
-  "hash": "e506bb825f185516",
+  "hash": "0eba0f6d49b87c3b",
   "ok": true
  },
  "q11-chi-square-test-variance-2": {
@@ -12,7 +12,7 @@
   "ok": true
  },
  "q11-f-test-equal-variances-1": {
-  "hash": "e2ce6d9393bda1e0",
+  "hash": "231c779432d1a140",
   "ok": true
  },
  "q11-f-test-equal-variances-2": {
@@ -20,15 +20,15 @@
   "ok": true
  },
  "q11-fisher-z-transformation-1": {
-  "hash": "a0c9206bf6d99913",
+  "hash": "5bd4fa5969d16806",
   "ok": true
  },
  "q11-fisher-z-transformation-2": {
-  "hash": "d244b3eaca72e145",
+  "hash": "d8391e5db660a1d1",
   "ok": true
  },
  "q11-hotelling-t2-1": {
-  "hash": "25d23dad424ec922",
+  "hash": "1c044bb51a63dc9d",
   "ok": true
  },
  "q11-normality-test-1": {
@@ -40,11 +40,11 @@
   "ok": true
  },
  "q11-one-sample-t-test-2": {
-  "hash": "7941383738cc9c92",
+  "hash": "85a7df2efba0f808",
   "ok": true
  },
  "q11-one-way-test-variance-equality-levene-1": {
-  "hash": "9e11cfec3a320ab0",
+  "hash": "a821f650cb01e8a4",
   "ok": true
  },
  "q11-paired-t-test-1": {
@@ -52,15 +52,19 @@
   "ok": true
  },
  "q11-paired-t-test-2": {
-  "hash": "d71b767817882d7c",
+  "hash": "1fd162423a267251",
   "ok": true
  },
  "q11-pooled-variance-1": {
-  "hash": "eba7e811bdaaed4a",
+  "hash": "4b30be180b3dbc77",
   "ok": true
  },
  "q11-pooled-variance-2": {
   "hash": "9cd5142a989b3c6a",
+  "ok": true
+ },
+ "q11-pooled-variance-3": {
+  "hash": "390912b3e1f31ca3",
   "ok": true
  },
  "q11-power-of-t-test-1": {
@@ -68,7 +72,7 @@
   "ok": true
  },
  "q11-power-of-t-test-2": {
-  "hash": "c6c72166ec6c91a1",
+  "hash": "506024de955cc8fc",
   "ok": true
  },
  "q11-preliminary-test-problem-1": {
@@ -80,11 +84,11 @@
   "ok": true
  },
  "q11-test-correlation-coefficient-1": {
-  "hash": "21c7ff79a3fd7faf",
+  "hash": "74d6e964bc468b2c",
   "ok": true
  },
  "q11-test-correlation-coefficient-2": {
-  "hash": "53cd3afab264a565",
+  "hash": "51021c68014200ca",
   "ok": true
  },
  "q11-two-sample-t-test-1": {
@@ -92,27 +96,31 @@
   "ok": true
  },
  "q11-two-sample-t-test-2": {
-  "hash": "a80365719cc5abb8",
+  "hash": "04dd0fc2e769d13d",
   "ok": true
  },
  "q11-welch-test-1": {
-  "hash": "d9ebdd2ffb938a43",
+  "hash": "53283f55e54c1ebc",
   "ok": true
  },
  "q11-welch-test-2": {
-  "hash": "1582f51ecc96128c",
+  "hash": "9922878d34b4feda",
   "ok": true
  },
  "q11-welch-test-3": {
   "hash": "5ec8192b89d4f543",
   "ok": true
  },
+ "q11-welch-test-4": {
+  "hash": "b61c49d677f33c17",
+  "ok": true
+ },
  "q11-z-test-known-variance-1": {
-  "hash": "660a75b38283f774",
+  "hash": "889a61a52e4b5d48",
   "ok": true
  },
  "q11-z-test-known-variance-2": {
-  "hash": "531d9442fdc65739",
+  "hash": "308c0c0ec268f695",
   "ok": true
  }
 }

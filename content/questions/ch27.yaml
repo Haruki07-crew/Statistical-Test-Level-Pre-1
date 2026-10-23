@@ -5,7 +5,7 @@ questions:
     level: 基本
     type: numeric
     question: |
-      四半期データ $y_1,\dots,y_6=10,\ 14,\ 12,\ 8,\ 11,\ 15$ がある。周期 $s=4$ の中心化移動平均で、時点 $t=3$ の傾向 $\hat T_3$ を小数第3位まで求めよ。
+      四半期データ $y_1,\dots,y_6=10,\ 14,\ 12,\ 8,\ 11,\ 15$ がある。周期 $s=4$ の中心化移動平均で、時点 $t=3$ の傾向 $\hat T_3$ を小数第3位まで（四捨五入）求めよ。
     answer: 11.125
     tolerance: 0.001
     hint: |
@@ -50,7 +50,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      $\varepsilon_t\sim WN(0,\ 1.5)$、$X_0=0$、$X_t=X_{t-1}+\varepsilon_t$（ランダムウォーク）とする。$V[X_{10}-X_4]$ と $V[X_{10}]$ の差 $V[X_{10}]-V[X_{10}-X_4]$ を求めよ（小数第1位まで）。
+      $\varepsilon_t\sim WN(0,\ 1.5)$、$X_0=0$、$X_t=X_{t-1}+\varepsilon_t$（ランダムウォーク）とする。$V[X_{10}-X_4]$ と $V[X_{10}]$ の差 $V[X_{10}]-V[X_{10}-X_4]$ を求めよ（小数第1位まで（四捨五入）、四捨五入）。
     answer: 6.0
     tolerance: 0.05
     hint: |
@@ -99,7 +99,7 @@ questions:
     level: 基本
     type: numeric
     question: |
-      データ $1,\ 3,\ 4,\ 6,\ 5,\ 7$（$n=6$）について、ラグ1の標本自己相関 $r_1$ を小数第3位まで求めよ。ただし $r_1=\sum_{t=1}^{n-1}(x_t-\bar x)(x_{t+1}-\bar x)\big/\sum_{t=1}^{n}(x_t-\bar x)^2$ とする。
+      データ $1,\ 3,\ 4,\ 6,\ 5,\ 7$（$n=6$）について、ラグ1の標本自己相関 $r_1$ を小数第3位まで（四捨五入）求めよ。ただし $r_1=\sum_{t=1}^{n-1}(x_t-\bar x)(x_{t+1}-\bar x)\big/\sum_{t=1}^{n}(x_t-\bar x)^2$ とする。
     answer: 0.310
     tolerance: 0.001
     hint: |
@@ -151,7 +151,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      長さ $n=400$ の系列で標本自己相関 $r_1=0.4$、ラグ2以降は小さかった。MA(1) を仮定し、バートレットの公式でラグ $h\ge2$ の95%の目安の帯 $\pm c$ を作るとき、$c$ を小数第3位まで求めよ（$\rho(1)$ は $r_1$ で置き換える）。
+      長さ $n=400$ の系列で標本自己相関 $r_1=0.4$、ラグ2以降は小さかった。MA(1) を仮定し、バートレットの公式でラグ $h\ge2$ の95%の目安の帯 $\pm c$ を作るとき、$c$ を小数第3位まで（四捨五入）求めよ（$\rho(1)$ は $r_1$ で置き換える）。
     answer: 0.113
     tolerance: 0.001
     hint: |
@@ -184,7 +184,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      弱定常過程の自己相関が $\rho(1)=0.6,\ \rho(2)=0.5$ であるとき、ラグ2の偏自己相関 $\phi_{22}$ を小数第3位まで求めよ。
+      弱定常過程の自己相関が $\rho(1)=0.6,\ \rho(2)=0.5$ であるとき、ラグ2の偏自己相関 $\phi_{22}$ を小数第3位まで（四捨五入）求めよ。
     answer: 0.219
     tolerance: 0.001
     hint: |
@@ -201,7 +201,7 @@ questions:
       AR(1) 過程 $X_t=0.7X_{t-1}+\varepsilon_t$ のラグ2の偏自己相関は $\phi_{22}=0.7^2=0.49$ である。
     answer: false
     hint: |
-      $0.49$ は自己相関 $\rho(2)$ の値。偏自己相関の公式に $\rho(1)=0.7,\ \rho(2)=0.49$ を代入する。
+      AR(1) の自己相関 $\rho(1),\ \rho(2)$ を求め、偏自己相関の公式 $\phi_{22}=\dfrac{\rho(2)-\rho(1)^2}{1-\rho(1)^2}$ に代入する。
     explanation: |
       $$\phi_{22}=\frac{\rho(2)-\rho(1)^2}{1-\rho(1)^2}=\frac{0.49-0.49}{1-0.49}=0$$
       です。AR(1) では $X_{t-1}$ を知れば $X_{t-2}$ は追加の情報を持たないので、偏自己相関はラグ2以降で0（切断）になります。$0.49$ は自己相関 $\rho(2)$ です。
@@ -211,7 +211,7 @@ questions:
     level: 応用
     type: numeric
     question: |
-      MA(1) 過程 $X_t=\varepsilon_t+0.5\varepsilon_{t-1}$ のラグ2の偏自己相関 $\phi_{22}$ を小数第3位まで求めよ。
+      MA(1) 過程 $X_t=\varepsilon_t+0.5\varepsilon_{t-1}$ のラグ2の偏自己相関 $\phi_{22}$ を小数第3位まで（四捨五入）求めよ。
     answer: -0.190
     tolerance: 0.001
     hint: |
@@ -226,7 +226,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      $n=100$ の残差系列で標本自己相関が $r_1=0.15,\ r_2=-0.10,\ r_3=0.08$ であった。$m=3$ のリュング・ボックス統計量 $Q$ を小数第2位まで求めよ。
+      $n=100$ の残差系列で標本自己相関が $r_1=0.15,\ r_2=-0.10,\ r_3=0.08$ であった。$m=3$ のリュング・ボックス統計量 $Q$ を小数第2位まで（四捨五入）求めよ。
     answer: 4.03
     tolerance: 0.01
     hint: |
@@ -273,7 +273,7 @@ questions:
     level: 基本
     type: numeric
     question: |
-      AR(1) 過程 $X_t=2+0.6X_{t-1}+\varepsilon_t$、$\varepsilon_t\sim WN(0,4)$ の分散 $\gamma(0)$ を小数第2位まで求めよ。
+      AR(1) 過程 $X_t=2+0.6X_{t-1}+\varepsilon_t$、$\varepsilon_t\sim WN(0,4)$ の分散 $\gamma(0)$ を小数第2位まで（四捨五入）求めよ。
     answer: 6.25
     tolerance: 0.01
     hint: |
@@ -287,7 +287,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      AR(2) 過程 $X_t=0.5X_{t-1}+0.3X_{t-2}+\varepsilon_t$ の自己相関 $\rho(2)$ を小数第3位まで求めよ。
+      AR(2) 過程 $X_t=0.5X_{t-1}+0.3X_{t-2}+\varepsilon_t$ の自己相関 $\rho(2)$ を小数第3位まで（四捨五入）求めよ。
     answer: 0.657
     tolerance: 0.001
     hint: |
@@ -303,7 +303,7 @@ questions:
     level: 応用
     type: numeric
     question: |
-      AR(2) 過程 $X_t=0.5X_{t-1}+0.3X_{t-2}+\varepsilon_t$、$\varepsilon_t\sim WN(0,1)$ の分散 $\gamma(0)$ を小数第3位まで求めよ。
+      AR(2) 過程 $X_t=0.5X_{t-1}+0.3X_{t-2}+\varepsilon_t$、$\varepsilon_t\sim WN(0,1)$ の分散 $\gamma(0)$ を小数第3位まで（四捨五入）求めよ。
     answer: 2.244
     tolerance: 0.001
     hint: |
@@ -318,7 +318,7 @@ questions:
     level: 基本
     type: numeric
     question: |
-      MA(1) 過程 $X_t=\varepsilon_t-0.6\varepsilon_{t-1}$ のラグ1の自己相関 $\rho(1)$ を小数第3位まで求めよ。
+      MA(1) 過程 $X_t=\varepsilon_t-0.6\varepsilon_{t-1}$ のラグ1の自己相関 $\rho(1)$ を小数第3位まで（四捨五入）求めよ。
     answer: -0.441
     tolerance: 0.001
     hint: |
@@ -365,7 +365,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      ARMA(1,1) 過程 $X_t=0.5X_{t-1}+\varepsilon_t+0.4\varepsilon_{t-1}$ のラグ1の自己相関 $\rho(1)$ を小数第3位まで求めよ。
+      ARMA(1,1) 過程 $X_t=0.5X_{t-1}+\varepsilon_t+0.4\varepsilon_{t-1}$ のラグ1の自己相関 $\rho(1)$ を小数第3位まで（四捨五入）求めよ。
     answer: 0.692
     tolerance: 0.001
     hint: |
@@ -436,7 +436,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      ARIMA(0,1,1) モデル $X_t=X_{t-1}+\varepsilon_t-0.7\varepsilon_{t-1}$ で予測する。最新の観測値が $X_n=50$、その1期前に出した予測値が $\hat X_n=46$ のとき、1期先予測 $\hat X_{n+1}$ を小数第1位まで求めよ。
+      ARIMA(0,1,1) モデル $X_t=X_{t-1}+\varepsilon_t-0.7\varepsilon_{t-1}$ で予測する。最新の観測値が $X_n=50$、その1期前に出した予測値が $\hat X_n=46$ のとき、1期先予測 $\hat X_{n+1}$ を小数第1位まで（四捨五入）求めよ。
     answer: 47.2
     tolerance: 0.05
     hint: |
@@ -451,7 +451,7 @@ questions:
     level: 応用
     type: numeric
     question: |
-      ドリフト付きランダムウォーク $X_t=0.5+X_{t-1}+\varepsilon_t$、$\varepsilon_t$ は i.i.d. $N(0,1)$ で、$X_n=20$ である。4期先 $X_{n+4}$ の95%予測区間の上限を小数第2位まで求めよ。
+      ドリフト付きランダムウォーク $X_t=0.5+X_{t-1}+\varepsilon_t$、$\varepsilon_t$ は i.i.d. $N(0,1)$ で、$X_n=20$ である。4期先 $X_{n+4}$ の95%予測区間の上限を小数第2位まで（四捨五入）求めよ。
     answer: 25.92
     tolerance: 0.01
     hint: |
@@ -466,7 +466,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      標本自己相関が $r_1=0.6,\ r_2=0.45$ の系列に AR(2) を当てはめる。ユール・ウォーカー推定値 $\hat\phi_1$ を小数第3位まで求めよ。
+      標本自己相関が $r_1=0.6,\ r_2=0.45$ の系列に AR(2) を当てはめる。ユール・ウォーカー推定値 $\hat\phi_1$ を小数第3位まで（四捨五入）求めよ。
     answer: 0.516
     tolerance: 0.001
     hint: |
@@ -481,7 +481,7 @@ questions:
     level: 応用
     type: numeric
     question: |
-      標本自己相関が $r_1=0.6,\ r_2=0.45$、標本分散 $\hat\gamma(0)=5$ の系列に AR(2) を当てはめる。雑音の分散のユール・ウォーカー推定値 $\hat\sigma^2$ を小数第3位まで求めよ。
+      標本自己相関が $r_1=0.6,\ r_2=0.45$、標本分散 $\hat\gamma(0)=5$ の系列に AR(2) を当てはめる。雑音の分散のユール・ウォーカー推定値 $\hat\sigma^2$ を小数第3位まで（四捨五入）求めよ。
     answer: 3.137
     tolerance: 0.001
     hint: |
@@ -531,7 +531,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      AR(2) 過程 $X_t=1.2X_{t-1}-0.5X_{t-2}+\varepsilon_t$ の特性方程式 $1-1.2z+0.5z^2=0$ の根の絶対値 $|z|$ を小数第3位まで求めよ。
+      AR(2) 過程 $X_t=1.2X_{t-1}-0.5X_{t-2}+\varepsilon_t$ の特性方程式 $1-1.2z+0.5z^2=0$ の根の絶対値 $|z|$ を小数第3位まで（四捨五入）求めよ。
     answer: 1.414
     tolerance: 0.001
     hint: |
@@ -559,7 +559,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      MA(1) 過程 $X_t=\varepsilon_t+2.5\varepsilon_{t-1}$、$\varepsilon_t\sim WN(0,1)$ は反転可能でない。同じ自己共分散をもつ反転可能な表現 $X_t=u_t+\theta' u_{t-1}$、$u_t\sim WN(0,\sigma'^2)$ の $\sigma'^2$ を小数第2位まで求めよ。
+      MA(1) 過程 $X_t=\varepsilon_t+2.5\varepsilon_{t-1}$、$\varepsilon_t\sim WN(0,1)$ は反転可能でない。同じ自己共分散をもつ反転可能な表現 $X_t=u_t+\theta' u_{t-1}$、$u_t\sim WN(0,\sigma'^2)$ の $\sigma'^2$ を小数第2位まで（四捨五入）求めよ。
     answer: 6.25
     tolerance: 0.01
     hint: |
@@ -612,7 +612,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      ランダムウォーク $X_t=X_{t-1}+\varepsilon_t$（$X_0=0$、$\varepsilon_t\sim WN(0,\sigma^2)$）で、$\operatorname{Corr}(X_{16},X_{25})$ を小数第2位まで求めよ。
+      ランダムウォーク $X_t=X_{t-1}+\varepsilon_t$（$X_0=0$、$\varepsilon_t\sim WN(0,\sigma^2)$）で、$\operatorname{Corr}(X_{16},X_{25})$ を小数第2位まで（四捨五入）求めよ。
     answer: 0.80
     tolerance: 0.005
     hint: |
@@ -669,7 +669,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      加法モデルで四半期の季節成分を推定する。$y_t-\hat T_t$ を四半期ごとに平均した値が、第1〜第4四半期で $3,\ -1,\ -4,\ 4$ であった。合計が0になるように調整した季節成分を使うとき、第2四半期の観測値 $y=120$ の季節調整済みの値を小数第1位まで求めよ。
+      加法モデルで四半期の季節成分を推定する。$y_t-\hat T_t$ を四半期ごとに平均した値が、第1〜第4四半期で $3,\ -1,\ -4,\ 4$ であった。合計が0になるように調整した季節成分を使うとき、第2四半期の観測値 $y=120$ の季節調整済みの値を小数第1位まで（四捨五入）求めよ。
     answer: 121.5
     tolerance: 0.05
     hint: |
@@ -703,7 +703,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      AR(1) 過程 $X_t=3+0.7X_{t-1}+\varepsilon_t$ で、最新の観測値が $X_n=14$ である。3期先の予測値 $\hat X_n(3)$ を小数第3位まで求めよ。
+      AR(1) 過程 $X_t=3+0.7X_{t-1}+\varepsilon_t$ で、最新の観測値が $X_n=14$ である。3期先の予測値 $\hat X_n(3)$ を小数第3位まで（四捨五入）求めよ。
     answer: 11.372
     tolerance: 0.001
     hint: |
@@ -718,7 +718,7 @@ questions:
     level: 応用
     type: numeric
     question: |
-      AR(1) 過程 $X_t=3+0.7X_{t-1}+\varepsilon_t$、$\varepsilon_t\sim WN(0,2)$ で予測する。3期先の予測誤差の分散 $V[e_n(3)]$ を小数第3位まで求めよ。
+      AR(1) 過程 $X_t=3+0.7X_{t-1}+\varepsilon_t$、$\varepsilon_t\sim WN(0,2)$ で予測する。3期先の予測誤差の分散 $V[e_n(3)]$ を小数第3位まで（四捨五入）求めよ。
     answer: 3.460
     tolerance: 0.001
     hint: |
@@ -747,7 +747,7 @@ questions:
     level: 応用
     type: numeric
     question: |
-      ローカルレベルモデルで信号対雑音比が $q=\sigma_\eta^2/\sigma_\varepsilon^2=2$ のとき、カルマンフィルタの定常状態でのゲイン $K$ を小数第3位まで求めよ。定常状態の予測分散は $\bar P=\sigma_\varepsilon^2(q+\sqrt{q^2+4q})/2$ である。
+      ローカルレベルモデルで信号対雑音比が $q=\sigma_\eta^2/\sigma_\varepsilon^2=2$ のとき、カルマンフィルタの定常状態でのゲイン $K$ を小数第3位まで（四捨五入）求めよ。定常状態の予測分散は $\bar P=\sigma_\varepsilon^2(q+\sqrt{q^2+4q})/2$ である。
     answer: 0.732
     tolerance: 0.001
     hint: |

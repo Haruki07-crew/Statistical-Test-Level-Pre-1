@@ -174,4 +174,29 @@ _pairs = {p: sum(1 for B in _blocks if set(p) <= B) for p in _cb(range(6), 2)}
 _reps = [sum(1 for B in _blocks if i in B) for i in range(6)]
 q.check("q20-incomplete-block-design-1", set(_pairs.values()) == {2} and set(_reps) == {5}, f"BIBD(6,10,3) の実例で r=5、λ=2")
 
+# --- 導出問題（追加） ---
+def _deriv20():
+    import sympy as _S
+    # 2次形式の期待値 E[y'Ay]=σ² tr A + m'Am で厳密に計算（n=(2,3,4)）
+    ns = [2, 3, 4]; k = len(ns); N = sum(ns)
+    mu, s2 = _S.symbols("mu sigma2", positive=True)
+    a1, a2 = _S.symbols("alpha1 alpha2", real=True)
+    a3 = -(ns[0] * a1 + ns[1] * a2) / ns[2]            # Σ n_i α_i = 0
+    al = [a1, a2, a3]
+    g = [i for i, ni in enumerate(ns) for _ in range(ni)]
+    m = _S.Matrix([mu + al[gi] for gi in g])
+    Pg = _S.zeros(N, N)
+    for r in range(N):
+        for c in range(N):
+            if g[r] == g[c]:
+                Pg[r, c] = _S.Rational(1, ns[g[r]])
+    J = _S.ones(N, N) / N; I = _S.eye(N)
+    AE = I - Pg; AA = Pg - J                          # S_E=y'(I-Pg)y、S_A=y'(Pg-J)y
+    EE = s2 * AE.trace() + (m.T * AE * m)[0]
+    EA = s2 * AA.trace() + (m.T * AA * m)[0]
+    ok = _S.simplify(EE - (N - k) * s2) == 0
+    ok &= _S.simplify(EA - ((k - 1) * s2 + sum(ni * ai ** 2 for ni, ai in zip(ns, al)))) == 0
+    q.check("q20-one-way-anova-4", bool(ok), "sympy（n=(2,3,4)）: E[S_E]=(N-k)σ²、E[S_A]=(k-1)σ²+Σn_iα_i²")
+_deriv20()
+
 q.done()

@@ -22,7 +22,7 @@ questions:
     type: numeric
     question: |
       5組のデータ $(x,y)=(1,2),(2,3),(3,5),(4,4),(5,8)$ に単回帰 $y=\beta_0+\beta_1x+\varepsilon$ を最小二乗法で当てはめた。
-      誤差分散の不偏推定値 $s^2=\sum e_i^2/(n-2)$ を小数第3位まで求めよ。
+      誤差分散の不偏推定値 $s^2=\sum e_i^2/(n-2)$ を小数第3位まで（四捨五入）求めよ。
     answer: 1.433
     tolerance: 0.001
     hint: |
@@ -41,7 +41,7 @@ questions:
     type: numeric
     question: |
       ある回帰で、点 $i$ の残差が $e_i=2.4$、てこ比が $h_{ii}=0.36$、誤差の標準偏差の推定値が $s=1.5$ であった。
-      標準化残差 $r_i=e_i/(s\sqrt{1-h_{ii}})$ を小数第2位まで求めよ。
+      標準化残差 $r_i=e_i/(s\sqrt{1-h_{ii}})$ を小数第2位まで（四捨五入）求めよ。
     answer: 2.0
     tolerance: 0.01
     hint: |
@@ -78,7 +78,7 @@ questions:
     type: numeric
     question: |
       $n=20$、説明変数 $p=2$ 個（切片あり）の重回帰で、点 $i$ の標準化残差が $r_i=2.5$ であった。
-      スチューデント化残差（外的スチューデント化残差）$t_i$ を小数第2位まで求めよ。
+      スチューデント化残差（外的スチューデント化残差）$t_i$ を小数第2位まで（四捨五入）求めよ。
     answer: 3.05
     tolerance: 0.01
     hint: |
@@ -113,7 +113,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      説明変数の値が $x=1,2,3,4,10$ の5点に単回帰（切片あり）を当てはめる。$x=10$ の点のてこ比 $h_{55}$ を小数第2位まで求めよ。
+      説明変数の値が $x=1,2,3,4,10$ の5点に単回帰（切片あり）を当てはめる。$x=10$ の点のてこ比 $h_{55}$ を小数第2位まで（四捨五入）求めよ。
     answer: 0.92
     tolerance: 0.005
     hint: |
@@ -129,7 +129,7 @@ questions:
     type: numeric
     question: |
       $n=40$ 個の観測に説明変数 $p=4$ 個（切片あり）の重回帰を当てはめる。
-      「てこ比が平均の2倍を超える点を高てこ比とする」目安での基準値を小数第3位まで求めよ。
+      「てこ比が平均の2倍を超える点を高てこ比とする」目安での基準値を小数第3位まで（四捨五入）求めよ。
     answer: 0.25
     tolerance: 0.001
     hint: |
@@ -159,7 +159,7 @@ questions:
     type: numeric
     question: |
       説明変数 $p=2$ 個（切片あり）の重回帰で、点 $i$ の標準化残差が $r_i=1.8$、てこ比が $h_{ii}=0.4$ であった。
-      クックの距離 $D_i$ を小数第2位まで求めよ。
+      クックの距離 $D_i$ を小数第2位まで（四捨五入）求めよ。
     answer: 0.72
     tolerance: 0.005
     hint: |
@@ -196,7 +196,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      ある点のスチューデント化残差が $t_i=2.2$、てこ比が $h_{ii}=0.3$ であった。$\mathrm{DFFITS}_i$ を小数第2位まで求めよ。
+      ある点のスチューデント化残差が $t_i=2.2$、てこ比が $h_{ii}=0.3$ であった。$\mathrm{DFFITS}_i$ を小数第2位まで（四捨五入）求めよ。
     answer: 1.44
     tolerance: 0.005
     hint: |
@@ -295,7 +295,7 @@ questions:
     type: numeric
     question: |
       $n=10$ 個の残差で正規Q-Qプロットを描く。プロット位置を $(i-0.5)/n$ とするとき、
-      9番目に小さい残差の横軸の値（理論分位点）$q_9$ を小数第2位まで求めよ。
+      9番目に小さい残差の横軸の値（理論分位点）$q_9$ を小数第2位まで（四捨五入）求めよ。
     answer: 1.04
     tolerance: 0.005
     hint: |
@@ -344,7 +344,7 @@ questions:
     type: numeric
     question: |
       $x=1,2,3,4$ の4点で単回帰 $y_i=\beta_0+\beta_1x_i+\varepsilon_i$ を考える。誤差は互いに無相関で $V[\varepsilon_i]=x_i^2$ とする。
-      最小二乗推定量 $\hat\beta_1$ の本当の分散 $V[\hat\beta_1]$ を小数第2位まで求めよ。
+      最小二乗推定量 $\hat\beta_1$ の本当の分散 $V[\hat\beta_1]$ を小数第2位まで（四捨五入）求めよ。
     answer: 1.66
     tolerance: 0.005
     hint: |
@@ -360,7 +360,7 @@ questions:
     type: numeric
     question: |
       回帰の誤差が定常な AR(1) $\varepsilon_t=0.6\,\varepsilon_{t-1}+u_t$（$u_t$ は独立に平均0・分散2）に従う。
-      $\mathrm{Cov}(\varepsilon_t,\ \varepsilon_{t-2})$ を小数第3位まで求めよ。
+      $\mathrm{Cov}(\varepsilon_t,\ \varepsilon_{t-2})$ を小数第3位まで（四捨五入）求めよ。
     answer: 1.125
     tolerance: 0.001
     hint: |
@@ -388,7 +388,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      時系列の回帰（切片あり）の残差が時間順に $1,\ 2,\ 1,\ -1,\ -2,\ -1$ であった。ダービン・ワトソン比 $d$ を小数第3位まで求めよ。
+      時系列の回帰（切片あり）の残差が時間順に $1,\ 2,\ 1,\ -1,\ -2,\ -1$ であった。ダービン・ワトソン比 $d$ を小数第3位まで（四捨五入）求めよ。
     answer: 0.667
     tolerance: 0.001
     hint: |
@@ -443,7 +443,7 @@ questions:
     type: numeric
     question: |
       $n=50$ のデータで回帰を当てはめ、残差の2乗 $e_i^2$ を定数と2つの説明変数に回帰した補助回帰の決定係数が $R^2_{\text{aux}}=0.12$ であった。
-      スチューデント化版のブルーシュ・ペイガン検定の漸近 $p$ 値を小数第3位まで求めよ。
+      スチューデント化版のブルーシュ・ペイガン検定の漸近 $p$ 値を小数第3位まで（四捨五入）求めよ。
     answer: 0.05
     tolerance: 0.001
     hint: |
@@ -466,3 +466,29 @@ questions:
       頑健標準誤差は $\hat{\boldsymbol\beta}=(X^\top X)^{-1}X^\top\boldsymbol y$ をそのまま使い、分散だけを
       $$(X^\top X)^{-1}\Big(\sum e_i^2\boldsymbol x_i\boldsymbol x_i^\top\Big)(X^\top X)^{-1}$$
       で推定し直します。変わるのは標準誤差・$t$ 値・信頼区間だけです。係数自体を変えるのは加重最小二乗法です。
+
+  - id: q17-leverage-4
+    term: leverage
+    level: 応用
+    type: derivation
+    question: |
+      切片ありの単回帰 $y_i=\beta_0+\beta_1x_i+\varepsilon_i$（$i=1,\dots,n$）で、計画行列の $i$ 行目を $\boldsymbol x_i^\top=(1,\ x_i)$ とする。
+      てこ比 $h_{ii}=\boldsymbol x_i^\top(X^\top X)^{-1}\boldsymbol x_i$ が $h_{ii}=\dfrac1n+\dfrac{(x_i-\bar x)^2}{S_{xx}}$（$S_{xx}=\sum_k(x_k-\bar x)^2$）と書けることを示せ。
+    steps:
+      - |
+        $X^\top X=\begin{pmatrix}n&\sum x_k\\ \sum x_k&\sum x_k^2\end{pmatrix}$、行列式は $n\sum x_k^2-(\sum x_k)^2=nS_{xx}$。
+      - |
+        逆行列：$(X^\top X)^{-1}=\dfrac{1}{nS_{xx}}\begin{pmatrix}\sum x_k^2&-\sum x_k\\ -\sum x_k&n\end{pmatrix}$。
+      - |
+        $h_{ii}=\dfrac{\sum x_k^2-2x_i\sum x_k+nx_i^2}{nS_{xx}}$。$\sum x_k^2=S_{xx}+n\bar x^2$、$\sum x_k=n\bar x$ を代入。
+      - |
+        分子 $=S_{xx}+n\bar x^2-2nx_i\bar x+nx_i^2=S_{xx}+n(x_i-\bar x)^2$。よって $h_{ii}=\dfrac1n+\dfrac{(x_i-\bar x)^2}{S_{xx}}$。
+    answer: '$h_{ii}=\dfrac1n+\dfrac{(x_i-\bar x)^2}{S_{xx}}$'
+    hint: |
+      2×2 行列の逆行列を書き、$\sum x_k^2=S_{xx}+n\bar x^2$ で平方完成する。
+    explanation: |
+      $(X^\top X)^{-1}$ を具体的に書いて2次形式を計算し、$\sum x_k^2=S_{xx}+n\bar x^2$ で整理すると
+      $$h_{ii}=\frac1n+\frac{(x_i-\bar x)^2}{S_{xx}}$$
+      です。てこ比は $y$ によらず $x$ の配置だけで決まり、$x_i$ が平均から遠いほど大きくなります（最小値 $1/n$ は $x_i=\bar x$ のとき）。
+      全点で足すと $\sum h_{ii}=1+1=2$（＝係数の個数）になることも確かめられます。
+      よくある間違いは、行列式を $nS_{xx}$ ではなく $S_{xx}$ とすること、$1/n$ の項を落とすことです。

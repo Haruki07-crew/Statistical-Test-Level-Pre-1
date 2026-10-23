@@ -22,7 +22,7 @@ questions:
     question: |
       2変数 $\boldsymbol{X}=(X_1,X_2)^\top$ の分散共分散行列が
       $$\Sigma=\begin{pmatrix}5&2\\2&2\end{pmatrix}$$
-      である。第1主成分 $Y_1=h_{11}X_1+h_{21}X_2$（$h_{11}^2+h_{21}^2=1$、$h_{11}>0$）の係数 $h_{11}$ を小数第3位まで求めよ。
+      である。第1主成分 $Y_1=h_{11}X_1+h_{21}X_2$（$h_{11}^2+h_{21}^2=1$、$h_{11}>0$）の係数 $h_{11}$ を小数第3位まで（四捨五入）求めよ。
     answer: 0.894
     tolerance: 0.001
     hint: |
@@ -109,7 +109,7 @@ questions:
     question: |
       $\boldsymbol{h}_1=(1,1)^\top/\sqrt2$、$\boldsymbol{h}_2=(1,-1)^\top/\sqrt2$ として、
       $$A=4\,\boldsymbol{h}_1\boldsymbol{h}_1^\top+1\cdot\boldsymbol{h}_2\boldsymbol{h}_2^\top$$
-      とする。逆行列 $A^{-1}$ の $(1,2)$ 成分を小数第3位まで求めよ。
+      とする。逆行列 $A^{-1}$ の $(1,2)$ 成分を小数第3位まで（四捨五入）求めよ。
     answer: -0.375
     tolerance: 0.001
     hint: |
@@ -124,7 +124,7 @@ questions:
     level: 基本
     type: numeric
     question: |
-      3変数の分散共分散行列から主成分分析を行い、固有値 $5.2,\ 2.1,\ 0.7$ を得た。第1主成分の寄与率を小数第3位まで求めよ。
+      3変数の分散共分散行列から主成分分析を行い、固有値 $5.2,\ 2.1,\ 0.7$ を得た。第1主成分の寄与率を小数第3位まで（四捨五入）求めよ。
     answer: 0.65
     tolerance: 0.001
     hint: |
@@ -158,7 +158,7 @@ questions:
     level: 応用
     type: numeric
     question: |
-      2変数の相関行列 $R=\begin{pmatrix}1&r\\r&1\end{pmatrix}$ から主成分分析を行ったところ、第1主成分の寄与率が $0.85$ であった。$|r|$ を小数第2位まで求めよ。
+      2変数の相関行列 $R=\begin{pmatrix}1&r\\r&1\end{pmatrix}$ から主成分分析を行ったところ、第1主成分の寄与率が $0.85$ であった。$|r|$ を小数第2位まで（四捨五入）求めよ。
     answer: 0.7
     tolerance: 0.005
     hint: |
@@ -203,7 +203,7 @@ questions:
     level: 応用
     type: numeric
     question: |
-      3変数のどの2つの相関係数も $0.5$ である相関行列から主成分分析を行う。第1主成分の累積寄与率 $C_1$ を小数第3位まで求めよ。
+      3変数のどの2つの相関係数も $0.5$ である相関行列から主成分分析を行う。第1主成分の累積寄与率 $C_1$ を小数第3位まで（四捨五入）求めよ。
     answer: 0.667
     tolerance: 0.001
     hint: |
@@ -219,7 +219,7 @@ questions:
     type: numeric
     question: |
       相関行列から主成分分析を行い、第1固有値 $\lambda_1=2.25$、第1固有ベクトルの変数 $X_1$ の成分 $h_{11}=0.6$ を得た。
-      第1主成分と $X_1$ の相関（主成分負荷量）を小数第2位まで求めよ。
+      第1主成分と $X_1$ の相関（主成分負荷量）を小数第2位まで（四捨五入）求めよ。
     answer: 0.9
     tolerance: 0.005
     hint: |
@@ -234,7 +234,7 @@ questions:
     type: numeric
     question: |
       分散共分散行列 $\Sigma=\begin{pmatrix}5&2\\2&2\end{pmatrix}$ の第1固有値は $6$、固有ベクトルは $(2,1)^\top/\sqrt5$ である。
-      第1主成分と $X_2$ の相関係数（主成分負荷量）を小数第3位まで求めよ。
+      第1主成分と $X_2$ の相関係数（主成分負荷量）を小数第3位まで（四捨五入）求めよ。
     answer: 0.775
     tolerance: 0.001
     hint: |
@@ -280,7 +280,7 @@ questions:
     type: numeric
     question: |
       2変数の相関行列から主成分分析を行い、第1固有ベクトル $(1/\sqrt2,\ 1/\sqrt2)^\top$ を得た。2変数の標準偏差はそれぞれ $10,\ 5$ である。
-      平均からの偏差が $(15,\ 2.5)$ の個体の第1主成分得点を小数第3位まで求めよ。
+      平均からの偏差が $(15,\ 2.5)$ の個体の第1主成分得点を小数第3位まで（四捨五入）求めよ。
     answer: 1.414
     tolerance: 0.001
     hint: |
@@ -329,7 +329,7 @@ questions:
     type: numeric
     question: |
       2変数の分散共分散行列が $\Sigma=\begin{pmatrix}16&6\\6&4\end{pmatrix}$ である。
-      相関行列から主成分分析を行ったときの第1主成分の寄与率を小数第3位まで求めよ。
+      相関行列から主成分分析を行ったときの第1主成分の寄与率を小数第3位まで（四捨五入）求めよ。
     answer: 0.875
     tolerance: 0.001
     hint: |
@@ -473,7 +473,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      行列 $X$ の特異値が $6,\ 3,\ 2,\ 1$ であった。階数2の最良近似 $X_2$ を使うとき、相対誤差 $\|X-X_2\|_F^2/\|X\|_F^2$ を小数第2位まで求めよ。
+      行列 $X$ の特異値が $6,\ 3,\ 2,\ 1$ であった。階数2の最良近似 $X_2$ を使うとき、相対誤差 $\|X-X_2\|_F^2/\|X\|_F^2$ を小数第2位まで（四捨五入）求めよ。
     answer: 0.1
     tolerance: 0.005
     hint: |
@@ -482,3 +482,29 @@ questions:
       $\|X\|_F^2=36+9+4+1=50$、$\|X-X_2\|_F^2=4+1=5$ なので
       $$\frac{5}{50}=0.10$$
       特異値そのもの（$3/12$ など）ではなく、**2乗**で比べる点に注意します。
+
+  - id: q22-principal-component-loading-4
+    term: principal-component-loading
+    level: 標準
+    type: derivation
+    question: |
+      $\boldsymbol X=(X_1,\dots,X_p)^\top$ の分散共分散行列を $\Sigma$（対角成分 $\sigma_{jj}$）、その固有値を $\lambda_k$、長さ1の固有ベクトルを $\boldsymbol h_k=(h_{1k},\dots,h_{pk})^\top$ とし、
+      第 $k$ 主成分を $Y_k=\boldsymbol h_k^\top\boldsymbol X$ とする。主成分負荷量 $r(Y_k,X_j)$ を $\lambda_k,\ h_{jk},\ \sigma_{jj}$ で表せ。
+    steps:
+      - |
+        $V[Y_k]=\boldsymbol h_k^\top\Sigma\boldsymbol h_k=\lambda_k\boldsymbol h_k^\top\boldsymbol h_k=\lambda_k$。
+      - |
+        $X_j=\boldsymbol e_j^\top\boldsymbol X$（$\boldsymbol e_j$ は第 $j$ 単位ベクトル）と書くと $\mathrm{Cov}[Y_k,X_j]=\boldsymbol e_j^\top\Sigma\boldsymbol h_k$。
+      - |
+        $\Sigma\boldsymbol h_k=\lambda_k\boldsymbol h_k$ なので $\mathrm{Cov}[Y_k,X_j]=\lambda_k\boldsymbol e_j^\top\boldsymbol h_k=\lambda_kh_{jk}$。
+      - |
+        $r(Y_k,X_j)=\dfrac{\lambda_kh_{jk}}{\sqrt{\lambda_k}\sqrt{\sigma_{jj}}}=\dfrac{\sqrt{\lambda_k}\,h_{jk}}{\sqrt{\sigma_{jj}}}$。
+    answer: '$r(Y_k,X_j)=\dfrac{\sqrt{\lambda_k}\,h_{jk}}{\sqrt{\sigma_{jj}}}$（相関行列から求めた場合は $\sqrt{\lambda_k}\,h_{jk}$）'
+    hint: |
+      $\mathrm{Cov}[\boldsymbol a^\top\boldsymbol X,\boldsymbol b^\top\boldsymbol X]=\boldsymbol a^\top\Sigma\boldsymbol b$ と、固有ベクトルの定義 $\Sigma\boldsymbol h_k=\lambda_k\boldsymbol h_k$ を使う。
+    explanation: |
+      共分散は $\mathrm{Cov}[Y_k,X_j]=\boldsymbol e_j^\top\Sigma\boldsymbol h_k=\lambda_kh_{jk}$ で、$V[Y_k]=\lambda_k$ なので
+      $$r(Y_k,X_j)=\frac{\sqrt{\lambda_k}\,h_{jk}}{\sqrt{\sigma_{jj}}}$$
+      です。相関行列から主成分分析をしたときは $\sigma_{jj}=1$ なので $\sqrt{\lambda_k}h_{jk}$ になります。
+      固有ベクトルの成分 $h_{jk}$ そのものは長さ1に正規化された「重み」で、相関（負荷量）にするには $\sqrt{\lambda_k}$ を掛け、$X_j$ の標準偏差で割る必要があります。
+      よくある間違いは、$\lambda_k$ を平方根にせずに掛けること、分散共分散行列から求めたのに $\sqrt{\sigma_{jj}}$ で割り忘れることです。

@@ -6,7 +6,7 @@ questions:
     type: numeric
     question: |
       ある政策の支持率が50%かどうかを調べるため、無作為に選んだ400人に聞いたところ228人が支持した。
-      $H_0:p=0.5$ の検定統計量 $Z=\dfrac{\hat p-p_0}{\sqrt{p_0(1-p_0)/n}}$ の値を小数第2位まで求めよ（連続修正なし）。
+      $H_0:p=0.5$ の検定統計量 $Z=\dfrac{\hat p-p_0}{\sqrt{p_0(1-p_0)/n}}$ の値を小数第2位まで（四捨五入）求めよ（連続修正なし）。
     answer: 2.80
     tolerance: 0.01
     hint: |
@@ -56,7 +56,7 @@ questions:
     level: 基本
     type: numeric
     question: |
-      コインを10回投げて表が9回出た。$H_0:p=0.5$ 対 $H_1:p>0.5$ の二項検定の p値を小数第3位まで求めよ。
+      コインを10回投げて表が9回出た。$H_0:p=0.5$ 対 $H_1:p>0.5$ の二項検定の p値を小数第3位まで（四捨五入）求めよ。
     answer: 0.011
     tolerance: 0.001
     hint: |
@@ -92,7 +92,7 @@ questions:
     type: numeric
     question: |
       $n=12$ 回の試行で成功が7回だった。$H_0:p=0.3$ 対 $H_1:p\ne0.3$ を二項検定で行う。
-      両側 p値を「片側 p値の小さいほうを2倍する方法」で求め、小数第3位まで答えよ。
+      両側 p値を「片側 p値の小さいほうを2倍する方法」で求め、小数第3位まで（四捨五入）答えよ。
     answer: 0.077
     tolerance: 0.001
     hint: |
@@ -108,7 +108,7 @@ questions:
     type: numeric
     question: |
       ある窓口の苦情件数は、従来1日あたり平均2件のポアソン分布に従っていた。
-      ある5日間の苦情の合計が17件だったとき、$H_0:\lambda=2$ 対 $H_1:\lambda>2$ の正確な p値を小数第3位まで求めよ。
+      ある5日間の苦情の合計が17件だったとき、$H_0:\lambda=2$ 対 $H_1:\lambda>2$ の正確な p値を小数第3位まで（四捨五入）求めよ。
     answer: 0.027
     tolerance: 0.001
     hint: |
@@ -124,7 +124,7 @@ questions:
     type: numeric
     question: |
       $X_1,\dots,X_{50}$ が独立に $\mathrm{Po}(\lambda)$ に従い、標本平均が $\bar X=4.5$ だった。
-      $H_0:\lambda=4$ の正規近似の検定統計量 $Z=\dfrac{\bar X-\lambda_0}{\sqrt{\lambda_0/n}}$ を小数第2位まで求めよ。
+      $H_0:\lambda=4$ の正規近似の検定統計量 $Z=\dfrac{\bar X-\lambda_0}{\sqrt{\lambda_0/n}}$ を小数第2位まで（四捨五入）求めよ。
     answer: 1.77
     tolerance: 0.01
     hint: |
@@ -139,7 +139,7 @@ questions:
     type: numeric
     question: |
       広告Aを見た200人のうち60人、広告Bを見た300人のうち66人が商品を購入した。
-      プールした比率を使う2標本の比率の差の検定統計量 $Z$ を小数第2位まで求めよ。
+      プールした比率を使う2標本の比率の差の検定統計量 $Z$ を小数第2位まで（四捨五入）求めよ。
     answer: 2.02
     tolerance: 0.01
     hint: |
@@ -170,7 +170,7 @@ questions:
     type: numeric
     question: |
       さいころを120回投げ、目1〜6の度数が $25,17,15,23,24,16$ だった。
-      「どの目も確率1/6」という $H_0$ に対するピアソンのカイ二乗統計量を小数第2位まで求めよ。
+      「どの目も確率1/6」という $H_0$ に対するピアソンのカイ二乗統計量を小数第2位まで（四捨五入）求めよ。
     answer: 5.00
     tolerance: 0.01
     hint: |
@@ -244,7 +244,7 @@ questions:
     type: numeric
     question: |
       100人を性別と賛否で分類した2×2分割表が $\begin{pmatrix}30&20\\20&30\end{pmatrix}$ だった。
-      独立性の検定のカイ二乗統計量（連続修正なし）を小数第2位まで求めよ。
+      独立性の検定のカイ二乗統計量（連続修正なし）を小数第2位まで（四捨五入）求めよ。
     answer: 4.00
     tolerance: 0.01
     hint: |
@@ -277,7 +277,7 @@ questions:
     type: numeric
     question: |
       100人を所属（2群）と満足度（低・中・高）で分類したところ、次の表になった。
-      独立性の検定のカイ二乗統計量を小数第2位まで求めよ。
+      独立性の検定のカイ二乗統計量を小数第2位まで（四捨五入）求めよ。
 
       | | 低 | 中 | 高 |
       |---|---|---|---|
@@ -312,7 +312,7 @@ questions:
     type: numeric
     question: |
       3つのカテゴリの理論確率が $(0.25,0.5,0.25)$ とされる。100個の観測で度数が $(30,50,20)$ だったとき、
-      尤度比検定統計量 $G=2\sum O_i\log(O_i/E_i)$ を小数第2位まで求めよ（$\log$ は自然対数）。
+      尤度比検定統計量 $G=2\sum O_i\log(O_i/E_i)$ を小数第2位まで（四捨五入）求めよ（$\log$ は自然対数）。
     answer: 2.01
     tolerance: 0.01
     hint: |
@@ -406,7 +406,7 @@ questions:
     question: |
       大きさ $n=28$ の2変量正規分布からの標本で、標本相関係数が $r=0.6$ だった。
       フィッシャーの $z$ 変換 $z=\tanh^{-1}r$（分散 $1/(n-3)$）を使って母相関係数 $\rho$ の95%信頼区間を求めるとき、
-      その下限を小数第3位まで求めよ。ただし $z_{0.025}=1.96$ とする。
+      その下限を小数第3位まで（四捨五入）求めよ。ただし $z_{0.025}=1.96$ とする。
     answer: 0.292
     tolerance: 0.001
     hint: |
@@ -423,7 +423,7 @@ questions:
     type: numeric
     question: |
       工場Aでは200日間に30件、工場Bでは100日間に5件の事故があった。事故はそれぞれ1日あたりの発生率 $\lambda_A,\lambda_B$ のポアソン分布に従うとする。
-      合計件数35を条件とした二項検定で $H_0:\lambda_A=\lambda_B$ 対 $H_1:\lambda_A>\lambda_B$ の p値を小数第3位まで求めよ。
+      合計件数35を条件とした二項検定で $H_0:\lambda_A=\lambda_B$ 対 $H_1:\lambda_A>\lambda_B$ の p値を小数第3位まで（四捨五入）求めよ。
     answer: 0.010
     tolerance: 0.001
     hint: |
@@ -439,7 +439,7 @@ questions:
     type: numeric
     question: |
       4個のデータ $0.1,\ 0.3,\ 0.35,\ 0.9$ が一様分布 $U(0,1)$ に従うかを、コルモゴロフ・スミルノフ検定で調べる。
-      統計量 $D_n=\sup_x|F_n(x)-F_0(x)|$ の値を小数第2位まで求めよ。
+      統計量 $D_n=\sup_x|F_n(x)-F_0(x)|$ の値を小数第2位まで（四捨五入）求めよ。
     answer: 0.40
     tolerance: 0.01
     hint: |
@@ -455,7 +455,7 @@ questions:
     type: numeric
     question: |
       6区画で数えた虫の数が $2,5,0,7,1,3$ だった。ポアソン分布に従うかを分散指数で調べる。
-      統計量 $D=\sum(X_i-\bar X)^2/\bar X$ の値を小数第2位まで求めよ。
+      統計量 $D=\sum(X_i-\bar X)^2/\bar X$ の値を小数第2位まで（四捨五入）求めよ。
     answer: 11.33
     tolerance: 0.01
     hint: |
@@ -464,3 +464,29 @@ questions:
       $\bar X=18/6=3$、偏差平方和は $1+4+9+16+4+0=34$ なので
       $$D=\frac{34}{3}=11.33$$
       自由度5の上側5%点 $11.07$ を超えるので、5%で「ポアソン分布より過分散」と判断されます。
+
+  - id: q12-g-statistic-3
+    term: g-statistic
+    level: 応用
+    type: derivation
+    question: |
+      観測度数 $O_i$、期待度数 $E_i$（$\sum O_i=\sum E_i$）について、$O_i=E_i+d_i$ とおく。
+      $\log(1+u)$ のテイラー展開を使って、$G=2\sum_iO_i\log\dfrac{O_i}{E_i}$ がピアソンのカイ二乗統計量 $X^2=\sum_i\dfrac{(O_i-E_i)^2}{E_i}$ で近似できることを示せ。
+    steps:
+      - |
+        $\log\dfrac{O_i}{E_i}=\log\Big(1+\dfrac{d_i}{E_i}\Big)=\dfrac{d_i}{E_i}-\dfrac{d_i^2}{2E_i^2}+O\big((d_i/E_i)^3\big)$。
+      - |
+        $O_i$ を掛ける：$(E_i+d_i)\Big(\dfrac{d_i}{E_i}-\dfrac{d_i^2}{2E_i^2}\Big)=d_i+\dfrac{d_i^2}{E_i}-\dfrac{d_i^2}{2E_i}+\cdots=d_i+\dfrac{d_i^2}{2E_i}+\cdots$。
+      - |
+        和をとると $\sum d_i=\sum O_i-\sum E_i=0$ なので $\sum O_i\log\dfrac{O_i}{E_i}\approx\sum\dfrac{d_i^2}{2E_i}$。
+      - |
+        2倍して $G\approx\sum\dfrac{d_i^2}{E_i}=\sum\dfrac{(O_i-E_i)^2}{E_i}=X^2$。
+    answer: '$G=2\sum O_i\log\dfrac{O_i}{E_i}\approx\sum\dfrac{(O_i-E_i)^2}{E_i}=X^2$（3次以上の項を無視）'
+    hint: |
+      $\log(1+u)\approx u-u^2/2$ を2次の項まで使い、$\sum(O_i-E_i)=0$ を使う。
+    explanation: |
+      $O_i\log(O_i/E_i)$ を $d_i=O_i-E_i$ について2次まで展開すると $d_i+\dfrac{d_i^2}{2E_i}$ になり、1次の項は和をとると消えるので
+      $$G\approx\sum_i\frac{(O_i-E_i)^2}{E_i}=X^2$$
+      です。$H_0$ のもとでは $d_i/E_i$ が小さくなるので、$G$ と $X^2$ は同じ自由度のカイ二乗分布で近似でき、検定結果もほぼ一致します。
+      観測度数と期待度数が大きくずれる（期待度数が小さい）ときは近似が悪くなり、両者の値は離れます。
+      よくある間違いは、1次の項 $\sum d_i$ が0になることを使わずに残してしまうこと、$\log(1+u)$ の2次の係数 $-\frac12$ を落とすことです。

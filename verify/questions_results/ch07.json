@@ -39,6 +39,10 @@
   "hash": "33d040287a415719",
   "ok": true
  },
+ "q07-chebyshev-inequality-4": {
+  "hash": "0cb936c166554ab9",
+  "ok": true
+ },
  "q07-continuity-correction-1": {
   "hash": "5f8401dd9a99e55e",
   "ok": true
@@ -93,6 +97,10 @@
  },
  "q07-delta-method-3": {
   "hash": "69d5d214dd0465e1",
+  "ok": true
+ },
+ "q07-delta-method-4": {
+  "hash": "3c68ecb007d314fb",
   "ok": true
  },
  "q07-extreme-value-distribution-1": {

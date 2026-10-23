@@ -168,4 +168,25 @@ q.check("q26-independent-component-analysis-1", max(kg) < 0.03 and ku[0] < -1.1 
 # --- 適合度指標 ---
 q.num("q26-goodness-of-fit-indices-1", np.sqrt(max(30 - 8, 0) / (8 * 300)))
 
+# --- 導出問題（追加） ---
+def _deriv26():
+    import numpy as _N
+    rng = _N.random.default_rng(26)
+    n = 7
+    X = rng.normal(size=(n, 2)); X -= X.mean(0)
+    B = X @ X.T
+    c = (X ** 2).sum(1)
+    D2 = ((X[:, None, :] - X[None, :, :]) ** 2).sum(-1)
+    one = _N.ones(n); J = _N.eye(n) - _N.outer(one, one) / n
+    ok = _N.allclose(D2, _N.outer(c, one) + _N.outer(one, c) - 2 * B)
+    ok &= _N.allclose(J @ one, 0) and _N.allclose(J @ X, X)
+    Bh = -0.5 * J @ D2 @ J
+    ok &= _N.allclose(Bh, B)
+    w, V = _N.linalg.eigh(Bh); idx = _N.argsort(w)[::-1]; w, V = w[idx], V[:, idx]
+    Xr = V[:, :2] * _N.sqrt(w[:2])
+    D2r = ((Xr[:, None, :] - Xr[None, :, :]) ** 2).sum(-1)
+    ok &= _N.allclose(D2r, D2) and _N.all(w[2:] > -1e-10) and _N.allclose(w[2:], 0, atol=1e-10)
+    q.check("q26-multidimensional-scaling-4", bool(ok), "D²=c1'+1c'-2B、-½JD²J=B、固有値分解の配置で距離を再現")
+_deriv26()
+
 q.done()

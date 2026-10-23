@@ -4,15 +4,15 @@
   "ok": true
  },
  "q28-cohort-and-case-control-study-2": {
-  "hash": "b70f9849622c6e03",
+  "hash": "42569e03b18eec37",
   "ok": true
  },
  "q28-contingency-table-1": {
-  "hash": "7dfdcc85615fb74a",
+  "hash": "f002a8f5a5e23702",
   "ok": true
  },
  "q28-contingency-table-2": {
-  "hash": "973499491279a053",
+  "hash": "f99d3d9cd660d9cd",
   "ok": true
  },
  "q28-contingency-table-3": {
@@ -32,11 +32,11 @@
   "ok": true
  },
  "q28-loglinear-model-1": {
-  "hash": "644468ccdb418bc6",
+  "hash": "220be6ddda9dfd18",
   "ok": true
  },
  "q28-loglinear-model-2": {
-  "hash": "b570c30866100e15",
+  "hash": "a0015f4c48ade51e",
   "ok": true
  },
  "q28-loglinear-model-3": {
@@ -44,7 +44,7 @@
   "ok": true
  },
  "q28-mantel-haenszel-estimator-1": {
-  "hash": "e6d1a3800c6129f2",
+  "hash": "2795b7ae3bfb7a99",
   "ok": true
  },
  "q28-mantel-haenszel-estimator-2": {
@@ -52,7 +52,7 @@
   "ok": true
  },
  "q28-mantel-haenszel-test-1": {
-  "hash": "b2401050596137e9",
+  "hash": "1df192984a64e3f9",
   "ok": true
  },
  "q28-mantel-haenszel-test-2": {
@@ -60,23 +60,23 @@
   "ok": true
  },
  "q28-mcnemar-test-1": {
-  "hash": "2a0ef7cdea2d6721",
+  "hash": "a78101d16c6f9bce",
   "ok": true
  },
  "q28-mcnemar-test-2": {
-  "hash": "3bcbefe6265b5004",
+  "hash": "bd9dde0c842904fb",
   "ok": true
  },
  "q28-mcnemar-test-3": {
-  "hash": "61ee78e615694ff9",
+  "hash": "d4aeff0c2850e1da",
   "ok": true
  },
  "q28-odds-ratio-interval-1": {
-  "hash": "ba90048c5a19f5dd",
+  "hash": "33dcaacca1928d80",
   "ok": true
  },
  "q28-odds-ratio-interval-2": {
-  "hash": "4cad022401280b6a",
+  "hash": "a05dae06943a862e",
   "ok": true
  },
  "q28-odds-ratio-interval-3": {
@@ -84,23 +84,23 @@
   "ok": true
  },
  "q28-ordinal-contingency-table-1": {
-  "hash": "4c5147068ef35166",
+  "hash": "cc60707d647af3ae",
   "ok": true
  },
  "q28-phi-coefficient-and-association-1": {
-  "hash": "475699ee249f78f4",
+  "hash": "17fb2df77d0fc5b6",
   "ok": true
  },
  "q28-phi-coefficient-and-association-2": {
-  "hash": "ecd16a23c0d5d766",
+  "hash": "73cb6d38aa703d84",
   "ok": true
  },
  "q28-relative-risk-1": {
-  "hash": "cad4f986972bed18",
+  "hash": "32fd192ef46eae3b",
   "ok": true
  },
  "q28-relative-risk-2": {
-  "hash": "aa0e4507e199f27f",
+  "hash": "3722d3b0fc13c682",
   "ok": true
  },
  "q28-relative-risk-3": {
@@ -108,7 +108,7 @@
   "ok": true
  },
  "q28-residual-analysis-contingency-1": {
-  "hash": "883613e03ae98674",
+  "hash": "35e7a5cb9d473f8b",
   "ok": true
  },
  "q28-residual-analysis-contingency-2": {
@@ -116,15 +116,15 @@
   "ok": true
  },
  "q28-risk-difference-1": {
-  "hash": "df6f5968870656f1",
+  "hash": "7b895b077c4620e6",
   "ok": true
  },
  "q28-risk-difference-2": {
-  "hash": "45062bf0c8fe3fc6",
+  "hash": "ea0ed4ac0a025cad",
   "ok": true
  },
  "q28-sampling-schemes-1": {
-  "hash": "ce73cd76f9ee7b36",
+  "hash": "dc8d66edb6bb2446",
   "ok": true
  },
  "q28-sampling-schemes-2": {
@@ -136,7 +136,7 @@
   "ok": true
  },
  "q28-simpsons-paradox-1": {
-  "hash": "c65a2be12b196700",
+  "hash": "b4ec21fed8a8854d",
   "ok": true
  },
  "q28-simpsons-paradox-2": {
@@ -148,7 +148,7 @@
   "ok": true
  },
  "q28-three-way-table-1": {
-  "hash": "e5b5fd09fcddbe83",
+  "hash": "2b2c50387c7304d2",
   "ok": true
  },
  "q28-three-way-table-2": {
@@ -156,7 +156,7 @@
   "ok": true
  },
  "q28-two-by-two-table-1": {
-  "hash": "60d81b0b0962cdfc",
+  "hash": "c098d5f40597a188",
   "ok": true
  },
  "q28-two-by-two-table-2": {
@@ -164,11 +164,11 @@
   "ok": true
  },
  "q28-yates-correction-1": {
-  "hash": "9d2b0d17b9363d67",
+  "hash": "787848e931344319",
   "ok": true
  },
  "q28-yates-correction-2": {
-  "hash": "359c583c31ef18fa",
+  "hash": "bef731c20f134c44",
   "ok": true
  }
 }

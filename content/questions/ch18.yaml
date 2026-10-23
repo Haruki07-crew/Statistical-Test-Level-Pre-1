@@ -5,7 +5,7 @@ questions:
     level: 基本
     type: numeric
     question: |
-      ロジスティック回帰 $\log\dfrac{p}{1-p}=-2+0.5x$ が得られた。$x=6$ のときの確率 $p$ を小数第3位まで求めよ。
+      ロジスティック回帰 $\log\dfrac{p}{1-p}=-2+0.5x$ が得られた。$x=6$ のときの確率 $p$ を小数第3位まで（四捨五入）求めよ。
     answer: 0.731
     tolerance: 0.001
     hint: |
@@ -20,7 +20,7 @@ questions:
     level: 応用
     type: numeric
     question: |
-      ロジスティック回帰 $\log\dfrac{p}{1-p}=-2+0.5x$ で、$x=6$ における確率の傾き $\dfrac{dp}{dx}$ を小数第3位まで求めよ。
+      ロジスティック回帰 $\log\dfrac{p}{1-p}=-2+0.5x$ で、$x=6$ における確率の傾き $\dfrac{dp}{dx}$ を小数第3位まで（四捨五入）求めよ。
     answer: 0.098
     tolerance: 0.001
     hint: |
@@ -49,7 +49,7 @@ questions:
     level: 基本
     type: numeric
     question: |
-      ある調査で、群1は100人中30人、群2は100人中15人に症状が出た。群1の群2に対する標本オッズ比を小数第2位まで求めよ。
+      ある調査で、群1は100人中30人、群2は100人中15人に症状が出た。群1の群2に対する標本オッズ比を小数第2位まで（四捨五入）求めよ。
     answer: 2.43
     tolerance: 0.005
     hint: |
@@ -65,7 +65,7 @@ questions:
     type: numeric
     question: |
       2×2表 $a=30,\ b=70,\ c=15,\ d=85$ について、オッズ比の95%信頼区間の**下限**を、
-      対数オッズ比の近似標準誤差 $\sqrt{1/a+1/b+1/c+1/d}$ を用いて小数第2位まで求めよ。
+      対数オッズ比の近似標準誤差 $\sqrt{1/a+1/b+1/c+1/d}$ を用いて小数第2位まで（四捨五入）求めよ。
     answer: 1.21
     tolerance: 0.005
     hint: |
@@ -150,7 +150,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      2値応答のモデルで補対数対数リンク $g(p)=\log\{-\log(1-p)\}$ を使う。線形予測子が $\eta=0$ のときの確率 $p$ を小数第3位まで求めよ。
+      2値応答のモデルで補対数対数リンク $g(p)=\log\{-\log(1-p)\}$ を使う。線形予測子が $\eta=0$ のときの確率 $p$ を小数第3位まで（四捨五入）求めよ。
     answer: 0.632
     tolerance: 0.001
     hint: |
@@ -203,7 +203,7 @@ questions:
     type: numeric
     question: |
       プロビットモデル $P(Y=1\mid x)=\Phi(-1+0.8x)$ が得られた（$\Phi$ は標準正規分布の分布関数）。
-      $x=2$ のときの $P(Y=1)$ を小数第3位まで求めよ。
+      $x=2$ のときの $P(Y=1)$ を小数第3位まで（四捨五入）求めよ。
     answer: 0.726
     tolerance: 0.001
     hint: |
@@ -219,7 +219,7 @@ questions:
     level: 応用
     type: numeric
     question: |
-      40人中12人が「1」と答えた。切片だけのロジスティック回帰 $\operatorname{logit}p=\beta_0$ を最尤法で当てはめたときの $\hat\beta_0$ を小数第3位まで求めよ。
+      40人中12人が「1」と答えた。切片だけのロジスティック回帰 $\operatorname{logit}p=\beta_0$ を最尤法で当てはめたときの $\hat\beta_0$ を小数第3位まで（四捨五入）求めよ。
     answer: -0.847
     tolerance: 0.001
     hint: |
@@ -250,7 +250,7 @@ questions:
     type: numeric
     question: |
       対数リンクのポアソン回帰を IRLS で解いている途中、ある観測で現在の当てはめ値が $\mu_i=4$、観測値が $y_i=6$ であった。
-      作業応答 $z_i=\eta_i+(y_i-\mu_i)\dfrac{d\eta_i}{d\mu_i}$ を小数第3位まで求めよ。
+      作業応答 $z_i=\eta_i+(y_i-\mu_i)\dfrac{d\eta_i}{d\mu_i}$ を小数第3位まで（四捨五入）求めよ。
     answer: 1.886
     tolerance: 0.001
     hint: |
@@ -266,7 +266,7 @@ questions:
     type: numeric
     question: |
       3カテゴリの多項ロジットモデル（カテゴリ1が基準）で、ある $\boldsymbol x$ において
-      $\log(\pi_2/\pi_1)=0.5$、$\log(\pi_3/\pi_1)=-0.2$ であった。$\pi_2$ を小数第3位まで求めよ。
+      $\log(\pi_2/\pi_1)=0.5$、$\log(\pi_3/\pi_1)=-0.2$ であった。$\pi_2$ を小数第3位まで（四捨五入）求めよ。
     answer: 0.475
     tolerance: 0.001
     hint: |
@@ -297,7 +297,7 @@ questions:
     type: numeric
     question: |
       3段階の順序ロジットモデル $\operatorname{logit}P(Y\le j\mid x)=\alpha_j-\beta x$（$j=1,2$）で、
-      $\alpha_1=-1$、$\alpha_2=1.5$、$\beta=0.8$ と推定された。$x=1$ のとき $P(Y=2)$ を小数第3位まで求めよ。
+      $\alpha_1=-1$、$\alpha_2=1.5$、$\beta=0.8$ と推定された。$x=1$ のとき $P(Y=2)$ を小数第3位まで（四捨五入）求めよ。
     answer: 0.526
     tolerance: 0.001
     hint: |
@@ -313,7 +313,7 @@ questions:
     type: numeric
     question: |
       0で左から打ち切られたトービットモデル $y^*=\boldsymbol x^\top\boldsymbol\beta+\varepsilon$（$\varepsilon\sim N(0,\sigma^2)$）、$y=\max(0,y^*)$ で、
-      ある個人について $\boldsymbol x^\top\boldsymbol\beta=1$、$\sigma=2$ である。$y=0$ と観測される確率を小数第3位まで求めよ。
+      ある個人について $\boldsymbol x^\top\boldsymbol\beta=1$、$\sigma=2$ である。$y=0$ と観測される確率を小数第3位まで（四捨五入）求めよ。
     answer: 0.309
     tolerance: 0.001
     hint: |
@@ -328,7 +328,7 @@ questions:
     type: numeric
     question: |
       $n=40$ 件のカウントデータに係数3個のポアソン回帰を当てはめたところ、ピアソンのカイ二乗統計量が $X^2=84$ であった。
-      準ポアソンモデルにすると、各係数の標準誤差はポアソン回帰の何倍になるか。小数第2位まで求めよ。
+      準ポアソンモデルにすると、各係数の標準誤差はポアソン回帰の何倍になるか。小数第2位まで（四捨五入）求めよ。
     answer: 1.51
     tolerance: 0.005
     hint: |
@@ -357,7 +357,7 @@ questions:
     level: 基本
     type: numeric
     question: |
-      ポアソン回帰 $\log\mu=\beta_0+0.3x$ で、$x$ が2増えると平均件数 $\mu$ は何倍になるか。小数第3位まで求めよ。
+      ポアソン回帰 $\log\mu=\beta_0+0.3x$ で、$x$ が2増えると平均件数 $\mu$ は何倍になるか。小数第3位まで（四捨五入）求めよ。
     answer: 1.822
     tolerance: 0.001
     hint: |
@@ -371,7 +371,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      ポアソン回帰 $\log\mu=0.5+0.2x$ が得られた。$x=3$ の個体で件数が0となる確率を小数第3位まで求めよ。
+      ポアソン回帰 $\log\mu=0.5+0.2x$ が得られた。$x=3$ の個体で件数が0となる確率を小数第3位まで（四捨五入）求めよ。
     answer: 0.05
     tolerance: 0.001
     hint: |
@@ -409,7 +409,7 @@ questions:
     type: numeric
     question: |
       ポアソン回帰の3つの観測値が $y=(2,\ 5,\ 0)$、当てはめ値が $\hat\mu=(3,\ 4,\ 1)$ であった。
-      逸脱度 $D=2\sum\{y_i\log(y_i/\hat\mu_i)-(y_i-\hat\mu_i)\}$ を小数第3位まで求めよ（$0\log0=0$ とする）。
+      逸脱度 $D=2\sum\{y_i\log(y_i/\hat\mu_i)-(y_i-\hat\mu_i)\}$ を小数第3位まで（四捨五入）求めよ（$0\log0=0$ とする）。
     answer: 2.61
     tolerance: 0.001
     hint: |
@@ -428,7 +428,7 @@ questions:
     type: numeric
     question: |
       同じデータに入れ子のポアソン回帰を当てはめた。小さいモデルの逸脱度は $45.2$（残差自由度30）、
-      説明変数を2つ加えた大きいモデルの逸脱度は $38.1$（残差自由度28）であった。追加した2変数の係数がともに0という仮説の尤度比検定の $p$ 値を小数第3位まで求めよ。
+      説明変数を2つ加えた大きいモデルの逸脱度は $38.1$（残差自由度28）であった。追加した2変数の係数がともに0という仮説の尤度比検定の $p$ 値を小数第3位まで（四捨五入）求めよ。
     answer: 0.029
     tolerance: 0.001
     hint: |
@@ -445,7 +445,7 @@ questions:
     type: numeric
     question: |
       事故件数のポアソン回帰で、観察人年 $t$ をオフセットに入れて $\log\mu=\log t-2+0.5x$ と推定された。
-      $t=200$ 人年、$x=1$ の集団の期待事故件数を小数第1位まで求めよ。
+      $t=200$ 人年、$x=1$ の集団の期待事故件数を小数第1位まで（四捨五入）求めよ。
     answer: 44.6
     tolerance: 0.05
     hint: |
@@ -453,3 +453,30 @@ questions:
     explanation: |
       $$\mu=200\times e^{-2+0.5}=200\times e^{-1.5}=200\times0.2231=44.6$$
       です。$e^{-1.5}=0.223$ は1人年あたりの発生率で、オフセットがあるので係数は「率」の対数として読みます。
+
+  - id: q18-logistic-regression-4
+    term: logistic-regression
+    level: 応用
+    type: derivation
+    question: |
+      ロジスティック回帰 $y_i\sim\mathrm{Bernoulli}(p_i)$、$\log\dfrac{p_i}{1-p_i}=\eta_i=\boldsymbol x_i^\top\boldsymbol\beta$（$i=1,\dots,n$、独立）の対数尤度を $\eta_i$ で書き、
+      スコア（勾配）$\partial\ell/\partial\boldsymbol\beta$ とヘッセ行列 $\partial^2\ell/\partial\boldsymbol\beta\partial\boldsymbol\beta^\top$ を行列で表せ。
+    steps:
+      - |
+        $\ell=\sum_i\{y_i\log p_i+(1-y_i)\log(1-p_i)\}=\sum_i\Big\{y_i\log\dfrac{p_i}{1-p_i}+\log(1-p_i)\Big\}$。
+      - |
+        $\log\dfrac{p_i}{1-p_i}=\eta_i$、$1-p_i=\dfrac{1}{1+e^{\eta_i}}$ を代入：$\ell=\sum_i\{y_i\eta_i-\log(1+e^{\eta_i})\}$。
+      - |
+        $\dfrac{\partial}{\partial\eta_i}\log(1+e^{\eta_i})=\dfrac{e^{\eta_i}}{1+e^{\eta_i}}=p_i$、$\dfrac{\partial\eta_i}{\partial\boldsymbol\beta}=\boldsymbol x_i$ より $\dfrac{\partial\ell}{\partial\boldsymbol\beta}=\sum_i(y_i-p_i)\boldsymbol x_i=X^\top(\boldsymbol y-\boldsymbol p)$。
+      - |
+        $\dfrac{\partial p_i}{\partial\eta_i}=p_i(1-p_i)$ より $\dfrac{\partial^2\ell}{\partial\boldsymbol\beta\partial\boldsymbol\beta^\top}=-\sum_ip_i(1-p_i)\boldsymbol x_i\boldsymbol x_i^\top=-X^\top WX$、$W=\mathrm{diag}\big(p_i(1-p_i)\big)$。
+    answer: '$\ell=\sum\{y_i\eta_i-\log(1+e^{\eta_i})\}$、スコア $X^\top(\boldsymbol y-\boldsymbol p)$、ヘッセ行列 $-X^\top WX$（$W=\mathrm{diag}(p_i(1-p_i))$）'
+    hint: |
+      $\log p_i$ と $\log(1-p_i)$ を、ロジット $\eta_i$ と $\log(1+e^{\eta_i})$ で書き直してから微分する。
+    explanation: |
+      対数尤度は $\ell=\sum\{y_i\eta_i-\log(1+e^{\eta_i})\}$ とすっきり書け、微分すると
+      $$\frac{\partial\ell}{\partial\boldsymbol\beta}=X^\top(\boldsymbol y-\boldsymbol p),\qquad \frac{\partial^2\ell}{\partial\boldsymbol\beta\partial\boldsymbol\beta^\top}=-X^\top WX$$
+      です。尤度方程式 $X^\top(\boldsymbol y-\hat{\boldsymbol p})=\boldsymbol 0$ は閉じた形では解けないので、
+      ニュートン法 $\boldsymbol\beta^{\text{new}}=\boldsymbol\beta+(X^\top WX)^{-1}X^\top(\boldsymbol y-\boldsymbol p)$（反復重み付き最小二乗法）で解きます。
+      ヘッセ行列は負定値なので対数尤度は凹で、最尤推定値は（存在すれば）1つに決まり、$(X^\top\hat WX)^{-1}$ が漸近分散共分散行列になります。
+      よくある間違いは、$W$ の対角成分を $p_i$ や $p_i^2$ にすること、スコアの符号を $\boldsymbol p-\boldsymbol y$ と逆にすることです。

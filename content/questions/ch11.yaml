@@ -5,7 +5,7 @@ questions:
     level: 基本
     type: numeric
     question: |
-      $N(\mu,15^2)$ から $n=25$ 個の標本をとり $\bar x=106$ を得た。$H_0:\mu=100$ の $z$ 検定統計量の値を小数第2位まで求めよ。
+      $N(\mu,15^2)$ から $n=25$ 個の標本をとり $\bar x=106$ を得た。$H_0:\mu=100$ の $z$ 検定統計量の値を小数第2位まで（四捨五入）求めよ。
     answer: 2
     tolerance: 0.005
     hint: |
@@ -19,7 +19,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      $N(\mu,12^2)$ から $n=36$ 個の標本をとり $\bar x=96$ を得た。$H_0:\mu=100$ 対 $H_1:\mu<100$ の p 値を小数第4位まで求めよ。
+      $N(\mu,12^2)$ から $n=36$ 個の標本をとり $\bar x=96$ を得た。$H_0:\mu=100$ 対 $H_1:\mu<100$ の p 値を小数第4位まで（四捨五入）求めよ。
     answer: 0.0228
     tolerance: 0.0001
     hint: |
@@ -51,7 +51,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      正規母集団からの観測値 $10.8,\ 12.1,\ 11.5,\ 12.6,\ 11.9,\ 12.5$ について、$H_0:\mu=11$ の $t$ 検定統計量の値を小数第2位まで求めよ。
+      正規母集団からの観測値 $10.8,\ 12.1,\ 11.5,\ 12.6,\ 11.9,\ 12.5$ について、$H_0:\mu=11$ の $t$ 検定統計量の値を小数第2位まで（四捨五入）求めよ。
     answer: 3.28
     tolerance: 0.01
     hint: |
@@ -85,7 +85,7 @@ questions:
     type: numeric
     question: |
       等分散の正規母集団から $m=6$（$\bar x=24.0$、$S_1^2=5$）、$n=8$（$\bar y=21.0$、$S_2^2=4$）の標本を得た。
-      $H_0:\mu_1=\mu_2$ の2標本 $t$ 検定統計量の値を小数第2位まで求めよ。
+      $H_0:\mu_1=\mu_2$ の2標本 $t$ 検定統計量の値を小数第2位まで（四捨五入）求めよ。
     answer: 2.64
     tolerance: 0.01
     hint: |
@@ -99,7 +99,7 @@ questions:
     level: 基本
     type: numeric
     question: |
-      大きさ $5$ の群の不偏分散が $10$、大きさ $11$ の群の不偏分散が $4$ である。プールした分散 $S_p^2$ を小数第3位まで求めよ。
+      大きさ $5$ の群の不偏分散が $10$、大きさ $11$ の群の不偏分散が $4$ である。プールした分散 $S_p^2$ を小数第3位まで（四捨五入）求めよ。
     answer: 5.714
     tolerance: 0.001
     hint: |
@@ -126,7 +126,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      $m=10$（$S_1^2=20$）、$n=15$（$S_2^2=5$）の独立な正規標本で、$\bar x-\bar y=3$ であった。ウェルチの検定統計量 $T_W$ の値を小数第3位まで求めよ。
+      $m=10$（$S_1^2=20$）、$n=15$（$S_2^2=5$）の独立な正規標本で、$\bar x-\bar y=3$ であった。ウェルチの検定統計量 $T_W$ の値を小数第3位まで（四捨五入）求めよ。
     answer: 1.964
     tolerance: 0.001
     hint: |
@@ -139,7 +139,7 @@ questions:
     level: 応用
     type: numeric
     question: |
-      $m=10$（$S_1^2=20$）、$n=15$（$S_2^2=5$）の独立な正規標本で、ウェルチ・サタースウェイトの近似自由度 $\nu$ を小数第2位まで求めよ。
+      $m=10$（$S_1^2=20$）、$n=15$（$S_2^2=5$）の独立な正規標本で、ウェルチ・サタースウェイトの近似自由度 $\nu$ を小数第2位まで（四捨五入）求めよ。
     answer: 12.04
     tolerance: 0.01
     hint: |
@@ -186,7 +186,7 @@ questions:
     type: numeric
     question: |
       5人の処置前後の値（前, 後）が $(82,78),\ (75,74),\ (90,85),\ (68,66),\ (77,72)$ であった。差 $D=$前$-$後 について、
-      $H_0:\mu_D=0$ の対応のある $t$ 検定統計量の値を小数第2位まで求めよ。
+      $H_0:\mu_D=0$ の対応のある $t$ 検定統計量の値を小数第2位まで（四捨五入）求めよ。
     answer: 4.19
     tolerance: 0.01
     hint: |
@@ -201,7 +201,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      正規母集団から $n=15$ 個の標本をとり、不偏分散 $S^2=6.5$ を得た。$H_0:\sigma^2=4$ 対 $H_1:\sigma^2>4$ の検定統計量の値を小数第2位まで求めよ。
+      正規母集団から $n=15$ 個の標本をとり、不偏分散 $S^2=6.5$ を得た。$H_0:\sigma^2=4$ 対 $H_1:\sigma^2>4$ の検定統計量の値を小数第2位まで（四捨五入）求めよ。
     answer: 22.75
     tolerance: 0.005
     hint: |
@@ -229,7 +229,7 @@ questions:
     type: numeric
     question: |
       $m=9$（$S_1^2=12.6$）、$n=13$（$S_2^2=4.2$）の独立な正規標本で、$H_0:\sigma_1^2=\sigma_2^2$ 対 $H_1:\sigma_1^2\ne\sigma_2^2$ の F 検定を行う。
-      両側 p 値を小数第3位まで求めよ。必要なら $P(F(8,12)\ge3.0)=0.0424$ を使ってよい。
+      両側 p 値を小数第3位まで（四捨五入）求めよ。必要なら $P(F(8,12)\ge3.0)=0.0424$ を使ってよい。
     answer: 0.085
     tolerance: 0.001
     hint: |
@@ -256,7 +256,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      2変量正規分布からの $n=27$ 組で標本相関係数 $r=0.4$ を得た。$H_0:\rho=0$ の検定統計量 $T=r\sqrt{n-2}/\sqrt{1-r^2}$ の値を小数第3位まで求めよ。
+      2変量正規分布からの $n=27$ 組で標本相関係数 $r=0.4$ を得た。$H_0:\rho=0$ の検定統計量 $T=r\sqrt{n-2}/\sqrt{1-r^2}$ の値を小数第3位まで（四捨五入）求めよ。
     answer: 2.182
     tolerance: 0.001
     hint: |
@@ -270,7 +270,7 @@ questions:
     level: 応用
     type: numeric
     question: |
-      $n=20$ 組のデータで $H_0:\rho=0$ を両側5%で検定する。有意となる標本相関係数 $|r|$ の最小値を小数第3位まで求めよ（$t_{0.025}(18)=2.101$）。
+      $n=20$ 組のデータで $H_0:\rho=0$ を両側5%で検定する。有意となる標本相関係数 $|r|$ の最小値を小数第3位まで（四捨五入）求めよ（$t_{0.025}(18)=2.101$）。
     answer: 0.444
     tolerance: 0.001
     hint: |
@@ -286,7 +286,7 @@ questions:
     type: numeric
     question: |
       $n=39$ 組のデータで $r=0.6$ を得た。フィッシャーの $z$ 変換を用いて $H_0:\rho=0.4$ を検定するときの統計量 $Z=(\tanh^{-1}r-\tanh^{-1}\rho_0)\sqrt{n-3}$ の値を
-      小数第2位まで求めよ。
+      小数第2位まで（四捨五入）求めよ。
     answer: 1.62
     tolerance: 0.01
     hint: |
@@ -301,7 +301,7 @@ questions:
     level: 応用
     type: numeric
     question: |
-      $n=28$ 組のデータで $r=0.5$ を得た。フィッシャーの $z$ 変換を用いた母相関係数 $\rho$ の95%信頼区間の**上限**を小数第3位まで求めよ（$z_{0.025}=1.96$）。
+      $n=28$ 組のデータで $r=0.5$ を得た。フィッシャーの $z$ 変換を用いた母相関係数 $\rho$ の95%信頼区間の**上限**を小数第3位まで（四捨五入）求めよ（$z_{0.025}=1.96$）。
     answer: 0.736
     tolerance: 0.001
     hint: |
@@ -334,7 +334,7 @@ questions:
     type: numeric
     question: |
       1標本 $t$ 検定（両側5%）で $n=20$、$d=0.5$ とする。$T$ の分布を $N(\delta,1)$、棄却限界を $1.96$ で近似したとき、検出力
-      $\Phi(\delta-1.96)$（反対側の小さな項は無視）を小数第3位まで求めよ。
+      $\Phi(\delta-1.96)$（反対側の小さな項は無視）を小数第3位まで（四捨五入）求めよ。
     answer: 0.609
     tolerance: 0.001
     hint: |
@@ -415,7 +415,7 @@ questions:
     type: numeric
     question: |
       2次元の多変量正規分布からの $n=12$ 個の標本で、$H_0:\boldsymbol\mu=\boldsymbol\mu_0$ のホテリングの $T^2=9$ を得た。
-      $F=\dfrac{n-p}{p(n-1)}T^2$ の値を小数第3位まで求めよ。
+      $F=\dfrac{n-p}{p(n-1)}T^2$ の値を小数第3位まで（四捨五入）求めよ。
     answer: 4.091
     tolerance: 0.001
     hint: |
@@ -430,7 +430,7 @@ questions:
     level: 応用
     type: numeric
     question: |
-      2群のデータ A: $1,3,5,7$、B: $3,4,4,5$ について、群平均からの絶対偏差を用いるルビーン検定の統計量 $W$ を小数第2位まで求めよ。
+      2群のデータ A: $1,3,5,7$、B: $3,4,4,5$ について、群平均からの絶対偏差を用いるルビーン検定の統計量 $W$ を小数第2位まで（四捨五入）求めよ。
     answer: 5.4
     tolerance: 0.005
     hint: |
@@ -440,3 +440,59 @@ questions:
       群内平方和は A で $4\times1^2=4$、B で $4\times0.5^2=1$ の計 $5$（自由度6）です。
       $$W=\frac{4.5/1}{5/6}=5.4$$
       $F(1,6)$ の上側5%点 $5.99$ に届かないので、5%水準では棄却されません。
+
+  - id: q11-pooled-variance-3
+    term: pooled-variance
+    level: 応用
+    type: derivation
+    question: |
+      独立な2標本 $X_1,\dots,X_m\sim N(\mu_1,\sigma^2)$、$Y_1,\dots,Y_n\sim N(\mu_2,\sigma^2)$（分散は共通で未知）の不偏分散を $S_1^2,S_2^2$ とし、
+      $S_p^2=\dfrac{(m-1)S_1^2+(n-1)S_2^2}{m+n-2}$ とする。$(m+n-2)S_p^2/\sigma^2$ の分布と $E[S_p^2]$ を求め、
+      $T=\dfrac{\bar X-\bar Y-(\mu_1-\mu_2)}{S_p\sqrt{1/m+1/n}}$ が従う分布を導け。
+    steps:
+      - |
+        $\dfrac{(m-1)S_1^2}{\sigma^2}\sim\chi^2(m-1)$、$\dfrac{(n-1)S_2^2}{\sigma^2}\sim\chi^2(n-1)$ で互いに独立。
+      - |
+        カイ二乗分布の再生性：$\dfrac{(m+n-2)S_p^2}{\sigma^2}\sim\chi^2(m+n-2)$。期待値は自由度なので $E[S_p^2]=\sigma^2$。
+      - |
+        $\bar X-\bar Y\sim N\big(\mu_1-\mu_2,\ \sigma^2(1/m+1/n)\big)$ なので $Z=\dfrac{\bar X-\bar Y-(\mu_1-\mu_2)}{\sigma\sqrt{1/m+1/n}}\sim N(0,1)$。正規標本では標本平均と不偏分散は独立なので、$Z$ と $S_p^2$ は独立。
+      - |
+        $T=\dfrac{Z}{\sqrt{\dfrac{(m+n-2)S_p^2/\sigma^2}{m+n-2}}}$ と書け、$\sigma$ が消える。$N(0,1)\big/\sqrt{\chi^2(\nu)/\nu}$ の形なので $T\sim t(m+n-2)$。
+    answer: '$\dfrac{(m+n-2)S_p^2}{\sigma^2}\sim\chi^2(m+n-2)$、$E[S_p^2]=\sigma^2$、$T\sim t(m+n-2)$'
+    hint: |
+      2つの $\chi^2$ の和にまとめ、$T$ を「標準正規 ÷ $\sqrt{\chi^2/\text{自由度}}$」の形に書き直す。
+    explanation: |
+      それぞれの群の $\chi^2$ を足すと自由度 $m+n-2$ のカイ二乗になり、$S_p^2$ は $\sigma^2$ の不偏推定量です。
+      $T$ の分母・分子を $\sigma$ で割ると
+      $$T=\frac{Z}{\sqrt{\chi^2(m+n-2)/(m+n-2)}}\sim t(m+n-2)$$
+      となり、未知の $\sigma$ が消えます。2つの群からそれぞれ平均を1つずつ推定するので、自由度が2つ減ると覚えます。
+      よくある間違いは、自由度を $m+n-1$ や $\min(m,n)-1$ にすること、また $S_p^2$ を2つの不偏分散の単純平均にしてしまうことです。
+      等分散でない場合は $\sigma$ が消えないので、ウェルチの検定を使います。
+
+  - id: q11-welch-test-4
+    term: welch-test
+    level: 応用
+    type: derivation
+    question: |
+      独立な2標本（大きさ $m,n$、母分散 $\sigma_1^2,\sigma_2^2$、不偏分散 $S_1^2,S_2^2$）で、$\hat V=\dfrac{S_1^2}{m}+\dfrac{S_2^2}{n}$ の分布を
+      「$\nu\hat V/V\sim\chi^2(\nu)$（$V=\sigma_1^2/m+\sigma_2^2/n$）」で近似する。期待値と分散を合わせることで、ウェルチ・サタースウェイトの近似自由度 $\nu$ を導け。
+    steps:
+      - |
+        $E[\hat V]=V$ なので、$\nu\hat V/V\sim\chi^2(\nu)$ の期待値 $\nu$ とは自動的に合う。分散を合わせると $V[\hat V]=\dfrac{V^2}{\nu^2}\cdot2\nu=\dfrac{2V^2}{\nu}$。
+      - |
+        $\dfrac{(m-1)S_1^2}{\sigma_1^2}\sim\chi^2(m-1)$ より $V[S_1^2]=\dfrac{2\sigma_1^4}{m-1}$。よって $V\Big[\dfrac{S_1^2}{m}\Big]=\dfrac{2(\sigma_1^2/m)^2}{m-1}$（2群目も同様）。
+      - |
+        独立なので $V[\hat V]=2\Big\{\dfrac{(\sigma_1^2/m)^2}{m-1}+\dfrac{(\sigma_2^2/n)^2}{n-1}\Big\}$。
+      - |
+        1段目と等しいとおいて $\nu=\dfrac{(\sigma_1^2/m+\sigma_2^2/n)^2}{\dfrac{(\sigma_1^2/m)^2}{m-1}+\dfrac{(\sigma_2^2/n)^2}{n-1}}$。
+      - |
+        未知の $\sigma_1^2,\sigma_2^2$ に $S_1^2,S_2^2$ を代入：$\hat\nu=\dfrac{(S_1^2/m+S_2^2/n)^2}{\dfrac{(S_1^2/m)^2}{m-1}+\dfrac{(S_2^2/n)^2}{n-1}}$。
+    answer: '$\hat\nu=\dfrac{(S_1^2/m+S_2^2/n)^2}{\dfrac{(S_1^2/m)^2}{m-1}+\dfrac{(S_2^2/n)^2}{n-1}}$'
+    hint: |
+      $\chi^2(\nu)$ の期待値は $\nu$、分散は $2\nu$。$\hat V$ の分散を各群の不偏分散の分散から計算する。
+    explanation: |
+      $\hat V$ を $\frac{V}{\nu}\chi^2(\nu)$ で近似し、分散 $\frac{2V^2}{\nu}$ を実際の分散 $2\sum\frac{(\sigma_i^2/n_i)^2}{n_i-1}$ に合わせると
+      $$\nu=\frac{(\sigma_1^2/m+\sigma_2^2/n)^2}{\frac{(\sigma_1^2/m)^2}{m-1}+\frac{(\sigma_2^2/n)^2}{n-1}}$$
+      が出て、母分散を不偏分散で置きかえたものがウェルチの近似自由度です（モーメント法による近似）。
+      $\hat\nu$ は整数とは限らず、$\min(m-1,n-1)$ と $m+n-2$ の間に入ります。
+      よくある間違いは、分母の各項で $m-1$ ではなく $m$ で割ること、また分子を2乗し忘れることです。

@@ -170,4 +170,22 @@ q.check("q14-positive-recurrence-1", part > 0.985 and mean_part[2] > mean_part[1
 G = np.array([[-2, 2], [3, -3]])
 q.num("q14-continuous-time-markov-chain-1", expm(0.5 * G)[0, 0])
 
+# --- 導出問題（追加） ---
+def _deriv14():
+    import numpy as _N
+    import sympy as _S
+    a, b = _S.symbols("a b", positive=True); n = _S.symbols("n", integer=True, nonnegative=True)
+    pn = b / (a + b) + a / (a + b) * (1 - a - b) ** n
+    ok = _S.simplify(pn.subs(n, 0) - 1) == 0
+    ok &= _S.simplify(pn.subs(n, n + 1) - (b + (1 - a - b) * pn)) == 0
+    P = _S.Matrix([[1 - a, a], [b, 1 - b]])
+    for k in (1, 2, 5):
+        ok &= _S.simplify((P ** k)[0, 0] - pn.subs(n, k)) == 0
+    pi = _S.Matrix([[b / (a + b), a / (a + b)]])
+    ok &= _S.simplify(pi * P - pi) == _S.zeros(1, 2)
+    Pn = _N.linalg.matrix_power(_N.array([[0.7, 0.3], [0.1, 0.9]]), 200)
+    ok &= abs(Pn[0, 0] - 0.1 / 0.4) < 1e-12
+    q.check("q14-n-step-transition-probability-3", bool(ok), "sympy: 漸化式と初期値を満たし (P^k)_11 と一致、極限 b/(a+b) が定常分布")
+_deriv14()
+
 q.done()

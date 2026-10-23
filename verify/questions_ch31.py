@@ -137,4 +137,8 @@ q.num("q31-empirical-bayes-1", Bh * 15 + (1 - Bh) * 20)
 q.num("q31-bayes-decision-theory-1", min(0.3 * 100, 0.7 * 20))
 q.check("q31-bayes-decision-theory-1", 0.7 * 20 < 0.3 * 100, "廃棄がベイズ解")
 
+# 校閲（review-ch27-33）で解説に加えた値
+from scipy import stats as _st
+_B = _st.beta(1, 10)
+q.check("q31-credible-interval-3", abs(_B.cdf(0.309) - _B.cdf(0.05) - 0.574) < 0.001, "[0.050,0.309] の確率は約57%")
 q.done()

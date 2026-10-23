@@ -4,23 +4,23 @@
   "ok": true
  },
  "q31-bayes-factor-1": {
-  "hash": "ceaa6a965a54ab2c",
+  "hash": "5433ee5b11d58386",
   "ok": true
  },
  "q31-bayes-factor-2": {
-  "hash": "bd2ce45c9ff2a92b",
+  "hash": "51ee06ef84a53260",
   "ok": true
  },
  "q31-beta-binomial-model-1": {
-  "hash": "12f7a40d2e9476aa",
+  "hash": "94cf78812a53ff59",
   "ok": true
  },
  "q31-beta-binomial-model-2": {
-  "hash": "7e8577c72f838d6a",
+  "hash": "85e17bd7d8419e69",
   "ok": true
  },
  "q31-beta-binomial-model-3": {
-  "hash": "fbb4c5ddd900affc",
+  "hash": "c7b53c0488e96f8f",
   "ok": true
  },
  "q31-conjugate-prior-1": {
@@ -28,15 +28,15 @@
   "ok": true
  },
  "q31-conjugate-prior-2": {
-  "hash": "d1ab12682a99e13b",
+  "hash": "af44c7cb786c1e09",
   "ok": true
  },
  "q31-conjugate-prior-3": {
-  "hash": "fbfbd99f147b148e",
+  "hash": "13eecf8061b699f7",
   "ok": true
  },
  "q31-credible-interval-1": {
-  "hash": "4890ed5ac6ccb4bf",
+  "hash": "90997ec08c81d322",
   "ok": true
  },
  "q31-credible-interval-2": {
@@ -44,7 +44,7 @@
   "ok": true
  },
  "q31-credible-interval-3": {
-  "hash": "979e88f3e370a6d5",
+  "hash": "fd33c921d1c46dd9",
   "ok": true
  },
  "q31-empirical-bayes-1": {
@@ -52,15 +52,15 @@
   "ok": true
  },
  "q31-gamma-poisson-model-1": {
-  "hash": "6727987fcb7a2263",
+  "hash": "ed4cae3ebc62d576",
   "ok": true
  },
  "q31-gamma-poisson-model-2": {
-  "hash": "d4c726092c2c0125",
+  "hash": "83d058bc3dac186c",
   "ok": true
  },
  "q31-gamma-poisson-model-3": {
-  "hash": "505ad7343b023657",
+  "hash": "c0f68e7de5f88b25",
   "ok": true
  },
  "q31-hierarchical-bayes-model-1": {
@@ -76,15 +76,15 @@
   "ok": true
  },
  "q31-jeffreys-prior-2": {
-  "hash": "fff01cc6ff45a669",
+  "hash": "3158122be21eb349",
   "ok": true
  },
  "q31-marginal-likelihood-1": {
-  "hash": "8ee754a064121ad1",
+  "hash": "e9ee22091b350f30",
   "ok": true
  },
  "q31-marginal-likelihood-2": {
-  "hash": "3706f523cb8f693e",
+  "hash": "389042b611d5a31c",
   "ok": true
  },
  "q31-noninformative-prior-1": {
@@ -92,15 +92,15 @@
   "ok": true
  },
  "q31-noninformative-prior-2": {
-  "hash": "ffd5073f62c53804",
+  "hash": "34fea4fabca03b35",
   "ok": true
  },
  "q31-normal-normal-model-1": {
-  "hash": "d3d546a6c087187c",
+  "hash": "d421a08443817be3",
   "ok": true
  },
  "q31-normal-normal-model-2": {
-  "hash": "ac7a082d46fc2746",
+  "hash": "a945a8a19bc1e20b",
   "ok": true
  },
  "q31-normal-normal-model-3": {
@@ -108,7 +108,7 @@
   "ok": true
  },
  "q31-posterior-distribution-1": {
-  "hash": "9d4d6af03ad13cee",
+  "hash": "fd678a82a5f3782f",
   "ok": true
  },
  "q31-posterior-distribution-2": {
@@ -124,23 +124,23 @@
   "ok": true
  },
  "q31-posterior-mean-map-2": {
-  "hash": "9acb3033b8e8bd60",
+  "hash": "1d9c4db0f92bba93",
   "ok": true
  },
  "q31-posterior-mean-map-3": {
-  "hash": "4f0bac595a52ea19",
+  "hash": "b42a501a89a81266",
   "ok": true
  },
  "q31-predictive-distribution-1": {
-  "hash": "6f2c3605e04daddd",
+  "hash": "4f422c9305ebeb66",
   "ok": true
  },
  "q31-predictive-distribution-2": {
-  "hash": "35c383b2c929a540",
+  "hash": "f8ced18ecb4afc04",
   "ok": true
  },
  "q31-predictive-distribution-3": {
-  "hash": "d025fb6d1fe2325e",
+  "hash": "b3936a9e627b2dc4",
   "ok": true
  },
  "q31-prior-distribution-1": {

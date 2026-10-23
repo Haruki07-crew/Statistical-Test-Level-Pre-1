@@ -31,6 +31,10 @@
   "hash": "c368d11d132dad2b",
   "ok": true
  },
+ "q03-conditional-variance-4": {
+  "hash": "5d41de447fb2b064",
+  "ok": true
+ },
  "q03-correlation-matrix-1": {
   "hash": "b33865704d05b0a5",
   "ok": true
@@ -49,6 +53,10 @@
  },
  "q03-covariance-and-correlation-3": {
   "hash": "5e04db3ab5c19291",
+  "ok": true
+ },
+ "q03-covariance-and-correlation-4": {
+  "hash": "f35a10a890159cf2",
   "ok": true
  },
  "q03-expectation-variance-properties-1": {

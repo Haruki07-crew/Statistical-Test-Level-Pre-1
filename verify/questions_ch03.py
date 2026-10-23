@@ -163,4 +163,42 @@ _wrong = [_sp.integrate(_x ** 4, (_x, 0, 1)), _sp.Rational(1, 144), _sp.Rational
 q.check("q03-moments-3", _mu4 == _sp.Rational(1, 80) and abs(_st.uniform.moment(4) - 1 / 5) < 1e-12, "正解 1/80")
 q.check("q03-moments-3", _wrong[0] == _sp.Rational(1, 5) and _sp.Rational(1, 12) ** 2 == _wrong[1] and all(w != _mu4 for w in _wrong), "誤答 1/5, 1/144, 1/16 は正解と異なる")
 
+# --- 導出問題（追加） ---
+def _deriv03():
+    import numpy as _N
+    import sympy as _S
+    from scipy import stats as _st
+    # 複合ポアソン：記号での全期待値・全分散
+    lam, mu, sig = _S.symbols("lambda mu sigma", positive=True)
+    ES = lam * mu
+    VS = lam * sig ** 2 + mu ** 2 * lam
+    ok = _S.simplify(VS - lam * (sig ** 2 + mu ** 2)) == 0
+    # 厳密な分布で確認：N~Po(2)、X∈{1,3} 確率 0.5（μ=2, σ²=1）
+    L, K = 2.0, 80
+    px = _N.zeros(4); px[1] = px[3] = 0.5
+    dist = _N.zeros(3 * K + 1); conv = _N.array([1.0])
+    for n in range(K):
+        pn = _st.poisson.pmf(n, L)
+        dist[: len(conv)] += pn * conv
+        conv = _N.convolve(conv, px)
+    k = _N.arange(len(dist))
+    m = (k * dist).sum(); v = (k ** 2 * dist).sum() - m ** 2
+    ok &= abs(m - L * 2) < 1e-9 and abs(v - L * (1 + 4)) < 1e-9
+    q.check("q03-conditional-variance-4", bool(ok), "E[S]=λμ、V[S]=λ(σ²+μ²)（N~Po(2)、X∈{1,3} の厳密分布で 4, 10）")
+    # 相関係数の範囲
+    t, sx, sy, sxy = _S.symbols("t s_x s_y s_xy", real=True)
+    g = sx ** 2 * t ** 2 - 2 * sxy * t + sy ** 2
+    disc4 = _S.discriminant(g, t) / 4
+    tmin = _S.solve(_S.diff(g, t), t)[0]
+    rho = sxy / (sx * sy)
+    ok2 = _S.simplify(disc4 - (sxy ** 2 - sx ** 2 * sy ** 2)) == 0
+    ok2 &= _S.simplify(tmin - sxy / sx ** 2) == 0 and _S.simplify(g.subs(t, tmin) - sy ** 2 * (1 - rho ** 2)) == 0
+    # 数値例で V[Y-tX] の展開を確認
+    rng = _N.random.default_rng(3)
+    Z = rng.normal(size=(200000, 2)) @ _N.array([[2.0, 0.6], [0.0, 1.5]])
+    C = _N.cov(Z.T)
+    ok2 &= abs(_N.var(Z[:, 1] - 0.7 * Z[:, 0], ddof=1) - (C[1, 1] - 1.4 * C[0, 1] + 0.49 * C[0, 0])) < 1e-8
+    q.check("q03-covariance-and-correlation-4", bool(ok2), "sympy: 判別式/4=σxy²-σx²σy²、最小値 σy²(1-ρ²)")
+_deriv03()
+
 q.done()

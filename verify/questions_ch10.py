@@ -155,4 +155,23 @@ g = (0.05 - stats.binom.sf(8, 10, 0.5)) / stats.binom.pmf(8, 10, 0.5)
 q.num("q10-randomized-test-1", g)
 q.check("q10-randomized-test-1", abs(stats.binom.sf(8, 10, 0.5) + g * stats.binom.pmf(8, 10, 0.5) - 0.05) < 1e-12, "サイズちょうど0.05")
 
+# --- 導出問題（追加） ---
+def _deriv10():
+    import math
+    from scipy import stats as _st
+    Phi = _st.norm.cdf; z = lambda a: _st.norm.isf(a)
+    def pw(mu, mu0, s, n, a):
+        crit = mu0 + z(a) * s / math.sqrt(n)              # 棄却域 X̄ > crit を真の分布で直接計算
+        return _st.norm(mu, s / math.sqrt(n)).sf(crit)
+    ok = True
+    for (mu, mu0, s, n, a) in [(105, 100, 10, 25, 0.05), (52, 50, 4, 16, 0.01), (100, 100, 10, 9, 0.05)]:
+        ok &= abs(pw(mu, mu0, s, n, a) - Phi(math.sqrt(n) * (mu - mu0) / s - z(a))) < 1e-12
+    ok &= abs(pw(100, 100, 10, 9, 0.05) - 0.05) < 1e-12
+    # 必要な n：式で求めた最小の整数で検出力≥1-β、1つ少ないと不足
+    for (s, d, a, b) in [(10, 5, 0.05, 0.2), (3, 1, 0.025, 0.1)]:
+        nmin = math.ceil(((z(a) + z(b)) * s / d) ** 2)
+        ok &= pw(d, 0, s, nmin, a) >= 1 - b and pw(d, 0, s, nmin - 1, a) < 1 - b
+    q.check("q10-power-function-3", bool(ok), "π(μ)=Φ(√n(μ-μ0)/σ - zα) が直接計算と一致、n≥((zα+zβ)σ/δ)² の最小整数で検出力を満たす")
+_deriv10()
+
 q.done()

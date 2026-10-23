@@ -165,4 +165,23 @@ q.check("q06-f-distribution-2", abs(stats.f.ppf(0.95, 10, 5) - 4.735) < 5e-4, "F
 q.num("q06-noncentral-f-distribution-1", stats.ncf(3, 12, 4).mean())
 q.check("q06-noncentral-f-distribution-1", abs(stats.f(3, 12).mean() - 1.2) < 1e-12, "中心 F の期待値1.2")
 
+# --- 導出問題（追加） ---
+def _deriv06():
+    import numpy as _N
+    import sympy as _S
+    sx, sy = _S.symbols("sigma_X sigma_Y", positive=True)
+    rho, b = _S.symbols("rho beta", real=True)
+    bsol = _S.solve(rho * sx * sy - b * sx ** 2, b)[0]
+    ok = _S.simplify(bsol - rho * sy / sx) == 0
+    VW = sy ** 2 - 2 * b * rho * sx * sy + b ** 2 * sx ** 2
+    ok &= _S.simplify(VW.subs(b, bsol) - sy ** 2 * (1 - rho ** 2)) == 0
+    # 一般の条件付き分布の公式（Σ12/Σ22, Σ11-Σ12²/Σ22）と一致することを数値で
+    mx, my, s1, s2, r = 50.0, 60.0, 10.0, 15.0, 0.6
+    S = _N.array([[s1 ** 2, r * s1 * s2], [r * s1 * s2, s2 ** 2]])
+    x = 65.0
+    cm = my + S[1, 0] / S[0, 0] * (x - mx); cv = S[1, 1] - S[1, 0] ** 2 / S[0, 0]
+    ok &= abs(cm - (my + r * s2 / s1 * (x - mx))) < 1e-12 and abs(cv - s2 ** 2 * (1 - r ** 2)) < 1e-9
+    q.check("q06-bivariate-normal-distribution-4", bool(ok), "sympy: β=ρσY/σX、V[W]=σY²(1-ρ²)、一般公式と一致")
+_deriv06()
+
 q.done()

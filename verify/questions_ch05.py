@@ -94,4 +94,26 @@ cov = stats.multinomial.cov(10, [0.5, 0.3, 0.2])[0, 1]
 q.check("q05-multinomial-distribution-2", abs(cov - (-1.5)) < 1e-12, "正解 -1.5")
 q.check("q05-multinomial-distribution-2", all(abs(w - cov) > 1e-6 for w in [0, 1.5, -0.15]), "誤答は正解と異なる")
 
+# --- 導出問題（追加） ---
+def _deriv05():
+    import sympy as _S
+    from scipy import stats as _st
+    N_, K_, n_ = _S.symbols("N K n", positive=True)
+    p = K_ / N_
+    cov = K_ * (K_ - 1) / (N_ * (N_ - 1)) - K_ ** 2 / N_ ** 2
+    ok = _S.simplify(cov + K_ * (N_ - K_) / (N_ ** 2 * (N_ - 1))) == 0
+    V = n_ * p * (1 - p) + n_ * (n_ - 1) * cov
+    ok &= _S.simplify(V - n_ * p * (1 - p) * (N_ - n_) / (N_ - 1)) == 0
+    for (NN, KK, nn) in [(20, 8, 5), (12, 5, 4), (50, 7, 20)]:
+        m, v = _st.hypergeom.stats(NN, KK, nn, moments="mv")
+        ok &= abs(m - nn * KK / NN) < 1e-9 and abs(v - float(V.subs({N_: NN, K_: KK, n_: nn}))) < 1e-9
+    q.check("q05-hypergeometric-distribution-4", bool(ok), "sympy: Cov=-K(N-K)/(N²(N-1))、V=np(1-p)(N-n)/(N-1)、scipy と一致")
+    lam = _S.symbols("lambda", positive=True); k = _S.symbols("k", integer=True, nonnegative=True)
+    pmf = _S.exp(-lam) * lam ** k / _S.factorial(k)
+    E1 = _S.simplify(_S.summation(k * pmf, (k, 0, _S.oo)))
+    E2 = _S.simplify(_S.summation(k * (k - 1) * pmf, (k, 0, _S.oo)))
+    ok2 = _S.simplify(E1 - lam) == 0 and _S.simplify(E2 - lam ** 2) == 0 and _S.simplify(E2 + E1 - E1 ** 2 - lam) == 0
+    q.check("q05-poisson-distribution-4", bool(ok2), "sympy: Σk p=λ、Σk(k-1)p=λ²、V=λ")
+_deriv05()
+
 q.done()

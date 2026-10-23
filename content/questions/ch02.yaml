@@ -581,3 +581,28 @@ questions:
       $\int_0^2(2x-x^2)\,dx=\left[x^2-\tfrac{x^3}{3}\right]_0^2=4-\tfrac83=\tfrac43$ なので $c=\tfrac34$ です。
       $$P(X<0.5)=\frac34\left[x^2-\frac{x^3}{3}\right]_0^{0.5}=\frac34\left(0.25-0.04167\right)=0.15625$$
       よって $0.156$ です。密度は $x=1$ について対称なので、$P(X>1.5)$ も同じ値になります。
+
+  - id: q02-probability-generating-function-4
+    term: probability-generating-function
+    level: 応用
+    type: derivation
+    question: |
+      $X\sim\mathrm{Bin}(n,p)$（$q=1-p$）の確率母関数 $G_X(s)=E[s^X]$ を求め、それを使って $E[X]$ と $V[X]$ を導け。
+    steps:
+      - |
+        定義どおりに和をとり、二項定理でまとめる：$G_X(s)=\displaystyle\sum_{k=0}^{n}\binom{n}{k}(ps)^k q^{\,n-k}=(q+ps)^n$。
+      - |
+        1回微分して $s=1$ を代入：$G_X'(s)=np(q+ps)^{n-1}$ より $G_X'(1)=np\,(q+p)^{n-1}=np$。これが $E[X]$。
+      - |
+        2回微分：$G_X''(s)=n(n-1)p^2(q+ps)^{n-2}$ より $G_X''(1)=n(n-1)p^2=E[X(X-1)]$（階乗モーメント）。
+      - |
+        $V[X]=E[X(X-1)]+E[X]-E[X]^2=n(n-1)p^2+np-n^2p^2=np(1-p)=npq$。
+    answer: '$G_X(s)=(q+ps)^n$、$E[X]=np$、$V[X]=npq$'
+    hint: |
+      $G_X'(1)=E[X]$、$G_X''(1)=E[X(X-1)]$ を使う。
+    explanation: |
+      二項定理から $G_X(s)=(q+ps)^n$ です。微分すると
+      $$G_X'(1)=np,\qquad G_X''(1)=n(n-1)p^2$$
+      となり、$V[X]=G_X''(1)+G_X'(1)-\{G_X'(1)\}^2=npq$ が得られます。
+      $(q+ps)^n$ はベルヌーイ分布の確率母関数 $q+ps$ の $n$ 乗なので、「独立なベルヌーイ変数 $n$ 個の和」という見方とも一致します。
+      よくある間違いは、$G_X''(1)$ を $E[X^2]$ と思って $V[X]=G''(1)-G'(1)^2$ としてしまうことです（$+G'(1)$ が抜ける）。

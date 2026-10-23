@@ -39,7 +39,7 @@ questions:
     type: numeric
     question: |
       $N(\mu,1)$ から $n=9$ 個の標本をとり、$H_0:\mu=0$ 対 $H_1:\mu=1$ を「$\bar X>0.6$ なら $H_0$ を棄却」で検定する。
-      第1種の過誤の確率を小数第3位まで求めよ。
+      第1種の過誤の確率を小数第3位まで（四捨五入）求めよ。
     answer: 0.036
     tolerance: 0.001
     hint: |
@@ -53,7 +53,7 @@ questions:
     type: numeric
     question: |
       $N(\mu,1)$ から $n=9$ 個の標本をとり、$H_0:\mu=0$ 対 $H_1:\mu=1$ を「$\bar X>0.6$ なら $H_0$ を棄却」で検定する。
-      $\mu=1$ が真のときの第2種の過誤の確率を小数第3位まで求めよ。
+      $\mu=1$ が真のときの第2種の過誤の確率を小数第3位まで（四捨五入）求めよ。
     answer: 0.115
     tolerance: 0.001
     hint: |
@@ -81,7 +81,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      $X\sim B(10,p)$ で $H_0:p=0.5$ 対 $H_1:p>0.5$ を「$X\ge9$ なら棄却」で検定する。この検定のサイズを小数第4位まで求めよ。
+      $X\sim B(10,p)$ で $H_0:p=0.5$ 対 $H_1:p>0.5$ を「$X\ge9$ なら棄却」で検定する。この検定のサイズを小数第4位まで（四捨五入）求めよ。
     answer: 0.0107
     tolerance: 0.0001
     hint: |
@@ -109,7 +109,7 @@ questions:
     level: 基本
     type: numeric
     question: |
-      両側の $z$ 検定で、検定統計量の観測値が $z=2.3$ であった。p 値を小数第4位まで求めよ。
+      両側の $z$ 検定で、検定統計量の観測値が $z=2.3$ であった。p 値を小数第4位まで（四捨五入）求めよ。
     answer: 0.0214
     tolerance: 0.0001
     hint: |
@@ -123,7 +123,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      硬貨を12回投げて表が10回出た。$H_0:p=0.5$ 対 $H_1:p>0.5$ の正確な（二項分布による）p 値を小数第4位まで求めよ。
+      硬貨を12回投げて表が10回出た。$H_0:p=0.5$ 対 $H_1:p>0.5$ の正確な（二項分布による）p 値を小数第4位まで（四捨五入）求めよ。
     answer: 0.0193
     tolerance: 0.0001
     hint: |
@@ -170,7 +170,7 @@ questions:
     type: numeric
     question: |
       $N(\mu,6^2)$ から $n=36$ 個の標本をとり、$H_0:\mu=50$ 対 $H_1:\mu>50$ を有意水準5%で検定する。棄却域を $\bar X\ge c$ と書くとき、
-      $c$ を小数第3位まで求めよ（$z_{0.05}=1.645$）。
+      $c$ を小数第3位まで（四捨五入）求めよ（$z_{0.05}=1.645$）。
     answer: 51.645
     tolerance: 0.001
     hint: |
@@ -185,7 +185,7 @@ questions:
     type: numeric
     question: |
       $N(\mu,10^2)$ から $n=25$ 個をとり、$H_0:\mu=100$ 対 $H_1:\mu>100$ を有意水準5%の $z$ 検定で検定する。
-      真の平均が $\mu=105$ のときの検出力を小数第3位まで求めよ（$z_{0.05}=1.645$）。
+      真の平均が $\mu=105$ のときの検出力を小数第3位まで（四捨五入）求めよ（$z_{0.05}=1.645$）。
     answer: 0.804
     tolerance: 0.001
     hint: |
@@ -200,7 +200,7 @@ questions:
     type: numeric
     question: |
       $N(\mu,10^2)$ から $n=25$ 個をとり、$H_0:\mu=100$ 対 $H_1:\mu\ne100$（両側）を有意水準5%の $z$ 検定で検定する。
-      真の平均が $\mu=105$ のときの検出力を小数第3位まで求めよ（$z_{0.025}=1.96$）。
+      真の平均が $\mu=105$ のときの検出力を小数第3位まで（四捨五入）求めよ（$z_{0.025}=1.96$）。
     answer: 0.705
     tolerance: 0.001
     hint: |
@@ -249,7 +249,7 @@ questions:
     type: numeric
     question: |
       1個の観測 $X$ がレート $\lambda$ の指数分布（密度 $\lambda e^{-\lambda x}$）に従う。$H_0:\lambda=1$ 対 $H_1:\lambda=2$ の有意水準5%の
-      最強力検定の検出力を小数第4位まで求めよ。
+      最強力検定の検出力を小数第4位まで（四捨五入）求めよ。
     answer: 0.0975
     tolerance: 0.0001
     hint: |
@@ -316,7 +316,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      $Po(\lambda)$ からの標本 $n=10$ 個の合計が $\sum x_i=30$ であった。$H_0:\lambda=2$ の尤度比検定統計量 $-2\log\Lambda$ を小数第3位まで求めよ。
+      $Po(\lambda)$ からの標本 $n=10$ 個の合計が $\sum x_i=30$ であった。$H_0:\lambda=2$ の尤度比検定統計量 $-2\log\Lambda$ を小数第3位まで（四捨五入）求めよ。
     answer: 4.328
     tolerance: 0.001
     hint: |
@@ -367,7 +367,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      ある尤度比検定で $-2\log\Lambda=6.2$ を得た。ウィルクスの定理により自由度2のカイ二乗分布で近似したときの p 値を小数第3位まで求めよ。
+      ある尤度比検定で $-2\log\Lambda=6.2$ を得た。ウィルクスの定理により自由度2のカイ二乗分布で近似したときの p 値を小数第3位まで（四捨五入）求めよ。
     answer: 0.045
     tolerance: 0.001
     hint: |
@@ -381,7 +381,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      $100$ 回の試行で成功が $60$ 回だった。$H_0:p=0.5$ のワルド検定統計量 $Z_W=\dfrac{\hat p-p_0}{\sqrt{\hat p(1-\hat p)/n}}$ を小数第3位まで求めよ。
+      $100$ 回の試行で成功が $60$ 回だった。$H_0:p=0.5$ のワルド検定統計量 $Z_W=\dfrac{\hat p-p_0}{\sqrt{\hat p(1-\hat p)/n}}$ を小数第3位まで（四捨五入）求めよ。
     answer: 2.041
     tolerance: 0.001
     hint: |
@@ -408,7 +408,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      $100$ 回の試行で成功が $60$ 回だった。$H_0:p=0.5$ のスコア検定統計量 $Z_S=\dfrac{U(p_0)}{\sqrt{nI(p_0)}}$ を小数第3位まで求めよ。
+      $100$ 回の試行で成功が $60$ 回だった。$H_0:p=0.5$ のスコア検定統計量 $Z_S=\dfrac{U(p_0)}{\sqrt{nI(p_0)}}$ を小数第3位まで（四捨五入）求めよ。
     answer: 2.0
     tolerance: 0.001
     hint: |
@@ -423,7 +423,7 @@ questions:
     level: 応用
     type: numeric
     question: |
-      $Po(\lambda)$ からの標本 $n=10$ 個の合計が $\sum x_i=30$ であった。$H_0:\lambda=2$ のスコア統計量 $S=U(\lambda_0)^2/\{nI(\lambda_0)\}$ を小数第3位まで求めよ。
+      $Po(\lambda)$ からの標本 $n=10$ 個の合計が $\sum x_i=30$ であった。$H_0:\lambda=2$ のスコア統計量 $S=U(\lambda_0)^2/\{nI(\lambda_0)\}$ を小数第3位まで（四捨五入）求めよ。
     answer: 5
     tolerance: 0.001
     hint: |
@@ -438,7 +438,7 @@ questions:
     level: 基本
     type: numeric
     question: |
-      帰無仮説がすべて正しい独立な10個の検定を、それぞれ有意水準5%で行う。少なくとも1つを誤って棄却する確率（FWER）を小数第3位まで求めよ。
+      帰無仮説がすべて正しい独立な10個の検定を、それぞれ有意水準5%で行う。少なくとも1つを誤って棄却する確率（FWER）を小数第3位まで（四捨五入）求めよ。
     answer: 0.401
     tolerance: 0.001
     hint: |
@@ -452,7 +452,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      独立な5個の検定で FWER をちょうど5%にしたい。各検定に共通の有意水準 $\alpha'$ を $1-(1-\alpha')^5=0.05$ から求め、小数第4位まで答えよ（シダックの補正）。
+      独立な5個の検定で FWER をちょうど5%にしたい。各検定に共通の有意水準 $\alpha'$ を $1-(1-\alpha')^5=0.05$ から求め、小数第4位まで（四捨五入）答えよ（シダックの補正）。
     answer: 0.0102
     tolerance: 0.0001
     hint: |
@@ -466,7 +466,7 @@ questions:
     level: 基本
     type: numeric
     question: |
-      8個の帰無仮説を FWER 5%で同時に検定する。ボンフェローニ補正での各検定の有意水準を小数第5位まで求めよ。
+      8個の帰無仮説を FWER 5%で同時に検定する。ボンフェローニ補正での各検定の有意水準を小数第5位まで（四捨五入）求めよ。
     answer: 0.00625
     tolerance: 0.00001
     hint: |
@@ -556,7 +556,7 @@ questions:
     type: numeric
     question: |
       $X\sim B(10,p)$ で $H_0:p=0.5$ 対 $H_1:p>0.5$ のサイズちょうど $0.05$ の検定を、$X\ge9$ なら棄却、$X=8$ なら確率 $\gamma$ で棄却、
-      $X\le7$ なら棄却しない、として作る。$\gamma$ を小数第3位まで求めよ。
+      $X\le7$ なら棄却しない、として作る。$\gamma$ を小数第3位まで（四捨五入）求めよ。
     answer: 0.893
     tolerance: 0.001
     hint: |
@@ -565,3 +565,30 @@ questions:
       $P(X\ge9)=11/1024=0.01074$、$P(X=8)=45/1024=0.04395$ なので
       $$\gamma=\frac{0.05-0.01074}{0.04395}=0.893$$
       無作為化により、離散分布でもサイズをちょうど $\alpha$ にでき、ネイマン・ピアソンの補題の最強力検定が作れます。
+
+  - id: q10-power-function-3
+    term: power-function
+    level: 応用
+    type: derivation
+    question: |
+      $N(\mu,\sigma^2)$（$\sigma^2$ 既知）からの大きさ $n$ の標本で、$H_0:\mu=\mu_0$ 対 $H_1:\mu>\mu_0$ を有意水準 $\alpha$ の $z$ 検定
+      （$Z=\sqrt n(\bar X-\mu_0)/\sigma>z_\alpha$ で棄却）で検定する。検出力関数 $\pi(\mu)$ を標準正規分布の累積分布関数 $\Phi$ で表し、
+      $\mu=\mu_0+\delta$（$\delta>0$）での検出力を $1-\beta$ 以上にするのに必要な $n$ の条件を導け（$z_a$ は標準正規分布の上側 $100a\%$ 点）。
+    steps:
+      - |
+        真の平均が $\mu$ のとき $\bar X\sim N(\mu,\sigma^2/n)$。棄却域を $\mu$ で標準化し直す：$Z>z_\alpha\iff\dfrac{\sqrt n(\bar X-\mu)}{\sigma}>z_\alpha-\dfrac{\sqrt n(\mu-\mu_0)}{\sigma}$。
+      - |
+        左辺は $N(0,1)$ に従うので $\pi(\mu)=1-\Phi\Big(z_\alpha-\dfrac{\sqrt n(\mu-\mu_0)}{\sigma}\Big)=\Phi\Big(\dfrac{\sqrt n(\mu-\mu_0)}{\sigma}-z_\alpha\Big)$。
+      - |
+        $\pi(\mu_0+\delta)\ge1-\beta=\Phi(z_\beta)$ と $\Phi$ の単調性から $\dfrac{\sqrt n\,\delta}{\sigma}-z_\alpha\ge z_\beta$。
+      - |
+        $n$ について解く：$n\ge\Big(\dfrac{(z_\alpha+z_\beta)\sigma}{\delta}\Big)^2$。
+    answer: '$\pi(\mu)=\Phi\Big(\dfrac{\sqrt n(\mu-\mu_0)}{\sigma}-z_\alpha\Big)$、$n\ge\dfrac{(z_\alpha+z_\beta)^2\sigma^2}{\delta^2}$'
+    hint: |
+      「$H_0$ のもとで標準化した $Z$」を「真の $\mu$ のもとで標準化した量」に書き直す。
+    explanation: |
+      棄却域 $\bar X>\mu_0+z_\alpha\sigma/\sqrt n$ を真の平均 $\mu$ で標準化すると
+      $$\pi(\mu)=\Phi\Big(\frac{\sqrt n(\mu-\mu_0)}{\sigma}-z_\alpha\Big)$$
+      となります。$\pi(\mu_0)=\alpha$ で、$\mu$ が大きいほど、$n$ が大きいほど検出力は1に近づきます。
+      検出力 $1-\beta$ を要求すると $n\ge(z_\alpha+z_\beta)^2\sigma^2/\delta^2$ で、検出したい差 $\delta$ を半分にすると必要な $n$ は4倍です。
+      よくある間違いは、$\Phi$ の中の符号を逆にすること（$\pi$ が $\mu$ の減少関数になってしまう）、両側検定でないのに $z_{\alpha/2}$ を使うことです。

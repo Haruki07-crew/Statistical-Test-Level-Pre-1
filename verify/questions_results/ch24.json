@@ -1,6 +1,6 @@
 {
  "q24-average-linkage-1": {
-  "hash": "a8328a6545828038",
+  "hash": "43528356baafcc31",
   "ok": true
  },
  "q24-average-linkage-2": {
@@ -8,7 +8,7 @@
   "ok": true
  },
  "q24-centroid-method-1": {
-  "hash": "cd14410eca8014ee",
+  "hash": "11e45160673ab23c",
   "ok": true
  },
  "q24-centroid-method-2": {
@@ -20,7 +20,7 @@
   "ok": true
  },
  "q24-complete-linkage-2": {
-  "hash": "d84ca406e6a7ae35",
+  "hash": "e2f0a0d2f1e1dfe6",
   "ok": true
  },
  "q24-complete-linkage-3": {
@@ -64,11 +64,11 @@
   "ok": true
  },
  "q24-k-means-method-1": {
-  "hash": "bb891757856546f1",
+  "hash": "dab17a0020a17433",
   "ok": true
  },
  "q24-k-means-method-2": {
-  "hash": "8d409eca8cfcc003",
+  "hash": "6c33a673ef3862bb",
   "ok": true
  },
  "q24-k-means-method-3": {
@@ -80,11 +80,11 @@
   "ok": true
  },
  "q24-lance-williams-formula-2": {
-  "hash": "2a1080d92726fb8f",
+  "hash": "fa51bebf865a1756",
   "ok": true
  },
  "q24-mixture-model-clustering-1": {
-  "hash": "8504ee0f1de02331",
+  "hash": "0dbaf161291daf30",
   "ok": true
  },
  "q24-non-hierarchical-clustering-1": {
@@ -92,7 +92,7 @@
   "ok": true
  },
  "q24-number-of-clusters-1": {
-  "hash": "46f1dee156d74edd",
+  "hash": "2511fd0a5ddc8c55",
   "ok": true
  },
  "q24-number-of-clusters-2": {
@@ -100,11 +100,11 @@
   "ok": true
  },
  "q24-similarity-measures-1": {
-  "hash": "3f662a825232aad4",
+  "hash": "45e35dbefb511f4f",
   "ok": true
  },
  "q24-similarity-measures-2": {
-  "hash": "342f0f9206c9703d",
+  "hash": "6b1ce0a6dcfdf2eb",
   "ok": true
  },
  "q24-single-linkage-1": {
@@ -120,7 +120,7 @@
   "ok": true
  },
  "q24-standardization-before-clustering-1": {
-  "hash": "df9dd2aac3346492",
+  "hash": "f9f53b45dd7a6125",
   "ok": true
  },
  "q24-ward-method-1": {
@@ -133,6 +133,10 @@
  },
  "q24-ward-method-3": {
   "hash": "8b0717792b3bb656",
+  "ok": true
+ },
+ "q24-ward-method-4": {
+  "hash": "4015ee2c83003f48",
   "ok": true
  }
 }

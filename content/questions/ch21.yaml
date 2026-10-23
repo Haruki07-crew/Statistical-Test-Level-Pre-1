@@ -68,7 +68,7 @@ questions:
     type: numeric
     question: |
       $N=3$ の母集団 $y=(2,\ 4,\ 9)$ から大きさ2の標本を、$P(\{1,2\})=0.5$、$P(\{1,3\})=0.3$、$P(\{2,3\})=0.2$ の確率で選ぶ。
-      総計のホルビッツ・トンプソン推定量の分散を小数第2位まで求めよ。
+      総計のホルビッツ・トンプソン推定量の分散を小数第2位まで（四捨五入）求めよ。
     answer: 47.29
     tolerance: 0.01
     hint: |
@@ -99,7 +99,7 @@ questions:
     type: numeric
     question: |
       50の集落から10集落を単純無作為抽出し、選ばれた集落（どれも40人）の中からさらに8人を単純無作為抽出する二段抽出を行う。
-      ある個人が標本に入る包含確率を小数第2位まで求めよ。
+      ある個人が標本に入る包含確率を小数第2位まで（四捨五入）求めよ。
     answer: 0.04
     tolerance: 0.001
     hint: |
@@ -113,7 +113,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      $N=10$ の母集団から $n=4$ を非復元の単純無作為抽出で選ぶ。特定の2単位 $i,j$ がともに標本に入る2次の包含確率 $\pi_{ij}$ を小数第3位まで求めよ。
+      $N=10$ の母集団から $n=4$ を非復元の単純無作為抽出で選ぶ。特定の2単位 $i,j$ がともに標本に入る2次の包含確率 $\pi_{ij}$ を小数第3位まで（四捨五入）求めよ。
     answer: 0.133
     tolerance: 0.001
     hint: |
@@ -145,7 +145,7 @@ questions:
     type: numeric
     question: |
       2層の層化抽出で、層1は $N_1=600$、$S_1=10$、$n_1=30$、層2は $N_2=400$、$S_2=20$、$n_2=20$ である。
-      層化推定量の分散 $V(\bar y_{st})$ を小数第2位まで求めよ。
+      層化推定量の分散 $V(\bar y_{st})$ を小数第2位まで（四捨五入）求めよ。
     answer: 4.18
     tolerance: 0.005
     hint: |
@@ -208,7 +208,7 @@ questions:
     type: numeric
     question: |
       2層の母集団（$N=1000$、$W_1=0.6$、$S_1=10$、$W_2=0.4$、$S_2=20$、$n=50$）で、ネイマン配分のときの層化推定量の分散
-      $V_{\text{opt}}=\frac1n\left(\sum W_hS_h\right)^2-\frac1N\sum W_hS_h^2$ を小数第2位まで求めよ。
+      $V_{\text{opt}}=\frac1n\left(\sum W_hS_h\right)^2-\frac1N\sum W_hS_h^2$ を小数第2位まで（四捨五入）求めよ。
     answer: 3.7
     tolerance: 0.005
     hint: |
@@ -239,7 +239,7 @@ questions:
     type: numeric
     question: |
       大きさの等しい $A=100$ の集落から $a=10$ 集落を単純無作為抽出し、選んだ集落は全員を調べる。
-      集落平均の分散が $S_b^2=\frac{1}{A-1}\sum(\bar Y_i-\bar Y)^2=4.5$ のとき、$\bar y_{cl}$ の分散を小数第3位まで求めよ。
+      集落平均の分散が $S_b^2=\frac{1}{A-1}\sum(\bar Y_i-\bar Y)^2=4.5$ のとき、$\bar y_{cl}$ の分散を小数第3位まで（四捨五入）求めよ。
     answer: 0.405
     tolerance: 0.001
     hint: |
@@ -267,7 +267,7 @@ questions:
     type: numeric
     question: |
       大きさ $M=50$ の集落が $A=80$ 個ある。第1段で $a=10$ 集落、第2段で各集落から $m=10$ 人を単純無作為抽出する。
-      $S_b^2=6$、$\bar S_w^2=40$ のとき、推定量 $\bar{\bar y}$ の分散を小数第3位まで求めよ。
+      $S_b^2=6$、$\bar S_w^2=40$ のとき、推定量 $\bar{\bar y}$ の分散を小数第3位まで（四捨五入）求めよ。
     answer: 0.845
     tolerance: 0.001
     hint: |
@@ -344,7 +344,7 @@ questions:
     type: numeric
     question: |
       抽出率 $f=0.1$、$n=40$ の単純無作為抽出で比推定を行う。母集団で $S_y^2=100$、$S_x^2=64$、$S_{xy}=72$、$R=\bar Y/\bar X=1.2$ である。
-      比推定量の近似分散 $\frac{1-f}{n}(S_y^2-2RS_{xy}+R^2S_x^2)$ を小数第3位まで求めよ。
+      比推定量の近似分散 $\frac{1-f}{n}(S_y^2-2RS_{xy}+R^2S_x^2)$ を小数第3位まで（四捨五入）求めよ。
     answer: 0.436
     tolerance: 0.001
     hint: |
@@ -412,7 +412,7 @@ questions:
     type: numeric
     question: |
       $n=100$ の標本で、半数の50人のウェイトが1、残り50人のウェイトが3であった。
-      重み付けによる計画効果のキッシュの近似 $\mathrm{deff}=n\sum w_i^2/(\sum w_i)^2$ を小数第2位まで求めよ。
+      重み付けによる計画効果のキッシュの近似 $\mathrm{deff}=n\sum w_i^2/(\sum w_i)^2$ を小数第2位まで（四捨五入）求めよ。
     answer: 1.25
     tolerance: 0.005
     hint: |
@@ -441,7 +441,7 @@ questions:
     type: numeric
     question: |
       ある調査の推定量は、非標本誤差による偏りが $1.5$、標本誤差（標準誤差）が $2$ であった。偏りはそのままで標本サイズだけを4倍にすると、
-      平均二乗誤差の平方根 $\sqrt{\mathrm{MSE}}$ はいくらになるか。小数第2位まで求めよ（有限母集団修正は無視する）。
+      平均二乗誤差の平方根 $\sqrt{\mathrm{MSE}}$ はいくらになるか。小数第2位まで（四捨五入）求めよ（有限母集団修正は無視する）。
     answer: 1.8
     tolerance: 0.005
     hint: |
@@ -508,3 +508,57 @@ questions:
       設計ウェイトは $5000/50=100$、回答率の逆数は $1/0.8=1.25$ なので
       $$100\times1.25=125$$
       です。回答者40人のウェイトの合計が $40\times125=5000=N_h$ となり、層の大きさに一致します。
+
+  - id: q21-simple-random-sampling-4
+    term: simple-random-sampling
+    level: 応用
+    type: derivation
+    question: |
+      大きさ $N$ の有限母集団の値 $Y_1,\dots,Y_N$（平均 $\bar Y$、$S^2=\frac{1}{N-1}\sum(Y_i-\bar Y)^2$）から、大きさ $n$ の標本を非復元の単純無作為抽出で選ぶ。
+      個体 $i$ が標本に入れば1となる指示変数 $Z_i$ を使って、標本平均 $\bar y=\frac1n\sum_iZ_iY_i$ の期待値と分散を導け。
+    steps:
+      - |
+        $P(Z_i=1)=\dfrac nN=f$、$i\ne j$ で $P(Z_i=Z_j=1)=\dfrac{n(n-1)}{N(N-1)}$。よって $E[\bar y]=\frac1n\sum f\,Y_i=\bar Y$。
+      - |
+        $V[Z_i]=f(1-f)$、$\mathrm{Cov}[Z_i,Z_j]=\dfrac{n(n-1)}{N(N-1)}-f^2=-\dfrac{f(1-f)}{N-1}$。
+      - |
+        $V\big[\sum Z_iY_i\big]=f(1-f)\Big\{\sum_iY_i^2-\dfrac{1}{N-1}\sum_{i\ne j}Y_iY_j\Big\}$。$\sum_{i\ne j}Y_iY_j=(\sum Y_i)^2-\sum Y_i^2$ を使う。
+      - |
+        中括弧 $=\dfrac{N}{N-1}\Big\{\sum Y_i^2-\dfrac{(\sum Y_i)^2}{N}\Big\}=\dfrac{N}{N-1}\sum(Y_i-\bar Y)^2=NS^2$。
+      - |
+        $V[\bar y]=\dfrac{1}{n^2}f(1-f)NS^2=\Big(1-\dfrac nN\Big)\dfrac{S^2}{n}$。
+    answer: '$E[\bar y]=\bar Y$、$V[\bar y]=\Big(1-\dfrac nN\Big)\dfrac{S^2}{n}$'
+    hint: |
+      $Z_i$ どうしは独立でない。共分散 $\mathrm{Cov}[Z_i,Z_j]$ を求め、$\sum_{i\ne j}Y_iY_j$ を $(\sum Y_i)^2-\sum Y_i^2$ で書きかえる。
+    explanation: |
+      非復元抽出では $Z_i$ の間に負の共分散 $-f(1-f)/(N-1)$ があり、これを入れて計算すると
+      $$V[\bar y]=\Big(1-\frac nN\Big)\frac{S^2}{n}$$
+      となります。$1-n/N$ が有限母集団修正で、全数調査（$n=N$）なら分散0、$N$ が十分大きければ復元抽出の $S^2/n$ に近づきます。
+      母分散を $N-1$ で割った $S^2$ で定義すると式がこの形にきれいにまとまる点が要点です（$N$ で割った $\sigma^2$ を使うと $\frac{N-n}{N-1}\frac{\sigma^2}{n}$）。
+      よくある間違いは、$Z_i$ を独立とみなして共分散の項を落とすこと、修正項を $\frac{N-n}{N-1}$ と $S^2$ の両方に重ねて掛けることです。
+
+  - id: q21-neyman-allocation-4
+    term: neyman-allocation
+    level: 応用
+    type: derivation
+    question: |
+      層 $h=1,\dots,H$（大きさ $N_h$、$W_h=N_h/N$、層内の分散 $S_h^2$）の層化抽出で、層化推定量の分散は
+      $V=\sum_hW_h^2S_h^2\Big(\dfrac1{n_h}-\dfrac1{N_h}\Big)$ である。$\sum_hn_h=n$ のもとで $V$ を最小にする配分 $n_h$ と、そのときの $V$ をラグランジュ乗数法で導け。
+    steps:
+      - |
+        $-\sum W_h^2S_h^2/N_h$ は $n_h$ によらないので、$\sum_h\dfrac{W_h^2S_h^2}{n_h}$ を最小にすればよい。$L=\sum_h\dfrac{W_h^2S_h^2}{n_h}+\mu\Big(\sum_hn_h-n\Big)$。
+      - |
+        $\dfrac{\partial L}{\partial n_h}=-\dfrac{W_h^2S_h^2}{n_h^2}+\mu=0$ より $n_h=\dfrac{W_hS_h}{\sqrt\mu}$、つまり $n_h\propto W_hS_h\propto N_hS_h$。
+      - |
+        $\sum n_h=n$ から $\sqrt\mu=\dfrac{\sum_kW_kS_k}{n}$、$n_h=n\dfrac{N_hS_h}{\sum_kN_kS_k}$。
+      - |
+        代入：$\dfrac{W_h^2S_h^2}{n_h}=\dfrac{W_hS_h\sum_kW_kS_k}{n}$ を足して $V_{\text{opt}}=\dfrac{(\sum_hW_hS_h)^2}{n}-\dfrac{\sum_hW_hS_h^2}{N}$。
+    answer: '$n_h=n\dfrac{N_hS_h}{\sum_kN_kS_k}$、$V_{\text{opt}}=\dfrac1n\Big(\sum_hW_hS_h\Big)^2-\dfrac1N\sum_hW_hS_h^2$'
+    hint: |
+      $n_h$ を連続量とみなし、$\sum_h W_h^2S_h^2/n_h+\mu(\sum n_h-n)$ を $n_h$ で微分する。$W_h^2/N_h=W_h/N$ に注意。
+    explanation: |
+      停留条件 $W_h^2S_h^2/n_h^2=\mu$ から $n_h\propto N_hS_h$（層が大きいほど、層内のばらつきが大きいほど多く取る）で、
+      $$n_h=n\frac{N_hS_h}{\sum_kN_kS_k},\qquad V_{\text{opt}}=\frac{(\sum W_hS_h)^2}{n}-\frac{\sum W_hS_h^2}{N}$$
+      となります。目的関数は $n_h$ について凸なので、この停留点が最小です。
+      比例配分 $n_h\propto N_h$ はすべての $S_h$ が等しいときのネイマン配分にあたります。調査費用が層で異なるときは $n_h\propto N_hS_h/\sqrt{c_h}$ になります。
+      よくある間違いは、$n_h\propto N_hS_h^2$（分散に比例）とすること、また最後の項 $-\frac1N\sum W_hS_h^2$ を落とすことです。

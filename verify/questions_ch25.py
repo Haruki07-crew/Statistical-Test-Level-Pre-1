@@ -207,4 +207,25 @@ obj = lambda O_: np.log(np.linalg.det(O_)) - np.trace(Sg @ O_) - lam_ * np.sum(n
 worse = all(obj(Od + 1e-3 * (lambda M: (M + M.T) / 2)(rng.normal(size=(4, 4)))) <= obj(Od) + 1e-12 for _ in range(200))
 q.check("q25-graphical-lasso-1", ok_kkt and worse, "λ=max|s_jk| で対角解が最適性条件を満たす（正しい）")
 
+# --- 導出問題（追加） ---
+def _deriv25():
+    import numpy as _N
+    import sympy as _S
+    x1, x2, x3 = _S.symbols("x1 x2 x3", real=True)
+    w = _S.symbols("w11 w12 w13 w22 w23 w33", real=True)
+    Om = _S.Matrix([[w[0], w[1], w[2]], [w[1], w[3], w[4]], [w[2], w[4], w[5]]])
+    xv = _S.Matrix([x1, x2, x3])
+    Qf = _S.expand((xv.T * Om * xv)[0])
+    m = -(w[1] * x2 + w[2] * x3) / w[0]
+    rest = _S.expand(Qf - w[0] * (x1 - m) ** 2)
+    ok = _S.diff(rest, x1) == 0                       # 平方完成の残りに x1 が入らない
+    rng = _N.random.default_rng(25)
+    for _ in range(3):
+        B = rng.normal(size=(4, 4)); S = B @ B.T + 0.2 * _N.eye(4); O = _N.linalg.inv(S)
+        coef = S[0, 1:] @ _N.linalg.inv(S[1:, 1:])      # 一般の条件付き分布の公式
+        cvar = S[0, 0] - coef @ S[1:, 0]
+        ok &= _N.allclose(coef, -O[0, 1:] / O[0, 0]) and abs(cvar - 1 / O[0, 0]) < 1e-10
+    q.check("q25-precision-matrix-4", bool(ok), "sympy: 平方完成の残りに x1 なし、Σ12Σ22^-1=-ω1j/ω11、条件付き分散=1/ω11")
+_deriv25()
+
 q.done()

@@ -185,4 +185,24 @@ q.num("q24-mixture-model-clustering-1", g)
 q.num("q24-standardization-before-clustering-1", np.hypot(5 / 10, 1 / 0.5))
 q.check("q24-standardization-before-clustering-1", abs(np.hypot(5, 1) - 5.10) < 5e-3, "標準化なしは5.10")
 
+# --- 導出問題（追加） ---
+def _deriv24():
+    import numpy as _N
+    import sympy as _S
+    na, nb = _S.symbols("n_A n_B", positive=True)
+    a1, a2, b1, b2 = _S.symbols("a1 a2 b1 b2", real=True)
+    A2 = a1 ** 2 + a2 ** 2; B2 = b1 ** 2 + b2 ** 2
+    m1 = (na * a1 + nb * b1) / (na + nb); m2 = (na * a2 + nb * b2) / (na + nb)
+    D = na * A2 + nb * B2 - (na + nb) * (m1 ** 2 + m2 ** 2)
+    ok = _S.simplify(D - na * nb / (na + nb) * ((a1 - b1) ** 2 + (a2 - b2) ** 2)) == 0
+    rng = _N.random.default_rng(24)
+    W = lambda P: ((P - P.mean(0)) ** 2).sum()
+    for na_, nb_ in [(3, 5), (1, 1), (7, 2)]:
+        A = rng.normal(size=(na_, 3)); Bm = rng.normal(size=(nb_, 3)) + 2
+        lhs = W(_N.vstack([A, Bm])) - W(A) - W(Bm)
+        rhs = na_ * nb_ / (na_ + nb_) * ((A.mean(0) - Bm.mean(0)) ** 2).sum()
+        ok &= abs(lhs - rhs) < 1e-10
+    q.check("q24-ward-method-4", bool(ok), "sympy: Δ=n_A n_B/(n_A+n_B)‖ā-b̄‖²、乱数のクラスターで直接計算と一致")
+_deriv24()
+
 q.done()

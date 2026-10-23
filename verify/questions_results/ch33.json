@@ -1,14 +1,14 @@
 {
  "q33-backdoor-criterion-1": {
-  "hash": "7ffeda2920f68a2d",
+  "hash": "1a11e4410bc5cf53",
   "ok": true
  },
  "q33-backdoor-criterion-2": {
-  "hash": "188f8e921f93aae2",
+  "hash": "007154381f32dfa8",
   "ok": true
  },
  "q33-backdoor-criterion-3": {
-  "hash": "5c58fac6b949ebb1",
+  "hash": "4b1f865e736dec54",
   "ok": true
  },
  "q33-causal-effect-1": {
@@ -16,15 +16,15 @@
   "ok": true
  },
  "q33-causal-effect-2": {
-  "hash": "ef53b194c0580b1c",
+  "hash": "4168896c28192c9f",
   "ok": true
  },
  "q33-causal-effect-3": {
-  "hash": "126eebf4ea422e71",
+  "hash": "e8400a26fdd4e03f",
   "ok": true
  },
  "q33-d-separation-1": {
-  "hash": "75d40fb29b2e384f",
+  "hash": "720cb49b8d9c4eab",
   "ok": true
  },
  "q33-d-separation-2": {
@@ -32,11 +32,11 @@
   "ok": true
  },
  "q33-d-separation-3": {
-  "hash": "1ce797ca7e8be588",
+  "hash": "f30e31632f0d5593",
   "ok": true
  },
  "q33-frontdoor-criterion-1": {
-  "hash": "5bdecf9392a2745c",
+  "hash": "d0d9d2dfbc3ce862",
   "ok": true
  },
  "q33-frontdoor-criterion-2": {

@@ -1,6 +1,6 @@
 {
  "q14-absorbing-state-1": {
-  "hash": "940ed84da176ba85",
+  "hash": "3b6c9d1b6ca12bd1",
   "ok": true
  },
  "q14-absorbing-state-2": {
@@ -8,15 +8,15 @@
   "ok": true
  },
  "q14-absorption-probability-1": {
-  "hash": "baab5fe316ee80cb",
+  "hash": "47057094b05cf72b",
   "ok": true
  },
  "q14-absorption-probability-2": {
-  "hash": "074eaa7317ffca38",
+  "hash": "79561f49e1c4bdc0",
   "ok": true
  },
  "q14-chapman-kolmogorov-equation-1": {
-  "hash": "fd2aa7e8ee8474e1",
+  "hash": "15b6b2503cdf6dda",
   "ok": true
  },
  "q14-chapman-kolmogorov-equation-2": {
@@ -28,7 +28,7 @@
   "ok": true
  },
  "q14-continuous-time-markov-chain-1": {
-  "hash": "ea37e7aece1508d6",
+  "hash": "a63471dc879a62ba",
   "ok": true
  },
  "q14-detailed-balance-1": {
@@ -36,11 +36,11 @@
   "ok": true
  },
  "q14-detailed-balance-2": {
-  "hash": "e39f41f9087938d0",
+  "hash": "0b8f79e27f6f570c",
   "ok": true
  },
  "q14-ergodicity-1": {
-  "hash": "d2f4376659e5c58d",
+  "hash": "9e1b6dbccfc5ddd5",
   "ok": true
  },
  "q14-ergodicity-2": {
@@ -48,7 +48,7 @@
   "ok": true
  },
  "q14-first-passage-time-1": {
-  "hash": "0b73d0758fc9e50f",
+  "hash": "4b50f27eec5daa73",
   "ok": true
  },
  "q14-irreducibility-1": {
@@ -60,15 +60,15 @@
   "ok": true
  },
  "q14-limiting-distribution-1": {
-  "hash": "d12a8cdb79d1d0fb",
+  "hash": "6d1710c6464a79ab",
   "ok": true
  },
  "q14-markov-chain-1": {
-  "hash": "8ad2379df4e2f72e",
+  "hash": "2357715422384bb4",
   "ok": true
  },
  "q14-markov-chain-2": {
-  "hash": "b177b154b0bb7805",
+  "hash": "efb58bb13f698e84",
   "ok": true
  },
  "q14-markov-property-1": {
@@ -76,11 +76,15 @@
   "ok": true
  },
  "q14-n-step-transition-probability-1": {
-  "hash": "b17044bb931eb9ff",
+  "hash": "b705d6887d19dc3a",
   "ok": true
  },
  "q14-n-step-transition-probability-2": {
-  "hash": "5479549c7c4d6029",
+  "hash": "34cf6962a64214ca",
+  "ok": true
+ },
+ "q14-n-step-transition-probability-3": {
+  "hash": "58e120d8bdb55577",
   "ok": true
  },
  "q14-periodicity-1": {
@@ -96,7 +100,7 @@
   "ok": true
  },
  "q14-recurrence-and-transience-1": {
-  "hash": "ecf00176c2ecbc59",
+  "hash": "7d1c0400593c82aa",
   "ok": true
  },
  "q14-recurrence-and-transience-2": {
@@ -104,11 +108,11 @@
   "ok": true
  },
  "q14-stationary-distribution-1": {
-  "hash": "77ac7051f7ed005b",
+  "hash": "11416ea55b06b28c",
   "ok": true
  },
  "q14-stationary-distribution-2": {
-  "hash": "75b8cac78f27d2fd",
+  "hash": "098d0f49adb9e2f0",
   "ok": true
  },
  "q14-stationary-distribution-3": {

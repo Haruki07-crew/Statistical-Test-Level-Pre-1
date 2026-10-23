@@ -1,6 +1,6 @@
 {
  "q10-bonferroni-correction-1": {
-  "hash": "54c851f20ff3f7ad",
+  "hash": "98267bc876b71287",
   "ok": true
  },
  "q10-bonferroni-correction-2": {
@@ -20,7 +20,7 @@
   "ok": true
  },
  "q10-likelihood-ratio-test-1": {
-  "hash": "a31018cd3cead01e",
+  "hash": "a6bc87d056bd5017",
   "ok": true
  },
  "q10-likelihood-ratio-test-2": {
@@ -32,11 +32,11 @@
   "ok": true
  },
  "q10-multiple-testing-1": {
-  "hash": "1b1f49ea9430b11a",
+  "hash": "f7c26688d21ed439",
   "ok": true
  },
  "q10-multiple-testing-2": {
-  "hash": "43b3d8d92828f77e",
+  "hash": "a2ff9f62f41accbb",
   "ok": true
  },
  "q10-neyman-pearson-lemma-1": {
@@ -44,7 +44,7 @@
   "ok": true
  },
  "q10-neyman-pearson-lemma-2": {
-  "hash": "e24cc4d970131c69",
+  "hash": "8b5993369504081b",
   "ok": true
  },
  "q10-null-and-alternative-hypothesis-1": {
@@ -60,11 +60,11 @@
   "ok": true
  },
  "q10-p-value-1": {
-  "hash": "c48ab48cc7217425",
+  "hash": "e77b864bdb57914f",
   "ok": true
  },
  "q10-p-value-2": {
-  "hash": "1fe8e22202ea6203",
+  "hash": "0f16e362bba81f88",
   "ok": true
  },
  "q10-p-value-3": {
@@ -72,15 +72,19 @@
   "ok": true
  },
  "q10-power-function-1": {
-  "hash": "a2e07b665752d607",
+  "hash": "d389f0212df67a02",
   "ok": true
  },
  "q10-power-function-2": {
-  "hash": "443eb6b89dbae62c",
+  "hash": "2b7d42a0031da9ba",
+  "ok": true
+ },
+ "q10-power-function-3": {
+  "hash": "12177e2430e69eb4",
   "ok": true
  },
  "q10-randomized-test-1": {
-  "hash": "12bd61ce86d85ae8",
+  "hash": "afac07d6c37194b4",
   "ok": true
  },
  "q10-rejection-region-1": {
@@ -88,7 +92,7 @@
   "ok": true
  },
  "q10-rejection-region-2": {
-  "hash": "ca3aab8650b083f7",
+  "hash": "93c40d127099b2ef",
   "ok": true
  },
  "q10-sample-size-determination-test-1": {
@@ -96,15 +100,15 @@
   "ok": true
  },
  "q10-score-test-1": {
-  "hash": "224df4476c3889c9",
+  "hash": "8087f6e952477a2d",
   "ok": true
  },
  "q10-score-test-2": {
-  "hash": "f900c02e632905ef",
+  "hash": "b354630338bf0caa",
   "ok": true
  },
  "q10-significance-level-1": {
-  "hash": "5d8d4588dedf5112",
+  "hash": "83c44215049a39d6",
   "ok": true
  },
  "q10-significance-level-2": {
@@ -112,11 +116,11 @@
   "ok": true
  },
  "q10-type-i-and-ii-errors-1": {
-  "hash": "57d628e12acb3ece",
+  "hash": "096e2db5231bbc0e",
   "ok": true
  },
  "q10-type-i-and-ii-errors-2": {
-  "hash": "8e2ae8b4a4cca721",
+  "hash": "d97ff2edb23ce599",
   "ok": true
  },
  "q10-type-i-and-ii-errors-3": {
@@ -132,7 +136,7 @@
   "ok": true
  },
  "q10-wald-test-1": {
-  "hash": "a5b013de11d5ce28",
+  "hash": "437f11fabc2e2eb7",
   "ok": true
  },
  "q10-wald-test-2": {
@@ -144,7 +148,7 @@
   "ok": true
  },
  "q10-wilks-theorem-2": {
-  "hash": "af9895761928759a",
+  "hash": "23ec6ef2a7fcb497",
   "ok": true
  }
 }

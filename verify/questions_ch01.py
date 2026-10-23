@@ -96,4 +96,19 @@ _wrong = [1 - 3 * (5 / 6) ** 5 + 3 * (4 / 6) ** 5, (1 - (5 / 6) ** 5) ** 3, 1 - 
 q.check("q01-inclusion-exclusion-principle-2", abs(_exact - _ok) < 1e-12 and round(_ok, 3) == 0.158 and abs(_mc - _ok) < 0.005, f"正解 0.158（全列挙 {_exact:.5f}）")
 q.check("q01-inclusion-exclusion-principle-2", [round(w, 3) for w in _wrong] == [0.189, 0.214, 0.969] and all(abs(w - _ok) > 0.02 for w in _wrong), "誤答 0.189/0.214/0.969 は正解と異なる")
 
+# --- 導出問題（追加） ---
+def _deriv01():
+    import sympy as _S
+    pi_, s_, f_ = _S.symbols("pi s f", positive=True)
+    Pp = s_ * pi_ + f_ * (1 - pi_)                      # 全確率の公式
+    post = s_ * pi_ / Pp
+    odds = post / (f_ * (1 - pi_) / Pp)
+    ok1 = _S.simplify(odds - (s_ / f_) * pi_ / (1 - pi_)) == 0
+    O = s_ * pi_ / (f_ * (1 - pi_))
+    ok2 = _S.simplify(O / (1 + O) - post) == 0
+    v = post.subs({pi_: _S.Rational(2, 100), s_: _S.Rational(9, 10), f_: _S.Rational(5, 100)})
+    q.check("q01-bayes-theorem-4", ok1 and ok2 and abs(float(v) - 0.2687) < 1e-3,
+            "sympy: 事後オッズ=尤度比×事前オッズ、O/(1+O)=sπ/(sπ+f(1-π))（π=0.02,s=0.9,f=0.05 で 0.269）")
+_deriv01()
+
 q.done()

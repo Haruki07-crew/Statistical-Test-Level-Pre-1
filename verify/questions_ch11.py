@@ -135,4 +135,39 @@ q.num("q11-one-way-test-variance-equality-levene-1", res.statistic)
 q.check("q11-one-way-test-variance-equality-levene-1", res.statistic < stats.f.isf(0.05, 1, 6) and abs(stats.f.isf(0.05, 1, 6) - 5.99) < 5e-3,
         "F(1,6) 5%点 5.99 未満")
 
+# --- 導出問題（追加） ---
+def _deriv11():
+    import numpy as _N
+    import sympy as _S
+    from scipy import stats as _st
+    m, n, s2 = _S.symbols("m n sigma2", positive=True)
+    # E[S_p²]：E[S_i²]=σ² を代入
+    Esp = ((m - 1) * s2 + (n - 1) * s2) / (m + n - 2)
+    ok = _S.simplify(Esp - s2) == 0
+    # χ²(m-1)+χ²(n-1) の平均・分散が χ²(m+n-2) と一致
+    ok &= _st.chi2(7).mean() + _st.chi2(11).mean() == _st.chi2(18).mean()
+    ok &= abs(_st.chi2(7).var() + _st.chi2(11).var() - _st.chi2(18).var()) < 1e-12
+    # シミュレーション：T の分布が t(m+n-2)
+    rng = _N.random.default_rng(11)
+    M_, N_ = 6, 9
+    X = rng.normal(3, 2, size=(100000, M_)); Y = rng.normal(1, 2, size=(100000, N_))
+    sp2 = ((M_ - 1) * X.var(axis=1, ddof=1) + (N_ - 1) * Y.var(axis=1, ddof=1)) / (M_ + N_ - 2)
+    T = (X.mean(1) - Y.mean(1) - 2) / _N.sqrt(sp2 * (1 / M_ + 1 / N_))
+    ks = _st.kstest(T, _st.t(M_ + N_ - 2).cdf).statistic
+    ks_wrong = _st.kstest(T, _st.norm.cdf).statistic
+    ok &= ks < 0.006 and ks_wrong > ks
+    q.check("q11-pooled-variance-3", bool(ok), f"E[Sp²]=σ²、χ²の再生性、シミュレーションで T~t(m+n-2)（KS={ks:.4f}）")
+    s1, s2b, nu = _S.symbols("s1 s2 nu", positive=True)
+    a, b = s1 / m, s2b / n
+    VV = 2 * (a ** 2 / (m - 1) + b ** 2 / (n - 1))
+    nusol = _S.solve(_S.Eq(2 * (a + b) ** 2 / nu, VV), nu)[0]
+    ok2 = _S.simplify(nusol - (a + b) ** 2 / (a ** 2 / (m - 1) + b ** 2 / (n - 1))) == 0
+    # V[S²]=2σ⁴/(m-1)
+    ok2 &= abs(_st.chi2(9).var() * (4.0 / 9) ** 2 - 2 * 4.0 ** 2 / 9) < 1e-12
+    # 既存の数値問題（m=10,S1²=20,n=15,S2²=5）の値と一致
+    v = float(nusol.subs({s1: 20, s2b: 5, m: 10, n: 15}))
+    ok2 &= abs(v - float(q.qs["q11-welch-test-2"]["answer"])) <= float(q.qs["q11-welch-test-2"]["tolerance"])
+    q.check("q11-welch-test-4", bool(ok2), f"sympy: 分散を合わせた ν の式、数値例で {v:.4f}")
+_deriv11()
+
 q.done()

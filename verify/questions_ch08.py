@@ -200,4 +200,34 @@ q.check("q08-standard-error-1", abs(_se[1] / _se[0] - 0.5) < 0.03 and abs(_sd[1]
 q.num("q08-standard-error-2", np.sqrt(6 ** 2 / 40 + 7.5 ** 2 / 50))
 q.check("q08-standard-error-2", abs(np.sqrt(36 / 40) + np.sqrt(56.25 / 50) - 2.010) < 0.001, "誤った足し方は 2.010")
 
+# --- 導出問題（追加） ---
+def _deriv08():
+    import sympy as _S
+    m, th = _S.symbols("m theta", positive=True)
+    n = _S.symbols("n", positive=True, integer=True)
+    F = (m / th) ** n
+    f = _S.simplify(_S.diff(F, m))
+    ok = _S.simplify(f - n * m ** (n - 1) / th ** n) == 0
+    E1 = _S.simplify(_S.integrate(m * f, (m, 0, th)))
+    E2 = _S.simplify(_S.integrate(m ** 2 * f, (m, 0, th)))
+    ok &= _S.simplify(E1 - n * th / (n + 1)) == 0 and _S.simplify(E2 - n * th ** 2 / (n + 2)) == 0
+    VM = _S.simplify(E2 - E1 ** 2)
+    ok &= _S.simplify(VM - n * th ** 2 / ((n + 1) ** 2 * (n + 2))) == 0
+    ok &= _S.simplify((n + 1) / n * E1 - th) == 0
+    ok &= _S.simplify(((n + 1) / n) ** 2 * VM - th ** 2 / (n * (n + 2))) == 0
+    q.check("q08-order-statistics-4", bool(ok), "sympy: f_M=nm^{n-1}/θ^n、E[M]=nθ/(n+1)、V[T]=θ²/(n(n+2))")
+    lam, x = _S.symbols("lambda x", positive=True)
+    lf = x * _S.log(lam) - lam - _S.log(_S.factorial(x))
+    d1 = _S.diff(lf, lam); d2 = _S.diff(lf, lam, 2)
+    ok2 = _S.simplify(d1 - (x / lam - 1)) == 0 and _S.simplify(d2 + x / lam ** 2) == 0
+    I = -d2.subs(x, lam)          # E[X]=λ を代入（d2 は x の1次式）
+    ok2 &= _S.simplify(I - 1 / lam) == 0
+    k = _S.symbols("k", integer=True, nonnegative=True)
+    pmf = _S.exp(-lam) * lam ** k / _S.factorial(k)
+    I_sum = _S.simplify(_S.summation((k / lam - 1) ** 2 * pmf, (k, 0, _S.oo)))   # E[score²] でも同じ
+    ok2 &= _S.simplify(I_sum - 1 / lam) == 0
+    ok2 &= _S.simplify(1 / (n * I) - lam / n) == 0
+    q.check("q08-cramer-rao-inequality-4", bool(ok2), "sympy: I(λ)=1/λ（E[score²] でも一致）、下限 λ/n = V[X̄]")
+_deriv08()
+
 q.done()

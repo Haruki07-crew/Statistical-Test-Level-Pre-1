@@ -352,3 +352,55 @@ questions:
       $X_1\sim\mathrm{Bin}(10,0.5)$、$X_2\sim\mathrm{Bin}(10,0.3)$、$X_1+X_2\sim\mathrm{Bin}(10,0.8)$ なので
       $$2\mathrm{Cov}=10(0.8)(0.2)-10(0.5)(0.5)-10(0.3)(0.7)=1.6-2.5-2.1=-3.0$$
       より $\mathrm{Cov}(X_1,X_2)=-1.5=-np_1p_2$ です。合計が $n$ に固定されているので、一方が増えれば他方は減りやすく、負の相関になります。
+
+  - id: q05-hypergeometric-distribution-4
+    term: hypergeometric-distribution
+    level: 応用
+    type: derivation
+    question: |
+      当たり $K$ 本を含む $N$ 本のくじから $n$ 本を非復元で順に引く。当たりの本数を $X$ とする。
+      $j$ 回目が当たりなら1、はずれなら0をとる指示変数 $I_j$ を使って、$E[X]$ と $V[X]$ を導け。
+    steps:
+      - |
+        $X=I_1+\cdots+I_n$。どの回に引くくじも対称なので $P(I_j=1)=\dfrac{K}{N}$、よって $E[X]=n\dfrac{K}{N}$。
+      - |
+        $j\ne k$ のとき $P(I_j=1,I_k=1)=\dfrac{K}{N}\cdot\dfrac{K-1}{N-1}$。
+      - |
+        共分散：$\mathrm{Cov}[I_j,I_k]=\dfrac{K(K-1)}{N(N-1)}-\dfrac{K^2}{N^2}=-\dfrac{K(N-K)}{N^2(N-1)}$（負になる）。
+      - |
+        $V[X]=\sum_jV[I_j]+\sum_{j\ne k}\mathrm{Cov}[I_j,I_k]=n\dfrac{K}{N}\Big(1-\dfrac{K}{N}\Big)-n(n-1)\dfrac{K(N-K)}{N^2(N-1)}$。
+      - |
+        $p=K/N$ とおいてまとめると $V[X]=np(1-p)\Big(1-\dfrac{n-1}{N-1}\Big)=np(1-p)\dfrac{N-n}{N-1}$。
+    answer: '$E[X]=\dfrac{nK}{N}$、$V[X]=n\dfrac{K}{N}\Big(1-\dfrac{K}{N}\Big)\dfrac{N-n}{N-1}$'
+    hint: |
+      期待値は線形性で足すだけ。分散は $I_j$ どうしが独立でないので、共分散の項（$n(n-1)$ 個）を入れる。
+    explanation: |
+      指示変数の和 $X=\sum I_j$ で考えると、$E[X]=nK/N$ は二項分布と同じです。
+      非復元では $I_j$ どうしに負の共分散 $-\dfrac{K(N-K)}{N^2(N-1)}$ があるので、
+      $$V[X]=np(1-p)\cdot\frac{N-n}{N-1}\qquad(p=K/N)$$
+      と、二項分布の分散に有限母集団修正 $\frac{N-n}{N-1}$ が掛かった形になります。
+      よくある間違いは、$I_j$ を独立とみなして共分散の項を落とすこと、また修正項を $\frac{N-n}{N}$ としてしまうことです。
+
+  - id: q05-poisson-distribution-4
+    term: poisson-distribution
+    level: 標準
+    type: derivation
+    question: |
+      $X\sim Po(\lambda)$（$P(X=k)=e^{-\lambda}\lambda^k/k!$）について、確率関数の和から直接 $E[X]$ と $E[X(X-1)]$ を計算し、$V[X]$ を求めよ。
+    steps:
+      - |
+        $E[X]=\displaystyle\sum_{k=1}^{\infty}k\,\frac{e^{-\lambda}\lambda^k}{k!}=\lambda\sum_{k=1}^{\infty}\frac{e^{-\lambda}\lambda^{k-1}}{(k-1)!}=\lambda$（後ろの和は確率の総和で1）。
+      - |
+        $E[X(X-1)]=\displaystyle\sum_{k=2}^{\infty}k(k-1)\frac{e^{-\lambda}\lambda^k}{k!}=\lambda^2\sum_{k=2}^{\infty}\frac{e^{-\lambda}\lambda^{k-2}}{(k-2)!}=\lambda^2$。
+      - |
+        $E[X^2]=E[X(X-1)]+E[X]=\lambda^2+\lambda$。
+      - |
+        $V[X]=E[X^2]-E[X]^2=\lambda^2+\lambda-\lambda^2=\lambda$。
+    answer: '$E[X]=\lambda$、$E[X(X-1)]=\lambda^2$、$V[X]=\lambda$'
+    hint: |
+      $k(k-1)/k!=1/(k-2)!$ と約分すると、和がポアソン分布の確率の総和に戻る。
+    explanation: |
+      $k/k!=1/(k-1)!$、$k(k-1)/k!=1/(k-2)!$ と約分して添字をずらすと、和がふたたび $Po(\lambda)$ の確率の総和（＝1）になり
+      $$E[X]=\lambda,\qquad E[X(X-1)]=\lambda^2,\qquad V[X]=\lambda$$
+      が得られます。$E[X^2]$ を直接計算するより、階乗モーメント $E[X(X-1)]$ を経由するほうが約分がきれいに決まるのが要点です。
+      よくある間違いは、$E[X(X-1)]=\lambda^2$ を $E[X^2]$ と取り違えて $V[X]=0$ としてしまうことです。

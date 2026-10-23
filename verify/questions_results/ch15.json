@@ -1,14 +1,14 @@
 {
  "q15-birth-death-process-1": {
-  "hash": "59ee3e0c3c767c82",
+  "hash": "689adb5877f0ed94",
   "ok": true
  },
  "q15-birth-death-process-2": {
-  "hash": "34725adb1186079e",
+  "hash": "b03f1bd7edce34be",
   "ok": true
  },
  "q15-brownian-motion-1": {
-  "hash": "0e02b16f09097f90",
+  "hash": "f29c353aaa4c16e2",
   "ok": true
  },
  "q15-brownian-motion-2": {
@@ -20,7 +20,7 @@
   "ok": true
  },
  "q15-counting-process-1": {
-  "hash": "63a556d5cfde4494",
+  "hash": "805bca73ee3a0efd",
   "ok": true
  },
  "q15-gambler-ruin-problem-1": {
@@ -28,11 +28,15 @@
   "ok": true
  },
  "q15-gambler-ruin-problem-2": {
-  "hash": "9c6681c86c31b7f8",
+  "hash": "5ee662291004fd78",
   "ok": true
  },
  "q15-gambler-ruin-problem-3": {
-  "hash": "da57616d78893991",
+  "hash": "e050ed7c68c8f39c",
+  "ok": true
+ },
+ "q15-gambler-ruin-problem-4": {
+  "hash": "df43f6f1479687d8",
   "ok": true
  },
  "q15-independent-stationary-increments-1": {
@@ -40,7 +44,7 @@
   "ok": true
  },
  "q15-interarrival-time-1": {
-  "hash": "bf31f02a51f51a3a",
+  "hash": "b5358b3f2b2caa56",
   "ok": true
  },
  "q15-interarrival-time-2": {
@@ -48,7 +52,7 @@
   "ok": true
  },
  "q15-interarrival-time-3": {
-  "hash": "cfc63b39e14ce142",
+  "hash": "61701b76d107c391",
   "ok": true
  },
  "q15-littles-law-1": {
@@ -64,23 +68,27 @@
   "ok": true
  },
  "q15-mm1-queue-2": {
-  "hash": "c90a8c7c16cd5b0b",
+  "hash": "912983f861349c83",
   "ok": true
  },
  "q15-mm1-queue-3": {
   "hash": "0c75046f0b6690cc",
   "ok": true
  },
+ "q15-mm1-queue-4": {
+  "hash": "fda2cb360e1e781b",
+  "ok": true
+ },
  "q15-mmc-queue-1": {
-  "hash": "0de39cf66a9797b2",
+  "hash": "f114baf3cd504aec",
   "ok": true
  },
  "q15-poisson-process-1": {
-  "hash": "9a41ce6e7e41c8df",
+  "hash": "04d016e45f108280",
   "ok": true
  },
  "q15-poisson-process-2": {
-  "hash": "a58bc6a9ca57cef3",
+  "hash": "ec407375f843b1f0",
   "ok": true
  },
  "q15-poisson-process-3": {
@@ -88,15 +96,15 @@
   "ok": true
  },
  "q15-pure-birth-process-1": {
-  "hash": "7496d5a82e4a183b",
+  "hash": "bb29403eb65cb551",
   "ok": true
  },
  "q15-queueing-theory-1": {
-  "hash": "57bf2b9cd5844a06",
+  "hash": "41c09b8ba8b46798",
   "ok": true
  },
  "q15-random-walk-1": {
-  "hash": "0501009f79b25d1e",
+  "hash": "fd1cd2a33e6b3499",
   "ok": true
  },
  "q15-random-walk-2": {
@@ -104,7 +112,7 @@
   "ok": true
  },
  "q15-reflection-principle-1": {
-  "hash": "d2160b802352207c",
+  "hash": "5067fa4388151e04",
   "ok": true
  },
  "q15-stochastic-process-1": {
@@ -112,15 +120,15 @@
   "ok": true
  },
  "q15-superposition-thinning-poisson-1": {
-  "hash": "bc577303728de992",
+  "hash": "9d8d9945cc4872e0",
   "ok": true
  },
  "q15-superposition-thinning-poisson-2": {
-  "hash": "ba4d5dc177f36e12",
+  "hash": "c52db5aef9991ec5",
   "ok": true
  },
  "q15-traffic-intensity-1": {
-  "hash": "70dcbd7d71940a27",
+  "hash": "81f8a033699a9cd9",
   "ok": true
  },
  "q15-traffic-intensity-2": {

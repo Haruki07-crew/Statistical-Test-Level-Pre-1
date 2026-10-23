@@ -1,6 +1,6 @@
 {
  "q23-bayes-discriminant-rule-1": {
-  "hash": "a0310d46abe2fc64",
+  "hash": "2e248ebb395ccfca",
   "ok": true
  },
  "q23-bayes-discriminant-rule-2": {
@@ -8,11 +8,11 @@
   "ok": true
  },
  "q23-bayes-discriminant-rule-3": {
-  "hash": "05b6a89b5eb1778f",
+  "hash": "dc6db949bcafe526",
   "ok": true
  },
  "q23-confusion-matrix-1": {
-  "hash": "25711472e8e370be",
+  "hash": "3c24f416003784dd",
   "ok": true
  },
  "q23-confusion-matrix-2": {
@@ -20,7 +20,7 @@
   "ok": true
  },
  "q23-decision-tree-1": {
-  "hash": "ba3fb9ef2c2534a0",
+  "hash": "da9050bc08f6ad7f",
   "ok": true
  },
  "q23-fisher-linear-discriminant-function-1": {
@@ -33,6 +33,10 @@
  },
  "q23-fisher-linear-discriminant-function-3": {
   "hash": "a847d8f98f1aa7e4",
+  "ok": true
+ },
+ "q23-fisher-linear-discriminant-function-4": {
+  "hash": "68ee49f69ea39730",
   "ok": true
  },
  "q23-k-nearest-neighbors-1": {
@@ -52,7 +56,7 @@
   "ok": true
  },
  "q23-linear-discriminant-analysis-2": {
-  "hash": "ff5c8411f3a06af8",
+  "hash": "bb10a0c3be0df4e8",
   "ok": true
  },
  "q23-linear-discriminant-analysis-3": {
@@ -60,35 +64,39 @@
   "ok": true
  },
  "q23-mahalanobis-distance-1": {
-  "hash": "e83fb23cc5f0c7be",
+  "hash": "f4cc86d2e3c04789",
   "ok": true
  },
  "q23-mahalanobis-distance-2": {
-  "hash": "bb349f738c2b75e9",
+  "hash": "3eca9e7b51885741",
   "ok": true
  },
  "q23-mahalanobis-distance-3": {
-  "hash": "0303b78dd04420a5",
+  "hash": "0d679ef42b82181a",
   "ok": true
  },
  "q23-misclassification-rate-1": {
-  "hash": "3636d256bfd6788a",
+  "hash": "8aa9d5523a8638f6",
   "ok": true
  },
  "q23-misclassification-rate-2": {
-  "hash": "ce376d097e52f6af",
+  "hash": "fbafb6a706d847df",
   "ok": true
  },
  "q23-misclassification-rate-3": {
   "hash": "ab142e60993c11e8",
   "ok": true
  },
+ "q23-misclassification-rate-4": {
+  "hash": "a12160e1a5324142",
+  "ok": true
+ },
  "q23-naive-bayes-classifier-1": {
-  "hash": "e7127b1b4247e55c",
+  "hash": "e2da972b6510230d",
   "ok": true
  },
  "q23-precision-recall-f-measure-1": {
-  "hash": "8bda4e9dfaa7f272",
+  "hash": "95a6340ee11b5cfa",
   "ok": true
  },
  "q23-precision-recall-f-measure-2": {
@@ -100,7 +108,7 @@
   "ok": true
  },
  "q23-quadratic-discriminant-analysis-2": {
-  "hash": "8b8fbce729e504b0",
+  "hash": "461297f7334e64bc",
   "ok": true
  },
  "q23-roc-curve-and-auc-1": {
@@ -108,31 +116,31 @@
   "ok": true
  },
  "q23-roc-curve-and-auc-2": {
-  "hash": "4d5e115f39cc4789",
+  "hash": "d4c32c6af9c90938",
   "ok": true
  },
  "q23-roc-curve-and-auc-3": {
-  "hash": "00f0193fc050dfdc",
+  "hash": "34606599e236046b",
   "ok": true
  },
  "q23-sensitivity-and-specificity-1": {
-  "hash": "09967a470b57ef0b",
+  "hash": "4986b812637c7503",
   "ok": true
  },
  "q23-sensitivity-and-specificity-2": {
-  "hash": "6e6000e96db409ea",
+  "hash": "c40bfce748670cd0",
   "ok": true
  },
  "q23-sensitivity-and-specificity-3": {
-  "hash": "05e6f737220fbde7",
+  "hash": "8cc971821f333a1d",
   "ok": true
  },
  "q23-support-vector-machine-1": {
-  "hash": "b4878599eb602148",
+  "hash": "83489405a7784083",
   "ok": true
  },
  "q23-support-vector-machine-2": {
-  "hash": "2bac7812ec76f65f",
+  "hash": "4dd292a0a5296fbc",
   "ok": true
  },
  "q23-support-vector-machine-3": {

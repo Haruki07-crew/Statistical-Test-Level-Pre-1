@@ -1,10 +1,10 @@
 {
  "q17-breusch-pagan-test-1": {
-  "hash": "ec7b2f5a10fa2ebd",
+  "hash": "4936a2b8047a8557",
   "ok": true
  },
  "q17-cooks-distance-1": {
-  "hash": "9a40ab0fe4460664",
+  "hash": "5a6683d8754a711c",
   "ok": true
  },
  "q17-cooks-distance-2": {
@@ -16,11 +16,11 @@
   "ok": true
  },
  "q17-dffits-1": {
-  "hash": "87534ab52e06f5d4",
+  "hash": "41b3a92bd8ddc243",
   "ok": true
  },
  "q17-durbin-watson-statistic-1": {
-  "hash": "d03471cb4cda8fea",
+  "hash": "29cfe35dc1f66d36",
   "ok": true
  },
  "q17-durbin-watson-statistic-2": {
@@ -36,23 +36,27 @@
   "ok": true
  },
  "q17-heteroscedasticity-2": {
-  "hash": "af136ee10064881c",
+  "hash": "ec616283b55c82db",
   "ok": true
  },
  "q17-leverage-1": {
-  "hash": "00d4c79ed6b3709e",
+  "hash": "b468ba6be7e90116",
   "ok": true
  },
  "q17-leverage-2": {
-  "hash": "98cd4b24ff9bc398",
+  "hash": "bea564e8ea49a638",
   "ok": true
  },
  "q17-leverage-3": {
   "hash": "210c48c7bdb0dedc",
   "ok": true
  },
+ "q17-leverage-4": {
+  "hash": "cbebfe89e91aad99",
+  "ok": true
+ },
  "q17-normal-qq-plot-1": {
-  "hash": "a1b6d6f19879487f",
+  "hash": "86eaeb0dc774ac3a",
   "ok": true
  },
  "q17-normal-qq-plot-2": {
@@ -72,7 +76,7 @@
   "ok": true
  },
  "q17-residual-2": {
-  "hash": "d86de61abd9c7ee0",
+  "hash": "440125df60d4edae",
   "ok": true
  },
  "q17-residual-plot-1": {
@@ -88,7 +92,7 @@
   "ok": true
  },
  "q17-serial-correlation-1": {
-  "hash": "c0c7fa31a9f1221c",
+  "hash": "95871bfb85fb3a3a",
   "ok": true
  },
  "q17-serial-correlation-2": {
@@ -96,7 +100,7 @@
   "ok": true
  },
  "q17-standardized-residual-1": {
-  "hash": "55d36bb7e737729e",
+  "hash": "117b52915efb34bb",
   "ok": true
  },
  "q17-standardized-residual-2": {
@@ -104,7 +108,7 @@
   "ok": true
  },
  "q17-studentized-residual-1": {
-  "hash": "edcdc2af316c3dd3",
+  "hash": "bfddf41e0b7a6782",
   "ok": true
  },
  "q17-studentized-residual-2": {

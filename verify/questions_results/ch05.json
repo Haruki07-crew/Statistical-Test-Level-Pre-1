@@ -59,6 +59,10 @@
   "hash": "ad5b42acb88c8b3b",
   "ok": true
  },
+ "q05-hypergeometric-distribution-4": {
+  "hash": "8bca440ab7370326",
+  "ok": true
+ },
  "q05-multinomial-distribution-1": {
   "hash": "dbca06d00dfc3fd7",
   "ok": true
@@ -85,6 +89,10 @@
  },
  "q05-poisson-distribution-3": {
   "hash": "f21eef574396e085",
+  "ok": true
+ },
+ "q05-poisson-distribution-4": {
+  "hash": "fe2da5c9320c031c",
   "ok": true
  }
 }

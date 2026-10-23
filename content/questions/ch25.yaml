@@ -6,7 +6,7 @@ questions:
     type: numeric
     question: |
       標準化した3変数に1因子モデル $x_j=\lambda_jf+\varepsilon_j$（直交因子の仮定）を当てはめ、因子負荷量 $\lambda=(0.9,\ 0.8,\ 0.6)$ を得た。
-      モデルが再現する $x_1$ と $x_3$ の相関係数を小数第2位まで求めよ。
+      モデルが再現する $x_1$ と $x_3$ の相関係数を小数第2位まで（四捨五入）求めよ。
     answer: 0.54
     tolerance: 0.005
     hint: |
@@ -21,7 +21,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      2因子の直交因子モデルで、変数 $x_1$ の因子負荷量が $(0.5,\ 0.4)$、独自分散が $\psi_1=0.3$ である。$V[x_1]$ を小数第2位まで求めよ。
+      2因子の直交因子モデルで、変数 $x_1$ の因子負荷量が $(0.5,\ 0.4)$、独自分散が $\psi_1=0.3$ である。$V[x_1]$ を小数第2位まで（四捨五入）求めよ。
     answer: 0.71
     tolerance: 0.005
     hint: |
@@ -35,7 +35,7 @@ questions:
     level: 応用
     type: numeric
     question: |
-      標準化した3変数の相関係数が $r_{12}=0.56,\ r_{13}=0.48,\ r_{23}=0.42$ で、1因子モデル（負荷量はすべて正）がちょうど当てはまっている。$x_1$ の因子負荷量 $\lambda_1$ を小数第2位まで求めよ。
+      標準化した3変数の相関係数が $r_{12}=0.56,\ r_{13}=0.48,\ r_{23}=0.42$ で、1因子モデル（負荷量はすべて正）がちょうど当てはまっている。$x_1$ の因子負荷量 $\lambda_1$ を小数第2位まで（四捨五入）求めよ。
     answer: 0.8
     tolerance: 0.005
     hint: |
@@ -63,7 +63,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      標準化した変数 $x_j$ の共通性が $h_j^2=0.6$ である。独自分散 $\psi_j=0.4$ のうち、特殊因子の分散が $0.15$、測定誤差の分散が $0.25$ と分けられるとき、$x_j$ の分散のうち測定誤差以外が占める割合（信頼性）を小数第2位まで求めよ。
+      標準化した変数 $x_j$ の共通性が $h_j^2=0.6$ である。独自分散 $\psi_j=0.4$ のうち、特殊因子の分散が $0.15$、測定誤差の分散が $0.25$ と分けられるとき、$x_j$ の分散のうち測定誤差以外が占める割合（信頼性）を小数第2位まで（四捨五入）求めよ。
     answer: 0.75
     tolerance: 0.005
     hint: |
@@ -77,7 +77,7 @@ questions:
     level: 基本
     type: numeric
     question: |
-      直交因子モデルで、変数 $x_j$（分散 $4$、標準化していない）の第1因子に対する負荷量（共分散）が $\lambda_{j1}=1.2$ である。$x_j$ と第1因子の相関係数を小数第2位まで求めよ。
+      直交因子モデルで、変数 $x_j$（分散 $4$、標準化していない）の第1因子に対する負荷量（共分散）が $\lambda_{j1}=1.2$ である。$x_j$ と第1因子の相関係数を小数第2位まで（四捨五入）求めよ。
     answer: 0.6
     tolerance: 0.005
     hint: |
@@ -111,7 +111,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      標準化した変数に2因子の直交因子モデルを当てはめ、$x_1$ の負荷量 $(0.8,\ 0.3)$、$x_2$ の負荷量 $(0.6,\ 0.5)$ を得た。モデルが再現する $x_1$ と $x_2$ の相関係数を小数第2位まで求めよ。
+      標準化した変数に2因子の直交因子モデルを当てはめ、$x_1$ の負荷量 $(0.8,\ 0.3)$、$x_2$ の負荷量 $(0.6,\ 0.5)$ を得た。モデルが再現する $x_1$ と $x_2$ の相関係数を小数第2位まで（四捨五入）求めよ。
     answer: 0.63
     tolerance: 0.005
     hint: |
@@ -124,7 +124,7 @@ questions:
     level: 基本
     type: numeric
     question: |
-      標準化した変数の2因子（直交）の負荷量が $(0.6,\ 0.5)$ である。独自分散 $\psi$ を小数第2位まで求めよ。
+      標準化した変数の2因子（直交）の負荷量が $(0.6,\ 0.5)$ である。独自分散 $\psi$ を小数第2位まで（四捨五入）求めよ。
     answer: 0.39
     tolerance: 0.005
     hint: |
@@ -137,7 +137,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      斜交因子モデルで、標準化した変数 $x_1$ の因子パターンが $(0.7,\ 0.1)$、因子間相関が $0.4$ である。$x_1$ の共通性を小数第3位まで求めよ。
+      斜交因子モデルで、標準化した変数 $x_1$ の因子パターンが $(0.7,\ 0.1)$、因子間相関が $0.4$ である。$x_1$ の共通性を小数第3位まで（四捨五入）求めよ。
     answer: 0.556
     tolerance: 0.001
     hint: |
@@ -178,7 +178,7 @@ questions:
     type: numeric
     question: |
       ある変数の2因子の負荷量が $(0.8,\ 0.4)$ である。
-      $T=\begin{pmatrix}\cos\theta&-\sin\theta\\\sin\theta&\cos\theta\end{pmatrix}$、$\theta=30^\circ$ で $\Lambda^*=\Lambda T$ と回転したとき、回転後の第1因子の負荷量を小数第3位まで求めよ。
+      $T=\begin{pmatrix}\cos\theta&-\sin\theta\\\sin\theta&\cos\theta\end{pmatrix}$、$\theta=30^\circ$ で $\Lambda^*=\Lambda T$ と回転したとき、回転後の第1因子の負荷量を小数第3位まで（四捨五入）求めよ。
     answer: 0.893
     tolerance: 0.001
     hint: |
@@ -209,7 +209,7 @@ questions:
       $$\Lambda=\begin{pmatrix}0.8&0\\0.7&0\\0&0.6\\0&0.5\end{pmatrix}$$
       について、（正規化しない）バリマックス基準
       $V=\sum_k\Bigl\{\frac1p\sum_j\lambda_{jk}^4-\bigl(\frac1p\sum_j\lambda_{jk}^2\bigr)^2\Bigr\}$
-      の値を小数第3位まで求めよ。
+      の値を小数第3位まで（四捨五入）求めよ。
     answer: 0.107
     tolerance: 0.001
     hint: |
@@ -238,7 +238,7 @@ questions:
     level: 基本
     type: numeric
     question: |
-      プロマックス回転で、べき指数 $k=3$ として目標行列を作る。バリマックス解の負荷量 $a=-0.6$ に対応する目標の値 $p=a|a|^{k-1}$ を小数第3位まで求めよ。
+      プロマックス回転で、べき指数 $k=3$ として目標行列を作る。バリマックス解の負荷量 $a=-0.6$ に対応する目標の値 $p=a|a|^{k-1}$ を小数第3位まで（四捨五入）求めよ。
     answer: -0.216
     tolerance: 0.001
     hint: |
@@ -299,7 +299,7 @@ questions:
     type: numeric
     question: |
       標準化した2変数の1因子モデルで、負荷量 $\Lambda=(0.8,\ 0.6)^\top$、独自分散 $\Psi=\mathrm{diag}(0.36,\ 0.64)$ である。
-      観測値 $\boldsymbol{x}=(1,\ 0.5)^\top$ の因子得点を回帰法 $\hat f=(1+\Lambda^\top\Psi^{-1}\Lambda)^{-1}\Lambda^\top\Psi^{-1}\boldsymbol{x}$ で求め、小数第3位まで答えよ。
+      観測値 $\boldsymbol{x}=(1,\ 0.5)^\top$ の因子得点を回帰法 $\hat f=(1+\Lambda^\top\Psi^{-1}\Lambda)^{-1}\Lambda^\top\Psi^{-1}\boldsymbol{x}$ で求め、小数第3位まで（四捨五入）答えよ。
     answer: 0.806
     tolerance: 0.001
     hint: |
@@ -329,7 +329,7 @@ questions:
     type: numeric
     question: |
       $n=200$、$p=6$ 変数に最尤法で $m=2$ 因子モデルを当てはめ、乖離度の最小値 $F(\hat\Lambda,\hat\Psi)=0.05$ を得た。
-      バートレットの補正をした統計量 $T=\bigl(n-1-\frac{2p+5}{6}-\frac{2m}{3}\bigr)F$ を小数第2位まで求めよ。
+      バートレットの補正をした統計量 $T=\bigl(n-1-\frac{2p+5}{6}-\frac{2m}{3}\bigr)F$ を小数第2位まで（四捨五入）求めよ。
     answer: 9.74
     tolerance: 0.005
     hint: |
@@ -418,7 +418,7 @@ questions:
     level: 基本
     type: numeric
     question: |
-      精度行列の成分が $\omega_{11}=2,\ \omega_{22}=2,\ \omega_{12}=-1$ である。$X_1$ と $X_2$ の偏相関係数（他の変数をすべて与えたもの）を小数第2位まで求めよ。
+      精度行列の成分が $\omega_{11}=2,\ \omega_{22}=2,\ \omega_{12}=-1$ である。$X_1$ と $X_2$ の偏相関係数（他の変数をすべて与えたもの）を小数第2位まで（四捨五入）求めよ。
     answer: 0.5
     tolerance: 0.005
     hint: |
@@ -434,7 +434,7 @@ questions:
     question: |
       3変数の相関行列が
       $$\Sigma=\begin{pmatrix}1&0.5&0.25\\0.5&1&0.5\\0.25&0.5&1\end{pmatrix}$$
-      である。$X_3$ を与えたときの $X_1$ と $X_2$ の偏相関係数を小数第3位まで求めよ。
+      である。$X_3$ を与えたときの $X_1$ と $X_2$ の偏相関係数を小数第3位まで（四捨五入）求めよ。
     answer: 0.447
     tolerance: 0.001
     hint: |
@@ -448,7 +448,7 @@ questions:
     level: 応用
     type: numeric
     question: |
-      $\boldsymbol{X}\sim N_3(\boldsymbol{0},\Sigma)$、$\Sigma=\begin{pmatrix}1&0.5&0.25\\0.5&1&0.5\\0.25&0.5&1\end{pmatrix}$ のとき、$X_1,X_3$ を与えたときの $X_2$ の条件付き分散 $V[X_2\mid X_1,X_3]$ を小数第2位まで求めよ。
+      $\boldsymbol{X}\sim N_3(\boldsymbol{0},\Sigma)$、$\Sigma=\begin{pmatrix}1&0.5&0.25\\0.5&1&0.5\\0.25&0.5&1\end{pmatrix}$ のとき、$X_1,X_3$ を与えたときの $X_2$ の条件付き分散 $V[X_2\mid X_1,X_3]$ を小数第2位まで（四捨五入）求めよ。
     answer: 0.6
     tolerance: 0.005
     hint: |
@@ -463,7 +463,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      $n=100$ の4変数データで、2本の辺を取り除いた共分散選択モデルを当てはめたところ、$|\hat\Sigma|/|S|=1.04$ であった。逸脱度 $n\log(|\hat\Sigma|/|S|)$ を小数第2位まで求めよ。
+      $n=100$ の4変数データで、2本の辺を取り除いた共分散選択モデルを当てはめたところ、$|\hat\Sigma|/|S|=1.04$ であった。逸脱度 $n\log(|\hat\Sigma|/|S|)$ を小数第2位まで（四捨五入）求めよ。
     answer: 3.92
     tolerance: 0.005
     hint: |
@@ -477,7 +477,7 @@ questions:
     level: 応用
     type: numeric
     question: |
-      3変数の標本相関行列が $s_{12}=0.6,\ s_{13}=0.4,\ s_{23}=0.5$（対角は1）である。$\omega_{13}=0$（$X_1\perp X_3\mid X_2$）とする共分散選択モデルの最尤推定値 $\hat\sigma_{13}$ を小数第2位まで求めよ。
+      3変数の標本相関行列が $s_{12}=0.6,\ s_{13}=0.4,\ s_{23}=0.5$（対角は1）である。$\omega_{13}=0$（$X_1\perp X_3\mid X_2$）とする共分散選択モデルの最尤推定値 $\hat\sigma_{13}$ を小数第2位まで（四捨五入）求めよ。
     answer: 0.3
     tolerance: 0.005
     hint: |
@@ -528,7 +528,7 @@ questions:
     question: |
       DAG $X_1\to X_2\to X_3$ の線形構造方程式モデル
       $X_1=e_1,\ X_2=0.5X_1+e_2,\ X_3=0.4X_2+e_3$（$e_1,e_2,e_3$ は独立、分散はいずれも1）
-      で、$X_1$ と $X_3$ の相関係数を小数第3位まで求めよ。
+      で、$X_1$ と $X_3$ の相関係数を小数第3位まで（四捨五入）求めよ。
     answer: 0.183
     tolerance: 0.001
     hint: |
@@ -552,3 +552,30 @@ questions:
       最適性の条件は $\Omega^{-1}-S-\lambda\Gamma=O$（$\Gamma$ は $|\omega_{jk}|$ の劣勾配で、$\omega_{jk}=0$ なら $|\gamma_{jk}|\le1$）です。
       対角の $\Omega$ では $\Omega^{-1}$ の非対角が0なので、$-s_{jk}=\lambda\gamma_{jk}$、つまり $|\gamma_{jk}|=|s_{jk}|/\lambda\le1$ が必要で、$\lambda\ge\max|s_{jk}|$ ならこれが満たされます。
       $\lambda$ を大きくするほどグラフは疎になり、ここで辺がすべて消えます。
+
+  - id: q25-precision-matrix-4
+    term: precision-matrix
+    level: 応用
+    type: derivation
+    question: |
+      $\boldsymbol X=(X_1,\dots,X_p)^\top\sim N_p(\boldsymbol 0,\Sigma)$、精度行列を $\Omega=\Sigma^{-1}=(\omega_{jk})$ とする。
+      同時密度の指数部分を $x_1$ について平方完成することで、$X_2=x_2,\dots,X_p=x_p$ を与えたときの $X_1$ の条件付き分布を $\Omega$ の成分で表せ。
+    steps:
+      - |
+        同時密度は $f(\boldsymbol x)\propto\exp\big(-\frac12\boldsymbol x^\top\Omega\boldsymbol x\big)$。$x_1$ を含む項を取り出すと $\boldsymbol x^\top\Omega\boldsymbol x=\omega_{11}x_1^2+2x_1\sum_{j\ge2}\omega_{1j}x_j+(x_1\text{ を含まない項})$。
+      - |
+        条件付き密度は同時密度を $x_1$ の関数とみたものに比例：$f(x_1\mid x_2,\dots,x_p)\propto\exp\Big\{-\dfrac{\omega_{11}}{2}\Big(x_1^2+2x_1\sum_{j\ge2}\dfrac{\omega_{1j}}{\omega_{11}}x_j\Big)\Big\}$。
+      - |
+        平方完成：$\propto\exp\Big\{-\dfrac{\omega_{11}}{2}\Big(x_1+\sum_{j\ge2}\dfrac{\omega_{1j}}{\omega_{11}}x_j\Big)^2\Big\}$。
+      - |
+        これは正規分布の密度の形なので $X_1\mid x_2,\dots,x_p\sim N\Big(-\sum_{j\ge2}\dfrac{\omega_{1j}}{\omega_{11}}x_j,\ \dfrac{1}{\omega_{11}}\Big)$。
+    answer: '$X_1\mid x_2,\dots,x_p\sim N\Big(-\sum_{j\ge2}\dfrac{\omega_{1j}}{\omega_{11}}x_j,\ \dfrac1{\omega_{11}}\Big)$'
+    hint: |
+      条件付き密度は、同時密度を「$x_1$ だけの関数」とみたものに比例する。$x_1$ の2次式として平方完成する。
+    explanation: |
+      指数部分を $x_1$ について平方完成すると
+      $$E[X_1\mid\text{他}]=-\sum_{j\ge2}\frac{\omega_{1j}}{\omega_{11}}x_j,\qquad V[X_1\mid\text{他}]=\frac{1}{\omega_{11}}$$
+      が得られます。$\omega_{1j}=0$ なら条件付き期待値に $x_j$ が入らず、他の変数を与えたもとで $X_1$ と $X_j$ は条件付き独立です。
+      これがガウス型グラフィカルモデルで「精度行列の0成分＝辺がない」と読む理由です。
+      回帰の見方では $-\omega_{1j}/\omega_{11}$ が他の変数への偏回帰係数、$1/\omega_{11}$ が残差分散にあたります。
+      よくある間違いは、符号のマイナスを落とすこと、条件付き分散を $\sigma_{11}$（$\Sigma$ の成分）や $\omega_{11}$ とすることです。

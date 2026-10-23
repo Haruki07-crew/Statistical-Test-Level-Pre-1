@@ -168,4 +168,43 @@ q.num("q19-spline-regression-1", np.linalg.matrix_rank(B))
 _p, _H = 5, 10
 q.num("q19-neural-network-model-1", _p * _H + _H + _H + 1)
 
+# --- 導出問題（追加） ---
+def _deriv19():
+    import numpy as _N
+    from scipy import optimize as _op
+    rng = _N.random.default_rng(19)
+    X = rng.normal(size=(25, 3)); y = rng.normal(size=25); lam = 0.7
+    bR = _N.linalg.solve(X.T @ X + lam * _N.eye(3), X.T @ y)
+    f = lambda b: ((y - X @ b) ** 2).sum() + lam * (b ** 2).sum()
+    res = _op.minimize(f, _N.zeros(3), tol=1e-12)
+    ok = _N.allclose(res.x, bR, atol=1e-6)
+    # 列が線形従属でも解ける
+    Xs = _N.column_stack([X[:, 0], X[:, 0], X[:, 1]])
+    ok &= _N.linalg.matrix_rank(Xs.T @ Xs) == 2 and _N.all(_N.linalg.eigvalsh(Xs.T @ Xs + lam * _N.eye(3)) > 0)
+    Q, _ = _N.linalg.qr(rng.normal(size=(25, 3)))      # Q'Q=I
+    b = Q.T @ y
+    ok &= _N.allclose(_N.linalg.solve(Q.T @ Q + lam * _N.eye(3), Q.T @ y), b / (1 + lam))
+    beta = _N.array([1.0, -2.0, 0.5])
+    Ys = Q @ beta + rng.normal(0, 1, size=(100000, 25))
+    ok &= _N.allclose((Ys @ Q / (1 + lam)).mean(0), beta / (1 + lam), atol=0.01)
+    q.check("q19-ridge-regression-3", bool(ok), "数値最小化と (X'X+λI)^-1X'y が一致、直交計画で b/(1+λ)、E=β/(1+λ)")
+    # Lasso：直交計画で残差平方和の分解と軟しきい値
+    bb = _N.array([2.5, -0.6, 1.1, -1.9, 0.3]); lam2 = 0.8
+    Q5, _ = _N.linalg.qr(rng.normal(size=(30, 5))); y5 = Q5 @ bb + rng.normal(size=30) * 0.0
+    y5 = y5 + (_N.eye(30) - Q5 @ Q5.T) @ rng.normal(size=30)   # 直交補空間の成分を加える（b は変わらない）
+    b5 = Q5.T @ y5
+    ok2 = _N.allclose(b5, bb)
+    beta_t = rng.normal(size=5)
+    lhs = 0.5 * ((y5 - Q5 @ beta_t) ** 2).sum()
+    rhs = 0.5 * ((y5 - Q5 @ b5) ** 2).sum() + 0.5 * ((beta_t - b5) ** 2).sum()
+    ok2 &= abs(lhs - rhs) < 1e-10
+    soft = _N.sign(b5) * _N.maximum(_N.abs(b5) - lam2, 0)
+    grid = _N.linspace(-4, 4, 800001)
+    for j in range(5):
+        obj = 0.5 * (grid - b5[j]) ** 2 + lam2 * _N.abs(grid)
+        ok2 &= abs(grid[obj.argmin()] - soft[j]) < 2e-5
+    ok2 &= soft[1] == 0 and soft[4] == 0
+    q.check("q19-lasso-3", bool(ok2), "残差平方和の分解、グリッド最小化と軟しきい値 sign(b)(|b|-λ)+ が一致")
+_deriv19()
+
 q.done()

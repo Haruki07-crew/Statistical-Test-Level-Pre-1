@@ -563,3 +563,54 @@ questions:
       $$E[Y^4]=\int_{-1/2}^{1/2}y^4\,dy=\frac{2}{5}\left(\frac12\right)^5=\frac1{80}$$
       関係式 $\mu_4=\mu'_4-4\mu\mu'_3+6\mu^2\mu'_2-3\mu^4=\tfrac15-\tfrac12+\tfrac12-\tfrac3{16}=\tfrac1{80}$ でも同じです。
       $1/5$ は原点モーメント $E[X^4]$、$1/144$ は $\sigma^4=(1/12)^2$、$1/16$ は $|Y|$ の最大値の4乗です。尖度は $\mu_4/\sigma^4=144/80=1.8$ になります。
+
+  - id: q03-conditional-variance-4
+    term: conditional-variance
+    level: 応用
+    type: derivation
+    question: |
+      1日の事故件数 $N$ が $Po(\lambda)$ に従い、各事故の損害額 $X_1,X_2,\dots$ は $N$ と独立に、平均 $\mu$・分散 $\sigma^2$ の同じ分布に独立に従う。
+      1日の損害の合計 $S=\sum_{i=1}^{N}X_i$（$N=0$ なら $S=0$）の期待値と分散を、全期待値の公式と全分散の公式で求めよ。
+    steps:
+      - |
+        $N=n$ を固定すると $S$ は独立な $n$ 個の和なので、$E[S\mid N]=N\mu$、$V[S\mid N]=N\sigma^2$。
+      - |
+        全期待値の公式：$E[S]=E\big[E[S\mid N]\big]=E[N]\mu=\lambda\mu$。
+      - |
+        全分散の公式：$V[S]=E\big[V[S\mid N]\big]+V\big[E[S\mid N]\big]=E[N]\sigma^2+\mu^2V[N]$。
+      - |
+        ポアソン分布は $E[N]=V[N]=\lambda$ なので $V[S]=\lambda\sigma^2+\lambda\mu^2=\lambda(\sigma^2+\mu^2)=\lambda E[X_1^2]$。
+    answer: '$E[S]=\lambda\mu$、$V[S]=\lambda(\sigma^2+\mu^2)=\lambda E[X_1^2]$'
+    hint: |
+      まず $N$ を与えたときの条件付き期待値と条件付き分散を求め、それを $N$ について平均する。
+    explanation: |
+      $E[S\mid N]=N\mu$、$V[S\mid N]=N\sigma^2$ から
+      $$E[S]=\lambda\mu,\qquad V[S]=E[N]\sigma^2+\mu^2V[N]=\lambda(\sigma^2+\mu^2)$$
+      です（複合ポアソン分布）。分散には「1件ごとのばらつき」$\lambda\sigma^2$ と「件数のばらつき」$\lambda\mu^2$ の両方が入ります。
+      よくある間違いは、$V[E[S\mid N]]$ の項を忘れて $V[S]=\lambda\sigma^2$ としてしまうこと、
+      また $V[N\mu]=\mu V[N]$ と係数を2乗し忘れることです。
+
+  - id: q03-covariance-and-correlation-4
+    term: covariance-and-correlation
+    level: 応用
+    type: derivation
+    question: |
+      $V[X]=\sigma_X^2>0$、$V[Y]=\sigma_Y^2>0$、$\mathrm{Cov}[X,Y]=\sigma_{XY}$ とする。
+      実数 $t$ についての関数 $g(t)=V[Y-tX]$ を使って、相関係数 $\rho=\sigma_{XY}/(\sigma_X\sigma_Y)$ が $-1\le\rho\le1$ を満たすことを示せ。
+    steps:
+      - |
+        分散の性質で展開：$g(t)=V[Y]-2t\,\mathrm{Cov}[X,Y]+t^2V[X]=\sigma_X^2t^2-2\sigma_{XY}t+\sigma_Y^2$。
+      - |
+        分散なのですべての $t$ で $g(t)\ge0$。$t$ の2次式がつねに0以上なので、判別式が0以下：$\dfrac{D}{4}=\sigma_{XY}^2-\sigma_X^2\sigma_Y^2\le0$。
+      - |
+        両辺を $\sigma_X^2\sigma_Y^2$ で割ると $\rho^2\le1$、つまり $-1\le\rho\le1$。
+      - |
+        （補足）$g$ の最小値は $t=\sigma_{XY}/\sigma_X^2$ で $g=\sigma_Y^2(1-\rho^2)$。$|\rho|=1$ はこれが0、つまり $Y-tX$ が定数（$Y$ が $X$ の1次式）のときに限る。
+    answer: '$\sigma_{XY}^2\le\sigma_X^2\sigma_Y^2$ より $-1\le\rho\le1$（等号は $Y$ が $X$ の1次式のとき）'
+    hint: |
+      $g(t)$ は $t$ の2次式で、つねに0以上になる。2次式がつねに0以上となる条件を考える。
+    explanation: |
+      $g(t)=\sigma_X^2t^2-2\sigma_{XY}t+\sigma_Y^2\ge0$ がすべての $t$ で成り立つので、判別式から
+      $$\sigma_{XY}^2\le\sigma_X^2\sigma_Y^2\iff\rho^2\le1$$
+      が出ます（コーシー・シュワルツの不等式の確率版）。最小値 $\sigma_Y^2(1-\rho^2)$ は、$Y$ を $X$ の1次式で予測したときの残差分散で、回帰の決定係数が $\rho^2$ になる理由にもつながります。
+      よくある間違いは、$V[Y-tX]$ を $V[Y]-t^2V[X]$ と展開する（共分散の項を落とす、符号を誤る）ことです。

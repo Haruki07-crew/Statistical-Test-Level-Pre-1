@@ -124,4 +124,31 @@ tb = stats.kendalltau(*zip(*pts)).statistic
 q.check("q13-concordant-discordant-pairs-1", abs(gam - 1 / 3) < 1e-12 and abs(tb - 0.25) < 1e-12
         and abs((C - D) / 10 - 0.2) < 1e-12 and abs(gam - 3 / 5) > 0.1, "γ=1/3、τ_b=1/4・τ_a=1/5 は誤答")
 
+# --- 導出問題（追加） ---
+def _deriv13():
+    import itertools
+    import numpy as _N
+    import sympy as _S
+    from scipy import stats as _st
+    n, r = _S.symbols("n r", positive=True, integer=True)
+    E = _S.summation(r / 2, (r, 1, n)); V = _S.summation(r ** 2 / 4, (r, 1, n))
+    ok = _S.simplify(E - n * (n + 1) / 4) == 0 and _S.simplify(V - n * (n + 1) * (2 * n + 1) / 24) == 0
+    # n=8 で全 2^8 通りの符号を列挙した厳密分布と一致
+    nn = 8
+    vals = _N.array([sum(k + 1 for k in range(nn) if s[k]) for s in itertools.product([0, 1], repeat=nn)], float)
+    ok &= abs(vals.mean() - nn * (nn + 1) / 4) < 1e-12 and abs(vals.var() - nn * (nn + 1) * (2 * nn + 1) / 24) < 1e-12
+    q.check("q13-wilcoxon-signed-rank-test-4", bool(ok), "sympy: Σr/2、Σr²/4、n=8 の全列挙で E=18, V=51")
+    k = _S.symbols("k", positive=True, integer=True)
+    SS = _S.summation(k ** 2, (k, 1, n)) - n * ((n + 1) / 2) ** 2
+    ok2 = _S.simplify(SS - n * (n ** 2 - 1) / 12) == 0
+    rng = _N.random.default_rng(13)
+    for nn in (5, 9, 20):
+        for _ in range(20):
+            R = rng.permutation(nn) + 1; S = rng.permutation(nn) + 1
+            rs = 1 - 6 * ((R - S) ** 2).sum() / (nn * (nn ** 2 - 1))
+            ok2 &= abs(rs - _st.spearmanr(R, S)[0]) < 1e-12
+    ok2 &= abs(1 - 6 * ((_N.arange(1, 7) - _N.arange(6, 0, -1)) ** 2).sum() / (6 * 35) + 1) < 1e-12
+    q.check("q13-spearman-rank-correlation-3", bool(ok2), "sympy: 平方和 n(n²-1)/12、乱数の順位で scipy.spearmanr と一致、逆順で -1")
+_deriv13()
+
 q.done()

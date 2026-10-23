@@ -1,6 +1,6 @@
 {
  "q09-ci-mean-known-variance-1": {
-  "hash": "26e0c94e827b503f",
+  "hash": "ae188cf6e7610d3c",
   "ok": true
  },
  "q09-ci-mean-known-variance-2": {
@@ -12,15 +12,15 @@
   "ok": true
  },
  "q09-ci-mean-unknown-variance-2": {
-  "hash": "bf1afd045bf091f3",
+  "hash": "5f466512be386fa1",
   "ok": true
  },
  "q09-ci-paired-difference-1": {
-  "hash": "ed2daff43758ab20",
+  "hash": "1bb77e897556d028",
   "ok": true
  },
  "q09-ci-proportion-1": {
-  "hash": "de1c14eee1ac55e6",
+  "hash": "1fc693607a061f12",
   "ok": true
  },
  "q09-ci-proportion-2": {
@@ -28,15 +28,15 @@
   "ok": true
  },
  "q09-ci-two-sample-mean-difference-1": {
-  "hash": "a1c8616dab3860be",
+  "hash": "ceae787205618fcd",
   "ok": true
  },
  "q09-ci-two-sample-mean-difference-2": {
-  "hash": "4db16906fa412e32",
+  "hash": "da43b6ab5b921f2c",
   "ok": true
  },
  "q09-ci-two-sample-proportion-1": {
-  "hash": "f84ab3810f1289ed",
+  "hash": "f4ac7aeed34c1f50",
   "ok": true
  },
  "q09-ci-variance-1": {
@@ -44,11 +44,11 @@
   "ok": true
  },
  "q09-ci-variance-2": {
-  "hash": "6217af5243a620dd",
+  "hash": "e915d3acf7c1ac74",
   "ok": true
  },
  "q09-ci-variance-3": {
-  "hash": "ada5263301720fb5",
+  "hash": "d216b3912f37baf9",
   "ok": true
  },
  "q09-ci-variance-ratio-1": {
@@ -56,11 +56,11 @@
   "ok": true
  },
  "q09-ci-variance-ratio-2": {
-  "hash": "ef226f51c7b1a138",
+  "hash": "fc3b613a07d79a5f",
   "ok": true
  },
  "q09-clopper-pearson-interval-1": {
-  "hash": "71a1a747e227b1c1",
+  "hash": "7980263f979672f4",
   "ok": true
  },
  "q09-confidence-coefficient-1": {
@@ -68,7 +68,7 @@
   "ok": true
  },
  "q09-confidence-coefficient-2": {
-  "hash": "94104cc26f0079bb",
+  "hash": "754bf8ca662adbfb",
   "ok": true
  },
  "q09-confidence-interval-1": {
@@ -76,7 +76,7 @@
   "ok": true
  },
  "q09-confidence-interval-2": {
-  "hash": "569bf984c56300ef",
+  "hash": "eb7f9fce76ccba13",
   "ok": true
  },
  "q09-confidence-interval-test-duality-1": {
@@ -84,7 +84,7 @@
   "ok": true
  },
  "q09-likelihood-based-confidence-interval-1": {
-  "hash": "661ef93e69d229d0",
+  "hash": "e43e956fccc023dd",
   "ok": true
  },
  "q09-one-sided-confidence-limit-1": {
@@ -100,7 +100,11 @@
   "ok": true
  },
  "q09-pivotal-quantity-2": {
-  "hash": "a72a2f4d16709ec8",
+  "hash": "03b07fbf61488a37",
+  "ok": true
+ },
+ "q09-pivotal-quantity-3": {
+  "hash": "af34e09fe6b206eb",
   "ok": true
  },
  "q09-required-sample-size-1": {
@@ -116,15 +120,15 @@
   "ok": true
  },
  "q09-wald-confidence-interval-1": {
-  "hash": "0d1dfa427d2d62e5",
+  "hash": "61c3a05698dba5e3",
   "ok": true
  },
  "q09-wald-confidence-interval-2": {
-  "hash": "81f74967b284a50e",
+  "hash": "2cfa7599c98e213e",
   "ok": true
  },
  "q09-wilson-interval-1": {
-  "hash": "e9783408cc6e2b66",
+  "hash": "9a909f56743bf679",
   "ok": true
  },
  "q09-wilson-interval-2": {

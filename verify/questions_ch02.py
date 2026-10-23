@@ -173,4 +173,23 @@ _csol = _sp.solve(_sp.integrate(_cc * _x * (2 - _x), (_x, 0, 2)) - 1, _cc)[0]
 q.check("q02-probability-mass-and-density-function-3", _csol == _sp.Rational(3, 4), "c = 3/4")
 q.num("q02-probability-mass-and-density-function-3", float(_sp.integrate(_csol * _x * (2 - _x), (_x, 0, _sp.Rational(1, 2)))))
 
+# --- 導出問題（追加） ---
+def _deriv02():
+    import sympy as _S
+    p_, s_ = _S.symbols("p s", positive=True)
+    qq = 1 - p_
+    ok = True
+    for n in (3, 6, 10):
+        G = sum(_S.binomial(n, k) * (p_ * s_) ** k * qq ** (n - k) for k in range(n + 1))
+        ok &= _S.expand(G - (qq + p_ * s_) ** n) == 0
+    n_ = _S.symbols("n", positive=True, integer=True)
+    G = (qq + p_ * s_) ** n_
+    g1 = _S.simplify(_S.diff(G, s_).subs(s_, 1))
+    g2 = _S.simplify(_S.diff(G, s_, 2).subs(s_, 1))
+    ok &= _S.simplify(g1 - n_ * p_) == 0 and _S.simplify(g2 - n_ * (n_ - 1) * p_ ** 2) == 0
+    ok &= _S.simplify(g2 + g1 - g1 ** 2 - n_ * p_ * (1 - p_)) == 0
+    q.check("q02-probability-generating-function-4", bool(ok),
+            "sympy: Σ C(n,k)(ps)^k q^(n-k)=(q+ps)^n、G'(1)=np、G''(1)=n(n-1)p²、V=npq")
+_deriv02()
+
 q.done()

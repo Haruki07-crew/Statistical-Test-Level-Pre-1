@@ -181,4 +181,32 @@ q.num("q23-naive-bayes-classifier-1", s / (s + h))
 # 数表（z を小数第2位に丸める）で引いた値も許容範囲に入ること
 q.check("q23-misclassification-rate-2", abs(round(stats.norm.cdf(-1.12), 3) - 0.132) <= 0.0015, "表の Φ(-1.12) を使った 0.131 も正解扱い")
 q.check("q23-roc-curve-and-auc-3", abs(round(stats.norm.cdf(1.06), 3) - 0.856) <= 0.0015, "表の Φ(1.06) を使った 0.855 も正解扱い")
+
+# --- 導出問題（追加） ---
+def _deriv23():
+    import numpy as _N
+    from scipy import optimize as _op
+    from scipy import stats as _st
+    rng = _N.random.default_rng(23)
+    B = rng.normal(size=(3, 3)); S = B @ B.T + 0.3 * _N.eye(3); d = rng.normal(size=3)
+    lam = lambda a: (a @ d) ** 2 / (a @ S @ a)
+    a0 = _N.linalg.solve(S, d); D2 = d @ a0
+    best = max((_op.minimize(lambda a: -lam(a), rng.normal(size=3)) for _ in range(5)), key=lambda r: -r.fun)
+    ok = abs(-best.fun - D2) < 1e-8
+    u = best.x / _N.linalg.norm(best.x); v = a0 / _N.linalg.norm(a0)
+    ok &= min(_N.linalg.norm(u - v), _N.linalg.norm(u + v)) < 1e-4
+    ok &= all(lam(rng.normal(size=3)) <= D2 + 1e-12 for _ in range(1000))
+    q.check("q23-fisher-linear-discriminant-function-4", bool(ok), "数値最大化：方向 S^-1 d、最大値 d'S^-1 d")
+    mu1 = _N.array([1.0, 0.0, 2.0]); mu2 = _N.array([0.0, 0.5, 1.0])
+    a = _N.linalg.solve(S, mu1 - mu2); Delta = _N.sqrt((mu1 - mu2) @ a)
+    m = (mu1 + mu2) / 2
+    EY = a @ (mu1 - m); VY = a @ S @ a
+    ok2 = abs(EY - Delta ** 2 / 2) < 1e-12 and abs(VY - Delta ** 2) < 1e-12
+    X = rng.multivariate_normal(mu1, S, size=400000)
+    err = ((X - m) @ a <= 0).mean()
+    ok2 &= abs(err - _st.norm.cdf(-Delta / 2)) < 0.003
+    ok2 &= abs(_st.norm.cdf(-2 / 2) - 0.159) < 0.001          # Δ=2 の例
+    q.check("q23-misclassification-rate-4", bool(ok2), f"E[Y]=Δ²/2、V[Y]=Δ²、シミュレーションで Φ(-Δ/2)={_st.norm.cdf(-Delta / 2):.4f}（実測 {err:.4f}）")
+_deriv23()
+
 q.done()

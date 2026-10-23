@@ -174,4 +174,23 @@ Uu, dd, Vv = np.linalg.svd(X)
 X2 = Uu[:, :2] @ np.diag(dd[:2]) @ Vv[:2]
 q.num("q22-low-rank-approximation-1", ((X - X2) ** 2).sum() / (X ** 2).sum())
 
+# --- 導出問題（追加） ---
+def _deriv22():
+    import numpy as _N
+    rng = _N.random.default_rng(220)
+    B = rng.normal(size=(4, 4)); S = B @ B.T + 0.5 * _N.eye(4)
+    w, H = _N.linalg.eigh(S)
+    # Cov[Y, X] = H' S（行 k、列 j）→ 相関
+    C = H.T @ S
+    ok = _N.allclose(C, (w[:, None] * H.T))
+    r = C / (_N.sqrt(w)[:, None] * _N.sqrt(_N.diag(S))[None, :])
+    ok &= _N.allclose(r, (_N.sqrt(w)[:, None] * H.T) / _N.sqrt(_N.diag(S))[None, :])
+    # データでも：大標本の標本相関と一致
+    X = rng.multivariate_normal(_N.zeros(4), S, size=400000)
+    Yk = X @ H
+    emp = _N.corrcoef(_N.column_stack([Yk, X]).T)[:4, 4:]
+    ok &= _N.allclose(emp, r, atol=0.01)
+    q.check("q22-principal-component-loading-4", bool(ok), "Cov[Y_k,X_j]=λ_k h_jk、r=√λ_k h_jk/√σ_jj（大標本の相関と一致）")
+_deriv22()
+
 q.done()

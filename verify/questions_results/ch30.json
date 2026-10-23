@@ -4,7 +4,7 @@
   "ok": true
  },
  "q30-aic-2": {
-  "hash": "8ca37b7bb22c07d9",
+  "hash": "57cbb54718d3556c",
   "ok": true
  },
  "q30-aic-3": {
@@ -12,15 +12,15 @@
   "ok": true
  },
  "q30-aicc-1": {
-  "hash": "87e183e21f212cbc",
+  "hash": "d1cb4a784a9bfe94",
   "ok": true
  },
  "q30-bias-variance-tradeoff-1": {
-  "hash": "570aef8866ac3af4",
+  "hash": "0d89bcfe844525af",
   "ok": true
  },
  "q30-bias-variance-tradeoff-2": {
-  "hash": "e97dfaa9be6e4602",
+  "hash": "1cdddb0454bfe226",
   "ok": true
  },
  "q30-bias-variance-tradeoff-3": {
@@ -28,7 +28,7 @@
   "ok": true
  },
  "q30-bic-1": {
-  "hash": "67756a648a1cf6c1",
+  "hash": "c1d4c9c8020e401c",
   "ok": true
  },
  "q30-bic-2": {
@@ -60,7 +60,7 @@
   "ok": true
  },
  "q30-generalization-error-1": {
-  "hash": "526333976cbe7a54",
+  "hash": "84771c0b134e3688",
   "ok": true
  },
  "q30-generalization-error-2": {
@@ -68,27 +68,27 @@
   "ok": true
  },
  "q30-information-criteria-comparison-1": {
-  "hash": "3c50edeba629776a",
+  "hash": "9d68543a0d6d6a81",
   "ok": true
  },
  "q30-kullback-leibler-divergence-1": {
-  "hash": "442f40dfff1ad13c",
+  "hash": "8456c663a3db6b93",
   "ok": true
  },
  "q30-kullback-leibler-divergence-2": {
-  "hash": "7d9b295f46d48399",
+  "hash": "a0ffee42d9e64a64",
   "ok": true
  },
  "q30-kullback-leibler-divergence-3": {
-  "hash": "6c8a4405d99659d9",
+  "hash": "1dd39f3057a4714f",
   "ok": true
  },
  "q30-leave-one-out-cv-1": {
-  "hash": "54e3f96459c106d7",
+  "hash": "8d3370f9ac3debe6",
   "ok": true
  },
  "q30-leave-one-out-cv-2": {
-  "hash": "ad7eae6a067686cf",
+  "hash": "bc759b442a3b7049",
   "ok": true
  },
  "q30-mallows-cp-1": {
@@ -108,7 +108,7 @@
   "ok": true
  },
  "q30-model-selection-2": {
-  "hash": "df2db59cb847830f",
+  "hash": "7c3b1652fb06a9bd",
   "ok": true
  },
  "q30-overfitting-1": {

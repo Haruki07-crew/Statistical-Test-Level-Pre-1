@@ -36,7 +36,7 @@ questions:
     level: 基本
     type: numeric
     question: |
-      単回帰で $\bar x=5$、$\bar y=12$、$S_{xx}=20$、$S_{xy}=36$ だった。最小二乗推定値の切片 $\hat\beta_0$ を小数第1位まで求めよ。
+      単回帰で $\bar x=5$、$\bar y=12$、$S_{xx}=20$、$S_{xy}=36$ だった。最小二乗推定値の切片 $\hat\beta_0$ を小数第1位まで（四捨五入）求めよ。
     answer: 3.0
     tolerance: 0.05
     hint: |
@@ -65,7 +65,7 @@ questions:
     type: numeric
     question: |
       説明変数2つの重回帰で、平均を引いた平方和・積和が
-      $S_{11}=10$、$S_{12}=4$、$S_{22}=8$、$S_{1y}=20$、$S_{2y}=16$ だった。偏回帰係数 $\hat\beta_1$ を小数第2位まで求めよ。
+      $S_{11}=10$、$S_{12}=4$、$S_{22}=8$、$S_{1y}=20$、$S_{2y}=16$ だった。偏回帰係数 $\hat\beta_1$ を小数第2位まで（四捨五入）求めよ。
     answer: 1.50
     tolerance: 0.005
     hint: |
@@ -101,7 +101,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      $n=20$、説明変数 $p=3$ 個（切片あり）の重回帰で、てこ比 $h_{ii}$ の平均 $\frac1n\sum_ih_{ii}$ を小数第2位まで求めよ。
+      $n=20$、説明変数 $p=3$ 個（切片あり）の重回帰で、てこ比 $h_{ii}$ の平均 $\frac1n\sum_ih_{ii}$ を小数第2位まで（四捨五入）求めよ。
     answer: 0.20
     tolerance: 0.005
     hint: |
@@ -129,7 +129,7 @@ questions:
     level: 応用
     type: numeric
     question: |
-      $n=10$ の単回帰で $S_{xx}=30$ である。$x_i-\bar x=3$ の観測のてこ比 $h_{ii}$ を小数第1位まで求めよ。
+      $n=10$ の単回帰で $S_{xx}=30$ である。$x_i-\bar x=3$ の観測のてこ比 $h_{ii}$ を小数第1位まで（四捨五入）求めよ。
     answer: 0.4
     tolerance: 0.05
     hint: |
@@ -174,7 +174,7 @@ questions:
     level: 基本
     type: numeric
     question: |
-      ある重回帰で回帰平方和 $S_R=150$、残差平方和 $S_e=50$ だった。重相関係数 $R$ を小数第3位まで求めよ。
+      ある重回帰で回帰平方和 $S_R=150$、残差平方和 $S_e=50$ だった。重相関係数 $R$ を小数第3位まで（四捨五入）求めよ。
     answer: 0.866
     tolerance: 0.001
     hint: |
@@ -202,7 +202,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      $n=25$、説明変数 $p=4$ 個の重回帰で $R^2=0.60$ だった。自由度調整済み決定係数 $\bar R^2$ を小数第2位まで求めよ。
+      $n=25$、説明変数 $p=4$ 個の重回帰で $R^2=0.60$ だった。自由度調整済み決定係数 $\bar R^2$ を小数第2位まで（四捨五入）求めよ。
     answer: 0.52
     tolerance: 0.005
     hint: |
@@ -216,7 +216,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      $n=11$、説明変数 $p=3$ 個の重回帰で $R^2=0.10$ だった。自由度調整済み決定係数 $\bar R^2$ を小数第3位まで求めよ。
+      $n=11$、説明変数 $p=3$ 個の重回帰で $R^2=0.10$ だった。自由度調整済み決定係数 $\bar R^2$ を小数第3位まで（四捨五入）求めよ。
     answer: -0.286
     tolerance: 0.001
     hint: |
@@ -245,7 +245,7 @@ questions:
     type: numeric
     question: |
       重回帰で $\hat\beta_2=1.1$、残差の不偏分散 $s^2=4$、$(X^\top X)^{-1}$ の対応する対角成分 $c_{22}=0.04$ だった。
-      $H_0:\beta_2=0$ の $t$ 統計量を小数第2位まで求めよ。
+      $H_0:\beta_2=0$ の $t$ 統計量を小数第2位まで（四捨五入）求めよ。
     answer: 2.75
     tolerance: 0.005
     hint: |
@@ -260,7 +260,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      $n=20$、説明変数 $p=3$ 個の重回帰で $\hat\beta_2=1.1$、標準誤差 $0.4$ だった。$\beta_2$ の95%信頼区間の下限を小数第3位まで求めよ。
+      $n=20$、説明変数 $p=3$ 個の重回帰で $\hat\beta_2=1.1$、標準誤差 $0.4$ だった。$\beta_2$ の95%信頼区間の下限を小数第3位まで（四捨五入）求めよ。
       ただし $t_{0.025}(16)=2.120$、$t_{0.025}(17)=2.110$、$t_{0.025}(19)=2.093$ とする。
     answer: 0.252
     tolerance: 0.001
@@ -294,7 +294,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      $n=24$、説明変数 $p=3$ 個の重回帰で $R^2=0.40$ だった。回帰全体の $F$ 統計量を小数第2位まで求めよ。
+      $n=24$、説明変数 $p=3$ 個の重回帰で $R^2=0.40$ だった。回帰全体の $F$ 統計量を小数第2位まで（四捨五入）求めよ。
     answer: 4.44
     tolerance: 0.005
     hint: |
@@ -326,7 +326,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      説明変数2つの重回帰で、相関係数が $r_{1y}=0.6$、$r_{2y}=0.5$、$r_{12}=0.4$ だった。$x_1$ の標準化偏回帰係数 $\hat\beta_1^*$ を小数第3位まで求めよ。
+      説明変数2つの重回帰で、相関係数が $r_{1y}=0.6$、$r_{2y}=0.5$、$r_{12}=0.4$ だった。$x_1$ の標準化偏回帰係数 $\hat\beta_1^*$ を小数第3位まで（四捨五入）求めよ。
     answer: 0.476
     tolerance: 0.001
     hint: |
@@ -340,7 +340,7 @@ questions:
     level: 応用
     type: numeric
     question: |
-      説明変数2つの重回帰で、相関係数が $r_{1y}=0.6$、$r_{2y}=0.5$、$r_{12}=0.4$ だった。決定係数 $R^2$ を小数第3位まで求めよ。
+      説明変数2つの重回帰で、相関係数が $r_{1y}=0.6$、$r_{2y}=0.5$、$r_{12}=0.4$ だった。決定係数 $R^2$ を小数第3位まで（四捨五入）求めよ。
     answer: 0.440
     tolerance: 0.001
     hint: |
@@ -355,7 +355,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      説明変数2つの重回帰で、2変数の相関係数が $r_{12}=0.9$ である。相関が0の場合と比べて、$\hat\beta_1$ の標準誤差は何倍になるか（$\sigma^2$ と $S_{11}$ は同じとする）。小数第2位まで求めよ。
+      説明変数2つの重回帰で、2変数の相関係数が $r_{12}=0.9$ である。相関が0の場合と比べて、$\hat\beta_1$ の標準誤差は何倍になるか（$\sigma^2$ と $S_{11}$ は同じとする）。小数第2位まで（四捨五入）求めよ。
     answer: 2.29
     tolerance: 0.005
     hint: |
@@ -399,7 +399,7 @@ questions:
     question: |
       3つの説明変数の相関係数行列が
       $$R=\begin{pmatrix}1&0.5&0.3\\0.5&1&0.4\\0.3&0.4&1\end{pmatrix}$$
-      である。$x_1$ の VIF を小数第3位まで求めよ。
+      である。$x_1$ の VIF を小数第3位まで（四捨五入）求めよ。
     answer: 1.355
     tolerance: 0.001
     hint: |
@@ -433,7 +433,7 @@ questions:
     type: numeric
     question: |
       3つのグループA（基準）・B・Cを、ダミー変数 $D_B$、$D_C$ で表した回帰式の推定結果が
-      $\hat y=20+1.5x-4D_B+2.5D_C$ だった。グループCで $x=5$ のときの予測値を求めよ（小数第1位まで）。
+      $\hat y=20+1.5x-4D_B+2.5D_C$ だった。グループCで $x=5$ のときの予測値を求めよ（小数第1位まで（四捨五入））。
     answer: 30.0
     tolerance: 0.05
     hint: |
@@ -462,7 +462,7 @@ questions:
     type: numeric
     question: |
       $n=12$ の単回帰で、$s=2$（残差の標準偏差の推定値）、$\bar x=10$、$S_{xx}=50$ だった。$x_0=15$ での当てはめ値は $\hat y_0=30$ である。
-      新しい観測 $y_0$ の95%予測区間の下限を小数第2位まで求めよ。ただし $t_{0.025}(10)=2.228$ とする。
+      新しい観測 $y_0$ の95%予測区間の下限を小数第2位まで（四捨五入）求めよ。ただし $t_{0.025}(10)=2.228$ とする。
     answer: 24.39
     tolerance: 0.01
     hint: |
@@ -491,7 +491,7 @@ questions:
     type: numeric
     question: |
       $n=30$ で説明変数5個の完全モデルの残差平方和が90、そこから2個を除いた縮小モデルの残差平方和が120だった。
-      除いた2個の係数がともに0という仮説の部分 $F$ 統計量を小数第2位まで求めよ。
+      除いた2個の係数がともに0という仮説の部分 $F$ 統計量を小数第2位まで（四捨五入）求めよ。
     answer: 4.00
     tolerance: 0.005
     hint: |
@@ -499,3 +499,54 @@ questions:
     explanation: |
       $$F=\frac{(120-90)/2}{90/(30-5-1)}=\frac{15}{3.75}=4.00$$
       $F(2,24)$ の上側5%点 $3.40$ を超えるので、2個の変数のうち少なくとも1つは必要と判断されます。
+
+  - id: q16-hat-matrix-4
+    term: hat-matrix
+    level: 応用
+    type: derivation
+    question: |
+      重回帰モデル $\boldsymbol y=X\boldsymbol\beta+\boldsymbol\varepsilon$（$X$ は $n\times(p+1)$ でフルランク、$E[\boldsymbol\varepsilon]=\boldsymbol 0$、$V[\boldsymbol\varepsilon]=\sigma^2I$）で、
+      ハット行列 $H=X(X^\top X)^{-1}X^\top$ が対称・べき等で $\mathrm{tr}\,H=p+1$ であることを示し、残差平方和 $S_e=\boldsymbol e^\top\boldsymbol e$ の期待値を求めよ。
+    steps:
+      - |
+        $H^\top=X\{(X^\top X)^{-1}\}^\top X^\top=H$。$H^2=X(X^\top X)^{-1}(X^\top X)(X^\top X)^{-1}X^\top=H$。
+      - |
+        トレースの巡回性：$\mathrm{tr}\,H=\mathrm{tr}\big((X^\top X)^{-1}X^\top X\big)=\mathrm{tr}\,I_{p+1}=p+1$。
+      - |
+        $(I-H)X=X-X=O$ なので、残差は $\boldsymbol e=(I-H)\boldsymbol y=(I-H)\boldsymbol\varepsilon$。$I-H$ も対称・べき等。
+      - |
+        $S_e=\boldsymbol\varepsilon^\top(I-H)^\top(I-H)\boldsymbol\varepsilon=\boldsymbol\varepsilon^\top(I-H)\boldsymbol\varepsilon$ で、$E[\boldsymbol\varepsilon^\top A\boldsymbol\varepsilon]=\sigma^2\,\mathrm{tr}A$ より $E[S_e]=\sigma^2\,\mathrm{tr}(I-H)=\sigma^2(n-p-1)$。
+    answer: '$H^\top=H$、$H^2=H$、$\mathrm{tr}\,H=p+1$、$E[S_e]=(n-p-1)\sigma^2$（よって $S_e/(n-p-1)$ は $\sigma^2$ の不偏推定量）'
+    hint: |
+      $\mathrm{tr}(AB)=\mathrm{tr}(BA)$ を使う。残差を $\boldsymbol\varepsilon$ だけで表すと、2次形式の期待値の公式が使える。
+    explanation: |
+      $H$ は $X$ の列空間への直交射影なので対称・べき等で、トレース（＝ランク）は $p+1$ です。残差は $\boldsymbol e=(I-H)\boldsymbol\varepsilon$ と書け、
+      $$E[S_e]=\sigma^2\,\mathrm{tr}(I-H)=(n-p-1)\sigma^2$$
+      となります。残差の自由度 $n-p-1$ は「推定した係数の個数（切片を含めて $p+1$）だけ減る」という意味で、$s^2=S_e/(n-p-1)$ が不偏分散です。
+      よくある間違いは、$\mathrm{tr}\,H=p$（切片を数え忘れる）として自由度を $n-p$ にすること、$\boldsymbol e=(I-H)\boldsymbol y$ のまま期待値をとって $X\boldsymbol\beta$ の項が消えることを示さないことです。
+
+  - id: q16-regression-coefficient-t-test-4
+    term: regression-coefficient-t-test
+    level: 標準
+    type: derivation
+    question: |
+      重回帰モデル $\boldsymbol y=X\boldsymbol\beta+\boldsymbol\varepsilon$（$V[\boldsymbol\varepsilon]=\sigma^2I$）の最小二乗推定量 $\hat{\boldsymbol\beta}=(X^\top X)^{-1}X^\top\boldsymbol y$ の期待値と分散共分散行列を求め、
+      誤差が正規分布のとき、回帰係数の $t$ 統計量 $t_j=\dfrac{\hat\beta_j-\beta_j}{s\sqrt{c_{jj}}}$ が従う分布を答えよ（$c_{jj}$ は $(X^\top X)^{-1}$ の対角成分、$s^2=S_e/(n-p-1)$）。
+    steps:
+      - |
+        $\boldsymbol y$ を代入：$\hat{\boldsymbol\beta}=(X^\top X)^{-1}X^\top(X\boldsymbol\beta+\boldsymbol\varepsilon)=\boldsymbol\beta+(X^\top X)^{-1}X^\top\boldsymbol\varepsilon$。よって $E[\hat{\boldsymbol\beta}]=\boldsymbol\beta$。
+      - |
+        $A=(X^\top X)^{-1}X^\top$ とおくと $V[\hat{\boldsymbol\beta}]=A\,V[\boldsymbol\varepsilon]A^\top=\sigma^2(X^\top X)^{-1}X^\top X(X^\top X)^{-1}=\sigma^2(X^\top X)^{-1}$。
+      - |
+        正規誤差なら $\hat\beta_j\sim N(\beta_j,\sigma^2c_{jj})$、$(n-p-1)s^2/\sigma^2\sim\chi^2(n-p-1)$ で、$\hat{\boldsymbol\beta}$ と $s^2$ は独立。
+      - |
+        $t_j=\dfrac{(\hat\beta_j-\beta_j)/(\sigma\sqrt{c_{jj}})}{\sqrt{s^2/\sigma^2}}$ は「標準正規 ÷ $\sqrt{\chi^2/\text{自由度}}$」なので $t_j\sim t(n-p-1)$。
+    answer: '$E[\hat{\boldsymbol\beta}]=\boldsymbol\beta$、$V[\hat{\boldsymbol\beta}]=\sigma^2(X^\top X)^{-1}$、$t_j\sim t(n-p-1)$'
+    hint: |
+      $\hat{\boldsymbol\beta}$ を $\boldsymbol\beta$ と「$\boldsymbol\varepsilon$ の1次式」に分ける。$V[A\boldsymbol\varepsilon]=AV[\boldsymbol\varepsilon]A^\top$。
+    explanation: |
+      $\hat{\boldsymbol\beta}=\boldsymbol\beta+(X^\top X)^{-1}X^\top\boldsymbol\varepsilon$ から不偏性と
+      $$V[\hat{\boldsymbol\beta}]=\sigma^2(X^\top X)^{-1}$$
+      が出ます。$\sigma^2$ を $s^2$ で置きかえた標準誤差 $s\sqrt{c_{jj}}$ で割ると、自由度 $n-p-1$ の $t$ 分布になります。
+      分散の計算に使うのは $V[\boldsymbol\varepsilon]=\sigma^2I$ だけで、正規性は $t$ 分布を言うときに初めて必要になります。
+      よくある間違いは、$V[A\boldsymbol\varepsilon]$ を $A^\top V[\boldsymbol\varepsilon]A$ と順序を逆にすること、標準誤差を $s\,c_{jj}$（平方根を忘れる）とすることです。

@@ -582,3 +582,29 @@ questions:
     explanation: |
       $$E[F']=\frac{n}{m}E[U]\,E\!\left[\frac1V\right]=\frac{12}{3}\times(3+4)\times\frac{1}{10}=2.8$$
       中心 F 分布の期待値 $n/(n-2)=1.2$ より大きくなり、これが検出力の源になります。
+
+  - id: q06-bivariate-normal-distribution-4
+    term: bivariate-normal-distribution
+    level: 応用
+    type: derivation
+    question: |
+      $(X,Y)$ が平均 $(\mu_X,\mu_Y)$、標準偏差 $\sigma_X,\sigma_Y$、相関係数 $\rho$ の2変量正規分布に従う。
+      $W=Y-\beta(X-\mu_X)$（$\beta$ は定数）を $X$ と無相関になるように選ぶことで、$X=x$ を与えたときの $Y$ の条件付き分布を導け。
+    steps:
+      - |
+        $\mathrm{Cov}[W,X]=\mathrm{Cov}[Y,X]-\beta V[X]=\rho\sigma_X\sigma_Y-\beta\sigma_X^2$。これを0にして $\beta=\rho\dfrac{\sigma_Y}{\sigma_X}$。
+      - |
+        $(W,X)$ は $(X,Y)$ の1次変換なので2変量正規分布。正規分布では無相関なら独立なので、$W$ と $X$ は独立。
+      - |
+        $E[W]=\mu_Y$、$V[W]=\sigma_Y^2-2\beta\rho\sigma_X\sigma_Y+\beta^2\sigma_X^2=\sigma_Y^2(1-\rho^2)$。
+      - |
+        $Y=W+\beta(X-\mu_X)$ で、$X=x$ を与えても $W$ の分布は変わらないので、$Y\mid X=x\sim N\!\Big(\mu_Y+\rho\dfrac{\sigma_Y}{\sigma_X}(x-\mu_X),\ \sigma_Y^2(1-\rho^2)\Big)$。
+    answer: '$Y\mid X=x\sim N\!\Big(\mu_Y+\rho\dfrac{\sigma_Y}{\sigma_X}(x-\mu_X),\ \sigma_Y^2(1-\rho^2)\Big)$'
+    hint: |
+      $Y$ を「$X$ で説明できる部分」と「$X$ と独立な残り $W$」に分ける。
+    explanation: |
+      $\beta=\rho\sigma_Y/\sigma_X$ とすると $W=Y-\beta(X-\mu_X)$ は $X$ と無相関で、2変量正規なので独立です。よって
+      $$E[Y\mid X=x]=\mu_Y+\rho\frac{\sigma_Y}{\sigma_X}(x-\mu_X),\qquad V[Y\mid X=x]=\sigma_Y^2(1-\rho^2)$$
+      です。条件付き期待値は $x$ の1次式（回帰直線）で、条件付き分散は $x$ によらず一定です。
+      よくある間違いは、傾きを $\rho\sigma_X/\sigma_Y$ と逆にすること、条件付き分散を $\sigma_Y^2(1-\rho)$ や $\sigma_Y^2\rho^2$ とすることです。
+      「無相関なら独立」は同時に正規分布に従う場合だけ使える点にも注意します。

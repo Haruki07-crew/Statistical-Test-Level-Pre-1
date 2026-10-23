@@ -8,7 +8,7 @@
   "ok": true
  },
  "q20-effect-size-eta-squared-1": {
-  "hash": "329bc9e6486790e6",
+  "hash": "8f1ad588c4bfc534",
   "ok": true
  },
  "q20-expected-mean-square-1": {
@@ -28,7 +28,7 @@
   "ok": true
  },
  "q20-fixed-and-random-effects-1": {
-  "hash": "f25d7f1ed6a11e5a",
+  "hash": "78130265f503d648",
   "ok": true
  },
  "q20-fixed-and-random-effects-2": {
@@ -56,7 +56,7 @@
   "ok": true
  },
  "q20-main-effect-and-interaction-1": {
-  "hash": "9651b0afb4495ce5",
+  "hash": "92c00816fa6ff00b",
   "ok": true
  },
  "q20-main-effect-and-interaction-2": {
@@ -64,7 +64,7 @@
   "ok": true
  },
  "q20-one-way-anova-1": {
-  "hash": "7a9ffe0db9c1a838",
+  "hash": "425ee64a81d88848",
   "ok": true
  },
  "q20-one-way-anova-2": {
@@ -73,6 +73,10 @@
  },
  "q20-one-way-anova-3": {
   "hash": "62e135331cdbf2f3",
+  "ok": true
+ },
+ "q20-one-way-anova-4": {
+  "hash": "b0c07d6664c035c4",
   "ok": true
  },
  "q20-orthogonal-array-1": {
@@ -84,11 +88,11 @@
   "ok": true
  },
  "q20-randomized-block-design-1": {
-  "hash": "d5b988dd33820e56",
+  "hash": "3ca42f93a90dac15",
   "ok": true
  },
  "q20-randomized-block-design-2": {
-  "hash": "29bf0059150ed36f",
+  "hash": "429f384e781ea26c",
   "ok": true
  },
  "q20-split-plot-design-1": {
@@ -96,11 +100,11 @@
   "ok": true
  },
  "q20-studentized-range-distribution-1": {
-  "hash": "6cc785c59ecaa880",
+  "hash": "f0e0c270aaae86c4",
   "ok": true
  },
  "q20-sum-of-squares-decomposition-1": {
-  "hash": "f7a458297ca30213",
+  "hash": "44c8793b4f5b0f7a",
   "ok": true
  },
  "q20-sum-of-squares-decomposition-2": {
@@ -108,7 +112,7 @@
   "ok": true
  },
  "q20-tukey-multiple-comparison-1": {
-  "hash": "a6dccc76fb2b8c9e",
+  "hash": "57ad2fc24c400f33",
   "ok": true
  },
  "q20-tukey-multiple-comparison-2": {
@@ -120,7 +124,7 @@
   "ok": true
  },
  "q20-two-way-anova-with-replication-2": {
-  "hash": "8c2f7d74f7978630",
+  "hash": "63313ec40929df34",
   "ok": true
  },
  "q20-two-way-anova-without-replication-1": {

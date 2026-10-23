@@ -35,6 +35,10 @@
   "hash": "b9ca64faccde9ac8",
   "ok": true
  },
+ "q08-cramer-rao-inequality-4": {
+  "hash": "86550bb5abdef91c",
+  "ok": true
+ },
  "q08-efficient-estimator-1": {
   "hash": "c8571665bad329bb",
   "ok": true
@@ -133,6 +137,10 @@
  },
  "q08-order-statistics-3": {
   "hash": "8aa1885c0e2cd702",
+  "ok": true
+ },
+ "q08-order-statistics-4": {
+  "hash": "38ddca2a6d8b65d5",
   "ok": true
  },
  "q08-point-estimation-1": {

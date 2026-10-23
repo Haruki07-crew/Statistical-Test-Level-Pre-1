@@ -1,14 +1,14 @@
 {
  "q19-bias-in-penalized-estimation-1": {
-  "hash": "7af6cabf04f06cf0",
+  "hash": "c2a4a635698ad4d3",
   "ok": true
  },
  "q19-elastic-net-1": {
-  "hash": "eee9291c7becd4df",
+  "hash": "6bb263759eafb682",
   "ok": true
  },
  "q19-endogeneity-1": {
-  "hash": "c20d819467db06a0",
+  "hash": "bf0703dd6d91d65f",
   "ok": true
  },
  "q19-endogeneity-2": {
@@ -20,11 +20,11 @@
   "ok": true
  },
  "q19-generalized-least-squares-2": {
-  "hash": "31812d413e93eae3",
+  "hash": "85c8c3e8a714bbd7",
   "ok": true
  },
  "q19-instrumental-variable-method-1": {
-  "hash": "7256ca3fb3384881",
+  "hash": "8bed83d7dfc354c4",
   "ok": true
  },
  "q19-instrumental-variable-method-2": {
@@ -39,6 +39,10 @@
   "hash": "973441aee040fa82",
   "ok": true
  },
+ "q19-lasso-3": {
+  "hash": "136af840445aaaac",
+  "ok": true
+ },
  "q19-neural-network-model-1": {
   "hash": "47c578890809dc2d",
   "ok": true
@@ -48,11 +52,11 @@
   "ok": true
  },
  "q19-nonlinear-regression-2": {
-  "hash": "d21747c01bbcf943",
+  "hash": "5defde475314b224",
   "ok": true
  },
  "q19-omitted-variable-bias-1": {
-  "hash": "ce64635465e6cece",
+  "hash": "9c2b6afb8ad35799",
   "ok": true
  },
  "q19-omitted-variable-bias-2": {
@@ -72,7 +76,7 @@
   "ok": true
  },
  "q19-quantile-regression-1": {
-  "hash": "9f44241c8cdd1dfb",
+  "hash": "c9f8c1416f1ec2fd",
   "ok": true
  },
  "q19-quantile-regression-2": {
@@ -88,11 +92,15 @@
   "ok": true
  },
  "q19-ridge-regression-1": {
-  "hash": "590e022150b42c92",
+  "hash": "4ec211f22614af60",
   "ok": true
  },
  "q19-ridge-regression-2": {
   "hash": "e97d972af3f4739f",
+  "ok": true
+ },
+ "q19-ridge-regression-3": {
+  "hash": "4299e087443ca5b9",
   "ok": true
  },
  "q19-spline-regression-1": {
@@ -112,7 +120,7 @@
   "ok": true
  },
  "q19-weighted-least-squares-1": {
-  "hash": "d00a9d9ee0b2d4c0",
+  "hash": "73f123957064e3d0",
   "ok": true
  },
  "q19-weighted-least-squares-2": {
