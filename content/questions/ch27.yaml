@@ -756,3 +756,59 @@ questions:
       $\bar P/\sigma_\varepsilon^2=(2+\sqrt{12})/2=(2+3.464)/2=2.732$ なので
       $$K=\frac{2.732}{2.732+1}=0.732$$
       このときフィルタは平滑化定数 $0.732$ の単純指数平滑と同じになります。水準の動きが観測の雑音より大きいので、新しい観測を強く重視します。
+
+  - id: q27-ar-model-4
+    term: ar-model
+    level: 応用
+    type: derivation
+    question: |
+      定常な AR(1) 過程 $X_t=c+\phi X_{t-1}+\varepsilon_t$（$|\phi|<1$、$\varepsilon_t\sim WN(0,\sigma^2)$、$\varepsilon_t$ は過去の $X_{t-1},X_{t-2},\dots$ と無相関）について、MA(∞) 表現を使わずに、平均 $\mu$、分散 $\gamma(0)$、自己相関 $\rho(h)\ (h\ge1)$ を導け。
+      さらに $c=3,\ \phi=-0.5,\ \sigma^2=3$ のとき、$\mu$、$\gamma(0)$、$\gamma(2)$ を求めよ。
+    steps:
+      - |
+        平均：両辺の期待値をとり、定常性から $E[X_t]=E[X_{t-1}]=\mu$ とおくと $\mu=c+\phi\mu$、よって $\mu=\dfrac{c}{1-\phi}$。
+      - |
+        中心化：$Y_t=X_t-\mu$ とおくと、$c=(1-\phi)\mu$ なので $Y_t=\phi Y_{t-1}+\varepsilon_t$。
+      - |
+        分散：両辺の分散をとる。$\operatorname{Cov}(Y_{t-1},\varepsilon_t)=0$ なので $\gamma(0)=\phi^2\gamma(0)+\sigma^2$、よって $\gamma(0)=\dfrac{\sigma^2}{1-\phi^2}$。
+      - |
+        自己共分散：$Y_t=\phi Y_{t-1}+\varepsilon_t$ に $Y_{t-h}\ (h\ge1)$ を掛けて期待値をとると、$E[\varepsilon_tY_{t-h}]=0$ なので $\gamma(h)=\phi\gamma(h-1)$。くり返して $\gamma(h)=\phi^h\gamma(0)$、$\rho(h)=\phi^h$。
+      - |
+        数値：$\mu=\dfrac{3}{1.5}=2$、$\gamma(0)=\dfrac{3}{1-0.25}=4$、$\gamma(2)=(-0.5)^2\times4=1$。
+    answer: '$\mu=\dfrac{c}{1-\phi}$、$\gamma(0)=\dfrac{\sigma^2}{1-\phi^2}$、$\rho(h)=\phi^h$。数値例では $\mu=2$、$\gamma(0)=4$、$\gamma(2)=1$'
+    hint: |
+      定常性から「$X_t$ と $X_{t-1}$ の平均・分散は同じ」とおいて方程式を立てる。自己共分散は両辺に $Y_{t-h}$ を掛ける。
+    explanation: |
+      定常性を使うと、平均も分散も「同じ未知数が両辺に出る1次方程式」になります。
+      $$\mu=c+\phi\mu,\qquad \gamma(0)=\phi^2\gamma(0)+\sigma^2$$
+      を解けば $\mu=c/(1-\phi)$、$\gamma(0)=\sigma^2/(1-\phi^2)$ です。両辺に $Y_{t-h}$ を掛けると $\gamma(h)=\phi\gamma(h-1)$ が出て、$\rho(h)=\phi^h$ になります。
+      $\phi<0$ なので自己相関は $-0.5,\ 0.25,\ -0.125,\dots$ と符号を変えながら減衰します。
+      よくある間違いは、平均を $c$ のままにすること（$c$ は切片で平均ではありません）、分散を $\sigma^2/(1-\phi)$ と2乗を忘れること、$\gamma(2)$ を $\rho(2)$ と取り違えて $0.25$ と答えることです。
+      また $|\phi|\ge1$ では $1-\phi^2\le0$ となって分散が正にならず、定常解が存在しないことも、この式から読み取れます。
+
+  - id: q27-ma-model-4
+    term: ma-model
+    level: 応用
+    type: derivation
+    question: |
+      MA(1) 過程 $X_t=\mu+\varepsilon_t+\theta\varepsilon_{t-1}$（$\varepsilon_t\sim WN(0,\sigma^2)$）について、$\gamma(0)$、$\gamma(1)$、$\gamma(h)\ (h\ge2)$ と $\rho(1)$ を導け。
+      次に、データから標本自己相関 $r_1=-0.3$、標本分散 $c_0=2$ が得られたとき、モーメント法（$\rho(1)=r_1$、$\gamma(0)=c_0$ とおく）で反転可能な $\hat\theta$ と $\hat\sigma^2$ を求めよ。
+    steps:
+      - |
+        $\gamma(0)=V[\varepsilon_t+\theta\varepsilon_{t-1}]=\sigma^2+\theta^2\sigma^2=(1+\theta^2)\sigma^2$（$\varepsilon$ どうしは無相関）。
+      - |
+        $\gamma(1)=\operatorname{Cov}(\varepsilon_t+\theta\varepsilon_{t-1},\ \varepsilon_{t-1}+\theta\varepsilon_{t-2})=\theta\,V[\varepsilon_{t-1}]=\theta\sigma^2$。$h\ge2$ では共通の $\varepsilon$ がないので $\gamma(h)=0$。
+      - |
+        $\rho(1)=\dfrac{\gamma(1)}{\gamma(0)}=\dfrac{\theta}{1+\theta^2}$。
+      - |
+        $\dfrac{\theta}{1+\theta^2}=-0.3$ を整理すると $0.3\theta^2+\theta+0.3=0$、$\theta=\dfrac{-1\pm\sqrt{1-0.36}}{0.6}=\dfrac{-1\pm0.8}{0.6}$ で、$\theta=-\dfrac13$ または $-3$。
+      - |
+        反転可能条件 $|\theta|<1$ から $\hat\theta=-\dfrac13$。$\hat\sigma^2=\dfrac{c_0}{1+\hat\theta^2}=\dfrac{2}{10/9}=1.8$。
+    answer: '$\gamma(0)=(1+\theta^2)\sigma^2$、$\gamma(1)=\theta\sigma^2$、$\gamma(h)=0\ (h\ge2)$、$\rho(1)=\dfrac{\theta}{1+\theta^2}$。モーメント法では $\hat\theta=-\dfrac13$、$\hat\sigma^2=1.8$'
+    hint: |
+      2つの時点の式に共通して含まれる $\varepsilon$ だけが共分散に効く。後半は $\rho(1)$ の式を $\theta$ の2次方程式にして、2つの解のどちらが反転可能かを見る。
+    explanation: |
+      MA(1) では、$X_t$ と $X_{t-1}$ に共通する雑音は $\varepsilon_{t-1}$ だけなので $\gamma(1)=\theta\sigma^2$、2期以上離れると共通の雑音がなく $\gamma(h)=0$ です（自己相関がラグ1の後で切断）。
+      $\rho(1)=\theta/(1+\theta^2)$ を $\theta$ について解くと2つの解が出ますが、その積は $1$ で、$\theta$ と $1/\theta$ が同じ自己相関を与えます。反転可能条件 $|\theta|<1$ で $\hat\theta=-1/3$ を選び、$\hat\sigma^2=c_0/(1+\hat\theta^2)=1.8$ です。
+      よくある間違いは、$\gamma(1)$ を $\theta^2\sigma^2$ とすること、2つの解のうち $-3$ を選んでしまうこと、$\hat\sigma^2$ を $c_0$ のまま（$=2$）にすることです。
+      なお $|r_1|>1/2$ なら判別式が負になり実数解がないので、MA(1) は当てはまりません。

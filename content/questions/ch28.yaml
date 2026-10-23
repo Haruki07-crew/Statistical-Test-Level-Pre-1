@@ -657,3 +657,31 @@ questions:
       分母は $0.2333\times0.7667\times\{50(0+1+4)-150^2/150\}=0.17889\times100=17.889$。
       $$Z^2=\frac{15.0^2}{17.889}=12.58$$
       自由度1のカイ二乗分布で強く有意で、用量とともに反応が増える傾向があると判断できます。
+
+  - id: q28-relative-risk-4
+    term: relative-risk
+    level: 応用
+    type: derivation
+    question: |
+      要因あり群 $n_1$ 人のうち $a$ 人、要因なし群 $n_2$ 人のうち $c$ 人に出来事が起こった（2群は独立で、それぞれ二項分布 $Bin(n_1,p_1)$、$Bin(n_2,p_2)$ に従う）。
+      $\widehat{RR}=\dfrac{a/n_1}{c/n_2}$ について、デルタ法で $\mathrm{SE}(\log\widehat{RR})$ の推定式を導け。
+      さらに $a=30,\ n_1=100,\ c=15,\ n_2=100$ のときの値を小数第3位まで（四捨五入）求めよ。
+    steps:
+      - |
+        $\hat p_1=a/n_1$ の分散は $V[\hat p_1]=\dfrac{p_1(1-p_1)}{n_1}$。
+      - |
+        デルタ法：$g(p)=\log p$、$g'(p)=1/p$ なので $V[\log\hat p_1]\approx\Big(\dfrac1{p_1}\Big)^2\dfrac{p_1(1-p_1)}{n_1}=\dfrac{1-p_1}{n_1p_1}$。
+      - |
+        $p_1$ に $a/n_1$ を代入すると $\dfrac{1-a/n_1}{a}=\dfrac1a-\dfrac1{n_1}$。群2も同様に $\dfrac1c-\dfrac1{n_2}$。
+      - |
+        $\log\widehat{RR}=\log\hat p_1-\log\hat p_2$ で2群は独立なので、分散は和になり $\mathrm{SE}(\log\widehat{RR})=\sqrt{\dfrac1a-\dfrac1{n_1}+\dfrac1c-\dfrac1{n_2}}$。
+      - |
+        数値：$\dfrac1{30}-\dfrac1{100}+\dfrac1{15}-\dfrac1{100}=0.1-0.02=0.08$、$\mathrm{SE}=\sqrt{0.08}=0.283$。
+    answer: '$\mathrm{SE}(\log\widehat{RR})=\sqrt{\dfrac1a-\dfrac1{n_1}+\dfrac1c-\dfrac1{n_2}}$、数値例では $0.283$'
+    hint: |
+      $\log\widehat{RR}$ を $\log\hat p_1-\log\hat p_2$ に分け、それぞれに $g(p)=\log p$ のデルタ法を使う。
+    explanation: |
+      デルタ法 $V[g(\hat p)]\approx g'(p)^2V[\hat p]$ で $V[\log\hat p_1]\approx(1-p_1)/(n_1p_1)$ となり、推定値を代入すると $1/a-1/n_1$ です。2群の独立性から分散を足して
+      $$\mathrm{SE}(\log\widehat{RR})=\sqrt{\frac1a-\frac1{n_1}+\frac1c-\frac1{n_2}}=\sqrt{0.08}=0.283$$
+      となります。95%信頼区間は $\exp(\log2\pm1.96\times0.283)=(1.15,\ 3.48)$ です。
+      よくある間違いは、オッズ比の式 $\sqrt{1/a+1/b+1/c+1/d}$ と混同すること（相対リスクでは $1/n_1,\ 1/n_2$ を**引く**）、2つの分散を引き算してしまうこと（差の分散でも独立なら和）、$\widehat{RR}$ そのものの標準誤差と取り違えることです。

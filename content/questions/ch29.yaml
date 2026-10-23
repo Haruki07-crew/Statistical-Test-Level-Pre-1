@@ -579,3 +579,32 @@ questions:
     explanation: |
       MAR で尤度は積に分かれますが、$\phi$ と $\theta$ の間に制約があると、第1因子 $f(R\mid Y_{\text{obs}},\phi)$ も $\theta$ について情報を持ってしまいます。
       分離していれば第1因子は $\theta$ の推測に関係しないので、$f(Y_{\text{obs}}\mid\theta)$ だけで推測できます。この2条件をあわせて無視可能性といいます。
+
+  - id: q29-em-algorithm-4
+    term: em-algorithm
+    level: 応用
+    type: derivation
+    question: |
+      データ $x_1,\dots,x_n$ が、形のわかっている2つの密度 $f_1,\ f_0$ の混合 $\pi f_1(x)+(1-\pi)f_0(x)$ からの i.i.d. 標本で、混合比 $\pi\ (0<\pi<1)$ だけが未知とする。
+      各点がどちらの成分から来たかを表す潜在変数 $z_i\in\{0,1\}$（$z_i=1$ なら $f_1$ から）を使って、EMアルゴリズムの E ステップ（$Q$ 関数）と M ステップ（$\pi^{(k+1)}$ の式）を導け。
+      さらに $n=3$ で、尤度比 $r_i=f_1(x_i)/f_0(x_i)$ が $4,\ 2,\ 0.5$、初期値 $\pi^{(0)}=0.5$ のとき、$\pi^{(1)}$ を小数第3位まで（四捨五入）求めよ。
+    steps:
+      - |
+        完全データの対数尤度：$\log f(\boldsymbol x,\boldsymbol z\mid\pi)=\displaystyle\sum_{i=1}^n\Big[z_i\{\log\pi+\log f_1(x_i)\}+(1-z_i)\{\log(1-\pi)+\log f_0(x_i)\}\Big]$。
+      - |
+        E ステップ：$z_i$ をその条件付き期待値（負担率）$w_i^{(k)}=P(z_i=1\mid x_i,\pi^{(k)})=\dfrac{\pi^{(k)}f_1(x_i)}{\pi^{(k)}f_1(x_i)+(1-\pi^{(k)})f_0(x_i)}$ に置き換え、$Q(\pi\mid\pi^{(k)})=\displaystyle\sum_i\big\{w_i^{(k)}\log\pi+(1-w_i^{(k)})\log(1-\pi)\big\}+(\pi\ \text{を含まない項})$。
+      - |
+        M ステップ：$\dfrac{\partial Q}{\partial\pi}=\dfrac{\sum_iw_i^{(k)}}{\pi}-\dfrac{n-\sum_iw_i^{(k)}}{1-\pi}=0$ を解いて $\pi^{(k+1)}=\dfrac1n\displaystyle\sum_{i=1}^nw_i^{(k)}$。
+      - |
+        数値：$\pi^{(0)}=0.5$ では $w_i=\dfrac{r_i}{r_i+1}$ なので $w=\dfrac45,\ \dfrac23,\ \dfrac13$。
+      - |
+        $\pi^{(1)}=\dfrac{0.8+0.6667+0.3333}{3}=\dfrac{1.8}{3}=0.600$。
+    answer: '$Q(\pi\mid\pi^{(k)})=\sum_i\{w_i^{(k)}\log\pi+(1-w_i^{(k)})\log(1-\pi)\}+\text{定数}$、$\pi^{(k+1)}=\dfrac1n\sum_iw_i^{(k)}$。数値例では $\pi^{(1)}=0.600$'
+    hint: |
+      完全データの対数尤度は $z_i$ について1次式なので、E ステップでは $z_i$ を $P(z_i=1\mid x_i)$ に置き換えるだけでよい。M ステップは二項分布の最尤推定と同じ形になる。
+    explanation: |
+      完全データの対数尤度が $z_i$ の1次式なので、E ステップは $z_i$ を負担率 $w_i^{(k)}$（ベイズの定理による事後確率）に置き換えることに帰着します。
+      $Q$ は「$\sum w_i$ 回の成功と $n-\sum w_i$ 回の失敗」をもつ二項分布の対数尤度と同じ形なので、M ステップは負担率の平均
+      $$\pi^{(k+1)}=\frac1n\sum_iw_i^{(k)}$$
+      です。数値例では $w=(0.8,\ 0.667,\ 0.333)$ で $\pi^{(1)}=0.600$ になり、成分1に近い点が多いぶん $\pi$ が $0.5$ から上がりました。
+      よくある間違いは、負担率の分母に $(1-\pi^{(k)})f_0$ を入れ忘れること、$w_i$ を $0/1$ に丸めて数えてしまうこと（それは EM ではなく「硬い」割り当て）、M ステップで $\log$ の中に和が残った観測データの尤度を直接微分しようとすることです。

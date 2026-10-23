@@ -136,6 +136,24 @@ try {
   check('文字サイズ大', await ev(`getComputedStyle(document.documentElement).fontSize === '18px'`));
   await ev(`document.querySelector('[data-font="m"]').click()`);
   await shot('stats-1280');
+  // ファイルから読み込む（統合と上書き）
+  const payload = JSON.stringify({ app: 'jun1-dictionary', v: 1, exported: '2026-10-20T00:00:00Z', data: { v: 1, memo: { 'gamma-distribution': 5 }, bm: { 't-distribution': 5 }, notes: { 'f-distribution': { x: '別端末のメモ', t: 9 } }, exam: '2027-01-10' } });
+  const imp = (mode) => ev(`(async () => {
+    const inp = document.querySelector('[data-import]'); const dt = new DataTransfer();
+    dt.items.add(new File([${JSON.stringify(payload)}], 'jd.json', { type: 'application/json' }));
+    inp.files = dt.files; inp.dispatchEvent(new Event('change', { bubbles: true }));
+    await new Promise(r => setTimeout(r, 400));
+    document.querySelector('[data-imp="${mode}"]').click();
+    const d = JSON.parse(localStorage.getItem('jd-data'));
+    return { memo: Object.keys(d.memo).length, note: d.notes['f-distribution'] && d.notes['f-distribution'].x, bm: !!d.bm['t-distribution'] };
+  })()`);
+  await open('#stats', 1280, 860);
+  const memoBefore = await ev(`Object.keys(JSON.parse(localStorage.getItem('jd-data')).memo).length`);
+  const m1 = await imp('merge');
+  check('読み込み：統合', m1.memo === memoBefore + 1 && m1.note === '別端末のメモ' && m1.bm, JSON.stringify(m1));
+  await open('#stats', 1280, 860);
+  const m2 = await imp('replace');
+  check('読み込み：上書き', m2.memo === 1 && m2.bm, JSON.stringify(m2));
   // 壊れたデータでも落ちない
   await ev(`localStorage.setItem('jd-data', '{"v":1,"memo":[1,2],"ans":{"x":5},"days":"bad"')`);
   await open('#stats', 1280, 860);

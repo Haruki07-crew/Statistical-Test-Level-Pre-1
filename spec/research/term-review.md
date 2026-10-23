@@ -125,3 +125,17 @@ aliases と本文を grep で確認し、別名や近い用語として既にあ
 | sampling-weight | horvitz-thompson-estimator に統合 | 包含確率の逆数としてそこで説明できる |
 | bartlett-test, one-way-test-variance-equality-levene | 1項目「等分散性の検定（バートレット・ルビーン）」に統合 | どちらも出題範囲表になく C。2項目に分ける必要がない |
 | tic-ebic | 重要度Cのまま、aic の「発展」に統合してもよい | 出題範囲表になく、範囲を超えている |
+
+## 追加用語の校閲（2026-10-23）
+
+19語を執筆者とは独立に校閲した。数値はすべて再計算で一致（B(400,0.3) の正確値 0.0580、Po(25) の 0.0338、比率の 0.9463 も scipy で確認）。related はすべて plan.yaml に存在。数値は変更していない。
+
+- probability-mass-and-density-function：グラフ説明の「σ を 0.3 以下にすると密度の山が1を超える」を、境界の値に合わせて「σ<1/√(2π)≈0.399」に直した
+- extreme-value-distribution：試験のポイントの「n(1−M_n)→指数分布（ワイブル型の α=1）」で向きが混ざっていたので、「n(M_n−1)→ワイブル型（α=1）、符号を変えると n(1−M_n)→Exp(1)」に直した
+- one-sided-confidence-limit：例2の「不良率は 1% 未満と主張できる」に「信頼係数 95% で」を加えた
+- neural-network-model：普遍近似定理に条件（コンパクト集合上の連続関数、素子数を十分増やす、活性化関数が多項式でない）を加えた。グラフ説明の「層が増えるほど矢印が掛け算で増える」を「隣り合う層の間の重みの数は素子数の積」に直した
+- incomplete-block-design：処理効果の推定値が制約 Στ_i=0 のもとでの値であることを明記した（ΣQ_i=0）
+- state-space-model：「ARIMA(0,1,1) で θ=K−1」に MA の符号の流儀（+θ。−θ で書く流儀では θ=1−K）を加え、ma-model・arima-model と合わせた
+- backdoor-criterion：潜在結果との対応の式で処置の記号が T になっていたので X に直した。よくある間違いの「P(y|do(x))=P(y|x) はバックドア経路がない（空集合が基準を満たす）ときだけ」を、両者が同じでない（合流点で閉じた経路があっても空集合は基準を満たす）ので「空集合が基準を満たすとき（経路がない、またはすべて合流点で閉じている）」に直した
+- d-separation：例2の後の「4行目から5行目のように…条件を増やすほど成り立ちやすいわけではない」は、根拠になる行が逆だった。「3→4行目で道が開き、4→5行目で再び閉じる」に直した
+- 変更なし：inclusion-exclusion-principle、moments、sum-of-random-variables、normal-approximation-binomial-poisson、order-statistics、standard-error、fractional-factorial-design、phi-coefficient-and-association、cohort-and-case-control-study、causal-effect、frontdoor-criterion

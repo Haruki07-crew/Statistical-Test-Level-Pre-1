@@ -555,3 +555,59 @@ questions:
     explanation: |
       出荷：$0.3\times100=30$。廃棄：$0.7\times20=14$。
       期待損失の小さい「廃棄」がベイズ解で、事後期待損失は $14$ です。不良の確率が半分未満でも、損失の非対称性で結論が決まります。
+
+  - id: q31-normal-normal-model-4
+    term: normal-normal-model
+    level: 応用
+    type: derivation
+    question: |
+      $x_1,\dots,x_n\mid\mu$ が i.i.d. で $N(\mu,\sigma^2)$（$\sigma^2$ は既知）、事前分布が $\mu\sim N(\mu_0,\tau_0^2)$ のとき、平方完成によって $\mu$ の事後分布を導け（精度 $\kappa_0=1/\tau_0^2$、$\kappa_x=n/\sigma^2$ を使ってよい）。
+      さらに $\sigma^2=9,\ \mu_0=50,\ \tau_0^2=4,\ n=9,\ \bar x=56$ のとき、事後平均と事後分散を求めよ。
+    steps:
+      - |
+        尤度：$\sum(x_i-\mu)^2=\sum(x_i-\bar x)^2+n(\bar x-\mu)^2$ なので、$\mu$ を含まない因子を捨てて $f(\boldsymbol x\mid\mu)\propto\exp\Big\{-\dfrac{\kappa_x(\mu-\bar x)^2}{2}\Big\}$。
+      - |
+        事前分布を掛ける：$\pi(\mu\mid\boldsymbol x)\propto\exp\Big\{-\dfrac{\kappa_x(\mu-\bar x)^2+\kappa_0(\mu-\mu_0)^2}{2}\Big\}$。
+      - |
+        $\mu$ について整理：指数の中は $-\dfrac12\big\{(\kappa_0+\kappa_x)\mu^2-2(\kappa_0\mu_0+\kappa_x\bar x)\mu\big\}+(\mu\ \text{を含まない項})$。
+      - |
+        平方完成：$\kappa_n=\kappa_0+\kappa_x$、$\mu_n=\dfrac{\kappa_0\mu_0+\kappa_x\bar x}{\kappa_n}$ とおくと $\pi(\mu\mid\boldsymbol x)\propto\exp\Big\{-\dfrac{\kappa_n(\mu-\mu_n)^2}{2}\Big\}$ で、$\mu\mid\boldsymbol x\sim N(\mu_n,\ 1/\kappa_n)$。
+      - |
+        数値：$\kappa_0=\dfrac14=0.25$、$\kappa_x=\dfrac99=1$、$\kappa_n=1.25$。$\mu_n=\dfrac{0.25\times50+1\times56}{1.25}=\dfrac{68.5}{1.25}=54.8$、事後分散 $=\dfrac1{1.25}=0.8$。
+    answer: '$\mu\mid\boldsymbol x\sim N\Big(\dfrac{\kappa_0\mu_0+\kappa_x\bar x}{\kappa_0+\kappa_x},\ \dfrac{1}{\kappa_0+\kappa_x}\Big)$。数値例では事後平均 $54.8$、事後分散 $0.8$'
+    hint: |
+      尤度は $\bar x$ だけを通して $\mu$ に依存する。指数の中を $\mu$ の2次式にまとめ、$\mu^2$ の係数から精度、1次の係数から平均を読み取る。
+    explanation: |
+      尤度と事前分布はどちらも $\mu$ の2次式を指数にもつので、掛けても2次式のままで、事後分布も正規分布になります（共役）。
+      $\mu^2$ の係数から事後の精度 $\kappa_n=\kappa_0+\kappa_x$（精度の足し算）、1次の係数から事後平均 $\mu_n=(\kappa_0\mu_0+\kappa_x\bar x)/\kappa_n$（精度による重み付き平均）が読み取れます。
+      数値例では、データの精度 $1$ が事前の精度 $0.25$ の4倍なので、事後平均 $54.8$ は $\bar x=56$ 寄りに $\mu_0=50$ から $80\%$ 進んだ位置になり、事後分散 $0.8$ は $\tau_0^2=4$ よりも $\sigma^2/n=1$ よりも小さくなります。
+      よくある間違いは、$\kappa_x$ を $1/\sigma^2$ と $n$ を掛け忘れること、分散どうしを足して事後分散を $\tau_0^2+\sigma^2/n$ とすること（それは予測分布側の発想）、重みを分散で（精度でなく）つけてしまうことです。
+
+  - id: q31-gamma-poisson-model-4
+    term: gamma-poisson-model
+    level: 応用
+    type: derivation
+    question: |
+      $\lambda$ の事後分布が $\mathrm{Ga}(\alpha',\beta')$（レート表記、密度 $\dfrac{\beta'^{\alpha'}}{\Gamma(\alpha')}\lambda^{\alpha'-1}e^{-\beta'\lambda}$）で、次の1期間の件数が $Y\mid\lambda\sim\mathrm{Po}(\lambda)$ に従うとする。
+      $Y$ の予測分布 $P(Y=k\mid\boldsymbol x)$ を導き、その平均と分散を、繰り返し期待値・条件付き分散の公式で求めよ。
+      さらに $\alpha'=6,\ \beta'=2$ のとき $P(Y=1\mid\boldsymbol x)$ を小数第3位まで（四捨五入）と $V[Y\mid\boldsymbol x]$ を求めよ。
+    steps:
+      - |
+        $\lambda$ を積分で消す：$P(Y=k\mid\boldsymbol x)=\displaystyle\int_0^\infty\frac{\lambda^ke^{-\lambda}}{k!}\cdot\frac{\beta'^{\alpha'}}{\Gamma(\alpha')}\lambda^{\alpha'-1}e^{-\beta'\lambda}\,d\lambda=\frac{\beta'^{\alpha'}}{k!\,\Gamma(\alpha')}\int_0^\infty\lambda^{\alpha'+k-1}e^{-(\beta'+1)\lambda}d\lambda$。
+      - |
+        ガンマ関数の積分 $\displaystyle\int_0^\infty\lambda^{s-1}e^{-b\lambda}d\lambda=\frac{\Gamma(s)}{b^s}$ を使うと $P(Y=k\mid\boldsymbol x)=\dfrac{\Gamma(\alpha'+k)}{k!\,\Gamma(\alpha')}\Big(\dfrac{\beta'}{\beta'+1}\Big)^{\alpha'}\Big(\dfrac{1}{\beta'+1}\Big)^k$（負の二項分布）。
+      - |
+        平均：$E[Y\mid\boldsymbol x]=E\big[E[Y\mid\lambda]\big]=E[\lambda\mid\boldsymbol x]=\dfrac{\alpha'}{\beta'}$。
+      - |
+        分散：$V[Y\mid\boldsymbol x]=E\big[V[Y\mid\lambda]\big]+V\big[E[Y\mid\lambda]\big]=\dfrac{\alpha'}{\beta'}+\dfrac{\alpha'}{\beta'^2}=\dfrac{\alpha'}{\beta'}\Big(1+\dfrac1{\beta'}\Big)$。
+      - |
+        数値：$P(Y=1)=\dfrac{\Gamma(7)}{1!\,\Gamma(6)}\Big(\dfrac23\Big)^6\dfrac13=6\times\dfrac{64}{729}\times\dfrac13=\dfrac{128}{729}=0.176$、$V[Y]=3\times1.5=4.5$。
+    answer: '$P(Y=k\mid\boldsymbol x)=\dfrac{\Gamma(\alpha^\prime+k)}{k!\,\Gamma(\alpha^\prime)}\Big(\dfrac{\beta^\prime}{\beta^\prime+1}\Big)^{\alpha^\prime}\Big(\dfrac1{\beta^\prime+1}\Big)^k$、平均 $\dfrac{\alpha^\prime}{\beta^\prime}$、分散 $\dfrac{\alpha^\prime}{\beta^\prime}\Big(1+\dfrac1{\beta^\prime}\Big)$。数値例では $P(Y=1)=0.176$、$V[Y]=4.5$'
+    hint: |
+      被積分関数をまとめると $\lambda^{(\alpha'+k)-1}e^{-(\beta'+1)\lambda}$ というガンマ分布の核になる。分散は「ポアソンのばらつき」と「$\lambda$ の不確かさ」の和。
+    explanation: |
+      ポアソン分布とガンマ分布を掛けると、$\lambda$ について再びガンマ分布の核になるので、ガンマ関数の積分で $\lambda$ を消せます。結果は $r=\alpha'$、$p=\beta'/(\beta'+1)$ の負の二項分布（成功 $r$ 回までの失敗回数）です。
+      平均は $\lambda$ の事後平均 $\alpha'/\beta'$ と同じですが、分散は
+      $$V[Y\mid\boldsymbol x]=\underbrace{\frac{\alpha'}{\beta'}}_{\text{ポアソンのばらつき}}+\underbrace{\frac{\alpha'}{\beta'^2}}_{\lambda\ \text{の不確かさ}}$$
+      とポアソン分布より大きくなります（過分散）。数値例では平均 $3$、分散 $4.5$ です。
+      よくある間違いは、予測分布を $\lambda$ に事後平均を代入した $\mathrm{Po}(3)$ とすること（$P(Y=1)=3e^{-3}=0.149$ となり、$\lambda$ の不確かさを無視している）、ガンマ関数の積分で $b^s$ の指数を $\alpha'$ のままにすること、尺度表記と混同して $\beta'$ を逆数にすることです。

@@ -801,7 +801,14 @@
 
   // ---------- 問題演習 ----------
   var quizCfg = load('jd-quizcfg', null);
-  if (!isObj(quizCfg)) quizCfg = { scope: 'all', ch: 1, part: 0, count: 10 };
+  if (!isObj(quizCfg)) quizCfg = {};
+  // 保存された設定が壊れていても使えるように整える
+  quizCfg = {
+    scope: ['all', 'part', 'ch', 'weak', 'new', 'bm'].indexOf(quizCfg.scope) >= 0 ? quizCfg.scope : 'all',
+    ch: Number(quizCfg.ch) >= 1 && Number(quizCfg.ch) <= CHAPTERS.length ? Number(quizCfg.ch) : 1,
+    part: Number(quizCfg.part) >= 0 && Number(quizCfg.part) < PARTS.length ? Number(quizCfg.part) : 0,
+    count: [5, 10, 20].indexOf(Number(quizCfg.count)) >= 0 ? Number(quizCfg.count) : 10
+  };
 
   function poolFor(cfg) {
     var weak = {};
@@ -1069,6 +1076,7 @@
       var x = o.days[k] || { a: 0, c: 0, v: 0 }, y = b.days[k];
       o.days[k] = { a: Math.max(x.a, y.a), c: Math.max(x.c, y.c), v: Math.max(x.v, y.v) };
     });
+    if (!o.exam && b.exam) o.exam = b.exam;
     var seen = {};
     o.recent = o.recent.concat(b.recent).filter(function (id) { if (seen[id]) return false; seen[id] = 1; return true; }).slice(0, 30);
     return o;

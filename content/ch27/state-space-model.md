@@ -65,7 +65,7 @@ $$
 - $y_t-a_{t|t-1}$ は予測の外れ（イノベーション）です。外れた分の $K_t$ 倍だけ推定を修正します。
 - 更新式は、正規分布の事前分布（予測）と尤度（観測）から事後分布を求めるベイズ更新と同じ形です。
 
-**定常状態と指数平滑**：$q=\sigma_\eta^2/\sigma_\varepsilon^2$（信号対雑音比）が一定なら、$P_{t|t-1}$ は $\bar P=\sigma_\varepsilon^2\,(q+\sqrt{q^2+4q})/2$ に収束し、ゲインも一定の $K=\bar P/(\bar P+\sigma_\varepsilon^2)$ になります。すると $a_t=K y_t+(1-K)a_{t-1}$ で、平滑化定数 $K$ の**単純指数平滑**と一致します。これは ARIMA(0,1,1) で $\theta=K-1$ とした予測と同じです。
+**定常状態と指数平滑**：$q=\sigma_\eta^2/\sigma_\varepsilon^2$（信号対雑音比）が一定なら、$P_{t|t-1}$ は $\bar P=\sigma_\varepsilon^2\,(q+\sqrt{q^2+4q})/2$ に収束し、ゲインも一定の $K=\bar P/(\bar P+\sigma_\varepsilon^2)$ になります。すると $a_t=K y_t+(1-K)a_{t-1}$ で、平滑化定数 $K$ の**単純指数平滑**と一致します。これは ARIMA(0,1,1) $X_t=X_{t-1}+\varepsilon_t+\theta\varepsilon_{t-1}$ で $\theta=K-1$ とした予測と同じです（MA 部分を $\varepsilon_t-\theta\varepsilon_{t-1}$ と書く流儀では $\theta=1-K$）。
 
 AR モデルや ARMA モデルも、過去の値を並べたベクトルを状態とみれば状態空間モデルで書けます。欠測があっても、更新を飛ばして予測だけ進めれば計算を続けられるのが利点です。
 

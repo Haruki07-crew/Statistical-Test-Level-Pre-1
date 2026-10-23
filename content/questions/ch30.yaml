@@ -461,3 +461,62 @@ questions:
     explanation: |
       モデルが正しければ $I=J$（どちらもフィッシャー情報量）なので $IJ^{-1}$ は $k$ 次の単位行列になり、$\mathrm{tr}(IJ^{-1})=k$ で、罰則は $2k$ になります。
       モデルが誤っているときは $I\ne J$ で、TIC は AIC と異なる罰則を与えます。
+
+  - id: q30-aic-4
+    term: aic
+    level: 応用
+    type: derivation
+    question: |
+      $n$ 個のデータに正規線形回帰 $y_i=\boldsymbol x_i^\top\boldsymbol\beta+\varepsilon_i$、$\varepsilon_i\sim N(0,\sigma^2)$（係数は切片を含めて $p$ 個、$\sigma^2$ は未知）を当てはめ、残差平方和を $S_e$ とする。
+      最大対数尤度から $\mathrm{AIC}=-2\ell(\hat{\boldsymbol\theta})+2k$ を $S_e$ で表せ。
+      次に、このモデル（残差平方和 $S_0$）に説明変数を $q$ 個加えたモデル（残差平方和 $S_1$）のほうが AIC が小さくなる条件を $S_1/S_0$ で表し、$n=100,\ q=2$ のときの $S_1/S_0$ の境目を小数第4位まで（四捨五入）求めよ。
+    steps:
+      - |
+        対数尤度：$\ell(\boldsymbol\beta,\sigma^2)=-\dfrac n2\log(2\pi\sigma^2)-\dfrac{1}{2\sigma^2}\displaystyle\sum_i(y_i-\boldsymbol x_i^\top\boldsymbol\beta)^2$。$\boldsymbol\beta$ について最大化すると和が $S_e$ になる（最小二乗推定量）。
+      - |
+        $\sigma^2$ で微分して $0$ とおくと $\hat\sigma^2=\dfrac{S_e}{n}$。代入して $\ell(\hat{\boldsymbol\theta})=-\dfrac n2\log\dfrac{2\pi S_e}{n}-\dfrac n2$。
+      - |
+        パラメータ数は $k=p+1$（係数 $p$ 個と $\sigma^2$）なので $\mathrm{AIC}=n\log\dfrac{S_e}{n}+n\{\log(2\pi)+1\}+2(p+1)$。
+      - |
+        差：$\mathrm{AIC}_1-\mathrm{AIC}_0=n\log\dfrac{S_1}{S_0}+2q$（定数と $n\log n$ は打ち消し合う）。
+      - |
+        $\mathrm{AIC}_1<\mathrm{AIC}_0\iff\dfrac{S_1}{S_0}<e^{-2q/n}$。$n=100,\ q=2$ では $e^{-0.04}=0.9608$。
+    answer: '$\mathrm{AIC}=n\log\dfrac{S_e}{n}+n\{\log(2\pi)+1\}+2(p+1)$。大きいモデルが選ばれるのは $\dfrac{S_1}{S_0}<e^{-2q/n}$ のときで、$n=100,\ q=2$ の境目は $0.9608$'
+    hint: |
+      まず $\boldsymbol\beta$、次に $\sigma^2$ の順に最大化する。$\sigma^2$ もパラメータに数えることを忘れない。
+    explanation: |
+      $\hat\sigma^2=S_e/n$ を代入すると最大対数尤度は $-\frac n2\{\log(2\pi S_e/n)+1\}$ となり、
+      $$\mathrm{AIC}=n\log\frac{S_e}{n}+n\{\log(2\pi)+1\}+2(p+1)$$
+      です。同じデータで2つのモデルを比べると定数は消え、差は $n\log(S_1/S_0)+2q$ だけになります。
+      したがって変数を $q$ 個加えたモデルが選ばれるのは、残差平方和が $e^{-2q/n}$ 倍未満に減るとき、$n=100,\ q=2$ なら約 $3.9\%$ 以上減るときです。
+      $F$ 統計量 $F=\dfrac{(S_0-S_1)/q}{S_1/(n-p-q)}$ に直すと、境目は $F=\dfrac{n-p-q}{q}(e^{2q/n}-1)\approx2$ で、AIC は「$F$ がおよそ2を超えたら変数を加える」規準とみなせます。
+      よくある間違いは、$k$ を $p$（$\sigma^2$ を数え忘れ）とすること、$\hat\sigma^2$ に不偏分散 $S_e/(n-p)$ を使うこと（最尤推定量ではない）、差をとるときに罰則の差 $2q$ の符号を逆にすることです。
+
+  - id: q30-kullback-leibler-divergence-4
+    term: kullback-leibler-divergence
+    level: 応用
+    type: derivation
+    question: |
+      $g=N(\mu_1,\sigma_1^2)$、$f=N(\mu_2,\sigma_2^2)$ のとき、KL 情報量 $D(g\,\|\,f)=E_g\!\left[\log\dfrac{g(X)}{f(X)}\right]$ を導け。
+      また、$g$ を固定して $(\mu_2,\sigma_2)$ を動かしたとき $D(g\|f)$ を最小にする値を求めよ。
+      最後に $D\big(N(0,1)\,\|\,N(0,2^2)\big)$ と $D\big(N(0,2^2)\,\|\,N(0,1)\big)$ を小数第3位まで（四捨五入）求めよ（自然対数）。
+    steps:
+      - |
+        対数密度の比：$\log\dfrac{g(x)}{f(x)}=\log\dfrac{\sigma_2}{\sigma_1}-\dfrac{(x-\mu_1)^2}{2\sigma_1^2}+\dfrac{(x-\mu_2)^2}{2\sigma_2^2}$。
+      - |
+        $X\sim g$ で期待値をとる：$E[(X-\mu_1)^2]=\sigma_1^2$、$E[(X-\mu_2)^2]=\sigma_1^2+(\mu_1-\mu_2)^2$（分散＋バイアスの2乗）。
+      - |
+        代入して $D(g\|f)=\log\dfrac{\sigma_2}{\sigma_1}+\dfrac{\sigma_1^2+(\mu_1-\mu_2)^2}{2\sigma_2^2}-\dfrac12$。
+      - |
+        最小化：$\mu_2$ は第2項だけに入るので $\mu_2=\mu_1$。そのとき $\dfrac{\partial D}{\partial\sigma_2}=\dfrac1{\sigma_2}-\dfrac{\sigma_1^2}{\sigma_2^3}=0$ から $\sigma_2=\sigma_1$ で、最小値は $D=0$。
+      - |
+        数値：$D(N(0,1)\|N(0,4))=\log2+\dfrac18-\dfrac12=0.318$、$D(N(0,4)\|N(0,1))=\log\dfrac12+\dfrac42-\dfrac12=0.807$。
+    answer: '$D(g\|f)=\log\dfrac{\sigma_2}{\sigma_1}+\dfrac{\sigma_1^2+(\mu_1-\mu_2)^2}{2\sigma_2^2}-\dfrac12$、最小は $\mu_2=\mu_1,\ \sigma_2=\sigma_1$（$D=0$）。数値例は $0.318$ と $0.807$'
+    hint: |
+      $\log(g/f)$ を $x$ の2次式で書き、$X\sim g$ のもとでの $E[(X-\mu_1)^2]$ と $E[(X-\mu_2)^2]$ を代入する。期待値は必ず $g$ でとる。
+    explanation: |
+      対数密度の比は $x$ の2次式なので、$X\sim g$ の2次モーメントだけで期待値が計算できます。$E[(X-\mu_2)^2]=\sigma_1^2+(\mu_1-\mu_2)^2$ がポイントで、
+      $$D(g\|f)=\log\frac{\sigma_2}{\sigma_1}+\frac{\sigma_1^2+(\mu_1-\mu_2)^2}{2\sigma_2^2}-\frac12$$
+      となります。$(\mu_2,\sigma_2)$ について最小化すると $\mu_2=\mu_1,\ \sigma_2=\sigma_1$ で $0$ になり、ギブスの不等式（$D\ge0$、等号は $f=g$）と合います。データから最尤推定することは、この KL 情報量を経験分布で近似して最小化することに当たります。
+      数値例では $0.318\ne0.807$ で、KL 情報量が非対称であることが確かめられます。広い分布 $N(0,4)$ を狭い $N(0,1)$ で近似するほうが、裾の点で $f$ が小さくなりすぎるため損失が大きくなります。
+      よくある間違いは、$E[(X-\mu_2)^2]$ を $\sigma_1^2$ だけにしてバイアスの項を落とすこと、$\log(\sigma_2/\sigma_1)$ を $\log(\sigma_2^2/\sigma_1^2)$ と2倍にすること、期待値を $f$ でとってしまうことです。

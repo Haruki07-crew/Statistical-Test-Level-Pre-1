@@ -35,6 +35,8 @@ $$
 Q_i = T_i - \frac{1}{k}\sum_{j:\,i\in j} B_j, \qquad \hat\tau_i = \frac{k\,Q_i}{\lambda v}
 $$
 
+ここで $\tau_i$ は処理効果で、制約 $\sum_i\tau_i=0$ のもとでの推定値です（$\sum_i Q_i=0$ なので $\sum_i\hat\tau_i=0$ になります）。
+
 ## 数式の読み解き
 
 - $bk=vr$：観測の総数を、ブロック側（$b$ 個 × $k$）と処理側（$v$ 個 × $r$）から数えたものです。

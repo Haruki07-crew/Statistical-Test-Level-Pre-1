@@ -554,3 +554,60 @@ questions:
     explanation: |
       $$\hat p=\frac{1+24}{999+1}=\frac{25}{1000}=0.025$$
       分子と分母に1を足すのは、観測データ自体も帰無仮説のもとでの1つの並べ方として数えるためで、$p$ 値が0にならず、検定の大きさが保たれます。
+
+  - id: q32-inverse-transform-sampling-4
+    term: inverse-transform-sampling
+    level: 応用
+    type: derivation
+    question: |
+      $U\sim U(0,1)$、$F$ を連続で狭義単調増加な分布関数とするとき、$X=F^{-1}(U)$ の分布関数が $F$ であることを示せ。
+      これを使って、ラプラス分布（両側指数分布）$f(x)=\dfrac12e^{-|x|}\ (-\infty<x<\infty)$ の乱数を $U$ から作る式を導き、$U=0.9$ と $U=0.2$ から得られる値をそれぞれ小数第3位まで（四捨五入）求めよ。
+    steps:
+      - |
+        $F$ は狭義単調増加なので $\{F^{-1}(U)\le x\}=\{U\le F(x)\}$。よって $P(X\le x)=P(U\le F(x))=F(x)$。
+      - |
+        分布関数：$x<0$ では $F(x)=\displaystyle\int_{-\infty}^x\frac12e^{t}dt=\frac12e^{x}$、$x\ge0$ では $F(x)=1-\dfrac12e^{-x}$（$F(0)=\tfrac12$）。
+      - |
+        逆関数：$u<\tfrac12$ なら $u=\tfrac12e^x$ を解いて $x=\log(2u)$。$u\ge\tfrac12$ なら $u=1-\tfrac12e^{-x}$ を解いて $x=-\log\{2(1-u)\}$。
+      - |
+        まとめると $X=\operatorname{sgn}\!\big(U-\tfrac12\big)\cdot\Big\{-\log\big(1-2\,|U-\tfrac12|\big)\Big\}$。
+      - |
+        数値：$U=0.9$ では $X=-\log(0.2)=1.609$、$U=0.2$ では $X=\log(0.4)=-0.916$。
+    answer: '$X=\log(2U)\ (U<\tfrac12)$、$X=-\log\{2(1-U)\}\ (U\ge\tfrac12)$。$U=0.9$ で $1.609$、$U=0.2$ で $-0.916$'
+    hint: |
+      $|x|$ を含むので、分布関数は $x<0$ と $x\ge0$ に分けて求める。$F(0)=1/2$ が $u$ の場合分けの境目になる。
+    explanation: |
+      逆関数法の根拠は「$F^{-1}(U)\le x\iff U\le F(x)$」の1行で、あとは $u=F(x)$ を $x$ について解くだけです。
+      ラプラス分布は $0$ について対称で $F(0)=1/2$ なので、$U<1/2$ なら負の値 $\log(2U)$、$U\ge1/2$ なら正の値 $-\log\{2(1-U)\}$ を返します。
+      $U=0.9$ は上側なので $-\log0.2=1.609$、$U=0.2$ は下側なので $\log0.4=-0.916$ です。
+      符号を一様にランダムに付けたレート1の指数乱数 $E$（$X=\pm E$）としても同じ分布が得られ、上の式はちょうどこの作り方を1つの $U$ で行っています。
+      よくある間違いは、場合分けをせずに $x\ge0$ の式 $-\log\{2(1-U)\}$ をすべての $U$ に使うこと（$U<1/2$ で負の値が出ず、分布が右に偏る）、$F(x)$ の係数 $1/2$ を落として $1-e^{-x}$ とすることです。
+
+  - id: q32-rejection-sampling-4
+    term: rejection-sampling
+    level: 応用
+    type: derivation
+    question: |
+      目標の密度が正規化定数を除いて $\tilde f(x)$（$f(x)=\tilde f(x)/Z$、$Z=\int\tilde f(x)\,dx$ は未知でもよい）としかわからないとする。
+      提案分布の密度 $g$ と定数 $M$ が $\tilde f(x)\le Mg(x)$ を満たすとき、「$Y\sim g$、$V\sim U(0,1)$ を独立に作り、$V\le\tilde f(Y)/\{Mg(Y)\}$ なら採択」という棄却法で、採択された値が $f$ に従うこと、採択率が $Z/M$ であることを示せ。
+      さらに $\tilde f(x)=x^2(1-x)\ (0<x<1)$、$g$ を $U(0,1)$ の密度とし、$M$ を最小にとったときの採択率を小数第4位まで（四捨五入）求めよ。
+    steps:
+      - |
+        $Y=y$ を条件とした採択確率は $\dfrac{\tilde f(y)}{Mg(y)}$（$\le1$）。
+      - |
+        $P(Y\le x,\ \text{採択})=\displaystyle\int_{-\infty}^x\frac{\tilde f(y)}{Mg(y)}g(y)\,dy=\frac1M\int_{-\infty}^x\tilde f(y)\,dy=\frac{Z\,F(x)}{M}$。
+      - |
+        $x\to\infty$ として採択率 $P(\text{採択})=\dfrac ZM$。よって $P(Y\le x\mid\text{採択})=\dfrac{ZF(x)/M}{Z/M}=F(x)$ で、採択された値は $f$ に従う（$Z$ を知らなくてよい）。
+      - |
+        数値：$\tilde f'(x)=2x-3x^2=0$ から $x=\tfrac23$ で最大、最小の $M=\tilde f(\tfrac23)=\tfrac49\cdot\tfrac13=\tfrac4{27}$。$Z=\displaystyle\int_0^1(x^2-x^3)dx=\frac13-\frac14=\frac1{12}$。
+      - |
+        採択率 $=\dfrac{Z}{M}=\dfrac{1/12}{4/27}=\dfrac{27}{48}=\dfrac9{16}=0.5625$（採択された値は $\mathrm{Be}(3,2)$ に従う）。
+    answer: '採択率は $Z/M$、採択された値の分布関数は $F$。数値例では $M=4/27$、$Z=1/12$、採択率 $9/16=0.5625$'
+    hint: |
+      「$Y\le x$ かつ採択」の確率を積分で書くと $g$ が約分される。採択率はその $x\to\infty$ の極限。
+    explanation: |
+      採択の条件付き確率 $\tilde f(y)/\{Mg(y)\}$ を $g$ で平均すると $g$ が約分され、
+      $$P(Y\le x,\ \text{採択})=\frac{1}{M}\int_{-\infty}^x\tilde f(y)\,dy=\frac{Z}{M}F(x)$$
+      となります。採択率は $Z/M$、採択を条件とすれば $Z/M$ が約分されて $F(x)$ が残るので、正規化定数 $Z$ を知らなくても $f$ の乱数が作れます（正規化された $f$ を使う場合は $Z=1$ で採択率 $1/M$）。
+      数値例では $M=4/27$、$Z=1/12$ で採択率 $9/16=0.5625$、採択までの平均試行回数は $16/9\approx1.78$ 回です。正規化した $f=12x^2(1-x)$ で考えても $M=12\times4/27=16/9$ で、採択率 $1/M$ は同じになります。
+      よくある間違いは、正規化していない $\tilde f$ のまま採択率を $1/M$ とすること（$=6.75$ となり確率として不自然）、$M$ を $\tilde f$ の最大値でなく区間の端の値で決めること、採択率と平均試行回数（その逆数）を取り違えることです。

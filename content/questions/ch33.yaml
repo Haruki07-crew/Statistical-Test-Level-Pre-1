@@ -164,3 +164,32 @@ questions:
       フロントドア基準の条件1は何を要求しているか。
     explanation: |
       条件1は「$X$ から $Y$ への有向道をすべて $M$ が遮る」ことです。直接の矢印 $X\to Y$ があると、$M$ を通らない効果が残り、フロントドア調整公式はそれを取りこぼします。
+
+  - id: q33-backdoor-criterion-4
+    term: backdoor-criterion
+    level: 応用
+    type: derivation
+    question: |
+      DAG が $Z\to X,\ Z\to Y,\ X\to Y$ の3つの矢印だけからなり（$X,Y,Z$ は2値、すべての $z$ で $P(x\mid z)>0$）、介入 $do(X=x)$ は「$X$ に入る矢印を切り、$X$ を $x$ に固定する」ことだとする。
+      同時分布の分解（因数分解）から調整化公式 $P(y\mid do(x))=\sum_zP(y\mid x,z)P(z)$ を導き、それが逆確率重み付けの形 $E\!\left[\dfrac{\mathbf 1\{X=x\}\,\mathbf 1\{Y=y\}}{P(X=x\mid Z)}\right]$ に等しいことを示せ。
+      さらに $P(Z=1)=0.3$、$P(Y=1\mid X,Z)$ が $(X,Z)=(1,0)$ で $0.5$、$(1,1)$ で $0.7$、$(0,0)$ で $0.3$、$(0,1)$ で $0.6$ のとき、平均因果効果 $P(Y=1\mid do(X=1))-P(Y=1\mid do(X=0))$ を小数第2位まで（四捨五入）求めよ。
+    steps:
+      - |
+        DAG に沿った分解：$P(x,y,z)=P(z)\,P(x\mid z)\,P(y\mid x,z)$。
+      - |
+        介入では $X$ に入る矢印 $Z\to X$ を切るので、因子 $P(x\mid z)$ を取り除き $X=x$ に固定する（切断された分解）：$P(y,z\mid do(x))=P(z)\,P(y\mid x,z)$。
+      - |
+        $z$ について和をとる：$P(y\mid do(x))=\displaystyle\sum_zP(y\mid x,z)\,P(z)$。条件付けの $P(y\mid x)=\sum_zP(y\mid x,z)P(z\mid x)$ とは重みが違う。
+      - |
+        逆確率重み付け：$E\!\left[\dfrac{\mathbf 1\{X=x\}\mathbf 1\{Y=y\}}{P(x\mid Z)}\right]=\displaystyle\sum_z\frac{P(z)P(x\mid z)P(y\mid x,z)}{P(x\mid z)}=\sum_zP(y\mid x,z)P(z)$。
+      - |
+        数値：$P(Y{=}1\mid do(X{=}1))=0.5\times0.7+0.7\times0.3=0.56$、$P(Y{=}1\mid do(X{=}0))=0.3\times0.7+0.6\times0.3=0.39$、差は $0.17$。
+    answer: '$P(y\mid do(x))=\sum_zP(y\mid x,z)P(z)=E\big[\mathbf 1\{X=x\}\mathbf 1\{Y=y\}/P(X=x\mid Z)\big]$。数値例の平均因果効果は $0.17$'
+    hint: |
+      介入は、同時分布の分解から $X$ の生成の仕組み $P(x\mid z)$ だけを取り除くことに当たる。逆確率重み付けは期待値を $z$ ごとの和に書き下すと $P(x\mid z)$ が約分される。
+    explanation: |
+      DAG に沿って $P(x,y,z)=P(z)P(x\mid z)P(y\mid x,z)$ と分解し、介入で $X$ の仕組み $P(x\mid z)$ だけを取り除くと $P(y,z\mid do(x))=P(z)P(y\mid x,z)$ です。$z$ で和をとれば調整化公式になります。
+      観察データの $P(y\mid x)$ では重みが $P(z\mid x)$（$X=x$ を選んだ人の $Z$ の分布）ですが、介入では元の集団の $P(z)$ のままである点が違いです。
+      逆確率重み付けは、$X=x$ になりにくい $z$ の人ほど $1/P(x\mid z)$ で大きく重みをつけ、$Z$ の分布を元の集団に戻す方法で、期待値を書き下すと同じ式になります（正値性 $P(x\mid z)>0$ が必要なのはこの割り算のため）。
+      数値例では $0.56-0.39=0.17$ です。$Z$ の分布 $P(Z=1)=0.3$ だけを使い、$P(X\mid Z)$ は必要ありません。
+      よくある間違いは、重みに $P(z\mid x)$ を使って $P(y\mid x)$ を計算してしまうこと、$Z$ の値ごとの効果 $0.2,\ 0.1$ を単純平均して $0.15$ とすること（重みは $P(z)=0.7,\ 0.3$）です。
