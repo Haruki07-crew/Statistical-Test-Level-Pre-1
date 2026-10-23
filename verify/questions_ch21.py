@@ -180,4 +180,24 @@ def _deriv21():
     q.check("q21-neyman-allocation-4", bool(ok2), "制約付き数値最小化とネイマン配分が一致、sympy で V_opt と停留条件")
 _deriv21()
 
+# --- 4択の追加分 ---
+def _vars(pop_strata, n):
+    allv = np.concatenate(pop_strata); N = allv.size; f = n / N
+    W = np.array([s.size for s in pop_strata]) / N; S2 = np.array([s.var(ddof=1) for s in pop_strata])
+    return (1 - f) / n * allv.var(ddof=1), (1 - f) / n * (W * S2).sum()
+_rng = np.random.default_rng(2103)
+_good = [_rng.normal(m, 2, 500) for m in (20, 50, 80)]      # 層内が均質・層間の差が大
+_bad = [_rng.normal(50, 20, 500) for _ in range(3)]          # 層内が多様・層間の差が小
+_vg, _vb = _vars(_good, 60), _vars(_bad, 60)
+_eq_many = [_rng.normal(50, 20, 150) for _ in range(10)]     # 大きさが等しく層が多くても層間の差が小
+_ve = _vars(_eq_many, 60)
+q.check("q21-stratified-sampling-3",
+        _vg[1] / _vg[0] < 0.05 and _vb[1] / _vb[0] > 0.9 and _ve[1] / _ve[0] > 0.9,
+        f"比例配分/SRS の分散比：層間の差が大 {_vg[1] / _vg[0]:.4f}、層内が多様 {_vb[1] / _vb[0]:.4f}、等大で10層 {_ve[1] / _ve[0]:.4f}")
+_y = np.array([4, 10, 3.0]); _pi = np.array([0.2, 0.5, 0.1])
+_ht = (_y / _pi).sum(); _wr = [(_y * _pi).sum(), (_y / _pi).mean(), 30 / 3 * _y.sum()]
+q.check("q21-horvitz-thompson-estimator-4",
+        abs(_ht - 70) < 1e-9 and [round(w, 1) for w in _wr] == [6.1, 23.3, 170.0],
+        f"HT={_ht}。誤答 {[round(w, 2) for w in _wr]}")
+
 q.done()

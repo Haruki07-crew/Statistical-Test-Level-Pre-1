@@ -11,6 +11,10 @@
   "hash": "f418c211f88b43a9",
   "ok": true
  },
+ "q16-adjusted-r-squared-4": {
+  "hash": "5fd9664ad7743eeb",
+  "ok": true
+ },
  "q16-coefficient-of-determination-1": {
   "hash": "3bfdeabd9f27e5a0",
   "ok": true
@@ -137,6 +141,10 @@
  },
  "q16-variance-inflation-factor-2": {
   "hash": "578fb81abebb631e",
+  "ok": true
+ },
+ "q16-variance-inflation-factor-3": {
+  "hash": "b506eaf4e3db8147",
   "ok": true
  }
 }

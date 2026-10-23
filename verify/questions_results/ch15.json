@@ -7,12 +7,20 @@
   "hash": "b03f1bd7edce34be",
   "ok": true
  },
+ "q15-birth-death-process-3": {
+  "hash": "eeb19f60a1f13084",
+  "ok": true
+ },
  "q15-brownian-motion-1": {
   "hash": "f29c353aaa4c16e2",
   "ok": true
  },
  "q15-brownian-motion-2": {
   "hash": "a5c747f09b65dc9d",
+  "ok": true
+ },
+ "q15-brownian-motion-3": {
+  "hash": "9138ca2253e522e6",
   "ok": true
  },
  "q15-compound-poisson-process-1": {

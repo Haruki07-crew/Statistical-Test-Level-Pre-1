@@ -404,3 +404,49 @@ questions:
       $$E[X]=\lambda,\qquad E[X(X-1)]=\lambda^2,\qquad V[X]=\lambda$$
       が得られます。$E[X^2]$ を直接計算するより、階乗モーメント $E[X(X-1)]$ を経由するほうが約分がきれいに決まるのが要点です。
       よくある間違いは、$E[X(X-1)]=\lambda^2$ を $E[X^2]$ と取り違えて $V[X]=0$ としてしまうことです。
+
+  # ---------- 4択の追加 ----------
+  - id: q05-poisson-distribution-5
+    term: poisson-distribution
+    level: 標準
+    type: choice
+    question: |
+      $X$ がポアソン分布 $Po(\lambda)$（$P(X=k)=e^{-\lambda}\lambda^k/k!$、$\lambda>0$）に従い、$P(X=1)=P(X=2)$ が成り立つ。
+      このとき $V[X]$ はどれか。
+    choices:
+      - '$\sqrt2$'
+      - '$6$'
+      - '$1$'
+      - '$2$'
+    answer: 3
+    hint: |
+      2つの確率を式で書いて等しいとおき、$\lambda$ を求める。ポアソン分布の分散は $\lambda$ と同じ。
+    explanation: |
+      $$e^{-\lambda}\lambda=\frac{e^{-\lambda}\lambda^2}{2}\iff\lambda=2\quad(\lambda>0)$$
+      ポアソン分布では $E[X]=V[X]=\lambda$ なので $V[X]=2$ です。
+      - $\sqrt2$ は標準偏差で、分散と標準偏差の取り違えです。
+      - $6$ は $E[X^2]=V[X]+E[X]^2=2+4$ で、2次モーメントと分散の取り違えです。
+      - $1$ は比 $P(X=k+1)/P(X=k)=\lambda/(k+1)$ で $k=0$ とし、$P(X=0)=P(X=1)$ を解いてしまった場合の $\lambda$ です。
+
+  - id: q05-negative-binomial-distribution-3
+    term: negative-binomial-distribution
+    level: 標準
+    type: choice
+    question: |
+      成功確率 $p=0.4$ の独立な試行を繰り返し、3回目の成功までに起きた**失敗の回数**を $X$ とする
+      （$X\sim\mathrm{NB}(3,0.4)$、$P(X=x)=\binom{r+x-1}{x}p^rq^x$、$q=1-p$）。
+      $V[X]$ はどれか（小数第2位まで（四捨五入））。
+    choices:
+      - '$11.25$'
+      - '$4.50$'
+      - '$7.50$'
+      - '$3.33$'
+    answer: 0
+    hint: |
+      $X$ は「1回の成功までの失敗回数」（幾何分布、分散 $q/p^2$）を独立に $r$ 個足したものと考える。
+    explanation: |
+      失敗回数の幾何分布は期待値 $q/p$、分散 $q/p^2$。独立に $r=3$ 個足すので
+      $$V[X]=\frac{rq}{p^2}=\frac{3\times0.6}{0.4^2}=\frac{1.8}{0.16}=11.25$$
+      - $4.50$ は期待値 $E[X]=rq/p$ で、期待値と分散の取り違えです。
+      - $7.50$ は $r/p$ で、「成功までの試行回数」の期待値です（試行回数 $X+3$ の分散は $X$ と同じ $11.25$）。
+      - $3.33$ は $rp/q^2$ で、$p$ と $q$ を取り違えています。

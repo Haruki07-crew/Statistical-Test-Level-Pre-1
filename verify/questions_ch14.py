@@ -188,4 +188,32 @@ def _deriv14():
     q.check("q14-n-step-transition-probability-3", bool(ok), "sympy: 漸化式と初期値を満たし (P^k)_11 と一致、極限 b/(a+b) が定常分布")
 _deriv14()
 
+# --- 4択の追加分 ---
+def _classes(P):
+    K = len(P); A = (np.asarray(P) > 0).astype(int)
+    R = np.linalg.matrix_power(np.eye(K, dtype=int) + A, K) > 0      # 到達可能（0歩以上）
+    trans = [i for i in range(K) if any(R[i, j] and not R[j, i] for j in range(K))]
+    return R, trans
+_P = np.array([[.5, .3, .2, 0], [.4, .4, 0, .2], [0, 0, .6, .4], [0, 0, .5, .5]])
+_R, _tr = _classes(_P)
+_Pn = np.linalg.matrix_power(_P, 2000)
+q.check("q14-recurrence-and-transience-3",
+        [i + 1 for i in _tr] == [1, 2] and np.allclose(_Pn[:, :2], 0, atol=1e-12) and (_Pn[:, 2:] > 0.1).all(),
+        f"過渡的な状態 {[i + 1 for i in _tr]}、P^2000 の1・2列は0、3・4列は正（{_Pn[0, 2:].round(4)}）")
+_Ppd = np.array([[0., 1], [1, 0]]); _I = np.eye(2)
+_osc = not np.allclose(np.linalg.matrix_power(_Ppd, 1001), np.linalg.matrix_power(_Ppd, 1000))
+_pi = np.array([.5, .5]); _db = np.allclose(_pi[:, None] * _Ppd, (_pi[:, None] * _Ppd).T)
+_dep = not np.allclose(np.array([1, 0]) @ _I, np.array([0, 1]) @ _I)
+_rng = np.random.default_rng(14); _ok = True
+for _ in range(20):
+    M = _rng.random((4, 4)) + 0.01; M /= M.sum(1, keepdims=True)   # 正の行列：既約・非周期
+    Mn = np.linalg.matrix_power(M, 200); _ok &= np.allclose(Mn, Mn[0], atol=1e-10)
+q.check("q14-ergodicity-3", _osc and _db and _dep and bool(_ok),
+        "既約・非周期の行列20個で P^n の行が一致。周期2の行列は振動（かつ詳細つり合いを満たす）、P=I は初期分布で極限が変わる")
+_Pp = np.array([[0, 1, 0], [0, 0, 1], [.5, .5, 0]])
+_ret = [n for n in range(1, 40) if np.linalg.matrix_power(_Pp, n)[1, 1] > 0]
+_per = [reduce(gcd, [n for n in range(1, 40) if np.linalg.matrix_power(_Pp, n)[i, i] > 0]) for i in range(3)]
+q.check("q14-periodicity-3", _per == [1, 1, 1] and 2 in _ret and 3 in _ret,
+        f"各状態の周期 {_per}（状態2の戻れる時刻 {_ret[:5]}…）。2・3・6 は誤り")
+
 q.done()

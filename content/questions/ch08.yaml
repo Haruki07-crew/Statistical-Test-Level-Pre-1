@@ -762,3 +762,71 @@ questions:
       $$V[\hat\lambda]\ge\frac{\lambda}{n}$$
       です。$\bar X$ は不偏で分散がちょうど $\lambda/n$ なので下限を達成します（$\bar X$ は最尤推定量でもあります）。
       よくある間違いは、下限を $1/I(\lambda)=\lambda$ として標本サイズ $n$ で割り忘れること、また情報量を $1/\lambda^2$ のまま（期待値をとり忘れて）使うことです。
+
+  # ---------- 4択の追加 ----------
+  - id: q08-score-function-3
+    term: score-function
+    level: 基本
+    type: choice
+    question: |
+      レート $\lambda$ の指数分布（密度 $\lambda e^{-\lambda x}$、$x>0$）からの i.i.d. 標本 $x_1,\dots,x_n$ について、
+      標本全体のスコア関数 $U(\lambda)=\dfrac{\partial\ell(\lambda)}{\partial\lambda}$（$\ell$ は対数尤度）はどれか。
+    choices:
+      - '$n\log\lambda-\lambda\sum x_i$'
+      - '$-\dfrac{n}{\lambda^2}$'
+      - '$\dfrac{n}{\lambda^2}$'
+      - '$\dfrac{n}{\lambda}-\sum x_i$'
+    answer: 3
+    hint: |
+      まず対数尤度 $\ell(\lambda)=\sum\log f(x_i;\lambda)$ を書き、$\lambda$ で1回だけ微分する。
+    explanation: |
+      $$\ell(\lambda)=\sum_{i=1}^n(\log\lambda-\lambda x_i)=n\log\lambda-\lambda\sum x_i,\qquad U(\lambda)=\frac{n}{\lambda}-\sum x_i$$
+      $U(\hat\lambda)=0$ から最尤推定量 $\hat\lambda=1/\bar x$ が得られます。
+      - $n\log\lambda-\lambda\sum x_i$ は対数尤度そのもので、微分していません。
+      - $-n/\lambda^2$ はスコアをもう1回微分した $\ell''(\lambda)$ です。
+      - $n/\lambda^2$ は $-E[\ell''(\lambda)]$、つまり標本全体のフィッシャー情報量 $nI(\lambda)$ です。
+
+  - id: q08-method-of-moments-3
+    term: method-of-moments
+    level: 標準
+    type: choice
+    question: |
+      正規分布 $N(\mu,\sigma^2)$ から観測値 $2,\ 4,\ 4,\ 6,\ 9$ を得た。1次と2次の（原点まわりの）標本モーメントを
+      母モーメント $E[X]=\mu$、$E[X^2]=\mu^2+\sigma^2$ に等しいとおくモーメント法で、$\sigma^2$ の推定値はどれか（小数第2位まで（四捨五入））。
+    choices:
+      - '$5.60$'
+      - '$7.00$'
+      - '$2.37$'
+      - '$30.60$'
+    answer: 0
+    hint: |
+      $\bar x=\frac1n\sum x_i$、$\overline{x^2}=\frac1n\sum x_i^2$ を計算し、$\hat\sigma^2=\overline{x^2}-\bar x^2$ とする。
+    explanation: |
+      $\bar x=25/5=5$、$\overline{x^2}=(4+16+16+36+81)/5=153/5=30.6$ なので
+      $$\hat\sigma^2=\overline{x^2}-\bar x^2=30.6-25=5.60$$
+      これは $n$ で割った標本分散 $\frac1n\sum(x_i-\bar x)^2=28/5$ と同じです。
+      - $7.00$ は $n-1=4$ で割った不偏分散で、モーメント法の推定値とは割る数が違います。
+      - $2.37$ は $\sqrt{5.6}$ で、$\sigma$ の推定値（分散と標準偏差の取り違え）です。
+      - $30.60$ は2次の原点モーメント $\overline{x^2}$ で、$\bar x^2$ を引き忘れています。
+
+  - id: q08-asymptotic-normality-of-mle-4
+    term: asymptotic-normality-of-mle
+    level: 標準
+    type: choice
+    question: |
+      成功確率 $p$ のベルヌーイ分布からの i.i.d. 標本 $n=100$ 個で、$p$ の最尤推定量は $\hat p=\bar X$ である。
+      真の値が $p=0.2$ のとき、最尤推定量の漸近正規性 $\hat p\approx N\!\left(p,\ \dfrac{1}{nI(p)}\right)$ による $\hat p$ の近似分散はどれか。
+    choices:
+      - '$0.0400$'
+      - '$0.1600$'
+      - '$0.0016$'
+      - '$0.0025$'
+    answer: 2
+    hint: |
+      ベルヌーイ分布1個あたりのフィッシャー情報量 $I(p)$ を求め、標本全体 $nI(p)$ の逆数をとる。
+    explanation: |
+      $\log f(x;p)=x\log p+(1-x)\log(1-p)$ より $I(p)=\dfrac{1}{p(1-p)}$。したがって
+      $$\frac{1}{nI(p)}=\frac{p(1-p)}{n}=\frac{0.2\times0.8}{100}=0.0016$$
+      - $0.0400$ は $\sqrt{0.0016}$ で、漸近標準偏差（分散と標準偏差の取り違え）です。
+      - $0.1600$ は $1/I(p)=p(1-p)$ で、標本サイズ $n$ で割り忘れています（1個分の分散）。
+      - $0.0025$ は $p=0.5$ の $0.25/100$ で、真の $p$ を使っていません（比率の分散の最大値）。

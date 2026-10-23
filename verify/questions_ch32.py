@@ -196,4 +196,38 @@ q.check("q32-rejection-sampling-4", abs(_r.x - 2 / 3) < 1e-5 and abs(_M - 4 / 27
         and round(_Z / _M, 4) == 0.5625 and abs(_acc.mean() - 0.5625) < 0.003 and _ks > 0.001,
         f"M=4/27、Z=1/12、採択率 {_Z / _M:.4f}、シミュレーション {_acc.mean():.4f}、Be(3,2) との KS p={_ks:.3f}")
 
+# --- 4択の追加（棄却法・提案分布が非対称な MH 法）---
+import numpy as _np
+_rng = _np.random.default_rng(3205)
+_xx = _np.linspace(1e-6, 1, 100001)
+_M = (3 * _xx ** 2 / (2 * _xx)).max()
+_y = _np.sqrt(_rng.random(600000))                    # g(x)=2x からの乱数（逆関数法）
+_acc = _rng.random(_y.size) <= 3 * _y ** 2 / (_M * 2 * _y)
+_rate = _acc.mean()
+_ok = abs(_M - 1.5) < 1e-9 and abs(_rate - 2 / 3) < 0.005 and round(1000 * _M) == 1500
+_ok &= abs(_y[_acc].mean() - 0.75) < 0.005                      # 採択された乱数の平均＝f の平均 3/4
+_ok &= (3 * _xx ** 2).max() == 3 and round(1000 / _M) == 667 and (2 * _xx).max() == 2
+q.check("q32-rejection-sampling-5", _ok, f"M={_M:.4f}、採択率（乱数）{_rate:.4f}、1000個で {1000*_M:.0f} 回")
+_pi = _np.array([0.2, 0.3, 0.5])
+_q = _np.array([[0, 1, 0], [0.5, 0, 0.5], [0, 1, 0]])
+_al = lambda x, y: min(1.0, _pi[y] * _q[y, x] / (_pi[x] * _q[x, y]))
+_Pm = _np.zeros((3, 3))
+for i in range(3):
+    for j in range(3):
+        if i != j and _q[i, j] > 0:
+            _Pm[i, j] = _q[i, j] * _al(i, j)
+    _Pm[i, i] = 1 - _Pm[i].sum()
+_ok = abs(_al(2, 1) - 0.30) < 1e-12 and _np.allclose(_pi @ _Pm, _pi)     # 定常分布が π
+_wr = [_pi[1] / _pi[2], _pi[2] * _q[2, 1] / (_pi[1] * _q[1, 2]), _pi[1] * _q[1, 2]]
+_ok &= abs(_wr[0] - 0.6) < 1e-12 and min(1, _wr[1]) == 1 and abs(_wr[2] - 0.15) < 1e-12
+# 補正なし（メトロポリス法の比）だと定常分布が π にならない
+_Pw = _np.zeros((3, 3))
+for i in range(3):
+    for j in range(3):
+        if i != j and _q[i, j] > 0:
+            _Pw[i, j] = _q[i, j] * min(1, _pi[j] / _pi[i])
+    _Pw[i, i] = 1 - _Pw[i].sum()
+_ok &= not _np.allclose(_pi @ _Pw, _pi)
+q.check("q32-metropolis-hastings-4", _ok, f"α(3,2)={_al(2,1):.2f}、遷移行列の定常分布＝π、補正なしではずれる")
+
 q.done()

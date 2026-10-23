@@ -15,6 +15,10 @@
   "hash": "07ea9c0505c1875c",
   "ok": true
  },
+ "q30-aic-5": {
+  "hash": "ba1cbd3908bd4694",
+  "ok": true
+ },
  "q30-aicc-1": {
   "hash": "d1cb4a784a9bfe94",
   "ok": true
@@ -29,6 +33,10 @@
  },
  "q30-bias-variance-tradeoff-3": {
   "hash": "e91aed19ea7995c3",
+  "ok": true
+ },
+ "q30-bias-variance-tradeoff-4": {
+  "hash": "647ec0fb4bd886d1",
   "ok": true
  },
  "q30-bic-1": {

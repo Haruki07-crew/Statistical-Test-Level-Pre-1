@@ -194,4 +194,27 @@ def _deriv16():
     q.check("q16-regression-coefficient-t-test-4", bool(ok2), f"シミュレーション：E[β̂]=β、V[β̂]=σ²(X'X)^-1、t_j~t(n-p-1)（KS={ks:.4f}）")
 _deriv16()
 
+# --- 4択の追加分 ---
+_n, _p, _Se, _ST = 30, 3, 60.0, 200.0
+_adj = 1 - (_Se / (_n - _p - 1)) / (_ST / (_n - 1))
+_wr = [1 - _Se / _ST, 1 - (_Se / (_n - _p)) / (_ST / (_n - 1)), 1 - (_Se / (_n - _p - 1)) / (_ST / _n)]
+q.check("q16-adjusted-r-squared-4",
+        round(_adj, 3) == 0.665 and [round(w, 3) for w in _wr] == [0.700, 0.678, 0.654]
+        and abs(_adj - (1 - (1 - 0.7) * (_n - 1) / (_n - _p - 1))) < 1e-12,
+        f"adjR²={_adj:.4f}。誤答 R²・n-p・n で割る {[round(w, 4) for w in _wr]}")
+_rng = np.random.default_rng(1603)
+_X = _rng.normal(size=(200, 3)); _X[:, 2] = 0.8 * _X[:, 0] + 0.5 * _X[:, 1] + 0.4 * _rng.normal(size=200)
+_y = _X @ np.array([1.0, -1.0, 2.0]) + _rng.normal(size=200)
+def _r2(t, Z):
+    Z = np.column_stack([np.ones(len(t)), Z]); b = np.linalg.lstsq(Z, t, rcond=None)[0]
+    e = t - Z @ b; return 1 - e @ e / ((t - t.mean()) @ (t - t.mean()))
+_Xc = np.column_stack([np.ones(200), _X]); _C = np.linalg.inv(_Xc.T @ _Xc)
+_S22 = ((_X[:, 2] - _X[:, 2].mean()) ** 2).sum()
+_vif = _C[3, 3] * _S22                       # V[β̂_j]·S_jj/σ² = VIF_j
+_cand = [_r2(_X[:, 2], _X[:, :2]), _r2(_y, _X[:, 2]), _r2(_y, _X), _r2(_y, _X[:, :2])]
+_vals = [1 / (1 - c) for c in _cand]
+q.check("q16-variance-inflation-factor-3",
+        abs(_vals[0] - _vif) < 1e-9 and all(abs(v - _vif) > 0.1 for v in _vals[1:]),
+        f"(X'X)^-1_jj·S_jj={_vif:.4f} は x_j を他に回帰した 1/(1-R²) と一致。他の候補 {[round(v, 3) for v in _vals[1:]]}")
+
 q.done()

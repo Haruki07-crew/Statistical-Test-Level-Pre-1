@@ -15,6 +15,10 @@
   "hash": "f5b47d9891419882",
   "ok": true
  },
+ "q13-friedman-test-3": {
+  "hash": "692266c3aa70c8b4",
+  "ok": true
+ },
  "q13-kendall-rank-correlation-1": {
   "hash": "0e98e2b10f34b27e",
   "ok": true
@@ -97,6 +101,10 @@
  },
  "q13-wilcoxon-rank-sum-test-2": {
   "hash": "fa38665b3053e367",
+  "ok": true
+ },
+ "q13-wilcoxon-rank-sum-test-3": {
+  "hash": "e65fc5552af3ccfb",
   "ok": true
  },
  "q13-wilcoxon-signed-rank-test-1": {

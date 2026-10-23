@@ -79,6 +79,10 @@
   "hash": "2ad074a3087b9d20",
   "ok": true
  },
+ "q05-negative-binomial-distribution-3": {
+  "hash": "0ce1e77e389e3629",
+  "ok": true
+ },
  "q05-poisson-distribution-1": {
   "hash": "b3c66d98ad7c53a6",
   "ok": true
@@ -93,6 +97,10 @@
  },
  "q05-poisson-distribution-4": {
   "hash": "fe2da5c9320c031c",
+  "ok": true
+ },
+ "q05-poisson-distribution-5": {
+  "hash": "d3dc78d456caef6f",
   "ok": true
  }
 }

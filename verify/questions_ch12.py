@@ -138,4 +138,24 @@ def _deriv12():
     q.check("q12-g-statistic-3", bool(ok), "sympy: (E+d)log(1+d/E)=d+d²/(2E)+O(d³)、数値で G≈X²")
 _deriv12()
 
+# --- 4択の追加分 ---
+_O = np.array([30, 20, 25, 25]); _E = np.full(4, 25.0)
+_x2 = ((_O - _E) ** 2 / _E).sum()
+_bad = [((_O - _E) ** 2).sum() / 100, ((_O - _E) ** 2 / _O).sum()]
+q.check("q12-pearson-chi-square-statistic-3",
+        abs(_x2 - 2.0) < 1e-12 and abs(stats.chisquare(_O, _E).statistic - 2.0) < 1e-12
+        and len(_O) - 1 == 3 and all(abs(round(b, 2) - 2.00) > 0.005 for b in _bad)
+        and round(_bad[0], 2) == 0.50 and round(_bad[1], 2) == 2.08,
+        f"χ²={_x2:.3f}、自由度3。誤答 Σ(O-E)²/n={_bad[0]:.3f}、Σ(O-E)²/O={_bad[1]:.3f}、自由度4 は別")
+_p1, _p2, _pp = 0.40, 0.25, 0.325
+_z = (_p1 - _p2) / np.sqrt(_pp * (1 - _pp) * (1 / 100 + 1 / 100))
+_zs = [(_p1 - _p2) / np.sqrt(_p1 * (1 - _p1) / 100 + _p2 * (1 - _p2) / 100),
+       (_p1 - _p2) / np.sqrt(_pp * (1 - _pp) / 100), (_p1 - _p2) / np.sqrt(_pp * (1 - _pp) / 200)]
+_tab = np.array([[40, 60], [25, 75]])
+_chi = stats.chi2_contingency(_tab, correction=False)[0]
+q.check("q12-two-sample-proportion-test-3",
+        round(_z, 2) == 2.26 and abs(_z ** 2 - _chi) < 1e-9
+        and [round(v, 2) for v in _zs] == [2.29, 3.20, 4.53],
+        f"Z={_z:.4f}（Z²=分割表のχ²={_chi:.4f}）。誤答 {[round(v, 4) for v in _zs]}")
+
 q.done()

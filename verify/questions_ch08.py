@@ -230,4 +230,48 @@ def _deriv08():
     q.check("q08-cramer-rao-inequality-4", bool(ok2), "sympy: I(λ)=1/λ（E[score²] でも一致）、下限 λ/n = V[X̄]")
 _deriv08()
 
+
+# --- 4択の追加 ---
+def _choice08():
+    import numpy as _np
+    import sympy as _S
+    # 指数分布のスコア関数
+    lam, n, T = _S.symbols("lambda n T", positive=True)    # T = Σx_i
+    ell = n * _S.log(lam) - lam * T
+    U = _S.diff(ell, lam)
+    ch = [n * _S.log(lam) - lam * T, -n / lam ** 2, n / lam ** 2, n / lam - T]
+    ans = q.qs["q08-score-function-3"]["answer"]
+    q.check("q08-score-function-3",
+            _S.simplify(ch[ans] - U) == 0 and all(_S.simplify(c - U) != 0 for i, c in enumerate(ch) if i != ans),
+            f"sympy: U(λ)={U}、誤答（ℓ, ℓ'', nI）は一致しない")
+    q.check("q08-score-function-3",
+            _S.simplify(_S.diff(U, lam) - ch[1]) == 0 and _S.solve(U, lam) == [n / T],
+            "誤答の由来：ℓ''=-n/λ²、U=0 から λ̂=n/Σx=1/x̄")
+
+    # モーメント法：σ² = m2 - m1²
+    x = _np.array([2, 4, 4, 6, 9], dtype=float)
+    est = _np.mean(x ** 2) - _np.mean(x) ** 2
+    ch = [5.60, 7.00, 2.37, 30.60]
+    ans = q.qs["q08-method-of-moments-3"]["answer"]
+    q.check("q08-method-of-moments-3",
+            abs(ch[ans] - est) < 0.005 and all(abs(c - est) >= 0.005 for i, c in enumerate(ch) if i != ans),
+            f"m2-m1²={est:.4f}（= ddof=0 の分散 {x.var():.4f}）、誤答は一致しない")
+    q.check("q08-method-of-moments-3",
+            abs(x.var(ddof=1) - 7.0) < 1e-12 and abs(_np.sqrt(est) - 2.37) < 0.005 and abs(_np.mean(x ** 2) - 30.6) < 1e-12,
+            "誤答の由来：不偏分散 7.00、√5.6=2.37、m2=30.60")
+
+    # ベルヌーイの MLE の漸近分散
+    p = _S.symbols("p", positive=True)
+    X = _S.symbols("X")
+    logf = X * _S.log(p) + (1 - X) * _S.log(1 - p)
+    d2 = _S.diff(logf, p, 2)
+    I = _S.simplify(-(d2.subs(X, 1) * p + d2.subs(X, 0) * (1 - p)))
+    av = float((1 / (100 * I)).subs(p, _S.Rational(1, 5)))
+    ch = [0.0400, 0.1600, 0.0016, 0.0025]
+    ans = q.qs["q08-asymptotic-normality-of-mle-4"]["answer"]
+    q.check("q08-asymptotic-normality-of-mle-4",
+            _S.simplify(I - 1 / (p * (1 - p))) == 0 and abs(ch[ans] - av) < 1e-12 and all(abs(c - av) > 1e-6 for i, c in enumerate(ch) if i != ans),
+            f"sympy: I(p)={I}、1/(nI)={av}、誤答は一致しない")
+_choice08()
+
 q.done()

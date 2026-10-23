@@ -597,3 +597,52 @@ questions:
       です。誤判別率は次元 $p$ や $\Sigma$ の形によらず、マハラノビス距離 $\Delta$ だけで決まり、$\Delta$ が大きいほど小さくなります。
       実際には $\boldsymbol\mu_i,\Sigma$ を標本から推定するので、この値は母数を知っているときの理論値です。
       よくある間違いは、$V[Y]$ を1とみなして $\Phi(-\Delta^2/2)$ とすること、また $\Phi(-\Delta)$ としきい値の位置（中点）を忘れることです。
+
+  - id: q23-quadratic-discriminant-analysis-3
+    term: quadratic-discriminant-analysis
+    level: 標準
+    type: choice
+    question: |
+      2群 $G_1,G_2$ の判別で、群 $k$ の分布を多変量正規分布 $N_p(\boldsymbol\mu_k,\Sigma_k)$、事前確率を $\pi_k$ とする二次判別分析（ベイズ判別ルールで $g_k(\boldsymbol x)=-\frac12(\boldsymbol x-\boldsymbol\mu_k)^\top\Sigma_k^{-1}(\boldsymbol x-\boldsymbol\mu_k)-\frac12\log|\Sigma_k|+\log\pi_k$ の大きい群に判別）について、正しい記述はどれか。
+    choices:
+      - '境界はつねに楕円で、双曲線や放物線にはならない'
+      - '事前確率 $\pi_k$ を変えても、境界の位置は変わらない'
+      - '$\Sigma_1=\Sigma_2$ なら、境界は線形判別と同じ超平面になる'
+      - '標本が少ないときほど、線形判別より推定が安定する'
+    answer: 2
+    hint: |
+      $g_2(\boldsymbol x)-g_1(\boldsymbol x)$ を展開し、$\boldsymbol x$ の2次の項・定数項がそれぞれ何で決まるかを見る。
+    explanation: |
+      $$g_2(\boldsymbol x)-g_1(\boldsymbol x)=-\tfrac12\boldsymbol x^\top(\Sigma_2^{-1}-\Sigma_1^{-1})\boldsymbol x+(\boldsymbol\mu_2^\top\Sigma_2^{-1}-\boldsymbol\mu_1^\top\Sigma_1^{-1})\boldsymbol x+\text{定数}$$
+      で、定数には $-\frac12\log(|\Sigma_2|/|\Sigma_1|)+\log(\pi_2/\pi_1)$ などが入ります。
+      - $\Sigma_1=\Sigma_2$ なら2次の項が消え、境界 $g_2-g_1=0$ は1次式、つまり線形判別と同じ超平面です（正解）。
+      - 2次の項の行列 $\Sigma_2^{-1}-\Sigma_1^{-1}$ は正定値とは限りません。たとえば $\Sigma_1=\mathrm{diag}(1,4)$、$\Sigma_2=\mathrm{diag}(4,1)$ なら $\mathrm{diag}(-3/4,\ 3/4)$ で符号が混ざり、境界は双曲線になります。
+      - $\log(\pi_2/\pi_1)$ は定数項に入るので、事前確率を変えると境界は動きます。
+      - 二次判別は群ごとに $p(p+1)/2$ 個の共分散を推定するので、線形判別より推定すべき母数が多く、標本が少ないと不安定になります。
+
+  - id: q23-sensitivity-and-specificity-4
+    term: sensitivity-and-specificity
+    level: 基本
+    type: choice
+    question: |
+      ある検査を、実際に陽性の 120 人と実際に陰性の 880 人に行った結果が次の混同行列である。
+
+      | | 判定：陽性 | 判定：陰性 |
+      |---|---|---|
+      | 実際：陽性 | 90 | 30 |
+      | 実際：陰性 | 44 | 836 |
+
+      この検査の（感度, 特異度）の組として正しいものはどれか（小数第2位まで、四捨五入）。
+    choices:
+      - '$(0.95,\ 0.75)$'
+      - '$(0.75,\ 0.95)$'
+      - '$(0.67,\ 0.95)$'
+      - '$(0.75,\ 0.05)$'
+    answer: 1
+    hint: |
+      感度も特異度も「実際の状態」の行ごとに割合をとる。
+    explanation: |
+      $$\text{感度}=\frac{TP}{TP+FN}=\frac{90}{120}=0.75,\qquad \text{特異度}=\frac{TN}{TN+FP}=\frac{836}{880}=0.95$$
+      - $(0.95,\ 0.75)$ は感度と特異度を取り違えています。
+      - $0.67$ は判定陽性の列で割った適合率（陽性的中率）$90/134=0.672$ で、感度ではありません。
+      - $0.05$ は偽陽性率 $FP/(TN+FP)=44/880=1-\text{特異度}$ です。

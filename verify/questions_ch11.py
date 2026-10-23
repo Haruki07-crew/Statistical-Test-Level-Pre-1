@@ -170,4 +170,35 @@ def _deriv11():
     q.check("q11-welch-test-4", bool(ok2), f"sympy: 分散を合わせた ν の式、数値例で {v:.4f}")
 _deriv11()
 
+
+# --- 4択の追加 ---
+def _choice11():
+    import math as _m
+    from scipy import stats as _st
+    # 母分散の両側検定の棄却域（自由度 9）
+    tab = {(0.025, 9): 19.023, (0.975, 9): 2.700, (0.05, 9): 16.919, (0.95, 9): 3.325, (0.025, 10): 20.483, (0.975, 10): 3.247}
+    tab_ok = all(abs(_st.chi2.isf(a, df) - v) < 0.0005 for (a, df), v in tab.items())
+    lo, hi = _st.chi2.isf(0.975, 9), _st.chi2.isf(0.025, 9)
+    ch = [(20.483, 3.247), (16.919, 3.325), (16.919, None), (19.023, 2.700)]
+    def match(c):
+        return c[1] is not None and abs(c[0] - hi) < 0.0005 and abs(c[1] - lo) < 0.0005
+    ans = q.qs["q11-chi-square-test-variance-3"]["answer"]
+    size = _st.chi2.sf(19.023, 9) + _st.chi2.cdf(2.700, 9)
+    size_b = _st.chi2.sf(16.919, 9) + _st.chi2.cdf(3.325, 9)
+    q.check("q11-chi-square-test-variance-3",
+            tab_ok and match(ch[ans]) and not any(match(c) for i, c in enumerate(ch) if i != ans) and abs(size - 0.05) < 1e-3,
+            f"scipy: 確率点の表は正しい、棄却域 [{lo:.3f}, {hi:.3f}] の外、サイズ {size:.4f}（5%ずつとると {size_b:.4f}）")
+
+    # z 検定：片側は棄却、両側は棄却しない
+    z = (103.6 - 100) / (8 / _m.sqrt(16))
+    a_rej = z > _st.norm.isf(0.05)
+    b_rej = abs(z) > _st.norm.isf(0.025)
+    truth = [a_rej and b_rej, a_rej and not b_rej, (not a_rej) and b_rej, (not a_rej) and (not b_rej)]
+    ans = q.qs["q11-z-test-known-variance-3"]["answer"]
+    p1, p2 = _st.norm.sf(z), 2 * _st.norm.sf(abs(z))
+    q.check("q11-z-test-known-variance-3",
+            truth[ans] and sum(truth) == 1 and abs(p1 - 0.036) < 0.0005 and abs(p2 - 0.072) < 0.0005,
+            f"z={z:.3f}、片側 p={p1:.4f}、両側 p={p2:.4f} → 正しい選択肢はちょうど1つ")
+_choice11()
+
 q.done()

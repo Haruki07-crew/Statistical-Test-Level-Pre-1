@@ -201,4 +201,33 @@ def _deriv03():
     q.check("q03-covariance-and-correlation-4", bool(ok2), "sympy: 判別式/4=σxy²-σx²σy²、最小値 σy²(1-ρ²)")
 _deriv03()
 
+
+# --- 4択の追加 ---
+def _choice03():
+    import numpy as _np
+    from scipy import stats as _st
+    # 全分散の公式：Y|X=0 ~ N(1,2), Y|X=1 ~ N(5,4) の混合で直接計算
+    EY = 0.5 * 1 + 0.5 * 5
+    EY2 = 0.5 * (2 + 1 ** 2) + 0.5 * (4 + 5 ** 2)
+    VY = EY2 - EY ** 2
+    ch = [3, 5, 7, 4]
+    ans = q.qs["q03-conditional-variance-5"]["answer"]
+    q.check("q03-conditional-variance-5",
+            abs(ch[ans] - VY) < 1e-12 and all(abs(c - VY) > 1e-9 for i, c in enumerate(ch) if i != ans),
+            f"E[Y^2]-E[Y]^2={VY}（正解の選択肢と一致、誤答は一致しない）")
+    rng = _np.random.default_rng(3)
+    xs = rng.integers(0, 2, 400000)
+    ys = _np.where(xs == 0, rng.normal(1, _np.sqrt(2), xs.size), rng.normal(5, 2, xs.size))
+    q.check("q03-conditional-variance-5", abs(ys.var() - 7) < 0.05, f"シミュレーション V[Y]≈{ys.var():.3f}")
+
+    # 変動係数：ガンマ(形状4, 尺度2)
+    g = _st.gamma(a=4, scale=2)
+    cv = g.std() / g.mean()
+    ch = [0.5, 0.25, 2, 4]
+    ans = q.qs["q03-coefficient-of-variation-3"]["answer"]
+    q.check("q03-coefficient-of-variation-3",
+            abs(ch[ans] - cv) < 1e-12 and all(abs(c - cv) > 1e-9 for i, c in enumerate(ch) if i != ans),
+            f"scipy: σ/μ={cv:.4f}、誤答（σ²/μ², μ/σ, σ）は一致しない")
+_choice03()
+
 q.done()

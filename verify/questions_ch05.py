@@ -116,4 +116,36 @@ def _deriv05():
     q.check("q05-poisson-distribution-4", bool(ok2), "sympy: Σk p=λ、Σk(k-1)p=λ²、V=λ")
 _deriv05()
 
+
+# --- 4択の追加 ---
+def _choice05():
+    import math as _m
+    import sympy as _S
+    from scipy import stats as _st
+    # ポアソン：P(X=1)=P(X=2) → λ=2, V=2
+    lam = _S.symbols("lam", positive=True)
+    sol = _S.solve(_S.Eq(_S.exp(-lam) * lam, _S.exp(-lam) * lam ** 2 / 2), lam)
+    V = float(_st.poisson(float(sol[0])).var())
+    ch = [_m.sqrt(2), 6, 1, 2]
+    ans = q.qs["q05-poisson-distribution-5"]["answer"]
+    q.check("q05-poisson-distribution-5",
+            sol == [2] and abs(ch[ans] - V) < 1e-12 and all(abs(c - V) > 1e-9 for i, c in enumerate(ch) if i != ans),
+            f"sympy: λ={sol}、scipy: V[X]={V}、誤答は一致しない")
+    d = _st.poisson(2)
+    q.check("q05-poisson-distribution-5", abs(d.std() - ch[0]) < 1e-12 and abs(d.moment(2) - ch[1]) < 1e-9,
+            "誤答の由来：標準偏差 √2、E[X^2]=6")
+
+    # 負の二項（失敗回数）：scipy.stats.nbinom は失敗回数の流儀
+    nb = _st.nbinom(3, 0.4)
+    v = nb.var()
+    ch = [11.25, 4.50, 7.50, 3.33]
+    ans = q.qs["q05-negative-binomial-distribution-3"]["answer"]
+    q.check("q05-negative-binomial-distribution-3",
+            abs(ch[ans] - v) < 0.005 and all(abs(c - v) >= 0.005 for i, c in enumerate(ch) if i != ans),
+            f"scipy: V[X]={v:.4f}、誤答は一致しない")
+    q.check("q05-negative-binomial-distribution-3",
+            abs(nb.mean() - 4.5) < 1e-9 and abs(3 / 0.4 - 7.5) < 1e-9 and abs(3 * 0.4 / 0.6 ** 2 - 3.333) < 1e-3,
+            "誤答の由来：E[X]=4.5、r/p=7.5、rp/q²=3.33")
+_choice05()
+
 q.done()

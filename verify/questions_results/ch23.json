@@ -111,6 +111,10 @@
   "hash": "461297f7334e64bc",
   "ok": true
  },
+ "q23-quadratic-discriminant-analysis-3": {
+  "hash": "7966b40bfaf6c0b2",
+  "ok": true
+ },
  "q23-roc-curve-and-auc-1": {
   "hash": "0c24e9bf3f98b90c",
   "ok": true
@@ -133,6 +137,10 @@
  },
  "q23-sensitivity-and-specificity-3": {
   "hash": "8cc971821f333a1d",
+  "ok": true
+ },
+ "q23-sensitivity-and-specificity-4": {
+  "hash": "9eaaa339d12319a4",
   "ok": true
  },
  "q23-support-vector-machine-1": {

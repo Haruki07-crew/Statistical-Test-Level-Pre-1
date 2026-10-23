@@ -27,6 +27,10 @@
   "hash": "ac2706bbd64f0005",
   "ok": true
  },
+ "q21-horvitz-thompson-estimator-4": {
+  "hash": "962508f166e235e8",
+  "ok": true
+ },
  "q21-inclusion-probability-1": {
   "hash": "bff2a16cac8fcd0c",
   "ok": true
@@ -121,6 +125,10 @@
  },
  "q21-stratified-sampling-2": {
   "hash": "81a7ac74d9307902",
+  "ok": true
+ },
+ "q21-stratified-sampling-3": {
+  "hash": "6df8693bb8cac7da",
   "ok": true
  },
  "q21-systematic-sampling-1": {

@@ -193,4 +193,25 @@ def _deriv22():
     q.check("q22-principal-component-loading-4", bool(ok), "Cov[Y_k,X_j]=λ_k h_jk、r=√λ_k h_jk/√σ_jj（大標本の相関と一致）")
 _deriv22()
 
+# --- 4択の追加分 ---
+_S = np.array([[16., 6], [6, 4]]); _d = np.sqrt(np.diag(_S)); _Rm = _S / np.outer(_d, _d)
+_ls, _vs = np.linalg.eigh(_S); _lr, _vr = np.linalg.eigh(_Rm)
+_ok = abs(_lr.sum() - 2) < 1e-12 and abs(_ls.sum() - 20) < 1e-9 and abs(_ls.sum() - 2) > 1
+_ok &= abs(_ls[-1] / _ls.sum() - _lr[-1] / _lr.sum()) > 0.01
+_ok &= abs(abs(_vs[:, -1] @ _vr[:, -1]) - 1) > 1e-3
+_rng = np.random.default_rng(2203); _A = _rng.normal(size=(5, 5)); _C = _A @ _A.T
+_dd = np.sqrt(np.diag(_C)); _ok &= abs(np.linalg.eigvalsh(_C / np.outer(_dd, _dd)).sum() - 5) < 1e-10
+q.check("q22-pca-on-correlation-matrix-3", bool(_ok),
+        f"固有値の和：相関行列 {_lr.sum():.3f}=p、共分散行列 {_ls.sum():.1f}。寄与率 {_ls[-1] / _ls.sum():.4f} と {_lr[-1] / _lr.sum():.4f}、固有ベクトルも異なる")
+_R3 = np.array([[1, .6, .4], [.6, 1, .5], [.4, .5, 1]])
+_w, _v = np.linalg.eigh(_R3); _h = np.abs(_v[:, -1])
+_cons = abs(_w[-1] - 2.004) < 0.0005 and np.allclose(_h, [0.580, 0.613, 0.536], atol=0.0005)
+_ld = np.sqrt(2.004) * 0.613
+_exact = np.corrcoef(*(np.random.default_rng(1).multivariate_normal(np.zeros(3), _R3, 400000) @ np.column_stack([_v[:, -1], np.eye(3)[:, 1]])).T)[0, 1]
+_wr = [2.004 * 0.613, 0.613 / np.sqrt(2.004), 0.613]
+q.check("q22-principal-component-loading-5",
+        _cons and round(_ld, 3) == 0.868 and abs(abs(_exact) - _ld) < 0.003
+        and [round(w, 3) for w in _wr] == [1.228, 0.433, 0.613],
+        f"√λ1·h21={_ld:.4f}（シミュレーションの相関 {abs(_exact):.4f}）。誤答 {[round(w, 4) for w in _wr]}")
+
 q.done()

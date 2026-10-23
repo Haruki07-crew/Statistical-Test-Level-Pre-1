@@ -190,4 +190,25 @@ def _deriv17():
     q.check("q17-leverage-4", bool(ok_all), "sympy（n=5 の記号データ）: det=nSxx、h_ii=1/n+(x_i-x̄)²/Sxx、Σh_ii=2")
 _deriv17()
 
+# --- 4択の追加分 ---
+_n, _p = 20, 2
+_pts = {"A": (0.25, 1.8), "B": (0.12, 3.1), "C": (0.42, 2.8), "D": (0.35, 0.4)}
+_thr = 2 * (_p + 1) / _n
+_sel = [k for k, (h, r) in _pts.items() if h > _thr and abs(r) < 2]
+_sel_wrong = [k for k, (h, r) in _pts.items() if h > 2 * _p / _n and abs(r) < 2]
+_rng = np.random.default_rng(1705)
+_Xs = np.column_stack([np.ones(_n), _rng.normal(size=(_n, _p))])
+_tr = np.trace(_Xs @ np.linalg.inv(_Xs.T @ _Xs) @ _Xs.T)
+q.check("q17-leverage-5", _sel == ["D"] and abs(_tr - (_p + 1)) < 1e-9 and abs(_thr - 0.30) < 1e-12 and "A" in _sel_wrong,
+        f"tr H={_tr:.3f}、目安 {_thr:.2f} で該当 {_sel}（2p/n=0.20 だと {_sel_wrong}）")
+_x = np.linspace(1, 10, 4000)
+_yy = np.exp(0.5 + 0.2 * _x + _rng.normal(0, 0.3, _x.size))   # 乗法的な誤差
+def _spread(t):
+    Z = np.column_stack([np.ones_like(_x), _x]); b = np.linalg.lstsq(Z, t, rcond=None)[0]
+    f = Z @ b; e = t - f; lo = f < np.median(f)
+    return e[~lo].std() / e[lo].std()
+_s_raw, _s_log = _spread(_yy), _spread(np.log(_yy))
+q.check("q17-heteroscedasticity-3", _s_raw > 2 and abs(_s_log - 1) < 0.1,
+        f"乗法的誤差の例：残差の広がりの比（上半分/下半分）は元のままで {_s_raw:.2f}、対数変換後 {_s_log:.3f}")
+
 q.done()

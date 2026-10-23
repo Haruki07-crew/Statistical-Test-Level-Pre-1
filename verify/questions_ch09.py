@@ -152,4 +152,40 @@ def _deriv09():
     q.check("q09-pivotal-quantity-3", bool(ok and ok2), "sympy: M_{2λX}(t)=(1-2t)^-1、2λΣX~χ²(2n)、区間の被覆確率がちょうど0.95")
 _deriv09()
 
+
+# --- 4択の追加 ---
+def _choice09():
+    import math as _m
+    from scipy import stats as _st
+    def same(a, b, d):
+        return all(abs(x - y) < 0.5 * 10 ** (-d) + 1e-12 for x, y in zip(a, b))
+    # 既知分散の 90% 区間
+    z05 = _st.norm.isf(0.05)
+    se = 6 / _m.sqrt(36)
+    ci = (50 - z05 * se, 50 + z05 * se)
+    ch = [(48.04, 51.96), (48.36, 51.64), (40.13, 59.87), (49.73, 50.27)]
+    ans = q.qs["q09-ci-mean-known-variance-3"]["answer"]
+    q.check("q09-ci-mean-known-variance-3",
+            same(ch[ans], ci, 2) and not any(same(c, ci, 2) for i, c in enumerate(ch) if i != ans),
+            f"scipy: z0.05={z05:.4f}、区間 [{ci[0]:.3f}, {ci[1]:.3f}]、誤答は一致しない")
+    w = [(50 - 1.96 * se, 50 + 1.96 * se), (50 - 1.645 * 6, 50 + 1.645 * 6), (50 - 1.645 / 6, 50 + 1.645 / 6)]
+    q.check("q09-ci-mean-known-variance-3", all(same(ch[i], w[k], 2) for i, k in ((0, 0), (2, 1), (3, 2))),
+            "誤答の由来：1.96 を使う／√n で割らない／n で割る")
+
+    # 比率のワルド区間
+    n, x = 400, 120
+    ph = x / n
+    z = _st.norm.isf(0.025)
+    se = _m.sqrt(ph * (1 - ph) / n)
+    ci = (ph - z * se, ph + z * se)
+    ch = [(0.262, 0.338), (0.299, 0.301), (0.251, 0.349), (0.255, 0.345)]
+    ans = q.qs["q09-ci-proportion-3"]["answer"]
+    q.check("q09-ci-proportion-3",
+            same(ch[ans], ci, 3) and not any(same(c, ci, 3) for i, c in enumerate(ch) if i != ans),
+            f"区間 [{ci[0]:.4f}, {ci[1]:.4f}]、誤答は一致しない")
+    w = {0: 1.645 * se, 1: 1.96 * ph * (1 - ph) / n, 2: 1.96 * _m.sqrt(0.25 / n)}
+    q.check("q09-ci-proportion-3", all(same(ch[i], (ph - h, ph + h), 3) for i, h in w.items()),
+            "誤答の由来：1.645 を使う／平方根を忘れる／p=0.5 を使う")
+_choice09()
+
 q.done()

@@ -67,6 +67,10 @@
   "hash": "ae0f472577d03cc4",
   "ok": true
  },
+ "q31-gamma-poisson-model-5": {
+  "hash": "b09cadfe68d0f9c4",
+  "ok": true
+ },
  "q31-hierarchical-bayes-model-1": {
   "hash": "b91fca71954151b9",
   "ok": true
@@ -149,6 +153,10 @@
  },
  "q31-predictive-distribution-3": {
   "hash": "b3936a9e627b2dc4",
+  "ok": true
+ },
+ "q31-predictive-distribution-4": {
+  "hash": "23d00adb5c4a55ac",
   "ok": true
  },
  "q31-prior-distribution-1": {

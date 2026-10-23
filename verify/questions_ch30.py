@@ -177,4 +177,38 @@ _d1, _d2 = _KL(0, 1, 0, 2), _KL(0, 2, 0, 1)
 q.check("q30-kullback-leibler-divergence-4", _ok and _crit == [{_m2: _m1, _s2: _s1}] and round(_d1, 3) == 0.318 and round(_d2, 3) == 0.807,
         f"KL の公式（記号積分と一致）、最小点 μ2=μ1,σ2=σ1、数値 {_d1:.4f}, {_d2:.4f}")
 
+# --- 4択の追加（AIC と BIC の選択・バイアスとバリアンス）---
+import numpy as _np
+_k = _np.array([2, 4, 7]); _ll = _np.array([-250.0, -246.5, -243.8]); _n = 100
+_aic = -2 * _ll + 2 * _k; _bic = -2 * _ll + _k * _np.log(_n)
+_sel = ("M%d" % (_aic.argmin() + 1), "M%d" % (_bic.argmin() + 1))
+_ok = _sel == ("M2", "M1") and _ll.argmax() == 2 and _sel != ("M1", "M2")
+q.check("q30-aic-5", _ok, f"AIC {_aic}、BIC {_np.round(_bic, 2)} → {_sel}")
+_rng = _np.random.default_rng(304)
+_f = lambda x: _np.sin(2 * _np.pi * x) + 0.5 * _np.exp(x)
+_sig, _nn, _reps, _degs = 0.4, 25, 1500, range(1, 11)
+_xg = _np.linspace(0.02, 0.98, 25)
+_x = _np.linspace(0, 1, _nn)
+_preds = {d: [] for d in _degs}; _tr = {d: [] for d in _degs}
+for _ in range(_reps):
+    y = _f(_x) + _rng.normal(0, _sig, _nn)
+    for d in _degs:
+        V = _np.vander(2 * _x - 1, d + 1)
+        b = _np.linalg.lstsq(V, y, rcond=None)[0]
+        _tr[d].append(((y - V @ b) ** 2).mean())
+        _preds[d].append(_np.vander(2 * _xg - 1, d + 1) @ b)
+_bias2 = _np.array([((_np.mean(_preds[d], 0) - _f(_xg)) ** 2).mean() for d in _degs])
+_var = _np.array([_np.var(_preds[d], 0).mean() for d in _degs])
+_test = _bias2 + _var + _sig ** 2
+_train = _np.array([_np.mean(_tr[d]) for d in _degs])
+_ok = all(_np.diff(_train) <= 1e-12)                                  # 訓練誤差は減り続ける
+_dmin = int(_test.argmin())
+_ok &= 0 < _dmin < len(_test) - 1 and _test[-1] > _test[_dmin]        # テスト誤差は減ったあと増える
+_ok &= _var[-1] > _var[0] and _bias2[-1] < _bias2[0]                  # 誤答1・2：バリアンスは増え、バイアスは減る
+# 誤答4：実際のテスト誤差（新しい雑音を含む）はバイアス²+バリアンスより σ² だけ大きい
+_ynew = _f(_xg) + _rng.normal(0, _sig, (len(_preds[3]), len(_xg)))
+_mse3 = ((_ynew - _np.array(_preds[3])) ** 2).mean()
+_ok &= abs(_mse3 - _test[2]) < 0.02 and _mse3 > _bias2[2] + _var[2] + 0.5 * _sig ** 2
+q.check("q30-bias-variance-tradeoff-4", _ok, f"テスト誤差最小は次数 {_dmin+1}、訓練誤差 {_np.round(_train[[0,4,9]],3)}、バリアンス {_var[0]:.4f}→{_var[-1]:.4f}")
+
 q.done()

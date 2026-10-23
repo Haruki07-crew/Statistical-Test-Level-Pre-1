@@ -189,4 +189,50 @@ def _deriv26():
     q.check("q26-multidimensional-scaling-4", bool(ok), "D²=c1'+1c'-2B、-½JD²J=B、固有値分解の配置で距離を再現")
 _deriv26()
 
+# --- 4択の追加（パス解析・コレスポンデンス分析・正準相関）---
+import numpy as _np
+_a1, _b1, _a2, _b2, _c = 0.5, 0.4, 0.3, 0.6, 0.1
+# 共分散を構造方程式から計算（x の分散1、m1,m2 の分散も1になるよう誤差分散を設定）
+_cov_x_m1, _cov_x_m2, _cov_m1m2 = _a1, _a2, _a1 * _a2
+_cov_xy = _c + _b1 * _cov_x_m1 + _b2 * _cov_x_m2
+_var_y_expl = _c**2 + _b1**2 + _b2**2 + 2 * (_c * _b1 * _a1 + _c * _b2 * _a2 + _b1 * _b2 * _cov_m1m2)
+_ind = _a1 * _b1 + _a2 * _b2
+_ok = abs(_ind - 0.38) < 1e-12 and abs(_cov_xy - 0.48) < 1e-12 and _var_y_expl < 1
+_wr = [(_a1 * _b1, _c + _a1 * _b1), (_cov_xy, _ind), (_a1 + _b1 + _a2 + _b2, _a1 + _b1 + _a2 + _b2 + _c)]
+_ok &= [tuple(round(v, 2) for v in w) for w in _wr] == [(0.2, 0.3), (0.48, 0.38), (1.8, 1.9)]
+q.check("q26-path-analysis-4", _ok, f"間接 {_ind:.2f}、総合 {_cov_xy:.2f}＝r_xy（説明される y の分散 {_var_y_expl:.3f}<1 で実現可能）")
+# コレスポンデンス分析：全イナーシャ＝χ²/n を任意の表で確認し、数値を計算
+_rng = _np.random.default_rng(260)
+_N = _rng.integers(5, 40, size=(3, 4)).astype(float)
+_P = _N / _N.sum(); _r = _P.sum(1); _cc = _P.sum(0)
+_Sres = (_P - _np.outer(_r, _cc)) / _np.sqrt(_np.outer(_r, _cc))
+_gam = _np.linalg.svd(_Sres, compute_uv=False)
+_E = _np.outer(_N.sum(1), _N.sum(0)) / _N.sum()
+_chi = ((_N - _E) ** 2 / _E).sum()
+_ok = abs((_gam ** 2).sum() - _chi / _N.sum()) < 1e-12 and (_gam > 1e-10).sum() <= 2
+_tot = 30 / 200; _con = 0.3 ** 2 / _tot
+_ok &= round(_tot, 2) == 0.15 and round(_con, 2) == 0.60 and _tot - 0.09 >= 0 and 0.06 <= 0.09
+_ok &= round(0.3 / _np.sqrt(_tot), 2) == 0.77 and round(0.3 ** 2, 2) == 0.09 and 30 != _tot
+q.check("q26-correspondence-analysis-4", _ok, f"Σγ²=χ²/n を確認、全イナーシャ {_tot}、寄与率 {_con:.2f}、誤答 0.77・0.09・30")
+# 正準相関：乱数データで性質を確認
+_n = 400
+_Z = _rng.standard_normal((_n, 8)) @ _rng.standard_normal((8, 8))
+_Xd, _Yd = _Z[:, :3], _Z[:, 3:]
+def _cca(X, Y):
+    X = X - X.mean(0); Y = Y - Y.mean(0)
+    S11, S22, S12 = X.T @ X, Y.T @ Y, X.T @ Y
+    M = _np.linalg.inv(S11) @ S12 @ _np.linalg.inv(S22) @ S12.T
+    return _np.sqrt(_np.sort(_np.clip(_np.linalg.eigvals(M).real, 0, None))[::-1])
+_rho = _cca(_Xd, _Yd)
+_R = _np.corrcoef(_Z.T)[:3, 3:]
+_ok = _rho[0] >= _np.abs(_R).max() - 1e-12 and len(_rho) == 3
+_rho_s = _cca(_Xd * _np.array([100, 0.1, 3]), _Yd * _np.array([2, 5, 0.01, 7, 1]))
+_ok &= _np.allclose(_rho, _rho_s)
+_X1c = _np.column_stack([_np.ones(_n), _Xd])
+_beta = _np.linalg.lstsq(_X1c, _Yd[:, 0], rcond=None)[0]
+_R2 = 1 - ((_Yd[:, 0] - _X1c @ _beta) ** 2).sum() / ((_Yd[:, 0] - _Yd[:, 0].mean()) ** 2).sum()
+_ok &= _R2 < _rho[0] ** 2 - 1e-6
+q.check("q26-canonical-correlation-analysis-4", _ok,
+        f"ρ1={_rho[0]:.4f} ≥ max|r|={_np.abs(_R).max():.4f}、組は3、尺度不変、R²(y1)={_R2:.4f}<ρ1²={_rho[0]**2:.4f}")
+
 q.done()

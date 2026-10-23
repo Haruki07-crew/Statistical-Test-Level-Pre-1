@@ -192,4 +192,27 @@ q.check("q28-relative-risk-4", _dv == 0 and _sub == 0 and round(_se, 3) == 0.283
         and abs(_ci[0] - 1.15) < 0.005 and abs(_ci[1] - 3.48) < 0.005,
         f"デルタ法の式、SE={_se:.4f}、シミュレーションSD={_sd:.4f}（有限標本で約5%ずれるため相対10%以内）、CI=({_ci[0]:.3f},{_ci[1]:.3f})")
 
+# --- 4択の追加（マクネマー検定・対数線形モデルの自由度）---
+import numpy as _np
+from scipy.stats import chi2_contingency as _chi2c
+_b, _c = 15, 35
+_M = (_b - _c) ** 2 / (_b + _c)
+_Mc = (abs(_b - _c) - 1) ** 2 / (_b + _c)
+_P = _chi2c([[70, 15], [35, 80]], correction=False)[0]
+_ok = round(_M, 2) == 8.00 and round(_Mc, 2) == 7.22 and round(_P, 2) == 52.83 and round((_b - _c) ** 2 / 200, 2) == 2.00
+q.check("q28-mcnemar-test-4", _ok, f"マクネマー {_M:.2f}、誤答：連続修正 {_Mc:.2f}・独立性 {_P:.2f}・n で割る 2.00")
+_I, _J = 3, 5
+_rows = []
+for i in range(_I):
+    for j in range(_J):
+        a = [(1 if i == k else 0) - (1 if i == _I - 1 else 0) for k in range(_I - 1)]   # 和が0の制約（効果コード）
+        bb = [(1 if j == k else 0) - (1 if j == _J - 1 else 0) for k in range(_J - 1)]
+        _rows.append([1] + a + bb)
+_X = _np.array(_rows, float)
+_rank = _np.linalg.matrix_rank(_X)
+# 制約なしの設計（1+I+J 列）でも階数は同じ → 9 個は独立でない
+_Xf = _np.array([[1] + [1 if i == k else 0 for k in range(_I)] + [1 if j == k else 0 for k in range(_J)] for i in range(_I) for j in range(_J)], float)
+_ok = _X.shape[1] == 7 and _rank == 7 and _I * _J - _rank == 8 and _np.linalg.matrix_rank(_Xf) == 7 and _Xf.shape[1] == 9
+q.check("q28-loglinear-model-4", _ok, f"パラメータ {_rank}、自由度 {_I*_J-_rank}（制約なしの9列も階数7）")
+
 q.done()

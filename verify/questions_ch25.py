@@ -228,4 +228,24 @@ def _deriv25():
     q.check("q25-precision-matrix-4", bool(ok), "sympy: 平方完成の残りに x1 なし、Σ12Σ22^-1=-ω1j/ω11、条件付き分散=1/ω11")
 _deriv25()
 
+# --- 4択の追加（共通性・精度行列）---
+import numpy as _np
+_L = _np.array([[0.8, 0.3], [0.4, 0.7], [0.7, 0.2]])
+_h2 = (_L ** 2).sum(1)[1]; _c = (_L ** 2).sum(0)
+_ok = abs(_h2 - 0.65) < 1e-12 and abs(_c[1] - 0.62) < 1e-12
+_wr = [(_c[1], _h2), (1 - _h2, _c[1]), (_h2, _c[0])]
+_ok &= all(abs(a - 0.65) + abs(b - 0.62) > 1e-6 for a, b in _wr) and abs(_c[0] - 1.29) < 1e-12 and abs(1 - _h2 - 0.35) < 1e-12
+q.check("q25-communality-4", _ok, f"x2 の共通性 {_h2:.2f}、因子2の寄与 {_c[1]:.2f}（因子1 {_c[0]:.2f}）")
+_Om = _np.array([[2, -1, 0], [-1, 2, -1], [0, -1, 2.0]])
+_Sg = _np.linalg.inv(_Om)
+_r13 = _Sg[0, 2] / _np.sqrt(_Sg[0, 0] * _Sg[2, 2])
+_pc12 = -_Om[0, 1] / _np.sqrt(_Om[0, 0] * _Om[1, 1])
+_cv1 = _Sg[0, 0] - _Sg[0, 1:] @ _np.linalg.inv(_Sg[1:, 1:]) @ _Sg[1:, 0]
+# X2 を与えたときの X1,X3 の条件付き共分散
+_idx = [0, 2]
+_cc = _Sg[_np.ix_(_idx, _idx)] - _Sg[_np.ix_(_idx, [1])] @ _Sg[_np.ix_([1], _idx)] / _Sg[1, 1]
+_ok = abs(_cc[0, 1]) < 1e-12 and _r13 > 0 and abs(_r13 - 1 / 3) < 1e-12
+_ok &= abs(_pc12 - 0.5) < 1e-12 and abs(_cv1 - 0.5) < 1e-12 and abs(_Sg[0, 0] - 0.75) < 1e-12
+q.check("q25-precision-matrix-5", _ok, f"X1⊥X3|X2（条件付き共分散 {_cc[0,1]:.1e}）、周辺相関 {_r13:.4f}>0、偏相関 +{_pc12}、条件付き分散 {_cv1}≠3/4")
+
 q.done()

@@ -195,4 +195,30 @@ def _deriv15():
     q.check("q15-mm1-queue-4", bool(ok2), "sympy: p0=1-ρ、L=ρ/(1-ρ)、W=1/(μ-λ)、生成行列の定常解と一致")
 _deriv15()
 
+# --- 4択の追加分 ---
+_rng = np.random.default_rng(15)
+_W2 = _rng.normal(0, np.sqrt(2), 400000); _W5 = _W2 + _rng.normal(0, np.sqrt(3), 400000)
+_rho = 2 / np.sqrt(10); _sim = np.corrcoef(_W2, _W5)[0, 1]
+_wrong = [2 / 5, np.sqrt(3 / 5), 3 / 5]
+q.check("q15-brownian-motion-3",
+        round(_rho, 3) == 0.632 and abs(_sim - _rho) < 0.005 and [round(w, 3) for w in _wrong] == [0.4, 0.775, 0.6]
+        and all(abs(w - _rho) > 0.02 for w in _wrong),
+        f"ρ=√(2/5)={_rho:.4f}（シミュレーション {_sim:.4f}）。誤答 {[round(w, 4) for w in _wrong]}")
+_ok = True
+for _r in (0.5, 3.0):
+    _w = np.array([_r ** n / factorial(n) for n in range(60)])
+    # 出生死滅の積公式 π_n ∝ Π λ/(kμ) を直接計算（λ=_r, μ=1）
+    _pr = np.cumprod([1.0] + [_r / k for k in range(1, 60)]); _pr /= _pr.sum()
+    _ok &= np.allclose(_pr, stats.poisson.pmf(range(60), _r))
+    _ok &= not np.allclose(_pr, stats.poisson.pmf(range(60), 1 / _r))
+    if _r < 1:
+        _ok &= not np.allclose(_pr, (1 - _r) * _r ** np.arange(60))
+# ρ=3 でも正規化定数が有限（定常分布が存在）
+_ok &= np.isfinite(sum(3.0 ** n / factorial(n) for n in range(150)))
+# 平衡方程式 λπ_{n-1}=nμπ_n の確認（ρ=3）
+_pp = stats.poisson.pmf(np.arange(1, 30), 3.0); _pm = stats.poisson.pmf(np.arange(0, 29), 3.0)
+_ok &= np.allclose(3.0 * _pm, np.arange(1, 30) * _pp)
+q.check("q15-birth-death-process-3", bool(_ok),
+        "ρ=0.5, 3 で積公式の定常分布＝Poisson(ρ)、Poisson(1/ρ)・幾何分布とは不一致、ρ≥1 でも存在")
+
 q.done()

@@ -11,6 +11,10 @@
   "hash": "d8bfea48480cbdc9",
   "ok": true
  },
+ "q08-asymptotic-normality-of-mle-4": {
+  "hash": "ddcfa81d8c95af46",
+  "ok": true
+ },
  "q08-complete-statistic-1": {
   "hash": "21d367de4e726808",
   "ok": true
@@ -123,6 +127,10 @@
   "hash": "773b6a66ee371b17",
   "ok": true
  },
+ "q08-method-of-moments-3": {
+  "hash": "e1f46468c12502f1",
+  "ok": true
+ },
  "q08-observed-fisher-information-1": {
   "hash": "35058ee162ff1e01",
   "ok": true
@@ -157,6 +165,10 @@
  },
  "q08-score-function-2": {
   "hash": "bd4fdb15a55ccfbf",
+  "ok": true
+ },
+ "q08-score-function-3": {
+  "hash": "83312d971393d9dd",
   "ok": true
  },
  "q08-standard-error-1": {

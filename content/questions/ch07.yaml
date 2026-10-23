@@ -718,3 +718,47 @@ questions:
       が得られます（逆正弦変換、角変換）。分散が $p$ に依存しなくなるので、比率を比べる検定や信頼区間を作りやすくなります。
       $2\arcsin\sqrt p$ を使えば近似分散は $1/n$ で、定数倍の違いは本質ではありません。
       よくある間違いは、$g'(p)$ ではなく $g'(p)^2$ が分散に掛かることを忘れること、また $\arcsin\sqrt p$ の微分で合成関数の $\frac{1}{2\sqrt p}$ を落とすことです。
+
+  # ---------- 4択の追加 ----------
+  - id: q07-convergence-in-probability-4
+    term: convergence-in-probability
+    level: 基本
+    type: choice
+    question: |
+      確率変数の列 $X_1, X_2, \dots$ と確率変数 $X$ について、一般に（どんな分布でも）成り立つものはどれか。
+    choices:
+      - '$X_n$ が $X$ に確率収束するなら、$X$ に概収束する'
+      - '$X_n$ が $X$ に分布収束するなら、$X$ に確率収束する'
+      - '$X_n$ が $X$ に概収束するなら、$X$ に確率収束する'
+      - '$X_n$ が $X$ に確率収束するなら、$X$ に平均二乗収束する'
+    answer: 2
+    hint: |
+      収束の強さの順序「概収束・平均二乗収束 ⇒ 確率収束 ⇒ 分布収束」を思い出し、逆向きには反例を考える。
+    explanation: |
+      概収束 $X_n\xrightarrow{a.s.}X$ ならば確率収束 $X_n\xrightarrow{p}X$ が成り立ちます（正解）。逆向きはどれも一般には成り立ちません。
+      - 確率収束 ⇒ 概収束：独立に $P(X_n=1)=1/n,\ P(X_n=0)=1-1/n$ とすると $P(|X_n|>\varepsilon)=1/n\to0$ で確率収束しますが、$\sum 1/n=\infty$ なのでボレル・カンテリの補題より $X_n=1$ が無限回起き、$0$ に概収束しません。
+      - 分布収束 ⇒ 確率収束：$Z\sim N(0,1)$、$X_n=-Z$、$X=Z$ とすると分布はつねに同じですが $|X_n-X|=2|Z|$ は小さくなりません（極限が定数のときだけ同値）。
+      - 確率収束 ⇒ 平均二乗収束：$P(X_n=n)=1/n,\ P(X_n=0)=1-1/n$ なら $X_n\xrightarrow{p}0$ ですが $E[X_n^2]=n\to\infty$ です。
+
+  - id: q07-continuous-mapping-theorem-3
+    term: continuous-mapping-theorem
+    level: 標準
+    type: choice
+    question: |
+      $X_1,\dots,X_n$ は i.i.d. で $E[X_i]=\mu$、$V[X_i]=\sigma^2$（$0<\sigma^2<\infty$）とし、$\bar X_n$ を標本平均とする。
+      $\dfrac{n(\bar X_n-\mu)^2}{\sigma^2}$ の $n\to\infty$ での極限分布はどれか。
+    choices:
+      - '$N(0,\ 1)$'
+      - '$\chi^2(1)$'
+      - '$\chi^2(2)$'
+      - '$N(1,\ 2)$'
+    answer: 1
+    hint: |
+      $Z_n=\sqrt n(\bar X_n-\mu)/\sigma$ の極限分布を中心極限定理で求め、連続関数 $g(z)=z^2$ を当てる。
+    explanation: |
+      中心極限定理より $Z_n=\dfrac{\sqrt n(\bar X_n-\mu)}{\sigma}\xrightarrow{d}Z\sim N(0,1)$。
+      $g(z)=z^2$ は連続なので、連続写像定理より
+      $$\frac{n(\bar X_n-\mu)^2}{\sigma^2}=Z_n^2\xrightarrow{d}Z^2\sim\chi^2(1)$$
+      - $N(0,\ 1)$ は $Z_n$ そのものの極限で、2乗したことを反映していません。
+      - $\chi^2(2)$ は自由度の数え違いです（標準正規の2乗1個なので自由度1）。
+      - $N(1,\ 2)$ は $\chi^2(1)$ の平均 $1$・分散 $2$ に合わせた正規分布ですが、$Z_n^2\ge0$ なので極限は正規分布ではありません。

@@ -27,6 +27,10 @@
   "hash": "d8c19e4f1e33f640",
   "ok": true
  },
+ "q01-conditional-independence-4": {
+  "hash": "29d83a40a9cc938b",
+  "ok": true
+ },
  "q01-conditional-probability-1": {
   "hash": "0f1e52d0da75d722",
   "ok": true
@@ -65,6 +69,10 @@
  },
  "q01-law-of-total-probability-2": {
   "hash": "68810bd20dbfc49e",
+  "ok": true
+ },
+ "q01-law-of-total-probability-3": {
+  "hash": "eaf33ddefe785e7c",
   "ok": true
  }
 }

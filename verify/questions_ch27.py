@@ -233,4 +233,29 @@ q.check("q27-ma-model-4", _roots == [-3, _sp.Rational(-1, 3)] and _inv == [_sp.R
         and abs(_g[0] - 2) < 1e-12 and abs(_g[1] / _g[0] + 0.3) < 1e-12 and _g[2] == 0,
         "解は -3 と -1/3、反転可能な θ=-1/3、σ²=1.8 で γ(0)=2、ρ(1)=-0.3")
 
+# --- 4択の追加（偏自己相関によるモデルの見分け・ユール・ウォーカー）---
+import numpy as _np
+_th = [1.0, 1.0, 0.5]
+_g = [sum(_th[i] * _th[i + h] for i in range(3 - h)) for h in range(3)]
+_rho = [1.0, _g[1] / _g[0], _g[2] / _g[0]] + [0.0] * 10
+def _pacf(rho, K):
+    out = []
+    for k in range(1, K + 1):
+        R = _np.array([[rho[abs(i - j)] for j in range(k)] for i in range(k)])
+        out.append(_np.linalg.solve(R, rho[1:k + 1])[-1])
+    return _np.array(out)
+_pa = _pacf(_rho, 10)
+_ok = _np.allclose(_np.round(_rho[1:6], 3), [0.667, 0.222, 0, 0, 0]) and _np.allclose(_np.round(_pa[:5], 3), [0.667, -0.4, 0.127, 0.067, -0.127])
+_ok &= all(abs(v) > 1e-4 for v in _pa[5:10]) and abs(_pa[9]) < abs(_pa[0])        # 偏自己相関は切れない
+# AR(2)（PACF がラグ3以降0）・AR(1)（ρ(3)≠0）・ホワイトノイズ（ρ(1)=0）とは合わない
+_ok &= abs(_pa[2]) > 0.05 and abs(_rho[1] ** 3) > 0.05 and _rho[1] != 0
+q.check("q27-partial-autocorrelation-4", _ok, f"MA(2) θ=(1,0.5) の ACF {_np.round(_rho[1:6],3)}、PACF {_np.round(_pa[:6],3)}")
+_r1, _r2 = 0.5, 0.4
+_phi = _np.linalg.solve(_np.array([[1, _r1], [_r1, 1]]), _np.array([_r1, _r2]))
+_ok = _np.allclose(_np.round(_phi, 2), [0.40, 0.20])
+_wr = [(_r1, _r2), (_r1, _r2 - _r1 ** 2), (_phi[1], _phi[0])]
+_ok &= [tuple(_np.round(w, 2)) for w in _wr] == [(0.5, 0.4), (0.5, 0.15), (0.2, 0.4)]
+_ok &= all(not _np.allclose(_np.round(w, 2), [0.40, 0.20]) for w in _wr)
+q.check("q27-yule-walker-equations-4", _ok, f"φ̂ = {_np.round(_phi, 4)}、誤答 (0.50,0.40)・(0.50,0.15)・(0.20,0.40) と異なる")
+
 q.done()

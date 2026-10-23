@@ -205,4 +205,53 @@ def _deriv24():
     q.check("q24-ward-method-4", bool(ok), "sympy: Δ=n_A n_B/(n_A+n_B)‖ā-b̄‖²、乱数のクラスターで直接計算と一致")
 _deriv24()
 
+# --- 4択の追加（k-means・最長距離法）---
+import itertools as _it
+import numpy as _np
+from scipy.cluster.hierarchy import linkage as _linkage
+from scipy.spatial.distance import squareform as _sqf
+_x = _np.array([0.0, 1.0, 1.5, 4.0, 4.2, 7.0, 9.5])
+def _bestW(k):
+    best = _np.inf
+    for lab in _it.product(range(k), repeat=len(_x)):
+        if len(set(lab)) < k:
+            continue
+        lab = _np.array(lab)
+        best = min(best, sum(((_x[lab == j] - _x[lab == j].mean()) ** 2).sum() for j in range(k)))
+    return best
+_Ws = [_bestW(k) for k in range(1, 5)]
+_nonincr = all(_Ws[i + 1] <= _Ws[i] + 1e-12 for i in range(3))
+def _lloyd(X, C):
+    C = C.astype(float).copy(); Ws = []
+    for _ in range(50):
+        lab = ((X[:, None, :] - C[None]) ** 2).sum(-1).argmin(1)
+        Ws.append(((X - C[lab]) ** 2).sum())
+        C = _np.array([X[lab == j].mean(0) for j in range(len(C))])
+        Ws.append(((X - C[lab]) ** 2).sum())
+    return lab, Ws
+_X1 = _x[:, None]
+_la, _Wa = _lloyd(_X1, _X1[[1, 2, 3]])
+_lb, _Wb = _lloyd(_X1, _X1[[0, 3, 6]])
+_init_dep = abs(_Wa[-1] - _Wb[-1]) > 1e-9                              # 誤答1：初期値で結果が変わる
+_mono = all(_np.diff(_Wa) <= 1e-12) and all(_np.diff(_Wb) <= 1e-12)     # 誤答3：W は増えない
+_X2 = _np.array([[0, 0], [0, 1], [3, 0], [3, 1.0]])
+def _best2(X):
+    best = None
+    for lab in _it.product(range(2), repeat=len(X)):
+        lab = _np.array(lab)
+        if lab[0] != 0 or len(set(lab)) < 2:
+            continue
+        W = sum(((X[lab == j] - X[lab == j].mean(0)) ** 2).sum() for j in range(2))
+        if best is None or W < best[0] - 1e-12:
+            best = (W, tuple(lab))
+    return best[1]
+_l1 = _best2(_X2); _l2 = _best2(_X2 * _np.array([1, 10.0]))
+_scale_dep = _l1 == (0, 0, 1, 1) and _l2 == (0, 1, 0, 1)   # 誤答2：単位を変えると最適な分割が変わる
+q.check("q24-k-means-method-4", _nonincr and _init_dep and _mono and _scale_dep,
+        f"最適 W={_np.round(_Ws, 3)} は非増加（正解）、初期値依存・単調減少・尺度依存を確認")
+_D = _np.array([[0, 3, 4, 9], [3, 0, 6, 7], [4, 6, 0, 8], [9, 7, 8, 0.0]])
+_h = {m: tuple(_np.round(_linkage(_sqf(_D), m)[:, 2], 6)) for m in ("complete", "single", "average")}
+q.check("q24-complete-linkage-4", _h["complete"] == (3, 6, 9) and _h["single"] == (3, 4, 7) and _h["average"] == (3, 5, 8)
+        and _h["complete"] != (3, 6, 8), f"最長 {_h['complete']}、最短 {_h['single']}、群平均 {_h['average']}")
+
 q.done()

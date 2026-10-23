@@ -19,6 +19,10 @@
   "hash": "adb837f4e12a089d",
   "ok": true
  },
+ "q25-communality-4": {
+  "hash": "7deea82bca644cc0",
+  "ok": true
+ },
  "q25-covariance-selection-1": {
   "hash": "4cdef0a5af212153",
   "ok": true
@@ -125,6 +129,10 @@
  },
  "q25-precision-matrix-4": {
   "hash": "f7b0ee296d40d0ab",
+  "ok": true
+ },
+ "q25-precision-matrix-5": {
+  "hash": "712d8055fb38a67b",
   "ok": true
  },
  "q25-promax-rotation-1": {

@@ -151,4 +151,22 @@ def _deriv13():
     q.check("q13-spearman-rank-correlation-3", bool(ok2), "sympy: 平方和 n(n²-1)/12、乱数の順位で scipy.spearmanr と一致、逆順で -1")
 _deriv13()
 
+# --- 4択の追加分 ---
+_n1, _n2 = 6, 8; _N = _n1 + _n2
+_W = np.array([sum(c) for c in combinations(range(1, _N + 1), _n1)], dtype=float)
+_EW, _VW = _W.mean(), _W.var()
+q.check("q13-wilcoxon-rank-sum-test-3",
+        abs(_EW - 45) < 1e-9 and abs(_VW - 60) < 1e-9
+        and abs(_n2 * (_N + 1) / 2 - 45) > 1 and abs(_n1 * _n2 / 2 - 45) > 1
+        and round(np.sqrt(_VW), 2) == 7.75 and abs(7.75 - 60) > 1,
+        f"全 C(14,6) 通りの順位和から E[W]={_EW}、V[W]={_VW:.4f}。誤答 E=60（n2）、24（U）、V=7.75（標準偏差）")
+# フリードマン：作業者ごとの定数（ブロック効果）を足しても統計量は変わらないが、クラスカル・ウォリスは変わる
+_rng = np.random.default_rng(13)
+_base = _rng.exponential(1.0, size=(10, 3)) + np.array([0.0, 0.3, 0.6])
+_blk = _base + _rng.exponential(5.0, size=(10, 1))
+_fr0 = stats.friedmanchisquare(*_base.T).statistic; _fr1 = stats.friedmanchisquare(*_blk.T).statistic
+_kw0 = stats.kruskal(*_base.T).statistic; _kw1 = stats.kruskal(*_blk.T).statistic
+q.check("q13-friedman-test-3", abs(_fr0 - _fr1) < 1e-12 and abs(_kw0 - _kw1) > 1e-6,
+        f"ブロック効果を加えてもフリードマン Q は不変（{_fr0:.3f}→{_fr1:.3f}）、KW は変化（{_kw0:.3f}→{_kw1:.3f}）。順位和・符号付き順位は2群用")
+
 q.done()

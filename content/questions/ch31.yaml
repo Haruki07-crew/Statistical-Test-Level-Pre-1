@@ -611,3 +611,46 @@ questions:
       $$V[Y\mid\boldsymbol x]=\underbrace{\frac{\alpha'}{\beta'}}_{\text{ポアソンのばらつき}}+\underbrace{\frac{\alpha'}{\beta'^2}}_{\lambda\ \text{の不確かさ}}$$
       とポアソン分布より大きくなります（過分散）。数値例では平均 $3$、分散 $4.5$ です。
       よくある間違いは、予測分布を $\lambda$ に事後平均を代入した $\mathrm{Po}(3)$ とすること（$P(Y=1)=3e^{-3}=0.149$ となり、$\lambda$ の不確かさを無視している）、ガンマ関数の積分で $b^s$ の指数を $\alpha'$ のままにすること、尺度表記と混同して $\beta'$ を逆数にすることです。
+
+  - id: q31-gamma-poisson-model-5
+    term: gamma-poisson-model
+    level: 標準
+    type: choice
+    question: |
+      1日の件数が $\mathrm{Po}(\lambda)$ に従い、$\lambda$ の事前分布をガンマ分布 $\mathrm{Ga}(4,\ 2)$（レート表記：密度 $\propto\lambda^{3}e^{-2\lambda}$、平均 $4/2=2$）とする。4日間の件数が $6,\ 3,\ 5,\ 4$ であったとき、$\lambda$ の事後平均はどれか（小数第2位まで、四捨五入）。
+    choices:
+      - '$3.50$'
+      - '$4.50$'
+      - '$4.89$'
+      - '$3.67$'
+    answer: 3
+    hint: |
+      事後分布は $\mathrm{Ga}(\alpha+\sum x_i,\ \beta+n)$（レート表記）。
+    explanation: |
+      $\sum x_i=18$、$n=4$ なので事後分布は $\mathrm{Ga}(4+18,\ 2+4)=\mathrm{Ga}(22,\ 6)$ で、
+      $$E[\lambda\mid\boldsymbol x]=\frac{22}{6}=3.67$$
+      事前平均 $2$ と標本平均 $4.5$ を、重み $\beta:n=2:4$ で平均した値 $\frac{2}{6}\times2+\frac46\times4.5$ にもなっています。
+      - $3.50$ は MAP 推定値 $(22-1)/6$ です。
+      - $4.50$ は最尤推定値（標本平均）で、事前分布を使っていません。
+      - $4.89$ は $2$ を尺度とみなして（レート $0.5$）$22/(0.5+4)$ と計算した、流儀の取り違えです。
+
+  - id: q31-predictive-distribution-4
+    term: predictive-distribution
+    level: 標準
+    type: choice
+    question: |
+      成功確率 $\theta$ の事前分布を一様分布 $\mathrm{Be}(1,1)$ とし、独立な6回の試行で成功が4回であった。同じ $\theta$ のもとで次に3回試行するとき、成功がちょうど1回である予測確率はどれか（小数第3位まで、四捨五入）。
+    choices:
+      - '$0.250$'
+      - '$0.264$'
+      - '$0.222$'
+      - '$0.375$'
+    answer: 0
+    hint: |
+      事後分布 $\mathrm{Be}(a',b')$ で $\binom31\theta(1-\theta)^2$ を平均する（ベータ二項分布）。
+    explanation: |
+      事後分布は $\mathrm{Be}(1+4,\ 1+2)=\mathrm{Be}(5,3)$ です。予測確率は
+      $$\binom31\frac{B(5+1,\ 3+2)}{B(5,3)}=3\times\frac{B(6,5)}{B(5,3)}=3\times\frac{1/1260}{1/105}=\frac{3}{12}=0.250$$
+      - $0.264$ は事後平均 $5/8$ を代入した $3\times\frac58\times(\frac38)^2$ で、$\theta$ の不確かさを無視しています。
+      - $0.222$ は最尤推定値 $2/3$ を代入した $3\times\frac23\times(\frac13)^2$ です。
+      - $0.375$ は次の1回が失敗する予測確率 $1-5/8$ です。

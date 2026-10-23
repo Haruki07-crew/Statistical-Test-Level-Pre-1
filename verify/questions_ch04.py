@@ -132,4 +132,35 @@ def _deriv04():
     q.check("q04-change-of-variables-4", bool(ok2), "sympy: ヤコビアン r、g が r と θ の積、f_W=e^{-w/2}/2")
 _deriv04()
 
+
+# --- 4択の追加 ---
+def _choice04():
+    import numpy as _np
+    import sympy as _S
+    y, lam = _S.symbols("y lambda", positive=True)
+    # Y=X^2, X~U(0,1)：F_Y(y)=sqrt(y) を微分した密度と比べる
+    true_pdf = _S.diff(_S.sqrt(y), y)
+    ch = [1 / (2 * _S.sqrt(y)), _S.Integer(1), 2 * _S.sqrt(y), _S.sqrt(y)]
+    ans = q.qs["q04-change-of-variables-5"]["answer"]
+    q.check("q04-change-of-variables-5",
+            _S.simplify(ch[ans] - true_pdf) == 0 and all(_S.simplify(c - true_pdf) != 0 for i, c in enumerate(ch) if i != ans),
+            "sympy: d/dy P(X<=sqrt y)=1/(2sqrt y)、誤答は一致しない")
+    xs = _np.random.default_rng(4).uniform(0, 1, 400000) ** 2
+    emp = _np.mean(xs <= 0.25)
+    q.check("q04-change-of-variables-5", abs(emp - float(_S.integrate(ch[ans], (y, 0, _S.Rational(1, 4))))) < 0.005,
+            f"シミュレーション P(Y<=0.25)≈{emp:.4f}（正解の密度の積分 0.5 と一致）")
+
+    # Box-Cox の lambda→0 の極限
+    lim = _S.limit((y ** lam - 1) / lam, lam, 0)
+    ch = [y - 1, 1 - 1 / y, _S.log(y), _S.Integer(0)]
+    ans = q.qs["q04-box-cox-transformation-3"]["answer"]
+    v = {c: float(c.subs(y, 3)) for c in ch}
+    q.check("q04-box-cox-transformation-3",
+            _S.simplify(ch[ans] - lim) == 0 and all(abs(float(c.subs(y, 3)) - float(lim.subs(y, 3))) > 1e-6 for i, c in enumerate(ch) if i != ans),
+            f"sympy: 極限 {lim}、y=3 で誤答の値は一致しない")
+    q.check("q04-box-cox-transformation-3",
+            _S.simplify(((y ** 1 - 1) / 1) - ch[0]) == 0 and _S.simplify(((y ** -1 - 1) / -1) - ch[1]) == 0,
+            "誤答の由来：λ=1 で y-1、λ=-1 で 1-1/y")
+_choice04()
+
 q.done()

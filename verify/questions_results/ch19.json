@@ -15,6 +15,10 @@
   "hash": "e3d90e61f8f8e4cc",
   "ok": true
  },
+ "q19-endogeneity-3": {
+  "hash": "06aadfeaea1fc97f",
+  "ok": true
+ },
  "q19-generalized-least-squares-1": {
   "hash": "033e2a96e51660c4",
   "ok": true
@@ -101,6 +105,10 @@
  },
  "q19-ridge-regression-3": {
   "hash": "4299e087443ca5b9",
+  "ok": true
+ },
+ "q19-ridge-regression-4": {
+  "hash": "1e4530abf9503c98",
   "ok": true
  },
  "q19-spline-regression-1": {

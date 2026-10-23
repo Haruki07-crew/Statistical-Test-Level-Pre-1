@@ -192,4 +192,44 @@ def _deriv02():
             "sympy: Σ C(n,k)(ps)^k q^(n-k)=(q+ps)^n、G'(1)=np、G''(1)=n(n-1)p²、V=npq")
 _deriv02()
 
+
+# --- 4択の追加 ---
+def _choice02():
+    import numpy as _np
+    import sympy as _S
+    # 累積分布関数の候補：非減少・極限・右連続を数値で調べる
+    cands = [
+        lambda x: 0.0 if x < 0 else _np.exp(-x),
+        lambda x: 0.0 if x < 0 else (x * x / 4 if x < 3 else 1.0),
+        lambda x: 0.0 if x <= 0 else (0.5 if x < 1 else 1.0),
+        lambda x: 0.0 if x < 0 else 1 - _np.exp(-x * x),
+    ]
+    grid = _np.linspace(-5, 20, 25001)
+    jumps = [0.0, 1.0, 3.0]
+    def is_cdf(F):
+        v = _np.array([F(x) for x in grid])
+        mono = bool(_np.all(_np.diff(v) >= -1e-12))
+        lims = abs(F(-1e6)) < 1e-9 and abs(F(1e6) - 1) < 1e-9
+        bounded = bool(_np.all((v >= -1e-12) & (v <= 1 + 1e-12)))
+        rc = all(abs(F(a + 1e-9) - F(a)) < 1e-6 for a in jumps)
+        return mono and lims and bounded and rc
+    ok = [is_cdf(F) for F in cands]
+    ans = q.qs["q02-cumulative-distribution-function-4"]["answer"]
+    q.check("q02-cumulative-distribution-function-4", ok[ans] and sum(ok) == 1,
+            f"条件を満たす候補 {ok}（正解だけが累積分布関数）")
+
+    # 同時密度 x+y の P(X+Y<1)
+    x, y = _S.symbols("x y", positive=True)
+    tot = _S.integrate(x + y, (y, 0, 1), (x, 0, 1))
+    p = _S.integrate(x + y, (y, 0, 1 - x), (x, 0, 1))
+    ch = [_S.Rational(1, 2), _S.Rational(1, 3), _S.Rational(1, 6), _S.Rational(2, 3)]
+    ans = q.qs["q02-joint-probability-density-function-4"]["answer"]
+    q.check("q02-joint-probability-density-function-4",
+            tot == 1 and p == ch[ans] and all(c != p for i, c in enumerate(ch) if i != ans),
+            f"sympy: 全体の積分 {tot}、P(X+Y<1)={p}、誤答は一致しない")
+    q.check("q02-joint-probability-density-function-4",
+            _S.integrate(x * (1 - x), (x, 0, 1)) == _S.Rational(1, 6) and 1 - p == _S.Rational(2, 3),
+            "誤答の由来：x(1-x) の項だけ 1/6、余事象 2/3、面積 1/2")
+_choice02()
+
 q.done()

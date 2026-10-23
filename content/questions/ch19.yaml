@@ -531,3 +531,44 @@ questions:
       となります（軟しきい値関数）。$|b_j|\le\lambda$ の係数はちょうど0になるので、Lasso は推定と変数選択を同時に行います。
       リッジの $\frac{b_j}{1+\lambda}$（比例的に縮むが0にはならない）との違いがこの式に表れています。
       よくある間違いは、$\lambda$ だけ縮めた結果が符号をまたぐ場合（$|b_j|<\lambda$）にも $b_j-\lambda$ を答えてしまうこと、目的関数に $\frac12$ がないときの係数（しきい値が $\lambda/2$ になる）と混同することです。
+
+  - id: q19-ridge-regression-4
+    term: ridge-regression
+    level: 基本
+    type: choice
+    question: |
+      リッジ推定量 $\hat{\boldsymbol\beta}_R=(X^\top X+\lambda I)^{-1}X^\top\boldsymbol y$（$\lambda>0$）の性質として正しいものはどれか。
+    choices:
+      - '$\lambda$ を大きくすると、一部の係数がちょうど0になる'
+      - '$\lambda>0$ のとき、$\boldsymbol\beta$ の不偏推定量である'
+      - '説明変数の単位を変えても、予測値は変わらない'
+      - '$\lambda$ を大きくすると、分散は減るがバイアスは増える'
+    answer: 3
+    hint: |
+      $E[\hat{\boldsymbol\beta}_R]=(X^\top X+\lambda I)^{-1}X^\top X\boldsymbol\beta$ を最小二乗推定量の場合と比べる。
+    explanation: |
+      $E[\hat{\boldsymbol\beta}_R]=(X^\top X+\lambda I)^{-1}X^\top X\boldsymbol\beta\ne\boldsymbol\beta$ で、$\lambda$ が大きいほど0の方向へ縮むのでバイアスが大きくなります。
+      一方、$V[\hat{\boldsymbol\beta}_R]=\sigma^2(X^\top X+\lambda I)^{-1}X^\top X(X^\top X+\lambda I)^{-1}$ は $\lambda$ とともに小さくなります（バイアスと分散のトレードオフ）。
+      - 係数がちょうど0になるのは $L_1$ 罰則の Lasso の性質です。リッジ（$L_2$ 罰則）は0に近づくだけです。
+      - $\lambda>0$ ではバイアスがあるので不偏ではありません。
+      - 罰則 $\lambda\sum\beta_j^2$ は係数の大きさに依存するので、単位を変えると縮み方が変わり、予測値も変わります。そのため普通は説明変数を標準化してから使います。
+
+  - id: q19-endogeneity-3
+    term: endogeneity
+    level: 標準
+    type: choice
+    question: |
+      回帰 $y=\beta_0+\beta_1x+\varepsilon$ で、説明変数 $x$ と誤差項 $\varepsilon$ が相関する（内生性がある）原因として**適切でない**ものはどれか。
+    choices:
+      - '説明変数 $x$ が、測定誤差を含んで観測される'
+      - '誤差項の分散が、$x$ の値によって異なる'
+      - '$x$ と相関する重要な変数を、モデルから落とした'
+      - '$x$ と $y$ が、需要と供給のように同時に決まる'
+    answer: 1
+    hint: |
+      それぞれの状況で $\mathrm{Cov}(x,\varepsilon)$ が0でなくなるかを考える。分散が変わることと、相関があることは別。
+    explanation: |
+      誤差の分散が $x$ によって変わる（不均一分散）だけでは、$E[\varepsilon\mid x]=0$ のままなので $\mathrm{Cov}(x,\varepsilon)=0$ です。最小二乗推定量は一致性を保ち、問題になるのは標準誤差のほうです。
+      - 測定誤差：観測値 $x=x^*+u$ の $u$ が誤差項に入り、$x$ と相関します（係数が0の方向へ偏る）。
+      - 欠落変数：落とした変数が誤差項に入り、それが $x$ と相関していれば内生性になります（欠落変数バイアス）。
+      - 同時決定：$y$ のショック $\varepsilon$ が $x$ にも影響するので、$x$ と $\varepsilon$ が相関します。

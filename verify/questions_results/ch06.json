@@ -23,6 +23,10 @@
   "hash": "790538f93b3c1526",
   "ok": true
  },
+ "q06-bivariate-normal-distribution-5": {
+  "hash": "61ee88956d18fe8a",
+  "ok": true
+ },
  "q06-cauchy-distribution-1": {
   "hash": "cd28b0a59c51f087",
   "ok": true
@@ -61,6 +65,10 @@
  },
  "q06-f-distribution-2": {
   "hash": "7503a56165c3533b",
+  "ok": true
+ },
+ "q06-f-distribution-3": {
+  "hash": "960b8f6b164df100",
   "ok": true
  },
  "q06-gamma-distribution-1": {
@@ -109,6 +117,10 @@
  },
  "q06-normal-distribution-2": {
   "hash": "225e836a3a5b93ed",
+  "ok": true
+ },
+ "q06-normal-distribution-3": {
+  "hash": "8d3eaafc0f8e74b3",
   "ok": true
  },
  "q06-normal-mixture-distribution-1": {

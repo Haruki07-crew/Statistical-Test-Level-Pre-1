@@ -71,6 +71,10 @@
   "hash": "119fa68552582d8e",
   "ok": true
  },
+ "q10-p-value-4": {
+  "hash": "a55cd236cc8daa7d",
+  "ok": true
+ },
  "q10-power-function-1": {
   "hash": "d389f0212df67a02",
   "ok": true
@@ -81,6 +85,10 @@
  },
  "q10-power-function-3": {
   "hash": "12177e2430e69eb4",
+  "ok": true
+ },
+ "q10-power-function-4": {
+  "hash": "7c176d1905ab6916",
   "ok": true
  },
  "q10-randomized-test-1": {
@@ -105,6 +113,10 @@
  },
  "q10-score-test-2": {
   "hash": "b354630338bf0caa",
+  "ok": true
+ },
+ "q10-score-test-3": {
+  "hash": "46c77ca98c525c61",
   "ok": true
  },
  "q10-significance-level-1": {

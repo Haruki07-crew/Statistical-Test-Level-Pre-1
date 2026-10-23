@@ -209,4 +209,31 @@ def _deriv23():
     q.check("q23-misclassification-rate-4", bool(ok2), f"E[Y]=Δ²/2、V[Y]=Δ²、シミュレーションで Φ(-Δ/2)={_st.norm.cdf(-Delta / 2):.4f}（実測 {err:.4f}）")
 _deriv23()
 
+# --- 4択の追加（二次判別・感度と特異度）---
+import numpy as _np
+def _quad_term(S1, S2):
+    return _np.linalg.inv(S2) - _np.linalg.inv(S1)
+_S = _np.array([[2.0, 0.5], [0.5, 1.0]])
+_eq_lin = _np.allclose(_quad_term(_S, _S), 0)
+_ev = _np.linalg.eigvalsh(_quad_term(_np.diag([1.0, 4.0]), _np.diag([4.0, 1.0])))
+_hyper = _ev.min() < 0 < _ev.max()           # 符号が混ざる → 双曲線（誤答1）
+# 事前確率は定数項 log(pi2/pi1) に入る → 境界が動く（誤答2）
+def _g(x, mu, S, pi):
+    d = x - mu
+    return -0.5 * d @ _np.linalg.inv(S) @ d - 0.5 * _np.log(_np.linalg.det(S)) + _np.log(pi)
+_x0 = _np.array([1.0, 0.3]); _m1, _m2 = _np.zeros(2), _np.array([2.0, 0.0])
+_d_a = _g(_x0, _m2, _np.eye(2), 0.5) - _g(_x0, _m1, _np.diag([1, 2.0]), 0.5)
+_d_b = _g(_x0, _m2, _np.eye(2), 0.2) - _g(_x0, _m1, _np.diag([1, 2.0]), 0.8)
+_prior_moves = abs(_d_a - _d_b) > 1e-6
+_p, _K = 5, 2
+_more_params = _K * _p * (_p + 1) // 2 > _p * (_p + 1) // 2   # 二次判別のほうが母数が多い（誤答3）
+q.check("q23-quadratic-discriminant-analysis-3", _eq_lin and _hyper and _prior_moves and _more_params,
+        "Σ1=Σ2 で2次の項が0（正解）、diag(1,4)/diag(4,1) で不定符号、事前確率で境界が動く、母数 30>15")
+_TP, _FN, _FP, _TN = 90, 30, 44, 836
+_sens, _spec = _TP / (_TP + _FN), _TN / (_TN + _FP)
+_ok = (round(_sens, 2), round(_spec, 2)) == (0.75, 0.95)
+_wrong = [(round(_spec, 2), round(_sens, 2)), (round(_TP / (_TP + _FP), 2), round(_spec, 2)), (round(_sens, 2), round(_FP / (_FP + _TN), 2))]
+_ok &= _wrong == [(0.95, 0.75), (0.67, 0.95), (0.75, 0.05)] and all(w != (0.75, 0.95) for w in _wrong)
+q.check("q23-sensitivity-and-specificity-4", _ok, f"感度 {_sens:.4f}・特異度 {_spec:.4f}、誤答は取り違え・適合率・偽陽性率")
+
 q.done()

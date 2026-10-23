@@ -171,4 +171,26 @@ q.check("q31-gamma-poisson-model-4", _ok and abs(_p1 - 128 / 729) < 1e-12 and ro
         and abs(stats.poisson.pmf(1, 3) - 0.149) < 0.001,
         f"積分が負の二項分布に一致、P(Y=1)={_p1:.4f}、平均3・分散4.5、誤答 Po(3) は 0.149")
 
+# --- 4択の追加（ガンマ・ポアソン・予測分布）---
+import numpy as _np
+from scipy import stats as _st
+from scipy.special import beta as _B, comb as _comb
+_x = _np.array([6, 3, 5, 4]); _a, _b = 4, 2
+_post = _st.gamma(_a + _x.sum(), scale=1 / (_b + len(_x)))
+_lam = _np.linspace(1e-3, 15, 30001)
+_dens = _st.poisson.pmf(_x[:, None], _lam).prod(0) * _st.gamma.pdf(_lam, _a, scale=1 / _b)
+_pm_num = (_lam * _dens).sum() / _dens.sum()
+_ok = abs(_post.mean() - _pm_num) < 1e-4 and round(_post.mean(), 2) == 3.67
+_wr = [(_a + _x.sum() - 1) / (_b + len(_x)), _x.mean(), (_a + _x.sum()) / (1 / _b + len(_x))]
+_ok &= [round(w, 2) for w in _wr] == [3.50, 4.50, 4.89]
+q.check("q31-gamma-poisson-model-5", _ok, f"事後平均 {_post.mean():.4f}（数値積分 {_pm_num:.4f}）、誤答 MAP・MLE・尺度取り違え")
+_a2, _b2 = 1 + 4, 1 + 2
+_pred = _comb(3, 1) * _B(_a2 + 1, _b2 + 2) / _B(_a2, _b2)
+_th = _np.linspace(0, 1, 200001)
+_num = (_st.binom.pmf(1, 3, _th) * _st.beta.pdf(_th, _a2, _b2)).mean()
+_ok = abs(_pred - 0.25) < 1e-12 and abs(_num - _pred) < 1e-4 and abs(_st.betabinom.pmf(1, 3, _a2, _b2) - _pred) < 1e-12
+_wr = [_st.binom.pmf(1, 3, 5 / 8), _st.binom.pmf(1, 3, 2 / 3), 1 - 5 / 8]
+_ok &= [round(w, 3) for w in _wr] == [0.264, 0.222, 0.375]
+q.check("q31-predictive-distribution-4", _ok, f"予測確率 {_pred:.4f}（ベータ二項）、誤答 {[round(w,4) for w in _wr]}")
+
 q.done()

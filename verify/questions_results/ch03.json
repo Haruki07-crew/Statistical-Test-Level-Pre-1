@@ -7,6 +7,10 @@
   "hash": "3fe9b84ad26a8f1e",
   "ok": true
  },
+ "q03-coefficient-of-variation-3": {
+  "hash": "92122c8070c6d3bd",
+  "ok": true
+ },
  "q03-conditional-expectation-1": {
   "hash": "e87c3ea2e509c4b3",
   "ok": true
@@ -33,6 +37,10 @@
  },
  "q03-conditional-variance-4": {
   "hash": "5d41de447fb2b064",
+  "ok": true
+ },
+ "q03-conditional-variance-5": {
+  "hash": "b6d835a38b46f725",
   "ok": true
  },
  "q03-correlation-matrix-1": {

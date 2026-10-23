@@ -55,12 +55,20 @@
   "hash": "2d412df5e2719309",
   "ok": true
  },
+ "q20-latin-square-design-3": {
+  "hash": "bdf72c4dcd93d864",
+  "ok": true
+ },
  "q20-main-effect-and-interaction-1": {
   "hash": "92c00816fa6ff00b",
   "ok": true
  },
  "q20-main-effect-and-interaction-2": {
   "hash": "35fe164d93e5854e",
+  "ok": true
+ },
+ "q20-main-effect-and-interaction-3": {
+  "hash": "a0f983943ae43b17",
   "ok": true
  },
  "q20-one-way-anova-1": {
@@ -133,6 +141,10 @@
  },
  "q20-two-way-anova-without-replication-2": {
   "hash": "20102711d789ea2e",
+  "ok": true
+ },
+ "q20-two-way-anova-without-replication-3": {
+  "hash": "cb1748d7282b2475",
   "ok": true
  }
 }

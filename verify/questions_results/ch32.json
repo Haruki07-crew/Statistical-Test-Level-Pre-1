@@ -115,6 +115,10 @@
   "hash": "e2f7cca1e273268b",
   "ok": true
  },
+ "q32-metropolis-hastings-4": {
+  "hash": "a97a6bca989ffd18",
+  "ok": true
+ },
  "q32-monte-carlo-integration-1": {
   "hash": "49d4abca3bf4e64d",
   "ok": true
@@ -145,6 +149,10 @@
  },
  "q32-rejection-sampling-4": {
   "hash": "99c49e03eb0ef2e0",
+  "ok": true
+ },
+ "q32-rejection-sampling-5": {
+  "hash": "453efa63c875da52",
   "ok": true
  },
  "q32-uniform-random-number-1": {

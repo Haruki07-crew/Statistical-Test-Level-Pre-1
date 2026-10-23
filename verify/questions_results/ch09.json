@@ -7,6 +7,10 @@
   "hash": "1b7fd5112cf23d98",
   "ok": true
  },
+ "q09-ci-mean-known-variance-3": {
+  "hash": "1bfb74ae89bdd157",
+  "ok": true
+ },
  "q09-ci-mean-unknown-variance-1": {
   "hash": "3b594a1315d14592",
   "ok": true
@@ -25,6 +29,10 @@
  },
  "q09-ci-proportion-2": {
   "hash": "88ee6d138e583b41",
+  "ok": true
+ },
+ "q09-ci-proportion-3": {
+  "hash": "4e6e20c505ccf7f5",
   "ok": true
  },
  "q09-ci-two-sample-mean-difference-1": {

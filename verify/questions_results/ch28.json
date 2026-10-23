@@ -43,6 +43,10 @@
   "hash": "22c6b5788521c1b4",
   "ok": true
  },
+ "q28-loglinear-model-4": {
+  "hash": "aeb589e2bdc9f048",
+  "ok": true
+ },
  "q28-mantel-haenszel-estimator-1": {
   "hash": "2795b7ae3bfb7a99",
   "ok": true
@@ -69,6 +73,10 @@
  },
  "q28-mcnemar-test-3": {
   "hash": "d4aeff0c2850e1da",
+  "ok": true
+ },
+ "q28-mcnemar-test-4": {
+  "hash": "9cec533dd7b2d33e",
   "ok": true
  },
  "q28-odds-ratio-interval-1": {

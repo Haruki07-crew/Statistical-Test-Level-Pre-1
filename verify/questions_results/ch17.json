@@ -39,6 +39,10 @@
   "hash": "ec616283b55c82db",
   "ok": true
  },
+ "q17-heteroscedasticity-3": {
+  "hash": "6a80a38081cc8a88",
+  "ok": true
+ },
  "q17-leverage-1": {
   "hash": "b468ba6be7e90116",
   "ok": true
@@ -53,6 +57,10 @@
  },
  "q17-leverage-4": {
   "hash": "cbebfe89e91aad99",
+  "ok": true
+ },
+ "q17-leverage-5": {
+  "hash": "18522437ddbb5991",
   "ok": true
  },
  "q17-normal-qq-plot-1": {

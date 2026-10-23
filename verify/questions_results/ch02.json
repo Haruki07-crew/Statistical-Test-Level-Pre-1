@@ -35,6 +35,10 @@
   "hash": "5c6a1bd5a9dbc2de",
   "ok": true
  },
+ "q02-cumulative-distribution-function-4": {
+  "hash": "8eb3761cd0820000",
+  "ok": true
+ },
  "q02-hazard-function-1": {
   "hash": "cf8b93cb743fb15b",
   "ok": true
@@ -57,6 +61,10 @@
  },
  "q02-joint-probability-density-function-3": {
   "hash": "94b9c9da06c28234",
+  "ok": true
+ },
+ "q02-joint-probability-density-function-4": {
+  "hash": "91a1db61ab48dd37",
   "ok": true
  },
  "q02-joint-probability-function-1": {

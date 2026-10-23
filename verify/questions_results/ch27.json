@@ -103,6 +103,10 @@
   "hash": "ad8b1ed21db40c14",
   "ok": true
  },
+ "q27-partial-autocorrelation-4": {
+  "hash": "b7b8390726e61cc3",
+  "ok": true
+ },
  "q27-seasonal-adjustment-1": {
   "hash": "27211fd4009870bf",
   "ok": true
@@ -197,6 +201,10 @@
  },
  "q27-yule-walker-equations-3": {
   "hash": "1931aef4588d1b10",
+  "ok": true
+ },
+ "q27-yule-walker-equations-4": {
+  "hash": "4d2c675028c86351",
   "ok": true
  }
 }

@@ -200,4 +200,46 @@ q.check("q29-em-algorithm-4", _crit == [_W / _N] and np.allclose(_w, [0.8, 2 / 3
         and abs(_grid[np.argmax(_Qn)] - _p1) < 1e-4 and _ll(_p1) >= _ll(_p0),
         f"M ステップ π=Σw/n、π(1)={_p1:.4f}、尤度は増加")
 
+# --- 4択の追加（MCAR・カプラン・マイヤー・ルービンの規則）---
+import numpy as _np
+from fractions import Fraction as _F
+_rng = _np.random.default_rng(2903)
+_n, _R = 200, 4000
+_cc_means, _full_means, _imp_se, _cc_se = [], [], [], []
+for _ in range(_R):
+    y = _rng.normal(10, 3, _n)
+    obs = _rng.random(_n) >= 0.3                           # MCAR：値と無関係に30%欠測
+    yo = y[obs]
+    _cc_means.append(yo.mean()); _full_means.append(y.mean())
+    _cc_se.append(yo.std(ddof=1) / _np.sqrt(len(yo)))
+    yi = _np.where(obs, y, yo.mean())                      # 平均値代入
+    _imp_se.append(yi.std(ddof=1) / _np.sqrt(_n))
+_sd_cc = _np.std(_cc_means); _sd_full = _np.std(_full_means)
+_ok = abs(_np.mean(_cc_means) - 10) < 0.02                      # 偏らない（誤答3は誤り）
+_ok &= _sd_cc > 1.1 * _sd_full                                  # 標準誤差は大きくなる（誤答1は誤り）
+_ok &= _np.mean(_imp_se) < 0.9 * _sd_cc                         # 平均値代入の SE は過小（誤答2は誤り）
+_ok &= abs(_sd_cc / _sd_full - 1 / _np.sqrt(0.7)) < 0.06
+q.check("q29-mcar-3", _ok, f"完全ケース平均 {_np.mean(_cc_means):.3f}、SD 比 {_sd_cc/_sd_full:.3f}（理論 {1/_np.sqrt(0.7):.3f}）、代入 SE {_np.mean(_imp_se):.3f} < 実 {_sd_cc:.3f}")
+_t = [1, 3, 3, 5, 5, 5, 8, 9, 11, 12]
+_e = [1, 1, 0, 1, 1, 0, 1, 0, 1, 0]
+def _km(t, e, at, keep_censored=False):
+    S = _F(1)
+    for u in sorted(set(ti for ti, ei in zip(t, e) if ei and ti <= at)):
+        if keep_censored:
+            n = len(t) - sum(1 for ti, ei in zip(t, e) if ei and ti < u)
+        else:
+            n = sum(1 for ti in t if ti >= u)
+        d = sum(1 for ti, ei in zip(t, e) if ei and ti == u)
+        S *= 1 - _F(d, n)
+    return S
+_S10 = _km(_t, _e, 10)
+_wr = [_F(2, 7), _F(2, 10), _km(_t, _e, 10, keep_censored=True)]
+_ok = _S10 == _F(3, 7) and [round(float(w), 3) for w in _wr] == [0.286, 0.2, 0.5] and all(round(float(w), 3) != 0.429 for w in _wr)
+q.check("q29-kaplan-meier-estimator-4", _ok, f"Ŝ(10)={_S10}={float(_S10):.4f}、誤答 2/7・2/10・打ち切りを残す {_wr[2]}")
+_Qs = _np.array([3.2, 2.6, 3.0, 3.6]); _U = _np.full(4, 0.25); _m = 4
+_B = _Qs.var(ddof=1); _T = _U.mean() + (1 + 1 / _m) * _B
+_wr = [_U.mean() + _B, _U.mean() + (1 - 1 / _m) * _B, _U.mean() + _B / _m]
+_ok = round(_T, 3) == 0.467 and [round(w, 3) for w in _wr] == [0.423, 0.380, 0.293]
+q.check("q29-rubins-rules-4", _ok, f"T={_T:.4f}（B={_B:.4f}）、誤答 {[round(w,4) for w in _wr]}")
+
 q.done()

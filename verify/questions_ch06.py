@@ -184,4 +184,47 @@ def _deriv06():
     q.check("q06-bivariate-normal-distribution-4", bool(ok), "sympy: β=ρσY/σX、V[W]=σY²(1-ρ²)、一般公式と一致")
 _deriv06()
 
+
+# --- 4択の追加 ---
+def _choice06():
+    import numpy as _np
+    from scipy import stats as _st
+    # 1次結合 W=2X1-X2、X ~ N(3,4)
+    a = _np.array([2, -1]); mu = _np.array([3, 3]); S = _np.diag([4, 4])
+    m, v = float(a @ mu), float(a @ S @ a)
+    ch = [(3, 12), (3, 20), (9, 20), (3, 4)]
+    ans = q.qs["q06-normal-distribution-3"]["answer"]
+    q.check("q06-normal-distribution-3",
+            ch[ans] == (m, v) and all(c != (m, v) for i, c in enumerate(ch) if i != ans),
+            f"a'μ={m}, a'Σa={v}、誤答は一致しない")
+    rng = _np.random.default_rng(6)
+    w = 2 * rng.normal(3, 2, 400000) - rng.normal(3, 2, 400000)
+    q.check("q06-normal-distribution-3", abs(w.mean() - 3) < 0.03 and abs(w.var() - 20) < 0.2,
+            f"シミュレーション 平均≈{w.mean():.3f}, 分散≈{w.var():.3f}")
+
+    # 2変量正規の条件付き分散（シューア補元）
+    sx, sy, r = 10.0, 15.0, 0.6
+    Sig = _np.array([[sx ** 2, r * sx * sy], [r * sx * sy, sy ** 2]])
+    cv = Sig[1, 1] - Sig[1, 0] ** 2 / Sig[0, 0]
+    ch = [12, 81, 90, 144]
+    ans = q.qs["q06-bivariate-normal-distribution-5"]["answer"]
+    q.check("q06-bivariate-normal-distribution-5",
+            abs(ch[ans] - cv) < 1e-9 and all(abs(c - cv) > 1e-6 for i, c in enumerate(ch) if i != ans),
+            f"Σyy-Σyx²/Σxx={cv}、誤答（SD 12, σ²ρ² 81, σ²(1-ρ) 90）は一致しない")
+
+    # F 分布の性質（m=3, n=10 で確かめる。一般の形は explanation のとおり）
+    mm, nn = 3, 10
+    ps = [0.05, 0.3, 0.5, 0.9]
+    t0 = all(abs(_st.f.ppf(1 - p, nn, mm) - 1 / _st.f.ppf(p, mm, nn)) < 1e-9 for p in ps)   # 1/X ~ F(n,m)
+    t1 = abs(_st.f.mean(mm, nn) - 1) < 1e-9                                                  # 期待値 1？
+    t2 = abs(_st.f.ppf(0.95, mm, nn) - _st.f.ppf(0.95, nn, mm)) < 1e-9                       # 同じ分布？
+    # U/V = (m/n)X の分布が F(m,n) と一致するか
+    t3 = all(abs(_st.f.cdf(x * nn / mm, mm, nn) - _st.f.cdf(x, mm, nn)) < 1e-9 for x in [0.5, 1, 2])
+    truth = [t0, t1, t2, t3]
+    ans = q.qs["q06-f-distribution-3"]["answer"]
+    q.check("q06-f-distribution-3", truth[ans] and sum(truth) == 1,
+            f"scipy（m=3,n=10）: 各記述の真偽 {truth}、E={_st.f.mean(mm, nn):.3f}、"
+            f"F0.05(3,10)={_st.f.ppf(0.95, 3, 10):.2f}, F0.05(10,3)={_st.f.ppf(0.95, 10, 3):.2f}")
+_choice06()
+
 q.done()

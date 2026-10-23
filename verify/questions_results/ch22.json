@@ -67,6 +67,10 @@
   "hash": "30761424b9f12c5d",
   "ok": true
  },
+ "q22-pca-on-correlation-matrix-3": {
+  "hash": "b142d7947faf59bd",
+  "ok": true
+ },
  "q22-principal-component-1": {
   "hash": "a140f3e9bc3c0db9",
   "ok": true
@@ -97,6 +101,10 @@
  },
  "q22-principal-component-loading-4": {
   "hash": "80814450e22a2d94",
+  "ok": true
+ },
+ "q22-principal-component-loading-5": {
+  "hash": "2c99d0274b9b1da3",
   "ok": true
  },
  "q22-principal-component-score-1": {

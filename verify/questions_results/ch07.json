@@ -63,6 +63,10 @@
   "hash": "7b3bc462739e4e17",
   "ok": true
  },
+ "q07-continuous-mapping-theorem-3": {
+  "hash": "6b71a7c6237fa79a",
+  "ok": true
+ },
  "q07-convergence-in-distribution-1": {
   "hash": "c25a393d282dbe81",
   "ok": true
@@ -85,6 +89,10 @@
  },
  "q07-convergence-in-probability-3": {
   "hash": "27a3b4e2ebb83088",
+  "ok": true
+ },
+ "q07-convergence-in-probability-4": {
+  "hash": "5713dd5011cb0aa3",
   "ok": true
  },
  "q07-delta-method-1": {

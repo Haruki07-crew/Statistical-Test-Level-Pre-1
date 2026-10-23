@@ -7,6 +7,10 @@
   "hash": "2c4f0d3fbcd87e7c",
   "ok": true
  },
+ "q04-box-cox-transformation-3": {
+  "hash": "e8686445d1023ca9",
+  "ok": true
+ },
  "q04-change-of-variables-1": {
   "hash": "a0189e91089b85f3",
   "ok": true
@@ -21,6 +25,10 @@
  },
  "q04-change-of-variables-4": {
   "hash": "754874c13562e6c8",
+  "ok": true
+ },
+ "q04-change-of-variables-5": {
+  "hash": "c13d5d4f2f828d3e",
   "ok": true
  },
  "q04-log-transformation-1": {

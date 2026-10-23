@@ -149,4 +149,28 @@ _ace = _do[1] - _do[0]
 q.check("q33-backdoor-criterion-4", _ok and abs(_do[1] - 0.56) < 1e-12 and abs(_do[0] - 0.39) < 1e-12 and round(_ace, 2) == 0.17
         and abs((0.2 + 0.1) / 2 - 0.17) > 0.01, f"調整化公式＝逆確率重み付け、ACE={_ace:.4f}、誤答 0.15 とは異なる")
 
+# --- 4択の追加（ATE・フロントドア基準の状況判断）---
+_Y0 = np.array([2, 3, 1, 4, 2, 5]); _Y1 = np.array([5, 4, 4, 4, 3, 7]); _T = np.array([1, 0, 1, 0, 0, 1])
+_ate = (_Y1 - _Y0).mean()
+_naive = _Y1[_T == 1].mean() - _Y0[_T == 0].mean()
+_att = (_Y1 - _Y0)[_T == 1].mean(); _atc = (_Y1 - _Y0)[_T == 0].mean()
+q.check("q33-causal-effect-4", round(_ate, 2) == 1.67 and [round(v, 2) for v in (_naive, _att, _atc)] == [2.33, 2.67, 0.67],
+        f"ATE {_ate:.4f}、群間差 {_naive:.4f}・ATT {_att:.4f}・ATC {_atc:.4f}")
+# U→X, U→Y, X→M→Y の数値例
+_pu = 0.4; _px = {0: 0.2, 1: 0.8}; _pm = {0: 0.1, 1: 0.7}
+_pyf = lambda m, u: 0.1 + 0.5 * m + 0.3 * u
+_J = {}
+for u, x, m, y in itertools.product((0, 1), repeat=4):
+    pu = _pu if u else 1 - _pu; px = _px[u] if x else 1 - _px[u]
+    pm = _pm[x] if m else 1 - _pm[x]; py = _pyf(m, u) if y else 1 - _pyf(m, u)
+    _J[(u, x, m, y)] = pu * px * pm * py
+_Pr = lambda **kw: sum(v for k, v in _J.items() if all(k["uxmy".index(a)] == b for a, b in kw.items()))
+_true = sum((_pu if u else 1 - _pu) * (_pm[1] if m else 1 - _pm[1]) * _pyf(m, u) for u in (0, 1) for m in (0, 1))
+_fd = sum(_Pr(x=1, m=m) / _Pr(x=1) * sum(_Pr(x=x2, m=m, y=1) / _Pr(x=x2, m=m) * _Pr(x=x2) for x2 in (0, 1)) for m in (0, 1))
+_bd_m = sum(_Pr(x=1, m=m, y=1) / _Pr(x=1, m=m) * _Pr(m=m) for m in (0, 1))   # M で調整（誤り）
+_cond = _Pr(x=1, y=1) / _Pr(x=1)
+_ok = abs(_fd - _true) < 1e-12 and abs(_bd_m - _true) > 0.01 and abs(_cond - _true) > 0.01
+_ok &= dsep([("U", "X"), ("U", "Y"), ("X", "M"), ("M", "Y")], "M", "U", {"X"})
+q.check("q33-frontdoor-criterion-3", _ok, f"真の値 {_true:.4f}＝フロントドア {_fd:.4f}、M で調整 {_bd_m:.4f}・P(y|x) {_cond:.4f} は不一致")
+
 q.done()

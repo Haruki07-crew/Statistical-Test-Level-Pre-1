@@ -79,6 +79,10 @@
   "hash": "6c7548110a87820c",
   "ok": true
  },
+ "q12-pearson-chi-square-statistic-3": {
+  "hash": "a71338f1d4ea6322",
+  "ok": true
+ },
  "q12-poisson-parameter-test-1": {
   "hash": "108d442f283bc5af",
   "ok": true
@@ -109,6 +113,10 @@
  },
  "q12-two-sample-proportion-test-2": {
   "hash": "0cf981a10159aa84",
+  "ok": true
+ },
+ "q12-two-sample-proportion-test-3": {
+  "hash": "7bd4b0ed252ac5a5",
   "ok": true
  },
  "q12-variance-stabilizing-transform-1": {

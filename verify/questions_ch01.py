@@ -111,4 +111,35 @@ def _deriv01():
             "sympy: 事後オッズ=尤度比×事前オッズ、O/(1+O)=sπ/(sπ+f(1-π))（π=0.02,s=0.9,f=0.05 で 0.269）")
 _deriv01()
 
+
+# --- 4択の追加 ---
+def _choice01():
+    # 全確率の公式：箱1(0.4, 赤3/5)、箱2(0.6, 赤1/5)
+    pR = Fr(3, 5) * Fr(2, 5) + Fr(1, 5) * Fr(3, 5)
+    ch = ["0.40", "0.24", "0.36", "0.67"]
+    ans = q.qs["q01-law-of-total-probability-3"]["answer"]
+    vals = [float(c) for c in ch]
+    q.check("q01-law-of-total-probability-3",
+            abs(vals[ans] - float(pR)) < 0.005 and all(abs(v - float(pR)) >= 0.005 for i, v in enumerate(vals) if i != ans),
+            f"P(R)={float(pR):.4f}（正解の選択肢と一致、誤答は一致しない）")
+    wrong = [(Fr(3, 5) + Fr(1, 5)) / 2, Fr(3, 5) * Fr(2, 5), (Fr(3, 5) * Fr(2, 5)) / pR]
+    q.check("q01-law-of-total-probability-3",
+            [round(float(w), 2) for w in wrong] == [0.40, 0.24, 0.67],
+            "誤答の由来：単純平均 0.40、箱1の項だけ 0.24、P(A1|R)=0.67")
+
+    # 条件付き独立：A=1個目奇数, B=2個目奇数, C=和が偶数
+    outs = [(a, b) for a in range(1, 7) for b in range(1, 7)]
+    P = lambda ev: Fr(sum(1 for o in outs if ev(o)), 36)
+    A = lambda o: o[0] % 2 == 1
+    B = lambda o: o[1] % 2 == 1
+    C = lambda o: (o[0] + o[1]) % 2 == 0
+    indep = P(lambda o: A(o) and B(o)) == P(A) * P(B)
+    pC = P(C)
+    cindep = P(lambda o: A(o) and B(o) and C(o)) / pC == (P(lambda o: A(o) and C(o)) / pC) * (P(lambda o: B(o) and C(o)) / pC)
+    truth = [indep and cindep, indep and not cindep, (not indep) and cindep, (not indep) and (not cindep)]
+    ans = q.qs["q01-conditional-independence-4"]["answer"]
+    q.check("q01-conditional-independence-4", truth[ans] and sum(truth) == 1,
+            f"列挙：独立={indep}、C のもとで条件付き独立={cindep} → 正しい選択肢はちょうど1つ")
+_choice01()
+
 q.done()

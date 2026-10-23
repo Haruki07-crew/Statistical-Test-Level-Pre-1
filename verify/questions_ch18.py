@@ -175,4 +175,27 @@ def _deriv18():
     q.check("q18-logistic-regression-4", bool(ok), "sympy: ℓ=yη-log(1+e^η)、dℓ/dη=y-p、d²ℓ/dη²=-p(1-p)、数値微分で X'(y-p)、-X'WX")
 _deriv18()
 
+# --- 4択の追加分 ---
+_b0, _b1 = -2.0, 0.693
+_p0, _p1 = expit(_b0), expit(_b0 + _b1)
+_o0, _o1 = _p0 / (1 - _p0), _p1 / (1 - _p1)
+q.check("q18-logistic-regression-5",
+        abs(_o1 / _o0 - 2) < 0.001 and abs(_p1 / _p0 - 2) > 0.1 and abs(_o1 - 2) > 1 and abs((_o1 - _o0) - 0.693) > 0.3,
+        f"オッズ比={_o1 / _o0:.4f}。確率比={_p1 / _p0:.3f}、喫煙者のオッズ={_o1:.3f}、オッズの差={_o1 - _o0:.3f}")
+_D, _n, _k = 72.0, 40, 4
+_rs = [_D / (_n - _k), _D / (_n - 3), _D / (_n - 1), _D / _n]
+# 自由度 36 の確認：正しいポアソン回帰をシミュレーションすると残差逸脱度の平均 ≈ n-k
+_rng = np.random.default_rng(1803); _X = np.column_stack([np.ones(_n), _rng.normal(size=(_n, 3)) * 0.3])
+_beta = np.array([2.0, 0.3, -0.2, 0.1]); _devs = []
+for _ in range(400):
+    _yy = _rng.poisson(np.exp(_X @ _beta))
+    _b = np.zeros(4); _b[0] = np.log(_yy.mean())
+    for _it in range(30):
+        _mu = np.exp(_X @ _b); _b = _b + np.linalg.solve(_X.T @ (_mu[:, None] * _X), _X.T @ (_yy - _mu))
+    _mu = np.exp(_X @ _b)
+    _devs.append(2 * np.sum(np.where(_yy > 0, _yy * np.log(np.where(_yy > 0, _yy, 1) / _mu), 0) - (_yy - _mu)))
+q.check("q18-deviance-3",
+        [round(r, 2) for r in _rs] == [2.00, 1.95, 1.85, 1.80] and abs(np.mean(_devs) - 36) < 1.5,
+        f"72/36={_rs[0]:.3f}（誤答 {[round(r, 3) for r in _rs[1:]]}）。シミュレーションの残差逸脱度の平均 {np.mean(_devs):.2f}≈36")
+
 q.done()

@@ -181,4 +181,38 @@ def _deriv07():
     q.check("q07-delta-method-4", bool(ok2), "sympy: g'(p)²p(1-p)=1/4、シミュレーションで V≈1/(4n)")
 _deriv07()
 
+
+# --- 4択の追加 ---
+def _choice07():
+    import numpy as _np
+    from scipy import stats as _st
+    # 収束の関係：誤答それぞれの反例を数値で確かめる
+    qid = "q07-convergence-in-probability-4"
+    ans = q.qs[qid]["answer"]
+    # 反例1（確率収束だが概収束しない）：独立 Bernoulli(1/n)。m 以降に一度も 1 が出ない確率 = prod(1-1/n) = (m-1)/M → 0
+    m, M = 100, 10 ** 6
+    p_none = _np.prod(1 - 1 / _np.arange(m, M + 1))
+    c1 = abs(p_none - (m - 1) / M) < 1e-9 and p_none < 1e-3 and 1 / M < 1e-5
+    # 反例2（分布収束だが確率収束しない）：X_n=-Z, X=Z。P(|X_n-X|>0.5)=P(|Z|>0.25)
+    c2 = 2 * _st.norm.sf(0.25) > 0.8
+    # 反例3（確率収束だが平均二乗収束しない）：X_n = n w.p. 1/n → E[X_n^2]=n
+    c3 = all(abs((n ** 2) * (1 / n) - n) < 1e-9 for n in [10, 100, 1000])
+    q.check(qid, ans == 2 and c1 and c2 and c3,
+            f"反例：Bernoulli(1/n) で m=100 以降 1 が出ない確率 {p_none:.2e}、-Z の P(|X_n-X|>0.5)={2*_st.norm.sf(0.25):.3f}、E[X_n^2]=n")
+    q.concept(qid, "概収束 ⇒ 確率収束 は定理（正解）。他の3つは上の反例で否定")
+
+    # 連続写像定理：Z_n^2 → χ²(1)
+    qid = "q07-continuous-mapping-theorem-3"
+    rng = _np.random.default_rng(7)
+    n, R = 400, 20000
+    xs = rng.exponential(1.0, (R, n))           # μ=1, σ²=1 の歪んだ分布
+    stat = n * (xs.mean(axis=1) - 1.0) ** 2
+    emp = [_np.mean(stat <= t) for t in (0.5, 1, 3)]
+    cands = [_st.norm(0, 1), _st.chi2(1), _st.chi2(2), _st.norm(1, _np.sqrt(2))]
+    ans = q.qs[qid]["answer"]
+    errs = [max(abs(e - d.cdf(t)) for e, t in zip(emp, (0.5, 1, 3))) for d in cands]
+    q.check(qid, errs[ans] < 0.015 and all(e > 0.05 for i, e in enumerate(errs) if i != ans),
+            f"シミュレーション（指数分布 n=400）と各候補の累積分布の最大差 {[round(e, 3) for e in errs]}")
+_choice07()
+
 q.done()

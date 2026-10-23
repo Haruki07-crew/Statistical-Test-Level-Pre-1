@@ -27,6 +27,10 @@
   "hash": "0a0e706851d31486",
   "ok": true
  },
+ "q24-complete-linkage-4": {
+  "hash": "89dcf5f0a5be4301",
+  "ok": true
+ },
  "q24-dendrogram-1": {
   "hash": "389697268c6868ad",
   "ok": true
@@ -73,6 +77,10 @@
  },
  "q24-k-means-method-3": {
   "hash": "3c945d33ada0705e",
+  "ok": true
+ },
+ "q24-k-means-method-4": {
+  "hash": "0c86c4aff789d72d",
   "ok": true
  },
  "q24-lance-williams-formula-1": {

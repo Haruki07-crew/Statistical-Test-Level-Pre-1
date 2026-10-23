@@ -75,6 +75,10 @@
   "hash": "7f0470dcb926d452",
   "ok": true
  },
+ "q29-kaplan-meier-estimator-4": {
+  "hash": "6be912c1024b3aae",
+  "ok": true
+ },
  "q29-log-rank-test-1": {
   "hash": "51e69c88e6626106",
   "ok": true
@@ -101,6 +105,10 @@
  },
  "q29-mcar-2": {
   "hash": "b0acff52cb656ebb",
+  "ok": true
+ },
+ "q29-mcar-3": {
+  "hash": "ad59659c09201fe8",
   "ok": true
  },
  "q29-missing-data-mechanism-1": {
@@ -149,6 +157,10 @@
  },
  "q29-rubins-rules-3": {
   "hash": "2c927b0342874b6d",
+  "ok": true
+ },
+ "q29-rubins-rules-4": {
+  "hash": "9d1d7e456d65a336",
   "ok": true
  },
  "q29-single-imputation-1": {

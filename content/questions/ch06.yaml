@@ -608,3 +608,69 @@ questions:
       です。条件付き期待値は $x$ の1次式（回帰直線）で、条件付き分散は $x$ によらず一定です。
       よくある間違いは、傾きを $\rho\sigma_X/\sigma_Y$ と逆にすること、条件付き分散を $\sigma_Y^2(1-\rho)$ や $\sigma_Y^2\rho^2$ とすることです。
       「無相関なら独立」は同時に正規分布に従う場合だけ使える点にも注意します。
+
+  # ---------- 4択の追加 ----------
+  - id: q06-normal-distribution-3
+    term: normal-distribution
+    level: 基本
+    type: choice
+    question: |
+      $X_1, X_2$ は独立にどちらも $N(3,\ 4)$ に従う（第2引数は分散）。$W=2X_1-X_2$ の分布はどれか。
+    choices:
+      - '$N(3,\ 12)$'
+      - '$N(3,\ 20)$'
+      - '$N(9,\ 20)$'
+      - '$N(3,\ 4)$'
+    answer: 1
+    hint: |
+      独立な正規変数の1次結合は正規分布。期待値は係数どおり、分散は係数の2乗を掛けて「足す」。
+    explanation: |
+      $$E[W]=2\times3-3=3,\qquad V[W]=2^2\times4+(-1)^2\times4=16+4=20$$
+      なので $W\sim N(3,\ 20)$ です。
+      - $N(3,\ 12)$ は分散を $16-4$ と引き算したもので、差の分散も「和」になることを忘れています。
+      - $N(9,\ 20)$ は期待値を $2\times3+3$ とした符号の誤りです。
+      - $N(3,\ 4)$ は係数を2乗せずに $2\times4-4$ としたものです。
+
+  - id: q06-bivariate-normal-distribution-5
+    term: bivariate-normal-distribution
+    level: 標準
+    type: choice
+    question: |
+      $(X,Y)$ が2変量正規分布に従い、$\sqrt{V[X]}=10$、$\sqrt{V[Y]}=15$、相関係数 $\rho=0.6$ である。
+      $X=x$ を与えたときの $Y$ の条件付き分散 $V[Y\mid X=x]$ はどれか。
+    choices:
+      - '$12$'
+      - '$81$'
+      - '$90$'
+      - '$144$'
+    answer: 3
+    hint: |
+      2変量正規分布の条件付き分散は $x$ によらず、$\sigma_Y^2$ に「$X$ で説明できない割合」を掛けたもの。
+    explanation: |
+      2変量正規分布では
+      $$V[Y\mid X=x]=\sigma_Y^2(1-\rho^2)=225\times(1-0.36)=225\times0.64=144$$
+      で、$x$ によりません。
+      - $12$ は条件付き標準偏差 $\sigma_Y\sqrt{1-\rho^2}$ で、分散と標準偏差の取り違えです。
+      - $81$ は $\sigma_Y^2\rho^2$ で、$X$ で説明される部分（回帰の分散）を答えています。
+      - $90$ は $\sigma_Y^2(1-\rho)$ で、$\rho$ を2乗し忘れています。
+
+  - id: q06-f-distribution-3
+    term: f-distribution
+    level: 基本
+    type: choice
+    question: |
+      $m, n$ は正の整数で $m\ne n$、$n>4$ とする。F 分布 $F(m,n)$（$m$ が分子の自由度）について正しい記述はどれか。
+    choices:
+      - '$X\sim F(m,n)$ のとき $1/X\sim F(n,m)$ である'
+      - '$F(m,n)$ の期待値はつねに $1$ である'
+      - '$F(m,n)$ と $F(n,m)$ は同じ分布である'
+      - '独立な $\chi^2(m)$ と $\chi^2(n)$ の比そのものが $F(m,n)$ に従う'
+    answer: 0
+    hint: |
+      F 分布の定義 $X=\dfrac{U/m}{V/n}$（$U\sim\chi^2(m)$、$V\sim\chi^2(n)$ は独立）に戻って考える。
+    explanation: |
+      $X=\dfrac{U/m}{V/n}$ なら $\dfrac1X=\dfrac{V/n}{U/m}$ で、分子と分母の役割が入れかわるので $1/X\sim F(n,m)$ です。
+      この性質から、下側確率点は $F_{1-\alpha}(m,n)=1/F_{\alpha}(n,m)$ と上側確率点で表せます。
+      - 期待値は $E[X]=\dfrac{n}{n-2}$（$n>2$）で、$1$ より大きくなります。
+      - $m\ne n$ なら $F(m,n)$ と $F(n,m)$ は別の分布です。たとえば上側5%点は $F_{0.05}(3,10)=3.71$、$F_{0.05}(10,3)=8.79$。
+      - $\chi^2$ 変数をそれぞれの自由度で割る必要があります。比 $U/V$ は $\dfrac{m}{n}X$ で、$m\ne n$ なら $F(m,n)$ に従いません（自由度で割り忘れる誤り）。

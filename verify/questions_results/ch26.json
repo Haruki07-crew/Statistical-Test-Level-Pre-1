@@ -11,6 +11,10 @@
   "hash": "fecbad8632aa8a26",
   "ok": true
  },
+ "q26-canonical-correlation-analysis-4": {
+  "hash": "8afb1e72db19122a",
+  "ok": true
+ },
  "q26-canonical-variate-1": {
   "hash": "45a6502f831bb839",
   "ok": true
@@ -37,6 +41,10 @@
  },
  "q26-correspondence-analysis-3": {
   "hash": "186b87edcd047241",
+  "ok": true
+ },
+ "q26-correspondence-analysis-4": {
+  "hash": "42def220ee415763",
   "ok": true
  },
  "q26-goodness-of-fit-indices-1": {
@@ -81,6 +89,10 @@
  },
  "q26-path-analysis-3": {
   "hash": "ec3fa87c31e16d7b",
+  "ok": true
+ },
+ "q26-path-analysis-4": {
+  "hash": "3477f4601d3c1ed0",
   "ok": true
  },
  "q26-quantification-theory-1": {

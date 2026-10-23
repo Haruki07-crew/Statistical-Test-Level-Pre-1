@@ -47,6 +47,10 @@
   "hash": "5823529d3e1f8015",
   "ok": true
  },
+ "q14-ergodicity-3": {
+  "hash": "064eca3edc7f8e78",
+  "ok": true
+ },
  "q14-first-passage-time-1": {
   "hash": "4b50f27eec5daa73",
   "ok": true
@@ -95,6 +99,10 @@
   "hash": "d1c68ea1c97fc1f9",
   "ok": true
  },
+ "q14-periodicity-3": {
+  "hash": "fa326eecda5c9da6",
+  "ok": true
+ },
  "q14-positive-recurrence-1": {
   "hash": "cdd592f58c3340c2",
   "ok": true
@@ -105,6 +113,10 @@
  },
  "q14-recurrence-and-transience-2": {
   "hash": "4008cf465ac78405",
+  "ok": true
+ },
+ "q14-recurrence-and-transience-3": {
+  "hash": "0974c18dbe1a810e",
   "ok": true
  },
  "q14-stationary-distribution-1": {

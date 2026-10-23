@@ -174,4 +174,49 @@ def _deriv10():
     q.check("q10-power-function-3", bool(ok), "π(μ)=Φ(√n(μ-μ0)/σ - zα) が直接計算と一致、n≥((zα+zβ)σ/δ)² の最小整数で検出力を満たす")
 _deriv10()
 
+
+# --- 4択の追加 ---
+def _choice10():
+    import numpy as _np
+    import sympy as _S
+    from scipy import stats as _st
+    # p 値の解釈：H0 のもとで一様分布（P(p<=α)=α）、P(H0|データ) とは一致しない
+    qid = "q10-p-value-4"
+    rng = _np.random.default_rng(10)
+    z = rng.normal(0, 1, 200000)
+    pv = 2 * _st.norm.sf(abs(z))
+    unif = abs(_np.mean(pv <= 0.05) - 0.05) < 0.003
+    post = _st.norm.pdf(1.96) / (_st.norm.pdf(1.96) + _st.norm.pdf(1.96 - 2))
+    p196 = 2 * _st.norm.sf(1.96)
+    q.check(qid, q.qs[qid]["answer"] == 1 and unif and abs(p196 - 0.05) < 1e-3 and abs(post - 0.13) < 0.01 and abs(post - p196) > 0.05,
+            f"H0 のもと P(p<=0.05)≈{_np.mean(pv <= 0.05):.4f}、z=1.96 で p={p196:.3f} だが P(H0|z)={post:.3f}（誤答の命題は成り立たない）")
+    q.concept(qid, "p 値の定義（H0 を条件とする裾の確率）を選ぶ問題")
+
+    # 検出力
+    pw = _st.norm.sf(1.645 - _np.sqrt(16) * 0.5)
+    ch = [0.639, 0.516, 0.126, 0.361]
+    ans = q.qs["q10-power-function-4"]["answer"]
+    q.check("q10-power-function-4",
+            abs(ch[ans] - pw) < 0.0005 and all(abs(c - pw) >= 0.0005 for i, c in enumerate(ch) if i != ans),
+            f"scipy: 検出力={pw:.4f}、誤答は一致しない")
+    w = [_st.norm.sf(1.96 - 2), _st.norm.sf(1.645 - 0.5), 1 - pw]
+    q.check("q10-power-function-4", all(abs(c - v) < 0.0005 for c, v in zip(ch[1:], w)),
+            f"誤答の由来：1.96 で {w[0]:.4f}、√n 忘れ {w[1]:.4f}、1-検出力 {w[2]:.4f}")
+
+    # スコア検定（ベルヌーイ）
+    p, x, n = _S.symbols("p x n", positive=True)
+    ell = x * _S.log(p) + (n - x) * _S.log(1 - p)
+    U = _S.diff(ell, p)
+    nI = n / (p * (1 - p))
+    ZS = float((U / _S.sqrt(nI)).subs({p: _S.Rational(1, 2), x: 60, n: 100}))
+    ch = [2.04, 4.00, 2.00, 0.20]
+    ans = q.qs["q10-score-test-3"]["answer"]
+    q.check("q10-score-test-3",
+            abs(ch[ans] - ZS) < 0.005 and all(abs(c - ZS) >= 0.005 for i, c in enumerate(ch) if i != ans),
+            f"sympy: Z_S={ZS:.4f}、誤答は一致しない")
+    wald = 0.1 / _np.sqrt(0.6 * 0.4 / 100)
+    q.check("q10-score-test-3", abs(wald - 2.04) < 0.005 and abs(ZS ** 2 - 4) < 1e-9 and abs(0.1 / _np.sqrt(0.25) - 0.2) < 1e-12,
+            f"誤答の由来：ワルド {wald:.4f}、Z_S²=4、n 忘れ 0.20")
+_choice10()
+
 q.done()

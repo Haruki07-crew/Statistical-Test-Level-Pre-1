@@ -614,3 +614,50 @@ questions:
       $$\sigma_{XY}^2\le\sigma_X^2\sigma_Y^2\iff\rho^2\le1$$
       が出ます（コーシー・シュワルツの不等式の確率版）。最小値 $\sigma_Y^2(1-\rho^2)$ は、$Y$ を $X$ の1次式で予測したときの残差分散で、回帰の決定係数が $\rho^2$ になる理由にもつながります。
       よくある間違いは、$V[Y-tX]$ を $V[Y]-t^2V[X]$ と展開する（共分散の項を落とす、符号を誤る）ことです。
+
+  # ---------- 4択の追加 ----------
+  - id: q03-conditional-variance-5
+    term: conditional-variance
+    level: 標準
+    type: choice
+    question: |
+      確率変数 $X$ は確率 $1/2$ ずつで $0$ または $1$ をとる。$X=0$ のとき $Y$ の条件付き期待値は $1$、条件付き分散は $2$、
+      $X=1$ のとき条件付き期待値は $5$、条件付き分散は $4$ である。$V[Y]$ はどれか。
+    choices:
+      - '$3$'
+      - '$5$'
+      - '$7$'
+      - '$4$'
+    answer: 2
+    hint: |
+      全分散の公式 $V[Y]=E\big[V[Y\mid X]\big]+V\big[E[Y\mid X]\big]$ の2つの項を別々に計算する。
+    explanation: |
+      群内の分散の平均は $E\big[V[Y\mid X]\big]=\frac12(2+4)=3$。
+      $E[Y\mid X]$ は確率 $1/2$ ずつで $1,\ 5$ をとるので、平均 $3$、分散 $V\big[E[Y\mid X]\big]=\frac12\{(1-3)^2+(5-3)^2\}=4$。
+      $$V[Y]=3+4=7$$
+      - $3$ は第1項（群内のばらつき）だけで、群の平均どうしのばらつきを足し忘れています。
+      - $4$ は第2項だけです。
+      - $5$ は第2項に $E[Y\mid X]$ の標準偏差 $2$ を使ったもので、分散と標準偏差の取り違えです。
+
+  - id: q03-coefficient-of-variation-3
+    term: coefficient-of-variation
+    level: 標準
+    type: choice
+    question: |
+      $X$ が形状 $\alpha=4$、**尺度** $\beta=2$ のガンマ分布（平均 $\alpha\beta$、分散 $\alpha\beta^2$）に従うとき、
+      $X$ の変動係数 $\sigma/\mu$ はどれか。
+    choices:
+      - '$0.5$'
+      - '$0.25$'
+      - '$2$'
+      - '$4$'
+    answer: 0
+    hint: |
+      分散から標準偏差 $\sigma$ を出してから、平均 $\mu$ で割る。
+    explanation: |
+      $\mu=\alpha\beta=8$、$\sigma^2=\alpha\beta^2=16$ より $\sigma=4$。
+      $$\frac{\sigma}{\mu}=\frac{\sqrt{\alpha}\,\beta}{\alpha\beta}=\frac{1}{\sqrt\alpha}=\frac48=0.5$$
+      変動係数は尺度 $\beta$ によらず、形状 $\alpha$ だけで決まります。
+      - $0.25$ は $\sigma^2/\mu^2=1/\alpha$ で、変動係数を2乗したものです。
+      - $2$ は $\mu/\sigma$（逆数）で、$\sigma^2/\mu$ と取り違えても同じ値になります。
+      - $4$ は標準偏差 $\sigma$ そのもので、平均で割っていません。

@@ -199,4 +199,40 @@ def _deriv20():
     q.check("q20-one-way-anova-4", bool(ok), "sympy（n=(2,3,4)）: E[S_E]=(N-k)σ²、E[S_A]=(k-1)σ²+Σn_iα_i²")
 _deriv20()
 
+# --- 4択の追加分 ---
+_a, _b = 4, 5
+_ia, _ib = np.repeat(np.arange(_a), _b), np.tile(np.arange(_b), _a)
+_Xab = np.column_stack([np.ones(_a * _b)] + [(_ia == i) * 1.0 for i in range(1, _a)] + [(_ib == j) * 1.0 for j in range(1, _b)])
+_phiE = _a * _b - np.linalg.matrix_rank(_Xab)
+_rng = np.random.default_rng(2003); _F = []
+for _ in range(20000):
+    y = _rng.normal(size=(_a, _b)) + np.arange(_b)          # B の効果あり、A の効果なし
+    m = y.mean(); SA = _b * ((y.mean(1) - m) ** 2).sum(); SB = _a * ((y.mean(0) - m) ** 2).sum()
+    SE = ((y - m) ** 2).sum() - SA - SB; _F.append((SA / 3) / (SE / 12))
+_ks = stats.kstest(_F, stats.f(3, 12).cdf).statistic
+_ks16 = stats.kstest(_F, stats.f(3, 16).cdf).statistic
+q.check("q20-two-way-anova-without-replication-3", _phiE == 12 and _ks < 0.012 and _ks16 > _ks,
+        f"誤差の自由度 {_phiE}、シミュレーションの F_A は F(3,12) に一致（KS={_ks:.4f}、F(3,16) とは {_ks16:.4f}）")
+_k = 4
+_L = np.array([[(i + j) % _k for j in range(_k)] for i in range(_k)])      # 巡回型のラテン方格
+_latin = all(len(set(_L[i])) == _k for i in range(_k)) and all(len(set(_L[:, j])) == _k for j in range(_k))
+_r, _c = np.repeat(np.arange(_k), _k), np.tile(np.arange(_k), _k); _t = _L.ravel()
+_D = lambda g: np.column_stack([(g == v) * 1.0 for v in range(1, _k)])
+_Xrc = np.column_stack([np.ones(_k * _k), _D(_r), _D(_c)])
+_Xall = np.column_stack([_Xrc, _D(_t)])
+_dfE = _k * _k - np.linalg.matrix_rank(_Xall)
+# 処理の対比が行・列と直交（中心化した処理ダミーの、行・列空間への射影が0）
+_Tc = _D(_t) - _D(_t).mean(0)
+_proj = _Xrc @ np.linalg.lstsq(_Xrc, _Tc, rcond=None)[0]
+_noroom = np.linalg.matrix_rank(np.column_stack([_Xrc, _D(_t)])) > np.linalg.matrix_rank(_Xrc)
+q.check("q20-latin-square-design-3", _latin and _dfE == 6 and np.allclose(_proj, 0) and _noroom,
+        f"4×4 ラテン方格：各行・各列に処理が1回、処理は行・列と直交、誤差の自由度 {_dfE}")
+_cells = [(10, 14, 13, 13), (10, 14, 20, 28), (10, 14, 14, 10), (10, 14, 13, 17)]
+_inter = [m11 - m12 - m21 + m22 for m11, m12, m21, m22 in _cells]
+def _ab22(c):
+    M = np.array(c, float).reshape(2, 2); return M - M.mean(1, keepdims=True) - M.mean(0, keepdims=True) + M.mean()
+q.check("q20-main-effect-and-interaction-3",
+        _inter == [-4, 4, -8, 0] and np.allclose(_ab22(_cells[3]), 0) and all(not np.allclose(_ab22(c), 0) for c in _cells[:3]),
+        f"対比 μ11-μ12-μ21+μ22 = {_inter}、交互作用0は最後の組だけ")
+
 q.done()

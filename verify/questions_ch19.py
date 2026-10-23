@@ -207,4 +207,32 @@ def _deriv19():
     q.check("q19-lasso-3", bool(ok2), "残差平方和の分解、グリッド最小化と軟しきい値 sign(b)(|b|-λ)+ が一致")
 _deriv19()
 
+# --- 4択の追加分 ---
+_rng = np.random.default_rng(1904)
+_X = _rng.normal(size=(50, 3)); _X[:, 1] = _X[:, 0] + 0.3 * _rng.normal(size=50)
+_beta = np.array([1.0, 2.0, -1.5]); _sig = 1.0; _G = _X.T @ _X; _I3 = np.eye(3)
+def _bv(lam):
+    A = np.linalg.inv(_G + lam * _I3)
+    bias = A @ _G @ _beta - _beta; var = _sig ** 2 * np.trace(A @ _G @ A)
+    return np.linalg.norm(bias), var
+_lams = [0.0, 0.5, 2.0, 10.0, 50.0]; _B, _V = zip(*[_bv(l) for l in _lams])
+_mono = all(np.diff(_B) > 0) and all(np.diff(_V) < 0)
+_yy = _X @ _beta + _rng.normal(size=50)
+_bR = np.linalg.solve(_G + 10 * _I3, _X.T @ _yy)
+_Xs = _X * np.array([100.0, 1, 1])     # 1列目の単位を変える
+_bRs = np.linalg.solve(_Xs.T @ _Xs + 10 * _I3, _Xs.T @ _yy)
+_scale_changes = not np.allclose(_X @ _bR, _Xs @ _bRs)
+q.check("q19-ridge-regression-4", _mono and _B[1] > 1e-6 and np.all(np.abs(_bR) > 1e-6) and _scale_changes,
+        f"λ↑でバイアス {np.round(_B, 3)} は増加、分散 {np.round(_V, 3)} は減少。λ=10 でも係数は0でない、単位変更で予測値が変わる")
+_n = 200000; _x = _rng.normal(size=_n)
+_eh = _rng.normal(size=_n) * (0.5 + np.abs(_x))      # 不均一分散（外生）
+_slope = lambda xx, yy: np.cov(xx, yy)[0, 1] / np.var(xx, ddof=1)
+_b_het = _slope(_x, 1 + 2 * _x + _eh)
+_xo = _x + _rng.normal(size=_n)                        # 測定誤差（分散1、真の分散1）
+_b_me = _slope(_xo, 1 + 2 * _x + _rng.normal(size=_n))
+_z = 0.8 * _x + _rng.normal(size=_n) * 0.6             # 欠落変数
+_b_ov = _slope(_x, 1 + 2 * _x + 1.5 * _z + _rng.normal(size=_n))
+q.check("q19-endogeneity-3", abs(_b_het - 2) < 0.02 and abs(_b_me - 1) < 0.02 and abs(_b_ov - 3.2) < 0.02,
+        f"不均一分散のみ：傾き {_b_het:.3f}≈2（一致）。測定誤差 {_b_me:.3f}≈1、欠落変数 {_b_ov:.3f}≈3.2（偏る）")
+
 q.done()

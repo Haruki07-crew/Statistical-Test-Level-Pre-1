@@ -11,6 +11,10 @@
   "hash": "f6e7e2b4797a85a9",
   "ok": true
  },
+ "q11-chi-square-test-variance-3": {
+  "hash": "6abb2a1c549c69ed",
+  "ok": true
+ },
  "q11-f-test-equal-variances-1": {
   "hash": "231c779432d1a140",
   "ok": true
@@ -121,6 +125,10 @@
  },
  "q11-z-test-known-variance-2": {
   "hash": "308c0c0ec268f695",
+  "ok": true
+ },
+ "q11-z-test-known-variance-3": {
+  "hash": "b145bd4ec8d7a121",
   "ok": true
  }
 }
