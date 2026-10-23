@@ -118,7 +118,13 @@
       .replace(/<h2>[\s\S]*?<\/h2>/g, ' ').replace(/<[^>]+>/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&')
       .replace(/\s+/g, ' ').trim();
   }
-  Object.keys(TERMS).forEach(function (id) { TERMS[id].text = plainFromHtml(TERMS[id].html); });
+  // 本文の検索用テキストは、初回表示を速くするため最初に検索したときに作る
+  var textReady = false;
+  function ensureText() {
+    if (textReady) return;
+    textReady = true;
+    INDEX.forEach(function (e) { var t = TERMS[e.id]; if (t) { t.text = plainFromHtml(t.html); e.text = norm(t.text); } });
+  }
 
   var INDEX = ORDER.map(function (id) {
     var p = PLAN[id], t = TERMS[id];
@@ -128,7 +134,7 @@
       reading: t ? norm(t.reading) : '',
       en: t ? norm(t.en) : '',
       tags: t ? t.tags.map(norm) : [],
-      text: t ? norm(t.text) : ''
+      text: ''
     };
   });
 
@@ -332,6 +338,7 @@
     var h = '', q = norm(state.query);
     if (q) {
       // 検索中はタブを無視して全章から探す
+      ensureText();
       var res = [];
       INDEX.forEach(function (e) {
         if (!visible(e.id)) return;
