@@ -951,3 +951,35 @@ check(T, "chart x=1..8、観測値と当てはめ値", c["params"]["x"] == list(
 # =====================================================================
 ok = sum(results); ng = len(results) - ok
 print(f"\n合計: OK {ok} / NG {ng}")
+
+# --- 追加用語（用語の見直し）: neural-network-model ---
+import re as _re, yaml as _yaml
+from pathlib import Path as _Path
+T = "neural-network-model"
+_fmN = _yaml.safe_load(_re.match(r"^---\n(.*?)\n---\n", (_Path(__file__).resolve().parent.parent / "content/ch19/neural-network-model.md").read_text(encoding="utf-8"), _re.S).group(1))
+_x = np.array([1.0, 2.0])
+_W = np.array([[0.5, -0.3], [-0.4, 0.6]]); _b = np.array([0.2, -0.1]); _v = np.array([1.0, -2.0]); _c0 = 0.5
+_h = np.maximum(0, _W @ _x + _b); _u = _v @ _h + _c0; _f = 1 / (1 + exp(-_u))
+check(T, "例 h1=0.1, h2=0.7, u=−0.8, f=1/(1+e^0.8)≈0.3100", allclose(_h, [0.1, 0.7], 1e-12) and close(_u, -0.8, 1e-12) and abs(_f - 0.3100) <= 5e-5, (_h.tolist(), _u, _f))
+check(T, "パラメータ数 H(p+1)+(H+1)：p=10, H=5 → 61", 5 * (10 + 1) + (5 + 1) == 61, 61)
+# 中間層なし＋シグモイド出力＝ロジスティック回帰（同じ式）
+_xx = rng.normal(size=(50, 3)); _vv = rng.normal(size=3)
+check(T, "中間層なし・シグモイド出力はロジスティック回帰の確率と一致", allclose(1 / (1 + np.exp(-(_xx @ _vv + 0.3))), stats.logistic.cdf(_xx @ _vv + 0.3), 1e-12), "")
+# 活性化が恒等なら2層でも線形
+_A1 = rng.normal(size=(4, 3)); _A2 = rng.normal(size=(1, 4))
+check(T, "恒等活性化の2層＝1つの線形写像 A2A1", allclose((_A2 @ (_A1 @ _xx.T)).ravel(), (_xx @ (_A2 @ _A1).T).ravel(), 1e-10), "")
+# 誤差逆伝播の勾配が数値微分と一致（二乗誤差, 例の重みで y=1）
+def _loss(par):
+    W = par[:4].reshape(2, 2); b = par[4:6]; v = par[6:8]; c = par[8]
+    h = np.maximum(0, W @ _x + b); return 0.5 * (1 / (1 + exp(-(v @ h + c))) - 1.0) ** 2
+_p0 = np.concatenate([_W.ravel(), _b, _v, [_c0]])
+_d = (_f - 1.0) * _f * (1 - _f)
+_gv = _d * _h; _gc = _d; _gh = _d * _v * (_W @ _x + _b > 0); _gW = np.outer(_gh, _x); _gb = _gh
+_g = np.concatenate([_gW.ravel(), _gb, _gv, [_gc]])
+_num = np.array([(_loss(_p0 + 1e-6 * e) - _loss(_p0 - 1e-6 * e)) / 2e-6 for e in np.eye(9)])
+check(T, "誤差逆伝播（連鎖律）の勾配＝数値微分", allclose(_g, _num, 1e-8), r4(_g))
+_cN = _fmN["charts"][0]["params"]
+check(T, "chart：辺の重みが例の重みと一致", _cN["edges"] == [[0, 2], [0, 3], [1, 2], [1, 3], [2, 4], [3, 4]] and _cN["weights"] == [0.5, -0.4, -0.3, 0.6, 1.0, -2.0] and [_W[0, 0], _W[1, 0], _W[0, 1], _W[1, 1], _v[0], _v[1]] == _cN["weights"], "")
+
+ok = sum(results); ng = len(results) - ok
+print(f"\n合計（追加用語を含む）: OK {ok} / NG {ng}")

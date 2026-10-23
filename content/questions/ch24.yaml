@@ -1,0 +1,520 @@
+chapter: 24
+questions:
+  - id: q24-hierarchical-clustering-1
+    term: hierarchical-clustering
+    level: 基本
+    type: numeric
+    question: |
+      12個の対象に凝集型の階層的クラスタリングを行い、全体が1つのクラスターになるまで併合を続ける。併合は全部で何回行われるか。
+    answer: 11
+    tolerance: 0.4
+    hint: |
+      1回の併合でクラスターの数は1つ減る。
+    explanation: |
+      クラスター数は $12$ から始まり、1回の併合で1ずつ減って $1$ になるので、併合は $12-1=11$ 回です。
+      デンドログラムの横線（併合の高さ）も11本になります。
+
+  - id: q24-hierarchical-clustering-2
+    term: hierarchical-clustering
+    level: 基本
+    type: truefalse
+    question: |
+      凝集型の階層的クラスタリングでは、ある段階で同じクラスターに併合された2つの対象が、その後の段階で別々のクラスターに分かれることはない。
+    answer: true
+    hint: |
+      各段で行う操作は「併合」だけである。
+    explanation: |
+      凝集型では、クラスターを併合するだけで分割はしません。いったん同じクラスターに入った対象は最後まで一緒です。
+      そのため、結果は入れ子の構造（階層）になり、デンドログラムで表せます。一方で、初期の段階の誤った併合を後から修正できないという弱点もあります。
+
+  - id: q24-hierarchical-clustering-3
+    term: hierarchical-clustering
+    level: 応用
+    type: choice
+    question: |
+      対象間の距離 $d_{ij}$ をすべて2乗した値 $d_{ij}^2$ に置き換えて（大小の順序は保たれる）凝集型の階層的クラスタリングをやり直す。
+      次の手法のうち、どんなデータでも**併合の順序と木の形が必ず変わらない**のはどれか（元の距離のまま更新式で計算するものとする）。
+    choices:
+      - '最短距離法'
+      - '群平均法'
+      - '重み付き群平均法'
+      - 'どれも変わりうる'
+    answer: 0
+    hint: |
+      最短距離法の併合は、距離の「大小の比較」だけで決まるか。群平均法は距離の「平均」をとる。
+    explanation: |
+      最短距離法（最長距離法も）は min や max だけを使うので、距離の順位だけで併合の順序が決まり、単調な変換では変わりません（高さの値だけが2乗されます）。
+      群平均法や重み付き群平均法は距離の平均をとるため、2乗すると平均どうしの大小が入れ替わることがあり、木の形が変わりえます。
+
+  - id: q24-dendrogram-1
+    term: dendrogram
+    level: 標準
+    type: numeric
+    question: |
+      4つの対象 A, B, C, D の距離が
+      $d_{AB}=2,\ d_{AC}=6,\ d_{AD}=10,\ d_{BC}=5,\ d_{BD}=9,\ d_{CD}=4$
+      である。最短距離法のデンドログラムで、A と C のコーフェン距離（初めて同じクラスターに入る高さ）を求めよ。
+    answer: 5
+    tolerance: 0.01
+    hint: |
+      併合を順に追い、A と C が同じクラスターになる併合の高さを読む。
+    explanation: |
+      まず $d_{AB}=2$ で {A,B}。次に $d(\{A,B\},C)=\min(6,5)=5$、$d(\{A,B\},D)=9$、$d_{CD}=4$ なので、{C,D} を高さ4で併合します。
+      最後に $d(\{A,B\},\{C,D\})=\min(6,10,5,9)=5$ で全体が併合されます。A と C はこの高さ $5$ で初めて同じクラスターに入るので、コーフェン距離は $5$ です（元の距離 $6$ より小さい）。
+
+  - id: q24-dendrogram-2
+    term: dendrogram
+    level: 基本
+    type: truefalse
+    question: |
+      デンドログラムで、横に隣り合って描かれた2つの葉（対象）は、必ず互いに最も近い対象どうしである。
+    answer: false
+    hint: |
+      デンドログラムの枝は、併合点を軸に左右を入れ替えても同じ木を表す。
+    explanation: |
+      葉の左右の並びは自由に入れ替えられるので、隣り合っていることに意味はありません。
+      例えば A, B, C, D の順に描いた木で B と C が隣り合っていても、B に最も近いのは A のことがあります。
+      対象の近さは、横の並びではなく**併合の高さ**（コーフェン距離）で読み取ります。
+
+  - id: q24-dendrogram-3
+    term: dendrogram
+    level: 標準
+    type: numeric
+    question: |
+      4つの対象 A, B, C, D の距離が
+      $d_{AB}=2,\ d_{AC}=6,\ d_{AD}=10,\ d_{BC}=5,\ d_{BD}=9,\ d_{CD}=4$
+      である。最長距離法のデンドログラムを高さ $7$ で切ったとき、クラスターはいくつになるか。
+    answer: 2
+    tolerance: 0.4
+    hint: |
+      最長距離法で併合の高さを3つ求め、$7$ より下にある併合の数を数える。
+    explanation: |
+      最長距離法では {A,B} が高さ2、次に $d(\{A,B\},C)=6$、$d(\{A,B\},D)=10$、$d_{CD}=4$ なので {C,D} が高さ4、
+      最後に $d(\{A,B\},\{C,D\})=\max(6,10,5,9)=10$ で併合されます。
+      高さ7で切ると、7より下の併合（2と4）だけが成立しているので、{A,B} と {C,D} の $2$ つです。
+
+  - id: q24-single-linkage-1
+    term: single-linkage
+    level: 標準
+    type: numeric
+    question: |
+      1次元の5点 $0,\ 1,\ 3.2,\ 6,\ 10$ に最短距離法（距離は差の絶対値）を適用する。最後の併合の高さを求めよ。
+    answer: 4
+    tolerance: 0.01
+    hint: |
+      1次元で最短距離法を使うと、隣り合う点の間隔が小さい順に併合される。
+    explanation: |
+      隣どうしの間隔は $1,\ 2.2,\ 2.8,\ 4$ です。最短距離法では、この小さい順に $1\to2.2\to2.8\to4$ の高さで併合されます。
+      最後の併合の高さは $4$（$6$ と $10$ の間）です。点が鎖のようにつながって1つのクラスターに吸収されていく様子が分かります。
+
+  - id: q24-single-linkage-2
+    term: single-linkage
+    level: 基本
+    type: truefalse
+    question: |
+      最短距離法は、近い点が鎖のようにつながった細長いクラスターを作りやすい（連鎖効果）。
+    answer: true
+    hint: |
+      クラスター間の距離を「いちばん近い1組」で測ると、間に1点でも橋渡しの点があれば距離はどうなるか。
+    explanation: |
+      最短距離法ではクラスター間の距離が最も近い1組だけで決まるので、離れた2群の間に点が点々と並んでいると、それをつたって次々に併合されます。
+      これが連鎖効果です。細長い形のクラスターを見つけられる長所でもありますが、まとまりのよいクラスターを作りたいときは最長距離法やウォード法が使われます。
+
+  - id: q24-single-linkage-3
+    term: single-linkage
+    level: 基本
+    type: numeric
+    question: |
+      対象 A, B, C の距離が $d_{AB}=3,\ d_{AC}=7,\ d_{BC}=5$ である。最短距離法で A と B を併合したあとの、クラスター {A,B} と C の距離を求めよ。
+    answer: 5
+    tolerance: 0.01
+    hint: |
+      $d(C,\{A,B\})=\min\{d(C,A),\ d(C,B)\}$。
+    explanation: |
+      $$d(C,\{A,B\})=\min(7,\ 5)=5$$
+      最長距離法なら $\max(7,5)=7$、群平均法なら $(7+5)/2=6$ になります。
+
+  - id: q24-complete-linkage-1
+    term: complete-linkage
+    level: 基本
+    type: numeric
+    question: |
+      4つの対象 A, B, C, D の距離が
+      $d_{AB}=2,\ d_{AC}=6,\ d_{AD}=10,\ d_{BC}=5,\ d_{BD}=9,\ d_{CD}=4$
+      である。最長距離法で A と B を併合したあとの、{A,B} と C の距離を求めよ。
+    answer: 6
+    tolerance: 0.01
+    hint: |
+      最長距離法ではクラスター間の最も遠い組の距離を使う。
+    explanation: |
+      $$d(\{A,B\},C)=\max(d_{AC},\ d_{BC})=\max(6,\ 5)=6$$
+      最短距離法なら $5$ になります。
+
+  - id: q24-complete-linkage-2
+    term: complete-linkage
+    level: 標準
+    type: numeric
+    question: |
+      1次元の5点 $0,\ 1,\ 3.2,\ 6,\ 10$ に最長距離法（距離は差の絶対値）を適用する。**2番目**の併合の高さを小数第1位まで求めよ。
+    answer: 2.8
+    tolerance: 0.05
+    hint: |
+      最初に $\{0,1\}$ が併合される。その後の各組の最長距離を比べる。
+    explanation: |
+      最初は $\{0,1\}$（高さ1）。次の候補は
+      $$d(\{0,1\},3.2)=\max(3.2,\ 2.2)=3.2,\quad d(3.2,6)=2.8,\quad d(6,10)=4$$
+      で、最小は $2.8$ なので $\{3.2,\ 6\}$ が併合されます。
+      最短距離法なら2番目は $3.2$ と $\{0,1\}$ の併合（高さ2.2）なので、手法によって併合の相手が変わります。
+
+  - id: q24-complete-linkage-3
+    term: complete-linkage
+    level: 応用
+    type: truefalse
+    question: |
+      最長距離法で全対象が1つのクラスターになる最後の併合の高さは、全対象のあいだの距離の最大値に等しい。
+    answer: true
+    hint: |
+      最後の併合は「全体を2つに分けたクラスターどうし」の最長距離。最も遠い2点はどこにあるか。
+    explanation: |
+      最後の併合では、全対象が2つのクラスターのどちらかに入っています。
+      最も遠い2点 $x,y$ が別のクラスターにあれば、その併合の高さは $d(x,y)$ 以上で、それ以上の距離はないので一致します。
+      同じクラスターにあるなら、そのクラスターを作った併合の高さがすでに $d(x,y)$ 以上で、高さは単調に増えるので、最後の高さも $d(x,y)$ になります。
+
+  - id: q24-average-linkage-1
+    term: average-linkage
+    level: 標準
+    type: numeric
+    question: |
+      4つの対象 A, B, C, D の距離が
+      $d_{AB}=2,\ d_{AC}=6,\ d_{AD}=10,\ d_{BC}=5,\ d_{BD}=9,\ d_{CD}=4$
+      である。群平均法で、最後に {A,B} と {C,D} が併合されるときの高さを小数第1位まで求めよ。
+    answer: 7.5
+    tolerance: 0.05
+    hint: |
+      2つのクラスターの間の全 $2\times2=4$ 組の距離の平均をとる。
+    explanation: |
+      $$d(\{A,B\},\{C,D\})=\frac{d_{AC}+d_{AD}+d_{BC}+d_{BD}}{4}=\frac{6+10+5+9}{4}=7.5$$
+      同じデータで最短距離法は $5$、最長距離法は $10$ で、群平均法はその中間になります。
+
+  - id: q24-average-linkage-2
+    term: average-linkage
+    level: 標準
+    type: choice
+    question: |
+      大きさ3のクラスター $C_i$ と大きさ1のクラスター $C_j$ を併合する。併合前の距離が $d(C_k,C_i)=4$、$d(C_k,C_j)=8$ のとき、群平均法（UPGMA）での $d(C_k,\ C_i\cup C_j)$ はどれか。
+    choices:
+      - '$5$'
+      - '$6$'
+      - '$4$'
+      - '$8$'
+    answer: 0
+    hint: |
+      大きさで重みを付けた平均 $\dfrac{n_i}{n_i+n_j}d_{ki}+\dfrac{n_j}{n_i+n_j}d_{kj}$。
+    explanation: |
+      $$\frac{3}{4}\times4+\frac14\times8=3+2=5$$
+      $6$ は大きさを無視した単純平均（重み付き群平均法 WPGMA）、$4$ は最短距離法、$8$ は最長距離法の値です。
+
+  - id: q24-ward-method-1
+    term: ward-method
+    level: 基本
+    type: numeric
+    question: |
+      クラスター $C_1=\{(0,0),\ (2,0)\}$ と $C_2=\{(4,3)\}$ を併合したときの、クラスター内平方和の増加量 $\Delta$ を求めよ。
+    answer: 12
+    tolerance: 0.01
+    hint: |
+      $\Delta=\dfrac{n_1n_2}{n_1+n_2}\|\bar{\boldsymbol{x}}_1-\bar{\boldsymbol{x}}_2\|^2$。
+    explanation: |
+      $C_1$ の重心は $(1,0)$ で、$\|(1,0)-(4,3)\|^2=9+9=18$ です。
+      $$\Delta=\frac{2\times1}{3}\times18=12$$
+      直接計算しても、3点の重心 $(2,1)$ からの平方和は $5+1+8=14$、$\mathrm{ESS}(C_1)=2$ なので $14-2=12$ です。
+
+  - id: q24-ward-method-2
+    term: ward-method
+    level: 標準
+    type: choice
+    question: |
+      1次元のクラスター P（大きさ1、位置 $0$）、Q（大きさ1、位置 $3$）、R（大きさ10、重心 $5.5$）がある。ウォード法で次に併合されるのはどの組か。
+    choices:
+      - 'P と Q'
+      - 'Q と R'
+      - 'P と R'
+      - 'どの組も増加量が等しく決まらない'
+    answer: 0
+    hint: |
+      各組の $\Delta=\dfrac{n_in_j}{n_i+n_j}(\text{重心の差})^2$ を比べる。
+    explanation: |
+      $$\Delta(P,Q)=\frac12\times9=4.5,\quad \Delta(Q,R)=\frac{10}{11}\times6.25=5.68,\quad \Delta(P,R)=\frac{10}{11}\times30.25=27.5$$
+      最小は P と Q です。重心の距離だけで比べる重心法なら、$(5.5-3)^2=6.25<9$ で Q と R が併合されます。ウォード法は大きいクラスターとの併合に重い罰を与えます。
+
+  - id: q24-ward-method-3
+    term: ward-method
+    level: 応用
+    type: numeric
+    question: |
+      1次元の4点 $0,\ 2,\ 6,\ 8$ にウォード法を適用する。最後の併合でのクラスター内平方和の増加量 $\Delta$ を求めよ。
+    answer: 36
+    tolerance: 0.01
+    hint: |
+      先に {0,2} と {6,8} が作られる。各段の $\Delta$ の合計は、全体の平方和に等しい。
+    explanation: |
+      {0,2} と {6,8} の併合はそれぞれ $\Delta=\frac12\times4=2$。最後は重心 $1$ と $7$、大きさ2ずつなので
+      $$\Delta=\frac{2\times2}{4}\times(7-1)^2=36$$
+      確認：全体の平方和は平均4から $16+4+4+16=40$ で、$2+2+36=40$ と一致します。
+
+  - id: q24-centroid-method-1
+    term: centroid-method
+    level: 標準
+    type: numeric
+    question: |
+      1点ずつのクラスター $i,\ j,\ k$ の2乗ユークリッド距離が $d_{ki}=4,\ d_{kj}=10,\ d_{ij}=2$ である。
+      重心法で $i$ と $j$ を併合したあとの $d(k,\ i\cup j)$ を、ランス・ウィリアムズの更新式で求め、小数第1位まで答えよ。
+    answer: 6.5
+    tolerance: 0.05
+    hint: |
+      重心法の係数は $\alpha_i=\frac{n_i}{n_i+n_j},\ \alpha_j=\frac{n_j}{n_i+n_j},\ \beta=-\frac{n_in_j}{(n_i+n_j)^2},\ \gamma=0$。
+    explanation: |
+      $n_i=n_j=1$ なので $\alpha_i=\alpha_j=\frac12,\ \beta=-\frac14$ です。
+      $$d(k,\ i\cup j)=\frac12\times4+\frac12\times10-\frac14\times2=6.5$$
+      これは $k$ と、$i,j$ の重心（中点）との2乗距離に等しくなります。
+
+  - id: q24-centroid-method-2
+    term: centroid-method
+    level: 応用
+    type: truefalse
+    question: |
+      重心法では、後の段の併合の高さが前の段より低くなる（デンドログラムの逆転が起こる）ことがある。
+    answer: true
+    hint: |
+      一辺1の正三角形の3頂点で、2点を併合したあと、その重心と残りの点との2乗距離を計算してみる。
+    explanation: |
+      正三角形の各2乗距離は $1$ なので、最初の併合の高さは $1$ です。併合した2点の重心（辺の中点）と残りの頂点の距離は高さ $\sqrt3/2$ で、2乗すると
+      $$\Bigl(\frac{\sqrt3}{2}\Bigr)^2=0.75<1$$
+      となり、2回目の併合の高さが1回目より低くなります。重心法やメディアン法ではこの逆転が起こりえます。
+
+  - id: q24-lance-williams-formula-1
+    term: lance-williams-formula
+    level: 基本
+    type: choice
+    question: |
+      ランス・ウィリアムズの更新式
+      $d(C_k,C_i\cup C_j)=\alpha_id_{ki}+\alpha_jd_{kj}+\beta d_{ij}+\gamma|d_{ki}-d_{kj}|$
+      で、最長距離法にあたる係数 $(\alpha_i,\alpha_j,\beta,\gamma)$ はどれか。
+    choices:
+      - '$(\frac12,\ \frac12,\ 0,\ +\frac12)$'
+      - '$(\frac12,\ \frac12,\ 0,\ -\frac12)$'
+      - '$(\frac12,\ \frac12,\ -\frac14,\ 0)$'
+      - '$(\frac12,\ \frac12,\ 0,\ 0)$'
+    answer: 0
+    hint: |
+      $\frac12(a+b)+\frac12|a-b|$ は $a,b$ のどちらになるか。
+    explanation: |
+      $\frac12(a+b)+\frac12|a-b|=\max(a,b)$ なので、$\gamma=+\frac12$ が最長距離法です。
+      $\gamma=-\frac12$ は $\min$ で最短距離法、$\beta=-\frac14$ はメディアン法、$(\frac12,\frac12,0,0)$ は重み付き群平均法です。
+
+  - id: q24-lance-williams-formula-2
+    term: lance-williams-formula
+    level: 応用
+    type: numeric
+    question: |
+      1点ずつのクラスター $i,\ j,\ k$ の2乗ユークリッド距離が $d_{ki}=8,\ d_{kj}=18,\ d_{ij}=2$ である。
+      ウォード法の係数でランス・ウィリアムズの更新式を使い、$i$ と $j$ を併合したあとの $d(k,\ i\cup j)$ を小数第3位まで求めよ。
+    answer: 16.667
+    tolerance: 0.001
+    hint: |
+      ウォード法の係数は $\alpha_i=\frac{n_i+n_k}{n_i+n_j+n_k},\ \alpha_j=\frac{n_j+n_k}{n_i+n_j+n_k},\ \beta=-\frac{n_k}{n_i+n_j+n_k}$。
+    explanation: |
+      $n_i=n_j=n_k=1$ なので $\alpha_i=\alpha_j=\frac23,\ \beta=-\frac13$ です。
+      $$d(k,\ i\cup j)=\frac23\times8+\frac23\times18-\frac13\times2=\frac{50}{3}=16.667$$
+      これはクラスター内平方和の増加量 $\Delta$ の2倍に当たります（例えば $i=(0,0),\ j=(1,1),\ k=(-2,-2)$ なら $\Delta=\frac{2}{3}\times12.5=8.333$）。
+
+  - id: q24-k-means-method-1
+    term: k-means-method
+    level: 基本
+    type: numeric
+    question: |
+      1次元のデータ $1,\ 2,\ 4,\ 7,\ 9,\ 10$ に $k=2$ の k-means 法を適用する。初期中心を $2$ と $9$ として、割り当てと中心の更新を1回行ったあとの、小さいほうの中心を小数第3位まで求めよ。
+    answer: 2.333
+    tolerance: 0.001
+    hint: |
+      各点を近いほうの中心に割り当て、クラスターごとに平均をとる。
+    explanation: |
+      $4$ は中心2まで2、中心9まで5なので中心2の側です。割り当ては $\{1,2,4\}$ と $\{7,9,10\}$ になり、
+      $$m_1=\frac{1+2+4}{3}=2.333,\qquad m_2=\frac{7+9+10}{3}=8.667$$
+      次の割り当ては変わらないので、ここで収束します。
+
+  - id: q24-k-means-method-2
+    term: k-means-method
+    level: 標準
+    type: numeric
+    question: |
+      1次元のデータ $1,\ 2,\ 4,\ 7,\ 9,\ 10$ を $\{1,2,4\}$ と $\{7,9,10\}$ の2つのクラスターに分けたとき、クラスター内平方和 $W$ を小数第3位まで求めよ。
+    answer: 9.333
+    tolerance: 0.001
+    hint: |
+      各クラスターの平均を求め、平均からの偏差の2乗を足す。
+    explanation: |
+      $\{1,2,4\}$ の平均は $7/3$ で、平方和は $\frac{16}{9}+\frac19+\frac{25}{9}=\frac{42}{9}=4.667$。
+      $\{7,9,10\}$ の平均は $26/3$ で、平方和は $\frac{25}{9}+\frac19+\frac{16}{9}=4.667$。
+      $$W=4.667+4.667=9.333$$
+
+  - id: q24-k-means-method-3
+    term: k-means-method
+    level: 応用
+    type: truefalse
+    question: |
+      k-means 法（ロイドのアルゴリズム）は、初期中心をどう選んでも、クラスター内平方和 $W$ を最小にする分割（大域的最適解）に収束する。
+    answer: false
+    hint: |
+      長方形の4頂点 $(0,0),(0,1),(4,0),(4,1)$ を $k=2$ で分けるとき、初期中心を $(2,0)$ と $(2,1)$ にするとどうなるか。
+    explanation: |
+      初期中心 $(2,0),(2,1)$ では、下の2点と上の2点に分かれ、中心は更新しても $(2,0),(2,1)$ のままで止まります。このとき $W=4\times4=16$ です。
+      左右に分ければ $W=4\times0.25=1$ なので、前者は局所解です。k-means 法は $W$ を単調に減らしますが局所解に止まりうるので、初期値を変えて何度か実行し、$W$ が最小の結果を選びます。
+
+  - id: q24-non-hierarchical-clustering-1
+    term: non-hierarchical-clustering
+    level: 標準
+    type: numeric
+    question: |
+      6個の対象を、空でない2つのクラスターに分ける分け方（クラスターに名前は付けない）は何通りあるか。
+    answer: 31
+    tolerance: 0.4
+    hint: |
+      各対象を2つのグループのどちらかに入れる $2^6$ 通りから、空のグループができる場合を除き、グループの名前の入れ替えで割る。
+    explanation: |
+      $$\frac{2^6-2}{2}=2^5-1=31$$
+      対象の数が増えると分け方は爆発的に増えるので、非階層的クラスタリングでは全てを調べずに反復法で局所最適解を探します。
+
+  - id: q24-distance-measures-1
+    term: distance-measures
+    level: 基本
+    type: numeric
+    question: |
+      $\boldsymbol{x}=(1,\ 4,\ 2)$、$\boldsymbol{y}=(4,\ 0,\ 2)$ のマンハッタン距離を求めよ。
+    answer: 7
+    tolerance: 0.01
+    hint: |
+      各成分の差の絶対値を足す。
+    explanation: |
+      $$|1-4|+|4-0|+|2-2|=3+4+0=7$$
+      ユークリッド距離は $\sqrt{9+16}=5$ です。
+
+  - id: q24-distance-measures-2
+    term: distance-measures
+    level: 標準
+    type: choice
+    question: |
+      $\boldsymbol{x}=(1,\ 4,\ 2)$、$\boldsymbol{y}=(4,\ 0,\ 2)$ について、マンハッタン距離 $d_1$、ユークリッド距離 $d_2$、次数3のミンコフスキー距離 $d_3$、チェビシェフ距離 $d_\infty$ の組として正しいものはどれか。
+    choices:
+      - '$d_1=7,\ d_2=5,\ d_3=4.50,\ d_\infty=4$'
+      - '$d_1=7,\ d_2=25,\ d_3=91,\ d_\infty=4$'
+      - '$d_1=7,\ d_2=5,\ d_3=5.50,\ d_\infty=3$'
+      - '$d_1=5,\ d_2=7,\ d_3=4.50,\ d_\infty=4$'
+    answer: 0
+    hint: |
+      $d_q=\bigl(\sum|x_l-y_l|^q\bigr)^{1/q}$。次数 $q$ を大きくすると距離は小さくなり、最大の差に近づく。
+    explanation: |
+      差の絶対値は $(3,4,0)$ です。
+      $$d_1=7,\quad d_2=\sqrt{25}=5,\quad d_3=(27+64)^{1/3}=91^{1/3}=4.50,\quad d_\infty=\max(3,4,0)=4$$
+      $d_1\ge d_2\ge d_3\ge d_\infty$ の順に並びます。$25$ や $91$ は $1/q$ 乗を忘れた値です。
+
+  - id: q24-distance-measures-3
+    term: distance-measures
+    level: 応用
+    type: truefalse
+    question: |
+      2乗ユークリッド距離 $\|\boldsymbol{x}-\boldsymbol{y}\|^2$ は、三角不等式を含む距離の公理をすべて満たす。
+    answer: false
+    hint: |
+      数直線上の3点 $0,\ 1,\ 2$ で試す。
+    explanation: |
+      $0,1,2$ では $d(0,2)=4$ に対し $d(0,1)+d(1,2)=1+1=2$ で、三角不等式 $d(0,2)\le d(0,1)+d(1,2)$ が成り立ちません。
+      2乗ユークリッド距離は距離の公理を満たさない「非類似度」ですが、ウォード法や重心法の計算では便利なのでよく使われます。
+
+  - id: q24-similarity-measures-1
+    term: similarity-measures
+    level: 標準
+    type: numeric
+    question: |
+      8項目の2値データ（1＝あり）で、2つの対象が
+      $x=(1,1,0,1,0,0,1,0)$、$y=(1,0,0,1,1,0,1,0)$
+      である。ジャッカード係数を小数第2位まで求めよ。
+    answer: 0.6
+    tolerance: 0.005
+    hint: |
+      両方1の数 $a$、片方だけ1の数 $b,c$ を数える。ジャッカード係数は両方0の項目を使わない。
+    explanation: |
+      両方1は1・4・7番目で $a=3$、$x$ だけ1は2番目で $b=1$、$y$ だけ1は5番目で $c=1$、両方0は $d=3$ です。
+      $$\text{ジャッカード}=\frac{a}{a+b+c}=\frac35=0.60$$
+      単純一致係数なら $(3+3)/8=0.75$ です。「両方ない」ことを似ていると数えるかどうかで値が変わります。
+
+  - id: q24-similarity-measures-2
+    term: similarity-measures
+    level: 基本
+    type: numeric
+    question: |
+      $\boldsymbol{x}=(1,\ 2,\ 2)$、$\boldsymbol{y}=(2,\ 0,\ 1)$ のコサイン類似度を小数第3位まで求めよ。
+    answer: 0.596
+    tolerance: 0.001
+    hint: |
+      $\cos=\boldsymbol{x}^\top\boldsymbol{y}/(\|\boldsymbol{x}\|\|\boldsymbol{y}\|)$。
+    explanation: |
+      $\boldsymbol{x}^\top\boldsymbol{y}=2+0+2=4$、$\|\boldsymbol{x}\|=3$、$\|\boldsymbol{y}\|=\sqrt5$ なので
+      $$\cos=\frac{4}{3\sqrt5}=0.596$$
+      コサイン類似度はベクトルの向きだけを見るので、一方を何倍しても値は変わりません。
+
+  - id: q24-number-of-clusters-1
+    term: number-of-clusters
+    level: 標準
+    type: numeric
+    question: |
+      ある点 $i$ について、同じクラスターの他の点との平均距離が $a(i)=2$、最も近い別のクラスターの点との平均距離が $b(i)=5$ であった。シルエット係数 $s(i)$ を小数第1位まで求めよ。
+    answer: 0.6
+    tolerance: 0.05
+    hint: |
+      $s(i)=\dfrac{b(i)-a(i)}{\max\{a(i),b(i)\}}$。
+    explanation: |
+      $$s(i)=\frac{5-2}{\max(2,5)}=\frac35=0.6$$
+      1に近いほど自分のクラスターによくなじんでおり、負なら別のクラスターのほうが近いことを示します。
+
+  - id: q24-number-of-clusters-2
+    term: number-of-clusters
+    level: 基本
+    type: truefalse
+    question: |
+      k-means 法でクラスター数を決めるときは、クラスター内平方和 $W(k)$ が最小になる $k$ を選べばよい。
+    answer: false
+    hint: |
+      $k$ をデータの個数 $n$ まで増やすと $W(k)$ はいくつになるか。
+    explanation: |
+      $W(k)$ は $k$ を増やすほど（最適解なら）小さくなり、$k=n$ で $0$ になります。最小を選ぶと「1点ずつのクラスター」という無意味な答えになります。
+      そこで減り方が緩やかになる「ひじ」を探すエルボー法や、シルエット係数・ギャップ統計量などを使います。
+
+  - id: q24-mixture-model-clustering-1
+    term: mixture-model-clustering
+    level: 標準
+    type: numeric
+    question: |
+      混合正規分布 $0.5\,N(0,1)+0.5\,N(3,1)$ で、データ $x=1$ が第1成分（$N(0,1)$）に属する事後確率（負担率）を小数第3位まで求めよ。
+    answer: 0.818
+    tolerance: 0.001
+    hint: |
+      $\gamma_1=\dfrac{\pi_1\phi(x-0)}{\pi_1\phi(x-0)+\pi_2\phi(x-3)}$。混合比率が等しいので密度の比だけで決まる。
+    explanation: |
+      $\phi(1)=0.2420$、$\phi(1-3)=\phi(2)=0.0540$ なので
+      $$\gamma_1=\frac{0.2420}{0.2420+0.0540}=0.818$$
+      k-means 法のように「どちらか一方」に決めるのではなく、所属の確からしさを確率で表せるのが混合モデルの特徴です。
+
+  - id: q24-standardization-before-clustering-1
+    term: standardization-before-clustering
+    level: 標準
+    type: numeric
+    question: |
+      2変数の標準偏差がそれぞれ $10$ と $0.5$ である。2つの対象の差が $(5,\ 1)$ のとき、標準化したデータでのユークリッド距離を小数第3位まで求めよ。
+    answer: 2.062
+    tolerance: 0.001
+    hint: |
+      各変数の差を、その変数の標準偏差で割ってから2乗して足す。
+    explanation: |
+      $$\sqrt{\Bigl(\frac{5}{10}\Bigr)^2+\Bigl(\frac{1}{0.5}\Bigr)^2}=\sqrt{0.25+4}=2.062$$
+      標準化しないと $\sqrt{25+1}=5.10$ で、ほぼ第1変数の差だけで決まります。標準化すると、ばらつきに比べて大きな差がある第2変数が主役になります。

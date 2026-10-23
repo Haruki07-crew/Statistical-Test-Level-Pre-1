@@ -890,3 +890,85 @@ check(T, "偏 η² の合計が 1 を超える例（S_A/(S_A+S_E)+S_B/(S_B+S_E)>
 n_ok = sum(results)
 n_ng = len(results) - n_ok
 print(f"\n合計: OK {n_ok} / NG {n_ng}")
+
+# --- 追加用語（用語の見直し）: fractional-factorial-design ---
+import re as _re, yaml as _yaml
+from pathlib import Path as _Path
+def _fm20(tid):
+    return _yaml.safe_load(_re.match(r"^---\n(.*?)\n---\n", (_Path(__file__).resolve().parent.parent / f"content/ch20/{tid}.md").read_text(encoding="utf-8"), _re.S).group(1))
+T = "fractional-factorial-design"
+_runs = []
+for _C in (-1, 1):
+    for _B in (-1, 1):
+        for _A in (-1, 1):
+            _runs.append((_A, _B, _C, _A * _B * _C))
+_R = np.array(_runs)
+_names = ["".join(l for l, v in zip("abcd", r) if v > 0) or "(1)" for r in _runs]
+_y = np.array([42, 54, 50, 54, 48, 48, 44, 60])
+check(T, "例1 実験の並び (1),ad,bd,ab,cd,ac,bc,abcd（D=ABC）", _names == ["(1)", "ad", "bd", "ab", "cd", "ac", "bc", "abcd"], _names)
+_Ab, _Bb, _Cb, _Db = _R.T
+check(T, "例1 収率は 50+4A+2B+3D+AB（±1）で作った値", np.array_equal(_y, 50 + 4 * _Ab + 2 * _Bb + 3 * _Db + _Ab * _Bb), _y.tolist())
+_eff = lambda col: _y[col > 0].mean() - _y[col < 0].mean()
+check(T, "例1 効果 A=8, B=4, C=0, D=6, AB=2, AC=0, AD=0",
+      [_eff(c) for c in (_Ab, _Bb, _Cb, _Db, _Ab * _Bb, _Ab * _Cb, _Ab * _Db)] == [8, 4, 0, 6, 2, 0, 0], "")
+check(T, "例1 平均 54−46、53−47、AB の＋平均51・−平均49",
+      (_y[_Ab > 0].mean(), _y[_Ab < 0].mean(), _y[_Db > 0].mean(), _y[_Db < 0].mean(), _y[_Ab * _Bb > 0].mean(), _y[_Ab * _Bb < 0].mean()) == (54, 46, 53, 47, 51, 49), "")
+check(T, "別名 A=BCD, B=ACD, C=ABD, D=ABC, AB=CD, AC=BD, AD=BC（列が一致）, ABCD=I",
+      all(np.array_equal(p, q) for p, q in [(_Ab, _Bb * _Cb * _Db), (_Bb, _Ab * _Cb * _Db), (_Cb, _Ab * _Bb * _Db), (_Db, _Ab * _Bb * _Cb), (_Ab * _Bb, _Cb * _Db), (_Ab * _Cb, _Bb * _Db), (_Ab * _Db, _Bb * _Cb)]) and np.all(_Ab * _Bb * _Cb * _Db == 1), "")
+# 7つの別名の組の列は互いに直交（推定できる組は 2^(4-1)−1=7）
+_cols = np.array([_Ab, _Bb, _Cb, _Db, _Ab * _Bb, _Ab * _Cb, _Ab * _Db])
+check(T, "7組の対比が互いに直交（2^(k−p)−1=7）", np.array_equal(_cols @ _cols.T, 8 * np.eye(7)), "")
+# 例2：2^(5-2), D=AB, E=AC
+def _mul(*ws):
+    s = set()
+    for w in ws:
+        s ^= set(w)
+    return "".join(sorted(s)) or "I"
+_words = sorted({_mul("ABD"), _mul("ACE"), _mul("ABD", "ACE")})
+check(T, "例2 定義関係 I=ABD=ACE=BCDE（2^2−1=3語）、分解能 III", _words == ["ABD", "ACE", "BCDE"] and min(map(len, _words)) == 3, _words)
+check(T, "例2 A の別名 BD, CE, ABCDE", sorted(_mul("A", w) for w in _words) == ["ABCDE", "BD", "CE"], "")
+# 2^(5-2) を実際に作って確認
+_R5 = np.array([(a, b, c, a * b, a * c) for c in (-1, 1) for b in (-1, 1) for a in (-1, 1)])
+check(T, "例2 計画行列で A=BD=CE、BCDE=I", np.array_equal(_R5[:, 0], _R5[:, 1] * _R5[:, 3]) and np.array_equal(_R5[:, 0], _R5[:, 2] * _R5[:, 4]) and np.all(_R5[:, 1] * _R5[:, 2] * _R5[:, 3] * _R5[:, 4] == 1), "")
+check(T, "2^4 の全実施なら 16 回、2^(4−1) は 8 回、L8 は 2^(7−4)", 2 ** 4 == 16 and 2 ** 3 == 8 and 2 ** (7 - 4) == 8, "")
+_pts = _fm20(T)["charts"][0]["params"]["points"]
+_exp = [{"label": n, "x": round((r[0] + 1) / 2 + 0.45 * (r[2] + 1) / 2, 2), "y": round((r[1] + 1) / 2 + 0.35 * (r[2] + 1) / 2, 2), "group": "D=＋" if r[3] > 0 else "D=−"} for n, r in zip(_names, _runs)]
+check(T, "chart：立方体の8頂点と D の符号", _pts == _exp, "")
+check(T, "chart：辺で隣り合う頂点で D が入れ替わる", all(_R[i, 3] != _R[j, 3] for i in range(8) for j in range(8) if np.sum(_R[i, :3] != _R[j, :3]) == 1), "")
+
+# --- 追加用語（用語の見直し）: incomplete-block-design ---
+T = "incomplete-block-design"
+_blocks = [{"A": 7, "B": 5, "C": 6}, {"A": 8, "B": 6, "D": 4}, {"A": 6, "C": 5, "D": 2}, {"B": 5, "C": 6, "D": 3}]
+_v, _bb, _k = 4, 4, 3
+_r = {t: sum(t in bl for bl in _blocks) for t in "ABCD"}
+_lam = {p: sum(p[0] in bl and p[1] in bl for bl in _blocks) for p in combinations("ABCD", 2)}
+check(T, "例 v=4, b=4, k=3, r=3, λ=2（すべての対で2回）", set(_r.values()) == {3} and set(_lam.values()) == {2} and all(len(bl) == 3 for bl in _blocks), (_r, _lam))
+check(T, "bk=vr=12, λ(v−1)=r(k−1)=6, b≥v", _bb * _k == _v * 3 == 12 and 2 * (_v - 1) == 3 * (_k - 1) == 6 and _bb >= _v, "")
+check(T, "効率因子 E=λv/(rk)=8/9≈0.889", close(2 * 4 / (3 * 3), 0.889), 8 / 9)
+_Bt = [sum(bl.values()) for bl in _blocks]
+_T = {t: sum(bl[t] for bl in _blocks if t in bl) for t in "ABCD"}
+_SB = {t: sum(B for B, bl in zip(_Bt, _blocks) if t in bl) for t in "ABCD"}
+_Q = {t: _T[t] - _SB[t] / 3 for t in "ABCD"}
+_tau = {t: 3 * _Q[t] / (2 * 4) for t in "ABCD"}
+check(T, "ブロック合計 18,18,13,14、T=21,16,17,9、含むブロック合計 49,50,45,45",
+      _Bt == [18, 18, 13, 14] and [_T[t] for t in "ABCD"] == [21, 16, 17, 9] and [_SB[t] for t in "ABCD"] == [49, 50, 45, 45], "")
+check(T, "Q=4.667,−0.667,2.000,−6.000、τ̂=1.750,−0.250,0.750,−2.250",
+      allclose([_Q[t] for t in "ABCD"], [4.667, -0.667, 2.0, -6.0]) and allclose([_tau[t] for t in "ABCD"], [1.75, -0.25, 0.75, -2.25]), [round(_tau[t], 3) for t in "ABCD"])
+# 最小二乗（処理＋ブロックの加法モデル）で同じ処理効果になる
+_rows, _yy = [], []
+for j, bl in enumerate(_blocks):
+    for t, val in bl.items():
+        xr = np.zeros(8); xr["ABCD".index(t)] = 1; xr[4 + j] = 1; _rows.append(xr); _yy.append(val)
+_bet = np.linalg.lstsq(np.array(_rows), np.array(_yy, float), rcond=None)[0]
+check(T, "ブロック内解析 τ̂=kQ/(λv) は加法モデルの最小二乗と一致", allclose(_bet[:4] - _bet[:4].mean(), [_tau[t] for t in "ABCD"], 1e-9), r(_bet[:4] - _bet[:4].mean()))
+_mean = {t: _T[t] / 3 for t in "ABCD"}
+check(T, "単純平均 B=5.333, C=5.667（差0.333）、調整後 C−B=1.000",
+      close(_mean["B"], 5.333) and close(_mean["C"], 5.667) and close(_mean["C"] - _mean["B"], 0.333) and close(_tau["C"] - _tau["B"], 1.0), "")
+# 差の分散 2kσ²/(λv)（σ²=1）を最小二乗の共分散から確認
+_X = np.array(_rows); _cov = np.linalg.pinv(_X.T @ _X)
+_cvec = np.zeros(8); _cvec[0], _cvec[1] = 1, -1
+check(T, "処理差の分散 2kσ²/(λv)=6/8=0.75、乱塊法 2σ²/r=0.667 との比=E", close(_cvec @ _cov @ _cvec, 0.75, 1e-9) and close((2 / 3) / 0.75, 8 / 9, 1e-9), _cvec @ _cov @ _cvec)
+
+n_ok = sum(results)
+n_ng = len(results) - n_ok
+print(f"\n合計（追加用語を含む）: OK {n_ok} / NG {n_ng}")

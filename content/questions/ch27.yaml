@@ -1,0 +1,728 @@
+chapter: 27
+questions:
+  - id: q27-time-series-1
+    term: time-series
+    level: 基本
+    type: numeric
+    question: |
+      四半期データ $y_1,\dots,y_6=10,\ 14,\ 12,\ 8,\ 11,\ 15$ がある。周期 $s=4$ の中心化移動平均で、時点 $t=3$ の傾向 $\hat T_3$ を小数第3位まで求めよ。
+    answer: 11.125
+    tolerance: 0.001
+    hint: |
+      $s$ が偶数なので、両端の $y_{t-2},\ y_{t+2}$ に重み $1/(2s)$、内側の3つに重み $1/s$ をつける。
+    explanation: |
+      $s=4$ の中心化移動平均は
+      $$\hat T_3=\frac14\left(\frac12y_1+y_2+y_3+y_4+\frac12y_5\right)$$
+      です。代入すると
+      $$\hat T_3=\frac14(5+14+12+8+5.5)=\frac{44.5}{4}=11.125$$
+      単純な4項平均だと中心が時点 2.5 や 3.5 にずれるので、2項平均をもう一度とって時点3に合わせています。
+
+  - id: q27-time-series-2
+    term: time-series
+    level: 基本
+    type: truefalse
+    question: |
+      売上の水準が上がるにつれて季節による上下の振れ幅も比例して大きくなっている時系列には、加法モデル $y_t=T_t+S_t+I_t$ より乗法モデル $y_t=T_tS_tI_t$ のほうが適している。
+    answer: true
+    hint: |
+      乗法モデルで対数をとるとどうなるかを考える。
+    explanation: |
+      乗法モデルでは季節成分 $S_t$ が「水準に対する倍率」なので、水準 $T_t$ が大きいほど季節の振れ幅 $T_t(S_t-1)$ も大きくなります。
+      対数をとれば $\log y_t=\log T_t+\log S_t+\log I_t$ の加法モデルになります。
+      振れ幅が水準によらず一定なら加法モデルを使います。
+
+  - id: q27-weak-stationarity-1
+    term: weak-stationarity
+    level: 基本
+    type: truefalse
+    question: |
+      $Z\sim N(0,1)$ を1つだけ発生させ、すべての時点で $X_t=Z$（同じ値）とする。この過程 $\{X_t\}$ は弱定常である。
+    answer: true
+    hint: |
+      $E[X_t]$ と $\operatorname{Cov}(X_t,X_{t+h})$ が $t$ に依存するかを調べる。
+    explanation: |
+      $E[X_t]=E[Z]=0$、$\operatorname{Cov}(X_t,X_{t+h})=V[Z]=1$ で、どちらも $t$ によりません（$\gamma(h)=1$ がすべての $h$ で一定）。
+      したがって弱定常です。系列は一直線で「動かない」ように見えますが、定常性は分布の法則が時間で変わらないことを言っているので矛盾しません。
+      ただし1本の系列の時間平均は $Z$ のままで $0$ に近づかず、エルゴード性は成り立たない例になっています。
+
+  - id: q27-weak-stationarity-2
+    term: weak-stationarity
+    level: 標準
+    type: numeric
+    question: |
+      $\varepsilon_t\sim WN(0,\ 1.5)$、$X_0=0$、$X_t=X_{t-1}+\varepsilon_t$（ランダムウォーク）とする。$V[X_{10}-X_4]$ と $V[X_{10}]$ の差 $V[X_{10}]-V[X_{10}-X_4]$ を求めよ（小数第1位まで）。
+    answer: 6.0
+    tolerance: 0.05
+    hint: |
+      $X_{10}-X_4$ は $\varepsilon_5,\dots,\varepsilon_{10}$ の和で表せる。
+    explanation: |
+      $X_t=\sum_{s=1}^{t}\varepsilon_s$ なので $V[X_{10}]=10\times1.5=15$ です。
+      $X_{10}-X_4=\varepsilon_5+\cdots+\varepsilon_{10}$ は6個の和なので $V[X_{10}-X_4]=6\times1.5=9$ です。
+      差は $15-9=6.0$ です。分散が $t$ に比例して増えるので、ランダムウォークは弱定常ではありません。一方、増分 $X_{10}-X_4$ の分散は間隔 $6$ だけで決まります。
+
+  - id: q27-weak-stationarity-3
+    term: weak-stationarity
+    level: 応用
+    type: choice
+    question: |
+      $A,B$ は平均0、分散 $\sigma^2$ で互いに無相関な確率変数、$\lambda$ は定数とする。
+      $X_t=A\cos(\lambda t)+B\sin(\lambda t)$ の $\operatorname{Cov}(X_t,X_{t+h})$ はどれか。
+    choices:
+      - '$\sigma^2\cos(\lambda h)$'
+      - '$\sigma^2\cos\{\lambda(2t+h)\}$'
+      - '$\sigma^2$'
+      - '$2\sigma^2\cos(\lambda h)$'
+    answer: 0
+    hint: |
+      $E[A^2]=E[B^2]=\sigma^2$、$E[AB]=0$ を使い、加法定理でまとめる。
+    explanation: |
+      $$\operatorname{Cov}(X_t,X_{t+h})=\sigma^2\{\cos(\lambda t)\cos(\lambda(t+h))+\sin(\lambda t)\sin(\lambda(t+h))\}=\sigma^2\cos(\lambda h)$$
+      です（$\cos(\alpha-\beta)$ の加法定理）。$t$ によらずラグ $h$ だけで決まり、平均も0なので弱定常です。
+      $\cos\{\lambda(2t+h)\}$ は $\cos\cdot\cos-\sin\cdot\sin$ と符号を誤った場合、$2\sigma^2$ は $A,B$ の分散を足してしまった場合です。
+
+  - id: q27-strict-stationarity-1
+    term: strict-stationarity
+    level: 基本
+    type: truefalse
+    question: |
+      $X_1,X_2,\dots$ が i.i.d. で自由度2の $t$ 分布に従うとき、$\{X_t\}$ は強定常であるが弱定常ではない。
+    answer: true
+    hint: |
+      自由度 $\nu$ の $t$ 分布の分散は $\nu>2$ のときだけ有限である。
+    explanation: |
+      i.i.d. の系列は、どの時点の組をずらしても同時分布が同じなので強定常です。
+      一方、自由度2の $t$ 分布は平均0は存在しますが、分散 $\nu/(\nu-2)$ が $\nu=2$ で発散します。
+      弱定常には $E[X_t^2]<\infty$ が必要なので、弱定常ではありません。「強定常 ⇒ 弱定常」は2次モーメントが有限という条件つきです。
+
+  - id: q27-autocovariance-autocorrelation-1
+    term: autocovariance-autocorrelation
+    level: 基本
+    type: numeric
+    question: |
+      データ $1,\ 3,\ 4,\ 6,\ 5,\ 7$（$n=6$）について、ラグ1の標本自己相関 $r_1$ を小数第3位まで求めよ。ただし $r_1=\sum_{t=1}^{n-1}(x_t-\bar x)(x_{t+1}-\bar x)\big/\sum_{t=1}^{n}(x_t-\bar x)^2$ とする。
+    answer: 0.310
+    tolerance: 0.001
+    hint: |
+      $\bar x=13/3$ なので、偏差を3倍した整数 $-10,-4,-1,5,2,8$ で計算すると楽になる（分母・分子の $1/9$ は約分される）。
+    explanation: |
+      偏差の3倍は $-10,-4,-1,5,2,8$ です。
+      分母：$100+16+1+25+4+64=210$
+      分子：$(-10)(-4)+(-4)(-1)+(-1)(5)+(5)(2)+(2)(8)=40+4-5+10+16=65$
+      $$r_1=\frac{65}{210}=0.3095\ldots\approx0.310$$
+
+  - id: q27-autocovariance-autocorrelation-2
+    term: autocovariance-autocorrelation
+    level: 標準
+    type: choice
+    question: |
+      $\varepsilon_t\sim WN(0,\sigma^2)$ として $X_t=\varepsilon_t-\varepsilon_{t-2}$ とする。自己相関 $(\rho(1),\ \rho(2))$ はどれか。
+    choices:
+      - '$(0,\ -0.5)$'
+      - '$(-0.5,\ 0)$'
+      - '$(0,\ -1)$'
+      - '$(0,\ 0.5)$'
+    answer: 0
+    hint: |
+      $X_t$ と $X_{t+h}$ に共通して含まれる $\varepsilon$ の係数どうしを掛ける。
+    explanation: |
+      $\gamma(0)=V[\varepsilon_t]+V[\varepsilon_{t-2}]=2\sigma^2$ です。
+      $X_t=\varepsilon_t-\varepsilon_{t-2}$ と $X_{t+1}=\varepsilon_{t+1}-\varepsilon_{t-1}$ には共通の $\varepsilon$ がないので $\gamma(1)=0$。
+      $X_{t+2}=\varepsilon_{t+2}-\varepsilon_t$ とは $\varepsilon_t$ が共通で、係数の積は $1\times(-1)=-1$ なので $\gamma(2)=-\sigma^2$。
+      $$\rho(1)=0,\qquad\rho(2)=\frac{-\sigma^2}{2\sigma^2}=-0.5$$
+      $-1$ は $\gamma(0)$ で割り忘れた誤り、$+0.5$ は符号の誤りです。
+
+  - id: q27-autocovariance-autocorrelation-3
+    term: autocovariance-autocorrelation
+    level: 応用
+    type: truefalse
+    question: |
+      $\gamma(0)=1,\ \gamma(\pm1)=0.8,\ \gamma(h)=0\ (|h|\ge2)$ を自己共分散関数にもつ弱定常過程が存在する。
+    answer: false
+    hint: |
+      自己共分散関数は非負定値でなければならない。$V[X_1-X_2+X_3-\cdots]$ のような交互の和を考える。
+    explanation: |
+      係数 $a_t=(-1)^t$ で $k$ 個の和 $S=\sum_{t=1}^{k}a_tX_t$ をとると
+      $$V[S]=k\gamma(0)-2(k-1)\gamma(1)=k-1.6(k-1)=1.6-0.6k$$
+      で、$k\ge3$ で負になります。分散が負になることはないので、このような過程は存在しません。
+      ラグ1でだけ相関が0でない過程は MA(1) で、そのとき $|\rho(1)|=|\theta|/(1+\theta^2)\le0.5$ でなければなりません。
+
+  - id: q27-correlogram-1
+    term: correlogram
+    level: 標準
+    type: numeric
+    question: |
+      長さ $n=400$ の系列で標本自己相関 $r_1=0.4$、ラグ2以降は小さかった。MA(1) を仮定し、バートレットの公式でラグ $h\ge2$ の95%の目安の帯 $\pm c$ を作るとき、$c$ を小数第3位まで求めよ（$\rho(1)$ は $r_1$ で置き換える）。
+    answer: 0.113
+    tolerance: 0.001
+    hint: |
+      $V[r_h]\approx\frac1n\left(1+2\sum_{j=1}^{q}\rho(j)^2\right)$ で $q=1$。
+    explanation: |
+      $$V[r_h]\approx\frac{1+2\times0.4^2}{400}=\frac{1.32}{400}=0.0033$$
+      より $c=1.96\sqrt{0.0033}=1.96\times0.05745=0.1126\approx0.113$ です。
+      ホワイトノイズ基準の帯 $1.96/\sqrt{400}=0.098$ より広くなります。
+
+  - id: q27-correlogram-2
+    term: correlogram
+    level: 基本
+    type: choice
+    question: |
+      ある系列のコレログラムで、標本自己相関がラグ1で0.97から始まり、ラグ20でも0.6程度と非常にゆっくり直線的に減っていた。偏自己相関はラグ1がほぼ1で、それ以降は小さい。最も考えられるのはどれか。
+    choices:
+      - '単位根を持つ非定常な系列なので、差分をとってから分析する'
+      - '係数 $0.3$ の AR(1) 過程'
+      - 'MA(1) 過程'
+      - 'ホワイトノイズ'
+    answer: 0
+    hint: |
+      定常な AR(1) なら自己相関は $\phi^h$ で指数的に減る。
+    explanation: |
+      定常な ARMA の自己相関は指数的に（速く）減衰します。ゆっくり直線的に減るのは単位根（ランダムウォーク型）の典型的な姿です。
+      係数0.3の AR(1) ならラグ2で $0.09$ まで落ち、MA(1) はラグ2以降で切断、ホワイトノイズはすべてのラグでほぼ0です。
+
+  - id: q27-partial-autocorrelation-1
+    term: partial-autocorrelation
+    level: 標準
+    type: numeric
+    question: |
+      弱定常過程の自己相関が $\rho(1)=0.6,\ \rho(2)=0.5$ であるとき、ラグ2の偏自己相関 $\phi_{22}$ を小数第3位まで求めよ。
+    answer: 0.219
+    tolerance: 0.001
+    hint: |
+      $\phi_{22}=\dfrac{\rho(2)-\rho(1)^2}{1-\rho(1)^2}$
+    explanation: |
+      $$\phi_{22}=\frac{0.5-0.36}{1-0.36}=\frac{0.14}{0.64}=0.21875\approx0.219$$
+      $\rho(2)=0.5$ のうち、ラグ1の関係を2回たどった分 $\rho(1)^2=0.36$ を除いた「直接の」関係を測っています。
+
+  - id: q27-partial-autocorrelation-2
+    term: partial-autocorrelation
+    level: 基本
+    type: truefalse
+    question: |
+      AR(1) 過程 $X_t=0.7X_{t-1}+\varepsilon_t$ のラグ2の偏自己相関は $\phi_{22}=0.7^2=0.49$ である。
+    answer: false
+    hint: |
+      $0.49$ は自己相関 $\rho(2)$ の値。偏自己相関の公式に $\rho(1)=0.7,\ \rho(2)=0.49$ を代入する。
+    explanation: |
+      $$\phi_{22}=\frac{\rho(2)-\rho(1)^2}{1-\rho(1)^2}=\frac{0.49-0.49}{1-0.49}=0$$
+      です。AR(1) では $X_{t-1}$ を知れば $X_{t-2}$ は追加の情報を持たないので、偏自己相関はラグ2以降で0（切断）になります。$0.49$ は自己相関 $\rho(2)$ です。
+
+  - id: q27-partial-autocorrelation-3
+    term: partial-autocorrelation
+    level: 応用
+    type: numeric
+    question: |
+      MA(1) 過程 $X_t=\varepsilon_t+0.5\varepsilon_{t-1}$ のラグ2の偏自己相関 $\phi_{22}$ を小数第3位まで求めよ。
+    answer: -0.190
+    tolerance: 0.001
+    hint: |
+      まず $\rho(1),\rho(2)$ を求め、$\phi_{22}$ の公式に代入する。
+    explanation: |
+      MA(1) では $\rho(1)=\theta/(1+\theta^2)=0.5/1.25=0.4$、$\rho(2)=0$ です。
+      $$\phi_{22}=\frac{0-0.16}{1-0.16}=-\frac{0.16}{0.84}=-0.1905\approx-0.190$$
+      自己相関はラグ2で切断しますが、偏自己相関は0になりません（MA は偏自己相関が減衰）。
+
+  - id: q27-white-noise-1
+    term: white-noise
+    level: 標準
+    type: numeric
+    question: |
+      $n=100$ の残差系列で標本自己相関が $r_1=0.15,\ r_2=-0.10,\ r_3=0.08$ であった。$m=3$ のリュング・ボックス統計量 $Q$ を小数第2位まで求めよ。
+    answer: 4.03
+    tolerance: 0.01
+    hint: |
+      $Q=n(n+2)\sum_{h=1}^{m}\dfrac{r_h^2}{n-h}$
+    explanation: |
+      $$Q=100\times102\left(\frac{0.0225}{99}+\frac{0.0100}{98}+\frac{0.0064}{97}\right)=10200\times0.0003953=4.032$$
+      自由度3のカイ二乗分布の上側5%点 $7.81$ より小さいので、「ラグ1〜3の自己相関がすべて0」は棄却されません。
+
+  - id: q27-white-noise-2
+    term: white-noise
+    level: 基本
+    type: truefalse
+    question: |
+      $\varepsilon_t\sim WN(0,\sigma^2)$ ならば、異なる時点の $\varepsilon_t$ と $\varepsilon_s$ は互いに独立である。
+    answer: false
+    hint: |
+      ホワイトノイズの定義は2次モーメント（平均・分散・共分散）だけの条件である。
+    explanation: |
+      ホワイトノイズの定義が要求するのは「無相関」までで、独立性は要求しません。
+      独立まで仮定したものは i.i.d. ノイズといいます。正規ホワイトノイズのように同時分布が正規なら、無相関と独立が一致します。
+
+  - id: q27-white-noise-3
+    term: white-noise
+    level: 応用
+    type: choice
+    question: |
+      $\varepsilon_t$ を i.i.d. の $N(0,1)$ として、$X_t=\varepsilon_t\varepsilon_{t-1}$ とする。正しいのはどれか。
+    choices:
+      - '$X_t$ は $WN(0,1)$ だが、$X_t$ どうしは独立ではない'
+      - '$X_t$ は $WN(0,1)$ で、しかも $X_t$ どうしは独立である'
+      - '$\varepsilon_t$ を共有するのでラグ1の自己相関が $1/2$ になり、ホワイトノイズではない'
+      - '分散が時点によって変わるので弱定常ではない'
+    answer: 0
+    hint: |
+      $\operatorname{Cov}(X_t,X_{t+1})=E[\varepsilon_t^2]E[\varepsilon_{t-1}]E[\varepsilon_{t+1}]$。独立かどうかは $X_t^2$ と $X_{t+1}^2$ の共分散で調べる。
+    explanation: |
+      $E[X_t]=0$、$V[X_t]=E[\varepsilon_t^2]E[\varepsilon_{t-1}^2]=1$ です。
+      $\operatorname{Cov}(X_t,X_{t+1})=E[\varepsilon_{t-1}\varepsilon_t^2\varepsilon_{t+1}]=0\cdot1\cdot0=0$、ラグ2以上も0なので $WN(0,1)$ です。
+      しかし $\operatorname{Cov}(X_t^2,X_{t+1}^2)=E[\varepsilon_t^4]-1=3-1=2\ne0$ なので、$X_t$ どうしは独立ではありません。
+      「無相関だが独立でない」ホワイトノイズの例です。
+
+  - id: q27-ar-model-1
+    term: ar-model
+    level: 基本
+    type: numeric
+    question: |
+      AR(1) 過程 $X_t=2+0.6X_{t-1}+\varepsilon_t$、$\varepsilon_t\sim WN(0,4)$ の分散 $\gamma(0)$ を小数第2位まで求めよ。
+    answer: 6.25
+    tolerance: 0.01
+    hint: |
+      定数項 $c$ は平均を動かすだけで、分散には影響しない。
+    explanation: |
+      $$\gamma(0)=\frac{\sigma^2}{1-\phi^2}=\frac{4}{1-0.36}=\frac{4}{0.64}=6.25$$
+      平均は $\mu=c/(1-\phi)=2/0.4=5$ です。分散を $\sigma^2/(1-\phi)$ としてしまう誤り（$10$）に注意します。
+
+  - id: q27-ar-model-2
+    term: ar-model
+    level: 標準
+    type: numeric
+    question: |
+      AR(2) 過程 $X_t=0.5X_{t-1}+0.3X_{t-2}+\varepsilon_t$ の自己相関 $\rho(2)$ を小数第3位まで求めよ。
+    answer: 0.657
+    tolerance: 0.001
+    hint: |
+      $\rho(1)=\phi_1/(1-\phi_2)$、続いて $\rho(2)=\phi_1\rho(1)+\phi_2$。
+    explanation: |
+      ユール・ウォーカー方程式の $h=1$ から $\rho(1)=\phi_1+\phi_2\rho(1)$、よって
+      $$\rho(1)=\frac{0.5}{1-0.3}=0.7143$$
+      $h=2$ から
+      $$\rho(2)=0.5\times0.7143+0.3\times1=0.6571\approx0.657$$
+
+  - id: q27-ar-model-3
+    term: ar-model
+    level: 応用
+    type: numeric
+    question: |
+      AR(2) 過程 $X_t=0.5X_{t-1}+0.3X_{t-2}+\varepsilon_t$、$\varepsilon_t\sim WN(0,1)$ の分散 $\gamma(0)$ を小数第3位まで求めよ。
+    answer: 2.244
+    tolerance: 0.001
+    hint: |
+      モデルの両辺に $X_t$ を掛けて期待値をとると $\gamma(0)=\phi_1\gamma(1)+\phi_2\gamma(2)+\sigma^2$。$\gamma(h)=\rho(h)\gamma(0)$ で書き直す。
+    explanation: |
+      $\rho(1)=5/7$、$\rho(2)=0.5\cdot5/7+0.3=23/35$ です。
+      $$\gamma(0)=\frac{\sigma^2}{1-\phi_1\rho(1)-\phi_2\rho(2)}=\frac{1}{1-\frac{5}{14}-\frac{69}{350}}=\frac{1}{0.44571}=2.2436\approx2.244$$
+      $\sigma^2/(1-\phi_1^2-\phi_2^2)=1/0.66=1.515$ とする誤り（AR(1) の公式の当てはめ）に注意します。
+
+  - id: q27-ma-model-1
+    term: ma-model
+    level: 基本
+    type: numeric
+    question: |
+      MA(1) 過程 $X_t=\varepsilon_t-0.6\varepsilon_{t-1}$ のラグ1の自己相関 $\rho(1)$ を小数第3位まで求めよ。
+    answer: -0.441
+    tolerance: 0.001
+    hint: |
+      本サイトの流儀 $X_t=\varepsilon_t+\theta\varepsilon_{t-1}$ では $\theta=-0.6$。
+    explanation: |
+      $$\rho(1)=\frac{\theta}{1+\theta^2}=\frac{-0.6}{1.36}=-0.4412\approx-0.441$$
+      ラグ2以降は0です。
+
+  - id: q27-ma-model-2
+    term: ma-model
+    level: 標準
+    type: choice
+    question: |
+      MA(2) 過程 $X_t=\varepsilon_t+0.5\varepsilon_{t-1}-0.3\varepsilon_{t-2}$、$\varepsilon_t\sim WN(0,1)$ の自己共分散 $\gamma(1)$ はどれか。
+    choices:
+      - '$0.35$'
+      - '$0.50$'
+      - '$0.65$'
+      - '$-0.30$'
+    answer: 0
+    hint: |
+      $\gamma(1)=\sigma^2(\theta_0\theta_1+\theta_1\theta_2)$、$\theta_0=1$。
+    explanation: |
+      $X_t$ と $X_{t+1}=\varepsilon_{t+1}+0.5\varepsilon_t-0.3\varepsilon_{t-1}$ に共通な $\varepsilon$ は $\varepsilon_t$（係数 $1$ と $0.5$）と $\varepsilon_{t-1}$（係数 $0.5$ と $-0.3$）です。
+      $$\gamma(1)=1\times0.5+0.5\times(-0.3)=0.35$$
+      $0.50$ は2つめの項を落とした誤り、$0.65$ は符号の誤り、$-0.30$ は $\gamma(2)$ です。
+
+  - id: q27-ma-model-3
+    term: ma-model
+    level: 応用
+    type: truefalse
+    question: |
+      MA(1) 過程 $X_t=\varepsilon_t+\theta\varepsilon_{t-1}$ では、$\theta$ がどんな実数でも $|\rho(1)|\le 1/2$ が成り立つ。
+    answer: true
+    hint: |
+      $(1-|\theta|)^2\ge0$ を展開する。
+    explanation: |
+      $(1-|\theta|)^2\ge0$ より $1+\theta^2\ge2|\theta|$、よって
+      $$|\rho(1)|=\frac{|\theta|}{1+\theta^2}\le\frac12$$
+      等号は $\theta=\pm1$ のときです。標本でラグ1の自己相関だけが大きく、それが $0.5$ を大きく超えるなら、MA(1) では説明できません。
+
+  - id: q27-arma-model-1
+    term: arma-model
+    level: 標準
+    type: numeric
+    question: |
+      ARMA(1,1) 過程 $X_t=0.5X_{t-1}+\varepsilon_t+0.4\varepsilon_{t-1}$ のラグ1の自己相関 $\rho(1)$ を小数第3位まで求めよ。
+    answer: 0.692
+    tolerance: 0.001
+    hint: |
+      $\rho(1)=\dfrac{(1+\phi\theta)(\phi+\theta)}{1+2\phi\theta+\theta^2}$
+    explanation: |
+      $$\rho(1)=\frac{(1+0.2)(0.9)}{1+0.4+0.16}=\frac{1.08}{1.56}=0.6923\approx0.692$$
+      ラグ2以降は $\rho(h)=0.5\,\rho(h-1)$ で減衰します（$\rho(2)=0.346$）。
+
+  - id: q27-arma-model-2
+    term: arma-model
+    level: 基本
+    type: choice
+    question: |
+      $X_t-0.5X_{t-1}=\varepsilon_t-0.5\varepsilon_{t-1}$（$\varepsilon_t\sim WN(0,\sigma^2)$、定常解）について正しいのはどれか。
+    choices:
+      - 'AR 多項式と MA 多項式が共通の根をもち、約分すると $X_t=\varepsilon_t$（ホワイトノイズ）になる'
+      - 'ARMA(1,1) で、ラグ1の自己相関は $0.5$ である'
+      - 'AR(1) で、自己相関は $0.5^h$ である'
+      - 'AR 多項式が単位根をもつので非定常である'
+    answer: 0
+    hint: |
+      後退作用素で $(1-0.5B)X_t=(1-0.5B)\varepsilon_t$ と書いてみる。
+    explanation: |
+      両辺に同じ因子 $(1-0.5B)$ があり、根 $z=2$ は単位円の外なので約分でき、$X_t=\varepsilon_t$ です。
+      ARMA(1,1) の公式でも $\phi=0.5,\ \theta=-0.5$ とすると $\phi+\theta=0$ で $\rho(1)=0$ になります。
+      ARMA では「共通根がない」ことを条件にして、次数を一意にします。
+
+  - id: q27-arma-model-3
+    term: arma-model
+    level: 応用
+    type: derivation
+    question: |
+      定常な ARMA(1,1) 過程 $X_t=\phi X_{t-1}+\varepsilon_t+\theta\varepsilon_{t-1}$（$|\phi|<1$、$\varepsilon_t\sim WN(0,\sigma^2)$）の分散 $\gamma(0)$ を導け。
+    steps:
+      - '$\varepsilon_t$ は過去の $X$ と無相関なので $E[X_t\varepsilon_t]=\sigma^2$、$E[X_t\varepsilon_{t-1}]=\phi E[X_{t-1}\varepsilon_{t-1}]+\theta\sigma^2=(\phi+\theta)\sigma^2$'
+      - '両辺に $X_t$ を掛けて期待値：$\gamma(0)=\phi\gamma(1)+\sigma^2+\theta(\phi+\theta)\sigma^2$'
+      - '両辺に $X_{t-1}$ を掛けて期待値：$\gamma(1)=\phi\gamma(0)+\theta\sigma^2$'
+      - '代入して $\gamma(0)(1-\phi^2)=\sigma^2(1+2\phi\theta+\theta^2)$'
+    answer: '$\gamma(0)=\dfrac{1+2\phi\theta+\theta^2}{1-\phi^2}\sigma^2$'
+    hint: |
+      まず $X_t$ と $\varepsilon_t,\ \varepsilon_{t-1}$ の共分散を求め、$X_t$ と $X_{t-1}$ をそれぞれ掛けた2本の式を連立する。
+    explanation: |
+      2本の式 $\gamma(0)=\phi\gamma(1)+\{1+\theta(\phi+\theta)\}\sigma^2$、$\gamma(1)=\phi\gamma(0)+\theta\sigma^2$ から $\gamma(1)$ を消去すると
+      $$\gamma(0)=\phi^2\gamma(0)+\phi\theta\sigma^2+(1+\phi\theta+\theta^2)\sigma^2$$
+      $$\gamma(0)=\frac{1+2\phi\theta+\theta^2}{1-\phi^2}\sigma^2$$
+      $\theta=0$ なら AR(1) の $\sigma^2/(1-\phi^2)$、$\phi=0$ なら MA(1) の $(1+\theta^2)\sigma^2$ に戻ります。
+
+  - id: q27-arima-model-1
+    term: arima-model
+    level: 基本
+    type: choice
+    question: |
+      $\Delta X_t=0.4\,\Delta X_{t-1}+\varepsilon_t+0.3\varepsilon_{t-1}$（$\Delta X_t=X_t-X_{t-1}$）で表されるモデルはどれか。
+    choices:
+      - 'ARIMA(1,1,1)'
+      - 'ARIMA(2,0,1)'
+      - 'ARIMA(1,0,1)'
+      - 'ARIMA(2,1,1)'
+    answer: 0
+    hint: |
+      1回差分した系列 $W_t=\Delta X_t$ がどんな ARMA に従うかを見る。
+    explanation: |
+      $W_t=\Delta X_t$ が $W_t=0.4W_{t-1}+\varepsilon_t+0.3\varepsilon_{t-1}$ という ARMA(1,1) なので、$X_t$ は ARIMA(1,1,1) です。
+      $X_t$ について展開すると $X_t=1.4X_{t-1}-0.4X_{t-2}+\cdots$ の2次の AR 多項式 $(1-0.4z)(1-z)$ になりますが、根 $z=1$ が単位根なので、定常な ARMA(2,1) ではありません。
+
+  - id: q27-arima-model-2
+    term: arima-model
+    level: 標準
+    type: numeric
+    question: |
+      ARIMA(0,1,1) モデル $X_t=X_{t-1}+\varepsilon_t-0.7\varepsilon_{t-1}$ で予測する。最新の観測値が $X_n=50$、その1期前に出した予測値が $\hat X_n=46$ のとき、1期先予測 $\hat X_{n+1}$ を小数第1位まで求めよ。
+    answer: 47.2
+    tolerance: 0.05
+    hint: |
+      ARIMA(0,1,1) の1期先予測は平滑化定数 $\alpha=1+\theta$ の単純指数平滑と同じ。
+    explanation: |
+      $\theta=-0.7$ なので $\alpha=1+\theta=0.3$ です。
+      $$\hat X_{n+1}=\alpha X_n+(1-\alpha)\hat X_n=0.3\times50+0.7\times46=15+32.2=47.2$$
+      直接計算しても、$\varepsilon_n=X_n-\hat X_n=4$ より $\hat X_{n+1}=X_n-0.7\varepsilon_n=50-2.8=47.2$ です。
+
+  - id: q27-arima-model-3
+    term: arima-model
+    level: 応用
+    type: numeric
+    question: |
+      ドリフト付きランダムウォーク $X_t=0.5+X_{t-1}+\varepsilon_t$、$\varepsilon_t$ は i.i.d. $N(0,1)$ で、$X_n=20$ である。4期先 $X_{n+4}$ の95%予測区間の上限を小数第2位まで求めよ。
+    answer: 25.92
+    tolerance: 0.01
+    hint: |
+      $X_{n+4}=X_n+4\times0.5+\varepsilon_{n+1}+\cdots+\varepsilon_{n+4}$ と書ける。
+    explanation: |
+      予測値は $\hat X_n(4)=20+4\times0.5=22$、予測誤差 $\varepsilon_{n+1}+\cdots+\varepsilon_{n+4}$ の分散は $4$ です。
+      $$22+1.96\sqrt4=22+3.92=25.92$$
+      単位根があるので、予測区間の幅は $\sqrt h$ に比例して上限なく広がります。
+
+  - id: q27-yule-walker-equations-1
+    term: yule-walker-equations
+    level: 標準
+    type: numeric
+    question: |
+      標本自己相関が $r_1=0.6,\ r_2=0.45$ の系列に AR(2) を当てはめる。ユール・ウォーカー推定値 $\hat\phi_1$ を小数第3位まで求めよ。
+    answer: 0.516
+    tolerance: 0.001
+    hint: |
+      $\begin{pmatrix}1&r_1\\r_1&1\end{pmatrix}\begin{pmatrix}\phi_1\\\phi_2\end{pmatrix}=\begin{pmatrix}r_1\\r_2\end{pmatrix}$ を解く。
+    explanation: |
+      $$\hat\phi_1=\frac{r_1(1-r_2)}{1-r_1^2}=\frac{0.6\times0.55}{0.64}=0.5156,\qquad
+      \hat\phi_2=\frac{r_2-r_1^2}{1-r_1^2}=\frac{0.09}{0.64}=0.1406$$
+      よって $\hat\phi_1\approx0.516$ です。
+
+  - id: q27-yule-walker-equations-2
+    term: yule-walker-equations
+    level: 応用
+    type: numeric
+    question: |
+      前問と同じく $r_1=0.6,\ r_2=0.45$、さらに標本分散 $\hat\gamma(0)=5$ の系列に AR(2) を当てはめる。雑音の分散のユール・ウォーカー推定値 $\hat\sigma^2$ を小数第3位まで求めよ。
+    answer: 3.137
+    tolerance: 0.001
+    hint: |
+      $\hat\sigma^2=\hat\gamma(0)\{1-\hat\phi_1r_1-\hat\phi_2r_2\}$
+    explanation: |
+      $\hat\phi_1=0.515625,\ \hat\phi_2=0.140625$ より
+      $$\hat\sigma^2=5\{1-0.515625\times0.6-0.140625\times0.45\}=5\times0.627344=3.1367\approx3.137$$
+      全体の分散5のうち、過去の値で予測できない部分が約3.14 です。
+
+  - id: q27-yule-walker-equations-3
+    term: yule-walker-equations
+    level: 基本
+    type: truefalse
+    question: |
+      AR(1) モデルのユール・ウォーカー推定値 $\hat\phi$ は、ラグ1の標本自己相関 $r_1$ に等しい。
+    answer: true
+    hint: |
+      $p=1$ のユール・ウォーカー方程式は $\rho(1)=\phi\rho(0)$ の1本だけ。
+    explanation: |
+      $h=1$ の式 $\rho(1)=\phi\cdot\rho(0)=\phi$ に $\rho(1)=r_1$ を代入すると $\hat\phi=r_1$ です。
+      標本自己相関は $|r_1|\le1$ を満たすので、推定値が定常域から大きく外れにくいという利点もあります。
+
+  - id: q27-stationarity-condition-1
+    term: stationarity-condition
+    level: 基本
+    type: choice
+    question: |
+      次の AR(2) 過程 $X_t=\phi_1X_{t-1}+\phi_2X_{t-2}+\varepsilon_t$ のうち、定常なのはどれか。
+    choices:
+      - '$(\phi_1,\phi_2)=(0.5,\ 0.4)$'
+      - '$(\phi_1,\phi_2)=(0.7,\ 0.4)$'
+      - '$(\phi_1,\phi_2)=(-0.3,\ 0.8)$'
+      - '$(\phi_1,\phi_2)=(1.2,\ -1.1)$'
+    answer: 0
+    hint: |
+      $\phi_1+\phi_2<1,\ \phi_2-\phi_1<1,\ |\phi_2|<1$ の3つをすべて確かめる。
+    explanation: |
+      - $(0.5,0.4)$：$0.9<1$、$-0.1<1$、$0.4<1$ ですべて満たす。
+      - $(0.7,0.4)$：$\phi_1+\phi_2=1.1\ge1$。
+      - $(-0.3,0.8)$：$\phi_2-\phi_1=1.1\ge1$。
+      - $(1.2,-1.1)$：$|\phi_2|=1.1\ge1$。
+
+      係数がそれぞれ1未満でも定常とは限らない点に注意します。
+
+  - id: q27-stationarity-condition-2
+    term: stationarity-condition
+    level: 標準
+    type: numeric
+    question: |
+      AR(2) 過程 $X_t=1.2X_{t-1}-0.5X_{t-2}+\varepsilon_t$ の特性方程式 $1-1.2z+0.5z^2=0$ の根の絶対値 $|z|$ を小数第3位まで求めよ。
+    answer: 1.414
+    tolerance: 0.001
+    hint: |
+      判別式が負なので複素共役な2根になる。2根の積は根と係数の関係から求まる。
+    explanation: |
+      判別式 $1.44-2=-0.56<0$ なので、根は $z=1.2\pm0.748i$ の複素共役です。
+      2根の積は $z\bar z=|z|^2=1/0.5=2$ なので $|z|=\sqrt2=1.414$ です。
+      $|z|>1$ なので定常で、根が複素数なので自己相関は減衰振動します。
+
+  - id: q27-stationarity-condition-3
+    term: stationarity-condition
+    level: 基本
+    type: truefalse
+    question: |
+      $X_t=\varepsilon_t+3\varepsilon_{t-1}$ は、係数の絶対値が1を超えるので弱定常ではない。
+    answer: false
+    hint: |
+      有限個のホワイトノイズの線形結合の平均と自己共分散を計算してみる。
+    explanation: |
+      MA 過程は係数によらず常に弱定常です（平均0、$\gamma(0)=10\sigma^2$、$\gamma(1)=3\sigma^2$、それ以外0で、どれも $t$ によらない）。
+      $|\theta|>1$ で崩れるのは定常性ではなく**反転可能性**です。
+
+  - id: q27-invertibility-1
+    term: invertibility
+    level: 標準
+    type: numeric
+    question: |
+      MA(1) 過程 $X_t=\varepsilon_t+2.5\varepsilon_{t-1}$、$\varepsilon_t\sim WN(0,1)$ は反転可能でない。同じ自己共分散をもつ反転可能な表現 $X_t=u_t+\theta' u_{t-1}$、$u_t\sim WN(0,\sigma'^2)$ の $\sigma'^2$ を小数第2位まで求めよ。
+    answer: 6.25
+    tolerance: 0.01
+    hint: |
+      $(\theta,\sigma^2)$ と $(1/\theta,\ \theta^2\sigma^2)$ は同じ自己共分散を与える。
+    explanation: |
+      $\theta'=1/2.5=0.4$、$\sigma'^2=2.5^2\times1=6.25$ です。確認すると
+      $\gamma(0)=(1+0.16)\times6.25=7.25=(1+6.25)\times1$、$\gamma(1)=0.4\times6.25=2.5=2.5\times1$ で一致します。
+
+  - id: q27-invertibility-2
+    term: invertibility
+    level: 基本
+    type: choice
+    question: |
+      次の MA(2) 過程のうち、反転可能なのはどれか。
+    choices:
+      - '$X_t=\varepsilon_t-0.5\varepsilon_{t-1}+0.06\varepsilon_{t-2}$'
+      - '$X_t=\varepsilon_t-1.5\varepsilon_{t-1}+0.5\varepsilon_{t-2}$'
+      - '$X_t=\varepsilon_t+2.5\varepsilon_{t-1}+\varepsilon_{t-2}$'
+      - '$X_t=\varepsilon_t+0.2\varepsilon_{t-1}-0.8\varepsilon_{t-2}$'
+    answer: 0
+    hint: |
+      $\theta(z)=1+\theta_1z+\theta_2z^2$ を因数分解して、根がすべて $|z|>1$ かを調べる。
+    explanation: |
+      - $1-0.5z+0.06z^2=(1-0.2z)(1-0.3z)$：根 $5,\ 3.33$ で反転可能。
+      - $1-1.5z+0.5z^2=(1-z)(1-0.5z)$：根 $z=1$ が単位円上。
+      - $1+2.5z+z^2=(1+0.5z)(1+2z)$：根 $z=-0.5$ が単位円の内側。
+      - $1+0.2z-0.8z^2$：根 $z=1.25,\ -1$ で、$z=-1$ が単位円上。
+
+  - id: q27-unit-root-1
+    term: unit-root
+    level: 基本
+    type: choice
+    question: |
+      定数項のみを含む回帰 $\Delta X_t=\alpha+\delta X_{t-1}+\varepsilon_t$ でディッキー・フラー検定を行い、$\hat\delta=-0.08$、標準誤差 $0.025$ を得た。5%有意水準での判断として正しいのはどれか（大標本の棄却点：定数項なし $-1.95$、定数項のみ $-2.86$、定数項とトレンド $-3.41$）。
+    choices:
+      - '$\tau=-3.2$ は $-2.86$ より小さいので、単位根の帰無仮説を棄却する'
+      - '$\tau=-3.2$ は $-3.41$ より大きいので、単位根の帰無仮説を棄却しない'
+      - '$\tau=-3.2$ を標準正規分布の $-1.645$ と比べて棄却するのが正しい手順である'
+      - '$\hat\delta<0$ なので、検定するまでもなく定常と判断できる'
+    answer: 0
+    hint: |
+      回帰に含めた項（ここでは定数項のみ）に対応する棄却点を使う。
+    explanation: |
+      $\tau=-0.08/0.025=-3.2$ で、定数項のみの棄却点 $-2.86$ より小さいので棄却します（定常と判断）。
+      トレンド入りの棄却点 $-3.41$ はこの回帰には使いません。
+      $H_0$ のもとで $\tau$ は $t$ 分布や正規分布に従わないので $-1.645$ と比べるのは誤りで、$\hat\delta<0$ は偶然でも起こるので検定が必要です。
+
+  - id: q27-unit-root-2
+    term: unit-root
+    level: 標準
+    type: numeric
+    question: |
+      ランダムウォーク $X_t=X_{t-1}+\varepsilon_t$（$X_0=0$、$\varepsilon_t\sim WN(0,\sigma^2)$）で、$\operatorname{Corr}(X_{16},X_{25})$ を小数第2位まで求めよ。
+    answer: 0.80
+    tolerance: 0.005
+    hint: |
+      $\operatorname{Cov}(X_s,X_t)=\min(s,t)\sigma^2$、$V[X_t]=t\sigma^2$。
+    explanation: |
+      $$\operatorname{Corr}(X_{16},X_{25})=\frac{16\sigma^2}{\sqrt{16\sigma^2\cdot25\sigma^2}}=\frac{16}{20}=0.80$$
+      ラグは $9$ と大きいのに相関が高いままです。相関が時点 $t$ にも依存するので、定常ではありません。
+
+  - id: q27-unit-root-3
+    term: unit-root
+    level: 標準
+    type: truefalse
+    question: |
+      AR(2) 過程 $X_t=1.3X_{t-1}-0.3X_{t-2}+\varepsilon_t$ は単位根をもち、1回差分 $\Delta X_t$ は係数 $0.3$ の定常な AR(1) に従う。
+    answer: true
+    hint: |
+      $\phi(1)=1-\phi_1-\phi_2$ を計算し、$\phi(z)$ を $(1-z)$ でくくる。
+    explanation: |
+      $\phi(z)=1-1.3z+0.3z^2$ で $\phi(1)=1-1.3+0.3=0$ なので単位根をもちます。
+      $\phi(z)=(1-z)(1-0.3z)$ と因数分解できるので
+      $$(1-0.3B)(1-B)X_t=\varepsilon_t\iff\Delta X_t=0.3\,\Delta X_{t-1}+\varepsilon_t$$
+      で、$|0.3|<1$ より $\Delta X_t$ は定常な AR(1) です（$X_t$ は ARIMA(1,1,0)）。
+
+  - id: q27-spectrum-1
+    term: spectrum
+    level: 標準
+    type: numeric
+    question: |
+      AR(1) 過程 $X_t=0.5X_{t-1}+\varepsilon_t$ のスペクトル密度について、$f(0)/f(\pi)$ を求めよ（整数で答えよ）。
+    answer: 9
+    tolerance: 0.01
+    hint: |
+      $f(\lambda)=\dfrac{\sigma^2}{2\pi(1-2\phi\cos\lambda+\phi^2)}$。$\cos0=1$、$\cos\pi=-1$。
+    explanation: |
+      $\lambda=0$ で分母は $1-2\phi+\phi^2=(1-\phi)^2=0.25$、$\lambda=\pi$ で $(1+\phi)^2=2.25$ です。
+      $$\frac{f(0)}{f(\pi)}=\frac{2.25}{0.25}=9$$
+      $\phi>0$ の AR(1) は低周波（ゆっくりした変動）にパワーが集中します。
+
+  - id: q27-spectrum-2
+    term: spectrum
+    level: 基本
+    type: truefalse
+    question: |
+      $\phi=-0.8$ の AR(1) 過程 $X_t=-0.8X_{t-1}+\varepsilon_t$ のスペクトル密度は、低周波（$\lambda$ が0に近いところ）で最大となる。
+    answer: false
+    hint: |
+      $\phi<0$ だと、隣り合う値はどう動くか。スペクトルの分母 $1-2\phi\cos\lambda+\phi^2$ が最小になる $\lambda$ を探す。
+    explanation: |
+      分母は $1+1.6\cos\lambda+0.64$ で、$\cos\lambda=-1$（$\lambda=\pi$）のとき最小 $0.04$ になります。
+      したがってスペクトルは $\lambda=\pi$（高周波）で最大です。$\phi<0$ だと値が1期ごとに上下に入れ替わりやすく、細かい振動が主になります。
+
+  - id: q27-seasonal-adjustment-1
+    term: seasonal-adjustment
+    level: 標準
+    type: numeric
+    question: |
+      加法モデルで四半期の季節成分を推定する。$y_t-\hat T_t$ を四半期ごとに平均した値が、第1〜第4四半期で $3,\ -1,\ -4,\ 4$ であった。合計が0になるように調整した季節成分を使うとき、第2四半期の観測値 $y=120$ の季節調整済みの値を小数第1位まで求めよ。
+    answer: 121.5
+    tolerance: 0.05
+    hint: |
+      4つの平均の合計は0になっていない。合計を4等分して各値から引く。
+    explanation: |
+      合計は $3-1-4+4=2$ なので、各値から $2/4=0.5$ を引き、季節成分は $2.5,\ -1.5,\ -4.5,\ 3.5$ です。
+      第2四半期は $\hat S=-1.5$ なので、季節調整済みの値は
+      $$y-\hat S=120-(-1.5)=121.5$$
+      調整前の $-1$ のまま使うと $121.0$ になります。
+
+  - id: q27-seasonal-adjustment-2
+    term: seasonal-adjustment
+    level: 基本
+    type: choice
+    question: |
+      月次データのモデル $(1-B)(1-B^{12})X_t=(1+\theta B)(1+\Theta B^{12})\varepsilon_t$ を SARIMA$(p,d,q)(P,D,Q)_s$ の記法で表したものはどれか。
+    choices:
+      - 'SARIMA$(0,1,1)(0,1,1)_{12}$'
+      - 'SARIMA$(1,1,0)(1,1,0)_{12}$'
+      - 'SARIMA$(0,1,1)(0,0,1)_{12}$'
+      - 'SARIMA$(0,2,2)(0,0,0)_{12}$'
+    answer: 0
+    hint: |
+      $(1-B)$ は通常の差分、$(1-B^{12})$ は季節差分、右辺の $(1+\theta B)$ は通常の MA、$(1+\Theta B^{12})$ は季節 MA。
+    explanation: |
+      AR 部分はなく（$p=P=0$）、通常の差分1回（$d=1$）と季節差分1回（$D=1$）、通常の MA(1)（$q=1$）と季節の MA(1)（$Q=1$）なので $(0,1,1)(0,1,1)_{12}$ です。
+      いわゆる航空機乗客モデルです。AR と MA の取り違え、季節差分の見落としに注意します。
+
+  - id: q27-forecasting-1
+    term: forecasting
+    level: 標準
+    type: numeric
+    question: |
+      AR(1) 過程 $X_t=3+0.7X_{t-1}+\varepsilon_t$ で、最新の観測値が $X_n=14$ である。3期先の予測値 $\hat X_n(3)$ を小数第3位まで求めよ。
+    answer: 11.372
+    tolerance: 0.001
+    hint: |
+      平均 $\mu=c/(1-\phi)$ を求め、$\hat X_n(h)=\mu+\phi^h(X_n-\mu)$ を使う。
+    explanation: |
+      $\mu=3/0.3=10$ なので
+      $$\hat X_n(3)=10+0.7^3\times(14-10)=10+0.343\times4=11.372$$
+      予測は平均 $10$ に向かって指数的に戻っていきます。
+
+  - id: q27-forecasting-2
+    term: forecasting
+    level: 応用
+    type: numeric
+    question: |
+      前問の AR(1) 過程 $X_t=3+0.7X_{t-1}+\varepsilon_t$ で $\varepsilon_t\sim WN(0,2)$ とする。3期先の予測誤差の分散 $V[e_n(3)]$ を小数第3位まで求めよ。
+    answer: 3.460
+    tolerance: 0.001
+    hint: |
+      $\psi_j=\phi^j$ として $V[e_n(h)]=\sigma^2\sum_{j=0}^{h-1}\psi_j^2$。
+    explanation: |
+      $$V[e_n(3)]=2(1+0.7^2+0.7^4)=2(1+0.49+0.2401)=3.4602\approx3.460$$
+      $h\to\infty$ では $\gamma(0)=2/(1-0.49)=3.922$ に近づきます。
