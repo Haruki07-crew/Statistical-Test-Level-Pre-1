@@ -1,0 +1,580 @@
+chapter: 29
+questions:
+  - id: q29-missing-data-mechanism-1
+    term: missing-data-mechanism
+    level: 基本
+    type: choice
+    question: |
+      収入を尋ねる調査で、年齢・性別などをそろえて比べても、収入が高い人ほど収入の質問に答えない傾向があった。この欠測メカニズムはどれか。
+    choices:
+      - 'MNAR'
+      - 'MAR'
+      - 'MCAR'
+      - '観測された変数で説明できるので MCAR と MAR の両方'
+    answer: 0
+    hint: |
+      欠測するかどうかが、欠けた値（収入）そのものに依存しているか。
+    explanation: |
+      観測された変数（年齢・性別）で条件付けても、欠測の起こりやすさが欠けた値（本人の収入）に依存しているので MNAR です。
+      欠測が年齢や性別だけで決まるなら MAR、何にも依存しないなら MCAR です。
+
+  - id: q29-missing-data-mechanism-2
+    term: missing-data-mechanism
+    level: 基本
+    type: truefalse
+    question: |
+      MCAR を満たす欠測は、必ず MAR の条件も満たす。
+    answer: true
+    hint: |
+      MCAR の条件 $f(R\mid Y_{\text{obs}},Y_{\text{mis}},\phi)=f(R\mid\phi)$ と MAR の条件を比べる。
+    explanation: |
+      MCAR では $f(R\mid Y_{\text{obs}},Y_{\text{mis}},\phi)=f(R\mid\phi)$ で、右辺は $Y_{\text{mis}}$ を含まないので、MAR の条件 $f(R\mid Y_{\text{obs}},\phi)$ の特別な場合（$Y_{\text{obs}}$ にも依存しない）です。
+      包含関係は MCAR ⊂ MAR で、MAR でないものが MNAR です。
+
+  - id: q29-mcar-1
+    term: mcar
+    level: 標準
+    type: numeric
+    question: |
+      母標準偏差 $\sigma=10$ の変数を $n=200$ 人で測る予定だったが、36% の値が MCAR で欠けた。観測値の平均の標準誤差を小数第3位まで求めよ。
+    answer: 0.884
+    tolerance: 0.001
+    hint: |
+      MCAR なら観測された人は単純無作為抽出の部分標本とみなせる。観測数は $n(1-p)$。
+    explanation: |
+      観測数は $200\times0.64=128$ なので
+      $$\frac{\sigma}{\sqrt{128}}=\frac{10}{11.31}=0.884$$
+      欠測がない場合の $10/\sqrt{200}=0.707$ の $1/\sqrt{0.64}=1.25$ 倍です。偏りはありませんが精度が落ちます。
+
+  - id: q29-mcar-2
+    term: mcar
+    level: 基本
+    type: truefalse
+    question: |
+      欠測した人と観測された人で、全員が観測できている他の変数（年齢、性別など）の分布に差がなければ、欠測が MCAR であると証明できる。
+    answer: false
+    hint: |
+      欠けた値そのものと欠測の関係は、データから調べられるか。
+    explanation: |
+      他の変数で差があれば MCAR でないとわかりますが、差がなくても、欠けた値そのものが欠測に影響している（MNAR）可能性は残ります。
+      欠けた値は観測できないので、その関係はデータでは確かめられません。差がないことは MCAR の証明ではなく「反証されなかった」だけです。
+
+  - id: q29-mar-1
+    term: mar
+    level: 基本
+    type: choice
+    question: |
+      健診データで、年齢は全員について記録されている。高齢の人ほど血圧の測定値が欠けやすいが、同じ年齢の人どうしで比べると、欠けるかどうかは血圧の値と無関係だった。この欠測はどれか。
+    choices:
+      - 'MAR'
+      - 'MCAR'
+      - 'MNAR'
+      - '高齢者ほど欠けるので、無作為ではなく分類できない'
+    answer: 0
+    hint: |
+      欠測が依存しているのは観測済みの年齢か、欠けた血圧そのものか。
+    explanation: |
+      欠測確率は観測済みの年齢に依存しますが、年齢で条件付ければ欠けた値（血圧）に依存しないので MAR です。
+      年齢に依存するので MCAR ではありません。「ランダム」は「観測値で条件付けた後はランダム」という意味です。
+
+  - id: q29-mar-2
+    term: mar
+    level: 応用
+    type: numeric
+    question: |
+      2値の変数 $X$ が全員観測され、$P(X=0)=P(X=1)=0.5$ である。$Y$ の平均は $X=0$ の人で $10$、$X=1$ の人で $20$ である。$Y$ は $X=0$ の人では確率0.2、$X=1$ の人では確率0.6で欠け、欠けるかどうかは $X$ を与えれば $Y$ と無関係とする。$Y$ が観測された人だけで平均をとったときの期待値を小数第2位まで求めよ。
+    answer: 13.33
+    tolerance: 0.01
+    hint: |
+      観測された人の中での $X=0$ と $X=1$ の割合を求め、平均を加重する。
+    explanation: |
+      観測される割合は $X=0$ で $0.5\times0.8=0.4$、$X=1$ で $0.5\times0.4=0.2$ なので、観測者の中では $X=0$ が $2/3$ です。
+      $$E[\bar y_{\text{CC}}]=\frac{0.4\times10+0.2\times20}{0.4+0.2}=\frac{8}{0.6}=13.33$$
+      真の平均は $15$ なので、完全ケースの平均は偏ります。MAR なので、$X$ ごとに平均を出してから $X$ の分布で平均し直せば（$0.5\times10+0.5\times20=15$）偏りを除けます。
+
+  - id: q29-mnar-1
+    term: mnar
+    level: 基本
+    type: truefalse
+    question: |
+      観測されたデータを十分に詳しく分析すれば、欠測が MAR か MNAR かを判定できる。
+    answer: false
+    hint: |
+      MAR と MNAR の違いは、欠測確率が「欠けた値」に依存するかどうか。
+    explanation: |
+      欠けた値は観測できないので、欠測確率がそれに依存するかどうかをデータだけで確かめることはできません。
+      どのような観測データに対しても、それと同じ当てはまりを示す MNAR のモデルを作れます。そのため MNAR が疑われるときは、欠測の仕組みについて仮定を変えて結果がどれだけ動くかを見る**感度分析**を行います。
+
+  - id: q29-mnar-2
+    term: mnar
+    level: 標準
+    type: numeric
+    question: |
+      $Y\sim N(0,1)$ で、$Y\ge1$ の値はすべて欠け、$Y<1$ の値はすべて観測されるとする。観測された値の平均（の期待値）を小数第3位まで求めよ。
+    answer: -0.288
+    tolerance: 0.001
+    hint: |
+      $E[Y\mid Y<c]=-\phi(c)/\Phi(c)$（$\phi,\Phi$ は標準正規分布の密度と分布関数）。
+    explanation: |
+      $\phi(1)=0.2420$、$\Phi(1)=0.8413$ より
+      $$E[Y\mid Y<1]=-\frac{0.2420}{0.8413}=-0.288$$
+      真の平均0より小さく偏ります。欠けるかどうかが値そのものに依存する MNAR なので、観測値だけからはこの偏りを補正できません。
+
+  - id: q29-complete-case-analysis-1
+    term: complete-case-analysis
+    level: 基本
+    type: numeric
+    question: |
+      分析に使う5つの変数が、それぞれ独立に確率0.1で欠ける。完全ケース分析で残る個体の割合（期待値）を小数第3位まで求めよ。
+    answer: 0.590
+    tolerance: 0.001
+    hint: |
+      5つの変数がすべて観測される確率を求める。
+    explanation: |
+      $$(1-0.1)^5=0.9^5=0.5905$$
+      各変数の欠測は1割でも、完全ケースは約59%に減ります。変数が多いほど完全ケース分析のデータの損失は大きくなります。
+
+  - id: q29-complete-case-analysis-2
+    term: complete-case-analysis
+    level: 応用
+    type: truefalse
+    question: |
+      $Y$ を $X$ に回帰する線形回帰で、欠測の起こりやすさが説明変数 $X$ の値だけに依存し、$X$ を与えたとき $Y$ に依存しないならば、完全ケース分析で推定した回帰係数は偏らない。
+    answer: true
+    hint: |
+      完全ケースでの $Y$ の条件付き分布 $f(Y\mid X,R=1)$ と $f(Y\mid X)$ を比べる。
+    explanation: |
+      $R$ が $X$ だけに依存するなら、$X$ を与えたとき $R$ と $Y$ は独立なので $f(Y\mid X,R=1)=f(Y\mid X)$ です。
+      回帰はこの条件付き分布だけを推定するので、完全ケースでも回帰係数は偏りません（$X$ の分布は変わりますが、それは回帰係数に影響しません）。
+      ただし標本が減るぶん標準誤差は大きくなります。
+
+  - id: q29-single-imputation-1
+    term: single-imputation
+    level: 標準
+    type: numeric
+    question: |
+      $n=50$ 人中 $r=40$ 人の値が観測され、その標本分散（$r-1$ で割る）が $s_r^2=25$ であった。欠けた10人を観測値の平均で埋めてから、50人の標本分散（$n-1$ で割る）を計算すると、いくつになるか。小数第2位まで求めよ。
+    answer: 19.90
+    tolerance: 0.01
+    hint: |
+      平均で埋めた値は偏差が0なので、偏差平方和は観測値の分だけ。
+    explanation: |
+      偏差平方和は $(r-1)s_r^2=39\times25=975$ のまま変わらず、割る数だけが $49$ になるので
+      $$\frac{975}{49}=19.90$$
+      本来の分散25より約2割小さくなり、平均値代入で分散が過小になることがわかります。
+
+  - id: q29-single-imputation-2
+    term: single-imputation
+    level: 標準
+    type: choice
+    question: |
+      $x$ は全員観測、$y$ の一部が欠けている。完全ケースで $y$ を $x$ に回帰し、欠けた $y$ を予測値 $\hat\beta_0+\hat\beta_1x_i$ で埋めた（回帰代入）。代入後のデータで計算した $x$ と $y$ の相関について、正しいものはどれか。
+    choices:
+      - '埋めた点が回帰直線上に乗るので、相関は強く出すぎる'
+      - '埋めた値は平均と同じなので、相関は0に近づく'
+      - '予測値は偏りがないので、相関も標準誤差も正しく推定される'
+      - '回帰代入では相関は変わらず、分散だけが大きくなる'
+    answer: 0
+    hint: |
+      埋めた点の残差はいくつか。
+    explanation: |
+      回帰代入で埋めた点は残差0で直線上に乗るので、$x$ と $y$ の関係が実際より強く見え、相関は強く出すぎ、$y$ の分散は過小になります。
+      相関が0に近づくのは平均値代入の場合です。どちらの単一代入でも、代入の不確かさを無視するので標準誤差は小さく出すぎます。
+
+  - id: q29-multiple-imputation-1
+    term: multiple-imputation
+    level: 標準
+    type: numeric
+    question: |
+      欠測情報の割合が $\gamma=0.4$ のとき、多重代入の相対効率 $(1+\gamma/m)^{-1}$ が $0.95$ 以上になる最小の代入回数 $m$ を求めよ。
+    answer: 8
+    tolerance: 0.1
+    hint: |
+      $(1+0.4/m)^{-1}\ge0.95$ を $m$ について解く。
+    explanation: |
+      $1+0.4/m\le1/0.95=1.0526$ より $0.4/m\le0.0526$、$m\ge7.6$ です。整数なので $m=8$ です。
+      $m=5$ では $1/1.08=0.926$ にとどまります。欠測情報が多いほど、代入回数を増やす必要があります。
+
+  - id: q29-multiple-imputation-2
+    term: multiple-imputation
+    level: 基本
+    type: truefalse
+    question: |
+      多重代入で、パラメータを最尤推定値 $\hat\theta$ に固定したまま、欠測値ごとに残差の乱数だけを変えて $m$ 組の代入データを作っても、ルービンの規則で得られる標準誤差は正しい。
+    answer: false
+    hint: |
+      代入間分散 $B$ に、パラメータの推定の不確かさが反映されているか。
+    explanation: |
+      パラメータを固定すると、$\hat\theta$ 自体の推定誤差が代入間のばらつきに入らないので $B$ が小さくなり、標準誤差を過小評価します。
+      適切な代入（proper imputation）では、まず $\theta^{(j)}$ を事後分布から引き、その $\theta^{(j)}$ のもとで欠測値を生成します。
+
+  - id: q29-rubins-rules-1
+    term: rubins-rules
+    level: 標準
+    type: numeric
+    question: |
+      $m=5$ 組の代入データで、推定値が $10.2,\ 9.8,\ 10.5,\ 10.1,\ 9.9$、その分散が $0.40,\ 0.42,\ 0.38,\ 0.41,\ 0.39$ であった。ルービンの規則による全分散 $T$ を小数第3位まで求めよ。
+    answer: 0.490
+    tolerance: 0.001
+    hint: |
+      $\bar U$ は分散の平均、$B$ は推定値の不偏分散。$T=\bar U+(1+1/m)B$。
+    explanation: |
+      $\bar Q=10.1$、$\bar U=0.40$ です。
+      $$B=\frac{0.1^2+0.3^2+0.4^2+0^2+0.2^2}{4}=\frac{0.30}{4}=0.075$$
+      $$T=0.40+1.2\times0.075=0.49$$
+      標準誤差は $\sqrt{0.49}=0.70$ です。
+
+  - id: q29-rubins-rules-2
+    term: rubins-rules
+    level: 応用
+    type: numeric
+    question: |
+      前問（$m=5$、$\bar U=0.40$、$B=0.075$）について、$t$ 分布の自由度 $\nu=(m-1)(1+1/r)^2$、$r=(1+1/m)B/\bar U$ を小数第1位まで求めよ。
+    answer: 118.6
+    tolerance: 0.1
+    hint: |
+      まず $r$ を求める。
+    explanation: |
+      $r=1.2\times0.075/0.40=0.225$、$1+1/r=5.444$ なので
+      $$\nu=4\times5.444^2=4\times29.64=118.6$$
+      欠測による分散の増加が小さい（$r$ が小さい）ほど自由度は大きくなり、正規分布に近づきます。
+
+  - id: q29-rubins-rules-3
+    term: rubins-rules
+    level: 基本
+    type: truefalse
+    question: |
+      ルービンの規則による全分散は、代入内分散と代入間分散の和 $\bar U+B$ である。
+    answer: false
+    hint: |
+      統合した推定値 $\bar Q$ は有限個（$m$ 個）の代入の平均である。
+    explanation: |
+      全分散は $T=\bar U+(1+1/m)B$ です。$B/m$ は、$\bar Q$ が有限の $m$ 個の平均であることによる揺れの分で、これを足さないと $m$ が小さいとき分散を過小評価します。
+
+  - id: q29-em-algorithm-1
+    term: em-algorithm
+    level: 標準
+    type: numeric
+    question: |
+      $Y_1,\dots,Y_{10}$ は i.i.d. $N(\mu,1)$ で、8個が観測され（合計64）、2個が MCAR で欠けている。EMアルゴリズムで、E ステップでは欠測値の条件付き期待値 $\mu^{(k)}$ を代入し、M ステップでは10個の平均を $\mu^{(k+1)}$ とする。初期値 $\mu^{(0)}=0$ から始めたとき、$\mu^{(2)}$ を小数第2位まで求めよ。
+    answer: 7.68
+    tolerance: 0.01
+    hint: |
+      $\mu^{(k+1)}=(64+2\mu^{(k)})/10$ を2回くり返す。
+    explanation: |
+      $$\mu^{(1)}=\frac{64+2\times0}{10}=6.4,\qquad \mu^{(2)}=\frac{64+2\times6.4}{10}=7.68$$
+      不動点は $\mu=(64+2\mu)/10$ を解いた $\mu=8$ で、観測値だけの平均（観測データの最尤推定値）に一致します。誤差は毎回 $0.2$ 倍（欠測の割合）に縮みます。
+
+  - id: q29-em-algorithm-2
+    term: em-algorithm
+    level: 基本
+    type: truefalse
+    question: |
+      EMアルゴリズムでは、反復のたびに観測データの対数尤度 $\ell(\theta^{(k)})$ が減少しない（単調に増加するか、変わらない）。
+    answer: true
+    hint: |
+      $\ell(\theta)=Q(\theta\mid\theta^{(k)})-H(\theta\mid\theta^{(k)})$ の分解を使う。
+    explanation: |
+      $\ell(\theta^{(k+1)})-\ell(\theta^{(k)})$ は、M ステップで非負になる $Q$ の増加分と、KL 情報量として非負になる $H$ の差の和です。
+      ただし単調に増えることは大域的な最大値への収束を保証しません。局所的な最大値や鞍点に止まることがあるので、初期値を変えて確かめます。
+
+  - id: q29-em-algorithm-3
+    term: em-algorithm
+    level: 応用
+    type: numeric
+    question: |
+      生存時間が指数分布（レート $\lambda$）に従うとする。イベントが時刻 $2,\ 4$ に観測され、もう1人は時刻 $3$ で打ち切られた。EMアルゴリズムで、E ステップでは打ち切られた人の生存時間を $E[T\mid T>3]$ で置き換え、M ステップでは $\lambda=3/(\text{3人の時間の合計})$ とする。$\lambda^{(0)}=0.5$ から1回反復した $\lambda^{(1)}$ を小数第3位まで求めよ。
+    answer: 0.273
+    tolerance: 0.001
+    hint: |
+      指数分布の無記憶性から $E[T\mid T>c]=c+1/\lambda$。
+    explanation: |
+      E ステップ：$E[T\mid T>3]=3+1/0.5=5$。
+      M ステップ：$\lambda^{(1)}=3/(2+4+5)=3/11=0.273$。
+      反復を続けると $\lambda=d/\sum y_i=2/9=0.222$（打ち切りを含む尤度の最尤推定値）に収束します。
+
+  - id: q29-censored-data-1
+    term: censored-data
+    level: 標準
+    type: numeric
+    question: |
+      5人の生存時間（月）が $2,\ 5,\ 3^+,\ 8,\ 4^+$ であった（$^+$ は右側打ち切り）。指数分布を仮定したとき、平均生存時間 $1/\lambda$ の最尤推定値を小数第2位まで求めよ。
+    answer: 7.33
+    tolerance: 0.01
+    hint: |
+      $\log L(\lambda)=d\log\lambda-\lambda\sum y_i$。$d$ はイベント数。
+    explanation: |
+      $d=3$、$\sum y_i=2+5+3+8+4=22$ なので $\hat\lambda=d/\sum y_i=3/22$ で、
+      $$\widehat{1/\lambda}=\frac{22}{3}=7.33$$
+      打ち切りを無視してイベントの3人だけで平均すると $5.0$、打ち切り時刻をイベントとみなすと $22/5=4.4$ となり、どちらも短く偏ります。
+
+  - id: q29-censored-data-2
+    term: censored-data
+    level: 基本
+    type: choice
+    question: |
+      半年ごとの定期検診で、前回の検診では異常がなく、今回の検診で初めて発症が見つかった。この発症時刻のデータはどれにあたるか。
+    choices:
+      - '区間打ち切り'
+      - '右側打ち切り'
+      - '左側打ち切り'
+      - '左側切断'
+    answer: 0
+    hint: |
+      わかっているのは「前回の検診時刻と今回の検診時刻のあいだに発症した」こと。
+    explanation: |
+      発症時刻 $T$ について $a<T\le b$ だけがわかるので区間打ち切りで、尤度への寄与は $S(a)-S(b)$ です。
+      右側打ち切りは「$T>c$」、左側打ち切りは「$T\le c$」だけがわかる場合、左側切断はある時点より前にイベントが起きた人がそもそも観察に入らない場合です。
+
+  - id: q29-censored-data-3
+    term: censored-data
+    level: 基本
+    type: truefalse
+    question: |
+      右側打ち切りのある生存データの尤度で、打ち切られた個体 $i$ は、密度 $f(y_i)$ を尤度に寄与する。
+    answer: false
+    hint: |
+      打ち切られた個体についてわかっているのは何か。
+    explanation: |
+      打ち切られた個体についてわかるのは「$y_i$ まではイベントが起きなかった」ことだけなので、寄与は生存関数 $S(y_i)$ です。
+      $f(y_i)$ を寄与するのはイベントを観測した個体です。尤度は $\prod f(y_i)^{\delta_i}S(y_i)^{1-\delta_i}$ となります。
+
+  - id: q29-truncated-data-1
+    term: truncated-data
+    level: 標準
+    type: numeric
+    question: |
+      $X\sim N(0,1)$ のうち、$X>0$ のものだけが観測される（左側切断）。観測される値の期待値を小数第3位まで求めよ。
+    answer: 0.798
+    tolerance: 0.001
+    hint: |
+      切断分布の密度は $f(x)/P(X>0)=2\phi(x)\ (x>0)$。
+    explanation: |
+      $$E[X\mid X>0]=\int_0^\infty x\cdot2\phi(x)\,dx=2\phi(0)=\frac{2}{\sqrt{2\pi}}=\sqrt{\frac2\pi}=0.798$$
+      切断を無視して $N(\mu,1)$ の最尤推定（観測値の平均）を使うと、平均を約0.8過大に推定してしまいます。
+
+  - id: q29-kaplan-meier-estimator-1
+    term: kaplan-meier-estimator
+    level: 基本
+    type: numeric
+    question: |
+      8人の生存時間が $2,\ 3^+,\ 4,\ 4,\ 6^+,\ 7,\ 9,\ 10^+$ であった（$^+$ は打ち切り）。カプラン・マイヤー推定値 $\hat S(5)$ を小数第3位まで求めよ。
+    answer: 0.583
+    tolerance: 0.001
+    hint: |
+      時刻 $2$ では $n=8,\ d=1$、時刻 $4$ では $n=6,\ d=2$（時刻3の打ち切り1人が抜けている）。
+    explanation: |
+      $$\hat S(5)=\left(1-\frac18\right)\left(1-\frac26\right)=0.875\times0.6667=0.5833$$
+      時刻3で打ち切られた人は、時刻2のリスク集合には入り、時刻4のリスク集合からは抜けます。
+
+  - id: q29-kaplan-meier-estimator-2
+    term: kaplan-meier-estimator
+    level: 標準
+    type: numeric
+    question: |
+      前問のデータ $2,\ 3^+,\ 4,\ 4,\ 6^+,\ 7,\ 9,\ 10^+$ について、カプラン・マイヤー推定値 $\hat S(9)$ を小数第3位まで求めよ。
+    answer: 0.194
+    tolerance: 0.001
+    hint: |
+      時刻7では $n=3$、時刻9では $n=2$。
+    explanation: |
+      $$\hat S(9)=0.875\times\frac46\times\left(1-\frac13\right)\times\left(1-\frac12\right)=0.5833\times0.6667\times0.5=0.1944$$
+      時刻 $10^+$ の人は打ち切りなので、$\hat S$ は $0.194$ のまま最後まで0になりません。
+
+  - id: q29-kaplan-meier-estimator-3
+    term: kaplan-meier-estimator
+    level: 基本
+    type: truefalse
+    question: |
+      前問のデータで、打ち切られた3人を分析から除き、残りの5人だけで「時刻 $t$ を超えて生存した人の割合」を計算すると、生存率を過大に推定する。
+    answer: false
+    hint: |
+      打ち切られた人は、少なくとも打ち切り時刻までは生存していた。除くとどちらに偏るか。
+    explanation: |
+      打ち切られた人は打ち切り時刻まで生きていた（その後も生きている可能性がある）ので、除くと「生き残っていた人」を捨てることになり、生存率を**過小**に推定します。
+      例えば5人だけだと $t=5$ を超えて生存したのは $7,9$ の2人で $0.4$、カプラン・マイヤーでは $0.583$ です。
+
+  - id: q29-greenwood-formula-1
+    term: greenwood-formula
+    level: 標準
+    type: numeric
+    question: |
+      前問のデータ $2,\ 3^+,\ 4,\ 4,\ 6^+,\ 7,\ 9,\ 10^+$ について、$\hat S(5)=0.5833$ のグリーンウッドの公式による標準誤差を小数第3位まで求めよ。
+    answer: 0.186
+    tolerance: 0.001
+    hint: |
+      $\widehat{\operatorname{Var}}[\hat S(t)]=\hat S(t)^2\sum d_j/\{n_j(n_j-d_j)\}$。時刻 $t\le5$ のイベントは時刻2と4。
+    explanation: |
+      $$\sum\frac{d_j}{n_j(n_j-d_j)}=\frac{1}{8\times7}+\frac{2}{6\times4}=0.01786+0.08333=0.10119$$
+      $$\widehat{\operatorname{Var}}=0.5833^2\times0.10119=0.03443,\qquad \mathrm{SE}=0.186$$
+      95%信頼区間は $0.583\pm0.364$ と広く、8人のデータでは精度が低いことがわかります。
+
+  - id: q29-nelson-aalen-estimator-1
+    term: nelson-aalen-estimator
+    level: 標準
+    type: numeric
+    question: |
+      前問のデータ $2,\ 3^+,\ 4,\ 4,\ 6^+,\ 7,\ 9,\ 10^+$ について、累積ハザードのネルソン・アーレン推定値 $\hat H(7)$ を小数第3位まで求めよ。
+    answer: 0.792
+    tolerance: 0.001
+    hint: |
+      $\hat H(t)=\sum_{t_{(j)}\le t}d_j/n_j$。
+    explanation: |
+      $$\hat H(7)=\frac18+\frac26+\frac13=0.125+0.3333+0.3333=0.7917$$
+      $e^{-0.7917}=0.453$ は、カプラン・マイヤーの $\hat S(7)=0.389$ より大きくなります（$e^{-x}\ge1-x$ のため）。
+
+  - id: q29-log-rank-test-1
+    term: log-rank-test
+    level: 標準
+    type: numeric
+    question: |
+      A群の生存時間が $2,\ 5,\ 7^+,\ 9$、B群が $1,\ 3,\ 4,\ 6^+$ であった（$^+$ は打ち切り、同時刻のイベントはない）。ログランク検定の A群の期待イベント数 $E_A$ を小数第3位まで求めよ。
+    answer: 3.921
+    tolerance: 0.001
+    hint: |
+      各イベント時刻でリスク集合の大きさ $n_{Aj},n_{Bj}$ を数え、$E_{Aj}=d_j\,n_{Aj}/n_j$ を足す。
+    explanation: |
+      イベント時刻ごとの $(n_{Aj},n_{Bj})$ は、時刻1：$(4,4)$、2：$(4,3)$、3：$(3,3)$、4：$(3,2)$、5：$(3,1)$、9：$(1,0)$ です。
+      $$E_A=\frac48+\frac47+\frac36+\frac35+\frac34+\frac11=3.921$$
+      観測イベント数 $O_A=3$ は期待より少なく、A群のほうが長く生きる傾向です。
+
+  - id: q29-log-rank-test-2
+    term: log-rank-test
+    level: 応用
+    type: numeric
+    question: |
+      前問のデータについて、ログランク検定の統計量 $\chi^2_{\text{LR}}=(O_A-E_A)^2/V$ を小数第2位まで求めよ。
+    answer: 0.72
+    tolerance: 0.01
+    hint: |
+      $d_j=1$ のとき $V_j=p_j(1-p_j)$、$p_j=n_{Aj}/n_j$。リスク集合が1人だけの時刻は $V_j=0$。
+    explanation: |
+      $$V=\frac{16}{64}+\frac{12}{49}+\frac{9}{36}+\frac{6}{25}+\frac{3}{16}+0=0.25+0.2449+0.25+0.24+0.1875=1.1724$$
+      $$\chi^2_{\text{LR}}=\frac{(3-3.921)^2}{1.1724}=\frac{0.848}{1.1724}=0.72$$
+      自由度1の上側5%点 $3.84$ よりずっと小さく、8人では差を検出できません。
+
+  - id: q29-log-rank-test-3
+    term: log-rank-test
+    level: 基本
+    type: truefalse
+    question: |
+      2群の生存曲線が途中で交差する（ハザード比が時間とともに1をまたいで変わる）ような差は、ログランク検定では見逃しやすい。
+    answer: true
+    hint: |
+      統計量の分子は、各時刻の $d_{Aj}-E_{Aj}$ を足し合わせたもの。
+    explanation: |
+      前半でA群に多く、後半でB群に多くイベントが起きると、$d_{Aj}-E_{Aj}$ の正と負が打ち消し合います。
+      ログランク検定は比例ハザード（どの時点でも同じ向きの差）のときに検出力が最も高い検定です。
+
+  - id: q29-cox-proportional-hazards-model-1
+    term: cox-proportional-hazards-model
+    level: 基本
+    type: numeric
+    question: |
+      コックス比例ハザードモデルで、年齢（10歳単位）の係数が $\hat\beta=0.4$ と推定された。他の共変量が同じで年齢が20歳違う2人のハザード比を小数第3位まで求めよ。
+    answer: 2.226
+    tolerance: 0.001
+    hint: |
+      20歳は年齢の単位で2つ分。ハザード比は $\exp\{\beta(x_1-x_2)\}$。
+    explanation: |
+      $$\exp(0.4\times2)=e^{0.8}=2.226$$
+      $2\times e^{0.4}=2.98$ と係数の指数を2倍してしまう誤りに注意します。
+
+  - id: q29-cox-proportional-hazards-model-2
+    term: cox-proportional-hazards-model
+    level: 標準
+    type: numeric
+    question: |
+      比例ハザードモデルで、基準群の5年生存率が $S_0(5)=0.8$、ある群のハザード比が2である。この群の5年生存率を小数第2位まで求めよ。
+    answer: 0.64
+    tolerance: 0.005
+    hint: |
+      $S(t\mid x)=S_0(t)^{\exp(\beta x)}$
+    explanation: |
+      $$S(5)=0.8^2=0.64$$
+      死亡割合は $0.2$ から $0.36$ になり、比は $1.8$ です。ハザード比2は「累積の死亡割合が2倍」という意味ではありません。
+
+  - id: q29-cox-proportional-hazards-model-3
+    term: cox-proportional-hazards-model
+    level: 基本
+    type: truefalse
+    question: |
+      コックス比例ハザードモデル $h(t\mid\boldsymbol x)=h_0(t)\exp(\boldsymbol\beta^\top\boldsymbol x)$ には、線形回帰と同じように切片（定数項）のパラメータが含まれ、部分尤度で推定される。
+    answer: false
+    hint: |
+      $\exp(\beta_0+\boldsymbol\beta^\top\boldsymbol x)$ と書いたとき、$e^{\beta_0}$ はどこに吸収されるか。
+    explanation: |
+      切片は $e^{\beta_0}h_0(t)$ としてベースラインハザード $h_0(t)$ に吸収されるので、モデルには含めません。
+      部分尤度でも各項の分子・分母に共通の $e^{\beta_0}$ が約分されて消え、推定できません。
+
+  - id: q29-partial-likelihood-1
+    term: partial-likelihood
+    level: 標準
+    type: numeric
+    question: |
+      4人のデータ（時刻, イベント, 共変量 $x$）が、(2, あり, 1)、(3, あり, 0)、(4, 打ち切り, 0)、(6, あり, 1) である。1変数のコックスモデルの部分尤度のスコア $U(\beta)$ を $\beta=0$ で評価した値を小数第3位まで求めよ。
+    answer: 0.167
+    tolerance: 0.001
+    hint: |
+      $U(0)=\sum_{\text{イベント}}\{x_i-\bar x(y_i)\}$。$\beta=0$ ではリスク集合の重みはすべて等しいので、$\bar x$ はリスク集合の単純平均。
+    explanation: |
+      - 時刻2：リスク集合は4人、$x$ の平均 $2/4=0.5$、イベントの人は $x=1$ なので $+0.5$。
+      - 時刻3：リスク集合は3人（$x=0,0,1$）、平均 $1/3$、イベントの人は $x=0$ なので $-1/3$。
+      - 時刻6：リスク集合は1人、平均1、$x=1$ なので $0$。
+
+      $$U(0)=0.5-0.3333+0=0.1667$$
+      正なので、$x=1$ の人のほうがイベントが早く起きやすい方向（$\hat\beta>0$）を示します。
+
+  - id: q29-partial-likelihood-2
+    term: partial-likelihood
+    level: 基本
+    type: truefalse
+    question: |
+      コックスモデルの部分尤度は、イベントが起きた順序とリスク集合だけで決まるので、時間の尺度を単調に変換しても（例えば $t$ を $\log t$ にしても）推定値 $\hat\beta$ は変わらない。
+    answer: true
+    hint: |
+      部分尤度の式に、イベント時刻の値そのものが入っているか。
+    explanation: |
+      部分尤度の各項は「その時点のリスク集合の中で、その個体にイベントが起きた条件付き確率」で、時刻の値ではなく順序（誰がリスク集合にいるか）だけで決まります。
+      単調変換は順序を変えないので、$\hat\beta$ も変わりません。
+
+  - id: q29-hazard-ratio-1
+    term: hazard-ratio
+    level: 基本
+    type: numeric
+    question: |
+      両群の生存時間が指数分布に従い、生存時間の中央値が対照群で12か月、治療群で18か月であった。治療群の対照群に対するハザード比を小数第3位まで求めよ。
+    answer: 0.667
+    tolerance: 0.001
+    hint: |
+      指数分布の中央値は $\log2/\lambda$。
+    explanation: |
+      $$HR=\frac{\lambda_1}{\lambda_0}=\frac{\log2/18}{\log2/12}=\frac{12}{18}=0.667$$
+      中央値の比 $18/12=1.5$ とは逆数の関係です。
+
+  - id: q29-hazard-ratio-2
+    term: hazard-ratio
+    level: 標準
+    type: numeric
+    question: |
+      ハザード比の推定値が $0.667$、イベント数が治療群40件、対照群60件であった。$\mathrm{SE}(\log\widehat{HR})=\sqrt{1/d_1+1/d_0}$ を使って、95%信頼区間の上限を小数第3位まで求めよ。
+    answer: 0.995
+    tolerance: 0.002
+    hint: |
+      対数の尺度で $\log0.667\pm1.96\,\mathrm{SE}$ を作り、指数で戻す。
+    explanation: |
+      $$\mathrm{SE}=\sqrt{\frac1{40}+\frac1{60}}=0.2041,\qquad 0.667\times e^{1.96\times0.2041}=0.667\times1.492=0.995$$
+      上限が1をわずかに下回るので、5%水準でぎりぎり有意です。精度は人数ではなくイベント数で決まります。
+
+  - id: q29-ignorability-1
+    term: ignorability
+    level: 基本
+    type: truefalse
+    question: |
+      尤度に基づく推測で欠測メカニズムが無視可能であるためには、MAR に加えて、データのパラメータ $\theta$ と欠測の仕組みのパラメータ $\phi$ が分離していること（とりうる範囲が直積になること）が必要である。
+    answer: true
+    hint: |
+      MAR のとき尤度は $f(R\mid Y_{\text{obs}},\phi)\times f(Y_{\text{obs}}\mid\theta)$ と分かれる。第1因子を捨ててよいのはどんなときか。
+    explanation: |
+      MAR で尤度は積に分かれますが、$\phi$ と $\theta$ の間に制約があると、第1因子 $f(R\mid Y_{\text{obs}},\phi)$ も $\theta$ について情報を持ってしまいます。
+      分離していれば第1因子は $\theta$ の推測に関係しないので、$f(Y_{\text{obs}}\mid\theta)$ だけで推測できます。この2条件をあわせて無視可能性といいます。

@@ -164,6 +164,10 @@ try {
   await ev(`document.querySelector('[data-back]').click()`); await sleep(600);
   const after = await ev(`document.getElementById('list').scrollTop`);
   check('スマホで戻るとスクロール位置を保つ', Math.abs(before - after) < 4, `${before} → ${after}`);
+  // 初回表示の速さ（DOMContentLoaded まで）
+  await open('#gamma-distribution', 1280, 860);
+  const dcl = await ev(`Math.round(performance.getEntriesByType('navigation')[0].domContentLoadedEventEnd)`);
+  check('初回表示（DOMContentLoaded）が3秒以内', dcl < 3000, dcl + 'ms');
   // ライトモードのホーム
   await ev(`localStorage.clear(); localStorage.setItem('jd-theme', 'light')`);
   await open('', 1280, 900);

@@ -1,0 +1,162 @@
+{
+ "q29-censored-data-1": {
+  "hash": "89d5cf1346c3b8ed",
+  "ok": true
+ },
+ "q29-censored-data-2": {
+  "hash": "8fa1e27e2e6cc088",
+  "ok": true
+ },
+ "q29-censored-data-3": {
+  "hash": "d4292e0a8904f755",
+  "ok": true
+ },
+ "q29-complete-case-analysis-1": {
+  "hash": "a9f0c0379cb2dcb1",
+  "ok": true
+ },
+ "q29-complete-case-analysis-2": {
+  "hash": "4834d838a5cfec9e",
+  "ok": true
+ },
+ "q29-cox-proportional-hazards-model-1": {
+  "hash": "bd7b636da4118c4b",
+  "ok": true
+ },
+ "q29-cox-proportional-hazards-model-2": {
+  "hash": "fead399ea22712f0",
+  "ok": true
+ },
+ "q29-cox-proportional-hazards-model-3": {
+  "hash": "e34329156d55ccef",
+  "ok": true
+ },
+ "q29-em-algorithm-1": {
+  "hash": "c008ca6f1a7356c7",
+  "ok": true
+ },
+ "q29-em-algorithm-2": {
+  "hash": "5c1cbd62c300f12a",
+  "ok": true
+ },
+ "q29-em-algorithm-3": {
+  "hash": "a0e8a936c0ff3d06",
+  "ok": true
+ },
+ "q29-greenwood-formula-1": {
+  "hash": "eacf395c0626141e",
+  "ok": true
+ },
+ "q29-hazard-ratio-1": {
+  "hash": "db3fd4305c916845",
+  "ok": true
+ },
+ "q29-hazard-ratio-2": {
+  "hash": "bbce02fb50e7d2fa",
+  "ok": true
+ },
+ "q29-ignorability-1": {
+  "hash": "a75248ff721e4581",
+  "ok": true
+ },
+ "q29-kaplan-meier-estimator-1": {
+  "hash": "f2fe95d94040d03d",
+  "ok": true
+ },
+ "q29-kaplan-meier-estimator-2": {
+  "hash": "483db33d1da4d9fb",
+  "ok": true
+ },
+ "q29-kaplan-meier-estimator-3": {
+  "hash": "7af7303eb208d827",
+  "ok": true
+ },
+ "q29-log-rank-test-1": {
+  "hash": "d4f8268befdc4a08",
+  "ok": true
+ },
+ "q29-log-rank-test-2": {
+  "hash": "cde37eb2bcf90a15",
+  "ok": true
+ },
+ "q29-log-rank-test-3": {
+  "hash": "f24778c6d95b5a93",
+  "ok": true
+ },
+ "q29-mar-1": {
+  "hash": "bd4fcd8c808efb17",
+  "ok": true
+ },
+ "q29-mar-2": {
+  "hash": "331608e876a6ddf9",
+  "ok": true
+ },
+ "q29-mcar-1": {
+  "hash": "b826e34d9dfa6336",
+  "ok": true
+ },
+ "q29-mcar-2": {
+  "hash": "b0acff52cb656ebb",
+  "ok": true
+ },
+ "q29-missing-data-mechanism-1": {
+  "hash": "afda23b75497ec77",
+  "ok": true
+ },
+ "q29-missing-data-mechanism-2": {
+  "hash": "32ebb96d1d39ad89",
+  "ok": true
+ },
+ "q29-mnar-1": {
+  "hash": "b61166bb2b8acd1b",
+  "ok": true
+ },
+ "q29-mnar-2": {
+  "hash": "462f47322cd1c1c0",
+  "ok": true
+ },
+ "q29-multiple-imputation-1": {
+  "hash": "66dddbb095beea8e",
+  "ok": true
+ },
+ "q29-multiple-imputation-2": {
+  "hash": "dab1bce51ebade67",
+  "ok": true
+ },
+ "q29-nelson-aalen-estimator-1": {
+  "hash": "4249f450988b85c9",
+  "ok": true
+ },
+ "q29-partial-likelihood-1": {
+  "hash": "b8a10de5af3257ac",
+  "ok": true
+ },
+ "q29-partial-likelihood-2": {
+  "hash": "0a367d7b51879923",
+  "ok": true
+ },
+ "q29-rubins-rules-1": {
+  "hash": "29526047d790602d",
+  "ok": true
+ },
+ "q29-rubins-rules-2": {
+  "hash": "79b8adf7226f581a",
+  "ok": true
+ },
+ "q29-rubins-rules-3": {
+  "hash": "2c927b0342874b6d",
+  "ok": true
+ },
+ "q29-single-imputation-1": {
+  "hash": "25b8112240de5229",
+  "ok": true
+ },
+ "q29-single-imputation-2": {
+  "hash": "b3ad06c5726e8345",
+  "ok": true
+ },
+ "q29-truncated-data-1": {
+  "hash": "13941d5b2f6070e9",
+  "ok": true
+ }
+}

@@ -1,0 +1,428 @@
+chapter: 26
+questions:
+  - id: q26-multidimensional-scaling-1
+    term: multidimensional-scaling
+    level: 基本
+    type: truefalse
+    question: |
+      古典的MDSで、距離行列 $D$ が実際にユークリッド空間の点どうしの距離から作られているなら、二重中心化した行列 $B=-\frac12JD^{(2)}J$ の固有値はすべて $0$ 以上である。
+    answer: true
+    hint: |
+      点の座標を中心化した行列を $X$ とすると、$B$ は $XX^\top$ に等しい。
+    explanation: |
+      ユークリッド距離から作った場合、$B=XX^\top$（$X$ は中心化した座標）となり、これは半正定値なので固有値はすべて $0$ 以上です。
+      逆に、負の固有値が出たら、その距離はどの次元のユークリッド空間でも正確には再現できません。
+
+  - id: q26-multidimensional-scaling-2
+    term: multidimensional-scaling
+    level: 標準
+    type: numeric
+    question: |
+      3つの対象の距離が $d_{12}=3,\ d_{23}=2,\ d_{13}=5$ である。古典的MDSの $B=-\frac12JD^{(2)}J$ の最大固有値を小数第3位まで求めよ。
+    answer: 12.667
+    tolerance: 0.001
+    hint: |
+      $d_{13}=d_{12}+d_{23}$ なので3点は一直線上にある。座標を $0,\ 3,\ 5$ とおき、中心化して2乗和をとる。
+    explanation: |
+      座標 $0,3,5$ の平均は $8/3$ で、中心化すると $-8/3,\ 1/3,\ 7/3$ です。$B=\boldsymbol{x}\boldsymbol{x}^\top$ の固有値は
+      $$\lambda_1=\frac{64+1+49}{9}=\frac{114}{9}=12.667$$
+      で、他の固有値は $0$ です。1次元で完全に再現できます。
+
+  - id: q26-multidimensional-scaling-3
+    term: multidimensional-scaling
+    level: 標準
+    type: numeric
+    question: |
+      古典的MDSで $B$ の固有値が $8,\ 3,\ 1,\ 0$ であった。2次元の配置の当てはまりのよさ $\sum_{m=1}^{2}\lambda_m/\sum_{\lambda_m>0}\lambda_m$ を小数第3位まで求めよ。
+    answer: 0.917
+    tolerance: 0.001
+    hint: |
+      主成分分析の累積寄与率と同じ計算。
+    explanation: |
+      $$\frac{8+3}{8+3+1}=\frac{11}{12}=0.917$$
+
+  - id: q26-classical-mds-1
+    term: classical-mds
+    level: 標準
+    type: numeric
+    question: |
+      3点 $(0,0),\ (4,0),\ (0,3)$ の距離行列（$d_{12}=4,\ d_{13}=3,\ d_{23}=5$）から作った $B=JAJ$（$A=(-\frac12d_{ij}^2)$）の $(1,1)$ 成分 $b_{11}$ を小数第3位まで求めよ。
+    answer: 2.778
+    tolerance: 0.001
+    hint: |
+      $b_{ij}=a_{ij}-\bar a_{i\cdot}-\bar a_{\cdot j}+\bar a_{\cdot\cdot}$ を使うか、$B$ が中心化した座標の内積行列であることを使う。
+    explanation: |
+      $A$ の第1行は $(0,\ -8,\ -4.5)$ で平均 $\bar a_{1\cdot}=-12.5/3$、全体の平均は $\bar a_{\cdot\cdot}=2\times(-8-4.5-12.5)/9=-50/9$ です。
+      $$b_{11}=0+\frac{12.5}{3}+\frac{12.5}{3}-\frac{50}{9}=\frac{25}{9}=2.778$$
+      確認：重心は $(4/3,\ 1)$ で、点1の中心化座標 $(-4/3,\ -1)$ の2乗ノルムは $16/9+1=25/9$ です。
+
+  - id: q26-nonmetric-mds-1
+    term: nonmetric-mds
+    level: 標準
+    type: truefalse
+    question: |
+      非計量MDSでは、非類似度 $\delta_{ij}$ をすべて単調増加の関数で変換して（例えば $\delta_{ij}^2$ や $\log\delta_{ij}$ に置き換えて）も、同じ配置に対するストレスの値は変わらない。
+    answer: true
+    hint: |
+      ディスパリティ $\hat d_{ij}$ は、$\delta_{ij}$ の何だけを使って決まるか。
+    explanation: |
+      ディスパリティは「$\delta_{ij}$ の順に並べて単調」という条件だけで決まるので、$\delta$ の順序が同じなら同じ $\hat d_{ij}$ になり、ストレスも同じです。
+      非計量MDSは距離の大小の順序だけを使う方法なので、順序尺度の非類似度にも使えます。
+
+  - id: q26-canonical-correlation-analysis-1
+    term: canonical-correlation-analysis
+    level: 基本
+    type: truefalse
+    question: |
+      $\boldsymbol{x}$ と $\boldsymbol{y}$ がともに1変数（$p=q=1$）なら、正準相関係数は2変数の相関係数 $r$ そのもので、負の値にもなりうる。
+    answer: false
+    hint: |
+      正準相関係数は $\rho\ge0$ と定める。係数 $a$ の符号を変えると相関の符号はどうなるか。
+    explanation: |
+      $U=ax,\ V=by$ の相関は、$a,b$ の符号の取り方で $\pm r$ になります。最大値は $|r|$ なので、正準相関係数は $|r|$ で、負にはなりません。
+
+  - id: q26-canonical-correlation-analysis-2
+    term: canonical-correlation-analysis
+    level: 標準
+    type: numeric
+    question: |
+      $\boldsymbol{x}=(x_1,x_2)$ は標準化された無相関の2変数、$y$ は標準化された1変数で、$\mathrm{Corr}(x_1,y)=0.6$、$\mathrm{Corr}(x_2,y)=0.3$ である。正準相関係数を小数第3位まで求めよ。
+    answer: 0.671
+    tolerance: 0.001
+    hint: |
+      $q=1$ のとき、正準相関係数は $y$ を $\boldsymbol{x}$ に回帰したときの重相関係数に等しい。
+    explanation: |
+      $\rho^2=\Sigma_{11}^{-1}\Sigma_{12}\Sigma_{22}^{-1}\Sigma_{21}$ のスカラー版で、$\Sigma_{11}=I$ なので
+      $$\rho^2=0.6^2+0.3^2=0.45,\qquad \rho=0.671$$
+      係数は $\boldsymbol{a}\propto(0.6,\ 0.3)$ で、これは重回帰の係数と同じ向きです。
+
+  - id: q26-canonical-correlation-analysis-3
+    term: canonical-correlation-analysis
+    level: 応用
+    type: numeric
+    question: |
+      2変数ずつの $\boldsymbol{x},\boldsymbol{y}$ がそれぞれ標準化されていて組の中では無相関（$R_{11}=R_{22}=I$）、組の間の相関行列が
+      $$R_{12}=\begin{pmatrix}0.5&0.3\\0.3&0.5\end{pmatrix}$$
+      である。第1正準相関係数を小数第2位まで求めよ。
+    answer: 0.8
+    tolerance: 0.005
+    hint: |
+      $R_{11}=R_{22}=I$ なら、$\rho^2$ は $R_{12}R_{21}$ の固有値、つまり $\rho$ は $R_{12}$ の特異値。
+    explanation: |
+      $R_{12}$ は対称で固有値は $0.5\pm0.3=0.8,\ 0.2$ なので、特異値も $0.8,\ 0.2$ です。
+      第1正準相関は $0.80$（$\boldsymbol{a}=\boldsymbol{b}\propto(1,1)$）、第2正準相関は $0.20$（$(1,-1)$ の方向）です。
+      個々の相関の最大 $0.5$ より大きくなる点に注意します。
+
+  - id: q26-canonical-variate-1
+    term: canonical-variate
+    level: 基本
+    type: truefalse
+    question: |
+      第1正準変量の組 $(U_1,V_1)$ と第2正準変量の組 $(U_2,V_2)$ について、$\mathrm{Corr}(U_1,V_2)=0$ である。
+    answer: true
+    hint: |
+      $\boldsymbol{x}$ 側の第1正準変量と $\boldsymbol{y}$ 側の第2正準変量の関係を、正準変量の性質から考える。
+    explanation: |
+      正準変量は $\mathrm{Corr}(U_k,V_k)=\rho_k$ のほか、$k\ne l$ について $\mathrm{Corr}(U_k,U_l)=\mathrm{Corr}(V_k,V_l)=\mathrm{Corr}(U_k,V_l)=0$ を満たします。
+      $\boldsymbol{x}$ と $\boldsymbol{y}$ の相関の構造が、組ごとに独立した $\rho_1,\rho_2,\dots$ に分解されています。
+
+  - id: q26-canonical-variate-2
+    term: canonical-variate
+    level: 標準
+    type: numeric
+    question: |
+      標準化した変数の正準相関分析で、$x_1$ と第1正準変量 $U_1$ の相関（正準負荷量）が $0.9$、第1正準相関係数が $\rho_1=0.6$ である。
+      $x_1$ と $\boldsymbol{y}$ 側の第1正準変量 $V_1$ の相関（交差負荷量）を小数第2位まで求めよ。
+    answer: 0.54
+    tolerance: 0.005
+    hint: |
+      $\mathrm{Corr}(\boldsymbol{x},V_k)=\rho_k\,\mathrm{Corr}(\boldsymbol{x},U_k)$。
+    explanation: |
+      $$\mathrm{Corr}(x_1,V_1)=0.6\times0.9=0.54$$
+      $V_1$ は $\boldsymbol{x}$ の空間に射影すると $\rho_1U_1$ になるので、交差負荷量は正準負荷量の $\rho_1$ 倍になります。
+
+  - id: q26-canonical-variate-3
+    term: canonical-variate
+    level: 応用
+    type: numeric
+    question: |
+      $n=100$、$p=q=2$ の正準相関分析で、標本正準相関係数が $\hat\rho_1=0.5,\ \hat\rho_2=0.1$ であった。$H_0:\rho_1=\rho_2=0$ のバートレットの近似統計量
+      $$\chi^2=-\Bigl(n-1-\frac{p+q+1}{2}\Bigr)\sum_j\log(1-\hat\rho_j^2)$$
+      を小数第2位まで求めよ。
+    answer: 28.73
+    tolerance: 0.005
+    hint: |
+      係数は $99-2.5=96.5$。対数は自然対数。
+    explanation: |
+      $$\chi^2=-96.5\{\log0.75+\log0.99\}=96.5\times(0.2877+0.0101)=28.73$$
+      自由度 $pq=4$ の上側5%点 $9.49$ を大きく超えるので、2組の変数は無相関とはいえません。
+
+  - id: q26-correspondence-analysis-1
+    term: correspondence-analysis
+    level: 基本
+    type: numeric
+    question: |
+      総度数 $n=400$ の分割表で、独立性のカイ二乗統計量が $\chi^2=24$ であった。コレスポンデンス分析の全イナーシャを小数第2位まで求めよ。
+    answer: 0.06
+    tolerance: 0.005
+    hint: |
+      全イナーシャ $=\chi^2/n$。
+    explanation: |
+      $$\frac{24}{400}=0.06$$
+      全イナーシャは標本の大きさによらない「連関の強さ」で、各軸の特異値の2乗の和に等しくなります。
+
+  - id: q26-correspondence-analysis-2
+    term: correspondence-analysis
+    level: 標準
+    type: numeric
+    question: |
+      $4\times3$ の分割表のコレスポンデンス分析で、特異値の2乗（各軸のイナーシャ）が $0.045$ と $0.015$ であった。第1軸の寄与率を小数第2位まで求めよ。
+    answer: 0.75
+    tolerance: 0.005
+    hint: |
+      $4\times3$ の表の軸の数は $\min(4,3)-1=2$。寄与率は $\gamma_k^2/\sum\gamma_l^2$。
+    explanation: |
+      軸は2本だけなので、全イナーシャは $0.045+0.015=0.06$ です。
+      $$\frac{0.045}{0.06}=0.75$$
+      2次元の布置図で、表の連関の構造がすべて表されます。
+
+  - id: q26-correspondence-analysis-3
+    term: correspondence-analysis
+    level: 応用
+    type: numeric
+    question: |
+      $2\times2$ の分割表
+      | | 列1 | 列2 |
+      |---|---|---|
+      | 行1 | 30 | 10 |
+      | 行2 | 20 | 40 |
+
+      のコレスポンデンス分析で、ただ1つの軸の特異値 $\gamma_1$ を小数第3位まで求めよ。
+    answer: 0.408
+    tolerance: 0.001
+    hint: |
+      $2\times2$ の表では軸は $\min(2,2)-1=1$ 本で、$\gamma_1^2$ が全イナーシャ $\chi^2/n$ に等しい。
+    explanation: |
+      期待度数は $40\times50/100=20$、$20$、$30$、$30$ なので
+      $$\chi^2=\frac{10^2}{20}+\frac{10^2}{20}+\frac{10^2}{30}+\frac{10^2}{30}=16.67$$
+      $\gamma_1^2=16.67/100=0.1667$、$\gamma_1=0.408$ です。これは $2\times2$ 表のファイ係数の絶対値に等しくなります。
+
+  - id: q26-quantification-theory-1
+    term: quantification-theory
+    level: 基本
+    type: choice
+    question: |
+      質的な説明変数（アイテム・カテゴリー）から、「購入した／しなかった」という質的な外的基準を判別したい。用いる数量化理論はどれか。
+    choices:
+      - '数量化II類'
+      - '数量化I類'
+      - '数量化III類'
+      - '数量化IV類'
+    answer: 0
+    hint: |
+      外的基準があるか、それが量的か質的かで分類する。
+    explanation: |
+      外的基準が質的なら II類（判別分析に相当）です。量的な外的基準を予測するのが I類（重回帰に相当）、外的基準がなく構造を見るのが III類（主成分分析・コレスポンデンス分析に相当）と IV類（多次元尺度構成法に相当）です。
+
+  - id: q26-quantification-theory-2
+    term: quantification-theory
+    level: 基本
+    type: truefalse
+    question: |
+      数量化III類は、量的な外的基準をできるだけよく予測するようにカテゴリースコアを決める手法である。
+    answer: false
+    hint: |
+      III類には外的基準があるか。
+    explanation: |
+      III類は外的基準を持たず、個体のスコアとカテゴリーのスコアの相関が最大になるように数量を決めます。
+      量的な外的基準を予測するのは I類です。
+
+  - id: q26-quantification-type-1-1
+    term: quantification-type-1
+    level: 標準
+    type: numeric
+    question: |
+      アイテム1つ（カテゴリー A, B）の数量化I類を行う。カテゴリー A の個体の外的基準が $10,\ 12,\ 14$、B の個体が $20,\ 22$ である。
+      カテゴリースコアを度数で重み付けた平均が0になるよう基準化するとき、B のスコア $x_B$ を小数第1位まで求めよ。
+    answer: 5.4
+    tolerance: 0.05
+    hint: |
+      アイテムが1つなら、予測値はカテゴリーの平均。基準化すると定数項は全体の平均 $\bar y$ になる。
+    explanation: |
+      $\bar y=78/5=15.6$ です。A の平均は $12$、B の平均は $21$ なので
+      $$x_A=12-15.6=-3.6,\qquad x_B=21-15.6=5.4$$
+      確認：$3\times(-3.6)+2\times5.4=0$ です。アイテム1つの数量化I類は一元配置分散分析と同じです。
+
+  - id: q26-quantification-type-1-2
+    term: quantification-type-1
+    level: 基本
+    type: numeric
+    question: |
+      数量化I類で、あるアイテムのカテゴリースコアが $-2.1,\ 0.5,\ 1.4$ であった。このアイテムのレンジを小数第1位まで求めよ。
+    answer: 3.5
+    tolerance: 0.05
+    hint: |
+      レンジ＝最大のスコア − 最小のスコア。
+    explanation: |
+      $$1.4-(-2.1)=3.5$$
+      レンジが大きいアイテムほど、外的基準への影響が大きいと解釈します（ただし偏相関係数などもあわせて見ます）。
+
+  - id: q26-quantification-type-3-1
+    term: quantification-type-3
+    level: 標準
+    type: truefalse
+    question: |
+      数量化III類の固有値問題 $H\boldsymbol{v}=\rho^2\boldsymbol{v}$ では、最大固有値 $1$ は全員・全項目が同じスコアになる自明解に対応するので除き、2番目以降の固有値を各軸の $\rho^2$ として使う。
+    answer: true
+    hint: |
+      $H\sqrt{\boldsymbol c}$ を計算してみる（$\sqrt{\boldsymbol c}$ は $\sqrt{c_j}$ を並べたベクトル）。
+    explanation: |
+      $\boldsymbol{v}\propto\sqrt{\boldsymbol{c}}$ のとき $\boldsymbol{y}=D_c^{-1/2}\boldsymbol{v}$ はすべて同じ値になり、$H\boldsymbol{v}=\boldsymbol{v}$ で固有値は $1$ です。
+      これはスコアがすべて等しいという意味のない解（自明解）なので、それを除いた2番目以降の固有値を使います。
+
+  - id: q26-quantification-type-3-2
+    term: quantification-type-3
+    level: 応用
+    type: numeric
+    question: |
+      4人 × 3項目の反応行列
+      $$F=\begin{pmatrix}1&1&0\\1&1&0\\0&1&1\\0&0&1\end{pmatrix}$$
+      の数量化III類で、第1軸（自明解を除いた最大の固有値）の $\rho^2$ を小数第3位まで求めよ。
+    answer: 0.69
+    tolerance: 0.001
+    hint: |
+      $H=D_c^{-1/2}F^\top D_r^{-1}FD_c^{-1/2}$ は $3\times3$。固有値の1つは $1$ なので、残り2つの和（トレース $-1$）と積（行列式）から2次方程式を作る。
+    explanation: |
+      $r=(2,2,2,1)$、$c=(2,3,2)$ です。$M=F^\top D_r^{-1}F=\begin{pmatrix}1&1&0\\1&1.5&0.5\\0&0.5&1.5\end{pmatrix}$ で、$H$ の対角は $1/2,\ 1.5/3,\ 1.5/2$、トレースは $1.75$。
+      $\det H=\det M/(2\cdot3\cdot2)=0.5/12$ です。残りの固有値 $\lambda_2,\lambda_3$ は
+      $$\lambda_2+\lambda_3=0.75,\qquad \lambda_2\lambda_3=\frac{1}{24}$$
+      を満たし、$\lambda^2-0.75\lambda+1/24=0$ を解いて $\lambda_2=0.690$（$\rho=0.830$）、$\lambda_3=0.060$ です。
+
+  - id: q26-multiple-correspondence-analysis-1
+    term: multiple-correspondence-analysis
+    level: 標準
+    type: numeric
+    question: |
+      4つの質問（カテゴリー数がそれぞれ $3,\ 3,\ 2,\ 4$）への回答の指示行列で多重コレスポンデンス分析を行う。全イナーシャを求めよ。
+    answer: 2
+    tolerance: 0.01
+    hint: |
+      指示行列の全イナーシャは $(J-Q)/Q$ で、データの中身によらない。
+    explanation: |
+      $J=3+3+2+4=12$、$Q=4$ なので
+      $$\frac{J-Q}{Q}=\frac{12-4}{4}=2$$
+      全イナーシャがデータによらないため、多重コレスポンデンス分析の寄与率は小さく出やすく、調整した寄与率が使われることがあります。
+
+  - id: q26-structural-equation-modeling-1
+    term: structural-equation-modeling
+    level: 基本
+    type: numeric
+    question: |
+      観測変数 $p=6$ 個、推定する自由なパラメータ $q=13$ 個の構造方程式モデルの自由度を求めよ。
+    answer: 8
+    tolerance: 0.4
+    hint: |
+      $\mathit{df}=p(p+1)/2-q$。$p(p+1)/2$ は共分散行列の異なる成分の数。
+    explanation: |
+      $$\mathit{df}=\frac{6\times7}{2}-13=21-13=8$$
+      自由度が正なら、モデルが観測データを再現できているかを適合度検定で調べられます。
+
+  - id: q26-structural-equation-modeling-2
+    term: structural-equation-modeling
+    level: 標準
+    type: choice
+    question: |
+      3つの観測変数に1因子モデル $\boldsymbol{x}=\boldsymbol{\lambda}\xi+\boldsymbol{\delta}$（$V[\xi]=1$ に固定、負荷量3つと誤差分散3つを推定）を当てはめる。このモデルの自由度と性質として正しいものはどれか。
+    choices:
+      - '自由度0（ちょうど識別。適合度検定はできない）'
+      - '自由度3（適合度検定ができる）'
+      - '自由度6（適合度検定ができる）'
+      - '自由度 $-1$（識別できない）'
+    answer: 0
+    hint: |
+      $p(p+1)/2$ と推定するパラメータの数を比べる。
+    explanation: |
+      共分散行列の異なる成分は $3\times4/2=6$ 個、推定するパラメータも $6$ 個なので $\mathit{df}=0$ です。
+      パラメータが一意に決まり（ちょうど識別）、データを完全に再現するので、当てはまりの検定はできません。
+
+  - id: q26-structural-equation-modeling-3
+    term: structural-equation-modeling
+    level: 応用
+    type: numeric
+    question: |
+      測定方程式 $x_1=\xi+\delta_1$、$x_2=0.8\,\xi+\delta_2$（$x_1$ の負荷量を1に固定）で、$V[\xi]=2$、誤差は互いに、また $\xi$ と無相関である。モデルが再現する $\mathrm{Cov}(x_1,x_2)$ を小数第1位まで求めよ。
+    answer: 1.6
+    tolerance: 0.05
+    hint: |
+      $\mathrm{Cov}(x_1,x_2)=\lambda_1\lambda_2V[\xi]$。
+    explanation: |
+      $$\mathrm{Cov}(x_1,x_2)=1\times0.8\times2=1.6$$
+      潜在変数の尺度は「負荷量の1つを1に固定する」か「$V[\xi]=1$ に固定する」かで決めます。ここでは前者の流儀です。
+
+  - id: q26-path-analysis-1
+    term: path-analysis
+    level: 基本
+    type: numeric
+    question: |
+      標準化したパスモデル $m=ax+e_m$、$y=c'x+bm+e_y$ で、$a=0.5,\ b=0.4,\ c'=0.3$ である。$x$ から $y$ への総合効果を小数第1位まで求めよ。
+    answer: 0.5
+    tolerance: 0.05
+    hint: |
+      総合効果＝直接効果＋間接効果（経路のパス係数の積）。
+    explanation: |
+      間接効果は $ab=0.5\times0.4=0.2$、直接効果は $c'=0.3$ なので、総合効果は $0.3+0.2=0.5$ です。
+
+  - id: q26-path-analysis-2
+    term: path-analysis
+    level: 標準
+    type: numeric
+    question: |
+      標準化した3変数の相関が $r_{xm}=0.5,\ r_{xy}=0.45,\ r_{my}=0.5$ である。パスモデル $m=ax+e_m$、$y=c'x+bm+e_y$ を当てはめたときの、$x$ から $y$ への間接効果 $ab$ を小数第3位まで求めよ。
+    answer: 0.183
+    tolerance: 0.001
+    hint: |
+      $a=r_{xm}$。$b$ は $y$ を $x,m$ に重回帰したときの $m$ の標準化偏回帰係数 $\dfrac{r_{my}-r_{xy}r_{xm}}{1-r_{xm}^2}$。
+    explanation: |
+      $$a=0.5,\qquad b=\frac{0.5-0.45\times0.5}{1-0.25}=\frac{0.275}{0.75}=0.367$$
+      間接効果は $ab=0.183$ です。直接効果は $c'=(0.45-0.5\times0.5)/0.75=0.267$ で、総合効果 $0.267+0.183=0.45$ は $r_{xy}$ に一致します。
+
+  - id: q26-path-analysis-3
+    term: path-analysis
+    level: 応用
+    type: numeric
+    question: |
+      標準化した3変数の相関が $r_{xm}=0.5,\ r_{xy}=0.45,\ r_{my}=0.5$ で、$y=c'x+bm+e_y$ のパス係数が $c'=0.267,\ b=0.367$（いずれも分数 $4/15,\ 11/30$ の値）である。誤差 $e_y$ の分散を小数第3位まで求めよ。
+    answer: 0.697
+    tolerance: 0.001
+    hint: |
+      $V[e_y]=1-R^2$、$R^2=c'r_{xy}+b\,r_{my}$。
+    explanation: |
+      $$R^2=\frac{4}{15}\times0.45+\frac{11}{30}\times0.5=0.12+0.1833=0.3033$$
+      $V[e_y]=1-0.3033=0.697$ です。パス図で誤差からの係数を書くときは $\sqrt{0.697}=0.835$ とします。
+
+  - id: q26-independent-component-analysis-1
+    term: independent-component-analysis
+    level: 標準
+    type: truefalse
+    question: |
+      源信号がすべて正規分布に従う場合でも、独立成分分析は混合された信号を（順序・符号・尺度を除いて）分離できる。
+    answer: false
+    hint: |
+      独立な標準正規分布のベクトルを回転させても、分布はどうなるか。
+    explanation: |
+      独立な正規分布の源信号を白色化したあと、どんな回転をかけても成分は独立な標準正規分布のままです。
+      独立性や非正規性の手がかりがなく、回転を決められないので分離できません。そのため「正規分布に従う源信号は高々1つ」という仮定が必要です。
+
+  - id: q26-goodness-of-fit-indices-1
+    term: goodness-of-fit-indices
+    level: 標準
+    type: numeric
+    question: |
+      $n=301$ の構造方程式モデルで、$\chi^2=30$、自由度 $\mathit{df}=8$ であった。RMSEA を小数第3位まで求めよ。
+    answer: 0.096
+    tolerance: 0.001
+    hint: |
+      $\mathrm{RMSEA}=\sqrt{\max(\chi^2-\mathit{df},0)/\{\mathit{df}(n-1)\}}$。
+    explanation: |
+      $$\mathrm{RMSEA}=\sqrt{\frac{30-8}{8\times300}}=\sqrt{0.00917}=0.096$$
+      目安として $0.05$ 以下なら当てはまりがよく、$0.1$ を超えると悪いとされるので、この値はやや悪い部類です。
