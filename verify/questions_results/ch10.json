@@ -1,0 +1,150 @@
+{
+ "q10-bonferroni-correction-1": {
+  "hash": "54c851f20ff3f7ad",
+  "ok": true
+ },
+ "q10-bonferroni-correction-2": {
+  "hash": "0b61e05da93a6e8d",
+  "ok": true
+ },
+ "q10-false-discovery-rate-1": {
+  "hash": "f97af1597e97e7cb",
+  "ok": true
+ },
+ "q10-holm-method-1": {
+  "hash": "666f737b94d4c938",
+  "ok": true
+ },
+ "q10-holm-method-2": {
+  "hash": "23ed2217b22d253f",
+  "ok": true
+ },
+ "q10-likelihood-ratio-test-1": {
+  "hash": "a31018cd3cead01e",
+  "ok": true
+ },
+ "q10-likelihood-ratio-test-2": {
+  "hash": "2520a6bba7f02678",
+  "ok": true
+ },
+ "q10-monotone-likelihood-ratio-1": {
+  "hash": "fb5ba5b9c3ff813d",
+  "ok": true
+ },
+ "q10-multiple-testing-1": {
+  "hash": "1b1f49ea9430b11a",
+  "ok": true
+ },
+ "q10-multiple-testing-2": {
+  "hash": "b5694ee0fc53a7d8",
+  "ok": true
+ },
+ "q10-neyman-pearson-lemma-1": {
+  "hash": "e331b4d712133b5f",
+  "ok": true
+ },
+ "q10-neyman-pearson-lemma-2": {
+  "hash": "e24cc4d970131c69",
+  "ok": true
+ },
+ "q10-null-and-alternative-hypothesis-1": {
+  "hash": "c60367ad94203e16",
+  "ok": true
+ },
+ "q10-null-and-alternative-hypothesis-2": {
+  "hash": "f3919b95b9ab0958",
+  "ok": true
+ },
+ "q10-one-sided-two-sided-test-1": {
+  "hash": "37c6226e8665ee6c",
+  "ok": true
+ },
+ "q10-p-value-1": {
+  "hash": "c48ab48cc7217425",
+  "ok": true
+ },
+ "q10-p-value-2": {
+  "hash": "1fe8e22202ea6203",
+  "ok": true
+ },
+ "q10-p-value-3": {
+  "hash": "119fa68552582d8e",
+  "ok": true
+ },
+ "q10-power-function-1": {
+  "hash": "a2e07b665752d607",
+  "ok": true
+ },
+ "q10-power-function-2": {
+  "hash": "5be6b79f7d8dd9da",
+  "ok": true
+ },
+ "q10-randomized-test-1": {
+  "hash": "12bd61ce86d85ae8",
+  "ok": true
+ },
+ "q10-rejection-region-1": {
+  "hash": "f49549fb0aaf9a01",
+  "ok": true
+ },
+ "q10-rejection-region-2": {
+  "hash": "ca3aab8650b083f7",
+  "ok": true
+ },
+ "q10-sample-size-determination-test-1": {
+  "hash": "3e1723c5e3ac0ea3",
+  "ok": true
+ },
+ "q10-score-test-1": {
+  "hash": "224df4476c3889c9",
+  "ok": true
+ },
+ "q10-score-test-2": {
+  "hash": "f900c02e632905ef",
+  "ok": true
+ },
+ "q10-significance-level-1": {
+  "hash": "5d8d4588dedf5112",
+  "ok": true
+ },
+ "q10-significance-level-2": {
+  "hash": "400368068a60fd00",
+  "ok": true
+ },
+ "q10-type-i-and-ii-errors-1": {
+  "hash": "57d628e12acb3ece",
+  "ok": true
+ },
+ "q10-type-i-and-ii-errors-2": {
+  "hash": "6aef58cd4875b225",
+  "ok": true
+ },
+ "q10-type-i-and-ii-errors-3": {
+  "hash": "2ef61d35e8cd8f24",
+  "ok": true
+ },
+ "q10-uniformly-most-powerful-test-1": {
+  "hash": "4110dacfafada0e6",
+  "ok": true
+ },
+ "q10-uniformly-most-powerful-test-2": {
+  "hash": "37b0f8e14b490294",
+  "ok": true
+ },
+ "q10-wald-test-1": {
+  "hash": "a5b013de11d5ce28",
+  "ok": true
+ },
+ "q10-wald-test-2": {
+  "hash": "b8d563ce90b94362",
+  "ok": true
+ },
+ "q10-wilks-theorem-1": {
+  "hash": "30d1ae71e9a29042",
+  "ok": true
+ },
+ "q10-wilks-theorem-2": {
+  "hash": "af9895761928759a",
+  "ok": true
+ }
+}

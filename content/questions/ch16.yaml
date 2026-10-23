@@ -1,0 +1,501 @@
+chapter: 16
+questions:
+  - id: q16-multiple-regression-model-1
+    term: multiple-regression-model
+    level: 基本
+    type: choice
+    question: |
+      観測数 $n=30$、説明変数 $p=4$ 個で切片を含む重回帰モデル $\boldsymbol y=X\boldsymbol\beta+\boldsymbol\varepsilon$ を考える。計画行列 $X$ の大きさはどれか。
+    choices:
+      - '$30\times5$'
+      - '$30\times4$'
+      - '$5\times30$'
+      - '$5\times5$'
+    answer: 0
+    hint: |
+      行は観測、列は「切片の列（すべて1）」と説明変数。
+    explanation: |
+      切片の列を含めて列は $p+1=5$ 本なので、$X$ は $30\times5$ です。
+      $30\times4$ は切片の列を忘れたもの、$5\times30$ は転置 $X^\top$、$5\times5$ は $X^\top X$ の大きさです。
+
+  - id: q16-multiple-regression-model-2
+    term: multiple-regression-model
+    level: 標準
+    type: truefalse
+    question: |
+      $y_i=\beta_0+\beta_1x_i+\beta_2x_i^2+\varepsilon_i$ は $x$ について2次式なので、線形の重回帰モデル $\boldsymbol y=X\boldsymbol\beta+\boldsymbol\varepsilon$ の枠組みでは扱えない。
+    answer: false
+    hint: |
+      「線形」とは何について線形なのか。$x_i^2$ を新しい説明変数とみなせるか。
+    explanation: |
+      重回帰モデルの「線形」は**パラメータ $\boldsymbol\beta$ について線形**という意味です。
+      $x_{i1}=x_i$、$x_{i2}=x_i^2$ とおけば、計画行列の行が $(1,x_i,x_i^2)$ の重回帰モデルとしてそのまま最小二乗法が使えます（多項式回帰）。
+
+  - id: q16-least-squares-method-1
+    term: least-squares-method
+    level: 基本
+    type: numeric
+    question: |
+      単回帰で $\bar x=5$、$\bar y=12$、$S_{xx}=20$、$S_{xy}=36$ だった。最小二乗推定値の切片 $\hat\beta_0$ を小数第1位まで求めよ。
+    answer: 3.0
+    tolerance: 0.05
+    hint: |
+      まず傾き $\hat\beta_1=S_{xy}/S_{xx}$ を求め、回帰直線が $(\bar x,\bar y)$ を通ることを使う。
+    explanation: |
+      $\hat\beta_1=36/20=1.8$、
+      $$\hat\beta_0=\bar y-\hat\beta_1\bar x=12-1.8\times5=3.0$$
+
+  - id: q16-least-squares-method-2
+    term: least-squares-method
+    level: 標準
+    type: truefalse
+    question: |
+      切片を含む重回帰を最小二乗法で当てはめたとき、残差の和 $\sum e_i$ は0になるが、残差と説明変数の積和 $\sum x_{ij}e_i$ は一般には0にならない。
+    answer: false
+    hint: |
+      正規方程式 $X^\top(\boldsymbol y-X\hat{\boldsymbol\beta})=\boldsymbol 0$ を成分ごとに読む。
+    explanation: |
+      正規方程式は $X^\top\boldsymbol e=\boldsymbol0$ で、$X$ の各列と残差の内積がすべて0です。
+      切片の列（すべて1）からは $\sum e_i=0$、説明変数 $x_j$ の列からは $\sum x_{ij}e_i=0$ が出ます。
+      つまり残差は、すべての説明変数と（標本で）無相関になります。
+
+  - id: q16-normal-equations-1
+    term: normal-equations
+    level: 標準
+    type: numeric
+    question: |
+      説明変数2つの重回帰で、平均を引いた平方和・積和が
+      $S_{11}=10$、$S_{12}=4$、$S_{22}=8$、$S_{1y}=20$、$S_{2y}=16$ だった。偏回帰係数 $\hat\beta_1$ を小数第2位まで求めよ。
+    answer: 1.50
+    tolerance: 0.005
+    hint: |
+      正規方程式 $\begin{pmatrix}S_{11}&S_{12}\\S_{12}&S_{22}\end{pmatrix}\begin{pmatrix}\hat\beta_1\\\hat\beta_2\end{pmatrix}=\begin{pmatrix}S_{1y}\\S_{2y}\end{pmatrix}$ を解く。
+    explanation: |
+      係数行列の行列式は $10\times8-4^2=64$ なので、クラメルの公式より
+      $$\hat\beta_1=\frac{20\times8-4\times16}{64}=\frac{96}{64}=1.50,\qquad\hat\beta_2=\frac{10\times16-4\times20}{64}=1.25$$
+      $x_1$ だけの単回帰なら傾きは $S_{1y}/S_{11}=2$ で、$x_2$ を入れると値が変わります。
+
+  - id: q16-normal-equations-2
+    term: normal-equations
+    level: 応用
+    type: derivation
+    question: |
+      残差平方和 $S(\boldsymbol\beta)=(\boldsymbol y-X\boldsymbol\beta)^\top(\boldsymbol y-X\boldsymbol\beta)$ を最小にする条件から、正規方程式を導け。
+    steps:
+      - |
+        展開すると $S(\boldsymbol\beta)=\boldsymbol y^\top\boldsymbol y-2\boldsymbol\beta^\top X^\top\boldsymbol y+\boldsymbol\beta^\top X^\top X\boldsymbol\beta$（$\boldsymbol y^\top X\boldsymbol\beta$ はスカラーなので転置しても同じ）。
+      - |
+        $\boldsymbol\beta$ で微分すると $\dfrac{\partial S}{\partial\boldsymbol\beta}=-2X^\top\boldsymbol y+2X^\top X\boldsymbol\beta$（$X^\top X$ は対称）。
+      - |
+        これを $\boldsymbol0$ とおくと $X^\top X\hat{\boldsymbol\beta}=X^\top\boldsymbol y$。$X^\top X$ は非負定値なので、この点で最小になる。
+    answer: "$X^\\top X\\hat{\\boldsymbol\\beta}=X^\\top\\boldsymbol y$"
+    hint: |
+      2次形式の微分 $\dfrac{\partial}{\partial\boldsymbol\beta}\boldsymbol\beta^\top A\boldsymbol\beta=2A\boldsymbol\beta$（$A$ 対称）と $\dfrac{\partial}{\partial\boldsymbol\beta}\boldsymbol\beta^\top\boldsymbol a=\boldsymbol a$ を使う。
+    explanation: |
+      勾配 $-2X^\top(\boldsymbol y-X\boldsymbol\beta)$ を0とおくと
+      $$X^\top X\hat{\boldsymbol\beta}=X^\top\boldsymbol y$$
+      です。$\operatorname{rank}X=p+1$ なら $X^\top X$ は正則で $\hat{\boldsymbol\beta}=(X^\top X)^{-1}X^\top\boldsymbol y$ と一意に解けます。
+
+  - id: q16-hat-matrix-1
+    term: hat-matrix
+    level: 標準
+    type: numeric
+    question: |
+      $n=20$、説明変数 $p=3$ 個（切片あり）の重回帰で、てこ比 $h_{ii}$ の平均 $\frac1n\sum_ih_{ii}$ を小数第2位まで求めよ。
+    answer: 0.20
+    tolerance: 0.005
+    hint: |
+      $\sum_ih_{ii}=\operatorname{tr}H=\operatorname{tr}\{(X^\top X)^{-1}X^\top X\}$。
+    explanation: |
+      $\operatorname{tr}H=p+1=4$ なので平均は $4/20=0.20$ です。
+      てこ比がこの平均の2〜3倍を超える観測は、説明変数の値が他から離れた「影響の大きい点」の候補とされます。
+
+  - id: q16-hat-matrix-2
+    term: hat-matrix
+    level: 標準
+    type: truefalse
+    question: |
+      誤差が $V[\boldsymbol\varepsilon]=\sigma^2I$ を満たすとき、最小二乗法の残差 $e_i$ の分散はすべての $i$ で $\sigma^2$ に等しい。
+    answer: false
+    hint: |
+      $\boldsymbol e=(I-H)\boldsymbol y$ と、$I-H$ が対称・べき等であることを使う。
+    explanation: |
+      $V[\boldsymbol e]=(I-H)\sigma^2I(I-H)^\top=\sigma^2(I-H)$ なので
+      $$V[e_i]=\sigma^2(1-h_{ii})$$
+      で、$\sigma^2$ より小さく、てこ比 $h_{ii}$ が大きい点ほど小さくなります。これを補正したのが標準化（スチューデント化）残差です。
+
+  - id: q16-hat-matrix-3
+    term: hat-matrix
+    level: 応用
+    type: numeric
+    question: |
+      $n=10$ の単回帰で $S_{xx}=30$ である。$x_i-\bar x=3$ の観測のてこ比 $h_{ii}$ を小数第1位まで求めよ。
+    answer: 0.4
+    tolerance: 0.05
+    hint: |
+      単回帰では $h_{ii}=\dfrac1n+\dfrac{(x_i-\bar x)^2}{S_{xx}}$。
+    explanation: |
+      $$h_{ii}=\frac1{10}+\frac{9}{30}=0.1+0.3=0.4$$
+      平均 $(p+1)/n=0.2$ の2倍で、$x$ が平均から離れた点ほどてこ比は大きくなります。
+
+  - id: q16-gauss-markov-theorem-1
+    term: gauss-markov-theorem
+    level: 基本
+    type: choice
+    question: |
+      ガウス・マルコフの定理（最小二乗推定量が最良線形不偏推定量になる）を示すのに**必要でない**仮定はどれか。
+    choices:
+      - '誤差が正規分布に従う'
+      - '誤差の期待値が0である'
+      - '誤差が互いに無相関で、分散が等しい'
+      - '計画行列 $X$ の列が一次独立である'
+    answer: 0
+    hint: |
+      定理が比べるのは、期待値と分散（2次までのモーメント）だけ。
+    explanation: |
+      定理に必要なのは $E[\boldsymbol\varepsilon]=\boldsymbol0$、$V[\boldsymbol\varepsilon]=\sigma^2I$ と $\operatorname{rank}X=p+1$ です。
+      正規性は不要で、$t$ 検定や $F$ 検定など分布を使う推測のときに必要になります。
+
+  - id: q16-gauss-markov-theorem-2
+    term: gauss-markov-theorem
+    level: 標準
+    type: truefalse
+    question: |
+      ガウス・マルコフの定理により、最小二乗推定量は、非線形なものも含めたすべての不偏推定量の中で分散が最小である。
+    answer: false
+    hint: |
+      定理名の「BLUE」の L は何の頭文字か。
+    explanation: |
+      定理が保証するのは、$\boldsymbol y$ の**線形**関数 $C\boldsymbol y$ で表される不偏推定量の中で分散最小（Best Linear Unbiased Estimator）であることだけです。
+      誤差が正規分布ならすべての不偏推定量の中でも最良になりますが、それは別の結果（クラメール・ラオの下限など）によります。
+
+  - id: q16-coefficient-of-determination-1
+    term: coefficient-of-determination
+    level: 基本
+    type: numeric
+    question: |
+      ある重回帰で回帰平方和 $S_R=150$、残差平方和 $S_e=50$ だった。重相関係数 $R$ を小数第3位まで求めよ。
+    answer: 0.866
+    tolerance: 0.001
+    hint: |
+      まず $S_T=S_R+S_e$ と $R^2=S_R/S_T$ を求める。
+    explanation: |
+      $S_T=200$、$R^2=150/200=0.75$ なので
+      $$R=\sqrt{0.75}=0.866$$
+      $R$ は $y$ と当てはめ値 $\hat y$ の相関係数です。
+
+  - id: q16-coefficient-of-determination-2
+    term: coefficient-of-determination
+    level: 標準
+    type: truefalse
+    question: |
+      切片を含む重回帰に、目的変数と無関係な説明変数を1つ追加しても、決定係数 $R^2$ が下がることはない。
+    answer: true
+    hint: |
+      追加した変数の係数を0にすれば、もとのモデルと同じ当てはめになる。
+    explanation: |
+      大きいモデルの残差平方和の最小値は、追加した係数を0に固定した場合（もとのモデル）以下なので、$S_e$ は増えず、$R^2=1-S_e/S_T$ は下がりません。
+      無関係な変数でもふつうは少し上がるので、モデル比較には自由度調整済み決定係数などを使います。
+
+  - id: q16-adjusted-r-squared-1
+    term: adjusted-r-squared
+    level: 標準
+    type: numeric
+    question: |
+      $n=25$、説明変数 $p=4$ 個の重回帰で $R^2=0.60$ だった。自由度調整済み決定係数 $\bar R^2$ を小数第2位まで求めよ。
+    answer: 0.52
+    tolerance: 0.005
+    hint: |
+      $\bar R^2=1-(1-R^2)\dfrac{n-1}{n-p-1}$。
+    explanation: |
+      $$\bar R^2=1-0.40\times\frac{24}{20}=1-0.48=0.52$$
+      分母を $n-p$ としてしまう（$0.5$ になる）誤りに注意します。
+
+  - id: q16-adjusted-r-squared-2
+    term: adjusted-r-squared
+    level: 応用
+    type: numeric
+    question: |
+      $n=11$、説明変数 $p=3$ 個の重回帰で $R^2=0.10$ だった。自由度調整済み決定係数 $\bar R^2$ を小数第3位まで求めよ。
+    answer: -0.286
+    tolerance: 0.001
+    hint: |
+      公式にそのまま代入する。$\bar R^2$ は負にもなりうる。
+    explanation: |
+      $$\bar R^2=1-0.90\times\frac{10}{7}=1-1.286=-0.286$$
+      $R^2<p/(n-1)=0.3$ のとき $\bar R^2<0$ になり、「説明変数を入れる意味がほとんどない」ことを示します。
+
+  - id: q16-adjusted-r-squared-3
+    term: adjusted-r-squared
+    level: 応用
+    type: truefalse
+    question: |
+      重回帰に説明変数を1つ加えたとき、自由度調整済み決定係数が上がるのは、加えた変数の係数の $t$ 値の絶対値が1より大きいときに限る。
+    answer: true
+    hint: |
+      $\bar R^2$ が上がることは、残差の平均平方 $S_e/(n-p-1)$ が下がることと同じ。
+    explanation: |
+      $\bar R^2=1-\dfrac{S_e/(n-p-1)}{S_T/(n-1)}$ なので、$\bar R^2$ の増加は $V_e=S_e/(n-p-1)$ の減少と同値です。
+      変数を加える前後の残差平方和の関係から、$V_e$ が減るのは部分 $F$ 値 $=t^2$ が1を超えるときだけになります。
+      有意水準5%の $|t|\approx2$ よりずっと甘い基準なので、$\bar R^2$ 最大化は変数を多めに残しがちです。
+
+  - id: q16-regression-coefficient-t-test-1
+    term: regression-coefficient-t-test
+    level: 基本
+    type: numeric
+    question: |
+      重回帰で $\hat\beta_2=1.1$、残差の不偏分散 $s^2=4$、$(X^\top X)^{-1}$ の対応する対角成分 $c_{22}=0.04$ だった。
+      $H_0:\beta_2=0$ の $t$ 統計量を小数第2位まで求めよ。
+    answer: 2.75
+    tolerance: 0.005
+    hint: |
+      標準誤差は $s\sqrt{c_{22}}$。
+    explanation: |
+      $\mathrm{SE}=\sqrt4\times\sqrt{0.04}=2\times0.2=0.4$ なので
+      $$t=\frac{1.1}{0.4}=2.75$$
+      $s^2c_{22}=0.16$ を標準誤差と取り違えると $6.875$ になってしまいます。
+
+  - id: q16-regression-coefficient-t-test-2
+    term: regression-coefficient-t-test
+    level: 標準
+    type: numeric
+    question: |
+      $n=20$、説明変数 $p=3$ 個の重回帰で $\hat\beta_2=1.1$、標準誤差 $0.4$ だった。$\beta_2$ の95%信頼区間の下限を小数第3位まで求めよ。
+      ただし $t_{0.025}(16)=2.120$、$t_{0.025}(17)=2.110$、$t_{0.025}(19)=2.093$ とする。
+    answer: 0.252
+    tolerance: 0.001
+    hint: |
+      自由度は $n-p-1$。
+    explanation: |
+      自由度は $20-3-1=16$ なので
+      $$1.1-2.120\times0.4=1.1-0.848=0.252$$
+      区間が0を含まないので、両側5%の $t$ 検定でも $H_0:\beta_2=0$ は棄却されます。
+
+  - id: q16-regression-coefficient-t-test-3
+    term: regression-coefficient-t-test
+    level: 基本
+    type: choice
+    question: |
+      $n=30$、説明変数 $p=4$ 個（切片あり）の重回帰で、各回帰係数の $t$ 統計量が従う $t$ 分布の自由度はどれか。
+    choices:
+      - '$25$'
+      - '$26$'
+      - '$29$'
+      - '$28$'
+    answer: 0
+    hint: |
+      残差の自由度 $n-(\text{推定した係数の数})$。
+    explanation: |
+      推定する係数は切片を含めて5個なので、自由度は $30-5=25$ です。
+      $26$ は切片を数え忘れた $n-p$、$29$ は $n-1$、$28$ は単回帰の $n-2$ です。
+
+  - id: q16-overall-f-test-regression-1
+    term: overall-f-test-regression
+    level: 標準
+    type: numeric
+    question: |
+      $n=24$、説明変数 $p=3$ 個の重回帰で $R^2=0.40$ だった。回帰全体の $F$ 統計量を小数第2位まで求めよ。
+    answer: 4.44
+    tolerance: 0.005
+    hint: |
+      $F=\dfrac{R^2/p}{(1-R^2)/(n-p-1)}$。
+    explanation: |
+      $$F=\frac{0.40/3}{0.60/20}=\frac{0.1333}{0.03}=4.44$$
+      $F(3,20)$ の上側5%点 $3.10$ を超えるので、「すべての係数が0」は棄却されます。
+
+  - id: q16-overall-f-test-regression-2
+    term: overall-f-test-regression
+    level: 基本
+    type: choice
+    question: |
+      前問（$n=24$、$p=3$）の $F$ 統計量が $H_0$ のもとで従う分布の自由度の組はどれか。
+    choices:
+      - '$(3,\ 20)$'
+      - '$(3,\ 23)$'
+      - '$(4,\ 20)$'
+      - '$(4,\ 19)$'
+    answer: 0
+    hint: |
+      分子は回帰の自由度、分母は残差の自由度。切片は検定の対象に含めない。
+    explanation: |
+      回帰の自由度は $p=3$、残差の自由度は $n-p-1=20$ です。
+      $(3,23)$ は分母に全体の自由度 $n-1$ を使った誤り、$(4,20)$ や $(4,19)$ は切片も分子に数えた誤りです。
+
+  - id: q16-standardized-partial-regression-coefficient-1
+    term: standardized-partial-regression-coefficient
+    level: 標準
+    type: numeric
+    question: |
+      説明変数2つの重回帰で、相関係数が $r_{1y}=0.6$、$r_{2y}=0.5$、$r_{12}=0.4$ だった。$x_1$ の標準化偏回帰係数 $\hat\beta_1^*$ を小数第3位まで求めよ。
+    answer: 0.476
+    tolerance: 0.001
+    hint: |
+      $\hat\beta_1^*=\dfrac{r_{1y}-r_{12}r_{2y}}{1-r_{12}^2}$。
+    explanation: |
+      $$\hat\beta_1^*=\frac{0.6-0.4\times0.5}{1-0.16}=\frac{0.40}{0.84}=0.476$$
+      同様に $\hat\beta_2^*=(0.5-0.24)/0.84=0.310$ です。$x_1$ と $x_2$ が相関しているので、それぞれの相関係数より小さくなります。
+
+  - id: q16-standardized-partial-regression-coefficient-2
+    term: standardized-partial-regression-coefficient
+    level: 応用
+    type: numeric
+    question: |
+      前問と同じ相関係数（$r_{1y}=0.6$、$r_{2y}=0.5$、$r_{12}=0.4$）のとき、決定係数 $R^2$ を小数第3位まで求めよ。
+    answer: 0.440
+    tolerance: 0.001
+    hint: |
+      $R^2=\sum_j\hat\beta_j^*r_{jy}$。
+    explanation: |
+      $\hat\beta_1^*=0.476$、$\hat\beta_2^*=0.310$ なので
+      $$R^2=0.476\times0.6+0.310\times0.5=0.2857+0.1548=0.440$$
+      単独の $r_{1y}^2+r_{2y}^2=0.61$ より小さいのは、2つの説明変数が情報を重複して持っているためです。
+
+  - id: q16-multicollinearity-1
+    term: multicollinearity
+    level: 標準
+    type: numeric
+    question: |
+      説明変数2つの重回帰で、2変数の相関係数が $r_{12}=0.9$ である。相関が0の場合と比べて、$\hat\beta_1$ の標準誤差は何倍になるか（$\sigma^2$ と $S_{11}$ は同じとする）。小数第2位まで求めよ。
+    answer: 2.29
+    tolerance: 0.005
+    hint: |
+      $V[\hat\beta_1]=\dfrac{\sigma^2}{S_{11}}\cdot\dfrac1{1-r_{12}^2}$ で、標準誤差はその平方根。
+    explanation: |
+      分散の倍率は $1/(1-0.81)=5.26$（VIF）なので、標準誤差は
+      $$\sqrt{5.26}=2.29\ \text{倍}$$
+      になります。同じ効果でも $t$ 値が約 $1/2.3$ に縮み、有意になりにくくなります。
+
+  - id: q16-multicollinearity-2
+    term: multicollinearity
+    level: 標準
+    type: truefalse
+    question: |
+      強い多重共線性があると、回帰全体の $F$ 検定は有意なのに、個々の回帰係数の $t$ 検定はどれも有意にならないことがある。
+    answer: true
+    hint: |
+      相関の強い2変数は「どちらか一方が効いている」ことはわかっても、どちらが効いているかを区別しにくい。
+    explanation: |
+      説明変数全体としては $y$ をよく説明するので $F$ 検定は有意になりますが、相関が強いと各係数の分散が VIF 倍に膨らみ、$t$ 値が小さくなります。
+      多重共線性の典型的な症状で、係数の符号が予想と逆になることもあります。
+
+  - id: q16-variance-inflation-factor-1
+    term: variance-inflation-factor
+    level: 基本
+    type: numeric
+    question: |
+      説明変数 $x_3$ を他の説明変数すべてに回帰したときの決定係数が $R_3^2=0.8$ だった。$x_3$ の VIF を求めよ。
+    answer: 5
+    tolerance: 0.01
+    hint: |
+      $\mathrm{VIF}_j=1/(1-R_j^2)$。
+    explanation: |
+      $$\mathrm{VIF}_3=\frac{1}{1-0.8}=5$$
+      許容度は $0.2$ です。VIF は10を超えると多重共線性を強く疑う目安としてよく使われます（5とする流儀もあります）。
+
+  - id: q16-variance-inflation-factor-2
+    term: variance-inflation-factor
+    level: 応用
+    type: numeric
+    question: |
+      3つの説明変数の相関係数行列が
+      $$R=\begin{pmatrix}1&0.5&0.3\\0.5&1&0.4\\0.3&0.4&1\end{pmatrix}$$
+      である。$x_1$ の VIF を小数第3位まで求めよ。
+    answer: 1.355
+    tolerance: 0.001
+    hint: |
+      $\mathrm{VIF}_1=(R^{-1})_{11}=\dfrac{\text{余因子 }C_{11}}{\det R}$。
+    explanation: |
+      $\det R=1-0.25-0.09-0.16+2\times0.5\times0.3\times0.4=0.62$、余因子 $C_{11}=1-0.4^2=0.84$ なので
+      $$\mathrm{VIF}_1=\frac{0.84}{0.62}=1.355$$
+      つまり $R_1^2=1-1/1.355=0.262$ です。
+
+  - id: q16-dummy-variable-1
+    term: dummy-variable
+    level: 基本
+    type: choice
+    question: |
+      切片を含む回帰で、4つの地域（北・東・西・南）を表すカテゴリ変数を入れたい。ダミー変数を何個入れればよいか。
+    choices:
+      - '3個（1つを基準にする）'
+      - '4個（地域ごとに1個）'
+      - '1個（地域を1〜4の番号で表す）'
+      - '2個（2進数で表す）'
+    answer: 0
+    hint: |
+      4個すべて入れると、4つのダミーの和が切片の列（すべて1）に一致する。
+    explanation: |
+      基準以外の $4-1=3$ 個を入れます。4個入れるとダミーの和が切片の列と一致して完全な多重共線性になり、$X^\top X$ が逆行列を持ちません（ダミー変数のわな）。
+      番号1〜4を1つの変数にすると、地域間の差が等間隔だと仮定することになり不適切です。
+
+  - id: q16-dummy-variable-2
+    term: dummy-variable
+    level: 標準
+    type: numeric
+    question: |
+      3つのグループA（基準）・B・Cを、ダミー変数 $D_B$、$D_C$ で表した回帰式の推定結果が
+      $\hat y=20+1.5x-4D_B+2.5D_C$ だった。グループCで $x=5$ のときの予測値を求めよ（小数第1位まで）。
+    answer: 30.0
+    tolerance: 0.05
+    hint: |
+      グループCでは $D_B=0$、$D_C=1$。
+    explanation: |
+      $$\hat y=20+1.5\times5-4\times0+2.5\times1=30.0$$
+      同じ $x$ でのグループCとBの差は $2.5-(-4)=6.5$ です。
+
+  - id: q16-interaction-term-1
+    term: interaction-term
+    level: 標準
+    type: numeric
+    question: |
+      推定された回帰式が $\hat y=5+2x_1+3x_2+0.5x_1x_2$ のとき、$x_2=4$ の状況で $x_1$ を1増やしたときの $\hat y$ の変化量を求めよ。
+    answer: 4
+    tolerance: 0.01
+    hint: |
+      $x_1$ の効果は $\beta_1+\beta_3x_2$ で、$x_2$ の値によって変わる。
+    explanation: |
+      $$\frac{\partial\hat y}{\partial x_1}=2+0.5\times4=4$$
+      $x_2=0$ なら効果は2で、交互作用があると「$x_1$ の効果」は1つの数で表せません。主効果の係数2だけで解釈するのは誤りです。
+
+  - id: q16-confidence-and-prediction-interval-regression-1
+    term: confidence-and-prediction-interval-regression
+    level: 応用
+    type: numeric
+    question: |
+      $n=12$ の単回帰で、$s=2$（残差の標準偏差の推定値）、$\bar x=10$、$S_{xx}=50$ だった。$x_0=15$ での当てはめ値は $\hat y_0=30$ である。
+      新しい観測 $y_0$ の95%予測区間の下限を小数第2位まで求めよ。ただし $t_{0.025}(10)=2.228$ とする。
+    answer: 24.39
+    tolerance: 0.01
+    hint: |
+      予測区間は $\hat y_0\pm t\,s\sqrt{1+\dfrac1n+\dfrac{(x_0-\bar x)^2}{S_{xx}}}$。
+    explanation: |
+      $q_0=\dfrac1{12}+\dfrac{25}{50}=0.5833$ なので
+      $$30-2.228\times2\times\sqrt{1.5833}=30-2.228\times2\times1.2583=30-5.61=24.39$$
+      平均応答の信頼区間なら $\sqrt{0.5833}$ を使い、下限は $26.60$ と狭くなります。
+
+  - id: q16-confidence-and-prediction-interval-regression-2
+    term: confidence-and-prediction-interval-regression
+    level: 基本
+    type: truefalse
+    question: |
+      標本の大きさ $n$ をいくら大きくしても、回帰の予測区間の幅は0に近づかないが、平均応答の信頼区間の幅は0に近づく。
+    answer: true
+    hint: |
+      $\sqrt{1+q_0}$ の「1」は何のばらつきを表すか。
+    explanation: |
+      $n\to\infty$ で $q_0\to0$ となるので、信頼区間の幅 $2ts\sqrt{q_0}$ は0に近づきます。
+      予測区間の幅 $2ts\sqrt{1+q_0}$ は $2z_{\alpha/2}\sigma$ に近づき、新しい観測自身の誤差 $\varepsilon_0$ の分は消えません。
+
+  - id: q16-partial-f-test-1
+    term: partial-f-test
+    level: 標準
+    type: numeric
+    question: |
+      $n=30$ で説明変数5個の完全モデルの残差平方和が90、そこから2個を除いた縮小モデルの残差平方和が120だった。
+      除いた2個の係数がともに0という仮説の部分 $F$ 統計量を小数第2位まで求めよ。
+    answer: 4.00
+    tolerance: 0.005
+    hint: |
+      $F=\dfrac{(S_e^{(R)}-S_e^{(F)})/q}{S_e^{(F)}/(n-p-1)}$、$p$ は完全モデルの説明変数の数。
+    explanation: |
+      $$F=\frac{(120-90)/2}{90/(30-5-1)}=\frac{15}{3.75}=4.00$$
+      $F(2,24)$ の上側5%点 $3.40$ を超えるので、2個の変数のうち少なくとも1つは必要と判断されます。

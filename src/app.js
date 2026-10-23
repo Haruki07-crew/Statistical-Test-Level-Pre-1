@@ -28,7 +28,7 @@
   var DB_KEY = 'jd-data', DB_VERSION = 1;
   function isObj(x) { return x && typeof x === 'object' && !Array.isArray(x); }
   function num(x, def) { return typeof x === 'number' && isFinite(x) ? x : def; }
-  function emptyDB() { return { v: DB_VERSION, memo: {}, bm: {}, notes: {}, recent: [], ans: {}, days: {}, searches: [], font: 'm' }; }
+  function emptyDB() { return { v: DB_VERSION, memo: {}, bm: {}, notes: {}, recent: [], ans: {}, days: {}, searches: [], font: 'm', exam: '' }; }
   // 型の合わない値は捨てて、使える部分だけ残す
   function sanitize(d) {
     var out = emptyDB();
@@ -51,6 +51,7 @@
     });
     if (Array.isArray(d.searches)) out.searches = d.searches.filter(function (x) { return typeof x === 'string' && x; }).slice(0, 8);
     if (d.font === 's' || d.font === 'm' || d.font === 'l') out.font = d.font;
+    if (typeof d.exam === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d.exam)) out.exam = d.exam;
     return out;
   }
   function loadDB() {
@@ -446,6 +447,8 @@
       '<a class="home-card" href="#review"><small>今日の復習</small><b>' + due + ' 問</b></a>' +
       '<a class="home-card" href="#quiz"><small>問題演習</small><b>' + QS.length + ' 問から出題</b></a>' +
       '<a class="home-card" href="#stats"><small>連続学習</small><b>' + st + ' 日</b></a>' +
+      (examDays() !== null ? '<a class="home-card" href="#stats"><small>試験まで</small><b>' + (examDays() >= 0 ? 'あと ' + examDays() + ' 日' : '終了') + '</b></a>' : '') +
+      '<a class="home-card" href="#cards"><small>用語カード</small><b>めくって覚える</b></a>' +
       '<button type="button" class="home-card" data-random><small>ランダムに1語</small><b>どれか開く</b></button>' +
       '<a class="home-card" href="#formulas"><small>公式まとめ</small><b>分布・検定・推定</b></a>' +
       '</div>';
@@ -754,6 +757,12 @@
     return Object.keys(st).filter(function (id) { var s = st[id]; return s.wrongNow > 0 || s.c / s.n < 0.6; })
       .sort(function (a, b) { return st[a].c / st[a].n - st[b].c / st[b].n || st[b].wrongNow - st[a].wrongNow; });
   }
+  function examDays() {
+    if (!DB.exam) return null;
+    var p = DB.exam.split('-').map(Number), d = new Date(p[0], p[1] - 1, p[2]), t = new Date();
+    t = new Date(t.getFullYear(), t.getMonth(), t.getDate());
+    return Math.round((d - t) / DAY);
+  }
   function streakDays() {
     var n = 0, d = new Date(), k = todayKey(d.getTime());
     var active = function (key) { var x = DB.days[key]; return x && (x.a > 0 || x.v > 0); };
@@ -809,7 +818,8 @@
       return '<button type="button" class="chip" data-count="' + n + '" aria-pressed="' + (Number(quizCfg.count) === n) + '">' + n + '問</button>';
     }).join('') + '</div></fieldset>' +
       '<p class="screen-sub">この範囲の問題：<b>' + pool.length + '</b> 問' + (pool.length ? '' : '（' + emptyReason(quizCfg.scope) + '）') + '</p>' +
-      '<button type="button" class="big-btn" data-start' + (pool.length ? '' : ' disabled') + '>始める</button>';
+      '<button type="button" class="big-btn" data-start' + (pool.length ? '' : ' disabled') + '>始める</button>' +
+      '<button type="button" class="big-btn ghost" data-cards>この範囲の用語カードで覚える（' + cardPool().length + '語）</button>';
     if (state.session && state.session.kind === 'quiz' && state.session.i < state.session.list.length) h += '<button type="button" class="big-btn ghost" data-resume>解いている途中の問題に戻る（' + (state.session.i + 1) + '/' + state.session.list.length + '）</button>';
     h += '</div>';
     detailEl.innerHTML = h;
@@ -864,6 +874,60 @@
     detailEl.innerHTML = h;
     detailEl.scrollTop = 0;
     Array.prototype.forEach.call(detailEl.querySelectorAll('.lazy-math'), lazy);
+  }
+
+  // ---------- 用語カード（用語名を見て意味を思い出す） ----------
+  function cardPool() {
+    var weak = {};
+    if (quizCfg.scope === 'weak') weakTerms().forEach(function (id) { weak[id] = true; });
+    return ORDER.filter(function (id) {
+      if (!isWritten(id)) return false;
+      var ch = PLAN[id].chapter;
+      switch (quizCfg.scope) {
+        case 'ch': return ch === Number(quizCfg.ch);
+        case 'part': var p = PARTS[quizCfg.part] || PARTS[0]; return ch >= p[1] && ch <= p[2];
+        case 'weak': return !!weak[id];
+        case 'new': return !DB.memo[id];
+        case 'bm': return !!DB.bm[id];
+        default: return true;
+      }
+    });
+  }
+  function startCards() {
+    var pool = shuffle(cardPool());
+    if (!pool.length) return;
+    state.cards = { list: pool.slice(0, quizCfg.count), i: 0, known: 0, again: [] };
+    location.hash === '#cards' ? renderCards() : go('#cards');
+  }
+  function summaryHtml(id) {
+    var m = /<section class="sec" data-sec="summary"[^>]*><h2>[\s\S]*?<\/h2>([\s\S]*?)<\/section>/.exec(TERMS[id].html);
+    return m ? m[1] : '';
+  }
+  function renderCards() {
+    clearDetail();
+    var cs = state.cards;
+    if (!cs) {
+      detailEl.innerHTML = '<div class="article screen"><h1 class="screen-h">用語カード</h1><p class="screen-sub">用語名を見て意味を思い出し、めくって確かめます。「覚えた」を押すと、その用語に「覚えた」チェックが付きます。範囲と枚数は問題演習と同じ設定を使います。</p>' +
+        '<p class="screen-sub">この範囲の用語：<b>' + cardPool().length + '</b> 語</p><button type="button" class="big-btn" data-cards' + (cardPool().length ? '' : ' disabled') + '>始める</button><a class="big-btn ghost" href="#quiz">範囲を選ぶ</a></div>';
+      return;
+    }
+    if (cs.i >= cs.list.length) {
+      detailEl.innerHTML = '<div class="article screen"><h1 class="screen-h">用語カードの結果</h1><div class="score"><b>' + cs.known + ' / ' + cs.list.length + '</b><span>覚えた</span></div>' +
+        (cs.again.length ? '<h2 class="home-h">まだの用語</h2><div class="related-list">' + cs.again.map(function (id) { return termBtn(id); }).join('') + '</div><button type="button" class="big-btn" data-cards-again>まだの用語だけもう一度</button>' : '') +
+        '<button type="button" class="big-btn ghost" data-cards>別の用語でもう一度</button><a class="big-btn ghost" href="#quiz">範囲を選び直す</a></div>';
+      detailEl.scrollTop = 0;
+      return;
+    }
+    var id = cs.list[cs.i], t = TERMS[id];
+    detailEl.innerHTML = '<div class="article screen"><div class="sess-head"><b>用語カード</b><span class="sess-n">' + (cs.i + 1) + ' / ' + cs.list.length + '</span></div>' +
+      '<div class="sess-bar" aria-hidden="true"><span style="width:' + (100 * cs.i / cs.list.length) + '%"></span></div>' +
+      '<div class="fc"><p class="crumb">第' + t.chapter + '章 ' + esc(chapterOf(t.chapter).title) + '</p><h2 class="fc-title">' + esc(t.title) + impMark(t.importance) + '</h2>' +
+      (t.en ? '<p class="term-meta"><span class="en" lang="en">' + esc(t.en) + '</span></p>' : '') +
+      '<div class="fc-back body" hidden>' + summaryHtml(id) + '<p>' + termBtn(id) + '</p></div>' +
+      '<button type="button" class="big-btn" data-card-flip>めくる</button>' +
+      '<div class="fc-judge q-row" hidden><button type="button" class="q-btn primary" data-card-judge="1">覚えた</button><button type="button" class="q-btn" data-card-judge="0">まだ</button></div></div></div>';
+    detailEl.scrollTop = 0;
+    typeset(detailEl.querySelector('.fc-title'));
   }
 
   function renderReview() {
@@ -930,6 +994,8 @@
     h += '<h2 class="home-h">設定</h2><fieldset class="seg"><legend>文字サイズ</legend><div class="seg-row">' + [['s', '小'], ['m', '中'], ['l', '大']].map(function (f) {
       return '<button type="button" class="chip" data-font="' + f[0] + '" aria-pressed="' + (DB.font === f[0]) + '">' + f[1] + '</button>';
     }).join('') + '</div></fieldset>' +
+      '<fieldset class="seg"><legend>試験日（ホームに残り日数を出す）</legend><div class="seg-row"><input type="date" class="date-in" data-exam value="' + esc(DB.exam) + '" aria-label="試験日">' +
+      (DB.exam ? '<button type="button" class="chip" data-exam-clear>消す</button>' : '') + '</div></fieldset>' +
       '<fieldset class="seg"><legend>学習データ（iPad とスマホの間で移す）</legend>' +
       '<p class="screen-sub">「覚えた」チェック、ブックマーク、メモ、問題の回答履歴をファイルに書き出し、別の端末で読み込めます。</p>' +
       '<div class="seg-row"><button type="button" class="chip" data-export>ファイルに書き出す</button><label class="chip file-chip">ファイルから読み込む<input type="file" accept="application/json,.json" data-import hidden></label></div>' +
@@ -1051,6 +1117,17 @@
     if (b.hasAttribute('data-setup')) { state.session = null; return; }   // href で問題演習へ
     // 記録・設定
     if (b.dataset.font) { setFont(b.dataset.font); renderStats(); return; }
+    if (b.hasAttribute('data-exam-clear')) { DB.exam = ''; persist(true); renderStats(); return; }
+    // 用語カード
+    if (b.hasAttribute('data-cards')) { startCards(); return; }
+    if (b.hasAttribute('data-card-flip')) { var bk = detailEl.querySelector('.fc-back'); bk.hidden = false; b.hidden = true; detailEl.querySelector('.fc-judge').hidden = false; typeset(bk); return; }
+    if (b.dataset.cardJudge) {
+      var cs = state.cards, cid = cs.list[cs.i];
+      if (b.dataset.cardJudge === '1') { cs.known++; if (!DB.memo[cid]) { DB.memo[cid] = Date.now(); persist(); } }
+      else cs.again.push(cid);
+      cs.i++; renderCards(); return;
+    }
+    if (b.hasAttribute('data-cards-again')) { var ag = state.cards.again; state.cards = { list: shuffle(ag), i: 0, known: 0, again: [] }; renderCards(); return; }
     if (b.hasAttribute('data-export')) { exportData(); return; }
     if (b.dataset.imp) {
       var box = detailEl.querySelector('.import-box'), inc = box && box.__inc;
@@ -1067,6 +1144,7 @@
     var t = e.target;
     if (t.dataset.cfg) { quizCfg[t.dataset.cfg] = Number(t.value); save('jd-quizcfg', quizCfg); renderQuizSetup(); }
     if (t.hasAttribute('data-import') && t.files && t.files[0]) importFile(t.files[0]);
+    if (t.hasAttribute('data-exam')) { DB.exam = /^\d{4}-\d{2}-\d{2}$/.test(t.value) ? t.value : ''; persist(true); renderStats(); }
   });
 
   // ---------- スマホの一覧／解説の切り替え ----------
@@ -1115,6 +1193,11 @@
     var h = decodeURIComponent(location.hash.replace(/^#/, ''));
     var m = /^ch(\d{1,2})$/.exec(h);
     var fromDetail = document.body.classList.contains('show-detail');
+    if (h === 'cards') {
+      setMode('quiz'); renderCards();
+      document.title = '用語カード｜準1級 用語辞典';
+      return;
+    }
     if (h === 'quiz' || h === 'review' || h === 'stats') {
       setMode(h);
       if (h === 'stats') renderStats();

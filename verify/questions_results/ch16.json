@@ -1,0 +1,134 @@
+{
+ "q16-adjusted-r-squared-1": {
+  "hash": "ba6bcf5bc58a4b33",
+  "ok": true
+ },
+ "q16-adjusted-r-squared-2": {
+  "hash": "29bb10ae85c4cb59",
+  "ok": true
+ },
+ "q16-adjusted-r-squared-3": {
+  "hash": "f418c211f88b43a9",
+  "ok": true
+ },
+ "q16-coefficient-of-determination-1": {
+  "hash": "29ad58b34b926fc6",
+  "ok": true
+ },
+ "q16-coefficient-of-determination-2": {
+  "hash": "170ab95b4e6369cd",
+  "ok": true
+ },
+ "q16-confidence-and-prediction-interval-regression-1": {
+  "hash": "8be3b5b29bc1e850",
+  "ok": true
+ },
+ "q16-confidence-and-prediction-interval-regression-2": {
+  "hash": "ee84d603c53c4e23",
+  "ok": true
+ },
+ "q16-dummy-variable-1": {
+  "hash": "6a1d3d7deaf7255b",
+  "ok": true
+ },
+ "q16-dummy-variable-2": {
+  "hash": "8b14f46dac1df5d9",
+  "ok": true
+ },
+ "q16-gauss-markov-theorem-1": {
+  "hash": "7caee77f3281be54",
+  "ok": true
+ },
+ "q16-gauss-markov-theorem-2": {
+  "hash": "ae83044e27a21440",
+  "ok": true
+ },
+ "q16-hat-matrix-1": {
+  "hash": "4ec37e052ae4042f",
+  "ok": true
+ },
+ "q16-hat-matrix-2": {
+  "hash": "16d97249bcad51c8",
+  "ok": true
+ },
+ "q16-hat-matrix-3": {
+  "hash": "7677d9a49e2e463a",
+  "ok": true
+ },
+ "q16-interaction-term-1": {
+  "hash": "bbabe0500b0467e7",
+  "ok": true
+ },
+ "q16-least-squares-method-1": {
+  "hash": "f1db701ecbc2e287",
+  "ok": true
+ },
+ "q16-least-squares-method-2": {
+  "hash": "d52c18d9b3cbec4b",
+  "ok": true
+ },
+ "q16-multicollinearity-1": {
+  "hash": "19ed06f7cce8cd73",
+  "ok": true
+ },
+ "q16-multicollinearity-2": {
+  "hash": "1cdab70a98d2388c",
+  "ok": true
+ },
+ "q16-multiple-regression-model-1": {
+  "hash": "b32c2c994095ad40",
+  "ok": true
+ },
+ "q16-multiple-regression-model-2": {
+  "hash": "4ad587187cbbcca2",
+  "ok": true
+ },
+ "q16-normal-equations-1": {
+  "hash": "7a2ba5707f2f96b8",
+  "ok": true
+ },
+ "q16-normal-equations-2": {
+  "hash": "d085fed07100368e",
+  "ok": true
+ },
+ "q16-overall-f-test-regression-1": {
+  "hash": "6fdda8822b9d7d72",
+  "ok": true
+ },
+ "q16-overall-f-test-regression-2": {
+  "hash": "ac38240fec314d9b",
+  "ok": true
+ },
+ "q16-partial-f-test-1": {
+  "hash": "69496a0f6077d111",
+  "ok": true
+ },
+ "q16-regression-coefficient-t-test-1": {
+  "hash": "bb9fd581a35691fb",
+  "ok": true
+ },
+ "q16-regression-coefficient-t-test-2": {
+  "hash": "ca60c6c022a7dce2",
+  "ok": true
+ },
+ "q16-regression-coefficient-t-test-3": {
+  "hash": "a20cb545648f3310",
+  "ok": true
+ },
+ "q16-standardized-partial-regression-coefficient-1": {
+  "hash": "332fef3281de1236",
+  "ok": true
+ },
+ "q16-standardized-partial-regression-coefficient-2": {
+  "hash": "8d2745caf18244e5",
+  "ok": true
+ },
+ "q16-variance-inflation-factor-1": {
+  "hash": "5fcd64f8523e3d37",
+  "ok": true
+ },
+ "q16-variance-inflation-factor-2": {
+  "hash": "605754ac3e024119",
+  "ok": true
+ }
+}

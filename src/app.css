@@ -515,3 +515,10 @@ textarea.note:focus { outline: none; border-color: var(--accent); box-shadow: 0 
 .qlist > *, .sess-card, .qcard > * { min-width: 0; }
 .qcard m, .body m, .wrong-q m { display: inline-block; max-width: 100%; overflow-x: auto; overflow-y: hidden; vertical-align: middle; }
 [hidden] { display: none !important; }
+
+/* ===== 用語カード・試験日 ===== */
+.fc { margin-top: 6px; padding: 18px 18px 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--bg); }
+.fc-title { margin: 0; font-size: 1.5rem; line-height: 1.4; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.fc-back { margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--line); }
+.fc-judge .q-btn { flex: 1; min-height: 52px; }
+.date-in { min-height: 44px; padding: 0 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--fg); font: inherit; font-size: 16px; }

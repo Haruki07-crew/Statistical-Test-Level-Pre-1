@@ -109,6 +109,20 @@ try {
   }
   check('問題演習の結果画面', await ev(`!!document.querySelector('.score')`), await ev(`document.querySelector('.score')?.textContent`));
   await shot('result-1280');
+  // 用語カード
+  await open('#quiz', 1280, 860);
+  await ev(`document.querySelector('[data-cards]').click()`); await sleep(500);
+  for (let i = 0; i < 5; i++) {
+    await ev(`document.querySelector('[data-card-flip]').click()`);
+    if (i === 0) await shot('cards-1280');
+    await ev(`document.querySelector('[data-card-judge="${i % 2}"]').click()`);
+  }
+  check('用語カードを最後まで', await ev(`document.querySelector('.score')?.textContent.includes('覚えた')`), await ev(`document.querySelector('.score')?.textContent`));
+  // 試験日
+  await open('#stats', 1280, 860);
+  await ev(`(() => { const d = document.querySelector('[data-exam]'); d.value = '2026-12-20'; d.dispatchEvent(new Event('change', {bubbles: true})); })()`);
+  await open('#all', 1280, 860);
+  check('試験日を保存', await ev(`JSON.parse(localStorage.getItem('jd-data')).exam === '2026-12-20'`));
   await open('#review', 1280, 860);
   check('復習画面', await ev(`!!document.querySelector('.screen-h')`), await ev(`document.querySelector('.score')?.textContent`));
   await open('#stats', 1280, 860);
@@ -135,7 +149,7 @@ try {
   check('公式まとめ', await ev(`!!document.querySelector('.formulas')`));
   // 幅ごとの崩れ
   for (const [w, h] of [[375, 780], [768, 1000], [1280, 860]]) {
-    for (const hash of ['#all', '#gamma-distribution', '#quiz', '#stats', '#review', '#formulas']) {
+    for (const hash of ['#all', '#gamma-distribution', '#quiz', '#stats', '#review', '#formulas', '#cards']) {
       await open(hash, w, h);
       const ov = await overflow();
       check(`${w}px ${hash} 横にはみ出さない`, !ov, ov);

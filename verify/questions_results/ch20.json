@@ -1,0 +1,122 @@
+{
+ "q20-confounding-1": {
+  "hash": "d075fda7431aeb1a",
+  "ok": true
+ },
+ "q20-confounding-2": {
+  "hash": "1cd72f76e8dbdd14",
+  "ok": true
+ },
+ "q20-effect-size-eta-squared-1": {
+  "hash": "329bc9e6486790e6",
+  "ok": true
+ },
+ "q20-expected-mean-square-1": {
+  "hash": "d43145f7a430b5d1",
+  "ok": true
+ },
+ "q20-factorial-design-1": {
+  "hash": "3bb7f1d86d70869b",
+  "ok": true
+ },
+ "q20-fisher-three-principles-1": {
+  "hash": "dd4cb694ace6dea6",
+  "ok": true
+ },
+ "q20-fisher-three-principles-2": {
+  "hash": "27c6f445ff99198f",
+  "ok": true
+ },
+ "q20-fixed-and-random-effects-1": {
+  "hash": "f25d7f1ed6a11e5a",
+  "ok": true
+ },
+ "q20-fixed-and-random-effects-2": {
+  "hash": "e7fc595ceddaedb7",
+  "ok": true
+ },
+ "q20-latin-square-design-1": {
+  "hash": "e6e9acbd29c41dc3",
+  "ok": true
+ },
+ "q20-latin-square-design-2": {
+  "hash": "2d412df5e2719309",
+  "ok": true
+ },
+ "q20-main-effect-and-interaction-1": {
+  "hash": "9651b0afb4495ce5",
+  "ok": true
+ },
+ "q20-main-effect-and-interaction-2": {
+  "hash": "35fe164d93e5854e",
+  "ok": true
+ },
+ "q20-one-way-anova-1": {
+  "hash": "7a9ffe0db9c1a838",
+  "ok": true
+ },
+ "q20-one-way-anova-2": {
+  "hash": "41b1987affced32a",
+  "ok": true
+ },
+ "q20-one-way-anova-3": {
+  "hash": "62e135331cdbf2f3",
+  "ok": true
+ },
+ "q20-orthogonal-array-1": {
+  "hash": "95fd5dc2848a32c8",
+  "ok": true
+ },
+ "q20-orthogonal-array-2": {
+  "hash": "724749f3e939b52a",
+  "ok": true
+ },
+ "q20-randomized-block-design-1": {
+  "hash": "d5b988dd33820e56",
+  "ok": true
+ },
+ "q20-randomized-block-design-2": {
+  "hash": "b3b1b90ebcf4c291",
+  "ok": true
+ },
+ "q20-split-plot-design-1": {
+  "hash": "64183ee86d182759",
+  "ok": true
+ },
+ "q20-studentized-range-distribution-1": {
+  "hash": "6cc785c59ecaa880",
+  "ok": true
+ },
+ "q20-sum-of-squares-decomposition-1": {
+  "hash": "f7a458297ca30213",
+  "ok": true
+ },
+ "q20-sum-of-squares-decomposition-2": {
+  "hash": "c5ffe7398065d334",
+  "ok": true
+ },
+ "q20-tukey-multiple-comparison-1": {
+  "hash": "a6dccc76fb2b8c9e",
+  "ok": true
+ },
+ "q20-tukey-multiple-comparison-2": {
+  "hash": "33c1dde1b120692d",
+  "ok": true
+ },
+ "q20-two-way-anova-with-replication-1": {
+  "hash": "b7cec98b5927d555",
+  "ok": true
+ },
+ "q20-two-way-anova-with-replication-2": {
+  "hash": "8c2f7d74f7978630",
+  "ok": true
+ },
+ "q20-two-way-anova-without-replication-1": {
+  "hash": "3e98cbd7f89e5aad",
+  "ok": true
+ },
+ "q20-two-way-anova-without-replication-2": {
+  "hash": "20102711d789ea2e",
+  "ok": true
+ }
+}
