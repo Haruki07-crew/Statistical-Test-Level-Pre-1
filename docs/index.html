@@ -3207,7 +3207,8 @@ window.MathJax = {
       '<div class="q-row q-tools"><button type="button" class="q-btn ghost" data-act="hint" aria-expanded="false">ヒント</button></div>' +
       '<div class="q-hint" hidden><b>ヒント</b>' + q.h + '</div>' +
       '<div class="q-result" hidden role="status"></div>' +
-      '<div class="q-exp" hidden><b>解説</b>' + q.e + '</div>' +
+      '<div class="q-exp" hidden><b>解説</b>' + q.e +
+      (opts.termLink && PLAN[q.term] && isWritten(q.term) ? '<p class="q-read"><button type="button" class="rel-btn" data-go="' + q.term + '">「' + esc(PLAN[q.term].title) + '」の解説を読む →</button></p>' : '') + '</div>' +
       '<div class="q-after" hidden></div>';
     var done = false, stepI = 0;
     function finish(ok, detail) {
