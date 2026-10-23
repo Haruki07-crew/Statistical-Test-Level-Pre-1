@@ -209,4 +209,28 @@ for _ in range(200):  # σε²=1, ση²=2 で反復して定常値に収束
     Ppred = P + 2; Kt = Ppred / (Ppred + 1); P = (1 - Kt) * Ppred
 q.check("q27-state-space-model-2", abs(Kt - Pbar / (Pbar + 1)) < 1e-12 and abs(Ppred - Pbar) < 1e-12, "反復の極限と一致")
 
+# --- 導出問題（追加）---
+import sympy as _sp
+_c, _ph, _s2, _mu, _g0 = _sp.symbols("c phi sigma2 mu g0")
+_mu_sol = _sp.solve(_sp.Eq(_mu, _c + _ph * _mu), _mu)[0]
+_g0_sol = _sp.solve(_sp.Eq(_g0, _ph**2 * _g0 + _s2), _g0)[0]
+_ok = _sp.simplify(_mu_sol - _c / (1 - _ph)) == 0 and _sp.simplify(_g0_sol - _s2 / (1 - _ph**2)) == 0
+_vals = {_c: 3, _ph: _sp.Rational(-1, 2), _s2: 3}
+_m, _v = _mu_sol.subs(_vals), _g0_sol.subs(_vals)
+_g2 = (_sp.Rational(-1, 2))**2 * _v
+# MA(∞) 表現の和でも同じ γ(0)、γ(2)
+_psi = (-0.5) ** np.arange(200)
+_ok2 = abs(3 * np.sum(_psi**2) - 4) < 1e-9 and abs(3 * np.sum(_psi[:-2] * _psi[2:]) - 1) < 1e-9
+q.check("q27-ar-model-4", _ok and _m == 2 and _v == 4 and _g2 == 1 and _ok2, "μ=c/(1-φ)、γ(0)=σ²/(1-φ²)、数値 μ=2, γ(0)=4, γ(2)=1（MA(∞) の和とも一致）")
+
+_th = _sp.symbols("theta")
+_roots = sorted(_sp.solve(_sp.Eq(_th / (1 + _th**2), _sp.Rational(-3, 10)), _th))
+_inv = [r for r in _roots if abs(r) < 1]
+_s2hat = 2 / (1 + _inv[0]**2)
+# γ(h) を係数の積の和で直接計算（θ=-1/3, σ²=1.8）
+_coef = np.array([1, -1 / 3]); _g = [1.8 * np.sum(_coef[: 2 - h] * _coef[h:]) if h < 2 else 0.0 for h in range(3)]
+q.check("q27-ma-model-4", _roots == [-3, _sp.Rational(-1, 3)] and _inv == [_sp.Rational(-1, 3)] and _s2hat == _sp.Rational(9, 5)
+        and abs(_g[0] - 2) < 1e-12 and abs(_g[1] / _g[0] + 0.3) < 1e-12 and _g[2] == 0,
+        "解は -3 と -1/3、反転可能な θ=-1/3、σ²=1.8 で γ(0)=2、ρ(1)=-0.3")
+
 q.done()

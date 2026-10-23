@@ -141,4 +141,34 @@ q.check("q31-bayes-decision-theory-1", 0.7 * 20 < 0.3 * 100, "廃棄がベイズ
 from scipy import stats as _st
 _B = _st.beta(1, 10)
 q.check("q31-credible-interval-3", abs(_B.cdf(0.309) - _B.cdf(0.05) - 0.574) < 0.001, "[0.050,0.309] の確率は約57%")
+# --- 導出問題（追加）---
+_mu, _m0, _k0, _kx, _xb = sp.symbols("mu mu0 kappa0 kappa_x xbar", real=True)
+_expo = -(_kx * (_mu - _xb)**2 + _k0 * (_mu - _m0)**2) / 2
+_kn = _k0 + _kx; _mn = (_k0 * _m0 + _kx * _xb) / _kn
+_diff = sp.simplify(sp.expand(_expo - (-_kn * (_mu - _mn)**2 / 2)))
+_ok = sp.diff(_diff, _mu) == 0  # 差は μ を含まない
+_vals = {_k0: sp.Rational(1, 4), _kx: 1, _m0: 50, _xb: 56}
+_post_mean, _post_var = _mn.subs(_vals), (1 / _kn).subs(_vals)
+# 数値積分でも確認（σ²=9, n=9 のデータ平均 56 は尤度 N(56, 1) と同じ）
+_dens = lambda m: stats.norm.pdf(56, m, 1) * stats.norm.pdf(m, 50, 2)
+_Zc = integrate.quad(_dens, 30, 80)[0]
+_Em = integrate.quad(lambda m: m * _dens(m), 30, 80)[0] / _Zc
+_Vm = integrate.quad(lambda m: (m - _Em)**2 * _dens(m), 30, 80)[0] / _Zc
+q.check("q31-normal-normal-model-4", _ok and _post_mean == sp.Rational(274, 5) and _post_var == sp.Rational(4, 5)
+        and abs(_Em - 54.8) < 1e-6 and abs(_Vm - 0.8) < 1e-6, f"平方完成、事後 N(54.8, 0.8)、数値積分 {_Em:.4f}, {_Vm:.4f}")
+
+_lam = sp.symbols("lambda", positive=True)
+_a, _b = sp.symbols("a b", positive=True)
+_k = sp.symbols("k", integer=True, nonnegative=True)
+_I = sp.integrate(_lam**(_a + _k - 1) * sp.exp(-(_b + 1) * _lam), (_lam, 0, sp.oo), conds="none")
+_pk = _b**_a / (sp.factorial(_k) * sp.gamma(_a)) * _I
+_nb = sp.gamma(_a + _k) / (sp.factorial(_k) * sp.gamma(_a)) * (_b / (_b + 1))**_a * (1 / (_b + 1))**_k
+_ok = sp.simplify(sp.powsimp(_pk / _nb, force=True)) == 1
+_p1 = float(_nb.subs({_a: 6, _b: 2, _k: 1}))
+_nbd = stats.nbinom(6, 2 / 3)
+q.check("q31-gamma-poisson-model-4", _ok and abs(_p1 - 128 / 729) < 1e-12 and round(_p1, 3) == 0.176
+        and abs(_nbd.pmf(1) - _p1) < 1e-12 and abs(_nbd.mean() - 3) < 1e-12 and abs(_nbd.var() - 4.5) < 1e-12
+        and abs(stats.poisson.pmf(1, 3) - 0.149) < 0.001,
+        f"積分が負の二項分布に一致、P(Y=1)={_p1:.4f}、平均3・分散4.5、誤答 Po(3) は 0.149")
+
 q.done()

@@ -132,4 +132,21 @@ true1 = sum(0.5 * (pm_x[1] if m else 1 - pm_x[1]) * py(1, m, u) for u in (0, 1) 
 est1 = sum(P_(x=1, m=m) / P_(x=1) * sum(P_(x=x2, m=m, y=1) / P_(x=x2, m=m) * P_(x=x2) for x2 in (0, 1)) for m in (0, 1))
 q.check("q33-frontdoor-criterion-2", abs(true1 - est1) > 0.01, "直接の矢印があると公式は真の値と一致しない（誤り）")
 
+# --- 導出問題（追加）---
+_pz = {0: 0.7, 1: 0.3}
+_py = {(1, 0): 0.5, (1, 1): 0.7, (0, 0): 0.3, (0, 1): 0.6}
+_do = {x: sum(_py[(x, z)] * _pz[z] for z in (0, 1)) for x in (0, 1)}
+# 逆確率重み付け：P(X|Z) を任意に与えても（正値性のもとで）同じ値になる
+_ok = True
+for _px1 in [(0.2, 0.6), (0.5, 0.5), (0.9, 0.1)]:
+    _pxz = {(1, 0): _px1[0], (1, 1): _px1[1], (0, 0): 1 - _px1[0], (0, 1): 1 - _px1[1]}
+    for _x in (0, 1):
+        _ipw = sum(_pz[z] * _pxz[(_x, z)] * _py[(_x, z)] / _pxz[(_x, z)] for z in (0, 1))
+        _ok &= abs(_ipw - _do[_x]) < 1e-12
+# 切断された分解：同時分布から P(x|z) を除いて和をとったものと一致
+_ok &= all(abs(sum(_pz[z] * _py[(x, z)] for z in (0, 1)) - _do[x]) < 1e-12 for x in (0, 1))
+_ace = _do[1] - _do[0]
+q.check("q33-backdoor-criterion-4", _ok and abs(_do[1] - 0.56) < 1e-12 and abs(_do[0] - 0.39) < 1e-12 and round(_ace, 2) == 0.17
+        and abs((0.2 + 0.1) / 2 - 0.17) > 0.01, f"調整化公式＝逆確率重み付け、ACE={_ace:.4f}、誤答 0.15 とは異なる")
+
 q.done()

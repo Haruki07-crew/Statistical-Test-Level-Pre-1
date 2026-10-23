@@ -175,4 +175,25 @@ q.check("q32-variance-reduction-1", abs(np.var((np.exp(Uu) + np.exp(1 - Uu)) / 2
 # --- モンテカルロ検定 ---
 q.num("q32-permutation-simulation-1", (1 + 24) / (999 + 1))
 
+# --- 導出問題（追加）---
+_lap_inv = lambda u: np.where(u < 0.5, np.log(2 * u), -np.log(2 * (1 - u)))
+_sgn_form = lambda u: np.sign(u - 0.5) * (-np.log(1 - 2 * np.abs(u - 0.5)))
+_us = np.linspace(0.001, 0.999, 999)
+_v9, _v2 = float(_lap_inv(0.9)), float(_lap_inv(0.2))
+q.check("q32-inverse-transform-sampling-4",
+        np.allclose(stats.laplace.cdf(_lap_inv(_us)), _us) and np.allclose(_lap_inv(_us), _sgn_form(_us))
+        and round(_v9, 3) == 1.609 and round(_v2, 3) == -0.916 and abs(stats.laplace.cdf(0) - 0.5) < 1e-12,
+        f"F(F^-1(u))=u、符号つきの式と一致、U=0.9→{_v9:.4f}、U=0.2→{_v2:.4f}")
+
+_ft = lambda x: x**2 * (1 - x)
+_r = optimize.minimize_scalar(lambda x: -_ft(x), bounds=(0, 1), method="bounded")
+_M = -_r.fun; _Z = integrate.quad(_ft, 0, 1)[0]
+_rng = np.random.default_rng(32)
+_Y = _rng.uniform(size=1_000_000); _V = _rng.uniform(size=1_000_000)
+_acc = _V <= _ft(_Y) / _M
+_ks = stats.kstest(_Y[_acc][:20000], stats.beta(3, 2).cdf).pvalue
+q.check("q32-rejection-sampling-4", abs(_r.x - 2 / 3) < 1e-5 and abs(_M - 4 / 27) < 1e-9 and abs(_Z - 1 / 12) < 1e-12
+        and round(_Z / _M, 4) == 0.5625 and abs(_acc.mean() - 0.5625) < 0.003 and _ks > 0.001,
+        f"M=4/27、Z=1/12、採択率 {_Z / _M:.4f}、シミュレーション {_acc.mean():.4f}、Be(3,2) との KS p={_ks:.3f}")
+
 q.done()

@@ -175,4 +175,21 @@ q.num("q28-ordinal-contingency-table-1", Z2)
 xi = np.repeat(x, mm.astype(int)); yi = np.concatenate([np.r_[np.ones(int(k)), np.zeros(int(m_ - k))] for k, m_ in zip(y, mm)])
 q.check("q28-ordinal-contingency-table-1", np.isclose(N * np.corrcoef(xi, yi)[0, 1] ** 2, Z2), "N r² と一致")
 
+# --- 導出問題（追加）---
+import sympy as _sp
+_p, _n = _sp.symbols("p n", positive=True)
+_dv = _sp.simplify((1 / _p)**2 * _p * (1 - _p) / _n - (1 - _p) / (_n * _p))
+_a = _sp.symbols("a", positive=True)
+_sub = _sp.simplify(((1 - _p) / (_n * _p)).subs(_p, _a / _n) - (1 / _a - 1 / _n))
+_se = np.sqrt(1 / 30 - 1 / 100 + 1 / 15 - 1 / 100)
+# シミュレーションで log RR の SD を確認
+_rng = np.random.default_rng(28)
+_x1 = _rng.binomial(100, 0.3, 400000); _x2 = _rng.binomial(100, 0.15, 400000)
+_m = (_x1 > 0) & (_x2 > 0)
+_sd = np.std(np.log(_x1[_m] / _x2[_m]))
+_ci = np.exp(np.log(2) + np.array([-1, 1]) * stats.norm.ppf(0.975) * _se)
+q.check("q28-relative-risk-4", _dv == 0 and _sub == 0 and round(_se, 3) == 0.283 and abs(_sd / _se - 1) < 0.1
+        and abs(_ci[0] - 1.15) < 0.005 and abs(_ci[1] - 3.48) < 0.005,
+        f"デルタ法の式、SE={_se:.4f}、シミュレーションSD={_sd:.4f}（有限標本で約5%ずれるため相対10%以内）、CI=({_ci[0]:.3f},{_ci[1]:.3f})")
+
 q.done()

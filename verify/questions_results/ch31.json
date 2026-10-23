@@ -63,6 +63,10 @@
   "hash": "c0f68e7de5f88b25",
   "ok": true
  },
+ "q31-gamma-poisson-model-4": {
+  "hash": "ae0f472577d03cc4",
+  "ok": true
+ },
  "q31-hierarchical-bayes-model-1": {
   "hash": "b91fca71954151b9",
   "ok": true
@@ -105,6 +109,10 @@
  },
  "q31-normal-normal-model-3": {
   "hash": "5e09d7383f2cfdf6",
+  "ok": true
+ },
+ "q31-normal-normal-model-4": {
+  "hash": "21451c22fd542617",
   "ok": true
  },
  "q31-posterior-distribution-1": {

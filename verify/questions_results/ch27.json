@@ -11,6 +11,10 @@
   "hash": "e83cf33e0eb2fbba",
   "ok": true
  },
+ "q27-ar-model-4": {
+  "hash": "637469aa3a8ba7ce",
+  "ok": true
+ },
  "q27-arima-model-1": {
   "hash": "8561d2fa5fad9c8a",
   "ok": true
@@ -81,6 +85,10 @@
  },
  "q27-ma-model-3": {
   "hash": "40ccc9baab8f6f92",
+  "ok": true
+ },
+ "q27-ma-model-4": {
+  "hash": "2316dd4c5b64171a",
   "ok": true
  },
  "q27-partial-autocorrelation-1": {

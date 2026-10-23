@@ -71,6 +71,10 @@
   "hash": "8fc5da2b35f169c5",
   "ok": true
  },
+ "q32-inverse-transform-sampling-4": {
+  "hash": "3db34065ed3341da",
+  "ok": true
+ },
  "q32-jackknife-1": {
   "hash": "0c1bfa0000449aef",
   "ok": true
@@ -137,6 +141,10 @@
  },
  "q32-rejection-sampling-3": {
   "hash": "f83a1473c9e25919",
+  "ok": true
+ },
+ "q32-rejection-sampling-4": {
+  "hash": "99c49e03eb0ef2e0",
   "ok": true
  },
  "q32-uniform-random-number-1": {

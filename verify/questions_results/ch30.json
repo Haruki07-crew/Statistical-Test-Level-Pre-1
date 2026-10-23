@@ -11,6 +11,10 @@
   "hash": "4de3ac9be47c7e84",
   "ok": true
  },
+ "q30-aic-4": {
+  "hash": "07ea9c0505c1875c",
+  "ok": true
+ },
  "q30-aicc-1": {
   "hash": "d1cb4a784a9bfe94",
   "ok": true
@@ -81,6 +85,10 @@
  },
  "q30-kullback-leibler-divergence-3": {
   "hash": "1dd39f3057a4714f",
+  "ok": true
+ },
+ "q30-kullback-leibler-divergence-4": {
+  "hash": "ee0cf752626b2f7d",
   "ok": true
  },
  "q30-leave-one-out-cv-1": {

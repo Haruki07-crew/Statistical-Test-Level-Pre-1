@@ -146,4 +146,35 @@ def IJ(xs):
 r_true = IJ(rng.exponential(2.0, 400000)); r_mis = IJ(rng.gamma(2.0, 1.0, 400000))
 q.check("q30-tic-ebic-1", abs(r_true - 1) < 0.02 and abs(r_mis - 0.5) < 0.02, f"正しいモデルで tr(IJ^-1)≈1（{r_true:.3f}）、誤ったモデルで {r_mis:.3f}")
 
+# --- 導出問題（追加）---
+_n_, _s2_, _Se_ = sp.symbols("n sigma2 S_e", positive=True)
+_l = -_n_ / 2 * sp.log(2 * sp.pi * _s2_) - _Se_ / (2 * _s2_)
+_s2hat = sp.solve(sp.diff(_l, _s2_), _s2_)[0]
+_lmax = sp.simplify(_l.subs(_s2_, _s2hat))
+_ok = sp.simplify(_s2hat - _Se_ / _n_) == 0 and sp.simplify(sp.expand_log(-2 * _lmax - (_n_ * sp.log(_Se_ / _n_) + _n_ * (sp.log(2 * sp.pi) + 1)), force=True)) == 0
+_thr = np.exp(-2 * 2 / 100)
+# 数値例：シミュレーションデータで AIC 差 = n log(S1/S0) + 2q を確認
+_rng = np.random.default_rng(30)
+_X = np.column_stack([np.ones(100), _rng.normal(size=(100, 3))]); _y = _X[:, :2] @ [1, 2] + _rng.normal(size=100)
+def _aic(Xm):
+    b, *_ = np.linalg.lstsq(Xm, _y, rcond=None); Se = np.sum((_y - Xm @ b)**2)
+    return -2 * np.sum(stats.norm.logpdf(_y, Xm @ b, np.sqrt(Se / 100))) + 2 * (Xm.shape[1] + 1), Se
+_a0, _S0 = _aic(_X[:, :2]); _a1, _S1 = _aic(_X)
+_Fthr = (100 - 2 - 2) / 2 * (np.exp(4 / 100) - 1)
+q.check("q30-aic-4", _ok and round(_thr, 4) == 0.9608 and abs((_a1 - _a0) - (100 * np.log(_S1 / _S0) + 4)) < 1e-9 and abs(_Fthr - 2) < 0.1,
+        f"σ̂²=Se/n、AIC の式、境目 e^(-0.04)={_thr:.5f}、F の境目 {_Fthr:.3f}")
+
+_m1, _m2, _s1, _s2 = sp.symbols("mu1 mu2 sigma1 sigma2", positive=True)
+_x = sp.symbols("x", real=True)
+_g = sp.exp(-(_x - _m1)**2 / (2 * _s1**2)) / sp.sqrt(2 * sp.pi * _s1**2)
+_logratio = sp.log(_s2 / _s1) - (_x - _m1)**2 / (2 * _s1**2) + (_x - _m2)**2 / (2 * _s2**2)
+_D = sp.simplify(sp.integrate(_g * sp.expand(_logratio), (_x, -sp.oo, sp.oo)))
+_Dform = sp.log(_s2 / _s1) + (_s1**2 + (_m1 - _m2)**2) / (2 * _s2**2) - sp.Rational(1, 2)
+_ok = sp.simplify(_D - _Dform) == 0
+_crit = sp.solve([sp.diff(_Dform, _m2), sp.diff(_Dform, _s2)], [_m2, _s2], dict=True)
+_KL = lambda a1, b1, a2, b2: integrate.quad(lambda t: stats.norm.pdf(t, a1, b1) * (stats.norm.logpdf(t, a1, b1) - stats.norm.logpdf(t, a2, b2)), -40, 40)[0]
+_d1, _d2 = _KL(0, 1, 0, 2), _KL(0, 2, 0, 1)
+q.check("q30-kullback-leibler-divergence-4", _ok and _crit == [{_m2: _m1, _s2: _s1}] and round(_d1, 3) == 0.318 and round(_d2, 3) == 0.807,
+        f"KL の公式（記号積分と一致）、最小点 μ2=μ1,σ2=σ1、数値 {_d1:.4f}, {_d2:.4f}")
+
 q.done()

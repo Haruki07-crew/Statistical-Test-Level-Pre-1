@@ -182,4 +182,22 @@ q.check("q29-mnar-2", abs(_st.norm.pdf(1) - 0.2420) < 5e-5 and abs(_st.norm.cdf(
         and abs(-0.2420 / 0.8413 - (-0.288)) < 0.0005, "与えた φ(1)=0.2420、Φ(1)=0.8413 で -0.288")
 _se = (7 / 12) * (1 / 56 + 2 / 24) ** 0.5
 q.check("q29-greenwood-formula-1", abs(_se - 0.18556) < 1e-5 and abs(0.185 - 0.186) <= 0.0015, "SE=0.18556、途中丸めの 0.185 も許容")
+# --- 導出問題（追加）---
+import sympy as _sp
+_pi = _sp.symbols("pi", positive=True)
+_W, _N = _sp.symbols("W N", positive=True)
+_Q = _W * _sp.log(_pi) + (_N - _W) * _sp.log(1 - _pi)
+_crit = _sp.solve(_sp.diff(_Q, _pi), _pi)
+_r = np.array([4, 2, 0.5]); _p0 = 0.5
+_w = _p0 * _r / (_p0 * _r + (1 - _p0))
+_p1 = _w.mean()
+# Q を数値で最大化しても同じ
+_grid = np.linspace(0.001, 0.999, 99901)
+_Qn = _w.sum() * np.log(_grid) + (3 - _w.sum()) * np.log(1 - _grid)
+# 観測データの対数尤度が増えること（f0 を 1 とおいた尤度比の形）
+_ll = lambda p: np.sum(np.log(p * _r + (1 - p)))
+q.check("q29-em-algorithm-4", _crit == [_W / _N] and np.allclose(_w, [0.8, 2 / 3, 1 / 3]) and round(_p1, 3) == 0.6
+        and abs(_grid[np.argmax(_Qn)] - _p1) < 1e-4 and _ll(_p1) >= _ll(_p0),
+        f"M ステップ π=Σw/n、π(1)={_p1:.4f}、尤度は増加")
+
 q.done()
