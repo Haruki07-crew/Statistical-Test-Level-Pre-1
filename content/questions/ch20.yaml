@@ -94,7 +94,7 @@ questions:
       交互作用A×Bの自由度と誤差の自由度の組はどれか。
     choices:
       - '（6, 12）'
-      - '（6, 17）'
+      - '（6, 18）'
       - '（12, 12）'
       - '（6, 24）'
     answer: 0
@@ -103,7 +103,7 @@ questions:
     explanation: |
       $\phi_{A\times B}=2\times3=6$、$\phi_E=3\times4\times(2-1)=12$ です。
       確認として $\phi_A+\phi_B+\phi_{A\times B}+\phi_E=2+3+6+12=23=abr-1$ になります。
-      17 は交互作用を誤差に含めた（繰り返しなしの扱い）値、24 は総データ数と取り違えた値です。
+      18 は交互作用を誤差にプールした（$6+12$）値、24 は総データ数と取り違えた値です。
 
   - id: q20-two-way-anova-with-replication-2
     term: two-way-anova-with-replication
@@ -236,7 +236,7 @@ questions:
     level: 応用
     type: numeric
     question: |
-      前問と同じデータ（処理4種類×ブロック5つ、$S_\tau=36$、$S_\beta=60$、$S_T=120$）で、ブロックを無視して一元配置分散分析を行った場合の処理の $F$ 値を小数第2位まで求めよ。
+      乱塊法の実験（処理4種類×ブロック5つ、$S_\tau=36$、$S_\beta=60$、$S_T=120$）で、ブロックを無視して一元配置分散分析を行った場合の処理の $F$ 値を小数第2位まで求めよ。
     answer: 2.29
     tolerance: 0.005
     hint: |

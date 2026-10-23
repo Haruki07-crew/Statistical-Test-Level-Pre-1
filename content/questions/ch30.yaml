@@ -1,0 +1,463 @@
+chapter: 30
+questions:
+  - id: q30-aic-1
+    term: aic
+    level: 基本
+    type: numeric
+    question: |
+      パラメータ数 $k=4$ のモデルを当てはめたところ、最大対数尤度が $\ell(\hat{\boldsymbol\theta})=-120.5$ であった。AIC を求めよ。
+    answer: 249
+    tolerance: 0.05
+    hint: |
+      $\mathrm{AIC}=-2\ell(\hat{\boldsymbol\theta})+2k$
+    explanation: |
+      $$\mathrm{AIC}=-2\times(-120.5)+2\times4=241+8=249$$
+      対数尤度の符号を取り違えて $-241+8$ としないよう注意します。
+
+  - id: q30-aic-2
+    term: aic
+    level: 標準
+    type: numeric
+    question: |
+      $n=50$ のデータに2つの正規線形回帰を当てはめた。モデルAは係数3個（切片を含む）で残差平方和 $S_e=200$、モデルBは係数5個で $S_e=180$ である。$\mathrm{AIC}=n\log(S_e/n)+2(p+1)$ を使い、$\mathrm{AIC}_A-\mathrm{AIC}_B$ を小数第2位まで求めよ。
+    answer: 1.27
+    tolerance: 0.01
+    hint: |
+      差をとると定数が消え、$n\log(S_{eA}/S_{eB})+2(p_A-p_B)$ になる。
+    explanation: |
+      $$\mathrm{AIC}_A-\mathrm{AIC}_B=50\log\frac{200}{180}+2(4-6)=50\times0.10536-4=5.27-4=1.27$$
+      正なので AIC ではモデルB（係数5個）を選びます。分散 $\sigma^2$ もパラメータに数えるので $k=p+1$ です。
+
+  - id: q30-aic-3
+    term: aic
+    level: 標準
+    type: truefalse
+    question: |
+      候補の中に真のモデルが含まれていれば、AIC 最小のモデルは $n\to\infty$ で確率1で真のモデルに一致する。
+    answer: false
+    hint: |
+      真のモデルに不要な変数を1つ加えたモデルと比べたとき、AIC の差は $n$ が大きくなるとどうなるか。
+    explanation: |
+      真のモデルに不要な変数を1つ加えると、$-2\ell$ の減少分は近似的に自由度1のカイ二乗分布に従い、罰則の増加は2です。
+      $P(\chi^2_1>2)\approx0.157$ の確率で大きいモデルを選んでしまい、これは $n$ を大きくしても0になりません（AIC は一致性をもたない）。
+      罰則が $\log n$ で増える BIC は一致性をもちます。
+
+  - id: q30-bic-1
+    term: bic
+    level: 標準
+    type: numeric
+    question: |
+      $n=50$、モデルA（係数3個、$S_e=200$）とモデルB（係数5個、$S_e=180$）について、$\mathrm{BIC}=n\log(S_e/n)+(p+1)\log n$ を使い、$\mathrm{BIC}_A-\mathrm{BIC}_B$ を小数第2位まで求めよ。
+    answer: -2.56
+    tolerance: 0.01
+    hint: |
+      差は $n\log(S_{eA}/S_{eB})+(p_A-p_B)\log n$。
+    explanation: |
+      $$\mathrm{BIC}_A-\mathrm{BIC}_B=50\log\frac{200}{180}-2\log50=5.268-7.824=-2.56$$
+      負なので BIC ではモデルA（小さいモデル）を選びます。AIC（Bを選ぶ）と結論が分かれる例で、BIC の罰則の重さが効いています。
+
+  - id: q30-bic-2
+    term: bic
+    level: 基本
+    type: choice
+    question: |
+      同じパラメータ数 $k$ について、BIC の罰則 $k\log n$ が AIC の罰則 $2k$ より大きくなるのは、標本の大きさ $n$ がどの範囲のときか。
+    choices:
+      - '$n\ge8$'
+      - '$n\ge3$'
+      - '$n\ge20$'
+      - 'すべての $n\ge1$'
+    answer: 0
+    hint: |
+      $\log n>2$ を解く（自然対数）。
+    explanation: |
+      $\log n>2\iff n>e^2=7.39$ なので、$n\ge8$ で BIC の罰則のほうが大きくなります。
+      ほとんどのデータでは BIC のほうが小さいモデルを選びやすくなります。
+
+  - id: q30-bic-3
+    term: bic
+    level: 応用
+    type: truefalse
+    question: |
+      2つのモデルで $\mathrm{BIC}_1-\mathrm{BIC}_2=4$ であった。BIC を $-2\log(\text{周辺尤度})$ の近似とみなすと、モデル2のモデル1に対するベイズ因子 $p(\boldsymbol x\mid M_2)/p(\boldsymbol x\mid M_1)$ はおよそ $e^2\approx7.4$ である。
+    answer: true
+    hint: |
+      $\mathrm{BIC}_r\approx-2\log p(\boldsymbol x\mid M_r)$ を差にする。
+    explanation: |
+      $$\mathrm{BIC}_1-\mathrm{BIC}_2\approx-2\log p(\boldsymbol x\mid M_1)+2\log p(\boldsymbol x\mid M_2)=2\log\frac{p(\boldsymbol x\mid M_2)}{p(\boldsymbol x\mid M_1)}$$
+      なので、ベイズ因子は $\exp(4/2)=e^2=7.39$ です。BIC の差2〜6は「肯定的な証拠」程度の目安とされます。
+
+  - id: q30-kullback-leibler-divergence-1
+    term: kullback-leibler-divergence
+    level: 標準
+    type: numeric
+    question: |
+      真の分布 $g$ が成功確率0.5のベルヌーイ分布、モデル $f$ が成功確率0.2のベルヌーイ分布のとき、$D(g\,\|\,f)$ を小数第3位まで求めよ（自然対数）。
+    answer: 0.223
+    tolerance: 0.001
+    hint: |
+      $D(g\|f)=\sum_xg(x)\log\{g(x)/f(x)\}$ を $x=0,1$ について足す。
+    explanation: |
+      $$D(g\|f)=0.5\log\frac{0.5}{0.2}+0.5\log\frac{0.5}{0.8}=0.5\times0.9163+0.5\times(-0.4700)=0.2231$$
+      各項は負になることもありますが、和は必ず0以上です。
+
+  - id: q30-kullback-leibler-divergence-2
+    term: kullback-leibler-divergence
+    level: 応用
+    type: numeric
+    question: |
+      $g=N(0,1)$、$f=N(1,\ 2^2)$ のとき、$D(g\,\|\,f)$ を小数第3位まで求めよ。
+    answer: 0.443
+    tolerance: 0.001
+    hint: |
+      $D=E_g[\log g(X)-\log f(X)]$ に正規分布の対数密度を代入し、$E_g[X^2]=1$、$E_g[(X-1)^2]=2$ を使う。
+    explanation: |
+      $$\log\frac{g(x)}{f(x)}=\log2-\frac{x^2}{2}+\frac{(x-1)^2}{8}$$
+      期待値をとると
+      $$D(g\|f)=\log2-\frac12+\frac{2}{8}=0.6931-0.5+0.25=0.4431$$
+      一般式 $\log\frac{\sigma_2}{\sigma_1}+\frac{\sigma_1^2+(\mu_1-\mu_2)^2}{2\sigma_2^2}-\frac12$ と一致します。
+
+  - id: q30-kullback-leibler-divergence-3
+    term: kullback-leibler-divergence
+    level: 基本
+    type: truefalse
+    question: |
+      KL 情報量は対称で、成功確率0.5と0.2のベルヌーイ分布について $D(g\|f)$ と $D(f\|g)$ は等しい。
+    answer: false
+    hint: |
+      $D(\mathrm{Bern}(0.2)\,\|\,\mathrm{Bern}(0.5))$ を計算して比べる。
+    explanation: |
+      $$D(f\|g)=0.2\log\frac{0.2}{0.5}+0.8\log\frac{0.8}{0.5}=-0.1833+0.3760=0.1927$$
+      で、$D(g\|f)=0.2231$ と異なります。KL 情報量は非対称で、数学的な距離ではありません。期待値をとる分布（第1引数）が真の分布 $g$ です。
+
+  - id: q30-cross-validation-1
+    term: cross-validation
+    level: 基本
+    type: choice
+    question: |
+      $n=100$ のデータで、5分割交差検証と一個抜き交差検証（LOOCV）を行うとき、モデルを推定する回数の組（5分割, LOOCV）はどれか。
+    choices:
+      - '$(5,\ 100)$'
+      - '$(20,\ 100)$'
+      - '$(5,\ 99)$'
+      - '$(80,\ 1)$'
+    answer: 0
+    hint: |
+      $K$ 分割では、各グループを1回ずつ検証用にする。
+    explanation: |
+      5分割ではグループを1つずつ除いて5回推定し、LOOCV では1個ずつ除いて $n=100$ 回推定します。
+      20はグループの大きさ、80は1回の推定に使う訓練データの数です。
+
+  - id: q30-cross-validation-2
+    term: cross-validation
+    level: 標準
+    type: numeric
+    question: |
+      データ $y=3,\ 5,\ 7,\ 9$ を、平均で予測するモデル（訓練データの平均を予測値にする）で評価する。グループ $\{3,7\}$ と $\{5,9\}$ に分けた2分割交差検証の推定値（二乗誤差の平均）を求めよ。
+    answer: 8
+    tolerance: 0.01
+    hint: |
+      $\{3,7\}$ を予測するときは $\{5,9\}$ の平均7を、$\{5,9\}$ を予測するときは $\{3,7\}$ の平均5を使う。
+    explanation: |
+      1回目：予測値7で $(3-7)^2+(7-7)^2=16$。2回目：予測値5で $(5-5)^2+(9-5)^2=16$。
+      $$\mathrm{CV}_{(2)}=\frac{16+16}{4}=8$$
+      全データの平均6で当てはめた訓練誤差は $(9+1+1+9)/4=5$ で、交差検証のほうが大きく（厳しく）なります。
+
+  - id: q30-cross-validation-3
+    term: cross-validation
+    level: 応用
+    type: truefalse
+    question: |
+      多数の候補変数から、全データでの目的変数との相関が高い変数を選んでおき、その選んだ変数だけを使ったモデルを交差検証で評価すると、汎化誤差を小さく（楽観的に）見積もりやすい。
+    answer: true
+    hint: |
+      変数を選ぶ段階で、検証用のデータの情報を使っているか。
+    explanation: |
+      変数選択に全データ（検証用に残すべきデータも含む）を使っているので、検証用データに偶然よく合う変数が選ばれ、交差検証の誤差が楽観的になります。
+      正しくは、変数選択も含めた手順全体を、各分割の訓練データだけで行います。
+
+  - id: q30-overfitting-1
+    term: overfitting
+    level: 標準
+    type: numeric
+    question: |
+      正しく特定された線形回帰（偏り $B=0$）で、誤差分散 $\sigma^2=4$、係数 $p=10$ 個、$n=40$ とする。観測点と同じ $\boldsymbol x_i$ で新しい $y$ を予測するとき、期待汎化誤差と期待訓練誤差の差 $E[\mathrm{Err}]-E[\mathrm{err}]$ を求めよ。
+    answer: 2
+    tolerance: 0.01
+    hint: |
+      $E[\mathrm{err}]=\sigma^2(1-p/n)$、$E[\mathrm{Err}]=\sigma^2(1+p/n)$。
+    explanation: |
+      $$E[\mathrm{Err}]-E[\mathrm{err}]=\frac{2\sigma^2p}{n}=\frac{2\times4\times10}{40}=2$$
+      $E[\mathrm{err}]=3$、$E[\mathrm{Err}]=5$ で、訓練誤差は汎化誤差を4割も小さく見せます。$p/n$ が大きいほど差は大きくなります。
+
+  - id: q30-overfitting-2
+    term: overfitting
+    level: 基本
+    type: truefalse
+    question: |
+      同じデータで多項式回帰の次数を1つ上げると、訓練データでの残差平方和が増えることはない。
+    answer: true
+    hint: |
+      次数 $d$ のモデルは、次数 $d+1$ のモデルで最高次の係数を0にしたもの。
+    explanation: |
+      モデルが入れ子になっているので、大きいモデルの最小二乗解は小さいモデルの解以上に当てはまり、残差平方和は増えません。
+      そのため訓練誤差だけでは複雑さを選べず、汎化誤差（交差検証や情報量規準）で評価する必要があります。
+
+  - id: q30-bias-variance-tradeoff-1
+    term: bias-variance-tradeoff
+    level: 標準
+    type: numeric
+    question: |
+      母平均 $\theta=2$ を、$V[\bar X]=1$ の標本平均 $\bar X$ を縮めた推定量 $\hat\theta=0.5\bar X$ で推定する。$\hat\theta$ の平均二乗誤差を小数第2位まで求めよ。
+    answer: 1.25
+    tolerance: 0.005
+    hint: |
+      $\mathrm{MSE}=(\text{バイアス})^2+\text{分散}$。$E[\hat\theta]=0.5\theta$、$V[\hat\theta]=0.25V[\bar X]$。
+    explanation: |
+      バイアスは $0.5\times2-2=-1$、分散は $0.25\times1=0.25$ なので
+      $$\mathrm{MSE}=1+0.25=1.25$$
+      不偏な $\bar X$ の MSE $1$ より大きく、縮めすぎてバイアスが分散の減少を上回っています。
+
+  - id: q30-bias-variance-tradeoff-2
+    term: bias-variance-tradeoff
+    level: 応用
+    type: numeric
+    question: |
+      前問の設定（$\theta=2$、$V[\bar X]=1$）で、$\hat\theta=c\bar X$ の平均二乗誤差を最小にする $c$ を使ったときの最小の MSE を小数第2位まで求めよ。
+    answer: 0.80
+    tolerance: 0.005
+    hint: |
+      $\mathrm{MSE}(c)=(c-1)^2\theta^2+c^2v$ を $c$ で微分する。
+    explanation: |
+      $\mathrm{MSE}(c)=4(c-1)^2+c^2$ を微分して0とおくと $8(c-1)+2c=0$、$c^*=0.8$ です（一般に $c^*=\theta^2/(\theta^2+v)$）。
+      $$\mathrm{MSE}(0.8)=4\times0.04+0.64=0.80$$
+      少し偏りを許すと、不偏推定量（MSE 1）より誤差が小さくなります。ただし $c^*$ は未知の $\theta$ を含むので、実際にはデータで調整します。
+
+  - id: q30-bias-variance-tradeoff-3
+    term: bias-variance-tradeoff
+    level: 基本
+    type: truefalse
+    question: |
+      $k$ 近傍法の回帰で $k$（平均をとる近傍の数）を大きくすると、予測のバリアンスは小さくなり、バイアスは大きくなる傾向がある。
+    answer: true
+    hint: |
+      $k$ を大きくすると、予測は滑らかになるか、細かくなるか。
+    explanation: |
+      多くの点を平均するほど予測値のばらつきは小さくなりますが、遠くの点まで混ぜるので真の関数の細かい形からはずれます（バイアス増）。
+      $k=1$ は最も複雑（バリアンス大）、$k=n$ は全体の平均で最も単純（バイアス大）です。
+
+  - id: q30-mallows-cp-1
+    term: mallows-cp
+    level: 標準
+    type: numeric
+    question: |
+      $n=30$ の回帰で、全変数モデル（係数6個）の残差平方和が $96$ である。係数3個の候補モデルの残差平方和が $120$ のとき、そのモデルの $C_p$ を求めよ。
+    answer: 6
+    tolerance: 0.01
+    hint: |
+      $\hat\sigma^2=S_e(p_{\max})/(n-p_{\max})$、$C_p=S_e(p)/\hat\sigma^2-n+2p$。
+    explanation: |
+      $\hat\sigma^2=96/24=4$ なので
+      $$C_p=\frac{120}{4}-30+2\times3=30-30+6=6$$
+      偏りのないモデルなら $C_p\approx p=3$ のはずなので、$C_p=6$ は必要な変数が抜けている（偏りがある）ことを示唆します。
+
+  - id: q30-mallows-cp-2
+    term: mallows-cp
+    level: 基本
+    type: truefalse
+    question: |
+      $\hat\sigma^2$ を全変数モデル（係数 $p_{\max}$ 個）から求めるとき、全変数モデル自身の $C_p$ は、データによらず常に $p_{\max}$ になる。
+    answer: true
+    hint: |
+      $\hat\sigma^2=S_e(p_{\max})/(n-p_{\max})$ を $C_p$ の式に入れる。
+    explanation: |
+      $S_e(p_{\max})/\hat\sigma^2=n-p_{\max}$ なので
+      $$C_{p_{\max}}=(n-p_{\max})-n+2p_{\max}=p_{\max}$$
+      全変数モデルはこの基準では必ず「偏りなし」に見えるので、他のモデルの $C_p$ と比べて選びます。
+
+  - id: q30-mallows-cp-3
+    term: mallows-cp
+    level: 応用
+    type: choice
+    question: |
+      $n=30$ の回帰で、係数の数 $p$ と残差平方和 $S_e$ が $(2,160),\ (3,120),\ (4,100),\ (5,98),\ (6,96)$ の5つのモデル（$p=6$ が全変数モデル）がある。$C_p$ 最小のモデルはどれか。
+    choices:
+      - '$p=4$'
+      - '$p=6$'
+      - '$p=3$'
+      - '$p=5$'
+    answer: 0
+    hint: |
+      $\hat\sigma^2=96/24=4$ を使って、5つの $C_p$ を計算する。
+    explanation: |
+      $C_p$ は順に $40-30+4=14$、$30-30+6=6$、$25-30+8=3$、$24.5-30+10=4.5$、$6$ です。
+      最小は $p=4$ の $3$ です。残差平方和が最小の全変数モデル（$p=6$）は、罰則 $2p$ のために選ばれません。
+
+  - id: q30-model-selection-1
+    term: model-selection
+    level: 基本
+    type: truefalse
+    question: |
+      自由度調整済み決定係数 $\bar R^2=1-\dfrac{S_e/(n-p)}{S_T/(n-1)}$ は、説明変数を1つ加えると必ず大きくなる。
+    answer: false
+    hint: |
+      変数を加えると $S_e$ は減るが、$n-p$ も減る。
+    explanation: |
+      変数を加えると $S_e$ は減りますが、分母の $n-p$ も1減ります。$S_e$ の減り方が小さいと $S_e/(n-p)$ が増え、$\bar R^2$ は小さくなります。
+      必ず大きくなる（減らない）のは、調整しないふつうの決定係数 $R^2$ です。
+
+  - id: q30-model-selection-2
+    term: model-selection
+    level: 標準
+    type: numeric
+    question: |
+      $n=30$、係数 $p=4$ 個（切片を含む）の回帰で、残差平方和 $S_e=100$、総平方和 $S_T=400$ であった。自由度調整済み決定係数を小数第3位まで求めよ。
+    answer: 0.721
+    tolerance: 0.001
+    hint: |
+      $\bar R^2=1-\dfrac{S_e/(n-p)}{S_T/(n-1)}$
+    explanation: |
+      $$\bar R^2=1-\frac{100/26}{400/29}=1-\frac{3.846}{13.793}=1-0.2788=0.721$$
+      調整しない決定係数は $1-100/400=0.75$ です。
+
+  - id: q30-expected-log-likelihood-1
+    term: expected-log-likelihood
+    level: 標準
+    type: choice
+    question: |
+      モデルが正しく $n$ が大きいとき、最大対数尤度 $\ell(\hat{\boldsymbol\theta})$ は、平均対数尤度の $n$ 倍 $nE_Z[\log f(Z\mid\hat{\boldsymbol\theta})]$ を平均でどれだけ上回るか（$k$ はパラメータ数）。
+    choices:
+      - '$k$'
+      - '$k/2$'
+      - '$2k$'
+      - '$k\log n$'
+    answer: 0
+    hint: |
+      AIC は $-2\times$（偏りを補正した対数尤度）である。
+    explanation: |
+      偏りは約 $k$ です。これを補正した $\ell(\hat{\boldsymbol\theta})-k$ に $-2$ を掛けると $\mathrm{AIC}=-2\ell+2k$ になります。
+      $2k$ は AIC の罰則（$-2$ 倍した後）、$k\log n$ は BIC の罰則です。
+
+  - id: q30-expected-log-likelihood-2
+    term: expected-log-likelihood
+    level: 応用
+    type: truefalse
+    question: |
+      $X_1,\dots,X_n$ が i.i.d. $N(\mu,1)$（分散は既知）で、$\hat\mu=\bar X$ とする。このとき偏り $E\big[\ell(\hat\mu)-nE_Z[\log f(Z\mid\hat\mu)]\big]$ は、$n$ によらずちょうど $1$ である。
+    answer: true
+    hint: |
+      $E_Z[(Z-\hat\mu)^2]=1+(\hat\mu-\mu)^2$、$E[\sum(X_i-\bar X)^2]=n-1$、$E[(\bar X-\mu)^2]=1/n$ を使う。
+    explanation: |
+      定数 $-\frac n2\log2\pi$ は打ち消し合い、
+      $$\ell(\hat\mu)-nE_Z[\log f]=-\frac12\sum(X_i-\bar X)^2+\frac n2\{1+(\bar X-\mu)^2\}$$
+      期待値は $-\frac{n-1}{2}+\frac n2+\frac n2\cdot\frac1n=1$ で、パラメータ数 $k=1$ と正確に一致します。一般には $k$ は大きい $n$ での近似です。
+
+  - id: q30-leave-one-out-cv-1
+    term: leave-one-out-cv
+    level: 標準
+    type: numeric
+    question: |
+      最小二乗法で当てはめた線形回帰で、ある観測の残差が $e_i=-1.2$、てこ比が $h_{ii}=0.4$ であった。この観測を除いて推定し直したモデルでの予測残差 $y_i-\hat y_{(-i)}$ を小数第1位まで求めよ。
+    answer: -2.0
+    tolerance: 0.05
+    hint: |
+      $y_i-\hat y_{(-i)}=e_i/(1-h_{ii})$
+    explanation: |
+      $$y_i-\hat y_{(-i)}=\frac{-1.2}{1-0.4}=-2.0$$
+      てこ比が大きい観測ほど、自分自身に回帰直線を引き寄せているので、除いたときの予測残差が大きくなります。
+
+  - id: q30-leave-one-out-cv-2
+    term: leave-one-out-cv
+    level: 応用
+    type: numeric
+    question: |
+      データ $y=3,\ 5,\ 7,\ 9$ を平均だけのモデル（切片のみの回帰）で当てはめる。一個抜き交差検証の推定値 $\mathrm{CV}_{(n)}$ を小数第2位まで求めよ。
+    answer: 8.89
+    tolerance: 0.01
+    hint: |
+      切片のみの回帰では $h_{ii}=1/n$。残差は $-3,-1,1,3$。
+    explanation: |
+      $h_{ii}=1/4$ なので予測残差は $e_i/(3/4)$ で $-4,\ -4/3,\ 4/3,\ 4$ です。
+      $$\mathrm{CV}_{(4)}=\frac{16+16/9+16/9+16}{4}=\frac{35.56}{4}=8.89$$
+      1個除いた3個の平均で予測して直接計算しても同じになります（例：3 を除くと平均7、誤差 $-4$）。
+
+  - id: q30-generalization-error-1
+    term: generalization-error
+    level: 標準
+    type: numeric
+    question: |
+      係数 $p=5$ 個の線形回帰を $n=50$ のデータに当てはめ、訓練誤差（残差の二乗の平均）が $1.80$ であった。誤差分散を $\hat\sigma^2=2$ と見積もり、楽観性 $2\sigma^2p/n$ を補正した汎化誤差（観測点と同じ $\boldsymbol x$ での予測誤差）の推定値を小数第2位まで求めよ。
+    answer: 2.20
+    tolerance: 0.005
+    hint: |
+      汎化誤差 ≈ 訓練誤差 ＋ $2\hat\sigma^2p/n$。
+    explanation: |
+      $$1.80+\frac{2\times2\times5}{50}=1.80+0.40=2.20$$
+      この補正は $C_p$ や AIC と同じ考え方です。
+
+  - id: q30-generalization-error-2
+    term: generalization-error
+    level: 基本
+    type: truefalse
+    question: |
+      テストデータでの誤差を見てはモデルを修正する、という作業を何度もくり返すと、最後のモデルのテスト誤差は汎化誤差を小さく（楽観的に）見積もるようになる。
+    answer: true
+    hint: |
+      テストデータが、モデルを選ぶための情報として使われていないか。
+    explanation: |
+      テスト誤差でモデルを選ぶと、テストデータに偶然よく合うモデルが選ばれ、テストデータが実質的に訓練（選択）に使われます。
+      その結果、テスト誤差は新しいデータでの誤差より小さくなりがちです。選択は検証データで行い、テストデータは最後に1回だけ使います。
+
+  - id: q30-information-criteria-comparison-1
+    term: information-criteria-comparison
+    level: 標準
+    type: numeric
+    question: |
+      3つの候補モデルの AIC が $100,\ 101.5,\ 104$ であった。AIC 最小のモデルの赤池ウェイトを小数第3位まで求めよ。
+    answer: 0.622
+    tolerance: 0.001
+    hint: |
+      $\Delta=0,\ 1.5,\ 4$ として $w_r=\exp(-\Delta_r/2)/\sum_s\exp(-\Delta_s/2)$。
+    explanation: |
+      $$w_1=\frac{1}{1+e^{-0.75}+e^{-2}}=\frac{1}{1+0.4724+0.1353}=\frac{1}{1.6077}=0.622$$
+      2番目のモデルも $0.294$ の重みがあり、最良のモデルが決定的に良いとはいえません。
+
+  - id: q30-training-test-split-1
+    term: training-test-split
+    level: 基本
+    type: truefalse
+    question: |
+      変数を標準化するための平均と標準偏差を全データで計算してから訓練データとテストデータに分けると、テストデータの情報が訓練に漏れ込む。
+    answer: true
+    hint: |
+      標準化に使った平均と標準偏差には、どのデータの値が含まれているか。
+    explanation: |
+      全データの平均・標準偏差にはテストデータの値が含まれるので、前処理の段階でテストデータの情報を使ったことになります（データの漏れ）。
+      平均・標準偏差は訓練データだけで計算し、その値でテストデータも変換します。
+
+  - id: q30-aicc-1
+    term: aicc
+    level: 標準
+    type: numeric
+    question: |
+      パラメータ数 $k=5$、標本の大きさ $n=20$ のとき、AICc と AIC の差 $\mathrm{AICc}-\mathrm{AIC}$ を小数第2位まで求めよ。
+    answer: 4.29
+    tolerance: 0.01
+    hint: |
+      $\mathrm{AICc}=\mathrm{AIC}+\dfrac{2k(k+1)}{n-k-1}$
+    explanation: |
+      $$\frac{2\times5\times6}{20-5-1}=\frac{60}{14}=4.29$$
+      $n=200$ なら $60/194=0.31$ で、$n$ が大きいと AIC とほぼ同じになります。小標本では AICc のほうが過学習を防ぎます。
+
+  - id: q30-tic-ebic-1
+    term: tic-ebic
+    level: 標準
+    type: truefalse
+    question: |
+      モデルが真の分布を含んでいる（正しく特定されている）とき、TIC の罰則 $2\,\mathrm{tr}(\hat I\hat J^{-1})$ は近似的に $2k$ となり、TIC は AIC とほぼ一致する。
+    answer: true
+    hint: |
+      モデルが正しいとき、スコアの外積の期待値 $I$ と、対数尤度の2階微分の期待値の符号反転 $J$ の関係は何か。
+    explanation: |
+      モデルが正しければ $I=J$（どちらもフィッシャー情報量）なので $IJ^{-1}$ は $k$ 次の単位行列になり、$\mathrm{tr}(IJ^{-1})=k$ で、罰則は $2k$ になります。
+      モデルが誤っているときは $I\ne J$ で、TIC は AIC と異なる罰則を与えます。

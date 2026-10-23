@@ -4,11 +4,11 @@
   "ok": true
  },
  "q05-bernoulli-distribution-2": {
-  "hash": "d0e0d001958057fa",
+  "hash": "78d74602c5c583cd",
   "ok": true
  },
  "q05-binomial-distribution-1": {
-  "hash": "cb48886ce8c41b1f",
+  "hash": "d03afaa9941dff6b",
   "ok": true
  },
  "q05-binomial-distribution-2": {
@@ -16,11 +16,11 @@
   "ok": true
  },
  "q05-binomial-distribution-3": {
-  "hash": "9f220da4756e38fb",
+  "hash": "071ed1d03d2c297b",
   "ok": true
  },
  "q05-finite-population-correction-1": {
-  "hash": "919fdfca5ebf698c",
+  "hash": "0aaa81381a568435",
   "ok": true
  },
  "q05-finite-population-correction-2": {
@@ -28,7 +28,7 @@
   "ok": true
  },
  "q05-fisher-exact-test-1": {
-  "hash": "eb5de5d3bbc7ecfc",
+  "hash": "1ecac974fff6afce",
   "ok": true
  },
  "q05-fisher-exact-test-2": {
@@ -36,11 +36,11 @@
   "ok": true
  },
  "q05-geometric-distribution-1": {
-  "hash": "aa44be103b6b0338",
+  "hash": "32c69adf430b9e25",
   "ok": true
  },
  "q05-geometric-distribution-2": {
-  "hash": "73750e1dbdd75014",
+  "hash": "e4b4646f4ccbed23",
   "ok": true
  },
  "q05-geometric-distribution-3": {
@@ -48,11 +48,11 @@
   "ok": true
  },
  "q05-hypergeometric-distribution-1": {
-  "hash": "9f98a58acb7c7b99",
+  "hash": "9c81b28647ae876f",
   "ok": true
  },
  "q05-hypergeometric-distribution-2": {
-  "hash": "50f56ca99ddfc1f1",
+  "hash": "090c0127d93a7a0b",
   "ok": true
  },
  "q05-hypergeometric-distribution-3": {
@@ -60,7 +60,7 @@
   "ok": true
  },
  "q05-multinomial-distribution-1": {
-  "hash": "a01f66153a7b37f7",
+  "hash": "dbca06d00dfc3fd7",
   "ok": true
  },
  "q05-multinomial-distribution-2": {
@@ -68,7 +68,7 @@
   "ok": true
  },
  "q05-negative-binomial-distribution-1": {
-  "hash": "bcf7494d8b869671",
+  "hash": "f942e9f1c289cec7",
   "ok": true
  },
  "q05-negative-binomial-distribution-2": {
@@ -76,15 +76,15 @@
   "ok": true
  },
  "q05-poisson-distribution-1": {
-  "hash": "dc158098545f3463",
+  "hash": "b3c66d98ad7c53a6",
   "ok": true
  },
  "q05-poisson-distribution-2": {
-  "hash": "af1dacbfe129e6a4",
+  "hash": "c995b531ac7e5f05",
   "ok": true
  },
  "q05-poisson-distribution-3": {
-  "hash": "119ea92dbf1e491f",
+  "hash": "bed35844e93a73f5",
   "ok": true
  }
 }

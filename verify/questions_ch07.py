@@ -141,9 +141,9 @@ q.num("q07-normal-approximation-binomial-poisson-3", 1 - 0.9131)
 q.check("q07-normal-approximation-binomial-poisson-3", abs(_st.norm.cdf(_zz) - 0.087) < 0.001 and abs(_st.binom.cdf(40, _n, _p) - 0.084) < 0.0005, "丸めない z でも 0.087、正確値 約0.084")
 
 # --- 極値分布（用語の見直しで追加） ---
-_H = sum(1 / k for k in range(1, 1001))
-q.num("q07-extreme-value-distribution-1", _np.log(1000) + _np.euler_gamma)
-q.check("q07-extreme-value-distribution-1", abs(_H - 7.4855) < 1e-4 and abs(_st.gumbel_r.mean() - _np.euler_gamma) < 1e-12, "正確な E[M]=H_1000=7.4855、グンベルの平均=γ")
+_H = sum(1 / k for k in range(1, 501))
+q.num("q07-extreme-value-distribution-1", _np.log(500) + _np.euler_gamma)
+q.check("q07-extreme-value-distribution-1", abs(_H - 6.7928) < 1e-4 and abs(_st.gumbel_r.mean() - _np.euler_gamma) < 1e-12 and round(_H, 2) == 6.79, "正確な E[M]=H_500=6.7928、グンベルの平均=γ、近似と正確値が同じ6.79に丸まる（n=1000 は 7.485 で丸めの境目だったため変更）")
 _xg = _np.array([-2.0, -0.5, -0.1])
 _lim = [(1 + x / 10 ** 6) ** (10 ** 6) for x in _xg]
 q.check("q07-extreme-value-distribution-2", _np.allclose(_lim, _np.exp(_xg), atol=1e-5) and _np.allclose(_np.exp(-(-_xg) ** 1), _st.weibull_max(1).cdf(_xg)), "U(0,1) の最大値の極限 e^x（x<0）はワイブル型 α=1")

@@ -12,7 +12,7 @@
   "ok": true
  },
  "q09-ci-mean-unknown-variance-2": {
-  "hash": "714eaa312645f169",
+  "hash": "bf1afd045bf091f3",
   "ok": true
  },
  "q09-ci-paired-difference-1": {
@@ -60,7 +60,7 @@
   "ok": true
  },
  "q09-clopper-pearson-interval-1": {
-  "hash": "3cd18614a0108163",
+  "hash": "71a1a747e227b1c1",
   "ok": true
  },
  "q09-confidence-coefficient-1": {

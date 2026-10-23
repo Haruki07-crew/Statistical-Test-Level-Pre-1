@@ -3,19 +3,22 @@ questions:
   - id: q21-simple-random-sampling-1
     term: simple-random-sampling
     level: 基本
-    type: numeric
+    type: choice
     question: |
       大きさ $N=500$ の母集団（母分散 $S^2=\frac{1}{N-1}\sum(Y_i-\bar Y)^2=36$）から $n=50$ を非復元の単純無作為抽出で選ぶ。
-      標本平均の標準誤差 $\sqrt{V(\bar y)}$ を小数第3位まで求めよ。
-    answer: 0.805
-    tolerance: 0.001
+      標本平均の標準誤差 $\sqrt{V(\bar y)}$ に最も近い値はどれか。
+    choices:
+      - '$0.805$'
+      - '$0.849$'
+      - '$0.764$'
+      - '$0.648$'
+    answer: 0
     hint: |
-      $V(\bar y)=(1-f)S^2/n$、$f=n/N$。
+      $V(\bar y)=(1-f)S^2/n$、$f=n/N$。標準誤差はその平方根。
     explanation: |
       $f=50/500=0.1$ なので
       $$V(\bar y)=0.9\times\frac{36}{50}=0.648,\qquad\sqrt{0.648}=0.805$$
-      です。有限母集団修正を忘れると $\sqrt{36/50}=0.849$ になります。
-
+      です。$0.849=\sqrt{36/50}$ は有限母集団修正を忘れた値、$0.764=0.9\times0.849$ は修正項 $1-f$ を平方根の外で掛けた誤り、$0.648$ は分散のままで平方根をとり忘れた値です。
   - id: q21-simple-random-sampling-2
     term: simple-random-sampling
     level: 応用
@@ -183,24 +186,28 @@ questions:
   - id: q21-neyman-allocation-1
     term: neyman-allocation
     level: 標準
-    type: numeric
+    type: choice
     question: |
-      2層の母集団で、層1は $N_1=600$、$S_1=10$、層2は $N_2=400$、$S_2=20$ である。全体で $n=50$ をネイマン配分するときの層2の標本サイズを小数第1位まで求めよ（整数に丸めない）。
-    answer: 28.6
-    tolerance: 0.05
+      2層の母集団で、層1は $N_1=600$、$S_1=10$、層2は $N_2=400$、$S_2=20$ である。全体で $n=50$ をネイマン配分するときの層2の標本サイズ（整数に丸める前の値）はどれか。
+    choices:
+      - '$28.6$'
+      - '$20.0$'
+      - '$33.3$'
+      - '$36.4$'
+    answer: 0
     hint: |
       $n_h=n\,N_hS_h/\sum_kN_kS_k$。
     explanation: |
       $N_1S_1=6000$、$N_2S_2=8000$ なので
       $$n_2=50\times\frac{8000}{14000}=28.57$$
-      です。比例配分（$n_2=20$）よりも、ばらつきの大きい層2に多く配ります。
-
+      です。$20.0$ は比例配分（$N_h$ に比例）、$33.3$ は $S_h$ だけに比例させた値、$36.4$ は $N_hS_h^2$ に比例させた（分散で配った）誤りです。
+      ネイマン配分は比例配分よりも、ばらつきの大きい層2に多く配ります。
   - id: q21-neyman-allocation-2
     term: neyman-allocation
     level: 応用
     type: numeric
     question: |
-      前問と同じ母集団（$N=1000$、$W_1=0.6$、$S_1=10$、$W_2=0.4$、$S_2=20$、$n=50$）で、ネイマン配分のときの層化推定量の分散
+      2層の母集団（$N=1000$、$W_1=0.6$、$S_1=10$、$W_2=0.4$、$S_2=20$、$n=50$）で、ネイマン配分のときの層化推定量の分散
       $V_{\text{opt}}=\frac1n\left(\sum W_hS_h\right)^2-\frac1N\sum W_hS_h^2$ を小数第2位まで求めよ。
     answer: 3.7
     tolerance: 0.005
@@ -363,35 +370,42 @@ questions:
   - id: q21-regression-estimation-1
     term: regression-estimation
     level: 標準
-    type: numeric
+    type: choice
     question: |
       補助変数 $x$ の母平均が $\bar X=50$ と分かっている。単純無作為抽出の標本で $\bar y=36$、$\bar x=45$、標本の回帰係数 $b=0.6$ であった。
-      回帰推定値 $\bar y_{lr}$ を求めよ。
-    answer: 39
-    tolerance: 0.05
+      回帰推定値 $\bar y_{lr}$ はどれか。
+    choices:
+      - '$39$'
+      - '$40$'
+      - '$33$'
+      - '$41$'
+    answer: 0
     hint: |
       $\bar y_{lr}=\bar y+b(\bar X-\bar x)$。
     explanation: |
       $$\bar y_{lr}=36+0.6\times(50-45)=39$$
-      です。比推定 $40$ は「原点を通る直線（傾き $\bar y/\bar x=0.8$）」で補正するのに対し、回帰推定は推定した傾き $0.6$ で補正します。
-      回帰直線が原点から離れているときは回帰推定のほうが精度が高くなります。
-
+      です。$40$ は比推定 $(\bar y/\bar x)\bar X$ の値、$33$ は $\bar x-\bar X$ と符号を逆にした誤り、$41$ は傾きを1として差だけを足した値です。
+      比推定は「原点を通る直線（傾き $\bar y/\bar x=0.8$）」で補正するのに対し、回帰推定は推定した傾き $0.6$ で補正します。回帰直線が原点から離れているときは回帰推定のほうが精度が高くなります。
   - id: q21-design-effect-1
     term: design-effect
     level: 標準
-    type: numeric
+    type: choice
     question: |
       30集落から各20人、合計600人を調べる調査で、級内相関係数が $\rho=0.05$ であった。
-      計画効果を $\mathrm{deff}\approx1+(\bar M-1)\rho$ で近似するとき、有効標本サイズを小数第1位まで求めよ。
-    answer: 307.7
-    tolerance: 0.05
+      計画効果を $\mathrm{deff}\approx1+(\bar M-1)\rho$ で近似するとき、有効標本サイズに最も近いものはどれか。
+    choices:
+      - '$308$ 人'
+      - '$300$ 人'
+      - '$1170$ 人'
+      - '$30$ 人'
+    answer: 0
     hint: |
       $n_{\text{eff}}=n/\mathrm{deff}$。
     explanation: |
       $\mathrm{deff}=1+19\times0.05=1.95$ なので
       $$n_{\text{eff}}=\frac{600}{1.95}=307.7$$
-      です。小さな級内相関でも集落が大きいと、600人の調査が単純無作為抽出の約308人分の精度しかもたなくなります。
-
+      です。$300$ は $\bar M-1$ を $\bar M$ とした誤り、$1170$ は deff で割らずに掛けた誤り、$30$ は集落の数です。
+      小さな級内相関でも集落が大きいと、600人の調査が単純無作為抽出の約308人分の精度しかもたなくなります。
   - id: q21-design-effect-2
     term: design-effect
     level: 応用
@@ -455,18 +469,17 @@ questions:
   - id: q21-nonresponse-bias-1
     term: nonresponse-bias
     level: 標準
-    type: numeric
+    type: truefalse
     question: |
       ある母集団の40%は調査に答えない層である。回答する層の平均は60、回答しない層の平均は45である。
-      回答者の平均で母平均を推定したときの偏りを求めよ。
-    answer: 6
-    tolerance: 0.05
+      回答者の平均で母平均を推定すると、偏りは $60-45=15$（15だけ過大）になる。
+    answer: false
     hint: |
-      $\mathrm{Bias}=W_{nr}(\bar Y_r-\bar Y_{nr})$。
+      $\mathrm{Bias}=W_{nr}(\bar Y_r-\bar Y_{nr})$。母平均 $\bar Y$ は2つの層の加重平均。
     explanation: |
-      $$\mathrm{Bias}=0.4\times(60-45)=6$$
-      です。母平均は $0.6\times60+0.4\times45=54$ なので、回答者の平均60は6だけ過大になります。
-
+      母平均は $0.6\times60+0.4\times45=54$ なので、偏りは
+      $$\mathrm{Bias}=60-54=0.4\times(60-45)=6$$
+      です。$15$ は回答者と無回答者の平均の差そのもので、無回答の割合 $W_{nr}=0.4$ を掛け忘れています。
   - id: q21-nonresponse-bias-2
     term: nonresponse-bias
     level: 基本

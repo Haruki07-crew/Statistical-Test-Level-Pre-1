@@ -8,7 +8,7 @@
   "ok": true
  },
  "q21-design-effect-1": {
-  "hash": "338bcb5808c23ebf",
+  "hash": "9e9451fc1e4ac371",
   "ok": true
  },
  "q21-design-effect-2": {
@@ -36,11 +36,11 @@
   "ok": true
  },
  "q21-neyman-allocation-1": {
-  "hash": "af5f9209d8f8d568",
+  "hash": "ba4cfcda33019412",
   "ok": true
  },
  "q21-neyman-allocation-2": {
-  "hash": "706f4f762057c685",
+  "hash": "93e0c413077799ac",
   "ok": true
  },
  "q21-neyman-allocation-3": {
@@ -48,7 +48,7 @@
   "ok": true
  },
  "q21-nonresponse-bias-1": {
-  "hash": "d0e976c026f31db3",
+  "hash": "e8c77c878850049a",
   "ok": true
  },
  "q21-nonresponse-bias-2": {
@@ -80,7 +80,7 @@
   "ok": true
  },
  "q21-regression-estimation-1": {
-  "hash": "d8a0b9d4cd533db9",
+  "hash": "abeff9f2265c991d",
   "ok": true
  },
  "q21-sampling-and-nonsampling-error-1": {
@@ -96,7 +96,7 @@
   "ok": true
  },
  "q21-simple-random-sampling-1": {
-  "hash": "aa760d57daff9996",
+  "hash": "b0a0b8540e3765ba",
   "ok": true
  },
  "q21-simple-random-sampling-2": {

@@ -107,7 +107,7 @@ questions:
     type: numeric
     question: |
       事象 $A, B$ は独立で、$P(A)=0.4$、$P(B)=0.5$ である。
-      $P(A\cup B)$ を小数第2位まで求めよ。
+      $P(A\cup B)$ を小数第2位まで（四捨五入）求めよ。
     answer: 0.70
     tolerance: 0.005
     hint: |

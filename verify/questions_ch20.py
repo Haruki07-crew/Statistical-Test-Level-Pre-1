@@ -32,7 +32,7 @@ q.check("q20-sum-of-squares-decomposition-2", ok, "ランダムなデータで S
 
 # --- 繰り返しのある二元配置 ---
 a, b, r = 3, 4, 2
-q.check("q20-two-way-anova-with-replication-1", ((a - 1) * (b - 1), a * b * (r - 1)) == (6, 12) and (a - 1) + (b - 1) + 6 + 12 == a * b * r - 1, "(6,12)")
+q.check("q20-two-way-anova-with-replication-1", ((a - 1) * (b - 1), a * b * (r - 1)) == (6, 12) and (a - 1) + (b - 1) + 6 + 12 == a * b * r - 1 and (a - 1) * (b - 1) + a * b * (r - 1) == 18, "(6,12)、誤答 18 はプールした自由度")
 Y = np.array([[[3, 5], [6, 8]], [[5, 7], [12, 14.]]])  # [A][B][rep]
 cm = Y.mean(2); gm = Y.mean(); am = Y.mean((1, 2)); bm = Y.mean((0, 2))
 SAB = 2 * np.sum((cm - am[:, None] - bm[None, :] + gm) ** 2); SE = np.sum((Y - cm[:, :, None]) ** 2)

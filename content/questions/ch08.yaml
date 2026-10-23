@@ -39,7 +39,7 @@ questions:
     type: numeric
     question: |
       $X_1,\dots,X_4$ を一様分布 $U(0,\theta)$ からの i.i.d. 標本、$M=\max_iX_i$ とする。
-      $cM$ が $\theta$ の不偏推定量となる定数 $c$ を小数第2位まで求めよ。
+      $cM$ が $\theta$ の不偏推定量となる定数 $c$ を小数第2位まで（四捨五入）求めよ。
     answer: 1.25
     tolerance: 0.005
     hint: |
@@ -101,7 +101,7 @@ questions:
     type: numeric
     question: |
       $X_1,\dots,X_{10}$ を $N(\mu,\sigma^2)$（$\sigma^2$ 既知）からの i.i.d. 標本とする。$\mu$ の不偏推定量 $T=(X_1+X_2)/2$ の効率
-      $\dfrac{1/\{nI(\mu)\}}{V[T]}$ を小数第2位まで求めよ。
+      $\dfrac{1/\{nI(\mu)\}}{V[T]}$ を小数第2位まで（四捨五入）求めよ。
     answer: 0.2
     tolerance: 0.005
     hint: |
@@ -117,7 +117,7 @@ questions:
     type: numeric
     question: |
       正規母集団 $N(\mu,\sigma^2)$ からの大標本で、標本平均に対する標本中央値の漸近相対効率
-      $\lim_{n\to\infty}V[\bar X]/V[\text{中央値}]$ を小数第3位まで求めよ。
+      $\lim_{n\to\infty}V[\bar X]/V[\text{中央値}]$ を小数第3位まで（四捨五入）求めよ。
     answer: 0.637
     tolerance: 0.001
     hint: |
@@ -132,7 +132,7 @@ questions:
     level: 基本
     type: numeric
     question: |
-      ある推定量の偏りが $0.2$、分散が $0.05$ である。平均二乗誤差（MSE）を小数第2位まで求めよ。
+      ある推定量の偏りが $0.2$、分散が $0.05$ である。平均二乗誤差（MSE）を小数第2位まで（四捨五入）求めよ。
     answer: 0.09
     tolerance: 0.005
     hint: |
@@ -147,7 +147,7 @@ questions:
     type: numeric
     question: |
       成功確率 $p$ のベルヌーイ試行を $n=96$ 回行い、成功回数を $Y$ とする。推定量 $\tilde p=\dfrac{Y+2}{n+4}$ の、$p=0.3$ における
-      平均二乗誤差を小数第5位まで求めよ。
+      平均二乗誤差を小数第5位まで（四捨五入）求めよ。
     answer: 0.00208
     tolerance: 0.00001
     hint: |
@@ -175,7 +175,7 @@ questions:
     explanation: |
       $$\mathrm{MSE}(c)=c^2\cdot2(n-1)\sigma^4+\{c(n-1)-1\}^2\sigma^4$$
       を $c$ で微分して0とおくと $2c+c(n-1)-1=0$、つまり $c=\frac1{n+1}$ です。
-      $\frac1{n-1}$ は不偏（MSE 最小ではない）、$\frac1n$ は最尤推定量です。MSE は $\frac1{n+1}<\frac1n<\frac1{n-1}$ の順に小さくなります。
+      $\frac1{n-1}$ は不偏（MSE 最小ではない）、$\frac1n$ は最尤推定量です。MSE は $c=\frac1{n+1}$ のときが最も小さく、$c=\frac1n$、$c=\frac1{n-1}$ の順に大きくなります。
 
   - id: q08-likelihood-function-1
     term: likelihood-function
@@ -195,7 +195,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      ポアソン分布 $Po(\lambda)$ からの観測値 $2,0,3,1$ が得られた。尤度比 $L(2)/L(1)$ を小数第3位まで求めよ。
+      ポアソン分布 $Po(\lambda)$ からの観測値 $2,0,3,1$ が得られた。尤度比 $L(2)/L(1)$ を小数第3位まで（四捨五入）求めよ。
     answer: 1.172
     tolerance: 0.001
     hint: |
@@ -211,7 +211,7 @@ questions:
     type: numeric
     question: |
       レート $\lambda$ の指数分布（密度 $\lambda e^{-\lambda x}$, $x>0$）から、観測値 $1.2,\ 3.1,\ 0.7,\ 4.0,\ 3.5$ を得た。
-      $\lambda$ の最尤推定値を小数第2位まで求めよ。
+      $\lambda$ の最尤推定値を小数第2位まで（四捨五入）求めよ。
     answer: 0.4
     tolerance: 0.005
     hint: |
@@ -225,7 +225,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      $N(\mu,\sigma^2)$（両方未知）から観測値 $4,\ 7,\ 5,\ 9,\ 5$ を得た。$\sigma^2$ の最尤推定値を小数第1位まで求めよ。
+      $N(\mu,\sigma^2)$（両方未知）から観測値 $4,\ 7,\ 5,\ 9,\ 5$ を得た。$\sigma^2$ の最尤推定値を小数第1位まで（四捨五入）求めよ。
     answer: 3.2
     tolerance: 0.05
     hint: |
@@ -298,7 +298,7 @@ questions:
       - '$1.25$'
     answer: 0
     hint: |
-      $I(p)=\dfrac{1}{p(1-p)}$。
+      $\log f(x;p)=x\log p+(1-x)\log(1-p)$ を $p$ で2回微分し、期待値をとって符号を反転する。
     explanation: |
       $$I(0.2)=\frac{1}{0.2\times0.8}=6.25$$
       $0.16$ は分散 $p(1-p)$ そのもので、情報量はその逆数です。$5=1/p$、$1.25=1/(1-p)$ は一方の項だけを使った誤りです。
@@ -308,7 +308,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      ポアソン分布 $Po(\lambda)$ からの大きさ $n=10$ の i.i.d. 標本がもつ $\lambda$ についてのフィッシャー情報量を、$\lambda=2.5$ で求めよ（小数第1位まで）。
+      ポアソン分布 $Po(\lambda)$ からの大きさ $n=10$ の i.i.d. 標本がもつ $\lambda$ についてのフィッシャー情報量を、$\lambda=2.5$ で求めよ（小数第1位まで（四捨五入））。
     answer: 4
     tolerance: 0.05
     hint: |
@@ -343,7 +343,7 @@ questions:
     type: numeric
     question: |
       平均 $\theta$ の指数分布（密度 $\frac1\theta e^{-x/\theta}$）からの i.i.d. 標本 $n=25$ 個について、$\theta$ の不偏推定量の分散の
-      クラメール・ラオの下限を $\theta=2$ で求めよ（小数第2位まで）。
+      クラメール・ラオの下限を $\theta=2$ で求めよ（小数第2位まで（四捨五入））。
     answer: 0.16
     tolerance: 0.005
     hint: |
@@ -359,7 +359,7 @@ questions:
     type: numeric
     question: |
       $Po(\lambda)$ からの i.i.d. 標本 $n=50$ 個で、$g(\lambda)=P(X=0)=e^{-\lambda}$ を推定する。
-      $g(\lambda)$ の不偏推定量の分散のクラメール・ラオの下限を、$\lambda=1$ で小数第4位まで求めよ。
+      $g(\lambda)$ の不偏推定量の分散のクラメール・ラオの下限を、$\lambda=1$ で小数第4位まで（四捨五入）求めよ。
     answer: 0.0027
     tolerance: 0.0001
     hint: |
@@ -456,7 +456,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      $U(0,\theta)$ から観測値 $2.0,\ 7.0,\ 1.5,\ 3.0,\ 2.0$ を得た。$\theta$ のモーメント推定値を小数第1位まで求めよ。
+      $U(0,\theta)$ から観測値 $2.0,\ 7.0,\ 1.5,\ 3.0,\ 2.0$ を得た。$\theta$ のモーメント推定値を小数第1位まで（四捨五入）求めよ。
     answer: 6.2
     tolerance: 0.05
     hint: |
@@ -471,7 +471,7 @@ questions:
     type: numeric
     question: |
       形状 $\alpha$・**尺度** $\beta$ のガンマ分布（平均 $\alpha\beta$、分散 $\alpha\beta^2$）からの標本で、標本平均が $\bar x=6$、
-      $n$ で割った標本分散が $12$ であった。$\alpha$ のモーメント推定値を求めよ（小数第1位まで）。
+      $n$ で割った標本分散が $12$ であった。$\alpha$ のモーメント推定値を求めよ（小数第1位まで（四捨五入））。
     answer: 3
     tolerance: 0.05
     hint: |
@@ -485,7 +485,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      成功確率 $p=0.3$ のベルヌーイ試行 $n=400$ 回で、最尤推定量 $\hat p$ の漸近分布 $N(p,\ 1/\{nI(p)\})$ の標準偏差を小数第3位まで求めよ。
+      成功確率 $p=0.3$ のベルヌーイ試行 $n=400$ 回で、最尤推定量 $\hat p$ の漸近分布 $N(p,\ 1/\{nI(p)\})$ の標準偏差を小数第3位まで（四捨五入）求めよ。
     answer: 0.023
     tolerance: 0.001
     hint: |
@@ -500,7 +500,7 @@ questions:
     type: numeric
     question: |
       レート $\lambda$ の指数分布からの標本 $n=50$ 個で、最尤推定値は $\hat\lambda=1/\bar x=0.4$ であった。
-      最尤推定量の漸近正規性を使い、$\hat\lambda$ の標準誤差（$I(\lambda)$ の $\lambda$ に $\hat\lambda$ を代入）を小数第3位まで求めよ。
+      最尤推定量の漸近正規性を使い、$\hat\lambda$ の標準誤差（$I(\lambda)$ の $\lambda$ に $\hat\lambda$ を代入）を小数第3位まで（四捨五入）求めよ。
     answer: 0.057
     tolerance: 0.001
     hint: |
@@ -528,7 +528,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      ポアソン分布 $Po(\lambda)$ からの標本の平均が $\bar x=1.5$ であった。$P(X=0)=e^{-\lambda}$ の最尤推定値を小数第3位まで求めよ。
+      ポアソン分布 $Po(\lambda)$ からの標本の平均が $\bar x=1.5$ であった。$P(X=0)=e^{-\lambda}$ の最尤推定値を小数第3位まで（四捨五入）求めよ。
     answer: 0.223
     tolerance: 0.001
     hint: |
@@ -557,7 +557,7 @@ questions:
     type: numeric
     question: |
       ベルヌーイ分布からの標本 $X_1,\dots,X_5$ で、$p$ の粗い不偏推定量 $\delta=X_1$ を十分統計量 $T=\sum X_i$ で条件付けて改良する。
-      $T=3$ のときの $E[\delta\mid T]$ の値を小数第1位まで求めよ。
+      $T=3$ のときの $E[\delta\mid T]$ の値を小数第1位まで（四捨五入）求めよ。
     answer: 0.6
     tolerance: 0.05
     hint: |
@@ -568,15 +568,15 @@ questions:
 
   - id: q08-complete-statistic-1
     term: complete-statistic
-    level: 応用
+    level: 標準
     type: numeric
     question: |
       $Po(\lambda)$ からの標本 $n=4$ 個で $T=\sum X_i$ は完備十分統計量であり、$\left(\frac{n-1}{n}\right)^T$ は $e^{-\lambda}$ の不偏推定量である。
-      $T=6$ のときこの UMVUE の値を小数第3位まで求めよ。
+      $T=6$ のときこの UMVUE の値を小数第3位まで（四捨五入）求めよ。
     answer: 0.178
     tolerance: 0.001
     hint: |
-      $(3/4)^6$ を計算する。
+      与えられた UMVUE の式に $n$ と $T$ の値を代入する。$e^{-\bar x}$（最尤推定値）とは別の値になる。
     explanation: |
       $$\left(\frac34\right)^6=0.1780$$
       不偏性は $E[s^T]=e^{n\lambda(s-1)}$（$T\sim Po(n\lambda)$ の確率母関数）に $s=\frac{n-1}{n}$ を入れると $e^{-\lambda}$ になることから確かめられます。
@@ -591,7 +591,7 @@ questions:
     choices:
       - '一様分布 $U(0,\theta)$'
       - 'ポアソン分布 $Po(\lambda)$'
-      - '試行回数 $n$ が既知の二項分布 $B(n,p)$'
+      - '試行回数 $n$ が既知の二項分布 $\mathrm{Bin}(n,p)$'
       - '分散既知の正規分布 $N(\mu,1)$'
     answer: 0
     hint: |
@@ -606,7 +606,7 @@ questions:
     type: numeric
     question: |
       ベルヌーイ分布を正準形 $f(x;\eta)=\exp\{\eta x-A(\eta)\}$、$A(\eta)=\log(1+e^\eta)$ で表す。
-      $\eta=\log3$ のとき $V[X]=A''(\eta)$ を小数第4位まで求めよ。
+      $\eta=\log3$ のとき $V[X]=A''(\eta)$ を小数第4位まで（四捨五入）求めよ。
     answer: 0.1875
     tolerance: 0.0001
     hint: |
@@ -621,7 +621,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      $Po(\lambda)$ からの標本 $n=10$ 個の合計が $\sum x_i=30$ であった。最尤推定値での観測情報量 $J(\hat\lambda)$ を小数第3位まで求めよ。
+      $Po(\lambda)$ からの標本 $n=10$ 個の合計が $\sum x_i=30$ であった。最尤推定値での観測情報量 $J(\hat\lambda)$ を小数第3位まで（四捨五入）求めよ。
     answer: 3.333
     tolerance: 0.001
     hint: |
@@ -661,7 +661,7 @@ questions:
     hint: |
       $X_{(3)}\le0.4$ は「5個のうち少なくとも3個が $0.4$ 以下」と同じ。$0.4$ 以下の個数は二項分布に従う。
     explanation: |
-      $0.4$ 以下の個数 $N$ は $B(5,\,0.4)$ に従うので
+      $0.4$ 以下の個数 $N$ は $\mathrm{Bin}(5,\,0.4)$ に従うので
       $$P(X_{(3)}\le0.4)=\sum_{j=3}^{5}\binom5j0.4^j0.6^{5-j}=0.2304+0.0768+0.01024=0.31744$$
       よって $0.317$ です。
 

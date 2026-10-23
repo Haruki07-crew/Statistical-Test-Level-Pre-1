@@ -170,7 +170,7 @@ questions:
 
   - id: q22-cumulative-contribution-ratio-1
     term: cumulative-contribution-ratio
-    level: 基本
+    level: 標準
     type: truefalse
     question: |
       分散共分散行列からの主成分分析で、分析に変数を1つ追加すると、第1主成分の累積寄与率 $C_1$ が小さくなることはない（同じか大きくなる）。

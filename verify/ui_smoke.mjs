@@ -73,6 +73,8 @@ try {
   await ev(`localStorage.setItem('jd-memo', JSON.stringify(['bayes-theorem']))`);
   await open('#bayes-theorem', 1280, 860);
   check('旧データの覚えたを引き継ぐ', await ev(`document.querySelector('.memo-toggle').getAttribute('aria-pressed') === 'true'`));
+  await sleep(2500);
+  check('数式が描かれる', await ev(`document.querySelectorAll('#detail mjx-container').length > 0`), await ev(`document.querySelectorAll('#detail mjx-container').length + '個'`));
   check('読みを表示しない', !(await ev(`document.querySelector('.term-meta')?.textContent.includes('べいず')`)));
   check('この用語の問題がある', await ev(`document.querySelectorAll('#sec-questions .qcard').length > 0`));
   // ブックマーク（b キー）とメモ

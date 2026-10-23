@@ -61,7 +61,7 @@ questions:
     type: numeric
     question: |
       非負の確率変数 $T$ の生存関数が $S(t)=(1+t)^{-3}\ (t\ge0)$ である。
-      $E[T]$ を小数第2位まで求めよ。
+      $E[T]$ を小数第2位まで（四捨五入）求めよ。
     answer: 0.50
     tolerance: 0.005
     hint: |
@@ -160,7 +160,7 @@ questions:
       | $X=0$ | 0.10 | 0.20 | 0.10 |
       | $X=1$ | 0.15 | 0.25 | 0.20 |
 
-      $P(X+Y\ge2)$ を小数第2位まで求めよ。
+      $P(X+Y\ge2)$ を小数第2位まで（四捨五入）求めよ。
     answer: 0.55
     tolerance: 0.005
     hint: |
@@ -363,7 +363,7 @@ questions:
     type: numeric
     question: |
       $(X,Y)$ の同時確率密度関数が $f(x,y)=8xy\ (0<y<x<1)$、それ以外で $0$ である。
-      $E[Y\mid X=0.6]$ を小数第2位まで求めよ。
+      $E[Y\mid X=0.6]$ を小数第2位まで（四捨五入）求めよ。
     answer: 0.40
     tolerance: 0.005
     hint: |
@@ -472,7 +472,7 @@ questions:
     type: numeric
     question: |
       $X_1, X_2$ は独立で、どちらも $P(X=0)=0.2,\ P(X=1)=0.5,\ P(X=2)=0.3$ の分布に従う。
-      確率母関数を使って $P(X_1+X_2=2)$ を小数第2位まで求めよ。
+      確率母関数を使って $P(X_1+X_2=2)$ を小数第2位まで（四捨五入）求めよ。
     answer: 0.37
     tolerance: 0.005
     hint: |

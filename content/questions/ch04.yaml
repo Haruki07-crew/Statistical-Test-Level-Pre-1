@@ -66,7 +66,7 @@ questions:
     type: numeric
     question: |
       正の確率変数 $X$ の期待値が $50$、標準偏差が $5$ である。
-      デルタ法（1次の近似）を使うと、$\log X$（自然対数）の標準偏差は近似的にいくらか。小数第3位まで答えよ。
+      デルタ法（1次の近似）を使うと、$\log X$（自然対数）の標準偏差は近似的にいくらか。小数第3位まで（四捨五入）答えよ。
     answer: 0.1
     tolerance: 0.001
     hint: |
@@ -118,7 +118,7 @@ questions:
     level: 基本
     type: numeric
     question: |
-      Box-Cox 変換 $y^{(\lambda)}=(y^{\lambda}-1)/\lambda$（$\lambda\ne0$）で、$y=9$、$\lambda=-1$ のときの値を小数第3位まで求めよ。
+      Box-Cox 変換 $y^{(\lambda)}=(y^{\lambda}-1)/\lambda$（$\lambda\ne0$）で、$y=9$、$\lambda=-1$ のときの値を小数第3位まで（四捨五入）求めよ。
     answer: 0.889
     tolerance: 0.001
     hint: |
@@ -148,7 +148,7 @@ questions:
     level: 基本
     type: numeric
     question: |
-      確率 $p=0.8$ のロジット $\operatorname{logit}(p)=\log\dfrac{p}{1-p}$（自然対数）を小数第3位まで求めよ。
+      確率 $p=0.8$ のロジット $\operatorname{logit}(p)=\log\dfrac{p}{1-p}$（自然対数）を小数第3位まで（四捨五入）求めよ。
     answer: 1.386
     tolerance: 0.001
     hint: |
@@ -183,7 +183,7 @@ questions:
     type: numeric
     question: |
       $n=100$ 回の独立な試行で成功が $20$ 回あり、$\hat p=0.2$ を得た。
-      デルタ法を使って $\operatorname{logit}(\hat p)$ の標準誤差を近似的に求めよ（$V[\hat p]$ は $\hat p(1-\hat p)/n$ で推定する）。小数第3位まで答えよ。
+      デルタ法を使って $\operatorname{logit}(\hat p)$ の標準誤差を近似的に求めよ（$V[\hat p]$ は $\hat p(1-\hat p)/n$ で推定する）。小数第3位まで（四捨五入）答えよ。
     answer: 0.25
     tolerance: 0.001
     hint: |
@@ -198,7 +198,7 @@ questions:
     level: 基本
     type: numeric
     question: |
-      $\operatorname{probit}(0.975)=\Phi^{-1}(0.975)$ の値を小数第3位まで求めよ（$\Phi$ は標準正規分布の累積分布関数）。
+      $\operatorname{probit}(0.975)=\Phi^{-1}(0.975)$ の値を小数第3位まで（四捨五入）求めよ（$\Phi$ は標準正規分布の累積分布関数）。
     answer: 1.96
     tolerance: 0.001
     hint: |
@@ -212,7 +212,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      プロビットモデル $p=\Phi(-1+0.4x)$ で、$x=5$ における限界効果 $\dfrac{dp}{dx}$ を小数第3位まで求めよ。
+      プロビットモデル $p=\Phi(-1+0.4x)$ で、$x=5$ における限界効果 $\dfrac{dp}{dx}$ を小数第3位まで（四捨五入）求めよ。
       必要なら $\phi(1)=0.2420$（標準正規分布の密度）を使ってよい。
     answer: 0.097
     tolerance: 0.001
@@ -229,9 +229,9 @@ questions:
     type: choice
     question: |
       それぞれ独立な2つの確率変数の和について、和が**同じ分布族に入らない**ものはどれか。
-      （$B(n,p)$ は二項分布、$Po(\lambda)$ はポアソン分布、$N(\mu,\sigma^2)$ は正規分布、$\chi^2(k)$ はカイ二乗分布）
+      （$\mathrm{Bin}(n,p)$ は二項分布、$Po(\lambda)$ はポアソン分布、$N(\mu,\sigma^2)$ は正規分布、$\chi^2(k)$ はカイ二乗分布）
     choices:
-      - '$B(5,\,0.3)+B(4,\,0.5)$'
+      - '$\mathrm{Bin}(5,\,0.3)+\mathrm{Bin}(4,\,0.5)$'
       - '$Po(1)+Po(2)$'
       - '$N(0,\,1)+N(1,\,4)$'
       - '$\chi^2(2)+\chi^2(3)$'
@@ -239,7 +239,7 @@ questions:
     hint: |
       再生性の表で、和が同じ族になるための条件がついている分布はどれか。
     explanation: |
-      二項分布の再生性 $B(m,p)+B(n,p)=B(m+n,p)$ は**成功確率 $p$ が共通**のときだけ成り立ちます。$p=0.3$ と $0.5$ では和は二項分布になりません（平均 $3.5$、分散 $2.05$ で、$B(9,p)$ の平均と分散の関係を満たさない）。
+      二項分布の再生性 $\mathrm{Bin}(m,p)+\mathrm{Bin}(n,p)=\mathrm{Bin}(m+n,p)$ は**成功確率 $p$ が共通**のときだけ成り立ちます。$p=0.3$ と $0.5$ では和は二項分布になりません（平均 $3.5$、分散 $2.05$ で、$\mathrm{Bin}(9,p)$ の平均と分散の関係を満たさない）。
       ほかはそれぞれ $Po(3)$、$N(1,\,5)$、$\chi^2(5)$ になります。
 
   - id: q04-sum-of-random-variables-2
@@ -247,7 +247,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      $X, Y$ は独立にどちらも一様分布 $U(0,1)$ に従う。$Z=X+Y$ について $P(0.5<Z<1.5)$ を小数第2位まで求めよ。
+      $X, Y$ は独立にどちらも一様分布 $U(0,1)$ に従う。$Z=X+Y$ について $P(0.5<Z<1.5)$ を小数第2位まで（四捨五入）求めよ。
     answer: 0.75
     tolerance: 0.005
     hint: |

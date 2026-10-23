@@ -243,19 +243,23 @@
     typeset(el);
   }
   function lazy(el) { if (io) io.observe(el); else activate(el); }
-  var mjReady = false;
+  var mjReady = false, waitTypeset = [];
   function typeset(el) {
     var MJ = window.MathJax;
-    if (!el || !mjReady || !MJ || !MJ.typesetPromise) { if (el) el.__needTypeset = true; return; }
-    el.__needTypeset = false;
+    if (!el) return;
+    if (!mjReady || !MJ || !MJ.typesetPromise) { if (waitTypeset.indexOf(el) < 0) waitTypeset.push(el); return; }
     MJ.typesetPromise([el]).catch(function (err) { if (window.console) console.warn(err); });
   }
-  document.addEventListener('mathjax-ready', function () {
+  function mathReady() {
+    if (mjReady || !window.MathJax || !window.MathJax.typesetPromise) return;
     mjReady = true;
-    Array.prototype.forEach.call(document.querySelectorAll('.sec, .qcard, .lazy-math'), function (el) {
-      if (el.__needTypeset) typeset(el);
-    });
-  });
+    var els = waitTypeset.filter(function (el) { return el.isConnected; });
+    waitTypeset = [];
+    els.forEach(typeset);
+  }
+  document.addEventListener('mathjax-ready', mathReady);
+  // 準備完了の合図が届かない場合（オフラインで一部の読み込みに失敗したときなど）にも描けるようにする
+  window.addEventListener('load', function () { setTimeout(mathReady, 1500); });
   window.addEventListener('load', function () { if (window.Charts) Charts.redrawAll(); });
 
   function clearDetail() {
@@ -1318,7 +1322,7 @@
   if (mq && mq.addEventListener) mq.addEventListener('change', function () { if (window.Charts) Charts.redrawAll(); });
 
   // ---------- オフライン（GitHub Pages など https のときだけ） ----------
-  if ('serviceWorker' in navigator && location.protocol === 'https:') {
+  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
     window.addEventListener('load', function () {
       try { navigator.serviceWorker.register('sw.js').catch(function () { /* 使えなくても続ける */ }); } catch (e) { /* 無視 */ }
     });

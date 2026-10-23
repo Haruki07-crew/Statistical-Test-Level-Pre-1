@@ -1,0 +1,557 @@
+chapter: 31
+questions:
+  - id: q31-prior-distribution-1
+    term: prior-distribution
+    level: 基本
+    type: numeric
+    question: |
+      成功確率 $\theta$ の事前分布にベータ分布 $\mathrm{Be}(a,b)$ を使う。事前の平均を $0.3$ とし、「10回分の観測に相当する確からしさ」として $a+b=10$ とするとき、$a$ を求めよ。
+    answer: 3
+    tolerance: 0.01
+    hint: |
+      $\mathrm{Be}(a,b)$ の平均は $a/(a+b)$。
+    explanation: |
+      $a/(a+b)=0.3$、$a+b=10$ より $a=3$、$b=7$ です。
+      $a+b$ は事前分布が持つ「仮想的な試行回数」と解釈でき、大きいほど事前の信念が強くなります。
+
+  - id: q31-prior-distribution-2
+    term: prior-distribution
+    level: 標準
+    type: truefalse
+    question: |
+      事前分布で $\theta$ のある範囲の事前確率を0にすると、どれだけ多くのデータを観測しても、その範囲の事後確率は0のままである。
+    answer: true
+    hint: |
+      事後 $\propto$ 尤度 $\times$ 事前。
+    explanation: |
+      $\pi(\theta)=0$ の範囲では、尤度がどれだけ大きくても $f(\boldsymbol x\mid\theta)\pi(\theta)=0$ なので、事後密度も0です。
+      ありえないと断定できない値には、小さくても正の事前確率を与えておく必要があります。
+
+  - id: q31-posterior-distribution-1
+    term: posterior-distribution
+    level: 標準
+    type: numeric
+    question: |
+      コインの表の確率 $\theta$ は $0.2$ か $0.5$ のどちらかで、事前確率はそれぞれ $0.5$ とする。4回投げて表が3回出た。$\theta=0.5$ である事後確率を小数第3位まで求めよ。
+    answer: 0.907
+    tolerance: 0.001
+    hint: |
+      各 $\theta$ での尤度 $\theta^3(1-\theta)$ に事前確率を掛けて正規化する（$\binom43$ は約分される）。
+    explanation: |
+      尤度は $\theta=0.2$ で $0.2^3\times0.8=0.0064$、$\theta=0.5$ で $0.5^4=0.0625$ です。事前確率が等しいので
+      $$P(\theta=0.5\mid x)=\frac{0.0625}{0.0625+0.0064}=0.907$$
+
+  - id: q31-posterior-distribution-2
+    term: posterior-distribution
+    level: 応用
+    type: derivation
+    question: |
+      $x_1,\dots,x_n$ が i.i.d. で指数分布（密度 $\lambda e^{-\lambda x}$）に従い、$\lambda$ の事前分布がガンマ分布 $\mathrm{Ga}(\alpha,\beta)$（レート表記、密度 $\propto\lambda^{\alpha-1}e^{-\beta\lambda}$）のとき、$\lambda$ の事後分布を求めよ。
+    steps:
+      - '尤度：$f(\boldsymbol x\mid\lambda)=\prod_{i=1}^n\lambda e^{-\lambda x_i}=\lambda^ne^{-\lambda\sum x_i}$'
+      - '事後 $\propto$ 尤度 $\times$ 事前：$\lambda^ne^{-\lambda\sum x_i}\cdot\lambda^{\alpha-1}e^{-\beta\lambda}=\lambda^{\alpha+n-1}e^{-(\beta+\sum x_i)\lambda}$'
+      - 'これはガンマ分布の核の形なので、正規化定数を補えば分布が決まる'
+    answer: '$\lambda\mid\boldsymbol x\sim\mathrm{Ga}\left(\alpha+n,\ \beta+\sum_{i=1}^nx_i\right)$'
+    hint: |
+      $\lambda$ を含まない因子は無視し、$\lambda$ のべきと指数の形にまとめる。
+    explanation: |
+      事後密度は $\lambda^{(\alpha+n)-1}e^{-(\beta+\sum x_i)\lambda}$ に比例するので $\mathrm{Ga}(\alpha+n,\ \beta+\sum x_i)$ です。
+      形のパラメータには観測数 $n$ が、レートには観測値の合計が足されます。事後平均は $(\alpha+n)/(\beta+\sum x_i)$ で、$n$ が大きいと最尤推定値 $1/\bar x$ に近づきます。
+
+  - id: q31-posterior-distribution-3
+    term: posterior-distribution
+    level: 基本
+    type: truefalse
+    question: |
+      観測が $\theta$ を与えたもとで独立なとき、データを1つずつ観測して「前回の事後分布を次の事前分布にする」ことをくり返して得た事後分布は、全データを一度に使って求めた事後分布と同じになる。
+    answer: true
+    hint: |
+      $\pi(\theta\mid x_1,x_2)\propto f(x_2\mid\theta)\{f(x_1\mid\theta)\pi(\theta)\}$ と書ける。
+    explanation: |
+      条件付き独立なら $f(x_1,x_2\mid\theta)=f(x_1\mid\theta)f(x_2\mid\theta)$ なので、
+      $$\pi(\theta\mid x_1,x_2)\propto f(x_2\mid\theta)\,\pi(\theta\mid x_1)$$
+      となり、逐次更新と一括更新は一致します。観測の順番にもよりません。
+
+  - id: q31-conjugate-prior-1
+    term: conjugate-prior
+    level: 基本
+    type: choice
+    question: |
+      ポアソン分布 $\mathrm{Po}(\lambda)$ の平均 $\lambda$ に対する共役事前分布はどれか。
+    choices:
+      - 'ガンマ分布'
+      - 'ベータ分布'
+      - '正規分布'
+      - 'ディリクレ分布'
+    answer: 0
+    hint: |
+      尤度は $\lambda^{\sum x_i}e^{-n\lambda}$ の形。これと同じ形の密度をもつ分布は何か。
+    explanation: |
+      尤度 $\lambda^{\sum x_i}e^{-n\lambda}$ と、ガンマ分布の密度 $\lambda^{\alpha-1}e^{-\beta\lambda}$ は同じ形なので、事後もガンマ分布 $\mathrm{Ga}(\alpha+\sum x_i,\ \beta+n)$ になります。
+      ベータ分布は二項・幾何、ディリクレ分布は多項、正規分布は正規の平均（分散既知）に対する共役事前分布です。
+
+  - id: q31-conjugate-prior-2
+    term: conjugate-prior
+    level: 標準
+    type: numeric
+    question: |
+      $x_i\mid\tau\sim N(0,\ 1/\tau)$（平均0は既知、$\tau$ は精度）とし、$\tau$ の事前分布を $\mathrm{Ga}(2,\ 3)$（レート表記）とする。データ $1,\ -2,\ 1$ を観測したとき、$\tau$ の事後平均を小数第3位まで求めよ。
+    answer: 0.583
+    tolerance: 0.001
+    hint: |
+      事後は $\mathrm{Ga}(\alpha+n/2,\ \beta+\sum(x_i-\mu)^2/2)$。
+    explanation: |
+      $n=3$、$\sum x_i^2=1+4+1=6$ なので、事後は $\mathrm{Ga}(2+1.5,\ 3+3)=\mathrm{Ga}(3.5,\ 6)$ です。
+      $$E[\tau\mid\boldsymbol x]=\frac{3.5}{6}=0.583$$
+      尺度表記と取り違えて $3.5\times6$ としないよう注意します。
+
+  - id: q31-conjugate-prior-3
+    term: conjugate-prior
+    level: 標準
+    type: numeric
+    question: |
+      幾何分布 $P(X=k)=\theta(1-\theta)^k\ (k=0,1,2,\dots)$ の $\theta$ に事前分布 $\mathrm{Be}(2,2)$ を置く。データ $3,\ 0,\ 5,\ 2$ を観測したとき、$\theta$ の事後平均を小数第3位まで求めよ。
+    answer: 0.333
+    tolerance: 0.001
+    hint: |
+      尤度は $\theta^n(1-\theta)^{\sum x_i}$。
+    explanation: |
+      $n=4$、$\sum x_i=10$ なので、事後は $\mathrm{Be}(2+4,\ 2+10)=\mathrm{Be}(6,12)$ です。
+      $$E[\theta\mid\boldsymbol x]=\frac{6}{18}=0.333$$
+      この幾何分布は「初めて成功するまでの失敗回数」の流儀です。試行回数の流儀なら尤度が $\theta^n(1-\theta)^{\sum x_i-n}$ に変わります。
+
+  - id: q31-beta-binomial-model-1
+    term: beta-binomial-model
+    level: 基本
+    type: numeric
+    question: |
+      成功確率 $\theta$ の事前分布を $\mathrm{Be}(2,3)$ とし、10回の試行で7回成功した。$\theta$ の事後平均を小数第2位まで求めよ。
+    answer: 0.60
+    tolerance: 0.005
+    hint: |
+      事後は $\mathrm{Be}(a+x,\ b+n-x)$。
+    explanation: |
+      事後は $\mathrm{Be}(9,6)$ なので、事後平均は $9/15=0.60$ です。
+      標本割合 $0.7$ と事前平均 $0.4$ の間の値になります。
+
+  - id: q31-beta-binomial-model-2
+    term: beta-binomial-model
+    level: 標準
+    type: numeric
+    question: |
+      前問（事前 $\mathrm{Be}(2,3)$、10回中7回成功）の事後分布の最頻値（MAP 推定値）を小数第3位まで求めよ。
+    answer: 0.615
+    tolerance: 0.001
+    hint: |
+      $\mathrm{Be}(a',b')$ の最頻値は $(a'-1)/(a'+b'-2)$。
+    explanation: |
+      $$\frac{9-1}{9+6-2}=\frac{8}{13}=0.615$$
+      事後平均 $0.600$ とは少し違います。分布が左右対称でないためです。
+
+  - id: q31-beta-binomial-model-3
+    term: beta-binomial-model
+    level: 応用
+    type: numeric
+    question: |
+      前問の事後平均 $0.60$ は、事前平均 $0.4$ と標本割合 $0.7$ の加重平均 $w\times0.7+(1-w)\times0.4$ として書ける。標本割合の重み $w$ を小数第3位まで求めよ。
+    answer: 0.667
+    tolerance: 0.001
+    hint: |
+      $\dfrac{a+x}{a+b+n}=\dfrac{n}{a+b+n}\cdot\dfrac xn+\dfrac{a+b}{a+b+n}\cdot\dfrac{a}{a+b}$
+    explanation: |
+      $$w=\frac{n}{a+b+n}=\frac{10}{15}=0.667$$
+      確かめると $0.667\times0.7+0.333\times0.4=0.6$ です。$n$ が増えるほど $w\to1$ でデータが支配的になり、$a+b$ が大きいほど事前分布の影響が残ります。
+
+  - id: q31-gamma-poisson-model-1
+    term: gamma-poisson-model
+    level: 基本
+    type: numeric
+    question: |
+      1日の件数がポアソン分布 $\mathrm{Po}(\lambda)$ に従い、$\lambda$ の事前分布を $\mathrm{Ga}(3,1)$（レート表記）とする。5日間の件数が $2,\ 4,\ 1,\ 5,\ 3$ であったとき、$\lambda$ の事後平均を小数第2位まで求めよ。
+    answer: 3.00
+    tolerance: 0.005
+    hint: |
+      事後は $\mathrm{Ga}(\alpha+\sum x_i,\ \beta+n)$。
+    explanation: |
+      $\sum x_i=15$、$n=5$ なので、事後は $\mathrm{Ga}(18,\ 6)$ で、事後平均は $18/6=3.00$ です。
+      事前平均 $3$ と標本平均 $3$ が一致しているので、事後平均も $3$ になっています。
+
+  - id: q31-gamma-poisson-model-2
+    term: gamma-poisson-model
+    level: 標準
+    type: numeric
+    question: |
+      前問の事後分布 $\mathrm{Ga}(18,6)$ の標準偏差を小数第3位まで求めよ。
+    answer: 0.707
+    tolerance: 0.001
+    hint: |
+      レート表記 $\mathrm{Ga}(\alpha,\beta)$ の分散は $\alpha/\beta^2$。
+    explanation: |
+      $$V[\lambda\mid\boldsymbol x]=\frac{18}{36}=0.5,\qquad \sqrt{0.5}=0.707$$
+      事前分布 $\mathrm{Ga}(3,1)$ の標準偏差 $\sqrt3=1.732$ から大きく縮み、データで不確かさが減ったことがわかります。
+
+  - id: q31-gamma-poisson-model-3
+    term: gamma-poisson-model
+    level: 基本
+    type: truefalse
+    question: |
+      ガンマ分布 $\mathrm{Ga}(\alpha',\beta')$（$\alpha'>1$、レート表記）の事後分布では、MAP 推定値はつねに事後平均より小さい。
+    answer: true
+    hint: |
+      MAP は $(\alpha'-1)/\beta'$、事後平均は $\alpha'/\beta'$。
+    explanation: |
+      差は $\alpha'/\beta'-(\alpha'-1)/\beta'=1/\beta'>0$ なので、MAP はつねに事後平均より小さくなります。
+      ガンマ分布は右に裾が長いので、最頻値 < 平均 となります。
+
+  - id: q31-normal-normal-model-1
+    term: normal-normal-model
+    level: 標準
+    type: numeric
+    question: |
+      $x_i\mid\mu\sim N(\mu,4)$（分散既知）、$\mu\sim N(10,1)$ とする。$n=16$ 個のデータの平均が $\bar x=10.5$ のとき、$\mu$ の事後平均を小数第2位まで求めよ。
+    answer: 10.40
+    tolerance: 0.005
+    hint: |
+      事前の精度 $1/\tau_0^2$ とデータの精度 $n/\sigma^2$ で、事前平均と $\bar x$ を重み付け平均する。
+    explanation: |
+      事前の精度は $1$、データの精度は $16/4=4$ なので
+      $$\mu_n=\frac{1\times10+4\times10.5}{1+4}=\frac{52}{5}=10.40$$
+      事後分散は $1/(1+4)=0.2$ です。
+
+  - id: q31-normal-normal-model-2
+    term: normal-normal-model
+    level: 標準
+    type: numeric
+    question: |
+      前問の事後分布 $N(10.4,\ 0.2)$ について、$\mu$ の95%信用区間の上限を小数第2位まで求めよ。
+    answer: 11.28
+    tolerance: 0.01
+    hint: |
+      正規の事後分布なので $\mu_n\pm1.96\tau_n$。$0.2$ は分散。
+    explanation: |
+      $$10.4+1.96\sqrt{0.2}=10.4+1.96\times0.4472=10.4+0.877=11.28$$
+      分散 $0.2$ をそのまま標準偏差として使う誤り（上限 $10.79$）に注意します。
+
+  - id: q31-normal-normal-model-3
+    term: normal-normal-model
+    level: 応用
+    type: numeric
+    question: |
+      $x_i\mid\mu\sim N(\mu,4)$、$\mu\sim N(10,1)$ のとき、$\mu$ の事後標準偏差を $0.25$ 以下にするには、最低何個のデータが必要か。
+    answer: 60
+    tolerance: 0.1
+    hint: |
+      事後の精度は $1/\tau_0^2+n/\sigma^2=1+n/4$。事後標準偏差 $0.25$ は精度 $16$ にあたる。
+    explanation: |
+      $1+n/4\ge1/0.25^2=16$ より $n\ge60$ です。
+      事後分散はデータの値 $\bar x$ によらず事前に計算できるので、ベイズ流の標本の大きさの設計に使えます。
+
+  - id: q31-posterior-mean-map-1
+    term: posterior-mean-map
+    level: 基本
+    type: choice
+    question: |
+      絶対損失 $L(\theta,d)=|\theta-d|$ のもとで、事後期待損失を最小にするベイズ推定量はどれか。
+    choices:
+      - '事後中央値'
+      - '事後平均'
+      - '事後最頻値（MAP）'
+      - '最尤推定値'
+    answer: 0
+    hint: |
+      $E[|\theta-d|\mid\boldsymbol x]$ を $d$ で微分すると、$P(\theta<d\mid\boldsymbol x)-P(\theta>d\mid\boldsymbol x)$ になる。
+    explanation: |
+      微分が0になるのは $P(\theta<d\mid\boldsymbol x)=P(\theta>d\mid\boldsymbol x)=1/2$、つまり事後中央値です。
+      二乗損失なら事後平均、0-1損失（の極限）なら MAP です。
+
+  - id: q31-posterior-mean-map-2
+    term: posterior-mean-map
+    level: 標準
+    type: numeric
+    question: |
+      成功確率 $\theta$ に一様事前分布 $\mathrm{Be}(1,1)$ を置き、10回中2回成功した。事後平均と MAP 推定値の差（事後平均 − MAP）を小数第2位まで求めよ。
+    answer: 0.05
+    tolerance: 0.005
+    hint: |
+      事後は $\mathrm{Be}(3,9)$。平均 $a'/(a'+b')$、最頻値 $(a'-1)/(a'+b'-2)$。
+    explanation: |
+      事後平均は $3/12=0.25$、MAP は $2/10=0.20$ で、差は $0.05$ です。
+      一様事前のもとで MAP は最尤推定値 $2/10$ と一致します。
+
+  - id: q31-posterior-mean-map-3
+    term: posterior-mean-map
+    level: 応用
+    type: truefalse
+    question: |
+      パラメータ $\theta$ について MAP 推定値を求めたあと、$\phi=\log\theta$ と変数変換して $\phi$ の事後分布の最頻値を求めると、それはつねに $\log(\hat\theta_{\mathrm{MAP}})$ に一致する。
+    answer: false
+    hint: |
+      変数変換すると、密度にはヤコビアン $|d\theta/d\phi|=e^\phi$ が掛かる。
+    explanation: |
+      $\phi$ の事後密度は $\pi(e^\phi\mid\boldsymbol x)\,e^\phi$ なので、最頻値の位置がずれます。
+      例えば事後が $\mathrm{Ga}(3,\ 6)$ なら $\hat\theta_{\mathrm{MAP}}=2/6=1/3$ ですが、$\phi=\log\theta$ の密度 $\propto e^{3\phi}e^{-6e^\phi}$ の最頻値は $\phi=\log(3/6)=\log0.5$ です。
+      事後中央値は単調変換で変わりませんが、MAP（と事後平均）は変換で変わります。
+
+  - id: q31-credible-interval-1
+    term: credible-interval
+    level: 標準
+    type: numeric
+    question: |
+      成功確率 $\theta$ に一様事前分布を置き、9回の試行で1回も成功しなかった。$\theta$ の片側95%信用上限 $U$（$P(\theta\le U\mid x)=0.95$）を小数第3位まで求めよ。
+    answer: 0.259
+    tolerance: 0.001
+    hint: |
+      事後は $\mathrm{Be}(1,10)$ で、分布関数は $1-(1-\theta)^{10}$。
+    explanation: |
+      $1-(1-U)^{10}=0.95$ より $(1-U)^{10}=0.05$、
+      $$U=1-0.05^{1/10}=1-0.7411=0.259$$
+      成功が0回でも、事後分布から「$\theta$ はほぼ26%以下」と幅のある結論が得られます。
+
+  - id: q31-credible-interval-2
+    term: credible-interval
+    level: 基本
+    type: truefalse
+    question: |
+      95%信用区間 $[L,U]$ は、データを与えたもとで $\theta$ がこの区間に入る（事後）確率が $0.95$ である、と解釈できる。
+    answer: true
+    hint: |
+      ベイズ流では $\theta$ を確率変数として扱う。
+    explanation: |
+      信用区間は $P(L\le\theta\le U\mid\boldsymbol x)=0.95$ で定義されるので、この解釈がそのまま成り立ちます。
+      頻度論の95%信頼区間は「同じ手順をくり返したとき、区間が真の値を含む割合が95%」という意味で、得られた1つの区間について $\theta$ が入る確率を述べるものではありません。
+
+  - id: q31-credible-interval-3
+    term: credible-interval
+    level: 応用
+    type: choice
+    question: |
+      事後分布が $\mathrm{Be}(1,10)$（密度 $10(1-\theta)^9$、単調減少）のとき、95% HPD 区間はどれか（値は小数第3位まで）。
+    choices:
+      - '$[0,\ 0.259]$'
+      - '$[0.003,\ 0.308]$'
+      - '$[0,\ 0.308]$'
+      - '$[0.050,\ 0.309]$'
+    answer: 0
+    hint: |
+      密度が単調減少なので、密度の高いところから集めると左端は0になる。
+    explanation: |
+      密度が $\theta=0$ で最大で単調減少なので、HPD 区間は $[0,U]$ の形になり、$U$ は片側95%の上限 $1-0.05^{0.1}=0.259$ です。
+      $[0.003,\ 0.308]$ は左右に2.5%ずつ残した等裾区間で、HPD より長くなります。$[0,\ 0.308]$ は確率が97.5%で多すぎます。
+
+  - id: q31-predictive-distribution-1
+    term: predictive-distribution
+    level: 標準
+    type: numeric
+    question: |
+      成功確率 $\theta$ の事後分布が $\mathrm{Be}(9,6)$ である。次の2回の試行が2回とも成功する予測確率を小数第3位まで求めよ。
+    answer: 0.375
+    tolerance: 0.001
+    hint: |
+      $\int\theta^2\pi(\theta\mid x)\,d\theta=E[\theta^2\mid x]$ を求める。$\mathrm{Be}(a,b)$ では $E[\theta^2]=\dfrac{a(a+1)}{(a+b)(a+b+1)}$。
+    explanation: |
+      $$E[\theta^2\mid x]=\frac{9\times10}{15\times16}=\frac{90}{240}=0.375$$
+      事後平均 $0.6$ を代入して $0.6^2=0.36$ とすると、$\theta$ の不確かさを無視した分だけ小さくなります（差は事後分散 $0.015$）。
+
+  - id: q31-predictive-distribution-2
+    term: predictive-distribution
+    level: 標準
+    type: numeric
+    question: |
+      $x_i\mid\mu\sim N(\mu,4)$ で、$\mu$ の事後分布が $N(10.4,\ 0.2)$ である。新しい観測 $\tilde x$ の95%予測区間の半幅を小数第2位まで求めよ。
+    answer: 4.02
+    tolerance: 0.01
+    hint: |
+      予測分布は $N(\mu_n,\ \sigma^2+\tau_n^2)$。
+    explanation: |
+      予測分散は $4+0.2=4.2$ なので、半幅は $1.96\sqrt{4.2}=1.96\times2.049=4.02$ です。
+      $\mu$ の信用区間（半幅 $0.88$）よりずっと広く、新しい観測自体のばらつき $\sigma^2$ が大部分を占めます。
+
+  - id: q31-predictive-distribution-3
+    term: predictive-distribution
+    level: 応用
+    type: numeric
+    question: |
+      1日の件数が $\mathrm{Po}(\lambda)$ に従い、$\lambda$ の事後分布が $\mathrm{Ga}(18,\ 6)$（レート表記）である。翌日の件数が0件である予測確率を小数第3位まで求めよ。
+    answer: 0.062
+    tolerance: 0.001
+    hint: |
+      $P(\tilde x=0)=\int e^{-\lambda}\pi(\lambda\mid\boldsymbol x)\,d\lambda$。ガンマ分布の積率母関数（ラプラス変換）を使う。
+    explanation: |
+      $$P(\tilde x=0)=E[e^{-\lambda}\mid\boldsymbol x]=\left(\frac{\beta'}{\beta'+1}\right)^{\alpha'}=\left(\frac67\right)^{18}=0.0624$$
+      予測分布は負の二項分布です。事後平均 $3$ を代入した $\mathrm{Po}(3)$ では $e^{-3}=0.0498$ で、不確かさを無視すると極端な値の確率を小さく見積もります。
+
+  - id: q31-noninformative-prior-1
+    term: noninformative-prior
+    level: 基本
+    type: truefalse
+    question: |
+      正規分布の平均 $\mu$ に非正則な平坦事前分布 $\pi(\mu)\propto1$ を置くと、事後分布も必ず非正則になり、推論に使えない。
+    answer: false
+    hint: |
+      $\int f(\boldsymbol x\mid\mu)\,d\mu$ は有限か。
+    explanation: |
+      $f(\boldsymbol x\mid\mu)$ は $\mu$ について正規分布の形をしているので積分は有限で、事後分布は $N(\bar x,\ \sigma^2/n)$ という正則な分布になります。
+      非正則事前分布でも、周辺尤度が有限なら事後分布は使えます（逆に有限にならない場合もあるので確認は必要です）。
+
+  - id: q31-noninformative-prior-2
+    term: noninformative-prior
+    level: 標準
+    type: numeric
+    question: |
+      $x_i\mid\mu\sim N(\mu,9)$（分散既知）、$\pi(\mu)\propto1$ とする。$n=25$、$\bar x=5$ のとき、$\mu$ の95%信用区間の上限を小数第2位まで求めよ。
+    answer: 6.18
+    tolerance: 0.01
+    hint: |
+      事後分布は $N(\bar x,\ \sigma^2/n)$。
+    explanation: |
+      事後分布は $N(5,\ 9/25)$、標準偏差は $0.6$ なので
+      $$5+1.96\times0.6=6.176\approx6.18$$
+      頻度論の95%信頼区間と数値は一致しますが、解釈（$\mu$ が入る事後確率）は異なります。
+
+  - id: q31-jeffreys-prior-1
+    term: jeffreys-prior
+    level: 標準
+    type: choice
+    question: |
+      ポアソン分布 $\mathrm{Po}(\lambda)$ のジェフリーズの事前分布はどれか。
+    choices:
+      - '$\pi(\lambda)\propto\lambda^{-1/2}$'
+      - '$\pi(\lambda)\propto\lambda^{-1}$'
+      - '$\pi(\lambda)\propto1$'
+      - '$\pi(\lambda)\propto\lambda^{1/2}$'
+    answer: 0
+    hint: |
+      $\log f=x\log\lambda-\lambda-\log x!$ の2階微分の期待値からフィッシャー情報量を求め、その平方根をとる。
+    explanation: |
+      $\partial^2\log f/\partial\lambda^2=-x/\lambda^2$ なので $I(\lambda)=E[X]/\lambda^2=1/\lambda$、
+      $$\pi_J(\lambda)\propto\sqrt{1/\lambda}=\lambda^{-1/2}$$
+      $\lambda^{-1}$ は指数分布のレートや尺度パラメータのジェフリーズ事前分布です。
+
+  - id: q31-jeffreys-prior-2
+    term: jeffreys-prior
+    level: 応用
+    type: numeric
+    question: |
+      成功確率 $\theta$ にジェフリーズの事前分布を置き、10回中3回成功した。$\theta$ の事後平均を小数第3位まで求めよ。
+    answer: 0.318
+    tolerance: 0.001
+    hint: |
+      ベルヌーイ・二項のジェフリーズ事前分布は $\mathrm{Be}(1/2,\ 1/2)$。
+    explanation: |
+      事後は $\mathrm{Be}(0.5+3,\ 0.5+7)=\mathrm{Be}(3.5,\ 7.5)$ なので
+      $$\frac{3.5}{11}=0.318$$
+      一様事前 $\mathrm{Be}(1,1)$ なら $4/12=0.333$ で、ジェフリーズ事前のほうが標本割合 $0.3$ に近くなります。
+
+  - id: q31-bayes-factor-1
+    term: bayes-factor
+    level: 標準
+    type: numeric
+    question: |
+      単純仮説 $M_0:\theta=0.5$ と $M_1:\theta=0.7$ を比べる。10回中7回成功したとき、ベイズファクター $B_{10}$ を小数第2位まで求めよ。
+    answer: 2.28
+    tolerance: 0.01
+    hint: |
+      パラメータのない単純仮説どうしでは、ベイズファクターは尤度比。$\binom{10}{7}$ は約分される。
+    explanation: |
+      $$B_{10}=\frac{0.7^7\times0.3^3}{0.5^{10}}=\frac{0.002224}{0.000977}=2.28$$
+      ジェフリーズの目安では「ほとんど言及に値しない」（1〜3）程度の証拠です。
+
+  - id: q31-bayes-factor-2
+    term: bayes-factor
+    level: 応用
+    type: numeric
+    question: |
+      前問の $B_{10}=2.277$ で、事前確率を $P(M_1)=0.2$、$P(M_0)=0.8$ とする。$M_1$ の事後確率を小数第3位まで求めよ。
+    answer: 0.363
+    tolerance: 0.001
+    hint: |
+      事後オッズ = ベイズファクター × 事前オッズ。
+    explanation: |
+      事前オッズは $0.2/0.8=0.25$ なので、事後オッズは $2.277\times0.25=0.569$ です。
+      $$P(M_1\mid x)=\frac{0.569}{1+0.569}=0.363$$
+      データは $M_1$ を支持していますが、事前に $M_1$ を疑っていたので事後確率はまだ半分未満です。
+
+  - id: q31-marginal-likelihood-1
+    term: marginal-likelihood
+    level: 標準
+    type: numeric
+    question: |
+      $x\mid\theta\sim\mathrm{Bin}(3,\theta)$、$\theta\sim\mathrm{Be}(1,1)$（一様）のとき、周辺尤度 $m(x=2)=\int_0^1\binom32\theta^2(1-\theta)\,d\theta$ を小数第2位まで求めよ。
+    answer: 0.25
+    tolerance: 0.005
+    hint: |
+      $\int_0^1\theta^a(1-\theta)^b\,d\theta=B(a+1,b+1)=\dfrac{a!\,b!}{(a+b+1)!}$
+    explanation: |
+      $$m(2)=3\times\frac{2!\,1!}{4!}=3\times\frac{2}{24}=0.25$$
+      一般に一様事前のもとでは $m(x)=\binom nx B(x+1,n-x+1)=1/(n+1)$ で、どの $x$ も等しく $1/4$ になります。
+
+  - id: q31-marginal-likelihood-2
+    term: marginal-likelihood
+    level: 応用
+    type: numeric
+    question: |
+      10回中7回成功したデータで、$M_0:\theta=0.5$（固定）と $M_1:\theta\sim\mathrm{Be}(1,1)$ を比べる。ベイズファクター $B_{10}=m_1(x)/m_0(x)$ を小数第3位まで求めよ。
+    answer: 0.776
+    tolerance: 0.001
+    hint: |
+      $m_1(x)=1/(n+1)$、$m_0(x)=\binom{10}{7}0.5^{10}$。
+    explanation: |
+      $$m_1=\frac1{11}=0.0909,\qquad m_0=\frac{120}{1024}=0.1172,\qquad B_{10}=\frac{0.0909}{0.1172}=0.776$$
+      最尤推定値 $\theta=0.7$ では $M_1$ のほうがよく当てはまりますが、周辺尤度は事前分布で尤度を平均するので、当てはまりの悪い $\theta$ も含む $M_1$ は不利になり、むしろ $M_0$ が支持されます（複雑なモデルへの自動的な罰則）。
+
+  - id: q31-hierarchical-bayes-model-1
+    term: hierarchical-bayes-model
+    level: 標準
+    type: numeric
+    question: |
+      正規階層モデル $\bar y_j\mid\theta_j\sim N(\theta_j,\sigma_j^2)$、$\theta_j\sim N(\mu,\tau^2)$ で、$\mu=50$、$\tau^2=25$ が既知とする。グループ $j$ の標本平均が $\bar y_j=62$、その分散が $\sigma_j^2=25$ のとき、$\theta_j$ の事後平均を求めよ。
+    answer: 56
+    tolerance: 0.05
+    hint: |
+      事後平均は $B_j\mu+(1-B_j)\bar y_j$、$B_j=\sigma_j^2/(\sigma_j^2+\tau^2)$。
+    explanation: |
+      $B_j=25/(25+25)=0.5$ なので
+      $$0.5\times50+0.5\times62=56$$
+      グループの平均62は全体の平均50に向かって半分縮められます。
+
+  - id: q31-hierarchical-bayes-model-2
+    term: hierarchical-bayes-model
+    level: 基本
+    type: truefalse
+    question: |
+      正規階層モデルでは、標本の大きさ $n_j$ が小さいグループほど、その推定値は全体の平均 $\mu$ に向かって強く縮められる。
+    answer: true
+    hint: |
+      $\sigma_j^2=\sigma^2/n_j$ と縮小係数 $B_j=\sigma_j^2/(\sigma_j^2+\tau^2)$ の関係を考える。
+    explanation: |
+      $n_j$ が小さいと $\sigma_j^2=\sigma^2/n_j$ が大きくなり、$B_j$ が1に近づくので、全体の平均への縮小が強くなります。
+      データの少ないグループは他のグループの情報を「借りる」ことで、推定が安定します。
+
+  - id: q31-empirical-bayes-1
+    term: empirical-bayes
+    level: 標準
+    type: numeric
+    question: |
+      多数のグループの標本平均 $\bar y_j$ があり、$\bar y_j\mid\theta_j\sim N(\theta_j,4)$、$\theta_j\sim N(\mu,\tau^2)$ とする。$\bar y_j$ 全体の平均が $15$、分散が $10$ であった。モーメント法で $\mu,\tau^2$ を推定したとき、$\bar y_j=20$ のグループの経験ベイズ推定値を求めよ。
+    answer: 18
+    tolerance: 0.05
+    hint: |
+      周辺分布は $\bar y_j\sim N(\mu,\tau^2+4)$。分散10から $\hat\tau^2$ を求める。
+    explanation: |
+      $\hat\mu=15$、$\hat\tau^2=10-4=6$、$\hat B=4/(4+6)=0.4$ なので
+      $$\hat\theta_j=0.4\times15+0.6\times20=18$$
+      ハイパーパラメータをデータから推定して、事前分布として使うのが経験ベイズ法です。
+
+  - id: q31-bayes-decision-theory-1
+    term: bayes-decision-theory
+    level: 標準
+    type: numeric
+    question: |
+      製品ロットが不良である事後確率が $0.3$ である。行動は「出荷」か「廃棄」で、不良ロットを出荷すると損失100、良品ロットを廃棄すると損失20、それ以外は損失0とする。ベイズ決定方式をとったときの事後期待損失を求めよ。
+    answer: 14
+    tolerance: 0.05
+    hint: |
+      行動ごとに事後期待損失を計算し、小さいほうを選ぶ。
+    explanation: |
+      出荷：$0.3\times100=30$。廃棄：$0.7\times20=14$。
+      期待損失の小さい「廃棄」がベイズ解で、事後期待損失は $14$ です。不良の確率が半分未満でも、損失の非対称性で結論が決まります。

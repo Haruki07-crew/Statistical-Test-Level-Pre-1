@@ -1,0 +1,130 @@
+{
+ "q30-aic-1": {
+  "hash": "c4a58963c3d1abae",
+  "ok": true
+ },
+ "q30-aic-2": {
+  "hash": "8ca37b7bb22c07d9",
+  "ok": true
+ },
+ "q30-aic-3": {
+  "hash": "4de3ac9be47c7e84",
+  "ok": true
+ },
+ "q30-aicc-1": {
+  "hash": "87e183e21f212cbc",
+  "ok": true
+ },
+ "q30-bias-variance-tradeoff-1": {
+  "hash": "570aef8866ac3af4",
+  "ok": true
+ },
+ "q30-bias-variance-tradeoff-2": {
+  "hash": "f229941913049905",
+  "ok": true
+ },
+ "q30-bias-variance-tradeoff-3": {
+  "hash": "e91aed19ea7995c3",
+  "ok": true
+ },
+ "q30-bic-1": {
+  "hash": "67756a648a1cf6c1",
+  "ok": true
+ },
+ "q30-bic-2": {
+  "hash": "d09a76eec9ae7407",
+  "ok": true
+ },
+ "q30-bic-3": {
+  "hash": "5a8e4b9ef1a69a93",
+  "ok": true
+ },
+ "q30-cross-validation-1": {
+  "hash": "a3475252dfb500bb",
+  "ok": true
+ },
+ "q30-cross-validation-2": {
+  "hash": "bf860c9ba8745ca7",
+  "ok": true
+ },
+ "q30-cross-validation-3": {
+  "hash": "e95da4dfe87c177b",
+  "ok": true
+ },
+ "q30-expected-log-likelihood-1": {
+  "hash": "bac5fe346cb2282d",
+  "ok": true
+ },
+ "q30-expected-log-likelihood-2": {
+  "hash": "4eae51b53aa4981e",
+  "ok": true
+ },
+ "q30-generalization-error-1": {
+  "hash": "526333976cbe7a54",
+  "ok": true
+ },
+ "q30-generalization-error-2": {
+  "hash": "a935964661cafd9b",
+  "ok": true
+ },
+ "q30-information-criteria-comparison-1": {
+  "hash": "3c50edeba629776a",
+  "ok": true
+ },
+ "q30-kullback-leibler-divergence-1": {
+  "hash": "442f40dfff1ad13c",
+  "ok": true
+ },
+ "q30-kullback-leibler-divergence-2": {
+  "hash": "7d9b295f46d48399",
+  "ok": true
+ },
+ "q30-kullback-leibler-divergence-3": {
+  "hash": "6c8a4405d99659d9",
+  "ok": true
+ },
+ "q30-leave-one-out-cv-1": {
+  "hash": "54e3f96459c106d7",
+  "ok": true
+ },
+ "q30-leave-one-out-cv-2": {
+  "hash": "ad7eae6a067686cf",
+  "ok": true
+ },
+ "q30-mallows-cp-1": {
+  "hash": "72082e94b6b5e907",
+  "ok": true
+ },
+ "q30-mallows-cp-2": {
+  "hash": "e9c9f800c6fb857c",
+  "ok": true
+ },
+ "q30-mallows-cp-3": {
+  "hash": "09b6f4d5cfc48660",
+  "ok": true
+ },
+ "q30-model-selection-1": {
+  "hash": "e06b5d5b2bc78582",
+  "ok": true
+ },
+ "q30-model-selection-2": {
+  "hash": "df2db59cb847830f",
+  "ok": true
+ },
+ "q30-overfitting-1": {
+  "hash": "0ac827b167e4ea55",
+  "ok": true
+ },
+ "q30-overfitting-2": {
+  "hash": "3a5bc52a11a36360",
+  "ok": true
+ },
+ "q30-tic-ebic-1": {
+  "hash": "ab3680e1e8e3a255",
+  "ok": true
+ },
+ "q30-training-test-split-1": {
+  "hash": "b2a513bea03bed38",
+  "ok": true
+ }
+}

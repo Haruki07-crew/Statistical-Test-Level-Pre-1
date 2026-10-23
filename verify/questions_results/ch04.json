@@ -1,6 +1,6 @@
 {
  "q04-box-cox-transformation-1": {
-  "hash": "cf1010be8cdf568b",
+  "hash": "7767cf17913a1a1e",
   "ok": true
  },
  "q04-box-cox-transformation-2": {
@@ -20,7 +20,7 @@
   "ok": true
  },
  "q04-log-transformation-1": {
-  "hash": "05d90d1fa10a31ed",
+  "hash": "c50918c67f252d8c",
   "ok": true
  },
  "q04-log-transformation-2": {
@@ -28,7 +28,7 @@
   "ok": true
  },
  "q04-logit-logistic-transformation-1": {
-  "hash": "be1f1ab71dfc7ec7",
+  "hash": "1317ec91ca9d9cff",
   "ok": true
  },
  "q04-logit-logistic-transformation-2": {
@@ -36,7 +36,7 @@
   "ok": true
  },
  "q04-logit-logistic-transformation-3": {
-  "hash": "ce0d85c7d2814be5",
+  "hash": "63d989612ba9da52",
   "ok": true
  },
  "q04-power-transformation-1": {
@@ -44,19 +44,19 @@
   "ok": true
  },
  "q04-probit-transformation-1": {
-  "hash": "a566698c91ed514d",
+  "hash": "3890c0b854bfb435",
   "ok": true
  },
  "q04-probit-transformation-2": {
-  "hash": "2bed2662bfb0d1df",
+  "hash": "57b34bfc864344f6",
   "ok": true
  },
  "q04-sum-of-random-variables-1": {
-  "hash": "c8020b4e20f10ea6",
+  "hash": "90a9de137f3adaf4",
   "ok": true
  },
  "q04-sum-of-random-variables-2": {
-  "hash": "bc52019a23f197e0",
+  "hash": "089437e78230a7ed",
   "ok": true
  },
  "q04-sum-of-random-variables-3": {

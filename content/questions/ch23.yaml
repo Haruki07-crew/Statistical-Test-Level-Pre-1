@@ -137,6 +137,7 @@ questions:
     type: numeric
     question: |
       $\boldsymbol{X}\sim N_3(\boldsymbol{\mu},\Sigma)$ のとき、マハラノビス距離 $D(\boldsymbol{X})$ が $3$ を超える確率を小数第3位まで求めよ。
+      必要なら、自由度3のカイ二乗分布の上側確率 $P(\chi^2_3>x)=2\{1-\Phi(\sqrt x)\}+2\sqrt x\,\phi(\sqrt x)$ と、$1-\Phi(3)=0.00135$、$\phi(3)=0.00443$（$\phi$ は標準正規分布の密度）を用いてよい。
     answer: 0.029
     tolerance: 0.001
     hint: |
@@ -246,13 +247,13 @@ questions:
       $$\boldsymbol{\mu}_1-\boldsymbol{\mu}_2=\begin{pmatrix}1\\-1\end{pmatrix},\qquad \Sigma=\begin{pmatrix}1&0.6\\0.6&1\end{pmatrix}$$
       である。事前確率が等しいとき、線形判別による誤判別率を小数第3位まで求めよ。
     answer: 0.132
-    tolerance: 0.001
+    tolerance: 0.0015
     hint: |
       まず $\Delta^2=(\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)^\top\Sigma^{-1}(\boldsymbol{\mu}_1-\boldsymbol{\mu}_2)$ を求める。
     explanation: |
       $\Sigma^{-1}=\dfrac{1}{0.64}\begin{pmatrix}1&-0.6\\-0.6&1\end{pmatrix}$ より
       $$\Delta^2=\frac{1+1.2+1}{0.64}=5,\qquad \Delta=\sqrt5=2.236$$
-      誤判別率は $\Phi(-\sqrt5/2)=\Phi(-1.118)=0.132$ です。
+      誤判別率は $\Phi(-\sqrt5/2)=\Phi(-1.118)=0.132$ です。（数表で $\Phi(-1.12)$ を引くと $0.131$ で、これも正解とします）
       相関を無視して $\Delta^2=2$ とすると $\Phi(-0.707)=0.240$ となり、判別のしやすさを過小に見積もります。
 
   - id: q23-misclassification-rate-3
@@ -288,6 +289,7 @@ questions:
     type: choice
     question: |
       3群の判別結果の混同行列（行が実際の群、列が判定した群）が次のとおりである。
+
       | | 判定1 | 判定2 | 判定3 |
       |---|---|---|---|
       | 実際1 | 30 | 5 | 5 |
@@ -386,12 +388,13 @@ questions:
     question: |
       判別得点が陰性群で $N(0,1)$、陽性群で $N(1.5,1)$ に従い、2群は独立である。AUC を小数第3位まで求めよ。
     answer: 0.856
-    tolerance: 0.001
+    tolerance: 0.0015
     hint: |
       AUC $=P(S_1>S_0)=P(S_1-S_0>0)$ で、$S_1-S_0$ は正規分布に従う。
     explanation: |
       $S_1-S_0\sim N(1.5,\ 2)$ なので
       $$\text{AUC}=P(S_1-S_0>0)=\Phi\!\left(\frac{1.5}{\sqrt2}\right)=\Phi(1.061)=0.856$$
+      （数表で $\Phi(1.06)$ を引くと $0.855$ で、これも正解とします）
       分母の $\sqrt2$ は、2つの得点の分散が足されることから来ます。
 
   - id: q23-precision-recall-f-measure-1

@@ -16,7 +16,7 @@
   "ok": true
  },
  "q23-confusion-matrix-2": {
-  "hash": "823dcc1830fb6dec",
+  "hash": "8b8a93d438075682",
   "ok": true
  },
  "q23-decision-tree-1": {
@@ -68,7 +68,7 @@
   "ok": true
  },
  "q23-mahalanobis-distance-3": {
-  "hash": "6dd22e3b1a4f9521",
+  "hash": "0303b78dd04420a5",
   "ok": true
  },
  "q23-misclassification-rate-1": {
@@ -76,7 +76,7 @@
   "ok": true
  },
  "q23-misclassification-rate-2": {
-  "hash": "9331e2ce2436f8b9",
+  "hash": "ce376d097e52f6af",
   "ok": true
  },
  "q23-misclassification-rate-3": {
@@ -112,7 +112,7 @@
   "ok": true
  },
  "q23-roc-curve-and-auc-3": {
-  "hash": "a0f91635061c1e1b",
+  "hash": "00f0193fc050dfdc",
   "ok": true
  },
  "q23-sensitivity-and-specificity-1": {

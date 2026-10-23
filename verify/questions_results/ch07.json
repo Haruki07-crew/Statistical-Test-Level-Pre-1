@@ -8,19 +8,19 @@
   "ok": true
  },
  "q07-almost-sure-convergence-3": {
-  "hash": "f05e3d455e14fe24",
+  "hash": "05d1d3885b3dd4b6",
   "ok": true
  },
  "q07-berry-esseen-theorem-1": {
-  "hash": "be4276597bafa909",
+  "hash": "c817da920dbfc6d4",
   "ok": true
  },
  "q07-central-limit-theorem-1": {
-  "hash": "7009f2184c6dc51f",
+  "hash": "f85948ee632679c7",
   "ok": true
  },
  "q07-central-limit-theorem-2": {
-  "hash": "9df847037e9c2008",
+  "hash": "1fc519c5daf7f725",
   "ok": true
  },
  "q07-central-limit-theorem-3": {
@@ -28,7 +28,7 @@
   "ok": true
  },
  "q07-chebyshev-inequality-1": {
-  "hash": "ea15e24302223e65",
+  "hash": "3a03b4c21f529e1a",
   "ok": true
  },
  "q07-chebyshev-inequality-2": {
@@ -44,15 +44,15 @@
   "ok": true
  },
  "q07-continuity-correction-2": {
-  "hash": "6296dec2b66f429c",
+  "hash": "09acd48ae49c5eed",
   "ok": true
  },
  "q07-continuity-correction-3": {
-  "hash": "538a187f3a729fa1",
+  "hash": "6659421bf47514fd",
   "ok": true
  },
  "q07-continuous-mapping-theorem-1": {
-  "hash": "3d48193cfb34074a",
+  "hash": "343fd1435d6f0a10",
   "ok": true
  },
  "q07-continuous-mapping-theorem-2": {
@@ -60,7 +60,7 @@
   "ok": true
  },
  "q07-convergence-in-distribution-1": {
-  "hash": "525f192a0f49ac70",
+  "hash": "c25a393d282dbe81",
   "ok": true
  },
  "q07-convergence-in-distribution-2": {
@@ -76,7 +76,7 @@
   "ok": true
  },
  "q07-convergence-in-probability-2": {
-  "hash": "77855f76f2fbadf4",
+  "hash": "45dfa0eaeb7138f2",
   "ok": true
  },
  "q07-convergence-in-probability-3": {
@@ -88,15 +88,15 @@
   "ok": true
  },
  "q07-delta-method-2": {
-  "hash": "f57e507882072f46",
+  "hash": "5e0fc99ee2b0aec9",
   "ok": true
  },
  "q07-delta-method-3": {
-  "hash": "0927c8b7cb0bdc62",
+  "hash": "69d5d214dd0465e1",
   "ok": true
  },
  "q07-extreme-value-distribution-1": {
-  "hash": "28ce71dbd423677b",
+  "hash": "67c7673d1a9a0aa9",
   "ok": true
  },
  "q07-extreme-value-distribution-2": {
@@ -104,11 +104,11 @@
   "ok": true
  },
  "q07-law-of-small-numbers-1": {
-  "hash": "7c4bd42adf286a3a",
+  "hash": "a7ac476f61074cc2",
   "ok": true
  },
  "q07-law-of-small-numbers-2": {
-  "hash": "3f5bb2722613bf96",
+  "hash": "a7c6b73106ddbe83",
   "ok": true
  },
  "q07-lindeberg-levy-clt-1": {
@@ -116,15 +116,15 @@
   "ok": true
  },
  "q07-markov-inequality-1": {
-  "hash": "14bfc14ba3751bd1",
+  "hash": "954458b40559abcb",
   "ok": true
  },
  "q07-markov-inequality-2": {
-  "hash": "cdca728d40c976f5",
+  "hash": "e93c494cf6a08fe4",
   "ok": true
  },
  "q07-normal-approximation-binomial-poisson-1": {
-  "hash": "d36a01893be3b415",
+  "hash": "fa5fde9d54227f86",
   "ok": true
  },
  "q07-normal-approximation-binomial-poisson-2": {
@@ -132,11 +132,11 @@
   "ok": true
  },
  "q07-normal-approximation-binomial-poisson-3": {
-  "hash": "1accb688298a83e2",
+  "hash": "61107ec2e5248ca6",
   "ok": true
  },
  "q07-slutsky-theorem-1": {
-  "hash": "fac30001cf83684d",
+  "hash": "37f07366ff0b60ad",
   "ok": true
  },
  "q07-slutsky-theorem-2": {
@@ -152,7 +152,7 @@
   "ok": true
  },
  "q07-weak-law-of-large-numbers-1": {
-  "hash": "b08e5a3db703de31",
+  "hash": "5a4b40fd7229e4f5",
   "ok": true
  },
  "q07-weak-law-of-large-numbers-2": {

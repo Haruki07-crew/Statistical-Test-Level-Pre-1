@@ -89,7 +89,7 @@ DA, DB = D(3.0, 0.05, 2), D(1.2, 0.6, 2)
 q.check("q17-cooks-distance-2", abs(DA - 0.24) < 0.005 and abs(DB - 1.08) < 0.005 and DB > DA, f"D_A={DA:.4f}, D_B={DB:.4f}")
 q.check("q17-cooks-distance-2", abs(9 / 2 - 4.5) < 1e-12 and abs(1.44 / 2 - 0.72) < 1e-12
         and abs(4.5 * 0.05 - 0.225) < 1e-12 and abs(0.72 * 0.6 - 0.432) < 1e-12 and abs(DA - DB) > 0.5,
-        "誤答（h/(1-h) の掛け忘れなど）は正解と異なる")
+        "誤答（h/(1-h) の掛け忘れ 4.5・0.72、h だけ掛けた 0.225・0.432）は正解と異なる")
 
 # --- DFFITS ---
 q.num("q17-dffits-1", 2.2 * np.sqrt(0.3 / 0.7))

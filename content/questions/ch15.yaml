@@ -199,7 +199,7 @@ questions:
     answer: 21
     tolerance: 0.4
     hint: |
-      $p=q$ のとき $D_i=i(N-i)$。
+      最初の1回で場合分けすると $D_i=1+\frac12D_{i+1}+\frac12D_{i-1}$、$D_0=D_{10}=0$。$p=q$ のときの解は $i$ の2次式になる。
     explanation: |
       $$D_3=3\times(10-3)=21$$
       10に達する確率は $3/10$ です。

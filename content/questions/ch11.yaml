@@ -229,7 +229,7 @@ questions:
     type: numeric
     question: |
       $m=9$（$S_1^2=12.6$）、$n=13$（$S_2^2=4.2$）の独立な正規標本で、$H_0:\sigma_1^2=\sigma_2^2$ 対 $H_1:\sigma_1^2\ne\sigma_2^2$ の F 検定を行う。
-      両側 p 値を小数第3位まで求めよ。
+      両側 p 値を小数第3位まで求めよ。必要なら $P(F(8,12)\ge3.0)=0.0424$ を使ってよい。
     answer: 0.085
     tolerance: 0.001
     hint: |

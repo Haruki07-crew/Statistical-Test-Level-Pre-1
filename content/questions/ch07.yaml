@@ -6,7 +6,7 @@ questions:
     type: numeric
     question: |
       非負の確率変数 $X$ の期待値が $E[X]=4$ であることだけがわかっている。
-      マルコフの不等式から得られる $P(X\ge10)$ の上界を小数第2位まで求めよ。
+      マルコフの不等式から得られる $P(X\ge10)$ の上界を小数第2位まで（四捨五入）求めよ。
     answer: 0.4
     tolerance: 0.005
     hint: |
@@ -22,7 +22,7 @@ questions:
     type: numeric
     question: |
       非負の確率変数 $X$ について $E[X]=2$、$V[X]=1$ である。
-      マルコフの不等式を $X^2$ に当てはめて（$g(x)=x^2$ として）得られる $P(X\ge4)$ の上界を小数第4位まで求めよ。
+      マルコフの不等式を $X^2$ に当てはめて（$g(x)=x^2$ として）得られる $P(X\ge4)$ の上界を小数第4位まで（四捨五入）求めよ。
     answer: 0.3125
     tolerance: 0.0001
     hint: |
@@ -39,7 +39,7 @@ questions:
     type: numeric
     question: |
       確率変数 $X$ の期待値が $50$、標準偏差が $5$ である（分布の形は不明）。
-      チェビシェフの不等式から得られる $P(40<X<60)$ の下界を小数第2位まで求めよ。
+      チェビシェフの不等式から得られる $P(40<X<60)$ の下界を小数第2位まで（四捨五入）求めよ。
     answer: 0.75
     tolerance: 0.005
     hint: |
@@ -105,7 +105,7 @@ questions:
     type: numeric
     question: |
       $X_1,\dots,X_n$ を一様分布 $U(0,1)$ からの i.i.d. 標本、$M_n=\max_i X_i$ とする。
-      $n=20$ のとき $P(M_n\le0.9)$ を小数第3位まで求めよ。
+      $n=20$ のとき $P(M_n\le0.9)$ を小数第3位まで（四捨五入）求めよ。
     answer: 0.122
     tolerance: 0.001
     hint: |
@@ -181,7 +181,7 @@ questions:
     type: numeric
     question: |
       $X_2,X_3,\dots$ は独立で、$X_n$ は確率 $1/n^2$ で $1$、確率 $1-1/n^2$ で $0$ をとる。
-      $n\ge2$ のすべてで $X_n=0$ となる確率を小数第3位まで求めよ。
+      $n\ge2$ のすべてで $X_n=0$ となる確率を小数第3位まで（四捨五入）求めよ。
     answer: 0.5
     tolerance: 0.001
     hint: |
@@ -197,7 +197,7 @@ questions:
     type: numeric
     question: |
       $X_1,\dots,X_n$ を $U(0,1)$ からの i.i.d. 標本、$M_n=\max_iX_i$ とする。
-      $Y_n=n(1-M_n)$ の極限分布を用いて、$\lim_{n\to\infty}P(Y_n\le2)$ を小数第3位まで求めよ。
+      $Y_n=n(1-M_n)$ の極限分布を用いて、$\lim_{n\to\infty}P(Y_n\le2)$ を小数第3位まで（四捨五入）求めよ。
     answer: 0.865
     tolerance: 0.001
     hint: |
@@ -229,7 +229,7 @@ questions:
     type: numeric
     question: |
       $X_1,\dots,X_{100}$ が i.i.d. で $V[X_i]=4$ のとき、チェビシェフの不等式から得られる
-      $P(|\bar X-\mu|\ge0.5)$ の上界を小数第2位まで求めよ。
+      $P(|\bar X-\mu|\ge0.5)$ の上界を小数第2位まで（四捨五入）求めよ。
     answer: 0.16
     tolerance: 0.005
     hint: |
@@ -281,7 +281,7 @@ questions:
     type: numeric
     question: |
       $X_1,\dots,X_{64}$ が平均 $2$ の指数分布からの i.i.d. 標本である。
-      中心極限定理による正規近似で $P(\bar X>2.5)$ を小数第3位まで求めよ。
+      中心極限定理による正規近似で $P(\bar X>2.5)$ を小数第3位まで（四捨五入）求めよ。
     answer: 0.023
     tolerance: 0.001
     hint: |
@@ -297,7 +297,7 @@ questions:
     type: numeric
     question: |
       $U_1,\dots,U_{48}$ が $U(0,1)$ からの i.i.d. 標本のとき、和 $S=\sum U_i$ について中心極限定理による正規近似で
-      $P(S>27)$ を小数第3位まで求めよ。
+      $P(S>27)$ を小数第3位まで（四捨五入）求めよ。
     answer: 0.067
     tolerance: 0.001
     hint: |
@@ -336,7 +336,7 @@ questions:
     type: numeric
     question: |
       $X_n\xrightarrow{d}N(0,1)$、$Y_n\xrightarrow{p}2$ とする。$W_n=X_nY_n+Y_n$ の極限分布を求め、
-      極限分布で $P(W\le4)$ を小数第3位まで答えよ。
+      極限分布で $P(W\le4)$ を小数第3位まで（四捨五入）答えよ。
     answer: 0.841
     tolerance: 0.001
     hint: |
@@ -388,7 +388,7 @@ questions:
     type: numeric
     question: |
       $Z_n=\sqrt n(\bar X_n-\mu)/\sigma\xrightarrow{d}N(0,1)$ のとき、$Z_n^2$ の極限分布を用いて
-      $\lim_{n\to\infty}P(Z_n^2\le2.706)$ を小数第2位まで求めよ。
+      $\lim_{n\to\infty}P(Z_n^2\le2.706)$ を小数第2位まで（四捨五入）求めよ。
     answer: 0.9
     tolerance: 0.005
     hint: |
@@ -438,7 +438,7 @@ questions:
     type: numeric
     question: |
       $X_1,\dots,X_{100}$ がポアソン分布 $Po(4)$ からの i.i.d. 標本である。デルタ法により $\sqrt{\bar X}$ の分散の近似値を
-      小数第4位まで求めよ。
+      小数第4位まで（四捨五入）求めよ。
     answer: 0.0025
     tolerance: 0.0001
     hint: |
@@ -453,7 +453,7 @@ questions:
     type: numeric
     question: |
       $n=200$ 人の調査で、ある回答の割合が $\hat p=0.2$ であった。対数オッズ $\log\{\hat p/(1-\hat p)\}$ の標準誤差を、
-      デルタ法で（$p$ に $\hat p$ を代入して）小数第3位まで求めよ。
+      デルタ法で（$p$ に $\hat p$ を代入して）小数第3位まで（四捨五入）求めよ。
     answer: 0.177
     tolerance: 0.001
     hint: |
@@ -487,7 +487,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      $X\sim B(50,\ 0.4)$ のとき、連続修正つきの正規近似で $P(X\le17)$ を小数第3位まで求めよ。
+      $X\sim \mathrm{Bin}(50,\ 0.4)$ のとき、連続修正つきの正規近似で $P(X\le17)$ を小数第3位まで（四捨五入）求めよ。
     answer: 0.235
     tolerance: 0.001
     hint: |
@@ -502,7 +502,7 @@ questions:
     level: 応用
     type: numeric
     question: |
-      $X\sim B(50,\ 0.4)$ のとき、$P(X=20)$ を連続修正つきの正規近似で小数第3位まで求めよ。
+      $X\sim \mathrm{Bin}(50,\ 0.4)$ のとき、$P(X=20)$ を連続修正つきの正規近似で小数第3位まで（四捨五入）求めよ。
     answer: 0.115
     tolerance: 0.001
     hint: |
@@ -517,7 +517,7 @@ questions:
     level: 標準
     type: numeric
     question: |
-      不良率 $0.4\%$ の製品を $500$ 個検査する。不良品の個数をポアソン分布で近似して、不良品が1個以下である確率を小数第3位まで求めよ。
+      不良率 $0.4\%$ の製品を $500$ 個検査する。不良品の個数をポアソン分布で近似して、不良品が1個以下である確率を小数第3位まで（四捨五入）求めよ。
     answer: 0.406
     tolerance: 0.001
     hint: |
@@ -525,14 +525,14 @@ questions:
     explanation: |
       $\lambda=500\times0.004=2$ なので
       $$P(X\le1)\approx e^{-2}(1+2)=3e^{-2}=0.4060$$
-      二項分布 $B(500,0.004)$ での正確な値は $0.4055$ で、よく一致します。
+      二項分布 $\mathrm{Bin}(500,0.004)$ での正確な値は $0.4055$ で、よく一致します。
 
   - id: q07-law-of-small-numbers-2
     term: law-of-small-numbers
     level: 基本
     type: truefalse
     question: |
-      $B(n,p)$ を $Po(np)$ で近似すると、近似分布の分散は $np$ となり、二項分布の分散 $np(1-p)$ とは $p$ が小さいほど近くなる。
+      $\mathrm{Bin}(n,p)$ を $Po(np)$ で近似すると、近似分布の分散は $np$ となり、二項分布の分散 $np(1-p)$ とは $p$ が小さいほど近くなる。
     answer: true
     hint: |
       ポアソン分布の期待値と分散の関係を思い出す。
@@ -574,7 +574,7 @@ questions:
     type: numeric
     question: |
       成功確率 $1/2$ のベルヌーイ分布からの i.i.d. 標本 $n=100$ 個について、標準化した和の分布関数と $\Phi$ の差の上限を
-      ベリー・エッセンの定理（定数 $C=0.4748$）で評価し、小数第3位まで求めよ。
+      ベリー・エッセンの定理（定数 $C=0.4748$）で評価し、小数第3位まで（四捨五入）求めよ。
     answer: 0.047
     tolerance: 0.001
     hint: |
@@ -591,18 +591,18 @@ questions:
     question: |
       目安「$np\ge5$ かつ $n(1-p)\ge5$」に照らして、正規近似を使ってよいと判断できる二項分布はどれか。
     choices:
-      - '$B(40,\ 0.2)$'
-      - '$B(20,\ 0.1)$'
-      - '$B(200,\ 0.02)$'
-      - '$B(30,\ 0.9)$'
+      - '$\mathrm{Bin}(40,\ 0.2)$'
+      - '$\mathrm{Bin}(20,\ 0.1)$'
+      - '$\mathrm{Bin}(200,\ 0.02)$'
+      - '$\mathrm{Bin}(30,\ 0.9)$'
     answer: 0
     hint: |
       それぞれ $np$ と $n(1-p)$ の両方を計算する。片方だけでは足りない。
     explanation: |
-      - $B(40,0.2)$：$np=8$、$n(1-p)=32$ で両方とも5以上。
-      - $B(20,0.1)$：$np=2$。
-      - $B(200,0.02)$：$np=4$（$n$ が大きくても $p$ が小さいと足りない。この場合はポアソン近似が向いている）。
-      - $B(30,0.9)$：$n(1-p)=3$（$p$ が1に近いと右側に歪む）。
+      - $\mathrm{Bin}(40,0.2)$：$np=8$、$n(1-p)=32$ で両方とも5以上。
+      - $\mathrm{Bin}(20,0.1)$：$np=2$。
+      - $\mathrm{Bin}(200,0.02)$：$np=4$（$n$ が大きくても $p$ が小さいと足りない。この場合はポアソン近似が向いている）。
+      - $\mathrm{Bin}(30,0.9)$：$n(1-p)=3$（$p$ が1に近いと右側に歪む）。
 
   - id: q07-normal-approximation-binomial-poisson-2
     term: normal-approximation-binomial-poisson
@@ -631,7 +631,7 @@ questions:
     answer: 0.087
     tolerance: 0.001
     hint: |
-      $X\sim B(2500,\ 0.02)$ の平均と分散を求め、「40 以下」を「40.5 以下」として標準化する。
+      $X\sim \mathrm{Bin}(2500,\ 0.02)$ の平均と分散を求め、「40 以下」を「40.5 以下」として標準化する。
     explanation: |
       $np=50$、$np(1-p)=50\times0.98=49$ なので標準偏差は $7$ です（$np\ge5$、$n(1-p)\ge5$ を満たす）。
       $$P(X\le40)\approx\Phi\!\left(\frac{40.5-50}{7}\right)=\Phi(-1.357)\approx\Phi(-1.36)=1-0.9131=0.0869$$
@@ -642,16 +642,16 @@ questions:
     level: 標準
     type: numeric
     question: |
-      $X_1,\dots,X_{1000}$ は独立にレート1の指数分布（密度 $e^{-x},\ x>0$）に従う。最大値を $M$ とする。
-      $M-\log n$ が標準グンベル分布で近似できることを使って、$E[M]$ の近似値を小数第2位まで求めよ（$\log$ は自然対数）。
-    answer: 7.49
-    tolerance: 0.01
+      $X_1,\dots,X_{500}$ は独立にレート1の指数分布（密度 $e^{-x},\ x>0$）に従う。最大値を $M$ とする。
+      $M-\log n$ が標準グンベル分布で近似できることを使って、$E[M]$ の近似値を小数第2位まで（四捨五入）求めよ（$\log$ は自然対数）。
+    answer: 6.79
+    tolerance: 0.005
     hint: |
       $P(M-\log n\le x)=(1-e^{-x}/n)^n\to\exp(-e^{-x})$。標準グンベル分布の期待値はオイラー定数 $\gamma\approx0.5772$。
     explanation: |
       $P(M\le x+\log n)=\left(1-\dfrac{e^{-x}}{n}\right)^n\to\exp(-e^{-x})$ なので、$M-\log n$ は近似的に標準グンベル分布に従います。
-      $$E[M]\approx\log1000+\gamma=6.9078+0.5772=7.485\approx7.49$$
-      正確には $E[M]=1+\frac12+\cdots+\frac1{1000}=7.4855$ で、近似はほぼ一致します。最大値は $n$ が10倍になっても $\log 10\approx2.3$ しか増えません。
+      $$E[M]\approx\log500+\gamma=6.2146+0.5772=6.7918\approx6.79$$
+      正確には $E[M]=1+\frac12+\cdots+\frac1{500}=6.7928$ で、近似はほぼ一致します。最大値は $n$ が10倍になっても $\log 10\approx2.3$ しか増えません。
 
   - id: q07-extreme-value-distribution-2
     term: extreme-value-distribution

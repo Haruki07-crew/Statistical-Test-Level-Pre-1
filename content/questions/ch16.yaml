@@ -209,11 +209,11 @@ questions:
       $\bar R^2=1-(1-R^2)\dfrac{n-1}{n-p-1}$。
     explanation: |
       $$\bar R^2=1-0.40\times\frac{24}{20}=1-0.48=0.52$$
-      分母を $n-p$ としてしまう（$0.5$ になる）誤りに注意します。
+      分母を $n-p$ としてしまう（$1-0.40\times24/21=0.543$ になる）誤りに注意します。
 
   - id: q16-adjusted-r-squared-2
     term: adjusted-r-squared
-    level: 応用
+    level: 標準
     type: numeric
     question: |
       $n=11$、説明変数 $p=3$ 個の重回帰で $R^2=0.10$ だった。自由度調整済み決定係数 $\bar R^2$ を小数第3位まで求めよ。

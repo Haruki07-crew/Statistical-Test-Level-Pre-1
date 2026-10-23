@@ -1,10 +1,10 @@
 {
  "q08-asymptotic-normality-of-mle-1": {
-  "hash": "b23ff31a84644050",
+  "hash": "ef3cd73605750d6f",
   "ok": true
  },
  "q08-asymptotic-normality-of-mle-2": {
-  "hash": "1c05489be94811bd",
+  "hash": "ad92ebf464ea8622",
   "ok": true
  },
  "q08-asymptotic-normality-of-mle-3": {
@@ -12,7 +12,7 @@
   "ok": true
  },
  "q08-complete-statistic-1": {
-  "hash": "0c8c9d25b25ca396",
+  "hash": "21d367de4e726808",
   "ok": true
  },
  "q08-consistent-estimator-1": {
@@ -24,11 +24,11 @@
   "ok": true
  },
  "q08-cramer-rao-inequality-1": {
-  "hash": "7f345aacda6027d2",
+  "hash": "1508c277659c04c5",
   "ok": true
  },
  "q08-cramer-rao-inequality-2": {
-  "hash": "ccfd6a9b67b17c73",
+  "hash": "bf7f9de85b03291c",
   "ok": true
  },
  "q08-cramer-rao-inequality-3": {
@@ -36,19 +36,19 @@
   "ok": true
  },
  "q08-efficient-estimator-1": {
-  "hash": "3e8dc61a0b73b5f7",
+  "hash": "c8571665bad329bb",
   "ok": true
  },
  "q08-efficient-estimator-2": {
-  "hash": "063d0d3d7d2e5d49",
+  "hash": "f77d9010cb67795d",
   "ok": true
  },
  "q08-exponential-family-1": {
-  "hash": "f187994107e02775",
+  "hash": "a0dfe68371ddf3d8",
   "ok": true
  },
  "q08-exponential-family-2": {
-  "hash": "c573a8b0af6653ff",
+  "hash": "e0c2621493a88e77",
   "ok": true
  },
  "q08-factorization-theorem-1": {
@@ -60,11 +60,11 @@
   "ok": true
  },
  "q08-fisher-information-1": {
-  "hash": "4f6a62e423761480",
+  "hash": "daf628cb61f58a8e",
   "ok": true
  },
  "q08-fisher-information-2": {
-  "hash": "8190f029ef36cd65",
+  "hash": "79b136d1350762ab",
   "ok": true
  },
  "q08-fisher-information-3": {
@@ -72,7 +72,7 @@
   "ok": true
  },
  "q08-invariance-of-mle-1": {
-  "hash": "76702d35ff0eea77",
+  "hash": "538bdb2ad5cb03d3",
   "ok": true
  },
  "q08-invariance-of-mle-2": {
@@ -84,15 +84,15 @@
   "ok": true
  },
  "q08-likelihood-function-2": {
-  "hash": "466c7db1a7fde37f",
+  "hash": "6a1ae963ca3dd6fb",
   "ok": true
  },
  "q08-maximum-likelihood-estimator-1": {
-  "hash": "a6eed30faa069252",
+  "hash": "1e6689ab354a5d19",
   "ok": true
  },
  "q08-maximum-likelihood-estimator-2": {
-  "hash": "e7251d637f0b130f",
+  "hash": "8c591b855e630cf3",
   "ok": true
  },
  "q08-maximum-likelihood-estimator-3": {
@@ -100,27 +100,27 @@
   "ok": true
  },
  "q08-mean-squared-error-1": {
-  "hash": "92278248e1f7ef04",
+  "hash": "c7b40130b90332e5",
   "ok": true
  },
  "q08-mean-squared-error-2": {
-  "hash": "3b02e35d494f09cd",
+  "hash": "da68413cccb1da46",
   "ok": true
  },
  "q08-mean-squared-error-3": {
-  "hash": "dc758a42cc1f82f8",
+  "hash": "cae8da1a8b47fc56",
   "ok": true
  },
  "q08-method-of-moments-1": {
-  "hash": "86c95a1bd9aae5d3",
+  "hash": "f1efe66b90c7dc1f",
   "ok": true
  },
  "q08-method-of-moments-2": {
-  "hash": "a98503e34927c525",
+  "hash": "773b6a66ee371b17",
   "ok": true
  },
  "q08-observed-fisher-information-1": {
-  "hash": "c77befe3cd03e53e",
+  "hash": "35058ee162ff1e01",
   "ok": true
  },
  "q08-order-statistics-1": {
@@ -128,7 +128,7 @@
   "ok": true
  },
  "q08-order-statistics-2": {
-  "hash": "58db2fb262ed361d",
+  "hash": "e7bf41687792a69d",
   "ok": true
  },
  "q08-order-statistics-3": {
@@ -140,7 +140,7 @@
   "ok": true
  },
  "q08-rao-blackwell-theorem-1": {
-  "hash": "515297e21de4933f",
+  "hash": "e1adf7b7dc6e0b0c",
   "ok": true
  },
  "q08-score-function-1": {
@@ -172,7 +172,7 @@
   "ok": true
  },
  "q08-unbiased-estimator-2": {
-  "hash": "989b0659f7a9cfc1",
+  "hash": "f062b8cc079a8a6b",
   "ok": true
  },
  "q08-unbiased-estimator-3": {

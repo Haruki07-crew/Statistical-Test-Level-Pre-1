@@ -10,7 +10,9 @@ q = Q(21)
 rng = np.random.default_rng(21)
 
 # --- 単純無作為抽出 ---
-q.num("q21-simple-random-sampling-1", np.sqrt((1 - 50 / 500) * 36 / 50))
+se_ = np.sqrt((1 - 50 / 500) * 36 / 50)
+q.check("q21-simple-random-sampling-1", round(se_, 3) == 0.805 and round(np.sqrt(36 / 50), 3) == 0.849
+        and round(0.9 * np.sqrt(36 / 50), 3) == 0.764 and round(se_ ** 2, 3) == 0.648, f"正解 {se_:.4f}、誤答 0.849/0.764/0.648 は別の値")
 n_ = next(n for n in range(1, 2001) if (1 - n / 2000) * 25 / n <= 0.25 + 1e-12)
 q.num("q21-simple-random-sampling-2", n_)
 q.check("q21-simple-random-sampling-2", (1 - 95 / 2000) * 25 / 95 > 0.25, "n=95 では条件を満たさない")
@@ -68,7 +70,10 @@ q.check("q21-proportional-allocation-2", abs(sum(w * s.mean() for w, s in zip(Wp
 
 # --- ネイマン配分 ---
 NS = Nh * S
-q.num("q21-neyman-allocation-1", 50 * NS[1] / NS.sum())
+n2_ = 50 * NS[1] / NS.sum()
+q.check("q21-neyman-allocation-1", round(n2_, 1) == 28.6 and round(50 * Nh[1] / Nh.sum(), 1) == 20.0
+        and round(50 * S[1] / S.sum(), 1) == 33.3 and round(50 * (Nh * S ** 2)[1] / (Nh * S ** 2).sum(), 1) == 36.4,
+        f"正解 {n2_:.3f}、誤答 20.0（比例）/33.3（S比例）/36.4（NS²比例）")
 Vopt = (W @ S) ** 2 / 50 - (W @ S ** 2) / 1000
 q.num("q21-neyman-allocation-2", Vopt)
 nopt = 50 * NS / NS.sum()
@@ -114,10 +119,13 @@ yR = [ys[list(s)].mean() / xs[list(s)].mean() * xs.mean() for s in itertools.com
 q.check("q21-ratio-estimation-3", abs(np.mean(yR) - ys.mean()) > 1e-3, f"全標本列挙で E[ȳ_R]={np.mean(yR):.4f} ≠ Ȳ={ys.mean()}（誤り）")
 
 # --- 回帰推定 ---
-q.num("q21-regression-estimation-1", 36 + 0.6 * (50 - 45))
+q.check("q21-regression-estimation-1", 36 + 0.6 * (50 - 45) == 39 and 36 / 45 * 50 == 40
+        and abs(36 + 0.6 * (45 - 50) - 33) < 1e-12 and 36 + (50 - 45) == 41, "正解 39、誤答 40（比推定）/33（符号逆）/41（傾き1）")
 
 # --- 計画効果 ---
-q.num("q21-design-effect-1", 600 / (1 + 19 * 0.05))
+ne_ = 600 / (1 + 19 * 0.05)
+q.check("q21-design-effect-1", round(ne_) == 308 and 600 / (1 + 20 * 0.05) == 300 and round(600 * 1.95) == 1170,
+        f"正解 {ne_:.2f}≈308、誤答 300/1170/30 は別の値")
 w = np.r_[np.ones(50), 3 * np.ones(50)]
 deff = 100 * np.sum(w ** 2) / w.sum() ** 2
 q.num("q21-design-effect-2", deff)
@@ -132,8 +140,7 @@ q.check("q21-sampling-and-nonsampling-error-2", abs(np.sqrt(4 + 2.25) - 2.5) < 1
 q.num("q21-probability-proportional-to-size-sampling-1", (30 / 0.1 + 50 / 0.2) / 2)
 
 # --- 無回答バイアス ---
-q.num("q21-nonresponse-bias-1", 0.4 * (60 - 45))
-q.check("q21-nonresponse-bias-1", abs(60 - (0.6 * 60 + 0.4 * 45) - 6) < 1e-12, "母平均54との差")
+q.check("q21-nonresponse-bias-1", abs(60 - (0.6 * 60 + 0.4 * 45) - 6) < 1e-12 and abs(0.4 * (60 - 45) - 6) < 1e-12 and 6 != 15, "偏りは 6（15 ではない＝誤り）")
 popr = np.r_[rng.normal(60, 10, 60000), rng.normal(45, 10, 40000)]; resp = np.r_[np.ones(60000), np.zeros(40000)].astype(bool)
 b_small = np.mean([popr[s][resp[s]].mean() for s in (rng.choice(100000, 200, replace=False) for _ in range(500))]) - popr.mean()
 b_large = np.mean([popr[s][resp[s]].mean() for s in (rng.choice(100000, 20000, replace=False) for _ in range(50))]) - popr.mean()

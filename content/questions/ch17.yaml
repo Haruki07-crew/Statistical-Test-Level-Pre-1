@@ -65,7 +65,7 @@ questions:
       - '上限はない'
     answer: 0
     hint: |
-      $e_i^2/(1-h_{ii})\le\sum_j e_j^2$ が成り立つことを使う。
+      $s^2$ の分子 $\sum_j e_j^2$ には点 $i$ 自身の残差も含まれる。1つの残差 $e_i^2/(1-h_{ii})$ と $\sum_j e_j^2$ の大小関係を考える。
     explanation: |
       $e_i^2/(1-h_{ii})\le\sum_j e_j^2=(n-p-1)s^2$ より
       $$r_i^2=\frac{e_i^2}{s^2(1-h_{ii})}\le n-p-1=9,\qquad |r_i|\le3$$
@@ -86,7 +86,7 @@ questions:
     explanation: |
       $n-p-2=16$、$n-p-1=17$ なので
       $$t_i=2.5\sqrt{\frac{16}{17-6.25}}=2.5\sqrt{1.4884}=2.5\times1.2200=3.05$$
-      です。点 $i$ を除くと $s$ が小さくなるので、$|t_i|>|r_i|$ となり外れ値がよりはっきり出ます。
+      です。$|r_i|>1$ の点では、その点を除くと $s$ が小さくなるので $|t_i|>|r_i|$ となり、外れ値がよりはっきり出ます（$|r_i|<1$ なら逆に $|t_i|<|r_i|$）。
 
   - id: q17-studentized-residual-2
     term: studentized-residual
@@ -179,7 +179,7 @@ questions:
     choices:
       - '点Bのほうが大きく、$D_B\approx1.08$、$D_A\approx0.24$'
       - '点Aのほうが大きく、$D_A\approx4.5$、$D_B\approx0.72$'
-      - '点Aのほうが大きく、$D_A\approx0.24$、$D_B\approx0.17$'
+      - '点Bのほうが大きく、$D_B\approx0.43$、$D_A\approx0.23$'
       - '2点とも約 $0.5$ で同程度'
     answer: 0
     hint: |
@@ -189,7 +189,7 @@ questions:
       $$D_A=\frac{9}{2}\cdot\frac{0.05}{0.95}=0.237,\qquad D_B=\frac{1.44}{2}\cdot\frac{0.6}{0.4}=1.08$$
       です。残差が大きい点Aは外れ値ですが、$x$ が中心付近にあるため推定はあまり動きません。
       残差がそれほど大きくなくても、てこ比の大きい点Bのほうが影響点になります。
-      $4.5$ や $0.72$ は $h/(1-h)$ を掛け忘れた値、$0.17$ は $h$ だけを掛けて $1-h$ で割り忘れた値です。
+      $4.5$ や $0.72$ は $h/(1-h)$ を掛け忘れた値、$0.43$ や $0.23$ は $h$ だけを掛けて $1-h$ で割り忘れた値です。
 
   - id: q17-dffits-1
     term: dffits

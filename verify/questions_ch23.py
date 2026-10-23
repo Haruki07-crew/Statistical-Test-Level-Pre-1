@@ -52,7 +52,7 @@ D = lambda v: np.sqrt(v @ np.linalg.solve(Sig, v))
 q.num("q23-mahalanobis-distance-2", D(np.array([2, -2.])))
 q.check("q23-mahalanobis-distance-2", abs(D(np.array([2, 2.])) - 1.15) < 5e-3, "(2,2) は 1.15")
 q.num("q23-mahalanobis-distance-3", stats.chi2.sf(9, 3))
-q.check("q23-mahalanobis-distance-3", abs(2 * stats.norm.sf(3) - 0.0027) < 5e-5, "1変数 3σ 外は 0.0027")
+q.check("q23-mahalanobis-distance-3", abs(2 * stats.norm.sf(3) - 0.0027) < 5e-5 and abs(2 * 0.00135 + 6 * 0.00443 - stats.chi2.sf(9, 3)) < 2e-4 and abs(stats.norm.pdf(3) - 0.00443) < 5e-6, "1変数 3σ 外は 0.0027、問題文の公式と数値で 0.0293")
 
 # --- 二次判別 ---
 p = 5
@@ -178,4 +178,7 @@ q.num("q23-decision-tree-1", gini([10, 10]) - (10 / 20 * gini([8, 2]) + 10 / 20 
 s = 0.4 * 0.8 * 0.6; h = 0.6 * 0.1 * 0.3
 q.num("q23-naive-bayes-classifier-1", s / (s + h))
 
+# 数表（z を小数第2位に丸める）で引いた値も許容範囲に入ること
+q.check("q23-misclassification-rate-2", abs(round(stats.norm.cdf(-1.12), 3) - 0.132) <= 0.0015, "表の Φ(-1.12) を使った 0.131 も正解扱い")
+q.check("q23-roc-curve-and-auc-3", abs(round(stats.norm.cdf(1.06), 3) - 0.856) <= 0.0015, "表の Φ(1.06) を使った 0.855 も正解扱い")
 q.done()

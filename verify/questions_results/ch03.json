@@ -4,7 +4,7 @@
   "ok": true
  },
  "q03-coefficient-of-variation-2": {
-  "hash": "0d5249c5b0df27c8",
+  "hash": "3fe9b84ad26a8f1e",
   "ok": true
  },
  "q03-conditional-expectation-1": {
@@ -12,7 +12,7 @@
   "ok": true
  },
  "q03-conditional-expectation-2": {
-  "hash": "a9132806821d1217",
+  "hash": "43605df2ddc44ce7",
   "ok": true
  },
  "q03-conditional-expectation-3": {
@@ -32,7 +32,7 @@
   "ok": true
  },
  "q03-correlation-matrix-1": {
-  "hash": "50784336280c24d4",
+  "hash": "b33865704d05b0a5",
   "ok": true
  },
  "q03-correlation-matrix-2": {
@@ -104,7 +104,7 @@
   "ok": true
  },
  "q03-skewness-kurtosis-2": {
-  "hash": "f09beb29c6865ee6",
+  "hash": "76b42d8aa1bb258a",
   "ok": true
  },
  "q03-spurious-correlation-1": {
