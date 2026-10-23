@@ -28,13 +28,14 @@
   var DB_KEY = 'jd-data', DB_VERSION = 1;
   function isObj(x) { return x && typeof x === 'object' && !Array.isArray(x); }
   function num(x, def) { return typeof x === 'number' && isFinite(x) ? x : def; }
-  function emptyDB() { return { v: DB_VERSION, memo: {}, bm: {}, notes: {}, recent: [], ans: {}, days: {}, searches: [], font: 'm', exam: '' }; }
+  function emptyDB() { return { v: DB_VERSION, memo: {}, bm: {}, notes: {}, recent: [], ans: {}, days: {}, searches: [], font: 'm', exam: '', qbm: {} }; }
   // 型の合わない値は捨てて、使える部分だけ残す
   function sanitize(d) {
     var out = emptyDB();
     if (!isObj(d)) return out;
     if (isObj(d.memo)) Object.keys(d.memo).forEach(function (k) { if (d.memo[k]) out.memo[k] = num(d.memo[k], 1); });
     if (isObj(d.bm)) Object.keys(d.bm).forEach(function (k) { if (d.bm[k]) out.bm[k] = num(d.bm[k], 1); });
+    if (isObj(d.qbm)) Object.keys(d.qbm).forEach(function (k) { if (d.qbm[k]) out.qbm[k] = num(d.qbm[k], 1); });
     if (isObj(d.notes)) Object.keys(d.notes).forEach(function (k) {
       var n = d.notes[k];
       if (isObj(n) && typeof n.x === 'string' && n.x) out.notes[k] = { x: n.x.slice(0, 20000), t: num(n.t, 0) };
@@ -470,7 +471,7 @@
       '<ul class="home-list"><li>一覧の上のタブで部を選び、章の見出しを押すと用語が開きます。上の検索欄に用語・読み・英語名を入れると全章から探せます（「ガウス」「がんま」「MGF」など）。</li>' +
       '<li>用語ページで「覚えた」チェック・★ブックマーク・自分のメモを付けられます。ページの最後にその用語の問題があります。</li>' +
       '<li>「問題」で範囲と問題数を選んで解き、「復習」で間違えた問題や時間が経った問題を解き直します（正解が続くほど 1→3→7→14→30 日と間隔が空きます）。</li>' +
-      '<li>PCでは <kbd>/</kbd> で検索、<kbd>j</kbd>／<kbd>k</kbd> で次・前の用語、<kbd>b</kbd> でブックマーク、<kbd>Esc</kbd> で検索の解除。</li>' +
+      '<li>PCでは <kbd>/</kbd> で検索、<kbd>j</kbd>／<kbd>k</kbd> で次・前の用語、<kbd>b</kbd> でブックマーク、<kbd>Esc</kbd> で検索の解除。問題演習では <kbd>1</kbd>〜<kbd>4</kbd> で選択、<kbd>Enter</kbd> で次へ、<kbd>h</kbd> でヒント。</li>' +
       '<li>「記録」で文字サイズの変更と、学習データのファイルへの書き出し・読み込み（iPad とスマホの間で移す）ができます。</li></ul>' +
       '<h2 class="home-h">重要度の印</h2>' +
       '<div class="legend"><span>' + impMark('A') + '必須・頻出</span><span>' + impMark('B') + '重要</span><span>' + impMark('C') + '補足</span></div>' +
@@ -646,6 +647,7 @@
     var hist = a ? '<span class="q-hist" title="これまでの正解数／回答数">' + a.c + '/' + a.n + '</span>' : '';
     var head = '<div class="q-meta">' + (opts.label ? '<b>' + esc(opts.label) + '</b>' : '') +
       '<span class="q-tag">' + esc(q.lv) + '</span><span class="q-tag">' + TYPE_LABELS[q.type] + '</span>' + hist +
+      '<button type="button" class="q-star" data-act="qbm" aria-pressed="' + !!DB.qbm[q.id] + '" aria-label="この問題をブックマーク" title="この問題をブックマーク">' + (DB.qbm[q.id] ? STAR_ON : STAR_OFF) + '</button>' +
       (opts.termLink ? '<button type="button" class="q-term" data-go="' + q.term + '">' + esc(PLAN[q.term] ? PLAN[q.term].title : q.term) + '</button>' : '') + '</div>';
     var ui = '';
     if (q.type === 'choice') {
@@ -694,6 +696,12 @@
         return;
       }
       if (act === 'retry') { el.replaceWith(qCard(q, opts)); return; }
+      if (act === 'qbm') {
+        if (DB.qbm[q.id]) delete DB.qbm[q.id]; else DB.qbm[q.id] = Date.now();
+        persist(true);
+        b.setAttribute('aria-pressed', String(!!DB.qbm[q.id])); b.innerHTML = DB.qbm[q.id] ? STAR_ON : STAR_OFF;
+        return;
+      }
       if (done) return;
       if (b.classList.contains('q-opt') && q.type === 'choice') {
         var i = Number(b.dataset.i), ok = i === q.a;
@@ -798,7 +806,7 @@
         case 'part': var p = PARTS[cfg.part] || PARTS[0]; return ch >= p[1] && ch <= p[2];
         case 'weak': return weak[q.term] || (DB.ans[q.id] && DB.ans[q.id].r === 0);
         case 'new': return !DB.ans[q.id];
-        case 'bm': return !!DB.bm[q.term];
+        case 'bm': return !!DB.bm[q.term] || !!DB.qbm[q.id];
         default: return true;
       }
     });
@@ -830,7 +838,7 @@
     detailEl.scrollTop = 0;
   }
   function emptyReason(scope) {
-    return { weak: '苦手な用語はまだありません。問題を解くと、間違えた用語がここに入ります', new: 'すべて回答済みです', bm: '★を付けた用語に問題がありません' }[scope] || 'この範囲には問題がまだありません';
+    return { weak: '苦手な用語はまだありません。問題を解くと、間違えた用語がここに入ります', new: 'すべて回答済みです', bm: '★を付けた問題や、★を付けた用語の問題がありません' }[scope] || 'この範囲には問題がまだありません';
   }
   function startSession(kind, list, title) {
     state.session = { kind: kind, list: list.map(function (q) { return q.id; }), i: 0, res: [], title: title, answered: false };
@@ -856,6 +864,8 @@
     });
     detailEl.querySelector('.sess-card').appendChild(card);
     detailEl.scrollTop = 0;
+    card.tabIndex = -1;
+    try { card.focus({ preventScroll: true }); } catch (e) { /* 無視 */ }
   }
   function renderResult() {
     var s = state.session, ok = s.res.filter(function (r) { return r.ok; }).length, n = s.res.length;
@@ -992,6 +1002,8 @@
     h += '<h2 class="home-h">苦手な用語</h2>' + (weak.length ? '<div class="related-list">' + weak.slice(0, 40).map(function (id) { return termBtn(id); }).join('') + '</div>' : '<p class="screen-sub">まだありません。問題を解いて間違えた用語がここに並びます。</p>');
     var bms = Object.keys(DB.bm).filter(isWritten).sort(function (a, b) { return DB.bm[b] - DB.bm[a]; });
     h += '<h2 class="home-h">ブックマーク（' + bms.length + '）</h2>' + (bms.length ? '<div class="related-list">' + bms.map(function (id) { return termBtn(id); }).join('') + '</div>' : '<p class="screen-sub">用語ページの「★ブックマーク」で追加できます。</p>');
+    var qbms = Object.keys(DB.qbm).filter(function (id) { return QBY[id]; });
+    if (qbms.length) h += '<p class="screen-sub">★を付けた問題：' + qbms.length + ' 問（問題演習の範囲「ブックマーク」で解けます）</p>';
     var notes = Object.keys(DB.notes).filter(isWritten).sort(function (a, b) { return DB.notes[b].t - DB.notes[a].t; });
     if (notes.length) h += '<h2 class="home-h">メモを書いた用語（' + notes.length + '）</h2><div class="related-list">' + notes.map(function (id) { return termBtn(id); }).join('') + '</div>';
     // 設定
@@ -1026,7 +1038,7 @@
   // 2つの記録を合わせる（新しい方・多い方を残す）
   function mergeDB(a, b) {
     var o = sanitize(JSON.parse(JSON.stringify(a)));
-    ['memo', 'bm'].forEach(function (k) { Object.keys(b[k]).forEach(function (id) { o[k][id] = Math.max(o[k][id] || 0, b[k][id]); }); });
+    ['memo', 'bm', 'qbm'].forEach(function (k) { Object.keys(b[k]).forEach(function (id) { o[k][id] = Math.max(o[k][id] || 0, b[k][id]); }); });
     Object.keys(b.notes).forEach(function (id) {
       var x = o.notes[id], y = b.notes[id];
       if (!x || y.t > x.t) o.notes[id] = y;
@@ -1302,6 +1314,13 @@
       var base = state.current || ORDER[0];
       var nx = state.current ? globalNeighbor(base, e.key === 'j' ? 1 : -1) : base;
       if (nx) { state.fromList = false; go('#' + nx); }
+    } else if (!typing && state.mode !== 'dict' && detailEl.querySelector('.sess-card .qcard')) {
+      // 問題演習中：1〜4（A〜D）で選ぶ、t/f で正誤、Enter で次へ
+      var card = detailEl.querySelector('.sess-card .qcard'), k = e.key.toLowerCase(), opts = card.querySelectorAll('.q-opt');
+      var idx = '1234'.indexOf(k) >= 0 ? '1234'.indexOf(k) : 'abcd'.indexOf(k);
+      if (idx >= 0 && opts[idx] && !opts[idx].disabled) { e.preventDefault(); opts[idx].click(); }
+      else if (e.key === 'Enter') { var nx2 = detailEl.querySelector('.sess-next:not([hidden]) [data-next]'); if (nx2) { e.preventDefault(); nx2.click(); } }
+      else if (k === 'h') { var hb = card.querySelector('[data-act="hint"]'); if (hb) hb.click(); }
     } else if (!typing && e.key === 'b' && state.mode === 'dict' && state.current && isWritten(state.current) && detailEl.querySelector('.bm-toggle')) {
       toggleBm(state.current);
     }

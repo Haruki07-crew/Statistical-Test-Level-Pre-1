@@ -12,7 +12,7 @@
   "ok": true
  },
  "q28-contingency-table-2": {
-  "hash": "4cede51a7743b79f",
+  "hash": "973499491279a053",
   "ok": true
  },
  "q28-contingency-table-3": {
@@ -28,7 +28,7 @@
   "ok": true
  },
  "q28-hierarchical-loglinear-model-3": {
-  "hash": "f8f4492e887b6860",
+  "hash": "565c4dcecd985e0a",
   "ok": true
  },
  "q28-loglinear-model-1": {
@@ -40,15 +40,15 @@
   "ok": true
  },
  "q28-loglinear-model-3": {
-  "hash": "225e4a5cf68be9e0",
+  "hash": "22c6b5788521c1b4",
   "ok": true
  },
  "q28-mantel-haenszel-estimator-1": {
-  "hash": "4c94bd27382d55fc",
+  "hash": "e6d1a3800c6129f2",
   "ok": true
  },
  "q28-mantel-haenszel-estimator-2": {
-  "hash": "0f8685566c88e389",
+  "hash": "68a08fb3a2a47ff5",
   "ok": true
  },
  "q28-mantel-haenszel-test-1": {
@@ -100,11 +100,11 @@
   "ok": true
  },
  "q28-relative-risk-2": {
-  "hash": "8a9da78c0b543196",
+  "hash": "aa0e4507e199f27f",
   "ok": true
  },
  "q28-relative-risk-3": {
-  "hash": "831509c8cdb9d37e",
+  "hash": "dcd632f4b0817290",
   "ok": true
  },
  "q28-residual-analysis-contingency-1": {
@@ -112,7 +112,7 @@
   "ok": true
  },
  "q28-residual-analysis-contingency-2": {
-  "hash": "83c398cdbe27d5cd",
+  "hash": "3c2807df2327f07e",
   "ok": true
  },
  "q28-risk-difference-1": {
@@ -152,7 +152,7 @@
   "ok": true
  },
  "q28-three-way-table-2": {
-  "hash": "934a1af053b01de4",
+  "hash": "799db5d8b424d723",
   "ok": true
  },
  "q28-two-by-two-table-1": {
@@ -160,7 +160,7 @@
   "ok": true
  },
  "q28-two-by-two-table-2": {
-  "hash": "3527f466794428ab",
+  "hash": "4aad0ee2ca2e8d6f",
   "ok": true
  },
  "q28-yates-correction-1": {
@@ -168,7 +168,7 @@
   "ok": true
  },
  "q28-yates-correction-2": {
-  "hash": "48c779346301ee78",
+  "hash": "359c583c31ef18fa",
   "ok": true
  }
 }

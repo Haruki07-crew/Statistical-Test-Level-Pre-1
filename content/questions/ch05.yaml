@@ -221,7 +221,7 @@ questions:
     level: 応用
     type: numeric
     question: |
-      前問と同じく $X\sim\mathrm{Po}(1.5)$、$Y\sim\mathrm{Po}(2.5)$ が独立とする。合計が $X+Y=4$ であったとき、
+      $X\sim\mathrm{Po}(1.5)$、$Y\sim\mathrm{Po}(2.5)$ が独立とする。合計が $X+Y=4$ であったとき、
       $X=1$ である条件付き確率を小数第3位まで（四捨五入）求めよ。
     answer: 0.366
     tolerance: 0.001

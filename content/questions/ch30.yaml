@@ -223,7 +223,7 @@ questions:
     level: 応用
     type: numeric
     question: |
-      前問の設定（$\theta=2$、$V[\bar X]=1$）で、$\hat\theta=c\bar X$ の平均二乗誤差を最小にする $c$ を使ったときの最小の MSE を小数第2位まで求めよ。
+      母平均 $\theta=2$ を、$V[\bar X]=1$ の標本平均 $\bar X$ を定数倍した推定量 $\hat\theta=c\bar X$ で推定する。平均二乗誤差を最小にする $c$ を使ったときの最小の MSE を小数第2位まで求めよ。
     answer: 0.80
     tolerance: 0.005
     hint: |

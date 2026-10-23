@@ -8,7 +8,7 @@
   "ok": true
  },
  "q31-bayes-factor-2": {
-  "hash": "400d600e9f67ff34",
+  "hash": "bd2ce45c9ff2a92b",
   "ok": true
  },
  "q31-beta-binomial-model-1": {
@@ -16,11 +16,11 @@
   "ok": true
  },
  "q31-beta-binomial-model-2": {
-  "hash": "47e871f3aada753e",
+  "hash": "7e8577c72f838d6a",
   "ok": true
  },
  "q31-beta-binomial-model-3": {
-  "hash": "558ae4808c3793ae",
+  "hash": "fbb4c5ddd900affc",
   "ok": true
  },
  "q31-conjugate-prior-1": {
@@ -56,7 +56,7 @@
   "ok": true
  },
  "q31-gamma-poisson-model-2": {
-  "hash": "41f16a20de1325e8",
+  "hash": "d4c726092c2c0125",
   "ok": true
  },
  "q31-gamma-poisson-model-3": {
@@ -100,7 +100,7 @@
   "ok": true
  },
  "q31-normal-normal-model-2": {
-  "hash": "daf1900c42287b94",
+  "hash": "ac7a082d46fc2746",
   "ok": true
  },
  "q31-normal-normal-model-3": {

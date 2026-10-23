@@ -523,3 +523,8 @@ textarea.note:focus { outline: none; border-color: var(--accent); box-shadow: 0 
 .fc-judge .q-btn { flex: 1; min-height: 52px; }
 .date-in { min-height: 44px; padding: 0 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--fg); font: inherit; font-size: 16px; }
 .f-link { border: 0; background: none; padding: 0; color: var(--accent); font-size: inherit; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+.q-star { display: inline-grid; place-items: center; width: 36px; height: 36px; border: 0; border-radius: 8px; background: transparent; color: var(--faint); }
+.q-star svg { width: 20px; height: 20px; }
+.q-star[aria-pressed="true"] { color: var(--chart-2); }
+.qcard:focus { outline: none; }
+@media (pointer: coarse) { .q-star { width: 44px; height: 44px; } }

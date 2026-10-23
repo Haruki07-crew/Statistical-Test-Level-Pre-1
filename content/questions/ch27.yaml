@@ -481,7 +481,7 @@ questions:
     level: 応用
     type: numeric
     question: |
-      前問と同じく $r_1=0.6,\ r_2=0.45$、さらに標本分散 $\hat\gamma(0)=5$ の系列に AR(2) を当てはめる。雑音の分散のユール・ウォーカー推定値 $\hat\sigma^2$ を小数第3位まで求めよ。
+      標本自己相関が $r_1=0.6,\ r_2=0.45$、標本分散 $\hat\gamma(0)=5$ の系列に AR(2) を当てはめる。雑音の分散のユール・ウォーカー推定値 $\hat\sigma^2$ を小数第3位まで求めよ。
     answer: 3.137
     tolerance: 0.001
     hint: |
@@ -718,7 +718,7 @@ questions:
     level: 応用
     type: numeric
     question: |
-      前問の AR(1) 過程 $X_t=3+0.7X_{t-1}+\varepsilon_t$ で $\varepsilon_t\sim WN(0,2)$ とする。3期先の予測誤差の分散 $V[e_n(3)]$ を小数第3位まで求めよ。
+      AR(1) 過程 $X_t=3+0.7X_{t-1}+\varepsilon_t$、$\varepsilon_t\sim WN(0,2)$ で予測する。3期先の予測誤差の分散 $V[e_n(3)]$ を小数第3位まで求めよ。
     answer: 3.460
     tolerance: 0.001
     hint: |

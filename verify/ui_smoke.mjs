@@ -101,6 +101,9 @@ try {
   await open('#quiz', 1280, 860);
   await ev(`document.querySelector('[data-count="5"]').click()`);
   await ev(`document.querySelector('[data-start]').click()`);
+  // 1問目に★を付ける
+  await ev(`document.querySelector('.sess-card .q-star').click()`);
+  check('問題の★を保存', await ev(`Object.keys(JSON.parse(localStorage.getItem('jd-data')).qbm).length === 1`));
   for (let i = 0; i < 5; i++) {
     await ev(`(() => { const c = document.querySelector('.sess-card .qcard');
       const o = c.querySelector('.q-opt'); if (o) { o.click(); return; }
@@ -109,7 +112,7 @@ try {
     if (i === 0) await shot('quiz-1280');
     await ev(`document.querySelector('[data-next]').click()`);
   }
-  check('問題演習の結果画面', await ev(`!!document.querySelector('.score')`), await ev(`document.querySelector('.score')?.textContent`));
+  check('問題演習の結果画面（キーボードでも操作できる）', await ev(`!!document.querySelector('.score')`), await ev(`document.querySelector('.score')?.textContent`));
   await shot('result-1280');
   // 用語カード
   await open('#quiz', 1280, 860);

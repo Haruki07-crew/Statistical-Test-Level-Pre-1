@@ -96,7 +96,7 @@
   "ok": true
  },
  "q16-overall-f-test-regression-2": {
-  "hash": "ac38240fec314d9b",
+  "hash": "8c9c87b6ec8beadb",
   "ok": true
  },
  "q16-partial-f-test-1": {
@@ -120,7 +120,7 @@
   "ok": true
  },
  "q16-standardized-partial-regression-coefficient-2": {
-  "hash": "8d2745caf18244e5",
+  "hash": "9ac12f13c60573d7",
   "ok": true
  },
  "q16-variance-inflation-factor-1": {

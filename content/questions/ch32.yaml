@@ -1,0 +1,556 @@
+chapter: 32
+questions:
+  - id: q32-uniform-random-number-1
+    term: uniform-random-number
+    level: 基本
+    type: numeric
+    question: |
+      $U\sim U(0,1)$ のとき、$V[3U+1]$ を小数第2位まで求めよ。
+    answer: 0.75
+    tolerance: 0.005
+    hint: |
+      $V[aU+b]=a^2V[U]$、$V[U]=1/12$。
+    explanation: |
+      $$V[3U+1]=9\times\frac1{12}=0.75$$
+      定数1を足しても分散は変わりません。$3U+1$ は $U(1,4)$ に従い、$(4-1)^2/12=0.75$ とも確かめられます。
+
+  - id: q32-uniform-random-number-2
+    term: uniform-random-number
+    level: 標準
+    type: numeric
+    question: |
+      $U_1,U_2$ が独立に $U(0,1)$ に従うとき、$P(U_1+U_2\le0.5)$ を小数第3位まで求めよ。
+    answer: 0.125
+    tolerance: 0.001
+    hint: |
+      $(U_1,U_2)$ は単位正方形上の一様分布。$u_1+u_2\le0.5$ の部分の面積を求める。
+    explanation: |
+      領域は直角を挟む2辺が $0.5$ の直角三角形なので、面積は
+      $$\frac12\times0.5\times0.5=0.125$$
+      和の分布は三角形の形（$0$ から $2$）で、一様にはなりません。
+
+  - id: q32-uniform-random-number-3
+    term: uniform-random-number
+    level: 基本
+    type: truefalse
+    question: |
+      疑似乱数は漸化式で作られるので、同じシードから作り直せば、まったく同じ乱数列が再現される。
+    answer: true
+    hint: |
+      $x_{n+1}=T(x_n)$ は決定的な規則である。
+    explanation: |
+      疑似乱数は $x_0$（シード）と規則 $T$ で完全に決まるので、同じシードなら同じ列になります。
+      シミュレーションの結果を他の人が再現できるように、シードを記録しておくのはこのためです。
+
+  - id: q32-linear-congruential-generator-1
+    term: linear-congruential-generator
+    level: 標準
+    type: numeric
+    question: |
+      線形合同法 $x_{n+1}=(5x_n+3)\bmod16$ でシード $x_0=1$ から始めるとき、$x_3$ を求めよ。
+    answer: 10
+    tolerance: 0.1
+    hint: |
+      1ステップずつ計算し、16で割った余りをとる。
+    explanation: |
+      $x_1=(5+3)\bmod16=8$、$x_2=(40+3)\bmod16=43\bmod16=11$、$x_3=(55+3)\bmod16=58\bmod16=10$ です。
+      一様乱数としては $u_3=10/16=0.625$ を使います。
+
+  - id: q32-linear-congruential-generator-2
+    term: linear-congruential-generator
+    level: 基本
+    type: truefalse
+    question: |
+      線形合同法 $x_{n+1}=(5x_n+3)\bmod16$ の周期は、どのシードから始めても最大の16になる。
+    answer: true
+    hint: |
+      ハル・ドーベルの定理の3条件（$c$ と $m$ が互いに素、$m$ の素因数が $a-1$ を割る、$4\mid m$ なら $4\mid a-1$）を確かめる。
+    explanation: |
+      $c=3$ と $m=16$ は互いに素、$m$ の素因数は2だけで $a-1=4$ は2で割り切れ、$16$ は4で割り切れて $a-1=4$ も4で割り切れます。
+      3条件を満たすので周期は最大の16で、0〜15のすべての値を1回ずつ通ります。
+
+  - id: q32-inverse-transform-sampling-1
+    term: inverse-transform-sampling
+    level: 基本
+    type: numeric
+    question: |
+      逆関数法でレート $\lambda=2$ の指数分布の乱数を作る。一様乱数 $U=0.7$ から得られる値 $X=-\frac1\lambda\log(1-U)$ を小数第3位まで求めよ。
+    answer: 0.602
+    tolerance: 0.001
+    hint: |
+      $F(x)=1-e^{-\lambda x}=U$ を $x$ について解いた式。
+    explanation: |
+      $$X=-\frac12\log(0.3)=\frac{1.2040}{2}=0.602$$
+      $1-U$ も $U(0,1)$ に従うので $X=-\frac1\lambda\log U$ としても同じ分布になります（値は変わります）。
+
+  - id: q32-inverse-transform-sampling-2
+    term: inverse-transform-sampling
+    level: 標準
+    type: numeric
+    question: |
+      分布関数 $F(x)=1-x^{-3}\ (x\ge1)$ のパレート分布の乱数を逆関数法で作る。一様乱数 $U=0.875$ から得られる値を求めよ。
+    answer: 2
+    tolerance: 0.001
+    hint: |
+      $1-x^{-3}=u$ を解くと $x=(1-u)^{-1/3}$。
+    explanation: |
+      $$X=(1-0.875)^{-1/3}=0.125^{-1/3}=2$$
+      確かめると $F(2)=1-1/8=0.875$ です。
+
+  - id: q32-inverse-transform-sampling-3
+    term: inverse-transform-sampling
+    level: 応用
+    type: choice
+    question: |
+      確率変数 $X$ が $1,2,3$ をそれぞれ確率 $0.2,\ 0.5,\ 0.3$ でとる。一般化逆関数 $F^{-1}(u)=\inf\{x:F(x)\ge u\}$ を使う逆関数法で、一様乱数 $U=0.75$ から得られる値はどれか。
+    choices:
+      - '$3$'
+      - '$2$'
+      - '$1$'
+      - '離散分布では逆関数がないので値は決まらない'
+    answer: 0
+    hint: |
+      $F(1)=0.2$、$F(2)=0.7$、$F(3)=1$ のうち、初めて $0.75$ 以上になる $x$ を探す。
+    explanation: |
+      $F(2)=0.7<0.75\le F(3)=1$ なので $X=3$ です。
+      $U$ が $(0,0.2]$ なら1、$(0.2,0.7]$ なら2、$(0.7,1)$ なら3となり、それぞれの区間の長さがちょうど確率になります。離散分布でも一般化逆関数で生成できます。
+
+  - id: q32-rejection-sampling-1
+    term: rejection-sampling
+    level: 標準
+    type: numeric
+    question: |
+      密度 $f(x)=6x(1-x)\ (0<x<1)$ の乱数を、提案分布 $U(0,1)$ と最小の定数 $M$ を使った棄却法で作る。採択率を小数第3位まで求めよ。
+    answer: 0.667
+    tolerance: 0.001
+    hint: |
+      $g(x)=1$ なので、最小の $M$ は $f$ の最大値。
+    explanation: |
+      $f(x)=6x(1-x)$ は $x=1/2$ で最大値 $1.5$ をとるので $M=1.5$、採択率は
+      $$\frac1M=\frac{1}{1.5}=0.667$$
+      1個の乱数を得るのに平均1.5回の試行が必要です。
+
+  - id: q32-rejection-sampling-2
+    term: rejection-sampling
+    level: 応用
+    type: numeric
+    question: |
+      半正規分布の密度 $f(x)=\sqrt{2/\pi}\,e^{-x^2/2}\ (x>0)$ の乱数を、提案分布にレート1の指数分布 $g(x)=e^{-x}$ を使った棄却法で作る。$f(x)\le Mg(x)$ を満たす最小の $M$ を小数第3位まで求めよ。
+    answer: 1.315
+    tolerance: 0.001
+    hint: |
+      $f(x)/g(x)=\sqrt{2/\pi}\,e^{x-x^2/2}$ の最大値を求める。
+    explanation: |
+      指数部 $x-x^2/2$ は $x=1$ で最大値 $1/2$ をとるので
+      $$M=\sqrt{\frac2\pi}\,e^{1/2}=\sqrt{\frac{2e}{\pi}}=1.315$$
+      採択率は $1/M=0.760$ です。
+
+  - id: q32-rejection-sampling-3
+    term: rejection-sampling
+    level: 基本
+    type: truefalse
+    question: |
+      棄却法で、$f(x)\le Mg(x)$ を満たす範囲で $M$ を必要以上に大きくとると、採択された乱数の分布が目標の分布 $f$ からずれる。
+    answer: false
+    hint: |
+      $M$ を大きくすると、採択の判定 $V\le f(Y)/\{Mg(Y)\}$ はどう変わるか。
+    explanation: |
+      $f\le Mg$ が成り立つ限り、採択された値の分布は正確に $f$ です。$M$ を大きくすると採択率 $1/M$ が下がり、効率が悪くなるだけです。
+      分布がずれるのは、$f(x)>Mg(x)$ となる $x$ がある（$M$ が小さすぎる）場合です。
+
+  - id: q32-box-muller-method-1
+    term: box-muller-method
+    level: 基本
+    type: numeric
+    question: |
+      ボックス・ミュラー法で $U_1=e^{-2}$、$U_2=0.125$ のとき、$Z_1=\sqrt{-2\log U_1}\cos(2\pi U_2)$ を小数第3位まで求めよ。
+    answer: 1.414
+    tolerance: 0.001
+    hint: |
+      $-2\log U_1=4$、$2\pi U_2=\pi/4$。
+    explanation: |
+      $$Z_1=\sqrt4\cos\frac\pi4=2\times\frac{\sqrt2}{2}=\sqrt2=1.414$$
+      同じ組から $Z_2=2\sin(\pi/4)=1.414$ も得られます。
+
+  - id: q32-box-muller-method-2
+    term: box-muller-method
+    level: 標準
+    type: truefalse
+    question: |
+      ボックス・ミュラー法で作った $Z_1,Z_2$ について、$Z_1^2+Z_2^2=-2\log U_1$ は平均2の指数分布（自由度2のカイ二乗分布）に従う。
+    answer: true
+    hint: |
+      $P(-2\log U_1>r)$ を計算する。
+    explanation: |
+      $\cos^2+\sin^2=1$ より $Z_1^2+Z_2^2=-2\log U_1$ です。$P(-2\log U_1>r)=P(U_1<e^{-r/2})=e^{-r/2}$ なので、平均2の指数分布です。
+      独立な標準正規2つの2乗和は $\chi^2(2)$ で、これは平均2の指数分布と同じです。
+
+  - id: q32-box-muller-method-3
+    term: box-muller-method
+    level: 応用
+    type: numeric
+    question: |
+      独立な標準正規分布 $Z_1,Z_2$ について、$P(Z_1^2+Z_2^2>4)$ を小数第3位まで求めよ。
+    answer: 0.135
+    tolerance: 0.001
+    hint: |
+      ボックス・ミュラー法の表現 $Z_1^2+Z_2^2=-2\log U_1$ を使う。
+    explanation: |
+      $$P(-2\log U_1>4)=P(U_1<e^{-2})=e^{-2}=0.135$$
+      原点から半径2の円の外に出る確率で、1次元の $P(|Z|>2)=0.046$ より大きくなります。
+
+  - id: q32-monte-carlo-integration-1
+    term: monte-carlo-integration
+    level: 基本
+    type: numeric
+    question: |
+      $I=\int_0^2g(x)\,dx$ を求めるため、$U(0,2)$ の乱数 $X_1,\dots,X_n$ を作って $g(X_i)$ を計算したところ、その平均が $1.7$ であった。$I$ の推定値を求めよ。
+    answer: 3.4
+    tolerance: 0.01
+    hint: |
+      $\int_a^bg(x)\,dx=(b-a)E[g(X)]$、$X\sim U(a,b)$。
+    explanation: |
+      $$\hat I=(2-0)\times1.7=3.4$$
+      区間の長さを掛け忘れると $1.7$ になります。
+
+  - id: q32-monte-carlo-integration-2
+    term: monte-carlo-integration
+    level: 標準
+    type: numeric
+    question: |
+      $\int_0^1e^x\,dx$ を一様乱数 $n=10000$ 個の単純モンテカルロ法で推定する。推定量の標準誤差を小数第4位まで求めよ。
+    answer: 0.0049
+    tolerance: 0.0001
+    hint: |
+      $\sigma^2=V[e^U]=E[e^{2U}]-(E[e^U])^2$、$E[e^{2U}]=(e^2-1)/2$、$E[e^U]=e-1$。
+    explanation: |
+      $$\sigma^2=\frac{e^2-1}{2}-(e-1)^2=3.1945-2.9525=0.2420$$
+      $$\mathrm{SE}=\sqrt{\frac{0.2420}{10000}}=0.00492$$
+      誤差は $1/\sqrt n$ でしか減らないので、精度を1桁上げるには $n$ を100倍にする必要があります。
+
+  - id: q32-monte-carlo-integration-3
+    term: monte-carlo-integration
+    level: 応用
+    type: numeric
+    question: |
+      $\int_0^1e^x\,dx$ を一様乱数による単純モンテカルロ法で推定する（$\sigma^2=V[e^U]=0.24204$）。単純モンテカルロ推定量の標準誤差を $0.001$ 以下にするには、最低何個の乱数が必要か。千の位までの概数（例：123000）で答えよ。
+    answer: 242000
+    tolerance: 600
+    hint: |
+      $\sigma/\sqrt n\le0.001$ を $n$ について解く。
+    explanation: |
+      $$n\ge\frac{\sigma^2}{0.001^2}=\frac{0.24204}{10^{-6}}=242036$$
+      約24万2千個です。$n=10000$ なら標準誤差は $0.0049$ なので、約 $4.9^2\approx24$ 倍必要になる、とも見積もれます。
+
+  - id: q32-importance-sampling-1
+    term: importance-sampling
+    level: 標準
+    type: numeric
+    question: |
+      $X\sim N(0,1)$ のもとでの期待値を、提案分布 $g=N(3,1)$ を使った重点サンプリングで推定する。$x=3$ での重み $w(x)=f(x)/g(x)$ を小数第4位まで求めよ。
+    answer: 0.0111
+    tolerance: 0.0001
+    hint: |
+      $w(x)=\exp\{-x^2/2+(x-3)^2/2\}=\exp(-3x+4.5)$。
+    explanation: |
+      $$w(3)=\exp(-9+4.5)=e^{-4.5}=0.0111$$
+      裾の確率 $P(X>3)$ を推定するとき、提案分布は $x=3$ 付近を多く出し、そのぶん小さな重みで補正します。
+
+  - id: q32-importance-sampling-2
+    term: importance-sampling
+    level: 応用
+    type: choice
+    question: |
+      $X\sim U(0,1)$ のもとで $\mu=E[X]$ を重点サンプリングで推定する。次の提案分布（いずれも $(0,1)$ 上の密度）のうち、推定量の分散が0になるものはどれか。
+    choices:
+      - '$g(x)=2x$'
+      - '$g(x)=1$'
+      - '$g(x)=3x^2$'
+      - '$g(x)=2(1-x)$'
+    answer: 0
+    hint: |
+      最適な提案分布は $g^*(x)=h(x)f(x)/\mu$。
+    explanation: |
+      $h(x)f(x)=x$、$\mu=1/2$ なので $g^*(x)=2x$ です。このとき $h(X)w(X)=x\cdot\frac{1}{2x}=\frac12$ が定数になり、分散は0です。
+      $g(x)=1$ は単純モンテカルロ（分散 $1/12$）、$3x^2$ は重みが変動して分散が残り、$2(1-x)$ は $x\to1$ で重みが発散し分散が無限大になります。
+
+  - id: q32-importance-sampling-3
+    term: importance-sampling
+    level: 基本
+    type: truefalse
+    question: |
+      重点サンプリングで、提案分布 $g$ の裾が目標の分布 $f$ の裾より軽い（速く0に近づく）と、推定量の分散が無限大になることがある。
+    answer: true
+    hint: |
+      分散には $\int h^2f^2/g\,dx$ が含まれる。$g$ が $f$ より速く小さくなると、この積分はどうなるか。
+    explanation: |
+      $f^2/g$ は $g$ が小さいところで大きくなるので、裾で $g\ll f$ だと積分が発散することがあります。
+      まれに大きな重みの点が出て推定値が跳ね上がるのはこのためです。提案分布は目標より裾の重いものを選ぶのが原則です。
+
+  - id: q32-mcmc-1
+    term: mcmc
+    level: 標準
+    type: numeric
+    question: |
+      2状態のマルコフ連鎖の推移確率行列が $P=\begin{pmatrix}0.9&0.1\\0.3&0.7\end{pmatrix}$（行が現在の状態）である。定常分布で状態1にいる確率を小数第2位まで求めよ。
+    answer: 0.75
+    tolerance: 0.005
+    hint: |
+      $\pi_1P_{12}=\pi_2P_{21}$（2状態では詳細つり合いが成り立つ）と $\pi_1+\pi_2=1$。
+    explanation: |
+      $0.1\pi_1=0.3\pi_2$ と $\pi_1+\pi_2=1$ より $\pi_1=0.3/(0.1+0.3)=0.75$ です。
+      この連鎖を長く走らせると、時間の75%を状態1で過ごします。
+
+  - id: q32-mcmc-2
+    term: mcmc
+    level: 基本
+    type: truefalse
+    question: |
+      マルコフ連鎖で $\pi$ が定常分布になるためには、詳細つり合い条件 $\pi(x)P(x,y)=\pi(y)P(y,x)$ が成り立つことが必要である。
+    answer: false
+    hint: |
+      詳細つり合いは「各組で流れがつり合う」、定常性は「全体で流れがつり合う」条件。
+    explanation: |
+      詳細つり合いは定常性の十分条件ですが、必要条件ではありません。
+      例えば3状態を $1\to2\to3\to1$ と確率1で回る連鎖は一様分布を定常分布にもちますが、$\pi(1)P(1,2)=1/3\ne\pi(2)P(2,1)=0$ で詳細つり合いは成り立ちません。
+
+  - id: q32-metropolis-hastings-1
+    term: metropolis-hastings
+    level: 標準
+    type: numeric
+    question: |
+      目標分布を $N(0,1)$、対称なランダムウォーク型の提案分布とするメトロポリス法で、現在値 $x=1$、候補 $y=2$ のときの採択確率を小数第3位まで求めよ。
+    answer: 0.223
+    tolerance: 0.001
+    hint: |
+      対称な提案なら $\alpha=\min\{1,\pi(y)/\pi(x)\}$。正規化定数は約分される。
+    explanation: |
+      $$\frac{\pi(2)}{\pi(1)}=\exp\left(-\frac{4-1}{2}\right)=e^{-1.5}=0.223$$
+      1より小さいので、採択確率は $0.223$ です。逆に $y=0$ のように密度が高い方への候補は必ず採択されます。
+
+  - id: q32-metropolis-hastings-2
+    term: metropolis-hastings
+    level: 応用
+    type: numeric
+    question: |
+      目標分布をガンマ分布（密度 $\propto xe^{-x}$、$x>0$）、提案分布を現在値によらないレート1の指数分布 $q(y)=e^{-y}$ とする独立連鎖型の MH 法で、現在値 $x=2$、候補 $y=1.5$ のときの採択確率を小数第2位まで求めよ。
+    answer: 0.75
+    tolerance: 0.005
+    hint: |
+      独立連鎖型では $\alpha=\min\left\{1,\ \dfrac{\pi(y)/q(y)}{\pi(x)/q(x)}\right\}$。
+    explanation: |
+      $\pi(x)/q(x)\propto xe^{-x}/e^{-x}=x$ なので
+      $$\alpha=\min\left\{1,\ \frac{1.5}{2}\right\}=0.75$$
+      提案分布の比 $q(x)/q(y)$ を入れ忘れると $\pi(1.5)/\pi(2)=0.75e^{0.5}=1.24$ で、採択確率1と誤ります。
+
+  - id: q32-metropolis-hastings-3
+    term: metropolis-hastings
+    level: 基本
+    type: truefalse
+    question: |
+      MH 法で候補が棄却されたときは、その回は何も記録せずに次の候補の生成に進む。
+    answer: false
+    hint: |
+      棄却されたとき $X_{t+1}$ には何が入るか。
+    explanation: |
+      棄却されたときは $X_{t+1}=X_t$ として、現在の値をもう一度記録します。
+      これを省くと、密度の高い場所（棄却が多く同じ値が続く場所）の重みが失われ、連鎖の定常分布が目標の分布からずれます。
+
+  - id: q32-gibbs-sampling-1
+    term: gibbs-sampling
+    level: 標準
+    type: numeric
+    question: |
+      平均0、分散1、相関 $\rho=0.8$ の2変量正規分布 $(X,Y)$ をギブスサンプリングで生成する。現在 $Y=1.5$ のとき、次に $X$ を生成する条件付き分布の分散を小数第2位まで求めよ。
+    answer: 0.36
+    tolerance: 0.005
+    hint: |
+      $X\mid Y=y\sim N(\rho y,\ 1-\rho^2)$。
+    explanation: |
+      条件付き分布は $N(0.8\times1.5,\ 1-0.64)=N(1.2,\ 0.36)$ で、分散は $0.36$ です。
+      相関が強いほど条件付き分布が狭く、1回の更新で動ける幅が小さくなります。
+
+  - id: q32-gibbs-sampling-2
+    term: gibbs-sampling
+    level: 応用
+    type: numeric
+    question: |
+      平均0、分散1、相関 $\rho=0.8$ の2変量正規分布 $(X,Y)$ を、$X\to Y$ の順に交互に更新するギブスサンプリングで生成する。定常状態での $X$ の連鎖 $X^{(t)}$ と $X^{(t+1)}$ の相関を小数第2位まで求めよ。
+    answer: 0.64
+    tolerance: 0.005
+    hint: |
+      $X^{(t+1)}=\rho Y^{(t+1)}+\cdots$、$Y^{(t+1)}=\rho X^{(t)}+\cdots$ と2段で書く。
+    explanation: |
+      $Y^{(t+1)}=\rho X^{(t)}+e_1$、$X^{(t+1)}=\rho Y^{(t+1)}+e_2$ なので $X^{(t+1)}=\rho^2X^{(t)}+(\text{独立な誤差})$ です。
+      したがって $X$ の連鎖は係数 $\rho^2=0.64$ の AR(1) で、ラグ1の自己相関は $0.64$ です。$\rho$ が1に近いほど連鎖の混ざりが悪くなります。
+
+  - id: q32-gibbs-sampling-3
+    term: gibbs-sampling
+    level: 基本
+    type: truefalse
+    question: |
+      ギブスサンプリングの1変数の更新は、提案分布を完全条件付き分布とした MH 法の特別な場合とみなせ、そのときの採択確率はつねに1である。
+    answer: true
+    hint: |
+      提案 $q(y\mid x)=\pi(y_j\mid x_{-j})$ を MH の採択確率に代入する。
+    explanation: |
+      $x_j$ だけを $\pi(x_j'\mid x_{-j})$ から提案すると、$\pi(x)=\pi(x_j\mid x_{-j})\pi(x_{-j})$ より
+      $$\frac{\pi(x')q(x\mid x')}{\pi(x)q(x'\mid x)}=\frac{\pi(x_j'\mid x_{-j})\pi(x_{-j})\pi(x_j\mid x_{-j})}{\pi(x_j\mid x_{-j})\pi(x_{-j})\pi(x_j'\mid x_{-j})}=1$$
+      なので、候補はつねに採択されます。
+
+  - id: q32-burn-in-convergence-1
+    term: burn-in-convergence
+    level: 標準
+    type: numeric
+    question: |
+      バーンイン後の MCMC 標本が $n=10000$ 個あり、自己相関が AR(1) 型 $\rho_k=0.8^k$ であった。有効標本数 $n_{\mathrm{eff}}$ を整数で答えよ（小数点以下四捨五入）。
+    answer: 1111
+    tolerance: 0.5
+    hint: |
+      $1+2\sum_{k\ge1}\phi^k=(1+\phi)/(1-\phi)$。
+    explanation: |
+      $(1+0.8)/(1-0.8)=9$ なので
+      $$n_{\mathrm{eff}}=\frac{10000}{9}=1111.1$$
+      1万個の標本でも、独立な標本約1100個分の情報しかありません。
+
+  - id: q32-burn-in-convergence-2
+    term: burn-in-convergence
+    level: 応用
+    type: numeric
+    question: |
+      初期値を変えた $m=2$ 本の連鎖（各 $n=100$ 個）で、連鎖ごとの平均が $0.9$ と $1.1$、分散がどちらも $1.0$ であった。ゲルマン・ルービンの $\hat R$ を小数第3位まで求めよ。
+    answer: 1.005
+    tolerance: 0.001
+    hint: |
+      $W=1$、$B=\frac{n}{m-1}\sum(\bar\theta_j-\bar\theta)^2$、$\hat V=\frac{n-1}{n}W+\frac1nB$、$\hat R=\sqrt{\hat V/W}$。
+    explanation: |
+      $\bar\theta=1.0$ なので $B=100\times(0.1^2+0.1^2)=2$ です。
+      $$\hat V=0.99\times1+0.02=1.01,\qquad \hat R=\sqrt{1.01}=1.005$$
+      1.01未満なので、収束したと判断できます。
+
+  - id: q32-bootstrap-1
+    term: bootstrap
+    level: 基本
+    type: numeric
+    question: |
+      $n=10$ 個の観測値から復元抽出で大きさ10のブートストラップ標本を作る。特定の観測値 $x_1$ が1回も選ばれない確率を小数第3位まで求めよ。
+    answer: 0.349
+    tolerance: 0.001
+    hint: |
+      1回の抽出で $x_1$ が選ばれない確率は $1-1/n$。
+    explanation: |
+      $$\left(1-\frac1{10}\right)^{10}=0.9^{10}=0.349$$
+      $n\to\infty$ で $e^{-1}=0.368$ に近づくので、ブートストラップ標本には元の観測値の約63%しか含まれません。
+
+  - id: q32-bootstrap-2
+    term: bootstrap
+    level: 標準
+    type: numeric
+    question: |
+      ある推定量の値が $\hat\theta=5.2$ で、$B=2000$ 個のブートストラップ推定値の平均が $\bar\theta^*=5.5$ であった。偏りを補正した推定値を小数第1位まで求めよ。
+    answer: 4.9
+    tolerance: 0.05
+    hint: |
+      $\widehat{\mathrm{bias}}=\bar\theta^*-\hat\theta$、補正後は $\hat\theta-\widehat{\mathrm{bias}}$。
+    explanation: |
+      偏りの推定値は $5.5-5.2=0.3$ なので、補正後は $5.2-0.3=4.9$ です（$2\hat\theta-\bar\theta^*$）。
+      ブートストラップの平均 $5.5$ をそのまま推定値にすると、偏りを2倍にしてしまいます。
+
+  - id: q32-bootstrap-3
+    term: bootstrap
+    level: 標準
+    type: truefalse
+    question: |
+      ブートストラップの反復回数 $B$ を十分大きくすれば、元の標本の大きさ $n$ が小さくても、標準誤差の推定の誤差はいくらでも小さくできる。
+    answer: false
+    hint: |
+      ブートストラップは真の分布 $F$ の代わりに経験分布 $\hat F_n$ を使っている。$B$ を増やして消えるのはどちらの誤差か。
+    explanation: |
+      $B$ を増やして消えるのは、有限回の再抽出による「モンテカルロ誤差」だけです。
+      $F$ を $\hat F_n$ で置き換えたこと自体による誤差は $n$ で決まり、$B$ をいくら増やしても残ります。
+
+  - id: q32-bootstrap-confidence-interval-1
+    term: bootstrap-confidence-interval
+    level: 標準
+    type: numeric
+    question: |
+      推定値が $\hat\theta=10$、ブートストラップ推定値の2.5%点が $8.5$、97.5%点が $12.5$ であった。ベーシック法による95%信頼区間の下限を求めよ。
+    answer: 7.5
+    tolerance: 0.01
+    hint: |
+      ベーシック法は $[2\hat\theta-\hat\theta^*_{(0.975)},\ 2\hat\theta-\hat\theta^*_{(0.025)}]$。
+    explanation: |
+      $$[2\times10-12.5,\ 2\times10-8.5]=[7.5,\ 11.5]$$
+      パーセンタイル法の区間 $[8.5,\ 12.5]$ とは、$\hat\theta$ を中心に左右が入れ替わった形になります。分布が非対称なときは両者が異なります。
+
+  - id: q32-jackknife-1
+    term: jackknife
+    level: 標準
+    type: numeric
+    question: |
+      データ $2,\ 4,\ 6,\ 8$ の標本平均について、ジャックナイフ標準誤差を小数第3位まで求めよ。
+    answer: 1.291
+    tolerance: 0.001
+    hint: |
+      1個除いた平均は $(20-x_i)/3$。$\widehat V_{\mathrm{jack}}=\frac{n-1}{n}\sum(\hat\theta_{(i)}-\bar\theta_{(\cdot)})^2$。
+    explanation: |
+      $\hat\theta_{(i)}=6,\ 5.333,\ 4.667,\ 4$、平均は5です。
+      $$\widehat V_{\mathrm{jack}}=\frac34(1+0.1111+0.1111+1)=\frac34\times2.2222=1.667,\qquad \mathrm{SE}=1.291$$
+      標本平均の場合は、ふつうの $s/\sqrt n=\sqrt{6.667/4}=1.291$ と一致します。
+
+  - id: q32-jackknife-2
+    term: jackknife
+    level: 応用
+    type: numeric
+    question: |
+      データ $2,\ 4,\ 6,\ 8$ で、分散の推定量 $\hat\theta=\frac1n\sum(x_i-\bar x)^2$（$n$ で割る）をジャックナイフで偏り補正した値 $\tilde\theta=n\hat\theta-(n-1)\bar\theta_{(\cdot)}$ を小数第3位まで求めよ。
+    answer: 6.667
+    tolerance: 0.001
+    hint: |
+      1個除いた3個で、同じく3で割った分散を計算する。
+    explanation: |
+      $\hat\theta=20/4=5$ です。1個除いた分散（3で割る）は、$\{4,6,8\}$ と $\{2,4,6\}$ で $8/3$、$\{2,6,8\}$ と $\{2,4,8\}$ で $56/9$ なので、平均は $\bar\theta_{(\cdot)}=(16/3+112/9)/4=4.444$ です。
+      $$\tilde\theta=4\times5-3\times4.444=20-13.333=6.667$$
+      これは不偏分散 $20/3$ に一致します。$1/n$ の分散の偏りは、ジャックナイフでちょうど取り除かれます。
+
+  - id: q32-jackknife-3
+    term: jackknife
+    level: 基本
+    type: truefalse
+    question: |
+      標本中央値のように滑らかでない統計量では、ジャックナイフによる分散の推定は一致性をもたず、ブートストラップのほうが適している。
+    answer: true
+    hint: |
+      1個除いたときの中央値は、何通りの値しかとらないか。
+    explanation: |
+      1個除いた中央値は、元の順序統計量の真ん中付近の2つ程度の値しかとらないので、そのばらつきから分散をうまく推定できません。
+      ジャックナイフは推定量が滑らか（微分可能）な場合に向いており、中央値や分位点にはブートストラップを使います。
+
+  - id: q32-variance-reduction-1
+    term: variance-reduction
+    level: 標準
+    type: numeric
+    question: |
+      $\int_0^1e^x\,dx$ を対照変量法 $\{e^U+e^{1-U}\}/2$ で推定する。この1組あたりの分散を小数第4位まで求めよ（$V[e^U]=0.2420$、$E[e^Ue^{1-U}]=e$ を使ってよい）。
+    answer: 0.0039
+    tolerance: 0.0001
+    hint: |
+      $V\left[\frac{h(U)+h(1-U)}{2}\right]=\frac{\sigma^2+\operatorname{Cov}(h(U),h(1-U))}{2}$。
+    explanation: |
+      $\operatorname{Cov}(e^U,e^{1-U})=e-(e-1)^2=2.7183-2.9525=-0.2342$ なので
+      $$\frac{0.2420-0.2342}{2}=0.0039$$
+      乱数2個ぶんの単純モンテカルロの分散 $0.2420/2=0.121$ と比べて、約30分の1になります。
+
+  - id: q32-permutation-simulation-1
+    term: permutation-simulation
+    level: 標準
+    type: numeric
+    question: |
+      帰無仮説のもとで並べ替えを $B=999$ 回行い、そのうち24回で統計量が観測値 $t_{\text{obs}}$ 以上になった。右片側のモンテカルロ $p$ 値を小数第3位まで求めよ。
+    answer: 0.025
+    tolerance: 0.001
+    hint: |
+      $\hat p=\{1+\#(T_b\ge t_{\text{obs}})\}/(B+1)$。
+    explanation: |
+      $$\hat p=\frac{1+24}{999+1}=\frac{25}{1000}=0.025$$
+      分子と分母に1を足すのは、観測データ自体も帰無仮説のもとでの1つの並べ方として数えるためで、$p$ 値が0にならず、検定の大きさが保たれます。

@@ -44,7 +44,7 @@
   "ok": true
  },
  "q29-greenwood-formula-1": {
-  "hash": "eacf395c0626141e",
+  "hash": "a0e7c87564336f1c",
   "ok": true
  },
  "q29-hazard-ratio-1": {
@@ -64,11 +64,11 @@
   "ok": true
  },
  "q29-kaplan-meier-estimator-2": {
-  "hash": "483db33d1da4d9fb",
+  "hash": "bacca90de5f5ccbd",
   "ok": true
  },
  "q29-kaplan-meier-estimator-3": {
-  "hash": "7af7303eb208d827",
+  "hash": "7f0470dcb926d452",
   "ok": true
  },
  "q29-log-rank-test-1": {
@@ -76,7 +76,7 @@
   "ok": true
  },
  "q29-log-rank-test-2": {
-  "hash": "cde37eb2bcf90a15",
+  "hash": "f5f110f02df986d4",
   "ok": true
  },
  "q29-log-rank-test-3": {
@@ -124,7 +124,7 @@
   "ok": true
  },
  "q29-nelson-aalen-estimator-1": {
-  "hash": "4249f450988b85c9",
+  "hash": "c12239945678d382",
   "ok": true
  },
  "q29-partial-likelihood-1": {
@@ -140,7 +140,7 @@
   "ok": true
  },
  "q29-rubins-rules-2": {
-  "hash": "79b8adf7226f581a",
+  "hash": "e92d76f462efc181",
   "ok": true
  },
  "q29-rubins-rules-3": {
