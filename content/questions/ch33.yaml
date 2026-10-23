@@ -1,0 +1,166 @@
+chapter: 33
+questions:
+  - id: q33-causal-effect-1
+    term: causal-effect
+    level: 基本
+    type: truefalse
+    question: |
+      十分に正確な測定をすれば、個体 $i$ の因果効果 $\tau_i=Y_i(1)-Y_i(0)$ は、その個体のデータから直接観測できる。
+    answer: false
+    hint: |
+      1人の個体について、処置を受けた場合と受けなかった場合の結果を同時に観測できるか。
+    explanation: |
+      ある個体について観測できるのは、実際に受けた処置に対応する潜在結果の一方だけで、もう一方は反事実です（因果推論の根本問題）。
+      そのため個体の因果効果は観測できず、無作為化などの仮定のもとで平均処置効果（ATE）のような集団の量を推定します。
+
+  - id: q33-causal-effect-2
+    term: causal-effect
+    level: 標準
+    type: numeric
+    question: |
+      4人の潜在結果 $(Y_i(1),\ Y_i(0))$ が、$(5,3),\ (4,4),\ (6,2),\ (3,3)$ であるとする（実際には各人の一方しか観測できない）。平均処置効果 ATE を小数第1位まで求めよ。
+    answer: 1.5
+    tolerance: 0.05
+    hint: |
+      $\mathrm{ATE}=\frac1n\sum_i\{Y_i(1)-Y_i(0)\}$。
+    explanation: |
+      個体の効果は $2,\ 0,\ 4,\ 0$ なので
+      $$\mathrm{ATE}=\frac{2+0+4+0}{4}=1.5$$
+      効果がある人とない人が混ざっていても、ATE はその平均です。
+
+  - id: q33-causal-effect-3
+    term: causal-effect
+    level: 応用
+    type: numeric
+    question: |
+      4人の潜在結果 $(Y_i(1),\ Y_i(0))$ が $(5,3),\ (4,4),\ (6,2),\ (3,3)$ で、実際には1人目と3人目が処置を受け（$T=1$）、2人目と4人目は受けなかった（$T=0$）。単純な群間差 $E[Y\mid T=1]-E[Y\mid T=0]$ を ATT ＋ 選択バイアスに分解したときの、選択バイアス $E[Y(0)\mid T=1]-E[Y(0)\mid T=0]$ を小数第1位まで求めよ。
+    answer: -1.0
+    tolerance: 0.05
+    hint: |
+      処置群（1人目・3人目）と対照群（2人目・4人目）で、処置を受けなかった場合の結果 $Y(0)$ の平均を比べる。
+    explanation: |
+      $E[Y(0)\mid T=1]=(3+2)/2=2.5$、$E[Y(0)\mid T=0]=(4+3)/2=3.5$ なので、選択バイアスは $-1.0$ です。
+      群間差は $(5+6)/2-(4+3)/2=2.0$、ATT は $(2+4)/2=3.0$ で、$2.0=3.0+(-1.0)$ と分解されます。
+      処置群はもともと $Y(0)$ が低い人たちだったので、群間差は ATT を過小に見せています。
+
+  - id: q33-backdoor-criterion-1
+    term: backdoor-criterion
+    level: 標準
+    type: numeric
+    question: |
+      2値の変数 $Z$ がバックドア基準を満たし、$P(Z=1)=0.4$ である。$P(Y=1\mid X,Z)$ は、$(X,Z)=(1,0)$ で $0.3$、$(1,1)$ で $0.6$、$(0,0)$ で $0.2$、$(0,1)$ で $0.5$ である。平均因果効果 $P(Y=1\mid do(X=1))-P(Y=1\mid do(X=0))$ を小数第2位まで求めよ。
+    answer: 0.10
+    tolerance: 0.005
+    hint: |
+      調整化公式 $P(y\mid do(x))=\sum_zP(y\mid x,z)P(z)$ で、重みは $Z$ の周辺分布。
+    explanation: |
+      $$P(Y=1\mid do(X=1))=0.6\times0.3+0.4\times0.6=0.42$$
+      $$P(Y=1\mid do(X=0))=0.6\times0.2+0.4\times0.5=0.32$$
+      差は $0.10$ です。$Z$ のどちらの層でも差は $0.1$ なので、それと一致します。
+
+  - id: q33-backdoor-criterion-2
+    term: backdoor-criterion
+    level: 応用
+    type: numeric
+    question: |
+      2値の変数 $Z$ がバックドア基準を満たし、$P(X=1)=1/3$、$P(Z=1\mid X=1)=0.8$、$P(Z=1\mid X=0)=0.2$（したがって $P(Z=1)=0.4$）である。$P(Y=1\mid X,Z)$ は、$(X,Z)=(1,0)$ で $0.3$、$(1,1)$ で $0.6$、$(0,0)$ で $0.2$、$(0,1)$ で $0.5$ である。調整をしない単純な差 $P(Y=1\mid X=1)-P(Y=1\mid X=0)$ を小数第2位まで求めよ。
+    answer: 0.28
+    tolerance: 0.005
+    hint: |
+      $P(y\mid x)=\sum_zP(y\mid x,z)P(z\mid x)$ で、重みは $X$ ごとの $Z$ の分布。
+    explanation: |
+      $$P(Y=1\mid X=1)=0.2\times0.3+0.8\times0.6=0.54,\qquad P(Y=1\mid X=0)=0.8\times0.2+0.2\times0.5=0.26$$
+      差は $0.28$ です。調整した因果効果は $0.10$ なので、$Z=1$（結果が起こりやすい層）が処置群に多いことによる交絡で、効果を約3倍に見積もってしまいます。
+
+  - id: q33-backdoor-criterion-3
+    term: backdoor-criterion
+    level: 基本
+    type: choice
+    question: |
+      DAG が $Z\to X,\ Z\to Y,\ X\to M\to Y,\ X\to C\leftarrow Y$ のとき、$X$ から $Y$ への因果効果について、バックドア基準を満たす変数の集合はどれか。
+    choices:
+      - '$\{Z\}$'
+      - '$\{Z,\ M\}$'
+      - '$\{Z,\ C\}$'
+      - '空集合 $\varnothing$'
+    answer: 0
+    hint: |
+      バックドア経路は $X\leftarrow Z\to Y$ だけ。$M$ と $C$ は $X$ の子孫である。
+    explanation: |
+      $\{Z\}$ は $X$ の子孫を含まず、唯一のバックドア経路 $X\leftarrow Z\to Y$ を遮断するので基準を満たします。
+      $M$（中間変数）や $C$（合流点）は $X$ の子孫なので、含めると条件1に反します。$M$ で調整すると因果の道をふさぎ、$C$ で調整すると偽の相関が生まれます。空集合ではバックドア経路が開いたままです。
+
+  - id: q33-d-separation-1
+    term: d-separation
+    level: 基本
+    type: truefalse
+    question: |
+      DAG $X\to M\leftarrow Y$ で、合流点 $M$ を条件にすると、$X$ と $Y$ は $\{M\}$ によって d分離される。
+    answer: false
+    hint: |
+      合流点は、条件にしないとき閉じていて、条件にすると開く。
+    explanation: |
+      合流点 $M$ を条件にすると道 $X\to M\leftarrow Y$ が開くので、$X$ と $Y$ は $\{M\}$ によって d分離されません。
+      d分離されるのは条件が空集合のときで、$X$ と $Y$ は周辺では独立ですが、$M$ を知ると従属になります。
+
+  - id: q33-d-separation-2
+    term: d-separation
+    level: 標準
+    type: choice
+    question: |
+      DAG が $A\to B,\ B\to C,\ A\to D,\ D\to C,\ C\to E$ のとき、正しい d分離の関係はどれか。
+    choices:
+      - '$A$ と $C$ は $\{B,\ D\}$ によって d分離される'
+      - '$A$ と $C$ は $\{B\}$ によって d分離される'
+      - '$B$ と $D$ は $\{C\}$ によって d分離される'
+      - '$B$ と $D$ は $\{E\}$ によって d分離される'
+    answer: 0
+    hint: |
+      $A$ と $C$ の間の道は $A\to B\to C$ と $A\to D\to C$ の2本。$B$ と $D$ の間の道は $B\leftarrow A\to D$ と $B\to C\leftarrow D$ の2本。
+    explanation: |
+      - $\{B,D\}$：2本の連鎖の中間点がどちらも条件に入り、両方とも遮断されるので d分離。
+      - $\{B\}$：$A\to D\to C$ が開いたまま。
+      - $\{C\}$：分岐 $B\leftarrow A\to D$ が開いているうえ、合流点 $C$ を条件にして $B\to C\leftarrow D$ も開く。
+      - $\{E\}$：分岐 $B\leftarrow A\to D$ が開いており、さらに合流点 $C$ の子孫 $E$ を条件にしたので合流の道も開く。
+
+  - id: q33-d-separation-3
+    term: d-separation
+    level: 応用
+    type: numeric
+    question: |
+      $X,Y$ が独立に $N(0,1)$ に従い、$M=X+Y+\varepsilon$（$\varepsilon\sim N(0,1)$、$X,Y$ と独立）とする。$M$ を与えたときの $X$ と $Y$ の偏相関係数を小数第2位まで求めよ。
+    answer: -0.50
+    tolerance: 0.005
+    hint: |
+      $V[M]=3$、$\mathrm{Cov}(X,M)=\mathrm{Cov}(Y,M)=1$。偏相関 $r_{XY\cdot M}=\dfrac{r_{XY}-r_{XM}r_{YM}}{\sqrt{(1-r_{XM}^2)(1-r_{YM}^2)}}$。
+    explanation: |
+      $r_{XY}=0$、$r_{XM}=r_{YM}=1/\sqrt3$ なので
+      $$r_{XY\cdot M}=\frac{0-1/3}{1-1/3}=-\frac{1/3}{2/3}=-0.50$$
+      周辺では無相関の $X,Y$ が、合流点 $M$ を固定すると負の相関をもちます（$M$ が同じなら、$X$ が大きいほど $Y$ は小さい）。
+
+  - id: q33-frontdoor-criterion-1
+    term: frontdoor-criterion
+    level: 標準
+    type: numeric
+    question: |
+      $X$ と $Y$ に未観測の共通原因があり、$M$ がフロントドア基準を満たす（$X\to M\to Y$）。$X,M,Y$ はすべて2値で、$P(X=1)=0.5$、$P(M=1\mid X=1)=0.8$、$P(M=1\mid X=0)=0.2$、$P(Y=1\mid X,M)$ は $(X,M)=(0,0)$ で $0.1$、$(0,1)$ で $0.5$、$(1,0)$ で $0.2$、$(1,1)$ で $0.6$ である。$P(Y=1\mid do(X=1))$ を小数第2位まで求めよ。
+    answer: 0.47
+    tolerance: 0.005
+    hint: |
+      まず $P(Y=1\mid do(M=m))=\sum_{x'}P(Y=1\mid x',m)P(x')$ を $m=0,1$ で求め、それを $P(m\mid X=1)$ で平均する。
+    explanation: |
+      $$P(Y=1\mid do(M=0))=0.5\times0.1+0.5\times0.2=0.15,\qquad P(Y=1\mid do(M=1))=0.5\times0.5+0.5\times0.6=0.55$$
+      $$P(Y=1\mid do(X=1))=0.2\times0.15+0.8\times0.55=0.47$$
+      同様に $P(Y=1\mid do(X=0))=0.8\times0.15+0.2\times0.55=0.23$ で、平均因果効果は $0.24$ です。未観測の共通原因の分布を使わずに求められます。
+
+  - id: q33-frontdoor-criterion-2
+    term: frontdoor-criterion
+    level: 基本
+    type: truefalse
+    question: |
+      $X\to M\to Y$ に加えて $X\to Y$ の直接の矢印があっても、$M$ を使ったフロントドア調整公式で $X$ の $Y$ への因果効果を正しく求められる。
+    answer: false
+    hint: |
+      フロントドア基準の条件1は何を要求しているか。
+    explanation: |
+      条件1は「$X$ から $Y$ への有向道をすべて $M$ が遮る」ことです。直接の矢印 $X\to Y$ があると、$M$ を通らない効果が残り、フロントドア調整公式はそれを取りこぼします。

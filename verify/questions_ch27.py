@@ -198,4 +198,15 @@ q.check("q27-forecasting-1", abs(xh - 11.372) < 1e-9, "逐次代入でも 11.372
 q.num("q27-forecasting-2", 2 * sum(0.7 ** (2 * j) for j in range(3)))
 q.check("q27-forecasting-2", np.isclose(2 * (1 - 0.7**6) / (1 - 0.49), 3.4602), "等比数列の和の公式と一致")
 
+# --- 状態空間モデル ---
+Pp = 2 + 1; K = Pp / (Pp + 3)
+q.num("q27-state-space-model-1", 10 + K * (14 - 10))
+qq = 2.0
+Pbar = (qq + np.sqrt(qq**2 + 4 * qq)) / 2
+q.num("q27-state-space-model-2", Pbar / (Pbar + 1))
+P = 5.0
+for _ in range(200):  # σε²=1, ση²=2 で反復して定常値に収束
+    Ppred = P + 2; Kt = Ppred / (Ppred + 1); P = (1 - Kt) * Ppred
+q.check("q27-state-space-model-2", abs(Kt - Pbar / (Pbar + 1)) < 1e-12 and abs(Ppred - Pbar) < 1e-12, "反復の極限と一致")
+
 q.done()

@@ -1,0 +1,46 @@
+{
+ "q33-backdoor-criterion-1": {
+  "hash": "7ffeda2920f68a2d",
+  "ok": true
+ },
+ "q33-backdoor-criterion-2": {
+  "hash": "188f8e921f93aae2",
+  "ok": true
+ },
+ "q33-backdoor-criterion-3": {
+  "hash": "5c58fac6b949ebb1",
+  "ok": true
+ },
+ "q33-causal-effect-1": {
+  "hash": "d202cad6a6e505ea",
+  "ok": true
+ },
+ "q33-causal-effect-2": {
+  "hash": "ef53b194c0580b1c",
+  "ok": true
+ },
+ "q33-causal-effect-3": {
+  "hash": "126eebf4ea422e71",
+  "ok": true
+ },
+ "q33-d-separation-1": {
+  "hash": "75d40fb29b2e384f",
+  "ok": true
+ },
+ "q33-d-separation-2": {
+  "hash": "703ce3d0103abde0",
+  "ok": true
+ },
+ "q33-d-separation-3": {
+  "hash": "1ce797ca7e8be588",
+  "ok": true
+ },
+ "q33-frontdoor-criterion-1": {
+  "hash": "5bdecf9392a2745c",
+  "ok": true
+ },
+ "q33-frontdoor-criterion-2": {
+  "hash": "d9ccc1a03028d582",
+  "ok": true
+ }
+}

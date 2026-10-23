@@ -1,0 +1,158 @@
+{
+ "q32-bootstrap-1": {
+  "hash": "acb6dfb3802ab824",
+  "ok": true
+ },
+ "q32-bootstrap-2": {
+  "hash": "bc32f12fc28b4828",
+  "ok": true
+ },
+ "q32-bootstrap-3": {
+  "hash": "0addd0bdab3af3d2",
+  "ok": true
+ },
+ "q32-bootstrap-confidence-interval-1": {
+  "hash": "52e31ceae3bb3071",
+  "ok": true
+ },
+ "q32-box-muller-method-1": {
+  "hash": "4d28492dbf6d3b59",
+  "ok": true
+ },
+ "q32-box-muller-method-2": {
+  "hash": "2a8295d8b495b834",
+  "ok": true
+ },
+ "q32-box-muller-method-3": {
+  "hash": "9df2ce0776f669fd",
+  "ok": true
+ },
+ "q32-burn-in-convergence-1": {
+  "hash": "e0c63abf49743e86",
+  "ok": true
+ },
+ "q32-burn-in-convergence-2": {
+  "hash": "2b3eceb15450e8cc",
+  "ok": true
+ },
+ "q32-gibbs-sampling-1": {
+  "hash": "a06b5b74595f977a",
+  "ok": true
+ },
+ "q32-gibbs-sampling-2": {
+  "hash": "710ef3755e7bb5e9",
+  "ok": true
+ },
+ "q32-gibbs-sampling-3": {
+  "hash": "cbbca04ad9763027",
+  "ok": true
+ },
+ "q32-importance-sampling-1": {
+  "hash": "5335cf1f4a7de56b",
+  "ok": true
+ },
+ "q32-importance-sampling-2": {
+  "hash": "b2c6bc69ad88b834",
+  "ok": true
+ },
+ "q32-importance-sampling-3": {
+  "hash": "191e927be0a2995d",
+  "ok": true
+ },
+ "q32-inverse-transform-sampling-1": {
+  "hash": "57492dadcbd4d797",
+  "ok": true
+ },
+ "q32-inverse-transform-sampling-2": {
+  "hash": "46d0c3d6fad90313",
+  "ok": true
+ },
+ "q32-inverse-transform-sampling-3": {
+  "hash": "8fc5da2b35f169c5",
+  "ok": true
+ },
+ "q32-jackknife-1": {
+  "hash": "5a8c9dfa5827e44e",
+  "ok": true
+ },
+ "q32-jackknife-2": {
+  "hash": "8ef0649175e22612",
+  "ok": true
+ },
+ "q32-jackknife-3": {
+  "hash": "52a1d1a250af6abc",
+  "ok": true
+ },
+ "q32-linear-congruential-generator-1": {
+  "hash": "a299ed7a5b5893ce",
+  "ok": true
+ },
+ "q32-linear-congruential-generator-2": {
+  "hash": "5aa7a84647cc7495",
+  "ok": true
+ },
+ "q32-mcmc-1": {
+  "hash": "0399aaf66393fa55",
+  "ok": true
+ },
+ "q32-mcmc-2": {
+  "hash": "8efe78bde74229f9",
+  "ok": true
+ },
+ "q32-metropolis-hastings-1": {
+  "hash": "fcbecc1c20495f16",
+  "ok": true
+ },
+ "q32-metropolis-hastings-2": {
+  "hash": "cd3ffc80a658a349",
+  "ok": true
+ },
+ "q32-metropolis-hastings-3": {
+  "hash": "e2f7cca1e273268b",
+  "ok": true
+ },
+ "q32-monte-carlo-integration-1": {
+  "hash": "49d4abca3bf4e64d",
+  "ok": true
+ },
+ "q32-monte-carlo-integration-2": {
+  "hash": "5021f49a790c018c",
+  "ok": true
+ },
+ "q32-monte-carlo-integration-3": {
+  "hash": "428d3adfc5bbd489",
+  "ok": true
+ },
+ "q32-permutation-simulation-1": {
+  "hash": "b06b28910a61e05d",
+  "ok": true
+ },
+ "q32-rejection-sampling-1": {
+  "hash": "e2bfd5f561ba92fb",
+  "ok": true
+ },
+ "q32-rejection-sampling-2": {
+  "hash": "397115cc6811c214",
+  "ok": true
+ },
+ "q32-rejection-sampling-3": {
+  "hash": "f83a1473c9e25919",
+  "ok": true
+ },
+ "q32-uniform-random-number-1": {
+  "hash": "d31821566d514909",
+  "ok": true
+ },
+ "q32-uniform-random-number-2": {
+  "hash": "d1452257f13afdbe",
+  "ok": true
+ },
+ "q32-uniform-random-number-3": {
+  "hash": "ab5a22604f84d1dd",
+  "ok": true
+ },
+ "q32-variance-reduction-1": {
+  "hash": "4dc29c1ea610ada1",
+  "ok": true
+ }
+}
