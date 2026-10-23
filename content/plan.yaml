@@ -25,7 +25,7 @@ chapters:
   - id: inclusion-exclusion-principle
     title: 包除原理
     importance: B
-    status: planned
+    status: verified
 - 'no': 2
   title: 確率分布と母関数
   terms:
@@ -363,7 +363,7 @@ chapters:
   - id: extreme-value-distribution
     title: 極値分布
     importance: B
-    status: planned
+    status: verified
 - 'no': 8
   title: 統計的推定の基礎
   terms:
@@ -450,7 +450,7 @@ chapters:
   - id: standard-error
     title: 標準誤差
     importance: B
-    status: planned
+    status: verified
 - 'no': 9
   title: 区間推定
   terms:
@@ -525,7 +525,7 @@ chapters:
   - id: one-sided-confidence-limit
     title: 片側信頼限界
     importance: B
-    status: planned
+    status: verified
 - 'no': 10
   title: 検定の基礎と検定法の導出
   terms:
@@ -1243,7 +1243,7 @@ chapters:
   - id: neural-network-model
     title: ニューラルネットワークモデル
     importance: C
-    status: planned
+    status: verified
 - 'no': 20
   title: 分散分析と実験計画法
   terms:
@@ -1318,11 +1318,11 @@ chapters:
   - id: fractional-factorial-design
     title: 一部実施要因計画
     importance: B
-    status: planned
+    status: verified
   - id: incomplete-block-design
     title: 釣合い型不完備ブロック計画
     importance: C
-    status: planned
+    status: verified
 - 'no': 21
   title: 標本調査法
   terms:
@@ -1779,7 +1779,7 @@ chapters:
   - id: state-space-model
     title: 状態空間モデル
     importance: B
-    status: planned
+    status: verified
 - 'no': 28
   title: 分割表
   terms:
@@ -1850,11 +1850,11 @@ chapters:
   - id: phi-coefficient-and-association
     title: ファイ係数とクラメールの連関係数
     importance: B
-    status: planned
+    status: verified
   - id: cohort-and-case-control-study
     title: コホート研究とケースコントロール研究
     importance: B
-    status: planned
+    status: verified
 - 'no': 29
   title: 不完全データの統計処理
   terms:

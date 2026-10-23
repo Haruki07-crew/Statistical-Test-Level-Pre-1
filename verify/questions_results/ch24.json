@@ -1,0 +1,138 @@
+{
+ "q24-average-linkage-1": {
+  "hash": "a8328a6545828038",
+  "ok": true
+ },
+ "q24-average-linkage-2": {
+  "hash": "12a3f97e68761700",
+  "ok": true
+ },
+ "q24-centroid-method-1": {
+  "hash": "cd14410eca8014ee",
+  "ok": true
+ },
+ "q24-centroid-method-2": {
+  "hash": "bdfd7e8e0449c874",
+  "ok": true
+ },
+ "q24-complete-linkage-1": {
+  "hash": "a8c5c4b66854f7cd",
+  "ok": true
+ },
+ "q24-complete-linkage-2": {
+  "hash": "d84ca406e6a7ae35",
+  "ok": true
+ },
+ "q24-complete-linkage-3": {
+  "hash": "0a0e706851d31486",
+  "ok": true
+ },
+ "q24-dendrogram-1": {
+  "hash": "389697268c6868ad",
+  "ok": true
+ },
+ "q24-dendrogram-2": {
+  "hash": "5bf8ca14c66da9e1",
+  "ok": true
+ },
+ "q24-dendrogram-3": {
+  "hash": "87b03492539f8fe9",
+  "ok": true
+ },
+ "q24-distance-measures-1": {
+  "hash": "a8f15805f5b5448a",
+  "ok": true
+ },
+ "q24-distance-measures-2": {
+  "hash": "fc59a33fda644866",
+  "ok": true
+ },
+ "q24-distance-measures-3": {
+  "hash": "ee5d36543d231b2a",
+  "ok": true
+ },
+ "q24-hierarchical-clustering-1": {
+  "hash": "31f85796f16d1906",
+  "ok": true
+ },
+ "q24-hierarchical-clustering-2": {
+  "hash": "d850fef19b788d98",
+  "ok": true
+ },
+ "q24-hierarchical-clustering-3": {
+  "hash": "ed4227aef28ea442",
+  "ok": true
+ },
+ "q24-k-means-method-1": {
+  "hash": "bb891757856546f1",
+  "ok": true
+ },
+ "q24-k-means-method-2": {
+  "hash": "8d409eca8cfcc003",
+  "ok": true
+ },
+ "q24-k-means-method-3": {
+  "hash": "3c945d33ada0705e",
+  "ok": true
+ },
+ "q24-lance-williams-formula-1": {
+  "hash": "8b68ee2d7e720443",
+  "ok": true
+ },
+ "q24-lance-williams-formula-2": {
+  "hash": "2a1080d92726fb8f",
+  "ok": true
+ },
+ "q24-mixture-model-clustering-1": {
+  "hash": "8504ee0f1de02331",
+  "ok": true
+ },
+ "q24-non-hierarchical-clustering-1": {
+  "hash": "e6da2309cd419c7f",
+  "ok": true
+ },
+ "q24-number-of-clusters-1": {
+  "hash": "46f1dee156d74edd",
+  "ok": true
+ },
+ "q24-number-of-clusters-2": {
+  "hash": "f3aadc53d9161236",
+  "ok": true
+ },
+ "q24-similarity-measures-1": {
+  "hash": "3f662a825232aad4",
+  "ok": true
+ },
+ "q24-similarity-measures-2": {
+  "hash": "342f0f9206c9703d",
+  "ok": true
+ },
+ "q24-single-linkage-1": {
+  "hash": "5b7191bd9bdc3e8a",
+  "ok": true
+ },
+ "q24-single-linkage-2": {
+  "hash": "f5bd85c2322d212d",
+  "ok": true
+ },
+ "q24-single-linkage-3": {
+  "hash": "a4801032a203e78b",
+  "ok": true
+ },
+ "q24-standardization-before-clustering-1": {
+  "hash": "df9dd2aac3346492",
+  "ok": true
+ },
+ "q24-ward-method-1": {
+  "hash": "a6954b90ba0f3fb2",
+  "ok": true
+ },
+ "q24-ward-method-2": {
+  "hash": "346cd11c05aaf372",
+  "ok": true
+ },
+ "q24-ward-method-3": {
+  "hash": "8b0717792b3bb656",
+  "ok": true
+ }
+}

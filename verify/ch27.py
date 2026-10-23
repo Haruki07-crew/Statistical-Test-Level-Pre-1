@@ -815,3 +815,61 @@ check(T, "コーシー：E|X|=∞（∫_0^M x/(π(1+x²))dx = log(1+M²)/(2π) �
 ok_n = sum(results)
 ng_n = len(results) - ok_n
 print(f"\n合計: OK {ok_n} / NG {ng_n}")
+
+# --- 追加用語（用語の見直し）: state-space-model ---
+import re as _re, yaml as _yaml
+T = "state-space-model"
+_fmK = _yaml.safe_load(_re.match(r"^---\n(.*?)\n---\n", (ROOT / "content/ch27/state-space-model.md").read_text(encoding="utf-8"), _re.S).group(1))
+def _kf(y, a0, P0, s_eta2, s_eps2):
+    a, P, out = a0, P0, []
+    for v in y:
+        Pp = P + s_eta2; K = Pp / (Pp + s_eps2); a = a + K * (v - a); P = (1 - K) * Pp
+        out.append((Pp, K, a, P))
+    return out
+_o = _kf([12, 11, 13], 10, 0.5, 0.5, 1.0)
+check(T, "例1 P_{t|t-1}=1.0, K=0.5, a=11.0, 11.0, 12.0, P=0.5",
+      all(close(o[0], 1.0) and close(o[1], 0.5) and close(o[3], 0.5) for o in _o) and allclose([o[2] for o in _o], [11.0, 11.0, 12.0]), [o[2] for o in _o])
+check(T, "例1 予測 ŷ4=12.0、予測誤差分散 P_{4|3}+σε²=2.0", close(_o[-1][2], 12.0) and close(_o[-1][3] + 0.5 + 1.0, 2.0), "")
+def _pbar(q):
+    return (q + math.sqrt(q * q + 4 * q)) / 2
+check(T, "例2 定常 P̄, K（q=0.1, 0.5, 2）= (0.3702,0.2702), (1,0.5), (2.7321,0.7321)",
+      allclose([_pbar(q) for q in (0.1, 0.5, 2)], [0.3702, 1.0, 2.7321]) and allclose([_pbar(q) / (_pbar(q) + 1) for q in (0.1, 0.5, 2)], [0.2702, 0.5, 0.7321]), "")
+# P̄ はリカッチ方程式 P̄ = P̄σε²/(P̄+σε²) + ση² の解、反復で収束
+_ok = True
+for q in (0.1, 0.5, 2):
+    P = 10.0
+    for _ in range(500):
+        P = P * 1 / (P + 1) + q
+    _ok &= abs(P - _pbar(q)) < 1e-10
+check(T, "定常解 P̄ にリカッチ反復が収束（3つの q）", _ok, "")
+# 定常カルマンフィルタ＝単純指数平滑（α=K）、ARIMA(0,1,1) の θ=K−1
+_ys = rng.normal(size=200).cumsum()
+_kfa = [o[2] for o in _kf(_ys, 0.0, 0.5, 0.5, 1.0)]
+_es, _a = [], 0.0
+for v in _ys:
+    _a = 0.5 * v + 0.5 * _a; _es.append(_a)
+check(T, "定常フィルタ＝指数平滑 a_t=Ky_t+(1−K)a_{t−1}", allclose(_kfa, _es, 1e-12), "")
+_th = (-(0.5 + 2) + math.sqrt(0.25 + 2)) / 2
+_d = rng.normal(0, math.sqrt(0.5), 400000) + np.diff(rng.normal(0, 1, 400001))
+_r1 = np.corrcoef(_d[1:], _d[:-1])[0, 1]
+check(T, "誘導形 Δy は MA(1)：θ=K−1=−0.5、ρ(1)=θ/(1+θ²)=−0.4=−σε²/(ση²+2σε²)",
+      close(_th, -0.5) and close(_th / (1 + _th**2), -1 / (0.5 + 2)) and abs(_r1 + 0.4) < 0.01, round(_r1, 4))
+# 図：観測値と推定（グラフの系列をそのまま入れて再計算）
+_cK = _fmK["charts"][0]["params"]
+_yK = _cK["series"][0]["y"]
+_aK = [o[2] for o in _kf(_yK, 10.0, 0.5, 0.5, 1.0)]  # 丸め前の値と図の値（小数2桁）を比べる
+check(T, "chart：40時点、フィルタの推定を観測値から再計算すると一致（丸め0.01）", _cK["x"] == list(range(1, 41)) and allclose(_aK, _cK["series"][2]["y"], 0.0051), "")
+_mu = np.array(_cK["series"][1]["y"])
+check(T, "chart：推定の誤差の二乗平均 < 観測値の誤差の二乗平均", np.mean((np.array(_cK["series"][2]["y"]) - _mu) ** 2) < np.mean((np.array(_yK) - _mu) ** 2),
+      (round(float(np.mean((np.array(_cK["series"][2]["y"]) - _mu) ** 2)), 3), round(float(np.mean((np.array(_yK) - _mu) ** 2)), 3)))
+check(T, "chart：t=38 の跳ね（18.89）に半分だけ反応 13.48→16.18", close(_cK["series"][2]["y"][36], 13.48) and close(_cK["series"][2]["y"][37], 16.18) and close(13.48 + 0.5 * (18.89 - 13.48), 16.185, 1e-9), "")
+# 図の系列は seed 20261023 のローカルレベルモデルから生成したもの
+_g = np.random.default_rng(20261023); _m = 10.0; _mus = []
+for _t in range(40):
+    _m = _m + _g.normal(0, math.sqrt(0.5)); _mus.append(_m)
+_ysim = np.array(_mus) + _g.normal(0, 1, 40)
+check(T, "chart：系列の再生成（seed=20261023）と一致", allclose(np.round(_ysim, 2), _yK, 1e-9) and allclose(np.round(_mus, 2), _mu, 1e-9), "")
+
+ok_n = sum(results)
+ng_n = len(results) - ok_n
+print(f"\n合計（追加用語を含む）: OK {ok_n} / NG {ng_n}")

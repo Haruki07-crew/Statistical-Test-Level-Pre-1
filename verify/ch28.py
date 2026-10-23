@@ -834,3 +834,63 @@ check(T, "グラフ節 列割合 75/240=0.3125, 20代現金 10/80=0.125, 60代�
 ok = sum(results)
 ng = len(results) - ok
 print(f"\n合計（重要度A への加筆を含む）: OK {ok} / NG {ng}")
+
+# --- 追加用語（用語の見直し）: phi-coefficient-and-association ---
+import re as _re, yaml as _yaml
+def _fm28(tid):
+    return _yaml.safe_load(_re.match(r"^---\n(.*?)\n---\n", (ROOT / f"content/ch28/{tid}.md").read_text(encoding="utf-8"), _re.S).group(1))
+T = "phi-coefficient-and-association"
+_t = np.array([[30, 20], [15, 35]], float); _a, _b, _c, _d = _t.ravel()
+_phi = (_a * _d - _b * _c) / math.sqrt((_a + _b) * (_c + _d) * (_a + _c) * (_b + _d))
+_chi = stats.chi2_contingency(_t, correction=False)[0]
+check(T, "例1 分子 750、√6187500≈2487.47、φ≈0.3015", _a * _d - _b * _c == 750 and close(math.sqrt(6187500), 2487.47, 5e-3) and close(_phi, 0.3015), _phi)
+check(T, "例1 χ²=9.091（補正なし）、√(χ²/n)=φ", close(_chi, 9.091, 5e-4) and close(math.sqrt(_chi / 100), _phi, 1e-12), _chi)
+_xv = np.repeat([1, 1, 0, 0], [30, 20, 15, 35]); _yv = np.repeat([1, 0, 1, 0], [30, 20, 15, 35])
+check(T, "φ は 0/1 変数のピアソン相関係数に一致", close(np.corrcoef(_xv, _yv)[0, 1], _phi, 1e-12), np.corrcoef(_xv, _yv)[0, 1])
+check(T, "例1 OR=3.5、Q=(1050−300)/(1050+300)≈0.5556=(OR−1)/(OR+1)", close(_a * _d / (_b * _c), 3.5, 1e-12) and close(750 / 1350, 0.5556) and close((3.5 - 1) / (3.5 + 1), 750 / 1350, 1e-12), "")
+check(T, "2×2 では V=|φ|（scipy association）", close(stats.contingency.association(_t.astype(int), method="cramer"), abs(_phi), 1e-12), "")
+# 周辺度数固定での φ の最大値（全表を列挙）
+_best = max(((x * (50 - (45 - x)) - (50 - x) * (45 - x)) / math.sqrt(50 * 50 * 45 * 55), x) for x in range(0, 46) if 0 <= 50 - x and 0 <= 45 - x <= 50)
+check(T, "周辺 50/50・45/55 での φ 最大 ≈0.9045（表 45,5;0,50）", close(_best[0], 0.9045) and _best[1] == 45, _best)
+_T3 = np.array([[40, 35, 25], [20, 30, 50]], float)
+_ch3, _p3, _df3, _E3 = stats.chi2_contingency(_T3)
+check(T, "例2 期待度数 30, 32.5, 37.5、χ²≈15.385、df=2、p≈0.0005", allclose(_E3[0], [30, 32.5, 37.5], 1e-12) and close(_ch3, 15.385, 5e-4) and _df3 == 2 and close(_p3, 0.0005, 5e-5), (_ch3, _p3))
+check(T, "例2 V≈0.2774、C≈0.2673（C の最大 √(1/2)）", close(math.sqrt(_ch3 / 200), 0.2774) and close(math.sqrt(_ch3 / (_ch3 + 200)), 0.2673) and close(stats.contingency.association(_T3.astype(int), method="cramer"), math.sqrt(_ch3 / 200), 1e-12), "")
+# V≤1、χ²/n ≤ min(I,J)−1（ランダムな表）
+_ok = True
+for _ in range(300):
+    _tt = rng.integers(0, 30, (rng.integers(2, 5), rng.integers(2, 5))) + 1
+    _cc = stats.chi2_contingency(_tt, correction=False)[0]
+    _ok &= _cc / _tt.sum() <= min(_tt.shape) - 1 + 1e-12
+check(T, "χ²/n ≤ min(I,J)−1（ランダム300表）→ 0≤V≤1", _ok, _ok)
+_mz = _fm28(T)["charts"][0]["params"]
+check(T, "chart：mosaic の表が例1と同じ", _mz["table"] == [[30, 20], [15, 35]], "")
+
+# --- 追加用語（用語の見直し）: cohort-and-case-control-study ---
+T = "cohort-and-case-control-study"
+check(T, "例1 コホート RR=0.02/0.01=2.000、RD=0.010、OR=40·2970/(1960·30)≈2.0204",
+      close(40 / 2000 / (30 / 3000), 2.0, 1e-12) and close(40 / 2000 - 30 / 3000, 0.01, 1e-12) and close(40 * 2970 / (1960 * 30), 2.0204), 40 * 2970 / (1960 * 30))
+check(T, "例1 ケースコントロール OR=3360/1680=2.000、40/96≈0.417", 40 * 84 == 3360 and 56 * 30 == 1680 and 3360 / 1680 == 2 and close(40 / 96, 0.417, 5e-4), "")
+check(T, "例1 対照の曝露割合 56/140=0.4（非発症者全体 1960/4930≈0.398）", close(56 / 140, 0.4, 1e-12) and close(1960 / 4930, 0.398, 5e-4), 1960 / 4930)
+# 対照を無作為に選ぶと OR の期待的な値は元の OR（2.0204）に近い：シミュレーション
+_non = np.r_[np.ones(1960), np.zeros(2970)]
+_ors = []
+for _ in range(20000):
+    _ctl = rng.choice(_non, 140, replace=False); _e1 = _ctl.sum()
+    if 0 < _e1 < 140:
+        _ors.append(math.log(40 * (140 - _e1) / (_e1 * 30)))
+check(T, "シミュレーション：対照140人の無作為抽出で log OR の中央値 ≈ log 2.0204（許容 0.03）", abs(np.median(_ors) - math.log(2.0204)) < 0.03, round(math.exp(np.median(_ors)), 4))
+check(T, "列を固定したので行のリスク（40/96）は対照数で変わる（対照280人なら 40/152）", not close(40 / 96, 40 / (40 + 112), 1e-3), (40 / 96, 40 / 152))
+_p0 = sp.Symbol("p0", positive=True); _RR = sp.Symbol("RR", positive=True)
+_p1 = _RR * _p0
+check(T, "OR=RR(1−p0)/(1−p1)（sympy）", sp.simplify(_p1 / (1 - _p1) / (_p0 / (1 - _p0)) - _RR * (1 - _p0) / (1 - _p1)) == 0, "")
+check(T, "例2 マッチド OR=25/10=2.5、マクネマー (25−10)²/35≈6.429 > 3.841",
+      25 / 10 == 2.5 and close(15**2 / 35, 6.429, 5e-4) and 15**2 / 35 > stats.chi2.ppf(0.95, 1) and close(stats.chi2.ppf(0.95, 1), 3.841, 5e-4), 15**2 / 35)
+_lc = _fm28(T)["charts"][0]["params"]
+_xs = [0.01, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4]
+check(T, "chart：RR=2 固定での OR=2(1−p0)/(1−2p0)（p0=0.01→2.0204, 0.4→6.0）",
+      _lc["x"] == _xs and _lc["series"][0]["y"] == [2] * 9 and allclose(_lc["series"][1]["y"], [2 * (1 - p) / (1 - 2 * p) for p in _xs], 5e-5) and close(_lc["series"][1]["y"][-1], 6.0, 1e-12), "")
+
+ok = sum(results)
+ng = len(results) - ok
+print(f"\n合計（追加用語を含む）: OK {ok} / NG {ng}")

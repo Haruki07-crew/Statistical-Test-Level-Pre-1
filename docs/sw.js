@@ -1,5 +1,5 @@
-/* オフラインでも開けるようにする service worker（build.py が d1ef5dc65c0d を差し替える） */
-var CACHE = 'jun1-dict-d1ef5dc65c0d';
+/* オフラインでも開けるようにする service worker（build.py が e2c142e4779d を差し替える） */
+var CACHE = 'jun1-dict-e2c142e4779d';
 var CORE = ['./', './index.html', './manifest.json', './icon.svg', './icon-192.png'];
 var CDN = [
   'https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js',

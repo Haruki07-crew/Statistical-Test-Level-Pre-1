@@ -1,0 +1,186 @@
+{
+ "q27-ar-model-1": {
+  "hash": "78e550efe1eaa4c6",
+  "ok": true
+ },
+ "q27-ar-model-2": {
+  "hash": "f1d5b249025ffd79",
+  "ok": true
+ },
+ "q27-ar-model-3": {
+  "hash": "6a46d5b17887a801",
+  "ok": true
+ },
+ "q27-arima-model-1": {
+  "hash": "8561d2fa5fad9c8a",
+  "ok": true
+ },
+ "q27-arima-model-2": {
+  "hash": "e09b5edb73ff6199",
+  "ok": true
+ },
+ "q27-arima-model-3": {
+  "hash": "462d6630ffcdbfe5",
+  "ok": true
+ },
+ "q27-arma-model-1": {
+  "hash": "9b5cd86a1dc16150",
+  "ok": true
+ },
+ "q27-arma-model-2": {
+  "hash": "668209def686a2d7",
+  "ok": true
+ },
+ "q27-arma-model-3": {
+  "hash": "5d8be3a3e2867b56",
+  "ok": true
+ },
+ "q27-autocovariance-autocorrelation-1": {
+  "hash": "5255107a4576e32b",
+  "ok": true
+ },
+ "q27-autocovariance-autocorrelation-2": {
+  "hash": "9171a427f76656fa",
+  "ok": true
+ },
+ "q27-autocovariance-autocorrelation-3": {
+  "hash": "e1f99291f210fe75",
+  "ok": true
+ },
+ "q27-correlogram-1": {
+  "hash": "d0029a7b862b77c5",
+  "ok": true
+ },
+ "q27-correlogram-2": {
+  "hash": "1b9173fe5faa6541",
+  "ok": true
+ },
+ "q27-forecasting-1": {
+  "hash": "8fa837bc16e89396",
+  "ok": true
+ },
+ "q27-forecasting-2": {
+  "hash": "1fa94ee70dbb4535",
+  "ok": true
+ },
+ "q27-invertibility-1": {
+  "hash": "353681227953c788",
+  "ok": true
+ },
+ "q27-invertibility-2": {
+  "hash": "7ab4344973a59f18",
+  "ok": true
+ },
+ "q27-ma-model-1": {
+  "hash": "68b7ec886105659f",
+  "ok": true
+ },
+ "q27-ma-model-2": {
+  "hash": "33ab4b2ae929d39f",
+  "ok": true
+ },
+ "q27-ma-model-3": {
+  "hash": "40ccc9baab8f6f92",
+  "ok": true
+ },
+ "q27-partial-autocorrelation-1": {
+  "hash": "1325caba1765e044",
+  "ok": true
+ },
+ "q27-partial-autocorrelation-2": {
+  "hash": "e07c7d83e2915846",
+  "ok": true
+ },
+ "q27-partial-autocorrelation-3": {
+  "hash": "bef99e23a748bd19",
+  "ok": true
+ },
+ "q27-seasonal-adjustment-1": {
+  "hash": "a9a1bdf633021baa",
+  "ok": true
+ },
+ "q27-seasonal-adjustment-2": {
+  "hash": "8ad483bb0b29f152",
+  "ok": true
+ },
+ "q27-spectrum-1": {
+  "hash": "3b0d3650fba6d1cc",
+  "ok": true
+ },
+ "q27-spectrum-2": {
+  "hash": "570162478816eca7",
+  "ok": true
+ },
+ "q27-stationarity-condition-1": {
+  "hash": "962451863648e5c4",
+  "ok": true
+ },
+ "q27-stationarity-condition-2": {
+  "hash": "7f668f5a6cba2298",
+  "ok": true
+ },
+ "q27-stationarity-condition-3": {
+  "hash": "7058fbbfc1cee3fe",
+  "ok": true
+ },
+ "q27-strict-stationarity-1": {
+  "hash": "ef09c882fe76f249",
+  "ok": true
+ },
+ "q27-time-series-1": {
+  "hash": "eab83914fba250e1",
+  "ok": true
+ },
+ "q27-time-series-2": {
+  "hash": "add9db958cba522b",
+  "ok": true
+ },
+ "q27-unit-root-1": {
+  "hash": "5a5e0bba5384532d",
+  "ok": true
+ },
+ "q27-unit-root-2": {
+  "hash": "1bb7bddae609510c",
+  "ok": true
+ },
+ "q27-unit-root-3": {
+  "hash": "3dfe38ec85a419ed",
+  "ok": true
+ },
+ "q27-weak-stationarity-1": {
+  "hash": "dcc7710e787e331c",
+  "ok": true
+ },
+ "q27-weak-stationarity-2": {
+  "hash": "ae81665a8423facd",
+  "ok": true
+ },
+ "q27-weak-stationarity-3": {
+  "hash": "41ad819d98d73385",
+  "ok": true
+ },
+ "q27-white-noise-1": {
+  "hash": "f5a2daab481d940b",
+  "ok": true
+ },
+ "q27-white-noise-2": {
+  "hash": "439a8607eed1b121",
+  "ok": true
+ },
+ "q27-white-noise-3": {
+  "hash": "67a72ee8cd651015",
+  "ok": true
+ },
+ "q27-yule-walker-equations-1": {
+  "hash": "45fba961863a90d2",
+  "ok": true
+ },
+ "q27-yule-walker-equations-2": {
+  "hash": "9b8fdfdd9cb4317f",
+  "ok": true
+ },
+ "q27-yule-walker-equations-3": {
+  "hash": "1931aef4588d1b10",
+  "ok": true
+ }
+}
