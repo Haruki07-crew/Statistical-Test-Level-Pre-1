@@ -422,3 +422,53 @@ check(T, "同時収束が必要: X_n=Z, Y_n=−Z で X_n+Y_n=0（独立N(0,1)の
 
 print()
 print(f"合計（重要度A への加筆を含む）: OK {sum(results)} / NG {len(results) - sum(results)}")
+
+# --- 追加用語（用語の見直し）: extreme-value-distribution ---
+import re as _re, yaml as _yaml
+from pathlib import Path as _Path
+T = "extreme-value-distribution"
+_rngE = np.random.default_rng(20261023 + 701)
+def _clE(x, s):
+    d = len(s.split(".")[1]) if "." in s else 0
+    return abs(float(x) - float(s)) <= 0.5 * 10 ** (-d) + 1e-9
+_fmE = _yaml.safe_load(_re.match(r"^---\n(.*?)\n---\n", (_Path(__file__).resolve().parent.parent / "content/ch07/extreme-value-distribution.md").read_text(encoding="utf-8"), _re.S).group(1))
+# グンベルの値
+_g = stats.gumbel_r()
+check(T, "標準グンベル 期待値 γ≈0.5772, 分散 π²/6≈1.6449, 中央値 0.3665（scipy）",
+      _clE(_g.mean(), "0.5772") and _clE(_g.var(), "1.6449") and _clE(_g.median(), "0.3665") and _clE(-log(log(2)), "0.3665"), (_g.mean(), _g.var(), _g.median()))
+_xg = sp.Symbol("x", real=True)
+check(T, "密度 exp(−x−e^(−x)) は G=exp(−e^(−x)) の微分（sympy）", sp.simplify(sp.diff(sp.exp(-sp.exp(-_xg)), _xg) - sp.exp(-_xg - sp.exp(-_xg))) == 0, "")
+# 指数分布 → グンベル（極限、sympy）
+_nn = sp.Symbol("n", positive=True)
+check(T, "(1−e^(−x)/n)^n → exp(−e^(−x))（x=2 で sympy の極限）", sp.simplify(sp.limit((1 - sp.exp(-2) / _nn) ** _nn, _nn, sp.oo) - sp.exp(-sp.exp(-2))) == 0, "")
+# 例1
+_ex = (1 - exp(-2) / 1000) ** 1000
+check(T, "例1 log1000=6.908, 正確 0.8734, 近似 exp(−e^(−2))=0.8734",
+      _clE(log(1000), "6.908") and _clE(_ex, "0.8734") and _clE(exp(-exp(-2)), "0.8734") and abs(_ex - (1 - exp(-(log(1000) + 2))) ** 1000) < 1e-12, (_ex, exp(-exp(-2))))
+_H = sum(1 / k for k in range(1, 1001))
+check(T, "例1 E[M]≈log1000+γ=7.485, 正確 H_1000≈7.4855（指数の最大値の期待値=Σ1/k）",
+      _clE(log(1000) + np.euler_gamma, "7.485") and _clE(_H, "7.4855"), (log(1000) + np.euler_gamma, _H))
+check(T, "例1 99%点 x=−log(−log0.99)≈4.600、6.908+4.600=11.508",
+      _clE(-log(-log(0.99)), "4.600") and _clE(log(1000) - log(-log(0.99)), "11.508"), -log(-log(0.99)))
+_M = _rngE.exponential(1, (20000, 1000)).max(1)
+check(T, "例1 シミュレーション P(M≤log1000+2)（2万回, 許容0.01）", abs(np.mean(_M <= log(1000) + 2) - 0.8734) < 0.01, np.mean(_M <= log(1000) + 2))
+# 例2
+check(T, "例2 一様 0.98^100≈0.1326, e^(−2)≈0.1353", _clE(0.98 ** 100, "0.1326") and _clE(exp(-2), "0.1353"), 0.98 ** 100)
+check(T, "例2 パレート α=2: (1−1/400)^100≈0.7786, e^(−0.25)≈0.7788（a_n=√100=10）",
+      _clE((1 - 1 / 400) ** 100, "0.7786") and _clE(exp(-0.25), "0.7788") and (1 - 20.0 ** -2) == 1 - 1 / 400, (1 - 1 / 400) ** 100)
+# GEV の ξ→0 がグンベル（scipy genextreme は c=−ξ）
+check(T, "GEV：ξ→0 でグンベル、ξ=0.5 はフレシェ（α=2, 位置・尺度の変換）",
+      abs(stats.genextreme(c=-1e-8).cdf(1.3) - exp(-exp(-1.3))) < 1e-6 and abs(stats.genextreme(c=-0.5).cdf(1.0) - exp(-(1 + 0.5 * 1.0) ** (-2))) < 1e-12, "")
+# chart
+_xs = [round(-3 + 0.25 * i, 2) for i in range(33)]
+_c1, _c2 = _fmE["charts"][0]["params"], _fmE["charts"][1]["params"]
+_gd = [round(exp(-x - exp(-x)), 4) for x in _xs]
+_fr = [round(2 * x ** -3 * exp(-x ** -2), 4) if x > 0 else 0 for x in _xs]
+_wb = [round(2 * (-x) * exp(-x ** 2), 4) if x < 0 else 0 for x in _xs]
+check(T, "chart1 3つの型の密度（グンベル・フレシェα=2・ワイブルα=2）", _c1["x"] == _xs and [s["y"] for s in _c1["series"]] == [_gd, _fr, _wb], "")
+check(T, "chart1 フレシェ・ワイブル型の密度が scipy と一致", all(abs(v - stats.invweibull(2).pdf(x)) < 6e-5 for x, v in zip(_xs, _fr) if x > 0) and all(abs(v - stats.weibull_max(2).pdf(x)) < 6e-5 for x, v in zip(_xs, _wb) if x < 0), "")
+_e2 = [[round(max(0, 1 - exp(-x) / n) ** n, 4) if x > -log(n) else 0 for x in _xs] for n in (2, 10)]
+check(T, "chart2 指数 n=2,10 の P(M−log n≤x) とグンベル分布関数", _c2["x"] == _xs and _c2["series"][0]["y"] == _e2[0] and _c2["series"][1]["y"] == _e2[1] and _c2["series"][2]["y"] == [round(exp(-exp(-x)), 4) for x in _xs], "")
+
+print()
+print(f"合計（追加用語を含む）: OK {sum(results)} / NG {len(results) - sum(results)}")

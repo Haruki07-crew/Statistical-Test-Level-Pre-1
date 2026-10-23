@@ -699,3 +699,43 @@ check(T, "非正規（指数分布, n=200）では95%区間の被覆率が大き
 
 print()
 print(f"合計（重要度A への加筆を含む）: OK {sum(results)} / NG {len(results) - sum(results)}")
+
+# --- 追加用語（用語の見直し）: one-sided-confidence-limit ---
+import re as _re, yaml as _yaml
+from pathlib import Path as _Path
+T = "one-sided-confidence-limit"
+_rngO = np.random.default_rng(20261023 + 901)
+def _clO(x, s):
+    d = len(s.split(".")[1]) if "." in s else 0
+    return abs(float(x) - float(s)) <= 0.5 * 10 ** (-d) + 1e-9
+_fmO = _yaml.safe_load(_re.match(r"^---\n(.*?)\n---\n", (_Path(__file__).resolve().parent.parent / "content/ch09/one-sided-confidence-limit.md").read_text(encoding="utf-8"), _re.S).group(1))
+_t1, _t2 = stats.t.ppf(0.95, 15), stats.t.ppf(0.975, 15)
+check(T, "例1 t_0.05(15)=1.753、L=500−1.753×10=482.47、両側の下端 2.131→478.69",
+      _clO(_t1, "1.753") and _clO(500 - 10 * _t1, "482.47") and _clO(_t2, "2.131") and _clO(500 - 10 * _t2, "478.69") and 40 / sqrt(16) == 10, (_t1, _t2))
+check(T, "例2 U=1−0.05^(1/300)≈0.00994（クロッパー・ピアソン上側=Beta(1,300) の95%点）、3/300=0.0100",
+      _clO(1 - 0.05 ** (1 / 300), "0.00994") and abs(stats.beta.ppf(0.95, 1, 300) - (1 - 0.05 ** (1 / 300))) < 1e-12, 1 - 0.05 ** (1 / 300))
+check(T, "3の法則 −log0.05≈2.996", _clO(-log(0.05), "2.996"), -log(0.05))
+_c9 = stats.chi2.ppf(0.05, 9)
+check(T, "例3 χ²_0.95(9)=3.325、上限 36/3.325≈10.827、√≈3.290", _clO(_c9, "3.325") and _clO(36 / _c9, "10.827") and _clO(sqrt(36 / _c9), "3.290"), 36 / _c9)
+check(T, "z_0.05=1.645、z_0.025=1.96", _clO(stats.norm.ppf(0.95), "1.645") and _clO(stats.norm.ppf(0.975), "1.96"), "")
+# 被覆率（シミュレーション）
+_X = _rngO.normal(500, 40, (200000, 16))
+_L = _X.mean(1) - stats.t.ppf(0.95, 15) * _X.std(1, ddof=1) / 4
+mc(T, "t 下側限界の被覆率≈0.95（20万回）", np.mean(_L <= 500), 0.95, 0.003)
+_S2 = _rngO.normal(0, 2, (200000, 10)).var(1, ddof=1)
+mc(T, "母分散の上側限界の被覆率≈0.95（σ²=4, n=10）", np.mean(4 <= 9 * _S2 / _c9), 0.95, 0.003)
+_B = _rngO.binomial(300, 0.01, 400000)
+check(T, "p=0.01 で n=300 のとき 0 個になる確率 0.99^300≈0.049<0.05（上限 0.00994 が p=0.01 を含まない境目）", 0.99 ** 300 < 0.05 and abs(np.mean(_B == 0) - 0.99 ** 300) < 0.002, 0.99 ** 300)
+# 検定との対応：L>μ0 ⇔ 右片側 t 検定で棄却
+_ok = True
+for _ in range(2000):
+    _x = _rngO.normal(10, 3, 12); _m0 = _rngO.uniform(7, 13)
+    _Lx = _x.mean() - stats.t.ppf(0.95, 11) * _x.std(ddof=1) / sqrt(12)
+    _tt = (_x.mean() - _m0) / (_x.std(ddof=1) / sqrt(12))
+    _ok &= (_Lx > _m0) == (_tt > stats.t.ppf(0.95, 11))
+check(T, "下側限界 > μ0 ⇔ 右片側 t 検定で棄却（2000ケース）", _ok, _ok)
+_cO = _fmO["charts"][0]
+check(T, "chart：t(15) の pdf-cdf、F(1.753)≈0.95, F(2.131)≈0.975", _cO["dist"] == "t" and _cO["params"]["df"] == 15 and _clO(stats.t.cdf(1.753, 15), "0.95") and _clO(stats.t.cdf(2.131, 15), "0.975"), "")
+
+print()
+print(f"合計（追加用語を含む）: OK {sum(results)} / NG {len(results) - sum(results)}")

@@ -679,3 +679,34 @@ check(T, "係数 n!/((k−1)!(n−k)!) = n·C(n−1,k−1)（n=4,k=2 → 12）",
 
 print()
 print(f"合計（追加用語を含む）: OK {sum(results)} / NG {len(results) - sum(results)}")
+
+# --- 追加用語（用語の見直し）: standard-error ---
+import re as _re, yaml as _yaml
+from pathlib import Path as _Path
+T = "standard-error"
+_rngS = np.random.default_rng(20261023 + 801)
+def _clS(x, s):
+    d = len(s.split(".")[1]) if "." in s else 0
+    return abs(float(x) - float(s)) <= 0.5 * 10 ** (-d) + 1e-9
+_fmS = _yaml.safe_load(_re.match(r"^---\n(.*?)\n---\n", (_Path(__file__).resolve().parent.parent / "content/ch08/standard-error.md").read_text(encoding="utf-8"), _re.S).group(1))
+_s2, _n = sp.symbols("sigma2 n", positive=True)
+check(T, "V[X̄]=(1/n²)·nσ²=σ²/n（sympy）", sp.simplify(_n * _s2 / _n**2 - _s2 / _n) == 0, "")
+_t24 = stats.t.ppf(0.975, 24)
+check(T, "例1 SE=1000/√25=200、t_0.025(24)=2.064、区間 [4587.2, 5412.8]、100日で 100",
+      1000 / sqrt(25) == 200 and _clS(_t24, "2.064") and _clS(5000 - 2.064 * 200, "4587.2") and _clS(5000 + 2.064 * 200, "5412.8") and 1000 / sqrt(100) == 100, _t24)
+check(T, "例2 比率 SE √(0.3·0.7/400)≈0.0229", 120 / 400 == 0.3 and _clS(sqrt(0.3 * 0.7 / 400), "0.0229"), sqrt(0.21 / 400))
+check(T, "例2 平均の差 SE √(100/25+144/36)=√8≈2.828", 100 / 25 + 144 / 36 == 8 and _clS(sqrt(8), "2.828"), sqrt(8))
+_lam = sp.Symbol("lambda", positive=True); _xx = sp.Symbol("x", integer=True, nonnegative=True)
+_I = -sp.diff(_xx * sp.log(_lam) - _lam, _lam, 2).subs(_xx, _lam)
+check(T, "例2 ポアソン I(λ)=1/λ、SE=√(λ/n)、n=50, x̄=4 → 0.2828", sp.simplify(_I - 1 / _lam) == 0 and _clS(sqrt(4 / 50), "0.2828"), sqrt(0.08))
+# シミュレーション：標本平均の SD ≈ σ/√n
+_xb = _rngS.normal(5000, 1000, (100000, 25)).mean(1)
+check(T, "シミュレーション：n=25, σ=1000 の X̄ の標準偏差≈200（許容 2）", abs(_xb.std() - 200) < 2, round(_xb.std(), 2))
+_ph = _rngS.binomial(400, 0.3, 200000) / 400
+check(T, "シミュレーション：p̂ の標準偏差≈0.0229（許容 0.0003）", abs(_ph.std() - sqrt(0.21 / 400)) < 3e-4, round(_ph.std(), 5))
+check(T, "n を4倍で SE 半分、2倍で 1/√2≈0.707倍", sqrt(1 / 4) == 0.5 and _clS(1 / sqrt(2), "0.707"), "")
+_cS = _fmS["charts"][0]["params"]
+check(T, "chart：σ=10 の σ/√n（n=1,4,…,100）", _cS["x"] == [k * k for k in range(1, 11)] and _cS["series"][0]["y"] == [round(10 / k, 4) for k in range(1, 11)], _cS["series"][0]["y"])
+
+print()
+print(f"合計（追加用語を含む）: OK {sum(results)} / NG {len(results) - sum(results)}")

@@ -122,8 +122,8 @@ def load_questions(plan_ids):
     return out, stat
 
 
-def render_formulas():
-    """content/formulas.md（公式まとめ）を節ごとの HTML にする。"""
+def render_formulas(titles=None):
+    """content/formulas.md（公式まとめ）を節ごとの HTML にする。「→ 用語名」は用語ページへのボタンにする。"""
     p = CONTENT / "formulas.md"
     if not p.exists():
         return ""
@@ -134,6 +134,10 @@ def render_formulas():
     MD.reset()
     h = restore_math(MD.convert(prot), store)
     h = h.replace("<table>", '<div class="table-wrap"><table>').replace("</table>", "</table></div>")
+    if titles:
+        names = sorted(titles, key=len, reverse=True)
+        pat = re.compile("→ ?(" + "|".join(re.escape(n) for n in names) + ")")
+        h = pat.sub(lambda m: f'→ <button type="button" class="f-link" data-go="{titles[m.group(1)]}">{m.group(1)}</button>', h)
     parts = re.split(r"<h2>(.*?)</h2>", h)
     out = [parts[0]] if parts[0].strip() else []
     for i in range(1, len(parts), 2):
@@ -194,7 +198,7 @@ def main():
         })
     plan_ids = {t["id"] for ch in chapters for t in ch["terms"]}
     questions, qstat = load_questions(plan_ids)
-    data = {"chapters": chapters, "terms": terms, "questions": questions, "formulas": render_formulas()}
+    data = {"chapters": chapters, "terms": terms, "questions": questions, "formulas": render_formulas({t["title"]: t["id"] for ch in chapters for t in ch["terms"] if t["id"] in terms})}
     data_json = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
 
     tpl = (SRC / "template.html").read_text(encoding="utf-8")

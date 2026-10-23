@@ -1,0 +1,134 @@
+{
+ "q21-cluster-sampling-1": {
+  "hash": "c1b2db0ed385045b",
+  "ok": true
+ },
+ "q21-cluster-sampling-2": {
+  "hash": "8097abecd24e73a9",
+  "ok": true
+ },
+ "q21-design-effect-1": {
+  "hash": "338bcb5808c23ebf",
+  "ok": true
+ },
+ "q21-design-effect-2": {
+  "hash": "8abeee19fc214118",
+  "ok": true
+ },
+ "q21-horvitz-thompson-estimator-1": {
+  "hash": "d6d1136c6509f03a",
+  "ok": true
+ },
+ "q21-horvitz-thompson-estimator-2": {
+  "hash": "b9d1f101562483a9",
+  "ok": true
+ },
+ "q21-horvitz-thompson-estimator-3": {
+  "hash": "ac2706bbd64f0005",
+  "ok": true
+ },
+ "q21-inclusion-probability-1": {
+  "hash": "12f8888e4f3f9011",
+  "ok": true
+ },
+ "q21-inclusion-probability-2": {
+  "hash": "c2569c1f9793f597",
+  "ok": true
+ },
+ "q21-neyman-allocation-1": {
+  "hash": "af5f9209d8f8d568",
+  "ok": true
+ },
+ "q21-neyman-allocation-2": {
+  "hash": "706f4f762057c685",
+  "ok": true
+ },
+ "q21-neyman-allocation-3": {
+  "hash": "26df2ed1f5819e7a",
+  "ok": true
+ },
+ "q21-nonresponse-bias-1": {
+  "hash": "d0e976c026f31db3",
+  "ok": true
+ },
+ "q21-nonresponse-bias-2": {
+  "hash": "5b51e4848c6716e3",
+  "ok": true
+ },
+ "q21-probability-proportional-to-size-sampling-1": {
+  "hash": "1c893f779be48c4a",
+  "ok": true
+ },
+ "q21-proportional-allocation-1": {
+  "hash": "82696267b6393ba5",
+  "ok": true
+ },
+ "q21-proportional-allocation-2": {
+  "hash": "e5289d840586f5b3",
+  "ok": true
+ },
+ "q21-ratio-estimation-1": {
+  "hash": "ac3201f747d41127",
+  "ok": true
+ },
+ "q21-ratio-estimation-2": {
+  "hash": "5fab1191e22574ff",
+  "ok": true
+ },
+ "q21-ratio-estimation-3": {
+  "hash": "bdb8c12dc3eef0ed",
+  "ok": true
+ },
+ "q21-regression-estimation-1": {
+  "hash": "d8a0b9d4cd533db9",
+  "ok": true
+ },
+ "q21-sampling-and-nonsampling-error-1": {
+  "hash": "36d8531952a0eca4",
+  "ok": true
+ },
+ "q21-sampling-and-nonsampling-error-2": {
+  "hash": "c330e68afa3f8f53",
+  "ok": true
+ },
+ "q21-sampling-weight-1": {
+  "hash": "9716bffba5bb18da",
+  "ok": true
+ },
+ "q21-simple-random-sampling-1": {
+  "hash": "aa760d57daff9996",
+  "ok": true
+ },
+ "q21-simple-random-sampling-2": {
+  "hash": "11ccc329fc757ffc",
+  "ok": true
+ },
+ "q21-simple-random-sampling-3": {
+  "hash": "f78212147830cfd0",
+  "ok": true
+ },
+ "q21-stratified-sampling-1": {
+  "hash": "b1c29b91567e698a",
+  "ok": true
+ },
+ "q21-stratified-sampling-2": {
+  "hash": "8e7ea9501acf04ee",
+  "ok": true
+ },
+ "q21-systematic-sampling-1": {
+  "hash": "00b1be08206ed91a",
+  "ok": true
+ },
+ "q21-systematic-sampling-2": {
+  "hash": "21198f0ec261cc52",
+  "ok": true
+ },
+ "q21-two-stage-sampling-1": {
+  "hash": "1ccd5c21f7dfb8a3",
+  "ok": true
+ },
+ "q21-two-stage-sampling-2": {
+  "hash": "f714091d94f7fbc9",
+  "ok": true
+ }
+}

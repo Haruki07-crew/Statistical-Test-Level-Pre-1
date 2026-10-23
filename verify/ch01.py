@@ -179,4 +179,48 @@ check(T, "条件付き版 P(B|C)=Σ P(B|Ai∩C)P(Ai|C)（ランダム200ケー�
 
 n_ok = sum(results); n_ng = len(results) - n_ok
 print(f"\n合計: OK {n_ok} / NG {n_ng}")
+# （終了コードは末尾の追加用語の節のあとで返す）
+
+# --- 追加用語（用語の見直し）: inclusion-exclusion-principle ---
+import re as _re, yaml as _yaml
+from math import factorial as _fact, comb as _comb, e as _e
+from pathlib import Path as _Path
+T = "inclusion-exclusion-principle"
+_fm = _yaml.safe_load(_re.match(r"^---\n(.*?)\n---\n", (_Path(__file__).resolve().parent.parent / "content/ch01/inclusion-exclusion-principle.md").read_text(encoding="utf-8"), _re.S).group(1))
+# 例1：200人の集合（各領域の人数を作って数え上げ）
+_cnt = {"V": 120, "M": 90, "N": 60, "VM": 50, "VN": 30, "MN": 25, "VMN": 15}
+_only = {"VMN": 15, "VM": 50 - 15, "VN": 30 - 15, "MN": 25 - 15}
+_only["V"] = 120 - _only["VM"] - _only["VN"] - 15
+_only["M"] = 90 - _only["VM"] - _only["MN"] - 15
+_only["N"] = 60 - _only["VN"] - _only["MN"] - 15
+check(T, "例1 和集合 180人（領域ごとの数え上げと一致）、どれもなし 20人=0.100",
+      120 + 90 + 60 - 50 - 30 - 25 + 15 == 180 == sum(_only.values()) and min(_only.values()) >= 0 and F(200 - 180, 200) == F(1, 10), sum(_only.values()))
+# 例2：n=5 の完全順列（全 120 通りを列挙）
+_n5 = sum(1 for _p in permutations(range(5)) if any(_p[i] == i for i in range(5)))
+_ie5 = sum(F((-1) ** (k + 1), _fact(k)) for k in range(1, 6))
+check(T, "例2 S_k=C(5,k)(5−k)!/5!=1/k!", all(F(_comb(5, k) * _fact(5 - k), _fact(5)) == F(1, _fact(k)) for k in range(1, 6)), "")
+check(T, "例2 少なくとも1通 ≈0.6333（列挙 76/120）、なし 0.3667",
+      _ie5 == F(_n5, 120) == F(19, 30) and close(_ie5, 0.6333) and close(1 - _ie5, 0.3667), (_n5, float(_ie5)))
+check(T, "例2 各項 0.5, 0.1667, 0.0417, 0.0083", close(F(1, 6), 0.1667) and close(F(1, 24), 0.0417) and close(F(1, 120), 0.0083), "")
+check(T, "極限 1−1/e ≈ 0.6321", close(1 - 1 / _e, 0.6321), 1 - 1 / _e)
+# 例3
+check(T, "例3 2,3,5 のどれかで割り切れる 74 個（16, 10, 6, 3 も確認）",
+      sum(1 for i in range(1, 101) if i % 2 == 0 or i % 3 == 0 or i % 5 == 0) == 74 == 50 + 33 + 20 - 16 - 10 - 6 + 3 and (100 // 6, 100 // 10, 100 // 15, 100 // 30) == (16, 10, 6, 3), 74)
+# 一般の包除原理（ランダムな有限確率空間, n=4）と ボンフェローニの不等式
+_ok = True
+for _ in range(300):
+    _w = rng.dirichlet(np.ones(40)); _A = rng.random((4, 40)) < rng.uniform(0.1, 0.6, (4, 1))
+    _S = [sum(_w[np.logical_and.reduce(_A[list(c)])].sum() for c in combinations(range(4), k)) for k in range(1, 5)]
+    _u = _w[_A.any(0)].sum()
+    _ok &= abs(_u - sum((-1) ** k * _S[k] for k in range(4))) < 1e-12 and _S[0] - _S[1] - 1e-12 <= _u <= _S[0] + 1e-12
+check(T, "一般式と S1−S2 ≤ P(∪) ≤ S1（ランダム300ケース）", _ok, _ok)
+check(T, "数え上げの恒等式 Σ(−1)^(k+1)C(m,k)=1（m=1..10）", all(sum((-1) ** (k + 1) * _comb(m, k) for k in range(1, m + 1)) == 1 for m in range(1, 11)), "")
+_c = _fm["charts"][0]["params"]
+_y = [round(float(sum(F((-1) ** (k + 1), _fact(k)) for k in range(1, n + 1))), 4) for n in range(1, 11)]
+check(T, "chart：n=1..10 の確率と 1−1/e の線", _c["x"] == list(range(1, 11)) and _c["series"][0]["y"] == _y and all(v == round(1 - 1 / _e, 4) for v in _c["series"][1]["y"]), _y)
+_mc = np.mean([np.any(rng.permutation(5) == np.arange(5)) for _ in range(200000)])
+check(T, "例2 シミュレーション（N=2e5, 許容0.005）", abs(_mc - 0.6333) < 0.005, round(_mc, 4))
+
+n_ok = sum(results); n_ng = len(results) - n_ok
+print(f"\n合計（追加用語を含む）: OK {n_ok} / NG {n_ng}")
 raise SystemExit(1 if n_ng else 0)

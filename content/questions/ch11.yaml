@@ -1,0 +1,442 @@
+chapter: 11
+questions:
+  - id: q11-z-test-known-variance-1
+    term: z-test-known-variance
+    level: 基本
+    type: numeric
+    question: |
+      $N(\mu,15^2)$ から $n=25$ 個の標本をとり $\bar x=106$ を得た。$H_0:\mu=100$ の $z$ 検定統計量の値を小数第2位まで求めよ。
+    answer: 2
+    tolerance: 0.005
+    hint: |
+      $Z=(\bar x-\mu_0)/(\sigma/\sqrt n)$。
+    explanation: |
+      $$Z=\frac{106-100}{15/5}=\frac{6}{3}=2.00$$
+      両側5%の棄却限界 $1.96$ を超えるので棄却されます。
+
+  - id: q11-z-test-known-variance-2
+    term: z-test-known-variance
+    level: 標準
+    type: numeric
+    question: |
+      $N(\mu,12^2)$ から $n=36$ 個の標本をとり $\bar x=96$ を得た。$H_0:\mu=100$ 対 $H_1:\mu<100$ の p 値を小数第4位まで求めよ。
+    answer: 0.0228
+    tolerance: 0.0001
+    hint: |
+      左片側なので p 値は $\Phi(z)$。
+    explanation: |
+      $$z=\frac{96-100}{12/6}=-2,\qquad p=\Phi(-2)=0.0228$$
+      両側検定なら $0.0455$ です。
+
+  - id: q11-one-sample-t-test-1
+    term: one-sample-t-test
+    level: 基本
+    type: choice
+    question: |
+      正規母集団（分散未知）から $n=15$ 個の標本をとり、$H_0:\mu=\mu_0$ 対 $H_1:\mu\ne\mu_0$ を有意水準5%で $t$ 検定する。棄却限界 $c$（$|T|\ge c$ で棄却）はどれか。
+    choices:
+      - '$2.145$'
+      - '$2.131$'
+      - '$1.761$'
+      - '$1.960$'
+    answer: 0
+    hint: |
+      自由度 $n-1$ の $t$ 分布の上側 $2.5\%$ 点。
+    explanation: |
+      $t_{0.025}(14)=2.145$ です。$2.131$ は自由度を15とした値、$1.761$ は片側5%の $t_{0.05}(14)$、
+      $1.960$ は分散既知の $z$ 検定の値です。
+
+  - id: q11-one-sample-t-test-2
+    term: one-sample-t-test
+    level: 標準
+    type: numeric
+    question: |
+      正規母集団からの観測値 $10.8,\ 12.1,\ 11.5,\ 12.6,\ 11.9,\ 12.5$ について、$H_0:\mu=11$ の $t$ 検定統計量の値を小数第2位まで求めよ。
+    answer: 3.28
+    tolerance: 0.01
+    hint: |
+      $\bar x$ と不偏分散 $S^2$ を求め、$T=(\bar x-11)/(S/\sqrt6)$。
+    explanation: |
+      $\bar x=11.9$、偏差は $-1.1,0.2,-0.4,0.7,0,0.6$ で偏差平方和 $2.26$、$S^2=2.26/5=0.452$、$S=0.672$ です。
+      $$T=\frac{0.9}{0.672/\sqrt6}=3.28$$
+      $t_{0.025}(5)=2.571$ を超えるので、両側5%で棄却されます。
+
+  - id: q11-two-sample-t-test-1
+    term: two-sample-t-test
+    level: 基本
+    type: choice
+    question: |
+      等分散を仮定した2標本 $t$ 検定で、標本サイズが $m=6$、$n=8$ のとき、検定統計量が従う $t$ 分布の自由度はどれか。
+    choices:
+      - '$12$'
+      - '$13$'
+      - '$14$'
+      - '$5$'
+    answer: 0
+    hint: |
+      2群それぞれで平均を1つずつ推定する。
+    explanation: |
+      自由度は $m+n-2=12$ です。プールした分散 $S_p^2$ の分母と同じです。
+      $13$ は $m+n-1$、$14$ は総数、$5$ は小さい群の $m-1$ で、いずれも誤りです。
+
+  - id: q11-two-sample-t-test-2
+    term: two-sample-t-test
+    level: 標準
+    type: numeric
+    question: |
+      等分散の正規母集団から $m=6$（$\bar x=24.0$、$S_1^2=5$）、$n=8$（$\bar y=21.0$、$S_2^2=4$）の標本を得た。
+      $H_0:\mu_1=\mu_2$ の2標本 $t$ 検定統計量の値を小数第2位まで求めよ。
+    answer: 2.64
+    tolerance: 0.01
+    hint: |
+      $S_p^2=\{5S_1^2+7S_2^2\}/12$、$T=(\bar x-\bar y)/\{S_p\sqrt{1/6+1/8}\}$。
+    explanation: |
+      $$S_p^2=\frac{25+28}{12}=4.417,\qquad\mathrm{SE}=\sqrt{4.417\times\left(\frac16+\frac18\right)}=1.135$$
+      $T=3/1.135=2.64$ で、$t_{0.025}(12)=2.179$ を超えるので両側5%で棄却されます。
+
+  - id: q11-pooled-variance-1
+    term: pooled-variance
+    level: 基本
+    type: numeric
+    question: |
+      大きさ $5$ の群の不偏分散が $10$、大きさ $11$ の群の不偏分散が $4$ である。プールした分散 $S_p^2$ を小数第3位まで求めよ。
+    answer: 5.714
+    tolerance: 0.001
+    hint: |
+      各群の自由度 $n_i-1$ で重み付けする。
+    explanation: |
+      $$S_p^2=\frac{4\times10+10\times4}{5+11-2}=\frac{80}{14}=5.714$$
+      単純平均 $(10+4)/2=7$ とは異なり、標本の多い群の分散に近くなります。
+
+  - id: q11-pooled-variance-2
+    term: pooled-variance
+    level: 標準
+    type: truefalse
+    question: |
+      2群のプールした分散 $S_p^2$ は、つねに2つの不偏分散の単純平均 $(S_1^2+S_2^2)/2$ に等しい。
+    answer: false
+    hint: |
+      重みは $(m-1)$ と $(n-1)$。単純平均と一致するのはどんなときか。
+    explanation: |
+      $S_p^2=\frac{(m-1)S_1^2+(n-1)S_2^2}{m+n-2}$ が単純平均になるのは $m=n$ のとき（または $S_1^2=S_2^2$ のとき）だけです。
+      前問の例では $5.714$ と $7$ で異なります。
+
+  - id: q11-welch-test-1
+    term: welch-test
+    level: 標準
+    type: numeric
+    question: |
+      $m=10$（$S_1^2=20$）、$n=15$（$S_2^2=5$）の独立な正規標本で、$\bar x-\bar y=3$ であった。ウェルチの検定統計量 $T_W$ の値を小数第3位まで求めよ。
+    answer: 1.964
+    tolerance: 0.001
+    hint: |
+      分母は $\sqrt{S_1^2/m+S_2^2/n}$。プールしない。
+    explanation: |
+      $$T_W=\frac{3}{\sqrt{20/10+5/15}}=\frac{3}{\sqrt{2.333}}=1.964$$
+
+  - id: q11-welch-test-2
+    term: welch-test
+    level: 応用
+    type: numeric
+    question: |
+      前問と同じデータ（$m=10,\ S_1^2=20$、$n=15,\ S_2^2=5$）で、ウェルチ・サタースウェイトの近似自由度 $\nu$ を小数第2位まで求めよ。
+    answer: 12.04
+    tolerance: 0.01
+    hint: |
+      $a=S_1^2/m=2$、$b=S_2^2/n=1/3$ として $\nu=\dfrac{(a+b)^2}{a^2/(m-1)+b^2/(n-1)}$。
+    explanation: |
+      $$\nu=\frac{(2.333)^2}{4/9+(1/9)/14}=\frac{5.444}{0.4524}=12.04$$
+      $t_{0.025}(12.04)\approx2.178$ で $T_W=1.964$ はこれを超えないので、両側5%では棄却されません。
+      分散の大きい群（$m=10$）の自由度9に近い値になっています。
+
+  - id: q11-welch-test-3
+    term: welch-test
+    level: 基本
+    type: truefalse
+    question: |
+      ウェルチ・サタースウェイトの近似自由度 $\nu$ は、つねに $\min(m-1,\ n-1)\le\nu\le m+n-2$ を満たす。
+    answer: true
+    hint: |
+      片方の群の $S^2/n$ が圧倒的に大きい場合と、2群が釣り合っている場合を考える。
+    explanation: |
+      一方の群の分散項が支配的なら $\nu$ はその群の自由度に近づき、2群の $S_i^2/n_i$ と自由度が釣り合うと最大の $m+n-2$ になります。
+      したがって $\nu$ は2つの端の間にあり、整数とは限りません。
+
+  - id: q11-paired-t-test-1
+    term: paired-t-test
+    level: 基本
+    type: choice
+    question: |
+      5人について処置の前後で測定し、対応のある $t$ 検定を行う。検定統計量が従う $t$ 分布の自由度はどれか。
+    choices:
+      - '$4$'
+      - '$8$'
+      - '$9$'
+      - '$5$'
+    answer: 0
+    hint: |
+      差 $D_i$ の1標本 $t$ 検定とみる。
+    explanation: |
+      差 $D_1,\dots,D_5$ の1標本 $t$ 検定なので、自由度は $5-1=4$ です。
+      $8$ は独立2標本とみなした $5+5-2$ で、対応を無視した誤りです。
+
+  - id: q11-paired-t-test-2
+    term: paired-t-test
+    level: 標準
+    type: numeric
+    question: |
+      5人の処置前後の値（前, 後）が $(82,78),\ (75,74),\ (90,85),\ (68,66),\ (77,72)$ であった。差 $D=$前$-$後 について、
+      $H_0:\mu_D=0$ の対応のある $t$ 検定統計量の値を小数第2位まで求めよ。
+    answer: 4.19
+    tolerance: 0.01
+    hint: |
+      差は $4,1,5,2,5$。その平均と不偏分散から $T=\bar D/(S_D/\sqrt5)$。
+    explanation: |
+      $\bar D=3.4$、偏差平方和 $0.36+5.76+2.56+1.96+2.56=13.2$、$S_D^2=3.3$、$S_D=1.817$ です。
+      $$T=\frac{3.4}{1.817/\sqrt5}=4.19$$
+      $t_{0.025}(4)=2.776$ を超えるので、両側5%で棄却されます。
+
+  - id: q11-chi-square-test-variance-1
+    term: chi-square-test-variance
+    level: 標準
+    type: numeric
+    question: |
+      正規母集団から $n=15$ 個の標本をとり、不偏分散 $S^2=6.5$ を得た。$H_0:\sigma^2=4$ 対 $H_1:\sigma^2>4$ の検定統計量の値を小数第2位まで求めよ。
+    answer: 22.75
+    tolerance: 0.005
+    hint: |
+      $\chi^2=(n-1)S^2/\sigma_0^2$。
+    explanation: |
+      $$\chi^2=\frac{14\times6.5}{4}=22.75$$
+      $\chi^2_{0.05}(14)=23.685$ より小さいので、5%水準では棄却されません（p 値は約 $0.064$）。
+
+  - id: q11-chi-square-test-variance-2
+    term: chi-square-test-variance
+    level: 基本
+    type: truefalse
+    question: |
+      正規母集団の母分散の検定では、母平均 $\mu$ が既知であっても未知であっても、検定統計量の自由度は $n-1$ である。
+    answer: false
+    hint: |
+      $\mu$ が既知なら、$\bar X$ で推定する必要があるか。
+    explanation: |
+      $\mu$ が未知なら $\sum(X_i-\bar X)^2/\sigma_0^2\sim\chi^2(n-1)$ ですが、
+      $\mu$ が既知なら $\sum(X_i-\mu)^2/\sigma_0^2\sim\chi^2(n)$ で、自由度は $n$ です。平均を推定するたびに自由度が1つ減ります。
+
+  - id: q11-f-test-equal-variances-1
+    term: f-test-equal-variances
+    level: 標準
+    type: numeric
+    question: |
+      $m=9$（$S_1^2=12.6$）、$n=13$（$S_2^2=4.2$）の独立な正規標本で、$H_0:\sigma_1^2=\sigma_2^2$ 対 $H_1:\sigma_1^2\ne\sigma_2^2$ の F 検定を行う。
+      両側 p 値を小数第3位まで求めよ。
+    answer: 0.085
+    tolerance: 0.001
+    hint: |
+      $F=S_1^2/S_2^2\sim F(8,12)$。両側 p 値は上側確率の2倍（$F>1$ のとき）。
+    explanation: |
+      $F=12.6/4.2=3.0$、$P(F(8,12)>3.0)=0.0424$ なので、両側 p 値は $2\times0.0424=0.085$ です。
+      $F_{0.025}(8,12)=3.51$ を超えないので、5%水準では棄却されません。片側検定と取り違えると「棄却」と誤ります。
+
+  - id: q11-f-test-equal-variances-2
+    term: f-test-equal-variances
+    level: 基本
+    type: truefalse
+    question: |
+      大きい方の不偏分散を分子にとった $F=S_{\text{大}}^2/S_{\text{小}}^2$ を使って有意水準5%の**両側**検定をするときは、$F$ を上側5%点 $F_{0.05}$ と比べる。
+    answer: false
+    hint: |
+      大きい方を分子にすると、下側の棄却域を上側に折り返したことになる。
+    explanation: |
+      大きい方を分子にすると $F\ge1$ になり、両側の棄却域のうち上側だけを見ることになります。
+      両側5%なら上側 $2.5\%$ 点 $F_{0.025}$ と比べる必要があり、$F_{0.05}$ と比べると実際のサイズは10%になってしまいます。
+
+  - id: q11-test-correlation-coefficient-1
+    term: test-correlation-coefficient
+    level: 標準
+    type: numeric
+    question: |
+      2変量正規分布からの $n=27$ 組で標本相関係数 $r=0.4$ を得た。$H_0:\rho=0$ の検定統計量 $T=r\sqrt{n-2}/\sqrt{1-r^2}$ の値を小数第3位まで求めよ。
+    answer: 2.182
+    tolerance: 0.001
+    hint: |
+      $\sqrt{n-2}=5$、$\sqrt{1-r^2}=\sqrt{0.84}$。
+    explanation: |
+      $$T=\frac{0.4\times5}{\sqrt{0.84}}=\frac{2}{0.9165}=2.182$$
+      $t_{0.025}(25)=2.060$ を超えるので、両側5%で「無相関ではない」と判断します。
+
+  - id: q11-test-correlation-coefficient-2
+    term: test-correlation-coefficient
+    level: 応用
+    type: numeric
+    question: |
+      $n=20$ 組のデータで $H_0:\rho=0$ を両側5%で検定する。有意となる標本相関係数 $|r|$ の最小値を小数第3位まで求めよ（$t_{0.025}(18)=2.101$）。
+    answer: 0.444
+    tolerance: 0.001
+    hint: |
+      $\dfrac{r\sqrt{18}}{\sqrt{1-r^2}}=2.101$ を $r$ について解く。
+    explanation: |
+      両辺を2乗して $18r^2=2.101^2(1-r^2)$ より
+      $$r=\frac{t}{\sqrt{n-2+t^2}}=\frac{2.101}{\sqrt{18+4.414}}=0.444$$
+      $n=20$ では $|r|\ge0.444$ でないと有意になりません。
+
+  - id: q11-fisher-z-transformation-1
+    term: fisher-z-transformation
+    level: 標準
+    type: numeric
+    question: |
+      $n=39$ 組のデータで $r=0.6$ を得た。フィッシャーの $z$ 変換を用いて $H_0:\rho=0.4$ を検定するときの統計量 $Z=(\tanh^{-1}r-\tanh^{-1}\rho_0)\sqrt{n-3}$ の値を
+      小数第2位まで求めよ。
+    answer: 1.62
+    tolerance: 0.01
+    hint: |
+      $\tanh^{-1}r=\frac12\log\frac{1+r}{1-r}$。
+    explanation: |
+      $\tanh^{-1}0.6=\frac12\log4=0.6931$、$\tanh^{-1}0.4=\frac12\log\frac{1.4}{0.6}=0.4236$ なので
+      $$Z=(0.6931-0.4236)\times\sqrt{36}=1.62$$
+      $1.96$ を超えないので、両側5%では $\rho=0.4$ を棄却できません。$\rho_0\ne0$ の検定には $t$ 統計量が使えないので $z$ 変換を使います。
+
+  - id: q11-fisher-z-transformation-2
+    term: fisher-z-transformation
+    level: 応用
+    type: numeric
+    question: |
+      $n=28$ 組のデータで $r=0.5$ を得た。フィッシャーの $z$ 変換を用いた母相関係数 $\rho$ の95%信頼区間の**上限**を小数第3位まで求めよ（$z_{0.025}=1.96$）。
+    answer: 0.736
+    tolerance: 0.001
+    hint: |
+      $z$ のスケールで $\tanh^{-1}r\pm1.96/\sqrt{n-3}$ を作り、$\tanh$ で戻す。
+    explanation: |
+      $\tanh^{-1}0.5=0.5493$、$1.96/\sqrt{25}=0.392$ なので $z$ スケールの区間は $[0.1573,\ 0.9413]$ です。
+      $\tanh$ で戻すと $[0.156,\ 0.736]$ です。$r=0.5$ に対して非対称（下に長い）になります。
+
+  - id: q11-power-of-t-test-1
+    term: power-of-t-test
+    level: 基本
+    type: choice
+    question: |
+      1標本 $t$ 検定で $n=20$、効果量 $d=(\mu-\mu_0)/\sigma=0.5$ のとき、対立仮説のもとで $T$ が従う非心 $t$ 分布の非心度 $\delta$ はどれか。
+    choices:
+      - '$2.236$'
+      - '$0.5$'
+      - '$10$'
+      - '$0.112$'
+    answer: 0
+    hint: |
+      $\delta=\sqrt n\,d$。
+    explanation: |
+      $\delta=\sqrt{20}\times0.5=2.236$ です。$10=nd$ は $\sqrt{}$ を忘れた値、$0.112=d/\sqrt n$ は割り算と掛け算を逆にした値です。
+      非心度は $\sqrt n$ に比例するので、$n$ を4倍にすると2倍になります。
+
+  - id: q11-power-of-t-test-2
+    term: power-of-t-test
+    level: 応用
+    type: numeric
+    question: |
+      1標本 $t$ 検定（両側5%）で $n=20$、$d=0.5$ とする。$T$ の分布を $N(\delta,1)$、棄却限界を $1.96$ で近似したとき、検出力
+      $\Phi(\delta-1.96)$（反対側の小さな項は無視）を小数第3位まで求めよ。
+    answer: 0.609
+    tolerance: 0.001
+    hint: |
+      $\delta=\sqrt{20}\times0.5$。
+    explanation: |
+      $\delta=2.236$ なので $\Phi(2.236-1.96)=\Phi(0.276)=0.609$ です。
+      非心 $t$ 分布 $t(19,2.236)$ と棄却限界 $t_{0.025}(19)=2.093$ で正確に計算すると $0.565$ で、
+      正規近似は $\sigma$ を推定する不確かさを無視するぶん、検出力を高めに見積もります。
+
+  - id: q11-bartlett-test-1
+    term: bartlett-test
+    level: 基本
+    type: truefalse
+    question: |
+      バートレット検定は、データが正規分布から外れて裾が重いと、等分散であっても帰無仮説を棄却しやすくなる。
+    answer: true
+    hint: |
+      バートレット検定が依拠している仮定を考える。
+    explanation: |
+      バートレット検定は正規性を前提に $\log s_i^2$ の分布を使っており、尖度が大きい分布では $s_i^2$ のばらつきが大きくなるため、
+      第1種の過誤が名目の水準を大きく上回ります。正規性に不安があるときはルビーン検定やブラウン・フォーサイス検定を使います。
+
+  - id: q11-test-ci-relationship-mean-difference-1
+    term: test-ci-relationship-mean-difference
+    level: 応用
+    type: truefalse
+    question: |
+      $m=5$（$S_1^2=10$）、$n=20$（$S_2^2=1$）、$\bar x-\bar y=2.2$ のデータで、等分散を仮定した $\mu_1-\mu_2$ の95%信頼区間は0を含まない。
+      このとき、同じデータのウェルチの検定（両側5%）でも必ず $H_0:\mu_1=\mu_2$ が棄却される。
+    answer: false
+    hint: |
+      区間と検定が対応するのは「同じ標準誤差と自由度」を使う組どうし。ウェルチ型の区間を計算してみる。
+    explanation: |
+      等分散の区間は $S_p^2=59/23=2.565$、$\mathrm{SE}=0.801$、$t_{0.025}(23)=2.069$ で $[0.54,\ 3.86]$ となり0を含みません。
+      ウェルチでは $\mathrm{SE}=\sqrt{2+0.05}=1.432$、$\nu\approx4.2$、$t_{0.025}(4.2)\approx2.72$ で区間は $[-1.70,\ 6.10]$ となり、0を含むので棄却されません。
+      検定と区間の対応は同じ手法どうしでのみ成り立ちます。
+
+  - id: q11-preliminary-test-problem-1
+    term: preliminary-test-problem
+    level: 基本
+    type: truefalse
+    question: |
+      まず F 検定で等分散性を調べ、棄却されなければプールした $t$ 検定、棄却されればウェルチの検定を使う手順をとれば、
+      全体としての第1種の過誤の確率はちょうど名目の5%に保たれる。
+    answer: false
+    hint: |
+      予備検定の結果に応じて検定を選ぶと、検定統計量の分布は何の条件付きになるか。
+    explanation: |
+      予備検定で選んだ後の検定統計量は「F 検定で受容（棄却）された」という条件付きの分布に従うので、全体の第1種の過誤は5%からずれます。
+      とくに標本サイズが違い、小さい群の分散が大きいとき、F 検定の検出力不足でプールした $t$ 検定が選ばれ、過誤が大きく膨らみます。
+      このため、はじめからウェルチの検定を使うことが推奨されます。
+
+  - id: q11-normality-test-1
+    term: normality-test
+    level: 基本
+    type: choice
+    question: |
+      シャピロ・ウィルク検定の統計量 $W$ についての記述として正しいものはどれか。
+    choices:
+      - |
+        $W$ は1以下の値をとり、小さいほど正規分布から外れていると判断する
+      - |
+        $W$ は大きいほど正規分布から外れていると判断する
+      - |
+        $W$ は自由度 $n-1$ のカイ二乗分布に従う
+      - |
+        帰無仮説が棄却されなければ、母集団が正規分布であることが証明される
+    answer: 0
+    hint: |
+      $W$ は、並べたデータと正規分布の順序統計量の期待値との「当てはまり」を測る比である。
+    explanation: |
+      $W$ は相関係数の2乗に似た量で、$0<W\le1$、1に近いほど正規分布によく合います。小さいとき棄却します。
+      $W$ の帰無分布は特殊で、カイ二乗分布ではありません。棄却されないことは正規性の証明にはならず、小標本では検出力が低い点にも注意します。
+
+  - id: q11-hotelling-t2-1
+    term: hotelling-t2
+    level: 標準
+    type: numeric
+    question: |
+      2次元の多変量正規分布からの $n=12$ 個の標本で、$H_0:\boldsymbol\mu=\boldsymbol\mu_0$ のホテリングの $T^2=9$ を得た。
+      $F=\dfrac{n-p}{p(n-1)}T^2$ の値を小数第3位まで求めよ。
+    answer: 4.091
+    tolerance: 0.001
+    hint: |
+      $p=2$、$n=12$ を代入する。$F$ は $F(p,\ n-p)$ に従う。
+    explanation: |
+      $$F=\frac{12-2}{2\times11}\times9=\frac{10}{22}\times9=4.091$$
+      $F(2,10)$ の上側5%点は $4.103$ で、わずかに届かず5%水準では棄却されません（p 値 $0.0503$）。
+      $T^2=9$ をそのまま $\chi^2(2)$ や $F$ と比べるのは誤りです。
+
+  - id: q11-one-way-test-variance-equality-levene-1
+    term: one-way-test-variance-equality-levene
+    level: 応用
+    type: numeric
+    question: |
+      2群のデータ A: $1,3,5,7$、B: $3,4,4,5$ について、群平均からの絶対偏差を用いるルビーン検定の統計量 $W$ を小数第2位まで求めよ。
+    answer: 5.4
+    tolerance: 0.005
+    hint: |
+      A の平均4から $z=3,1,1,3$、B の平均4から $z=1,0,0,1$。この $z$ に一元配置分散分析の F 統計量を当てはめる。
+    explanation: |
+      $\bar z_A=2$、$\bar z_B=0.5$、全体平均 $1.25$ です。群間平方和は $4(0.75^2)+4(0.75^2)=4.5$（自由度1）、
+      群内平方和は A で $4\times1^2=4$、B で $4\times0.5^2=1$ の計 $5$（自由度6）です。
+      $$W=\frac{4.5/1}{5/6}=5.4$$
+      $F(1,6)$ の上側5%点 $5.99$ に届かないので、5%水準では棄却されません。
