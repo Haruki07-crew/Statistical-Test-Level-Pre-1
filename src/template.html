@@ -27,9 +27,6 @@ window.MathJax = {
 </head>
 <body>
 <header class="top">
-  <button id="btn-nav" class="icon-btn nav-toggle" type="button" aria-label="章の一覧を開く" aria-controls="nav" aria-expanded="false">
-    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
-  </button>
   <a class="brand" href="#all"><span class="brand-main">準1級 用語辞典</span></a>
   <div class="search">
     <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="2" fill="none"/><path d="M15.5 15.5L20 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -41,11 +38,9 @@ window.MathJax = {
   </button>
 </header>
 <div class="layout">
-  <nav id="nav" class="pane nav" aria-label="章"></nav>
   <section id="list" class="pane list" aria-label="用語一覧"></section>
   <main id="detail" class="pane detail" aria-live="polite"></main>
 </div>
-<div id="scrim" class="scrim" hidden></div>
 <script type="application/json" id="data">{{DATA}}</script>
 <script>
 {{JS}}

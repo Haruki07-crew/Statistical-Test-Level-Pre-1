@@ -13,7 +13,7 @@
   var SEC_LABELS = { summary: '一言', definition: '定義', reading: '読み解き', example: '具体例', field: '現場', chart: 'グラフ', exam: '試験', mistake: '間違い' };
 
   var $ = function (id) { return document.getElementById(id); };
-  var navEl = $('nav'), listEl = $('list'), detailEl = $('detail'), qEl = $('q'), scrim = $('scrim');
+  var listEl = $('list'), detailEl = $('detail'), qEl = $('q');
 
   // ---------- 保存（使えなくても動くように） ----------
   function load(key, def) { try { var v = localStorage.getItem(key); return v == null ? def : JSON.parse(v); } catch (e) { return def; } }
@@ -33,6 +33,8 @@
     });
   });
   function chapterOf(no) { return CHAPTERS[no - 1]; }
+  function partOf(no) { for (var i = 0; i < PARTS.length; i++) if (no >= PARTS[i][1] && no <= PARTS[i][2]) return i; return 0; }
+  function pad2(n) { return String(n).padStart(2, '0'); }
   function isWritten(id) { return !!TERMS[id]; }
 
   // 検索用の正規化：NFKC → 小文字 → カタカナをひらがな → 空白・中黒・ハイフン類を除去
@@ -112,12 +114,23 @@
 
   // ---------- 状態 ----------
   var state = {
-    chapter: 'all',         // 'all' か章番号
+    tab: 0,                 // 選んでいる部（PARTS の添字）
+    open: {},               // 開いている章 { 章番号: true }
     query: '',
     hideMemo: !!load('jd-hide-memo', false),
     current: null,
     fromList: false
   };
+  (function () {
+    var t = Number(load('jd-tab', 0));
+    if (t >= 0 && t < PARTS.length) state.tab = t;
+    var o = load('jd-open', []);
+    if (Array.isArray(o)) o.forEach(function (n) { if (n >= 1 && n <= 32) state.open[n] = true; });
+  })();
+  function saveListState() {
+    save('jd-tab', state.tab);
+    save('jd-open', Object.keys(state.open).filter(function (k) { return state.open[k]; }).map(Number));
+  }
 
   // ---------- 表示の部品 ----------
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -134,46 +147,12 @@
     return { written: w, total: ch.terms.length };
   }
 
-  // ---------- 章ナビ ----------
-  function renderNav() {
-    var h = '<div class="nav-head">' +
-      '<button type="button" data-nav="all" aria-pressed="' + (state.chapter === 'all') + '">すべての章</button>' +
-      '<button type="button" data-nav="hide-memo" aria-pressed="' + state.hideMemo + '">覚えた用語を隠す</button></div>';
-    PARTS.forEach(function (p) {
-      var open = state.chapter === 'all' || (state.chapter >= p[1] && state.chapter <= p[2]);
-      h += '<details' + (open ? ' open' : '') + '><summary>' + esc(p[0]) + '</summary>';
-      for (var n = p[1]; n <= p[2]; n++) {
-        var ch = chapterOf(n), c = chapterCounts(ch);
-        h += '<button type="button" class="ch-btn" data-ch="' + n + '"' + (state.chapter === n ? ' aria-current="true"' : '') + '>' +
-          '<span class="ch-no">' + String(n).padStart(2, '0') + '</span><span>' + esc(ch.title) + '</span>' +
-          '<span class="ch-count" title="作成済み／予定">' + c.written + '/' + c.total + '</span></button>';
-      }
-      h += '</details>';
-    });
-    navEl.innerHTML = h;
-  }
-
-  navEl.addEventListener('click', function (e) {
-    var b = e.target.closest('button');
-    if (!b) return;
-    if (b.dataset.nav === 'all') { go('#all'); closeNav(); }
-    else if (b.dataset.nav === 'hide-memo') {
-      state.hideMemo = !state.hideMemo; save('jd-hide-memo', state.hideMemo);
-      renderNav(); renderList();
-    } else if (b.dataset.ch) { go('#ch' + String(b.dataset.ch).padStart(2, '0')); closeNav(); }
-  });
-
-  function openNav() { document.body.classList.add('nav-open'); scrim.hidden = false; $('btn-nav').setAttribute('aria-expanded', 'true'); }
-  function closeNav() { document.body.classList.remove('nav-open'); scrim.hidden = true; $('btn-nav').setAttribute('aria-expanded', 'false'); }
-  $('btn-nav').addEventListener('click', function () { document.body.classList.contains('nav-open') ? closeNav() : openNav(); });
-  scrim.addEventListener('click', closeNav);
-
   // ---------- 用語一覧 ----------
   function rowHtml(id, opts) {
     var p = PLAN[id], t = TERMS[id], written = !!t;
     var cur = state.current === id ? ' aria-current="true"' : '';
     var title = esc(p.title);
-    var sub = written ? esc(t.reading) + (t.en ? '　' + esc(t.en) : '') : '';
+    var sub = written && t.en ? esc(t.en) : '';
     var snip = '';
     if (opts && opts.snip) snip = '<span class="row-snippet">' + esc(opts.snip.pre) + '<mark>' + esc(opts.snip.hit) + '</mark>' + esc(opts.snip.post) + '</span>';
     var chTag = opts && opts.showCh ? '<span class="row-ch">第' + p.chapter + '章</span>' : '';
@@ -183,55 +162,114 @@
     return '<li class="row' + (written ? '' : ' pending') + '" data-id="' + id + '"' + cur + '>' +
       '<button type="button" class="row-main"' + (written ? '' : ' aria-disabled="true" tabindex="-1"') + '>' +
       '<span class="row-title"><span>' + title + '</span>' + impMark(p.importance) + (written ? '' : '<span class="pending-tag">準備中</span>') + chTag + '</span>' +
-      (sub ? '<span class="row-reading">' + sub + '</span>' : '') + snip + '</button>' + memoBtn + '</li>';
+      (sub ? '<span class="row-en" lang="en">' + sub + '</span>' : '') + snip + '</button>' + memoBtn + '</li>';
   }
 
-  function inScope(id) {
-    if (state.chapter !== 'all' && PLAN[id].chapter !== state.chapter) return false;
-    if (state.hideMemo && memo[id]) return false;
-    return true;
+  function visible(id) { return !(state.hideMemo && memo[id]); }
+
+  function listTopHtml(searching) {
+    var h = '<div class="list-top">';
+    if (!searching) {
+      h += '<div class="tabs" role="tablist" aria-label="部">' + PARTS.map(function (p, i) {
+        return '<button type="button" class="tab" role="tab" data-tab="' + i + '" aria-selected="' + (state.tab === i) + '">' + esc(p[0]) + '</button>';
+      }).join('') + '</div>';
+    }
+    h += '<div class="list-tools">';
+    if (!searching) h += '<button type="button" class="chip" data-all="open">すべて開く</button><button type="button" class="chip" data-all="close">すべて閉じる</button>';
+    h += '<button type="button" class="chip memo-chip" data-hide-memo aria-pressed="' + state.hideMemo + '">覚えた用語を隠す</button></div>';
+    if (searching) h += '<div class="search-head"><h2 class="list-title">「' + esc(state.query) + '」の検索結果 ' + searching.count + '件</h2><p class="list-sub">全章から' + (state.hideMemo ? '（覚えた用語を隠しています）' : '') + '</p></div>';
+    return h + '</div>';
+  }
+
+  function chapterHtml(n) {
+    var ch = chapterOf(n), c = chapterCounts(ch), open = !!state.open[n];
+    var hasCur = state.current && PLAN[state.current] && PLAN[state.current].chapter === n;
+    var h = '<div class="ch-sec" id="list-ch' + pad2(n) + '">' +
+      '<button type="button" class="ch-head' + (hasCur ? ' has-current' : '') + '" data-toggle="' + n + '" aria-expanded="' + open + '" aria-controls="list-ch' + pad2(n) + '-ul">' +
+      '<span class="ch-mark" aria-hidden="true">&#x25B6;&#xFE0E;</span><span class="ch-no">' + pad2(n) + '</span><span>' + esc(ch.title) + '</span>' +
+      '<span class="ch-count" title="作成済み／予定">' + c.written + '/' + c.total + '</span></button>';
+    if (open) {
+      var ids = ch.terms.map(function (t) { return t.id; }).filter(visible);
+      h += ids.length ? '<ul id="list-ch' + pad2(n) + '-ul">' + ids.map(function (id) { return rowHtml(id); }).join('') + '</ul>'
+        : '<div class="empty" id="list-ch' + pad2(n) + '-ul">表示する用語がありません。</div>';
+    }
+    return h + '</div>';
   }
 
   function renderList() {
+    var tabs = listEl.querySelector('.tabs'), tabScroll = tabs ? tabs.scrollLeft : 0;
     var h = '', q = norm(state.query);
-    var scopeName = state.chapter === 'all' ? '全章' : '第' + state.chapter + '章 ' + chapterOf(state.chapter).title;
     if (q) {
+      // 検索中はタブを無視して全章から探す
       var res = [];
       INDEX.forEach(function (e) {
-        if (!inScope(e.id)) return;
+        if (!visible(e.id)) return;
         var s = scoreEntry(e, q);
         if (s) res.push({ id: e.id, s: s });
       });
       res.sort(function (a, b) { return b.s - a.s || ORDER.indexOf(a.id) - ORDER.indexOf(b.id); });
-      h += '<div class="list-head"><h2 class="list-title">「' + esc(state.query) + '」の検索結果 ' + res.length + '件</h2><p class="list-sub">' + esc(scopeName) + 'から</p></div>';
+      h += listTopHtml({ count: res.length });
       if (res.length) {
         h += '<ul>' + res.map(function (r) {
           return rowHtml(r.id, { showCh: true, snip: r.s === 10 ? snippet(r.id, q) : null });
         }).join('') + '</ul>';
       } else {
         var near = nearCandidates(q);
-        h += '<div class="empty"><h3>見つかりませんでした</h3>' + (state.chapter !== 'all' ? '<p>章の絞り込みを外すと見つかるかもしれません。</p>' : '') +
+        h += '<div class="empty"><h3>見つかりませんでした</h3>' + (state.hideMemo ? '<p>「覚えた用語を隠す」を外すと見つかるかもしれません。</p>' : '') +
           (near.length ? '<p>近い候補：</p></div><ul>' + near.map(function (id) { return rowHtml(id, { showCh: true }); }).join('') + '</ul>' : '</div>');
       }
-    } else if (state.chapter === 'all') {
-      var tot = ORDER.length, wr = ORDER.filter(isWritten).length;
-      h += '<div class="list-head"><h2 class="list-title">すべての用語</h2><p class="list-sub">作成済み ' + wr + ' ／ 予定 ' + tot + '</p></div>';
-      CHAPTERS.forEach(function (ch) {
-        var ids = ch.terms.map(function (t) { return t.id; }).filter(inScope);
-        if (!ids.length) return;
-        h += '<div class="list-head" style="position:static;padding-top:14px"><h3 class="list-title" style="font-size:.85rem">第' + ch.no + '章 ' + esc(ch.title) + '</h3></div>';
-        h += '<ul>' + ids.map(function (id) { return rowHtml(id); }).join('') + '</ul>';
-      });
     } else {
-      var ch = chapterOf(state.chapter), c = chapterCounts(ch);
-      var ids = ch.terms.map(function (t) { return t.id; }).filter(inScope);
-      h += '<div class="list-head"><h2 class="list-title">第' + ch.no + '章 ' + esc(ch.title) + '</h2><p class="list-sub">作成済み ' + c.written + ' ／ 予定 ' + c.total + (state.hideMemo ? '（覚えた用語を隠しています）' : '') + '</p></div>';
-      h += ids.length ? '<ul>' + ids.map(function (id) { return rowHtml(id); }).join('') + '</ul>' : '<div class="empty">表示する用語がありません。</div>';
+      var p = PARTS[state.tab];
+      h += listTopHtml(null);
+      for (var n = p[1]; n <= p[2]; n++) h += chapterHtml(n);
     }
     listEl.innerHTML = h;
+    tabs = listEl.querySelector('.tabs');
+    if (tabs) tabs.scrollLeft = tabScroll;
+  }
+
+  // 選んでいるタブが横スクロールの外にあれば見える位置へ
+  function revealTab() {
+    var tabs = listEl.querySelector('.tabs'), b = tabs && tabs.querySelector('.tab[aria-selected="true"]');
+    if (!b) return;
+    var l = b.offsetLeft - tabs.offsetLeft, r = l + b.offsetWidth;
+    if (l < tabs.scrollLeft + 12 || r > tabs.scrollLeft + tabs.clientWidth - 12) tabs.scrollLeft = l - 12;
+  }
+  function topHeight() { var t = listEl.querySelector('.list-top'); return t ? t.offsetHeight : 0; }
+  function scrollChapterIntoView(n) {
+    var sec = $('list-ch' + pad2(n));
+    if (!sec) return;
+    listEl.scrollTop += sec.getBoundingClientRect().top - listEl.getBoundingClientRect().top - topHeight();
+  }
+  function selectTab(i) {
+    if (state.tab === i) return;
+    state.tab = i; saveListState();
+    renderList(); revealTab();
+    listEl.scrollTop = 0;
+  }
+  function toggleChapter(n) {
+    var sec = $('list-ch' + pad2(n)), before = sec ? sec.getBoundingClientRect().top : 0;
+    if (state.open[n]) delete state.open[n]; else state.open[n] = true;
+    saveListState();
+    renderList();
+    // 押した見出しが同じ位置に残るようにする
+    sec = $('list-ch' + pad2(n));
+    if (sec) listEl.scrollTop += sec.getBoundingClientRect().top - before;
+    var btn = sec && sec.querySelector('.ch-head');
+    if (btn) btn.focus({ preventScroll: true });
+  }
+  function setAll(open) {
+    var p = PARTS[state.tab];
+    for (var n = p[1]; n <= p[2]; n++) { if (open) state.open[n] = true; else delete state.open[n]; }
+    saveListState(); renderList();
   }
 
   listEl.addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (b && b.dataset.tab) { selectTab(Number(b.dataset.tab)); return; }
+    if (b && b.dataset.toggle) { toggleChapter(Number(b.dataset.toggle)); return; }
+    if (b && b.dataset.all) { setAll(b.dataset.all === 'open'); return; }
+    if (b && b.hasAttribute('data-hide-memo')) { state.hideMemo = !state.hideMemo; save('jd-hide-memo', state.hideMemo); renderList(); return; }
     var m = e.target.closest('[data-memo]');
     if (m) { toggleMemo(m.dataset.memo); return; }
     var row = e.target.closest('.row');
@@ -278,8 +316,8 @@
       '<div class="progress-bar" aria-hidden="true"><span style="width:' + (100 * wr / Math.max(1, tot)).toFixed(1) + '%"></span></div>' +
       '<p style="margin-top:0;font-size:.85rem">作成済み ' + wr + ' 語 ／ 予定 ' + tot + ' 語（うち数値検算済み ' + vf + ' 語）</p>' +
       '<h2 style="font-size:1rem;margin-top:1.6em">使い方</h2>' +
-      '<ul style="padding-left:1.2em"><li>左の章から選ぶか、上の検索欄に用語・読み・英語名を入れます（「ガウス」「がんま」「MGF」など）。</li>' +
-      '<li>各用語の右の丸をチェックすると「覚えた」印が付き、章ナビの「覚えた用語を隠す」で一覧から消せます。</li>' +
+      '<ul style="padding-left:1.2em"><li>一覧の上のタブで部を選び、章の見出しを押すと用語が開きます。上の検索欄に用語・読み・英語名を入れると全章から探せます（「ガウス」「がんま」「MGF」など）。</li>' +
+      '<li>各用語の右の丸をチェックすると「覚えた」印が付き、「覚えた用語を隠す」で一覧から消せます。</li>' +
       '<li>PCでは <kbd>/</kbd> で検索、<kbd>Esc</kbd> で検索の解除ができます。</li>' +
       '<li>用語ごとのURL（#用語のid）をブックマークすると、その用語を直接開けます。</li></ul>' +
       '<h2 style="font-size:1rem;margin-top:1.6em">重要度の印</h2>' +
@@ -306,13 +344,13 @@
   function renderTerm(id) {
     clearDetail();
     var t = TERMS[id], p = PLAN[id], ch = chapterOf(t.chapter);
-    var meta = [esc(t.reading)];
+    var meta = [];
     if (t.en) meta.push('<span class="en" lang="en">' + esc(t.en) + '</span>');
     if (t.aliases.length) meta.push('別名：' + t.aliases.map(esc).join('、'));
     var h = '<button type="button" class="back-btn" data-back>← 一覧</button><div class="article">' +
       '<p class="crumb">第' + t.chapter + '章 <button type="button" data-goch="' + t.chapter + '">' + esc(ch.title) + '</button></p>' +
       '<h1 class="term-title">' + esc(t.title) + impMark(t.importance) + '</h1>' +
-      '<p class="term-meta">' + meta.join('　・　') + '</p>' +
+      (meta.length ? '<p class="term-meta">' + meta.join('　・　') + '</p>' : '') +
       '<div class="term-actions"><button type="button" class="memo-toggle"></button>' +
       (p.status === 'verified' ? '<span class="pending-tag" style="border-style:solid" title="数値をPythonで検算済み">検算済み</span>' : '') + '</div>';
     var secs = [];
@@ -381,7 +419,7 @@
   }
   function backToList() {
     if (state.fromList && history.length > 1) { state.fromList = false; history.back(); return; }
-    go(state.chapter === 'all' ? '#all' : '#ch' + String(state.chapter).padStart(2, '0'));
+    go('#all');
   }
 
   // ---------- ルーティング ----------
@@ -391,39 +429,45 @@
   function scrollRowIntoView() {
     var row = listEl.querySelector('.row[aria-current="true"]');
     if (!row) return;
-    var lr = listEl.getBoundingClientRect(), rr = row.getBoundingClientRect();
-    if (rr.top < lr.top + 60 || rr.bottom > lr.bottom) listEl.scrollTop += rr.top - lr.top - lr.height / 3;
+    var lr = listEl.getBoundingClientRect(), rr = row.getBoundingClientRect(), top = lr.top + topHeight();
+    if (rr.top < top + 8 || rr.bottom > lr.bottom) listEl.scrollTop += rr.top - top - (lr.bottom - top) / 3;
+  }
+  // 今見ている用語の部と章に合わせる
+  function focusChapter(n) {
+    var t = partOf(n), changed = state.tab !== t || !state.open[n];
+    state.tab = t; state.open[n] = true;
+    if (changed) saveListState();
   }
   function route() {
     var h = decodeURIComponent(location.hash.replace(/^#/, ''));
     var m = /^ch(\d{1,2})$/.exec(h);
+    var fromDetail = document.body.classList.contains('show-detail');
     if (!h || h === 'all') {
-      state.chapter = 'all';
-      renderNav(); renderList(); showListView();
+      renderList(); showListView(); revealTab();
       if (!state.current) renderWelcome();
       return;
     }
     if (m) {
       var n = Number(m[1]);
       if (n >= 1 && n <= 32) {
-        if (state.chapter !== n) listEl.scrollTop = 0;
-        state.chapter = n;
-        renderNav(); renderList(); showListView();
+        focusChapter(n);
+        renderList(); showListView(); revealTab();
+        if (!fromDetail && !state.query) scrollChapterIntoView(n);
         if (!state.current) renderWelcome();
         return;
       }
     }
     if (PLAN[h]) {
       state.current = h;
-      if (!state.query && state.chapter !== 'all' && state.chapter !== PLAN[h].chapter) { state.chapter = PLAN[h].chapter; listEl.scrollTop = 0; }
-      renderNav(); renderList();
+      focusChapter(PLAN[h].chapter);
+      renderList(); revealTab();
       if (isWritten(h)) { renderTerm(h); save('jd-last', h); } else renderPending(h);
       showDetailView();
       scrollRowIntoView();
       document.title = PLAN[h].title + '｜準1級 用語辞典';
       return;
     }
-    renderNav(); renderList(); renderWelcome(); showListView();
+    renderList(); renderWelcome(); showListView();
   }
   window.addEventListener('hashchange', route);
 
@@ -432,10 +476,11 @@
   qEl.addEventListener('input', function () {
     clearTimeout(timer);
     timer = setTimeout(function () {
+      var was = state.query;
       state.query = qEl.value.trim();
       renderList();
-      listEl.scrollTop = 0;
-      if (state.query) showListView();
+      if (state.query) { listEl.scrollTop = 0; showListView(); }
+      else if (was) { revealTab(); listEl.scrollTop = 0; scrollRowIntoView(); }
     }, 100);
   });
   document.addEventListener('keydown', function (e) {
@@ -443,8 +488,7 @@
     var typing = tag === 'input' || tag === 'textarea' || e.target.isContentEditable;
     if (e.key === '/' && !typing && !e.metaKey && !e.ctrlKey) { e.preventDefault(); qEl.focus(); qEl.select(); }
     else if (e.key === 'Escape') {
-      if (document.body.classList.contains('nav-open')) { closeNav(); return; }
-      if (qEl.value || document.activeElement === qEl) { qEl.value = ''; state.query = ''; renderList(); qEl.blur(); }
+      if (qEl.value || document.activeElement === qEl) { qEl.value = ''; state.query = ''; renderList(); revealTab(); scrollRowIntoView(); qEl.blur(); }
     }
   });
 
