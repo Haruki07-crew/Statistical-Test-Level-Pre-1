@@ -194,11 +194,11 @@ try {
   check('公式まとめ', await ev(`!!document.querySelector('.formulas')`));
   // 幅ごとの崩れ
   for (const [w, h] of [[375, 780], [768, 1000], [1280, 860]]) {
-    for (const hash of ['#all', '#gamma-distribution', '#quiz', '#stats', '#review', '#formulas', '#cards']) {
+    for (const hash of ['#home', '#all', '#gamma-distribution', '#quiz', '#stats', '#review', '#formulas', '#cards']) {
       await open(hash, w, h);
       const ov = await overflow();
       check(`${w}px ${hash} 横にはみ出さない`, !ov, ov);
-      if (['#gamma-distribution', '#quiz', '#all', '#stats'].includes(hash)) await shot(`${hash.slice(1)}-${w}`);
+      if (['#home', '#gamma-distribution', '#quiz', '#all', '#stats'].includes(hash)) await shot(`${hash.slice(1)}-${w}`);
     }
   }
   // スマホ：一覧 → 解説 → 戻る でスクロール位置を保つ
@@ -217,9 +217,19 @@ try {
   await ev(`localStorage.clear(); localStorage.setItem('jd-theme', 'light')`);
   await open('', 1280, 900);
   check('ホームに今日の1問', await ev(`!!document.querySelector('.home-q .qcard')`));
+  check('ホームに学習の順番（6ステップ）と使い方', await ev(`document.querySelectorAll('.roadmap .step').length === 6 && document.querySelectorAll('.howto details').length >= 5`));
+  check('開いたときはホーム', await ev(`document.body.dataset.mode === 'home'`));
   await shot('home-light-1280');
   await open('#quiz', 375, 780);
   await shot('quiz-light-375');
+  await open('#home', 375, 780);
+  await shot('home-light-375');
+  await open('#home', 1280, 900);
+  await ev(`document.querySelector('[data-step-quiz="0"]').click()`); await sleep(600);
+  check('ホームのステップから問題演習', await ev(`location.hash === '#quiz' && !!document.querySelector('.sess-card .qcard')`), await ev(`document.querySelector('.sess-head b')?.textContent`));
+  await open('#home', 1280, 900);
+  await ev(`document.querySelector('[data-step-cards="1"]').click()`); await sleep(600);
+  check('ホームのステップから用語カード', await ev(`location.hash === '#cards' && !!document.querySelector('.fc-title')`));
   check('ページのエラーなし', errors.length === 0, errors.slice(0, 3).join(' | '));
 } catch (e) {
   console.log('NG  例外: ' + e.message);

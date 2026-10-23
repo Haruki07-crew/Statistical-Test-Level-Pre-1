@@ -447,46 +447,171 @@
   }
 
   // ---------- ホーム ----------
-  function renderWelcome() {
+  // 初学者向けの学習の順番（部をまたいで、土台から積み上げる順）
+  var ROADMAP = [
+    { t: '確率と分布の土台', chs: [1, 2, 3, 4, 5, 6],
+      why: 'すべての分野の土台です。条件付き確率、期待値と分散の計算、モーメント母関数、主要な分布（二項・ポアソン・正規・カイ二乗・t・F）の性質を、手を動かして確実にします。',
+      keys: ['conditional-probability', 'bayes-theorem', 'expectation-variance-properties', 'moment-generating-function', 'change-of-variables', 'binomial-distribution', 'poisson-distribution', 'normal-distribution', 'chi-squared-distribution', 't-distribution', 'f-distribution'] },
+    { t: '推定と検定の骨格', chs: [7, 8, 9, 10, 11],
+      why: '中心極限定理から始めて、最尤法・フィッシャー情報量、信頼区間、検定の考え方（p値・検出力・ネイマン・ピアソン）へ進みます。準1級の計算問題の多くがこの型です。',
+      keys: ['central-limit-theorem', 'delta-method', 'maximum-likelihood-estimator', 'fisher-information', 'confidence-interval', 'p-value', 'power-function', 'neyman-pearson-lemma', 'likelihood-ratio-test', 'two-sample-t-test'] },
+    { t: 'いろいろな検定', chs: [12, 13],
+      why: '比率・適合度・独立性のカイ二乗検定と、順位を使うノンパラメトリック検定です。どの場面でどの検定を使うかを整理します。',
+      keys: ['proportion-test', 'goodness-of-fit-test', 'independence-test', 'wilcoxon-rank-sum-test', 'kruskal-wallis-test', 'spearman-rank-correlation'] },
+    { t: '回帰と実験計画・標本調査', chs: [16, 17, 18, 19, 20, 21],
+      why: '重回帰の推定と診断、ロジスティック回帰、分散分析、標本調査です。出力表を読み取る問題が多いので、決定係数・t値・F値の意味を押さえます。',
+      keys: ['least-squares-method', 'coefficient-of-determination', 'regression-coefficient-t-test', 'multicollinearity', 'cooks-distance', 'logistic-regression', 'one-way-anova', 'stratified-sampling'] },
+    { t: '多変量解析', chs: [22, 23, 24, 25, 26],
+      why: '主成分分析・判別分析・クラスター分析・因子分析です。固有値と寄与率、マハラノビス距離など、行列の計算の考え方が共通しています。',
+      keys: ['principal-component-analysis', 'contribution-ratio', 'linear-discriminant-analysis', 'mahalanobis-distance', 'hierarchical-clustering', 'k-means-method', 'factor-analysis-model'] },
+    { t: '発展分野', chs: [14, 15, 27, 28, 29, 30, 31, 32, 33],
+      why: 'マルコフ連鎖・確率過程、時系列、分割表、欠測データ、モデル選択、ベイズ法、シミュレーション、因果推論です。土台ができてから、章ごとに取り組みます。',
+      keys: ['markov-chain', 'poisson-process', 'ar-model', 'odds-ratio-interval', 'em-algorithm', 'aic', 'conjugate-prior', 'mcmc', 'bootstrap', 'backdoor-criterion'] }
+  ];
+  function stepTerms(st) { return ORDER.filter(function (id) { return st.chs.indexOf(PLAN[id].chapter) >= 0; }); }
+  function stepStats(st) {
+    var ids = stepTerms(st), aIds = ids.filter(function (id) { return PLAN[id].importance === 'A'; });
+    var memoA = aIds.filter(function (id) { return DB.memo[id]; }).length, n = 0, c = 0;
+    QS.forEach(function (q) { if (PLAN[q.term] && st.chs.indexOf(PLAN[q.term].chapter) >= 0 && DB.ans[q.id]) { n += DB.ans[q.id].n; c += DB.ans[q.id].c; } });
+    return { aTotal: aIds.length, aMemo: memoA, n: n, c: c, total: ids.length };
+  }
+  // 次に読むとよい用語：ロードマップ順に、まだ覚えていない・まだ開いていない重要度Aの用語
+  function nextTerms(k) {
+    var seen = {}, out = [];
+    DB.recent.forEach(function (id) { seen[id] = true; });
+    ROADMAP.some(function (st) {
+      stepTerms(st).some(function (id) {
+        if (PLAN[id].importance === 'A' && isWritten(id) && !DB.memo[id] && !seen[id]) out.push(id);
+        return out.length >= k;
+      });
+      return out.length >= k;
+    });
+    return out;
+  }
+  function chsLabel(chs) {
+    var r = [], i = 0;
+    while (i < chs.length) { var j = i; while (j + 1 < chs.length && chs[j + 1] === chs[j] + 1) j++; r.push(i === j ? chs[i] : chs[i] + '〜' + chs[j]); i = j + 1; }
+    return '第' + r.join('・') + '章';
+  }
+  function startStepQuiz(i) {
+    var st = ROADMAP[i], pool = shuffle(QS.filter(function (q) { return PLAN[q.term] && st.chs.indexOf(PLAN[q.term].chapter) >= 0 && PLAN[q.term].importance === 'A'; }));
+    if (!pool.length) return;
+    setMode('quiz');
+    startSession('quiz', pool.slice(0, 5), 'ステップ' + (i + 1) + '：' + st.t);
+    if (location.hash !== '#quiz') { ignoreNextRoute = true; location.hash = '#quiz'; }
+  }
+  function startStepCards(i) {
+    var st = ROADMAP[i], pool = shuffle(stepTerms(st).filter(function (id) { return isWritten(id) && PLAN[id].importance === 'A' && !DB.memo[id]; }));
+    if (!pool.length) pool = shuffle(stepTerms(st).filter(isWritten));
+    state.cards = { list: pool.slice(0, 10), i: 0, known: 0, again: [] };
+    location.hash === '#cards' ? renderCards() : go('#cards');
+  }
+  var ignoreNextRoute = false;
+
+  function renderHome() {
     clearDetail();
-    var tot = ORDER.length, wr = ORDER.filter(isWritten).length, vf = ORDER.filter(function (id) { return PLAN[id].status === 'verified'; }).length;
-    var last = DB.recent.filter(isWritten)[0];
-    var due = dueList().length, st = streakDays();
-    var h = '<div class="article welcome">' +
-      '<h1>統計検定準1級 用語辞典</h1>' +
-      '<div class="home-cards">' +
-      (last ? '<button type="button" class="home-card" data-go="' + last + '"><small>続きから読む</small><b>' + esc(PLAN[last].title) + '</b></button>' : '') +
-      '<a class="home-card" href="#review"><small>今日の復習</small><b>' + due + ' 問</b></a>' +
-      '<a class="home-card" href="#quiz"><small>問題演習</small><b>' + QS.length + ' 問から出題</b></a>' +
-      '<a class="home-card" href="#stats"><small>連続学習</small><b>' + st + ' 日</b></a>' +
-      (examDays() !== null ? '<a class="home-card" href="#stats"><small>試験まで</small><b>' + (examDays() >= 0 ? 'あと ' + examDays() + ' 日' : '終了') + '</b></a>' : '') +
-      '<a class="home-card" href="#cards"><small>用語カード</small><b>めくって覚える</b></a>' +
-      '<button type="button" class="home-card" data-random><small>ランダムに1語</small><b>どれか開く</b></button>' +
-      '<a class="home-card" href="#formulas"><small>公式まとめ</small><b>分布・検定・推定</b></a>' +
+    var last = DB.recent.filter(isWritten)[0], due = dueList().length, st = streakDays();
+    var today = DB.days[todayKey()] || { a: 0, c: 0, v: 0 };
+    var fresh = !DB.recent.length && !Object.keys(DB.ans).length && !Object.keys(DB.memo).length;
+    var ex = examDays();
+    var h = '<div class="article home">' +
+      '<header class="home-hero"><p class="home-kicker">統計検定準1級</p><h1>用語辞典と問題集</h1>' +
+      '<p class="home-lead">『統計学実践ワークブック』（増補版）の全33章に沿って、' + ORDER.length + ' 語の解説と ' + QS.length + ' 問の問題をまとめています。読む・解く・復習するを、毎日少しずつ。</p></header>';
+    // 今日の状況
+    h += '<div class="home-stats">' +
+      '<a href="#review" class="hs"><b>' + due + '</b><span>今日の復習</span></a>' +
+      '<a href="#stats" class="hs"><b>' + today.a + '</b><span>今日の回答</span></a>' +
+      '<a href="#stats" class="hs"><b>' + st + '<small>日</small></b><span>連続学習</span></a>' +
+      (ex !== null ? '<a href="#stats" class="hs"><b>' + (ex >= 0 ? ex + '<small>日</small>' : '—') + '</b><span>試験まで</span></a>'
+        : '<a href="#stats" class="hs hs-set"><b>＋</b><span>試験日を設定</span></a>') +
       '</div>';
-    // 今日の1問：日付で決まる1問（復習待ちがあればその先頭）
+    // 今日のメニュー
+    var nx = nextTerms(3);
+    h += '<section class="home-sec"><h2 class="home-h">今日のメニュー<small>15〜30分の目安</small></h2><ol class="menu">' +
+      '<li><span class="menu-n">1</span><div><b>復習する</b><p>' + (due ? '期限が来た問題が <b>' + due + '</b> 問あります。先に片付けると記憶に残ります。' : '今日の復習はありません。') + '</p>' +
+      (due ? '<a class="q-btn primary" href="#review">復習を始める</a>' : '') + '</div></li>' +
+      '<li><span class="menu-n">2</span><div><b>用語を読む</b><p>' + (last && !fresh ? '続きから、または学習の順番で次の用語を読みます。' : 'まずは下の「学習の順番」のステップ1から。読んだら「覚えた」にチェックします。') + '</p><div class="related-list">' +
+      (last && !fresh ? '<button type="button" class="rel-btn strong" data-go="' + last + '">続きから：' + esc(PLAN[last].title) + '</button>' : '') +
+      nx.map(function (id) { return termBtn(id); }).join('') + '</div></div></li>' +
+      '<li><span class="menu-n">3</span><div><b>問題を解く</b><p>読んだ範囲の問題を5問。間違えた問題は自動で「復習」に入ります。</p><a class="q-btn" href="#quiz">問題演習へ</a> <a class="q-btn ghost" href="#cards">用語カードで覚える</a></div></li>' +
+      '</ol></section>';
+    // 学習の順番
+    h += '<section class="home-sec"><h2 class="home-h">はじめての人へ：学習の順番</h2>' +
+      '<p class="screen-sub">章の番号順でなくても大丈夫です。土台から積み上げる順に、6つのステップに分けました。各ステップはまず<b>重要度A</b>の用語だけを一通り読み、問題を解いてから、2周目で B・C に進むのがおすすめです。</p><ol class="roadmap">';
+    ROADMAP.forEach(function (stp, i) {
+      var ss = stepStats(stp), pct = ss.aTotal ? Math.round(100 * ss.aMemo / ss.aTotal) : 0;
+      h += '<li class="step"><div class="step-head"><span class="step-n">' + (i + 1) + '</span><div><b>' + esc(stp.t) + '</b><small>' + chsLabel(stp.chs) + '・' + ss.total + '語</small></div></div>' +
+        '<p>' + esc(stp.why) + '</p>' +
+        '<div class="step-prog"><span class="bar wide"><i style="width:' + pct + '%"></i></span><span>重要度Aを覚えた ' + ss.aMemo + '/' + ss.aTotal + (ss.n ? '・正答率 ' + Math.round(100 * ss.c / ss.n) + '%' : '') + '</span></div>' +
+        '<p class="step-keys-h">まず読む用語</p><div class="related-list">' + stp.keys.filter(function (id) { return PLAN[id]; }).map(function (id) {
+          return '<button type="button" class="rel-btn' + (DB.memo[id] ? ' done' : '') + '" data-go="' + id + '"' + (isWritten(id) ? '' : ' disabled') + '>' + (DB.memo[id] ? '✓ ' : '') + esc(PLAN[id].title) + '</button>';
+        }).join('') + '</div>' +
+        '<div class="q-row"><button type="button" class="q-btn" data-step-cards="' + i + '">用語カード</button><button type="button" class="q-btn" data-step-quiz="' + i + '">重要度Aの問題を5問</button>' +
+        '<button type="button" class="q-btn ghost" data-goch="' + stp.chs[0] + '">一覧で見る</button></div></li>';
+    });
+    h += '</ol></section>';
+    // 勉強のコツ
+    h += '<section class="home-sec"><h2 class="home-h">勉強のコツ</h2><ul class="tips">' +
+      '<li><b>用語ページは上から順に。</b>「一言でいうと」で全体像をつかみ、「定義・数式」「数式の読み解き」で式の意味を確かめ、「具体例」の数値は自分でも電卓で計算します。</li>' +
+      '<li><b>読んだらすぐ解く。</b>ページの最後の「この用語の問題」を解き、間違えたら「よくある間違い」を読み直します。</li>' +
+      '<li><b>公式は導けるように。</b>「公式まとめ」で一覧し、期待値・分散・母関数は導出問題で手を動かして確かめます。</li>' +
+      '<li><b>毎日少しずつ。</b>復習は 1→3→7→14→30 日と間隔が空くので、毎日「今日の復習」を片付けるのがいちばん効きます。</li>' +
+      '<li><b>試験が近づいたら。</b>問題演習の「模擬試験モード」（1問3分）で時間を計り、「苦手」の範囲を集中して解きます。</li>' +
+      '<li><b>試験の形式・日程・出題範囲</b>は <a href="https://www.toukei-kentei.jp/" target="_blank" rel="noopener">統計検定の公式サイト</a> で最新の情報を確認してください（2027年から出題範囲表が改訂され、「統計的因果推論」が加わります）。</li>' +
+      '</ul></section>';
+    // 使い方
+    h += '<section class="home-sec"><h2 class="home-h">使い方</h2><div class="howto">' +
+      '<details><summary>辞書：用語を探す・読む</summary><ul>' +
+      '<li>「辞書」の一覧で、上のタブから部を選び、章の見出しを押すと用語が開きます。「すべて開く／閉じる」もあります。</li>' +
+      '<li>上の検索欄に、用語名・読み（ひらがな）・英語名・別名を入れると全章から探せます（「ガウス」「がんま」「MGF」など）。検索欄を押すと最近の検索語が出ます。</li>' +
+      '<li>用語ページでは「覚えた」チェック、★ブックマーク、自分のメモ（自動保存）が使えます。上の節ボタンで見たい節へ飛べます。</li>' +
+      '<li>PC・iPad では、左上のボタンで左の一覧をたたんで解説を広く読めます。</li>' +
+      '<li>重要度の印：' + impMark('A') + ' 必須・頻出　' + impMark('B') + ' 重要　' + impMark('C') + ' 補足</li></ul></details>' +
+      '<details><summary>問題：解く・復習する</summary><ul>' +
+      '<li>「問題」で出題範囲（全体・部・章・苦手・未回答・ブックマーク）と問題数を選びます。形式は4択・数値入力・正誤・導出（途中式を1つずつ見て自己採点）。</li>' +
+      '<li>数値入力は小数・分数（1/3）・%で答えられます。問題文の丸め方（四捨五入の桁）に合わせて入力します。</li>' +
+      '<li>答えると「復習」の予定に入ります。間違えた問題はすぐ、正解した問題は 1→3→7→14→30 日後に出ます。</li>' +
+      '<li>「模擬試験モード」をオンにすると、1問3分の制限時間がつきます。問題の★で、あとで解き直したい問題を集められます。</li></ul></details>' +
+      '<details><summary>用語カード・公式まとめ</summary><ul>' +
+      '<li>用語カードは用語名を見て意味を思い出し、めくって「一言でいうと」を確かめます。「覚えた」を押すと覚えたチェックが付きます。</li>' +
+      '<li>「公式まとめ」には各分布の期待値・分散・母関数の表と、分野ごとの公式があります。公式から用語ページへ移れます。</li></ul></details>' +
+      '<details><summary>記録・設定・データの移し方</summary><ul>' +
+      '<li>「記録」で、章ごとの覚えた率と正答率、直近14日の回答数、苦手な用語、最近間違えた問題を見られます。</li>' +
+      '<li>文字サイズ（小・中・大）と試験日は「記録」の下で設定します。右上のボタンでライト／ダークを切り替えます。</li>' +
+      '<li>記録はこの端末のブラウザに保存されます。iPad とスマホの間で移すときは「記録」の「ファイルに書き出す」→別の端末で「ファイルから読み込む」（統合か上書きを選べます）。</li></ul></details>' +
+      '<details><summary>ホーム画面に追加・オフライン</summary><ul>' +
+      '<li>iPhone・iPad：Safari で開き、共有ボタン →「ホーム画面に追加」。アプリのように全画面で開けます。</li>' +
+      '<li>Android：Chrome のメニュー →「ホーム画面に追加」。</li>' +
+      '<li>一度ネットにつないで開くと、次からはオフラインでも開けます（公開ページ https://haruki07-crew.github.io/Statistical-Test-Level-Pre-1/ から開いた場合）。</li></ul></details>' +
+      '<details><summary>キーボード操作（PC）</summary><ul>' +
+      '<li><kbd>/</kbd> 検索、<kbd>Esc</kbd> 検索を消す、<kbd>j</kbd>／<kbd>k</kbd> 次・前の用語、<kbd>b</kbd> ブックマーク、<kbd>\\</kbd> 左の一覧をたたむ。</li>' +
+      '<li>問題演習中：<kbd>1</kbd>〜<kbd>4</kbd> で選択、<kbd>Enter</kbd> で次へ、<kbd>h</kbd> でヒント。</li></ul></details>' +
+      '</div></section>';
+    // 今日の1問・最近・ブックマーク
     var dq = dueList()[0];
     if (!dq && QS.length) { var seed = Number(todayKey().replace(/-/g, '')); dq = QS[(seed * 2654435761 % 4294967296) % QS.length]; }
-    if (dq) h += '<h2 class="home-h">今日の1問</h2><div class="home-q"></div>';
+    if (dq) h += '<section class="home-sec"><h2 class="home-h">今日の1問</h2><div class="home-q"></div></section>';
     var recent = DB.recent.filter(isWritten).slice(0, 8);
-    if (recent.length) h += '<h2 class="home-h">最近見た用語</h2><div class="related-list">' + recent.map(function (id) { return termBtn(id); }).join('') + '</div>';
+    if (recent.length) h += '<section class="home-sec"><h2 class="home-h">最近見た用語</h2><div class="related-list">' + recent.map(function (id) { return termBtn(id); }).join('') + '</div></section>';
     var bms = Object.keys(DB.bm).filter(isWritten).sort(function (a, b) { return DB.bm[b] - DB.bm[a]; });
-    if (bms.length) h += '<h2 class="home-h">ブックマーク</h2><div class="related-list">' + bms.slice(0, 30).map(function (id) { return termBtn(id); }).join('') + '</div>';
-    h += '<p class="home-note">『統計学実践ワークブック』（増補版）の全33章の章立てに沿って、用語の定義・数式・具体例・試験のポイントをまとめています。解説と問題はすべてオリジナルです。' +
-      '作成済み ' + wr + ' 語 ／ 予定 ' + tot + ' 語（うち数値検算済み ' + vf + ' 語）、検算済みの問題 ' + QS.length + ' 問。</p>' +
-      '<h2 class="home-h">使い方</h2>' +
-      '<ul class="home-list"><li>一覧の上のタブで部を選び、章の見出しを押すと用語が開きます。上の検索欄に用語・読み・英語名を入れると全章から探せます（「ガウス」「がんま」「MGF」など）。</li>' +
-      '<li>用語ページで「覚えた」チェック・★ブックマーク・自分のメモを付けられます。ページの最後にその用語の問題があります。</li>' +
-      '<li>「問題」で範囲と問題数を選んで解き、「復習」で間違えた問題や時間が経った問題を解き直します（正解が続くほど 1→3→7→14→30 日と間隔が空きます）。</li>' +
-      '<li>PC・iPad では、左上のボタン（PCは <kbd>\\</kbd> キーでも）で左の一覧をたたんで、解説を広く読めます。</li>' +
-      '<li>PCでは <kbd>/</kbd> で検索、<kbd>j</kbd>／<kbd>k</kbd> で次・前の用語、<kbd>b</kbd> でブックマーク、<kbd>Esc</kbd> で検索の解除。問題演習では <kbd>1</kbd>〜<kbd>4</kbd> で選択、<kbd>Enter</kbd> で次へ、<kbd>h</kbd> でヒント。</li>' +
-      '<li>「記録」で文字サイズの変更と、学習データのファイルへの書き出し・読み込み（iPad とスマホの間で移す）ができます。</li></ul>' +
-      '<h2 class="home-h">重要度の印</h2>' +
-      '<div class="legend"><span>' + impMark('A') + '必須・頻出</span><span>' + impMark('B') + '重要</span><span>' + impMark('C') + '補足</span></div>' +
-      '</div>';
+    if (bms.length) h += '<section class="home-sec"><h2 class="home-h">ブックマーク</h2><div class="related-list">' + bms.slice(0, 30).map(function (id) { return termBtn(id); }).join('') + '</div></section>';
+    h += '<p class="home-note">解説と問題はすべてオリジナルです。数値は Python で検算済み（用語 ' + ORDER.filter(function (id) { return PLAN[id].status === 'verified'; }).length + ' 語・問題 ' + QS.length + ' 問）。<button type="button" class="f-link" data-random>ランダムに1語を開く</button></p></div>';
     detailEl.innerHTML = h;
     var hq = detailEl.querySelector('.home-q');
     if (hq) hq.appendChild(qCard(dq, { termLink: true, retry: true }));
+    detailEl.scrollTop = 0;
+  }
+
+  // 辞書で用語を選んでいないときの解説欄
+  function renderWelcome() {
+    clearDetail();
+    var last = DB.recent.filter(isWritten)[0];
+    detailEl.innerHTML = '<div class="article welcome"><h1>用語を選んでください</h1>' +
+      '<p class="screen-sub">左の一覧（スマホでは一覧画面）で部のタブと章を選ぶか、上の検索欄で探します。</p><div class="home-cards">' +
+      (last ? '<button type="button" class="home-card" data-go="' + last + '"><small>続きから読む</small><b>' + esc(PLAN[last].title) + '</b></button>' : '') +
+      '<a class="home-card" href="#home"><small>ホーム</small><b>使い方・学習の順番</b></a>' +
+      '<a class="home-card" href="#formulas"><small>公式まとめ</small><b>分布・検定・推定</b></a>' +
+      '<button type="button" class="home-card" data-random><small>ランダムに1語</small><b>どれか開く</b></button></div></div>';
     detailEl.scrollTop = 0;
   }
 
@@ -1154,6 +1279,8 @@
       if (s) s.scrollIntoView({ block: 'start', behavior: 'smooth' });
       return;
     }
+    if (b.dataset.stepQuiz !== undefined) { startStepQuiz(Number(b.dataset.stepQuiz)); return; }
+    if (b.dataset.stepCards !== undefined) { startStepCards(Number(b.dataset.stepCards)); return; }
     if (b.hasAttribute('data-random')) { var w = ORDER.filter(isWritten); go('#' + w[Math.floor(Math.random() * w.length)]); return; }
     if (b.classList.contains('bm-toggle') && state.current) { toggleBm(state.current); return; }
     if (b.classList.contains('memo-toggle') && state.current) { toggleMemo(state.current); return; }
@@ -1261,6 +1388,12 @@
     var h = decodeURIComponent(location.hash.replace(/^#/, ''));
     var m = /^ch(\d{1,2})$/.exec(h);
     var fromDetail = document.body.classList.contains('show-detail');
+    if (ignoreNextRoute && h === 'quiz') { ignoreNextRoute = false; return; }
+    if (!h || h === 'home') {
+      setMode('home'); renderHome();
+      document.title = '準1級 用語辞典';
+      return;
+    }
     if (h === 'cards') {
       setMode('quiz'); renderCards();
       document.title = '用語カード｜準1級 用語辞典';
@@ -1420,13 +1553,7 @@
   // ---------- 開始 ----------
   document.documentElement.setAttribute('data-font', DB.font);
   setCollapsed(!!load('jd-list-collapsed', false));
-  if (!location.hash) {
-    var last = DB.recent.filter(isWritten)[0];
-    if (last && window.innerWidth >= 600) {
-      state.current = last;
-      history.replaceState(null, '', '#' + last);
-    }
-  }
+  // 開いたときはホームから（「続きから読む」はホームにある）
   updateBadge();
   route();
 })();
