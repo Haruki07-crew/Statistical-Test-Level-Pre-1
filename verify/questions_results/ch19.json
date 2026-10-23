@@ -1,0 +1,118 @@
+{
+ "q19-bias-in-penalized-estimation-1": {
+  "hash": "7af6cabf04f06cf0",
+  "ok": true
+ },
+ "q19-elastic-net-1": {
+  "hash": "eee9291c7becd4df",
+  "ok": true
+ },
+ "q19-endogeneity-1": {
+  "hash": "c20d819467db06a0",
+  "ok": true
+ },
+ "q19-endogeneity-2": {
+  "hash": "e3d90e61f8f8e4cc",
+  "ok": true
+ },
+ "q19-generalized-least-squares-1": {
+  "hash": "033e2a96e51660c4",
+  "ok": true
+ },
+ "q19-generalized-least-squares-2": {
+  "hash": "31812d413e93eae3",
+  "ok": true
+ },
+ "q19-instrumental-variable-method-1": {
+  "hash": "7256ca3fb3384881",
+  "ok": true
+ },
+ "q19-instrumental-variable-method-2": {
+  "hash": "ecdbca6756ed5e26",
+  "ok": true
+ },
+ "q19-lasso-1": {
+  "hash": "50d59dbcc5009ad6",
+  "ok": true
+ },
+ "q19-lasso-2": {
+  "hash": "973441aee040fa82",
+  "ok": true
+ },
+ "q19-nonlinear-regression-1": {
+  "hash": "6af9d69c063e9214",
+  "ok": true
+ },
+ "q19-nonlinear-regression-2": {
+  "hash": "d21747c01bbcf943",
+  "ok": true
+ },
+ "q19-omitted-variable-bias-1": {
+  "hash": "ce64635465e6cece",
+  "ok": true
+ },
+ "q19-omitted-variable-bias-2": {
+  "hash": "4b52697d1d28479a",
+  "ok": true
+ },
+ "q19-polynomial-regression-1": {
+  "hash": "96a2fb45369e4d84",
+  "ok": true
+ },
+ "q19-polynomial-regression-2": {
+  "hash": "9748284265674f0e",
+  "ok": true
+ },
+ "q19-principal-component-regression-1": {
+  "hash": "f57bcd9593b0368a",
+  "ok": true
+ },
+ "q19-quantile-regression-1": {
+  "hash": "9f44241c8cdd1dfb",
+  "ok": true
+ },
+ "q19-quantile-regression-2": {
+  "hash": "012373ccbf289f81",
+  "ok": true
+ },
+ "q19-regularization-1": {
+  "hash": "2d5a199b086171fb",
+  "ok": true
+ },
+ "q19-regularization-2": {
+  "hash": "bd6cda8733853bf7",
+  "ok": true
+ },
+ "q19-ridge-regression-1": {
+  "hash": "590e022150b42c92",
+  "ok": true
+ },
+ "q19-ridge-regression-2": {
+  "hash": "e97d972af3f4739f",
+  "ok": true
+ },
+ "q19-spline-regression-1": {
+  "hash": "0603096bbfe30d87",
+  "ok": true
+ },
+ "q19-two-stage-least-squares-1": {
+  "hash": "2c7cb72c334a02df",
+  "ok": true
+ },
+ "q19-variable-selection-1": {
+  "hash": "7283ad353dd3e681",
+  "ok": true
+ },
+ "q19-variable-selection-2": {
+  "hash": "905c28357f480918",
+  "ok": true
+ },
+ "q19-weighted-least-squares-1": {
+  "hash": "d00a9d9ee0b2d4c0",
+  "ok": true
+ },
+ "q19-weighted-least-squares-2": {
+  "hash": "ac53c46b549ba556",
+  "ok": true
+ }
+}

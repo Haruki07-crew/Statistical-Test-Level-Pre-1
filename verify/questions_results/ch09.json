@@ -1,0 +1,126 @@
+{
+ "q09-ci-mean-known-variance-1": {
+  "hash": "26e0c94e827b503f",
+  "ok": true
+ },
+ "q09-ci-mean-known-variance-2": {
+  "hash": "1b7fd5112cf23d98",
+  "ok": true
+ },
+ "q09-ci-mean-unknown-variance-1": {
+  "hash": "3b594a1315d14592",
+  "ok": true
+ },
+ "q09-ci-mean-unknown-variance-2": {
+  "hash": "714eaa312645f169",
+  "ok": true
+ },
+ "q09-ci-paired-difference-1": {
+  "hash": "ed2daff43758ab20",
+  "ok": true
+ },
+ "q09-ci-proportion-1": {
+  "hash": "de1c14eee1ac55e6",
+  "ok": true
+ },
+ "q09-ci-proportion-2": {
+  "hash": "88ee6d138e583b41",
+  "ok": true
+ },
+ "q09-ci-two-sample-mean-difference-1": {
+  "hash": "a1c8616dab3860be",
+  "ok": true
+ },
+ "q09-ci-two-sample-mean-difference-2": {
+  "hash": "4db16906fa412e32",
+  "ok": true
+ },
+ "q09-ci-two-sample-proportion-1": {
+  "hash": "f84ab3810f1289ed",
+  "ok": true
+ },
+ "q09-ci-variance-1": {
+  "hash": "d9dd2a9791bf0dab",
+  "ok": true
+ },
+ "q09-ci-variance-2": {
+  "hash": "6217af5243a620dd",
+  "ok": true
+ },
+ "q09-ci-variance-3": {
+  "hash": "ada5263301720fb5",
+  "ok": true
+ },
+ "q09-ci-variance-ratio-1": {
+  "hash": "3974d03524c136e1",
+  "ok": true
+ },
+ "q09-ci-variance-ratio-2": {
+  "hash": "ef226f51c7b1a138",
+  "ok": true
+ },
+ "q09-clopper-pearson-interval-1": {
+  "hash": "3cd18614a0108163",
+  "ok": true
+ },
+ "q09-confidence-coefficient-1": {
+  "hash": "69c448b3aade4358",
+  "ok": true
+ },
+ "q09-confidence-coefficient-2": {
+  "hash": "94104cc26f0079bb",
+  "ok": true
+ },
+ "q09-confidence-interval-1": {
+  "hash": "06d492b699f79d3c",
+  "ok": true
+ },
+ "q09-confidence-interval-2": {
+  "hash": "569bf984c56300ef",
+  "ok": true
+ },
+ "q09-confidence-interval-test-duality-1": {
+  "hash": "324c0f1d9857cb35",
+  "ok": true
+ },
+ "q09-likelihood-based-confidence-interval-1": {
+  "hash": "661ef93e69d229d0",
+  "ok": true
+ },
+ "q09-pivotal-quantity-1": {
+  "hash": "56972b873ec78f32",
+  "ok": true
+ },
+ "q09-pivotal-quantity-2": {
+  "hash": "a72a2f4d16709ec8",
+  "ok": true
+ },
+ "q09-required-sample-size-1": {
+  "hash": "0e1362316a1e1421",
+  "ok": true
+ },
+ "q09-required-sample-size-2": {
+  "hash": "81db7be5859f9097",
+  "ok": true
+ },
+ "q09-required-sample-size-3": {
+  "hash": "3b23b429ea9eb068",
+  "ok": true
+ },
+ "q09-wald-confidence-interval-1": {
+  "hash": "0d1dfa427d2d62e5",
+  "ok": true
+ },
+ "q09-wald-confidence-interval-2": {
+  "hash": "81f74967b284a50e",
+  "ok": true
+ },
+ "q09-wilson-interval-1": {
+  "hash": "e9783408cc6e2b66",
+  "ok": true
+ },
+ "q09-wilson-interval-2": {
+  "hash": "08fd97160f186710",
+  "ok": true
+ }
+}

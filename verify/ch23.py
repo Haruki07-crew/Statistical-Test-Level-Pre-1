@@ -606,3 +606,26 @@ check(T, "正規分布のナイーブベイズ = 対角共分散の二次判別�
 ok = sum(results)
 ng = len(results) - ok
 print(f"\n合計: OK {ok} / NG {ng}")
+
+# --- 重要度A への加筆: quadratic-discriminant-analysis ---
+T = "quadratic-discriminant-analysis"
+_f1 = stats.norm(0, 1).pdf; _f2 = stats.norm(2, 2).pdf
+check(T, "例2 P(G2|x=0)≈0.2327, P(G2|x=−3)≈0.6642", abs(_f2(0) / (_f1(0) + _f2(0)) - 0.2327) < 5e-5 and abs(_f2(-3) / (_f1(-3) + _f2(-3)) - 0.6642) < 5e-5,
+      (round(_f2(0) / (_f1(0) + _f2(0)), 5), round(_f2(-3) / (_f1(-3) + _f2(-3)), 5)))
+_rt = np.sort(np.roots([3, 4, -4 - 8 * math.log(2) + 8 * math.log(0.25)]))
+_post = lambda xx: 0.2 * _f2(xx) / (0.8 * _f1(xx) + 0.2 * _f2(xx))
+check(T, "例2 π2=0.2 の境界 ≈−3.373, 2.039（事後確率0.5と一致）", abs(_rt[0] + 3.373) < 5e-4 and abs(_rt[1] - 2.039) < 5e-4 and all(abs(_post(r_) - 0.5) < 1e-9 for r_ in _rt), np.round(_rt, 4))
+_c = 8 * math.log(4) / 3
+check(T, "例3 r²>8log4/3≈3.697, r>1.923", abs(_c - 3.697) < 5e-4 and abs(math.sqrt(_c) - 1.923) < 5e-4, round(_c, 5))
+_xx = rng.standard_normal((20, 2)) * 2
+_g = lambda X, S: -0.5 * np.einsum("ij,jk,ik->i", X, np.linalg.inv(S), X) - 0.5 * math.log(np.linalg.det(S))
+check(T, "例3 g2−g1 = 3r²/8 − log4（行列で計算）", np.allclose(_g(_xx, 4 * np.eye(2)) - _g(_xx, np.eye(2)), 3 * (_xx**2).sum(1) / 8 - math.log(4)), "")
+_e1 = stats.chi2.sf(_c, 2); _e2 = stats.chi2.cdf(_c / 4, 2)
+check(T, "例3 誤判別率 0.1575, 0.3700, 平均≈0.264", abs(_e1 - 0.1575) < 5e-5 and abs(_e2 - 0.3700) < 5e-5 and abs((_e1 + _e2) / 2 - 0.264) < 5e-4 and abs(_e1 - math.exp(-_c / 2)) < 1e-12, (round(_e1, 5), round(_e2, 5)))
+_X1 = rng.standard_normal((500_000, 2)); _X2 = 2 * rng.standard_normal((500_000, 2))
+check(T, "例3 シミュ誤判別率（許容0.002）", abs(((_X1**2).sum(1) > _c).mean() - 0.1575) < 0.002 and abs(((_X2**2).sum(1) < _c).mean() - 0.37) < 0.002, "")
+check(T, "パラメータ数 p=10,K=3: 55 と 165", 10 * 11 // 2 == 55 and 3 * 55 == 165, "")
+
+ok = sum(results)
+ng = len(results) - ok
+print(f"\n合計（重要度A への加筆を含む）: OK {ok} / NG {ng}")

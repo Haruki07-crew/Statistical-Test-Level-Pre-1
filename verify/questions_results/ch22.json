@@ -1,0 +1,122 @@
+{
+ "q22-biplot-1": {
+  "hash": "c8d2f796b64d1975",
+  "ok": true
+ },
+ "q22-contribution-ratio-1": {
+  "hash": "80afe117795c7e50",
+  "ok": true
+ },
+ "q22-contribution-ratio-2": {
+  "hash": "c5111f2f41e00125",
+  "ok": true
+ },
+ "q22-contribution-ratio-3": {
+  "hash": "6551b1940358836d",
+  "ok": true
+ },
+ "q22-cumulative-contribution-ratio-1": {
+  "hash": "2a24524e815a8ddd",
+  "ok": true
+ },
+ "q22-cumulative-contribution-ratio-2": {
+  "hash": "b845c44e63565a72",
+  "ok": true
+ },
+ "q22-cumulative-contribution-ratio-3": {
+  "hash": "c4ce8a4b02b0a351",
+  "ok": true
+ },
+ "q22-eigenvalue-and-eigenvector-1": {
+  "hash": "cd741f02ab912cf6",
+  "ok": true
+ },
+ "q22-eigenvalue-and-eigenvector-2": {
+  "hash": "c531da7dd7227f61",
+  "ok": true
+ },
+ "q22-eigenvalue-and-eigenvector-3": {
+  "hash": "8d17eff4899a12f6",
+  "ok": true
+ },
+ "q22-kaiser-criterion-1": {
+  "hash": "158c15d433f3395c",
+  "ok": true
+ },
+ "q22-kaiser-criterion-2": {
+  "hash": "c28d03f04e3607f6",
+  "ok": true
+ },
+ "q22-lagrange-multiplier-pca-1": {
+  "hash": "a56919af257169ae",
+  "ok": true
+ },
+ "q22-lagrange-multiplier-pca-2": {
+  "hash": "d64a69f897aef9dd",
+  "ok": true
+ },
+ "q22-low-rank-approximation-1": {
+  "hash": "5a6ccf792e8e2476",
+  "ok": true
+ },
+ "q22-pca-on-correlation-matrix-1": {
+  "hash": "5cc6208f3d89a454",
+  "ok": true
+ },
+ "q22-pca-on-correlation-matrix-2": {
+  "hash": "3371ea21ed8df2dd",
+  "ok": true
+ },
+ "q22-principal-component-1": {
+  "hash": "a140f3e9bc3c0db9",
+  "ok": true
+ },
+ "q22-principal-component-analysis-1": {
+  "hash": "36ef4ed61d49e184",
+  "ok": true
+ },
+ "q22-principal-component-analysis-2": {
+  "hash": "a71add4911ee35f3",
+  "ok": true
+ },
+ "q22-principal-component-analysis-3": {
+  "hash": "2370542f81923f1b",
+  "ok": true
+ },
+ "q22-principal-component-loading-1": {
+  "hash": "13512676c1ee0d63",
+  "ok": true
+ },
+ "q22-principal-component-loading-2": {
+  "hash": "62069ace57ae598b",
+  "ok": true
+ },
+ "q22-principal-component-loading-3": {
+  "hash": "a241ab44abffa45b",
+  "ok": true
+ },
+ "q22-principal-component-score-1": {
+  "hash": "ce81c24ddc77c7c0",
+  "ok": true
+ },
+ "q22-principal-component-score-2": {
+  "hash": "02cb07dc54323e01",
+  "ok": true
+ },
+ "q22-principal-component-score-3": {
+  "hash": "3cd4d0e663d2c003",
+  "ok": true
+ },
+ "q22-scree-plot-1": {
+  "hash": "f83d06823e808c2b",
+  "ok": true
+ },
+ "q22-singular-value-decomposition-1": {
+  "hash": "01e48ab271ead4e2",
+  "ok": true
+ },
+ "q22-singular-value-decomposition-2": {
+  "hash": "f44db2beb1ae095f",
+  "ok": true
+ }
+}

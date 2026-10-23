@@ -753,3 +753,20 @@ check(T, "χ²≤df なら RMSEA=0、CFI=1（max の働き）", math.sqrt(max(1.
 ok_n = sum(results)
 ng_n = len(results) - ok_n
 print(f"\n合計: OK {ok_n} / NG {ng_n}")
+
+# --- 重要度A への加筆: path-analysis ---
+T = "path-analysis"
+_R = np.array([[1, 0.3], [0.3, 1]]); _r = np.array([0.5, 0.4])
+_p = np.linalg.solve(_R, _r)
+check(T, "例3 p1=0.38/0.91≈0.4176, p2=0.25/0.91≈0.2747（正規方程式）", abs(_p[0] - 0.4176) < 5e-5 and abs(_p[1] - 0.2747) < 5e-5 and abs(_p[0] - 0.38 / 0.91) < 1e-12 and abs(_p[1] - 0.25 / 0.91) < 1e-12, np.round(_p, 5))
+check(T, "例3 r1y = p1 + r12·p2 = 0.4176 + 0.0824 = 0.5", abs(0.3 * _p[1] - 0.0824) < 5e-5 and abs(_p[0] + 0.3 * _p[1] - 0.5) < 1e-12, round(0.3 * _p[1], 5))
+_R2 = _p @ _r
+check(T, "例3 R²≈0.3187, 誤差のパス係数≈0.8254", abs(_R2 - 0.3187) < 5e-5 and abs(math.sqrt(1 - _R2) - 0.8254) < 5e-5, (round(_R2, 5), round(math.sqrt(1 - _R2), 5)))
+_C = np.array([[1, 0.3, 0.5], [0.3, 1, 0.4], [0.5, 0.4, 1]])
+_Z = rng.multivariate_normal(np.zeros(3), _C, 400_000); _Z = (_Z - _Z.mean(0)) / _Z.std(0)
+_b = np.linalg.lstsq(_Z[:, :2], _Z[:, 2], rcond=None)[0]
+check(T, "例3 シミュ 標準化偏回帰係数（許容0.005）", np.all(np.abs(_b - _p) < 0.005), np.round(_b, 4))
+
+ok_n = sum(results)
+ng_n = len(results) - ok_n
+print(f"\n合計（重要度A への加筆を含む）: OK {ok_n} / NG {ng_n}")

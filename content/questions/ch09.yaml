@@ -1,0 +1,470 @@
+chapter: 9
+questions:
+  - id: q09-confidence-interval-1
+    term: confidence-interval
+    level: 基本
+    type: truefalse
+    question: |
+      あるデータから母平均 $\mu$ の95%信頼区間 $[10.2,\ 13.8]$ が得られた。このとき、真の $\mu$ がこの区間 $[10.2,\ 13.8]$ に入っている確率は $0.95$ である。
+    answer: false
+    hint: |
+      確率 $0.95$ をもつのは「区間を作る手続き」か、「計算済みの数値の区間」か。
+    explanation: |
+      頻度論では $\mu$ は定数で、計算済みの区間 $[10.2,13.8]$ は $\mu$ を含むか含まないかのどちらかです（確率は0か1）。
+      $0.95$ は、標本を取り直して区間を作ることを繰り返したとき、区間が $\mu$ を含む割合を表します。
+      「この区間に入る確率が95%」と言えるのは、ベイズ統計の信用区間の解釈です。
+
+  - id: q09-confidence-interval-2
+    term: confidence-interval
+    level: 標準
+    type: numeric
+    question: |
+      互いに独立な20個の調査で、それぞれ信頼係数95%の信頼区間を作る。20個すべての区間が真の値を含む確率を小数第3位まで求めよ。
+    answer: 0.358
+    tolerance: 0.001
+    hint: |
+      各区間が真の値を含む確率は $0.95$ で、独立。
+    explanation: |
+      $$0.95^{20}=0.3585$$
+      1つでも外れる確率は約 $0.64$ です。区間を多数並べると、いくつかが外れるのはふつうのことで、
+      同時に全部を保証したいときは多重比較の考え方（ボンフェローニなど）が必要になります。
+
+  - id: q09-confidence-coefficient-1
+    term: confidence-coefficient
+    level: 基本
+    type: choice
+    question: |
+      分散既知の正規母集団で、母平均の信頼係数90%の両側信頼区間 $\bar X\pm z\,\sigma/\sqrt n$ を作るときの $z$ はどれか。
+    choices:
+      - '$1.645$'
+      - '$1.282$'
+      - '$1.960$'
+      - '$2.326$'
+    answer: 0
+    hint: |
+      両側なので、上側 $5\%$ 点 $z_{0.05}$ を使う。
+    explanation: |
+      90%両側区間では左右に5%ずつ残すので $z_{0.05}=1.645$ です。
+      $1.282$ は上側10%点（片側90%の値）、$1.960$ は95%両側、$2.326$ は上側1%点（98%両側）です。
+
+  - id: q09-confidence-coefficient-2
+    term: confidence-coefficient
+    level: 応用
+    type: numeric
+    question: |
+      $X\sim B(10,\ p)$ に対して、近似の95%信頼区間 $\hat p\pm1.96\sqrt{\hat p(1-\hat p)/10}$（$\hat p=X/10$）を作る。
+      真の値が $p=0.5$ のとき、この区間が $p$ を含む確率（被覆確率）を小数第3位まで求めよ。
+    answer: 0.891
+    tolerance: 0.001
+    hint: |
+      $x=0,1,\dots,10$ のそれぞれで区間が $0.5$ を含むかを調べ、含む $x$ の二項確率を足す。
+    explanation: |
+      区間が $0.5$ を含むのは $x=3,\dots,7$ のときです（$x=2$ では上限が $0.448$、$x=8$ では下限が $0.552$）。
+      $$P(3\le X\le7)=1-2\{P(X=0)+P(X=1)+P(X=2)\}=1-2\times\frac{1+10+45}{1024}=0.8906$$
+      名目の95%より小さく、離散分布で近似に基づく区間の被覆確率が信頼係数からずれる例です。
+
+  - id: q09-pivotal-quantity-1
+    term: pivotal-quantity
+    level: 基本
+    type: choice
+    question: |
+      $X_1,\dots,X_n$ を $N(\mu,\sigma^2)$（$\mu,\sigma^2$ ともに未知）からの標本とし、$S^2$ を不偏分散とする。
+      $\mu$ の信頼区間を作るのに使えるピボット量はどれか。
+    choices:
+      - '$\dfrac{\bar X-\mu}{S/\sqrt n}$'
+      - '$\dfrac{\bar X-\mu}{\sigma/\sqrt n}$'
+      - '$\dfrac{(n-1)S^2}{\sigma^2}$'
+      - '$\bar X$'
+    answer: 0
+    hint: |
+      分布が未知母数によらず、しかも $\mu$ 以外の未知母数を含まないもの。
+    explanation: |
+      $\frac{\bar X-\mu}{S/\sqrt n}\sim t(n-1)$ で、分布が母数によらず、式に含まれる未知母数は $\mu$ だけです。
+      $\frac{\bar X-\mu}{\sigma/\sqrt n}$ は $N(0,1)$ に従いますが、未知の $\sigma$ を含むので $\mu$ について解けません。
+      $\frac{(n-1)S^2}{\sigma^2}$ は $\sigma^2$ のピボット量で $\mu$ を含みません。$\bar X$ は分布が $\mu$ に依存します。
+
+  - id: q09-pivotal-quantity-2
+    term: pivotal-quantity
+    level: 応用
+    type: numeric
+    question: |
+      平均 $\theta$ の指数分布からの標本 $n=5$ 個の合計が $\sum x_i=12$ であった。$2\sum X_i/\theta\sim\chi^2(10)$ を用いて、
+      $\theta$ の95%信頼区間の**上限**を小数第2位まで求めよ（$\chi^2_{0.975}(10)=3.247$、$\chi^2_{0.025}(10)=20.483$ は上側確率点）。
+    answer: 7.39
+    tolerance: 0.01
+    hint: |
+      $3.247\le 2\sum X_i/\theta\le20.483$ を $\theta$ について解く。分母にくる値の大小に注意。
+    explanation: |
+      $$\frac{2\times12}{20.483}\le\theta\le\frac{2\times12}{3.247}\quad\Longrightarrow\quad1.172\le\theta\le7.391$$
+      小さいカイ二乗の値が上限の分母に入ります。区間は推定値 $\bar x=2.4$ を中心に対称ではありません。
+
+  - id: q09-ci-mean-known-variance-1
+    term: ci-mean-known-variance
+    level: 基本
+    type: numeric
+    question: |
+      $N(\mu,4^2)$ から大きさ $16$ の標本をとり、$\bar x=52.3$ を得た。$\mu$ の95%信頼区間の**下限**を小数第2位まで求めよ（$z_{0.025}=1.96$）。
+    answer: 50.34
+    tolerance: 0.01
+    hint: |
+      半幅は $1.96\times\sigma/\sqrt n$。
+    explanation: |
+      $\sigma/\sqrt n=4/4=1$ なので、区間は $52.3\pm1.96$、すなわち $[50.34,\ 54.26]$ です。
+
+  - id: q09-ci-mean-known-variance-2
+    term: ci-mean-known-variance
+    level: 標準
+    type: truefalse
+    question: |
+      分散既知の正規母集団で、標本サイズを変えずに信頼係数を95%から99%に上げると、母平均の信頼区間の幅は約 $1.31$ 倍になる。
+    answer: true
+    hint: |
+      幅は $2z_{\alpha/2}\sigma/\sqrt n$。$z_{0.005}=2.576$、$z_{0.025}=1.960$。
+    explanation: |
+      幅の比は $z_{0.005}/z_{0.025}=2.576/1.960=1.314$ で、約1.31倍です。
+      信頼係数を上げるほど区間は広くなります。幅を変えずに信頼係数を上げるには $n$ を $1.314^2\approx1.73$ 倍にする必要があります。
+
+  - id: q09-ci-mean-unknown-variance-1
+    term: ci-mean-unknown-variance
+    level: 基本
+    type: choice
+    question: |
+      正規母集団（分散未知）から大きさ $n=10$ の標本をとり、母平均の95%信頼区間 $\bar X\pm t\,S/\sqrt n$ を作る。$t$ の値はどれか。
+    choices:
+      - '$2.262$'
+      - '$2.228$'
+      - '$1.960$'
+      - '$1.833$'
+    answer: 0
+    hint: |
+      自由度 $n-1$ の $t$ 分布の上側 $2.5\%$ 点。
+    explanation: |
+      $t_{0.025}(9)=2.262$ です。$2.228$ は自由度を $n=10$ と数えた $t_{0.025}(10)$、
+      $1.960$ は分散既知の正規分布の値、$1.833$ は上側5%点 $t_{0.05}(9)$（片側の値）です。
+
+  - id: q09-ci-mean-unknown-variance-2
+    term: ci-mean-unknown-variance
+    level: 標準
+    type: numeric
+    question: |
+      正規母集団からの観測値 $12,\ 15,\ 11,\ 14,\ 13$ をもとに、母平均の95%信頼区間の**半幅**を小数第3位まで求めよ（$t_{0.025}(4)=2.776$）。
+    answer: 1.963
+    tolerance: 0.002
+    hint: |
+      不偏分散 $S^2$ を求め、$t_{0.025}(4)\,S/\sqrt5$ を計算する。
+    explanation: |
+      $\bar x=13$、偏差は $-1,2,-2,1,0$ で偏差平方和は $10$、$S^2=10/4=2.5$、$S=1.581$ です。
+      $$2.776\times\frac{1.581}{\sqrt5}=1.963$$
+      区間は $[11.04,\ 14.96]$ です。
+
+  - id: q09-ci-variance-1
+    term: ci-variance
+    level: 基本
+    type: truefalse
+    question: |
+      正規母集団の母分散 $\sigma^2$ の信頼区間 $\left[\frac{(n-1)S^2}{\chi^2_{\alpha/2}(n-1)},\ \frac{(n-1)S^2}{\chi^2_{1-\alpha/2}(n-1)}\right]$ は、$S^2$ を中心に左右対称である。
+    answer: false
+    hint: |
+      カイ二乗分布は左右対称ではない。具体的な $n$ で両端と $S^2$ の距離を比べる。
+    explanation: |
+      たとえば $n=10,S^2=4$ の95%区間は $[1.89,\ 13.33]$ で、$S^2=4$ から下へ $2.11$、上へ $9.33$ と非対称です。
+      カイ二乗分布が右に歪んでいるため、区間は右に長くなります。
+
+  - id: q09-ci-variance-2
+    term: ci-variance
+    level: 標準
+    type: numeric
+    question: |
+      正規母集団から大きさ $n=10$ の標本をとり、不偏分散 $S^2=4$ を得た。$\sigma^2$ の95%信頼区間の**上限**を小数第2位まで求めよ
+      （$\chi^2_{0.025}(9)=19.023$、$\chi^2_{0.975}(9)=2.700$ は上側確率点）。
+    answer: 13.33
+    tolerance: 0.01
+    hint: |
+      上限の分母には、小さい方のカイ二乗の値が入る。
+    explanation: |
+      $(n-1)S^2=36$ なので
+      $$\left[\frac{36}{19.023},\ \frac{36}{2.700}\right]=[1.892,\ 13.33]$$
+      分母を逆にすると下限が上限より大きくなるので、取り違えに気づけます。
+
+  - id: q09-ci-variance-3
+    term: ci-variance
+    level: 応用
+    type: numeric
+    question: |
+      正規母集団 $N(\mu,\sigma^2)$ で $\mu$ が**既知**であり、$n=6$ 個の観測値について $\sum(x_i-\mu)^2=30$ であった。
+      母標準偏差 $\sigma$ の95%信頼区間の**下限**を小数第3位まで求めよ（$\chi^2_{0.025}(6)=14.449$）。
+    answer: 1.441
+    tolerance: 0.001
+    hint: |
+      $\mu$ 既知なら $\sum(X_i-\mu)^2/\sigma^2\sim\chi^2(n)$ で、自由度は $n$。最後に平方根をとる。
+    explanation: |
+      $\sigma^2$ の下限は $30/14.449=2.076$、$\sigma$ の下限はその平方根で $\sqrt{2.076}=1.441$ です。
+      $\mu$ を推定しないので自由度は $n-1=5$ ではなく $6$ です。
+
+  - id: q09-ci-proportion-1
+    term: ci-proportion
+    level: 基本
+    type: numeric
+    question: |
+      $400$ 人中 $120$ 人が「はい」と答えた。母比率の95%信頼区間（ワルド型）の**上限**を小数第3位まで求めよ（$z_{0.025}=1.96$）。
+    answer: 0.345
+    tolerance: 0.001
+    hint: |
+      $\hat p=0.3$、標準誤差は $\sqrt{\hat p(1-\hat p)/n}$。
+    explanation: |
+      $\sqrt{0.3\times0.7/400}=0.02291$、半幅は $1.96\times0.02291=0.0449$ です。
+      区間は $[0.255,\ 0.345]$ です。
+
+  - id: q09-ci-proportion-2
+    term: ci-proportion
+    level: 標準
+    type: truefalse
+    question: |
+      $n=30$ 回の試行で成功が $0$ 回だったとき、ワルド型の区間 $\hat p\pm z_{\alpha/2}\sqrt{\hat p(1-\hat p)/n}$ は幅0の区間 $[0,0]$ になる。
+    answer: true
+    hint: |
+      $\hat p=0$ を代入して標準誤差を計算する。
+    explanation: |
+      $\hat p=0$ だと $\sqrt{\hat p(1-\hat p)/n}=0$ で、区間は $[0,0]$ になります。
+      成功が0回でも $p$ が小さな正の値である可能性は十分あるので、これは明らかに不適切です。
+      このような場合はウィルソン区間やクロッパー・ピアソン区間を使います（後者の95%上限は約 $0.116$）。
+
+  - id: q09-wald-confidence-interval-1
+    term: wald-confidence-interval
+    level: 標準
+    type: numeric
+    question: |
+      ポアソン分布 $Po(\lambda)$ からの標本 $n=40$ 個の平均が $\bar x=2.5$ であった。$\lambda$ のワルド型95%信頼区間の**上限**を
+      小数第2位まで求めよ（$z_{0.025}=1.96$）。
+    answer: 2.99
+    tolerance: 0.01
+    hint: |
+      $I(\lambda)=1/\lambda$ なので標準誤差は $\sqrt{\hat\lambda/n}$。
+    explanation: |
+      $\widehat{\mathrm{SE}}=\sqrt{2.5/40}=0.25$ なので
+      $$2.5\pm1.96\times0.25=[2.01,\ 2.99]$$
+
+  - id: q09-wald-confidence-interval-2
+    term: wald-confidence-interval
+    level: 応用
+    type: numeric
+    question: |
+      レート $\lambda$ の指数分布からの標本 $n=50$ 個で最尤推定値 $\hat\lambda=0.4$ を得た。$I(\lambda)=1/\lambda^2$ を用いた
+      ワルド型95%信頼区間の**下限**を小数第3位まで求めよ（$z_{0.025}=1.96$）。
+    answer: 0.289
+    tolerance: 0.001
+    hint: |
+      $\widehat{\mathrm{SE}}=1/\sqrt{nI(\hat\lambda)}=\hat\lambda/\sqrt n$。
+    explanation: |
+      $\widehat{\mathrm{SE}}=0.4/\sqrt{50}=0.0566$ なので下限は $0.4-1.96\times0.0566=0.289$ です（上限は $0.511$）。
+      ワルド型は $\hat\lambda$ を中心に対称で、母数の範囲（$\lambda>0$）や分布の歪みを考慮しない点が弱点です。
+
+  - id: q09-wilson-interval-1
+    term: wilson-interval
+    level: 標準
+    type: numeric
+    question: |
+      $n=20$ 回中 $2$ 回成功した。母比率の95%ウィルソン区間の**上限**を小数第3位まで求めよ（$z=1.96$）。
+    answer: 0.301
+    tolerance: 0.001
+    hint: |
+      中心 $\dfrac{\hat p+z^2/(2n)}{1+z^2/n}$ と半幅 $\dfrac{z}{1+z^2/n}\sqrt{\dfrac{\hat p(1-\hat p)}{n}+\dfrac{z^2}{4n^2}}$ を計算する。
+    explanation: |
+      $\hat p=0.1$、$z^2/n=0.1921$ なので、中心は $\frac{0.1+0.0960}{1.1921}=0.1645$、
+      半幅は $\frac{1.96}{1.1921}\sqrt{0.0045+0.0024}=0.1366$ です。区間は $[0.028,\ 0.301]$ です。
+      ワルド型 $[-0.031,\ 0.231]$ は下限が負になってしまいます。
+
+  - id: q09-wilson-interval-2
+    term: wilson-interval
+    level: 基本
+    type: truefalse
+    question: |
+      ウィルソン区間の中心は、つねに標本比率 $\hat p$ そのものである。
+    answer: false
+    hint: |
+      中心の式 $\dfrac{\hat p+z^2/(2n)}{1+z^2/n}$ で、$\hat p=1/2$ 以外のときを考える。
+    explanation: |
+      中心は $\hat p$ と $1/2$ の重み付き平均
+      $$\frac{n}{n+z^2}\hat p+\frac{z^2}{n+z^2}\cdot\frac12$$
+      で、$\hat p$ より $1/2$ 寄りにずれます（$\hat p=1/2$ のときだけ一致）。$n$ が大きいとずれは小さくなります。
+
+  - id: q09-ci-two-sample-mean-difference-1
+    term: ci-two-sample-mean-difference
+    level: 標準
+    type: numeric
+    question: |
+      2つの正規母集団から独立に $n_1=25$、$n_2=36$ の標本をとった。母標準偏差は既知で $\sigma_1=10$、$\sigma_2=12$ である。
+      $\mu_1-\mu_2$ の95%信頼区間の**半幅**を小数第2位まで求めよ（$z_{0.025}=1.96$）。
+    answer: 5.54
+    tolerance: 0.01
+    hint: |
+      $\bar X_1-\bar X_2$ の分散は $\sigma_1^2/n_1+\sigma_2^2/n_2$。
+    explanation: |
+      $$\sqrt{\frac{100}{25}+\frac{144}{36}}=\sqrt{8}=2.828,\qquad1.96\times2.828=5.54$$
+      標準偏差を足して $\sqrt{100/25}+\sqrt{144/36}=4$ とするのは誤りで、足すのは分散です。
+
+  - id: q09-ci-two-sample-mean-difference-2
+    term: ci-two-sample-mean-difference
+    level: 応用
+    type: numeric
+    question: |
+      等分散を仮定できる2つの正規母集団から、$n_1=8$（不偏分散 $S_1^2=6$）、$n_2=10$（$S_2^2=9$）の標本を得て、$\bar x_1-\bar x_2=3$ であった。
+      $\mu_1-\mu_2$ の95%信頼区間の**下限**を小数第2位まで求めよ（$t_{0.025}(16)=2.120$）。
+    answer: 0.21
+    tolerance: 0.01
+    hint: |
+      プールした分散 $S_p^2=\{(n_1-1)S_1^2+(n_2-1)S_2^2\}/(n_1+n_2-2)$ を使う。
+    explanation: |
+      $$S_p^2=\frac{7\times6+9\times9}{16}=7.6875,\qquad\mathrm{SE}=\sqrt{7.6875\left(\frac18+\frac1{10}\right)}=1.315$$
+      半幅は $2.120\times1.315=2.788$、区間は $[0.21,\ 5.79]$ です。
+
+  - id: q09-ci-paired-difference-1
+    term: ci-paired-difference
+    level: 標準
+    type: numeric
+    question: |
+      6人について処置前後の測定値の差（後－前）が $1.2,\ 0.8,\ 1.5,\ 0.3,\ 1.0,\ 0.6$ であった。差を正規分布と仮定し、
+      平均の差の95%信頼区間の**下限**を小数第2位まで求めよ（$t_{0.025}(5)=2.571$）。
+    answer: 0.45
+    tolerance: 0.01
+    hint: |
+      差を1つの標本とみて、1標本の $t$ 区間を作る。自由度は組の数 $-1$。
+    explanation: |
+      $\bar d=0.9$、偏差平方和は $0.09+0.01+0.36+0.36+0.01+0.09=0.92$、$S_D^2=0.184$、$S_D=0.429$ です。
+      $$0.9-2.571\times\frac{0.429}{\sqrt6}=0.9-0.450=0.45$$
+      独立2標本として扱うと、個人差による変動が誤差に入り、区間が広くなってしまいます。
+
+  - id: q09-ci-variance-ratio-1
+    term: ci-variance-ratio
+    level: 基本
+    type: choice
+    question: |
+      $n_1=11$、$n_2=16$ の独立な正規標本から $\sigma_1^2/\sigma_2^2$ の95%信頼区間を作る。下限 $\dfrac{S_1^2/S_2^2}{F_{0.025}(m_1,m_2)}$ の自由度 $(m_1,m_2)$ はどれか。
+    choices:
+      - '$(10,\ 15)$'
+      - '$(15,\ 10)$'
+      - '$(11,\ 16)$'
+      - '$(16,\ 11)$'
+    answer: 0
+    hint: |
+      $\dfrac{S_1^2/\sigma_1^2}{S_2^2/\sigma_2^2}\sim F(n_1-1,\ n_2-1)$。
+    explanation: |
+      分子の群の自由度 $n_1-1=10$、分母の群の自由度 $n_2-1=15$ で $F(10,15)$ です。
+      $(15,10)$ は上限を $\frac{S_1^2}{S_2^2}F_{0.025}(15,10)$ と書くときに使う自由度で、下限の式では順序が逆です。
+
+  - id: q09-ci-variance-ratio-2
+    term: ci-variance-ratio
+    level: 標準
+    type: numeric
+    question: |
+      $n_1=11$（$S_1^2=8$）、$n_2=16$（$S_2^2=4$）の独立な正規標本から、$\sigma_1^2/\sigma_2^2$ の95%信頼区間の**上限**を小数第2位まで求めよ
+      （$F_{0.025}(15,10)=3.522$、$F_{0.025}(10,15)=3.060$）。
+    answer: 7.04
+    tolerance: 0.01
+    hint: |
+      上限は $\dfrac{S_1^2}{S_2^2}\cdot\dfrac{1}{F_{0.975}(10,15)}=\dfrac{S_1^2}{S_2^2}F_{0.025}(15,10)$。
+    explanation: |
+      $S_1^2/S_2^2=2$ なので
+      $$\left[\frac{2}{3.060},\ 2\times3.522\right]=[0.654,\ 7.04]$$
+      区間が1を含むので、95%の信頼度では「分散が異なる」とは言えません。
+
+  - id: q09-required-sample-size-1
+    term: required-sample-size
+    level: 基本
+    type: numeric
+    question: |
+      母標準偏差が $\sigma=10$ とわかっているとき、母平均の95%信頼区間の半幅を $2$ 以下にするのに必要な最小の標本サイズを求めよ（$z_{0.025}=1.96$）。
+    answer: 97
+    tolerance: 0.5
+    hint: |
+      $n\ge(z\sigma/E)^2$ を満たす最小の整数。
+    explanation: |
+      $$\left(\frac{1.96\times10}{2}\right)^2=96.04$$
+      $n$ は整数なので切り上げて $97$ です。四捨五入して $96$ にすると半幅が $2$ をわずかに超えます。
+
+  - id: q09-required-sample-size-2
+    term: required-sample-size
+    level: 標準
+    type: numeric
+    question: |
+      母比率について事前の見込みがない。95%信頼区間の半幅を $0.03$ 以下にするのに必要な最小の標本サイズを求めよ（$z_{0.025}=1.96$）。
+    answer: 1068
+    tolerance: 0.5
+    hint: |
+      見込みがないときは $p(1-p)$ の最大値 $1/4$ を使う。
+    explanation: |
+      $$n\ge\frac{1.96^2\times0.25}{0.03^2}=1067.1$$
+      なので $1068$ です。$p$ の見込みが $0.2$ なら $p(1-p)=0.16$ で、約 $683$ で足ります。
+
+  - id: q09-required-sample-size-3
+    term: required-sample-size
+    level: 基本
+    type: truefalse
+    question: |
+      信頼係数を変えずに信頼区間の半幅を半分にしたいとき、標本サイズを2倍にすればよい。
+    answer: false
+    hint: |
+      半幅は $\sqrt n$ に反比例する。
+    explanation: |
+      半幅 $\propto1/\sqrt n$ なので、半分にするには $\sqrt n$ を2倍、つまり $n$ を4倍にする必要があります。
+      2倍にした場合、半幅は $1/\sqrt2\approx0.71$ 倍にしかなりません。
+
+  - id: q09-ci-two-sample-proportion-1
+    term: ci-two-sample-proportion
+    level: 標準
+    type: numeric
+    question: |
+      A群では $200$ 人中 $60$ 人、B群では $250$ 人中 $50$ 人が改善した。改善率の差 $p_A-p_B$ の95%信頼区間（ワルド型）の**下限**を
+      小数第3位まで求めよ（$z_{0.025}=1.96$）。
+    answer: 0.019
+    tolerance: 0.001
+    hint: |
+      $\hat p_A=0.3$、$\hat p_B=0.2$。差の分散は各群の分散の和。
+    explanation: |
+      $$\mathrm{SE}=\sqrt{\frac{0.3\times0.7}{200}+\frac{0.2\times0.8}{250}}=\sqrt{0.00169}=0.0411$$
+      半幅は $1.96\times0.0411=0.0806$、区間は $[0.019,\ 0.181]$ で、0を含みません。
+
+  - id: q09-clopper-pearson-interval-1
+    term: clopper-pearson-interval
+    level: 標準
+    type: numeric
+    question: |
+      $n=20$ 回の試行で成功が $0$ 回だった。クロッパー・ピアソンの95%信頼区間の**上限**を小数第3位まで求めよ。
+    answer: 0.168
+    tolerance: 0.001
+    hint: |
+      $x=0$ なので上限は $P(X\le0\mid p_U)=(1-p_U)^{20}=0.025$ の解。
+    explanation: |
+      $$(1-p_U)^{20}=0.025\quad\Longrightarrow\quad p_U=1-0.025^{1/20}=0.1684$$
+      区間は $[0,\ 0.168]$ です。ベータ分布で書けば $B_{0.975}(1,20)$ と一致します。
+      （片側95%の上限なら $1-0.05^{1/20}=0.139$ で、「3の法則」$3/n=0.15$ に近い値です。）
+
+  - id: q09-likelihood-based-confidence-interval-1
+    term: likelihood-based-confidence-interval
+    level: 応用
+    type: numeric
+    question: |
+      $Po(\lambda)$ からの標本 $n=10$ 個の合計が $\sum x_i=20$ であった。$2\{\ell(\hat\lambda)-\ell(\lambda)\}\le3.841$ で定まる
+      尤度に基づく95%信頼区間の**下限**を小数第2位まで求めよ。
+    answer: 1.25
+    tolerance: 0.01
+    hint: |
+      $\ell(\lambda)=20\log\lambda-10\lambda$（定数を除く）、$\hat\lambda=2$。方程式は数値的に解く。
+    explanation: |
+      $2\{(20\log2-20)-(20\log\lambda-10\lambda)\}=3.841$ を解くと、$\lambda=1.247$ と $3.009$ です。
+      区間 $[1.25,\ 3.01]$ は $\hat\lambda=2$ に対して右に長く、ワルド型 $2\pm1.96\sqrt{0.2}=[1.12,\ 2.88]$ とは異なります。
+      尤度に基づく区間は母数の変換に対して不変で、分布の歪みを反映します。
+
+  - id: q09-confidence-interval-test-duality-1
+    term: confidence-interval-test-duality
+    level: 標準
+    type: truefalse
+    question: |
+      ある正規母集団の母平均について、$t$ 分布を用いた95%信頼区間が $[1.2,\ 3.8]$ であった。同じデータで $H_0:\mu=4$ を
+      有意水準5%の両側 $t$ 検定で検定すると、$H_0$ は棄却される。
+    answer: true
+    hint: |
+      信頼係数 $1-\alpha$ の区間は、有意水準 $\alpha$ の両側検定で棄却されない $\mu_0$ の集合。
+    explanation: |
+      $4$ は区間 $[1.2,3.8]$ の外にあるので、5%両側検定で棄却されます。区間の中の値（たとえば $\mu_0=3$）なら棄却されません。
+      ただし有意水準1%の検定については、99%区間が必要で、この情報だけでは判断できません。

@@ -1,0 +1,462 @@
+chapter: 19
+questions:
+  - id: q19-weighted-least-squares-1
+    term: weighted-least-squares
+    level: 標準
+    type: numeric
+    question: |
+      原点を通るモデル $y_i=\beta x_i+\varepsilon_i$ で、誤差は互いに無相関、$V[\varepsilon_i]=\sigma^2x_i$（$x_i>0$）とする。
+      データ $(x,y)=(1,3),\ (2,5),\ (4,10)$ から加重最小二乗推定値 $\hat\beta_W$ を小数第3位まで求めよ。
+    answer: 2.571
+    tolerance: 0.001
+    hint: |
+      重みは分散の逆数 $w_i=1/x_i$。$\sum w_i(y_i-\beta x_i)^2$ を $\beta$ で微分して0とおく。
+    explanation: |
+      $\hat\beta_W=\dfrac{\sum w_ix_iy_i}{\sum w_ix_i^2}$ に $w_i=1/x_i$ を入れると
+      $$\hat\beta_W=\frac{\sum y_i}{\sum x_i}=\frac{18}{7}=2.571$$
+      となり、比推定と同じ形になります。重みなしの最小二乗 $\sum x_iy_i/\sum x_i^2=53/21=2.524$ とは異なります。
+
+  - id: q19-weighted-least-squares-2
+    term: weighted-least-squares
+    level: 基本
+    type: truefalse
+    question: |
+      加重最小二乗法では、各観測の重み $w_i$ を誤差の**標準偏差**の逆数に比例させると、最良線形不偏推定量が得られる。
+    answer: false
+    hint: |
+      重み付き残差平方和 $\sum w_i(y_i-\boldsymbol x_i^\top\boldsymbol\beta)^2$ は、どの量で割って等分散化したものの平方和か。
+    explanation: |
+      $V[\varepsilon_i]=\sigma^2/w_i$ のとき、両辺に $\sqrt{w_i}$ を掛けると誤差が等分散になります。
+      そこで最小二乗法をかけると $\sum w_i(y_i-\boldsymbol x_i^\top\boldsymbol\beta)^2$ の最小化になるので、重みは**分散**の逆数に比例させます。
+      標準偏差の逆数を重みにすると不偏ではありますが、分散最小にはなりません。
+
+  - id: q19-generalized-least-squares-1
+    term: generalized-least-squares
+    level: 基本
+    type: choice
+    question: |
+      一般化最小二乗推定量 $\hat{\boldsymbol\beta}_G=(X^\top\Omega^{-1}X)^{-1}X^\top\Omega^{-1}\boldsymbol y$ について、
+      $\Omega$ が単位行列ではない**対角行列**のとき、これは何に一致するか。
+    choices:
+      - '加重最小二乗推定量'
+      - '通常の最小二乗推定量'
+      - 'リッジ推定量'
+      - '操作変数推定量'
+    answer: 0
+    hint: |
+      対角の $\Omega$ は「誤差は無相関だが分散が観測ごとに違う」ことを表す。
+    explanation: |
+      $\Omega=\mathrm{diag}(1/w_i)$ なら $\Omega^{-1}=W$ で、$\hat{\boldsymbol\beta}_G=(X^\top WX)^{-1}X^\top W\boldsymbol y$ は加重最小二乗推定量です。
+      $\Omega=I$ のときが通常の最小二乗法です。リッジは $X^\top X$ に $\lambda I$ を足すもので別物です。
+
+  - id: q19-generalized-least-squares-2
+    term: generalized-least-squares
+    level: 応用
+    type: numeric
+    question: |
+      同じ量 $\mu$ を2回測定し、$y_1=10$、$y_2=14$ を得た。測定誤差の分散共分散行列は
+      $\sigma^2\Omega$、$\Omega=\begin{pmatrix}1&0.5\\0.5&4\end{pmatrix}$ である。
+      モデル $\boldsymbol y=\boldsymbol1\mu+\boldsymbol\varepsilon$ の一般化最小二乗推定値 $\hat\mu_G$ を小数第2位まで求めよ。
+    answer: 10.5
+    tolerance: 0.005
+    hint: |
+      $\hat\mu_G=\dfrac{\boldsymbol1^\top\Omega^{-1}\boldsymbol y}{\boldsymbol1^\top\Omega^{-1}\boldsymbol1}$。まず $\Omega^{-1}$ を求める。
+    explanation: |
+      $\det\Omega=4-0.25=3.75$ より
+      $$\Omega^{-1}=\frac{1}{3.75}\begin{pmatrix}4&-0.5\\-0.5&1\end{pmatrix},\qquad \Omega^{-1}\boldsymbol1=\frac{1}{3.75}\begin{pmatrix}3.5\\0.5\end{pmatrix}$$
+      なので重みは $3.5/4=0.875$ と $0.5/4=0.125$ です。
+      $$\hat\mu_G=0.875\times10+0.125\times14=10.5$$
+      単純平均 $12$ とは異なり、精度の高い1回目を重く使います。分散は $\sigma^2/(\boldsymbol1^\top\Omega^{-1}\boldsymbol1)=0.9375\sigma^2$ で、1回目だけの $\sigma^2$ より小さくなります。
+
+  - id: q19-ridge-regression-1
+    term: ridge-regression
+    level: 応用
+    type: numeric
+    question: |
+      標準化した2つの説明変数について $X^\top X=\begin{pmatrix}1&0.9\\0.9&1\end{pmatrix}$、$X^\top\boldsymbol y=\begin{pmatrix}1.5\\1.2\end{pmatrix}$ であった。
+      $\lambda=0.1$ のリッジ推定量 $(X^\top X+\lambda I)^{-1}X^\top\boldsymbol y$ の第2成分を小数第3位まで求めよ。
+    answer: -0.075
+    tolerance: 0.001
+    hint: |
+      $\begin{pmatrix}a&b\\b&a\end{pmatrix}^{-1}=\dfrac{1}{a^2-b^2}\begin{pmatrix}a&-b\\-b&a\end{pmatrix}$ を使う。
+    explanation: |
+      $X^\top X+0.1I=\begin{pmatrix}1.1&0.9\\0.9&1.1\end{pmatrix}$、行列式は $1.21-0.81=0.40$ なので
+      $$\hat{\boldsymbol\beta}_R=\frac{1}{0.40}\begin{pmatrix}1.1\times1.5-0.9\times1.2\\-0.9\times1.5+1.1\times1.2\end{pmatrix}=\frac{1}{0.40}\begin{pmatrix}0.57\\-0.03\end{pmatrix}=\begin{pmatrix}1.425\\-0.075\end{pmatrix}$$
+      最小二乗推定値は $(2.211,\ -0.789)$ で、強い相関のため逆符号に大きく振れていましたが、小さな $\lambda$ で大きく縮小・安定化しています。
+
+  - id: q19-ridge-regression-2
+    term: ridge-regression
+    level: 基本
+    type: truefalse
+    question: |
+      リッジ回帰では、正則化パラメータ $\lambda$ を大きくするほど係数は0に近づくが、一般に有限の $\lambda$ で係数がちょうど0になることはない。
+    answer: true
+    hint: |
+      直交計画 $X^\top X=I$ のときのリッジ推定量 $b_j/(1+\lambda)$ を考える。
+    explanation: |
+      直交計画ではリッジ推定量は $b_j/(1+\lambda)$ で、$b_j\ne0$ なら $\lambda$ がいくら大きくても0にはなりません（$\lambda\to\infty$ で0に近づくだけ）。
+      係数がちょうど0になって変数選択ができるのは、絶対値の罰則をもつ Lasso です。
+
+  - id: q19-lasso-1
+    term: lasso
+    level: 標準
+    type: choice
+    question: |
+      直交計画 $X^\top X=I$ で、最小二乗推定値が $\boldsymbol b=(2.5,\ -0.6,\ 1.1)$ であった。
+      目的関数 $\frac12\|\boldsymbol y-X\boldsymbol\beta\|^2+\lambda\sum_j|\beta_j|$、$\lambda=0.8$ の Lasso 推定値はどれか。
+    choices:
+      - '$(1.7,\ 0,\ 0.3)$'
+      - '$(1.7,\ -1.4,\ 0.3)$'
+      - '$(1.39,\ -0.33,\ 0.61)$'
+      - '$(2.5,\ 0,\ 1.1)$'
+    answer: 0
+    hint: |
+      ソフト閾値関数 $\mathrm{sign}(b_j)(|b_j|-\lambda)_+$ を各成分に使う。
+    explanation: |
+      $|b_j|>\lambda$ なら絶対値を $\lambda$ だけ縮め、$|b_j|\le\lambda$ なら0にします。
+      $$2.5\to1.7,\qquad |-0.6|\le0.8\to0,\qquad 1.1\to0.3$$
+      $(1.7,-1.4,0.3)$ は負の成分で符号の扱いを誤った値、$(1.39,-0.33,0.61)$ は $b_j/(1+\lambda)$（リッジ）の値、
+      $(2.5,0,1.1)$ は小さい係数を0にして残りを縮めない（ハード閾値）の値です。
+
+  - id: q19-lasso-2
+    term: lasso
+    level: 基本
+    type: truefalse
+    question: |
+      Lasso の推定結果は説明変数の測定単位（たとえば cm と m）に依存しないので、説明変数を標準化する必要はない。
+    answer: false
+    hint: |
+      $x$ を100分の1の単位にすると、対応する係数は何倍になり、罰則 $\lambda|\beta_j|$ はどう変わるか。
+    explanation: |
+      $x_j$ の単位を変えると係数 $\beta_j$ の大きさが変わり、同じ $\lambda$ でも罰則のかかり方が変わります。
+      その結果、どの変数が0になるかまで変わりうるので、Lasso やリッジでは説明変数を標準化してから当てはめるのが標準です。
+      罰則のない最小二乗法なら、単位を変えても当てはめ値は変わりません。
+
+  - id: q19-regularization-1
+    term: regularization
+    level: 基本
+    type: choice
+    question: |
+      残差平方和に罰則 $\lambda P(\boldsymbol\beta)$ を加える正則化で、係数がちょうど0になりやすく、推定と変数選択を同時に行えるのはどの罰則か。
+    choices:
+      - '$P(\boldsymbol\beta)=\sum_j|\beta_j|$（L1）'
+      - '$P(\boldsymbol\beta)=\sum_j\beta_j^2$（L2）'
+      - '$P(\boldsymbol\beta)=\left(\sum_j\beta_j\right)^2$'
+      - '罰則なし（$\lambda=0$）'
+    answer: 0
+    hint: |
+      制約領域 $P(\boldsymbol\beta)\le t$ の形（ひし形か円か）と、残差平方和の等高線がどこで接するかを考える。
+    explanation: |
+      L1 の制約領域はひし形で角が座標軸上にあるため、等高線が角で接しやすく、係数がちょうど0になります（Lasso）。
+      L2 の円形の制約では接点はふつう軸上にならず、縮小するだけです（リッジ）。
+
+  - id: q19-regularization-2
+    term: regularization
+    level: 標準
+    type: truefalse
+    question: |
+      リッジ回帰で正則化パラメータ $\lambda$ を大きくすると、**訓練データ**での残差平方和は小さくなる。
+    answer: false
+    hint: |
+      $\lambda=0$ の推定値は訓練データの残差平方和を最小にする値である。
+    explanation: |
+      残差平方和を最小にするのは $\lambda=0$ の最小二乗推定値なので、罰則を強めて係数を縮めるほど訓練データの残差平方和は大きくなります。
+      正則化が改善をねらうのは、新しいデータでの予測誤差（汎化誤差）です。そのため $\lambda$ は訓練誤差ではなく交差検証法などで選びます。
+
+  - id: q19-elastic-net-1
+    term: elastic-net
+    level: 標準
+    type: numeric
+    question: |
+      直交計画 $X^\top X=I$ で、ある係数の最小二乗推定値が $b=2.0$ であった。目的関数
+      $\frac12\|\boldsymbol y-X\boldsymbol\beta\|^2+\lambda_1\sum|\beta_j|+\frac{\lambda_2}{2}\sum\beta_j^2$、$\lambda_1=0.5$、$\lambda_2=1$
+      のエラスティックネット推定値を小数第2位まで求めよ。
+    answer: 0.75
+    tolerance: 0.005
+    hint: |
+      まずソフト閾値で $\lambda_1$ だけ縮め、次に $1+\lambda_2$ で割る。
+    explanation: |
+      $$\hat\beta_{EN}=\frac{\mathrm{sign}(b)(|b|-\lambda_1)_+}{1+\lambda_2}=\frac{2.0-0.5}{2}=0.75$$
+      です。Lasso だけなら $1.5$、リッジだけなら $1.0$ で、エラスティックネットは両方の縮小がかかります。
+
+  - id: q19-bias-in-penalized-estimation-1
+    term: bias-in-penalized-estimation
+    level: 応用
+    type: numeric
+    question: |
+      直交計画 $X^\top X=I$ のリッジ推定量 $\hat\beta_R=b/(1+\lambda)$ を考える。真の係数が $\beta=2$、誤差分散が $\sigma^2=1$ のとき、
+      平均二乗誤差 $\mathrm{MSE}(\lambda)=\dfrac{\sigma^2+\lambda^2\beta^2}{(1+\lambda)^2}$ の最小値を小数第2位まで求めよ。
+    answer: 0.8
+    tolerance: 0.005
+    hint: |
+      $\mathrm{MSE}(\lambda)$ を微分すると、分子は $\lambda\beta^2-\sigma^2$ に比例する。
+    explanation: |
+      $$\frac{d}{d\lambda}\mathrm{MSE}=\frac{2(\lambda\beta^2-\sigma^2)}{(1+\lambda)^3}$$
+      より最適な $\lambda=\sigma^2/\beta^2=0.25$ です。このとき
+      $$\mathrm{MSE}=\frac{1+0.0625\times4}{1.25^2}=\frac{1.25}{1.5625}=0.80$$
+      で、最小二乗推定量の $\mathrm{MSE}=\sigma^2=1$ より小さくなります。偏り $-\lambda\beta/(1+\lambda)=-0.4$ を受け入れて分散を $0.64$ に減らした結果です。
+
+  - id: q19-nonlinear-regression-1
+    term: nonlinear-regression
+    level: 基本
+    type: choice
+    question: |
+      次のうち、パラメータ $(a,b)$ について**非線形**な回帰モデル（非線形最小二乗法が必要なもの）はどれか。誤差項は省略する。
+    choices:
+      - '$y=a\,e^{-bx}+c$'
+      - '$y=a+bx+cx^2$'
+      - '$y=a+b\log x$'
+      - '$y=a\sin x+b\cos x$'
+    answer: 0
+    hint: |
+      $x$ について非線形かどうかではなく、パラメータについて一次式かどうかを見る。
+    explanation: |
+      $a e^{-bx}$ は $b$ が指数の中にあり、パラメータについて一次式ではないので非線形回帰です（$c\ne0$ があるので対数変換でも線形化できません）。
+      他の3つは $x$ について曲線でも、$x^2$、$\log x$、$\sin x$、$\cos x$ を新しい説明変数とみなせば、パラメータについて線形な重回帰です。
+
+  - id: q19-nonlinear-regression-2
+    term: nonlinear-regression
+    level: 標準
+    type: numeric
+    question: |
+      ロジスティック曲線 $f(t)=\dfrac{K}{1+e^{-r(t-t_0)}}$ を当てはめ、$\hat K=100$、$\hat r=0.5$、$\hat t_0=10$ を得た。
+      $t=12$ における予測値を小数第1位まで求めよ。
+    answer: 73.1
+    tolerance: 0.05
+    hint: |
+      $r(t-t_0)$ を先に計算する。$t=t_0$ のとき $f=K/2$ になることも確認できる。
+    explanation: |
+      $r(t-t_0)=0.5\times2=1$ なので
+      $$f(12)=\frac{100}{1+e^{-1}}=\frac{100}{1.3679}=73.1$$
+      です。変曲点 $t_0=10$ では $K/2=50$ で、そこから2単位後には上限の約73%に達しています。
+
+  - id: q19-polynomial-regression-1
+    term: polynomial-regression
+    level: 標準
+    type: numeric
+    question: |
+      2次の多項式回帰で $\hat y=3+4x-0.5x^2$ が得られた。予測値が最大となる $x$ と、そのときの予測値の**和**を求めよ。
+    answer: 15
+    tolerance: 0.01
+    hint: |
+      頂点は $x^*=-\hat\beta_1/(2\hat\beta_2)$。
+    explanation: |
+      $$x^*=-\frac{4}{2\times(-0.5)}=4,\qquad \hat y(4)=3+16-8=11$$
+      なので和は $4+11=15$ です。$\hat\beta_2<0$ なので頂点は最大値です。分母の2を忘れると $x^*=8$（$\hat y=3$）になります。
+
+  - id: q19-polynomial-regression-2
+    term: polynomial-regression
+    level: 基本
+    type: truefalse
+    question: |
+      多項式回帰 $y=\beta_0+\beta_1x+\beta_2x^2+\varepsilon$ は $x$ について非線形なので、係数の推定には非線形最小二乗法の反復計算が必要である。
+    answer: false
+    hint: |
+      モデルは係数 $\beta_0,\beta_1,\beta_2$ について一次式か。
+    explanation: |
+      $x$ と $x^2$ を2つの説明変数とみなせば係数について線形な重回帰なので、
+      $\hat{\boldsymbol\beta}=(X^\top X)^{-1}X^\top\boldsymbol y$ で一度に求まります。$t$ 検定や $F$ 検定もそのまま使えます。
+      注意点は、$x$ と $x^2$ の相関が強くなりやすい（多重共線性）ことで、$x$ を中心化してから2乗すると和らぎます。
+
+  - id: q19-quantile-regression-1
+    term: quantile-regression
+    level: 標準
+    type: numeric
+    question: |
+      $\tau=0.9$ の分位点回帰で、ある係数の値における4つの残差が $u=(2,\ -1,\ 0.5,\ -3)$ であった。
+      チェック関数の和 $\sum\rho_{0.9}(u_i)$ を小数第2位まで求めよ。ただし $\rho_\tau(u)=\tau u\ (u\ge0)$、$(\tau-1)u\ (u<0)$。
+    answer: 2.65
+    tolerance: 0.005
+    hint: |
+      正の残差には $0.9$、負の残差には $0.1$ を絶対値に掛ける。
+    explanation: |
+      $$0.9\times2+0.1\times1+0.9\times0.5+0.1\times3=1.8+0.1+0.45+0.3=2.65$$
+      です。$\tau=0.9$ では「予測より上に外れる」ことを強く罰するので、当てはめ線は上側に押し上げられ、条件付き90%点を推定します。
+
+  - id: q19-quantile-regression-2
+    term: quantile-regression
+    level: 基本
+    type: truefalse
+    question: |
+      説明変数を含まない（切片だけの）$\tau=0.5$ の分位点回帰の推定値は、標本の中央値になる。
+    answer: true
+    hint: |
+      $\rho_{0.5}(u)=|u|/2$ なので、$\sum|y_i-c|$ を最小にする $c$ を考える。
+    explanation: |
+      $\tau=0.5$ では $\sum\rho_{0.5}(y_i-c)=\frac12\sum|y_i-c|$ で、これを最小にする $c$ は標本中央値です。
+      同様に一般の $\tau$ では標本 $\tau$ 分位点になります。切片だけの最小二乗法が標本平均になるのと対応しています。
+
+  - id: q19-instrumental-variable-method-1
+    term: instrumental-variable-method
+    level: 標準
+    type: numeric
+    question: |
+      2値の操作変数 $z$ で群を分けたところ、$z=1$ の群では $\bar y_1=25.6$、$\bar x_1=12.8$、$z=0$ の群では $\bar y_0=22.6$、$\bar x_0=12.4$ であった。
+      単回帰 $y=\beta_0+\beta_1x+\varepsilon$ の $\beta_1$ のワルド推定値を小数第1位まで求めよ。
+    answer: 7.5
+    tolerance: 0.05
+    hint: |
+      $\hat\beta_{1,IV}=(\bar y_1-\bar y_0)/(\bar x_1-\bar x_0)$。
+    explanation: |
+      $$\hat\beta_{1,IV}=\frac{25.6-22.6}{12.8-12.4}=\frac{3.0}{0.4}=7.5$$
+      です。$z$ が $y$ を動かした量（誘導形の効果）を、$z$ が $x$ を動かした量（第1段階の効果）で割っています。
+      分母の差 $0.4$ のように第1段階の効果が小さい（弱い操作変数）と、推定値は不安定になります。
+
+  - id: q19-instrumental-variable-method-2
+    term: instrumental-variable-method
+    level: 基本
+    type: choice
+    question: |
+      モデル $y=\beta_0+\beta_1x+\varepsilon$ で $x$ が内生的（$\mathrm{Cov}(x,\varepsilon)\ne0$）とする。変数 $z$ が操作変数として満たすべき条件の組はどれか。
+    choices:
+      - '$\mathrm{Cov}(z,x)\ne0$ かつ $\mathrm{Cov}(z,\varepsilon)=0$'
+      - '$\mathrm{Cov}(z,x)=0$ かつ $\mathrm{Cov}(z,\varepsilon)=0$'
+      - '$\mathrm{Cov}(z,x)\ne0$ かつ $\mathrm{Cov}(z,y)=0$'
+      - '$\mathrm{Cov}(z,x)\ne0$ かつ $\mathrm{Cov}(z,\varepsilon)\ne0$'
+    answer: 0
+    hint: |
+      $\hat\beta_{1,IV}=s_{zy}/s_{zx}$ の確率極限を、$y=\beta_0+\beta_1x+\varepsilon$ を代入して計算してみる。
+    explanation: |
+      $\mathrm{plim}\,\hat\beta_{1,IV}=\dfrac{\mathrm{Cov}(z,y)}{\mathrm{Cov}(z,x)}=\beta_1+\dfrac{\mathrm{Cov}(z,\varepsilon)}{\mathrm{Cov}(z,x)}$ なので、
+      分母が0でない（関連性）ことと、分子の $\mathrm{Cov}(z,\varepsilon)$ が0（外生性）であることが必要です。
+      $\mathrm{Cov}(z,y)=0$ を要求すると、$\beta_1\ne0$ のとき関連性と矛盾します（$z$ は $x$ を通じて $y$ と相関してよい）。
+
+  - id: q19-endogeneity-1
+    term: endogeneity
+    level: 標準
+    type: numeric
+    question: |
+      真のモデルは $y=1+2x^*+\varepsilon$ だが、$x^*$（分散4）は測定誤差 $u$（平均0・分散1、$x^*$ と $\varepsilon$ と独立）付きの $x=x^*+u$ でしか観測できない。
+      $y$ を $x$ に単回帰した最小二乗推定量の傾きの確率極限を小数第2位まで求めよ。
+    answer: 1.6
+    tolerance: 0.005
+    hint: |
+      $\mathrm{plim}\,\hat\beta_1=\mathrm{Cov}(x,y)/V[x]$ を計算する。
+    explanation: |
+      $\mathrm{Cov}(x,y)=\mathrm{Cov}(x^*+u,\ 1+2x^*+\varepsilon)=2V[x^*]=8$、$V[x]=4+1=5$ なので
+      $$\mathrm{plim}\,\hat\beta_1=\frac{8}{5}=1.6$$
+      です。真の傾き2が信頼性比 $4/5$ 倍に縮む（希薄化バイアス）現象で、標本を増やしても解消しません。
+
+  - id: q19-endogeneity-2
+    term: endogeneity
+    level: 基本
+    type: truefalse
+    question: |
+      説明変数に内生性があっても、標本サイズを十分大きくすれば、最小二乗推定量は真の係数に近づく。
+    answer: false
+    hint: |
+      $\hat{\boldsymbol\beta}_{OLS}$ の確率極限 $\boldsymbol\beta+(E[\boldsymbol x\boldsymbol x^\top])^{-1}E[\boldsymbol x\varepsilon]$ を見る。
+    explanation: |
+      内生性があると $E[\boldsymbol x\varepsilon]\ne\boldsymbol0$ なので、確率極限は $\boldsymbol\beta$ からずれたままです（一致性がない）。
+      標本を増やすと、ずれた値にばらつきなく近づくだけです。対処には操作変数法などが必要です。
+
+  - id: q19-two-stage-least-squares-1
+    term: two-stage-least-squares
+    level: 標準
+    type: truefalse
+    question: |
+      二段階最小二乗法を手作業で2回の最小二乗法として行った場合、第2段階の回帰が出力する残差（$\boldsymbol y-\hat X\hat{\boldsymbol\beta}$）から求めた標準誤差をそのまま使ってよい。
+    answer: false
+    hint: |
+      誤差 $\varepsilon$ の推定には、モデル $\boldsymbol y=X\boldsymbol\beta+\boldsymbol\varepsilon$ の元の $X$ と予測値 $\hat X$ のどちらを使うべきか。
+    explanation: |
+      係数 $\hat{\boldsymbol\beta}_{2SLS}$ は第2段階の回帰で正しく求まりますが、第2段階の残差は $\boldsymbol y-\hat X\hat{\boldsymbol\beta}$ で、誤差 $\boldsymbol y-X\hat{\boldsymbol\beta}$ とは別物です。
+      $\sigma^2$ は元の $X$ を使った残差で $\hat\sigma^2=\sum(y_i-\boldsymbol x_i^\top\hat{\boldsymbol\beta})^2/(n-k)$ と推定し直す必要があります。専用の 2SLS の関数はこれを自動で行います。
+
+  - id: q19-omitted-variable-bias-1
+    term: omitted-variable-bias
+    level: 標準
+    type: numeric
+    question: |
+      真のモデルが $y=\beta_0+0.5x_1+2x_2+\varepsilon$ で、$V[x_1]=4$、$\mathrm{Cov}(x_1,x_2)=1.2$ である。
+      $x_2$ を落として $y$ を $x_1$ だけに単回帰したときの傾きの確率極限を小数第2位まで求めよ。
+    answer: 1.1
+    tolerance: 0.005
+    hint: |
+      $\mathrm{plim}\,\tilde\beta_1=\beta_1+\beta_2\,\mathrm{Cov}(x_1,x_2)/V[x_1]$。
+    explanation: |
+      $x_2$ を $x_1$ に回帰した傾きは $\delta_1=1.2/4=0.3$ なので
+      $$\mathrm{plim}\,\tilde\beta_1=0.5+2\times0.3=1.1$$
+      です。$x_1$ の本当の効果 $0.5$ の2倍以上に見えてしまい、そのずれ $0.6$ が欠落変数バイアスです。
+
+  - id: q19-omitted-variable-bias-2
+    term: omitted-variable-bias
+    level: 基本
+    type: choice
+    question: |
+      賃金 $y$ を勤務年数 $x_1$ に回帰した。本当は「通勤時間 $x_2$」が賃金を下げる効果（$\beta_2<0$）をもち、$x_1$ と $x_2$ は正の相関をもつとする。
+      $x_2$ を落とした単回帰の $x_1$ の係数は、真の $\beta_1$ に比べてどうなるか。
+    choices:
+      - '過小に推定される（下向きの偏り）'
+      - '過大に推定される（上向きの偏り）'
+      - '偏らない'
+      - '偏りの向きは標本サイズで決まる'
+    answer: 0
+    hint: |
+      偏りは $\beta_2\times\delta_1$ で、$\delta_1$ の符号は $\mathrm{Cov}(x_1,x_2)$ の符号と同じ。
+    explanation: |
+      偏り $\beta_2\delta_1$ は、$\beta_2<0$、$\delta_1>0$ より負です。したがって $x_1$ の係数は過小に推定されます。
+      偏りが0になるのは $\beta_2=0$ か $x_1$ と $x_2$ が無相関のときだけで、向きは標本サイズには依存しません。
+
+  - id: q19-variable-selection-1
+    term: variable-selection
+    level: 標準
+    type: choice
+    question: |
+      $n=50$ のデータで、モデルA（説明変数 $k=2$ 個、残差平方和 $S_e=120$）とモデルB（$k=4$ 個、$S_e=105$）を比べる。
+      $\mathrm{AIC}=n\log(S_e/n)+2(k+2)$、$\mathrm{BIC}=n\log(S_e/n)+(k+2)\log n$ を使うとき、正しいものはどれか。
+    choices:
+      - 'AIC ではモデルB、BIC ではモデルAが選ばれる'
+      - 'AIC でも BIC でもモデルBが選ばれる'
+      - 'AIC でも BIC でもモデルAが選ばれる'
+      - 'AIC ではモデルA、BIC ではモデルBが選ばれる'
+    answer: 0
+    hint: |
+      $\log(120/50)=0.8755$、$\log(105/50)=0.7419$、$\log50=3.912$。
+    explanation: |
+      $$\mathrm{AIC}_A=43.77+8=51.77,\qquad \mathrm{AIC}_B=37.10+12=49.10$$
+      $$\mathrm{BIC}_A=43.77+4\times3.912=59.42,\qquad \mathrm{BIC}_B=37.10+6\times3.912=60.57$$
+      AIC は B、BIC は A を選びます。$n\ge8$ では $\log n>2$ なので、BIC のほうが変数の追加を強く罰し、小さいモデルを選びやすくなります。
+
+  - id: q19-variable-selection-2
+    term: variable-selection
+    level: 基本
+    type: truefalse
+    question: |
+      入れ子になった回帰モデルの候補の中から、決定係数 $R^2$ が最大のモデルを選べば、不要な変数を含まないモデルが選ばれる。
+    answer: false
+    hint: |
+      変数を1つ加えたとき、最小二乗法の残差平方和は増えることがあるか。
+    explanation: |
+      変数を加えると残差平方和は減るか変わらないので、$R^2$ は必ず増えるか変わりません。
+      入れ子の候補では $R^2$ 最大は常に「全部入り」のモデルになり、不要な変数まで選ばれます。
+      そのため自由度調整済み $\bar R^2$、AIC、BIC、$C_p$ のように変数の数を罰する基準を使います。
+
+  - id: q19-principal-component-regression-1
+    term: principal-component-regression
+    level: 標準
+    type: truefalse
+    question: |
+      主成分回帰では、説明変数の主成分を $y$ を使わずに分散の大きい順に選ぶので、分散は小さいが $y$ をよく説明する方向が捨てられてしまうことがある。
+    answer: true
+    hint: |
+      主成分は $X^\top X$ の固有ベクトルだけで決まる。$y$ はどこで使われるか。
+    explanation: |
+      主成分は説明変数の分散構造（$X^\top X$ の固有値）だけで作られ、$y$ との関係は考慮されません。
+      そのため、固有値が小さい主成分が $y$ の予測に重要な場合でも捨てられることがあります。
+      $y$ との共分散を考えて成分を作る方法として部分最小二乗法（PLS）があります。
+
+  - id: q19-spline-regression-1
+    term: spline-regression
+    level: 標準
+    type: numeric
+    question: |
+      ノットを4個置いた3次スプライン（切断べき基底 $1,x,x^2,x^3,(x-\kappa_k)_+^3$）で回帰する。推定する係数の個数を求めよ。
+    answer: 8
+    tolerance: 0.1
+    hint: |
+      3次多項式の部分の係数と、ノットごとの切断べき項の係数を数える。
+    explanation: |
+      3次多項式部分が $d+1=4$ 個、ノットごとの $(x-\kappa_k)_+^3$ が $K=4$ 個で、合計
+      $$d+1+K=4+4=8$$
+      です。区間ごとに別々の3次式（5区間×4=20個）を当てはめる場合と比べ、ノットで2階微分まで連続という制約（各ノット3本）の分だけ少なくなります（$20-12=8$）。

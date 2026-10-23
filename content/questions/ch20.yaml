@@ -1,0 +1,500 @@
+chapter: 20
+questions:
+  - id: q20-one-way-anova-1
+    term: one-way-anova
+    level: 標準
+    type: numeric
+    question: |
+      3つの群から各4個のデータを得た。群1：$5,7,6,6$、群2：$8,9,7,8$、群3：$10,9,11,10$。
+      一元配置分散分析の $F$ 値を求めよ（小数第1位まで）。
+    answer: 24
+    tolerance: 0.05
+    hint: |
+      群平均と総平均から $S_A=\sum n_i(\bar y_{i\cdot}-\bar y_{\cdot\cdot})^2$、群内の偏差から $S_E$ を求め、それぞれ自由度で割る。
+    explanation: |
+      群平均は $6,\ 8,\ 10$、総平均は $8$ なので $S_A=4(4+0+4)=32$（自由度2）。
+      群内の平方和は各群 $2$ で $S_E=6$（自由度 $12-3=9$）です。
+      $$F=\frac{32/2}{6/9}=\frac{16}{0.667}=24.0$$
+      $F_{0.05}(2,9)=4.26$ を大きく超えるので、群の平均に差があると判断します。
+
+  - id: q20-one-way-anova-2
+    term: one-way-anova
+    level: 基本
+    type: choice
+    question: |
+      5つの群から合計30個（各群6個）のデータを得て一元配置分散分析を行う。帰無仮説のもとで $F=V_A/V_E$ が従う分布はどれか。
+    choices:
+      - '$F(4,\ 25)$'
+      - '$F(5,\ 30)$'
+      - '$F(4,\ 29)$'
+      - '$F(5,\ 24)$'
+    answer: 0
+    hint: |
+      群間の自由度は $k-1$、群内の自由度は $N-k$。
+    explanation: |
+      $\phi_A=k-1=4$、$\phi_E=N-k=30-5=25$ なので $F(4,25)$ です。
+      $\phi_E=N-1=29$ は総自由度と取り違えた誤り、$(5,24)$ は群の数を自由度とした誤りです。$4+25=29=N-1$ と、自由度も分解されることを確かめます。
+
+  - id: q20-one-way-anova-3
+    term: one-way-anova
+    level: 標準
+    type: truefalse
+    question: |
+      群が2つ（$k=2$）のとき、一元配置分散分析の $F$ 値は、等分散を仮定した2標本 $t$ 検定の $t$ 値の2乗に等しく、両者の $p$ 値も一致する。
+    answer: true
+    hint: |
+      $t^2$ が従う分布と $F(1,\nu)$ の関係を思い出す。
+    explanation: |
+      $k=2$ では $S_A=\dfrac{n_1n_2}{n_1+n_2}(\bar y_1-\bar y_2)^2$、$V_E$ はプールした分散そのものなので $F=t^2$ になります。
+      $t\sim t(\nu)$ なら $t^2\sim F(1,\nu)$ なので、両側 $t$ 検定と $F$ 検定の $p$ 値は一致します。
+
+  - id: q20-sum-of-squares-decomposition-1
+    term: sum-of-squares-decomposition
+    level: 基本
+    type: numeric
+    question: |
+      4群・合計24個のデータの一元配置分散分析で、総平方和が $S_T=150$、誤差平方和が $S_E=90$ であった。
+      $F$ 値を小数第2位まで求めよ。
+    answer: 4.44
+    tolerance: 0.005
+    hint: |
+      $S_A=S_T-S_E$。自由度も $\phi_T=\phi_A+\phi_E$ と分かれる。
+    explanation: |
+      $S_A=150-90=60$、$\phi_A=3$、$\phi_E=24-4=20$ なので
+      $$F=\frac{60/3}{90/20}=\frac{20}{4.5}=4.44$$
+      です。平方和は足し算で分かれますが、平均平方 $V$ は足し算になりません。
+
+  - id: q20-sum-of-squares-decomposition-2
+    term: sum-of-squares-decomposition
+    level: 応用
+    type: derivation
+    question: |
+      一元配置で $S_T=S_A+S_E$ が成り立つことを示せ。ただし
+      $S_T=\sum_i\sum_j(y_{ij}-\bar y_{\cdot\cdot})^2$、$S_A=\sum_in_i(\bar y_{i\cdot}-\bar y_{\cdot\cdot})^2$、$S_E=\sum_i\sum_j(y_{ij}-\bar y_{i\cdot})^2$。
+    steps:
+      - |
+        $y_{ij}-\bar y_{\cdot\cdot}=(\bar y_{i\cdot}-\bar y_{\cdot\cdot})+(y_{ij}-\bar y_{i\cdot})$ と分けて2乗し、全体で和をとる。
+      - |
+        2乗の項はそれぞれ $S_A$ と $S_E$ になる（第1項は $j$ によらないので $n_i$ 倍）。
+      - |
+        交差項は $2\sum_i(\bar y_{i\cdot}-\bar y_{\cdot\cdot})\sum_j(y_{ij}-\bar y_{i\cdot})$ で、内側の和は群平均からの偏差の和なので0。
+    answer: "$S_T=S_A+S_E$（交差項 $=0$）"
+    hint: |
+      総平均からの偏差を「群平均までの距離」と「群平均からの距離」に分ける。
+    explanation: |
+      $$S_T=\sum_i n_i(\bar y_{i\cdot}-\bar y_{\cdot\cdot})^2+\sum_i\sum_j(y_{ij}-\bar y_{i\cdot})^2+2\sum_i(\bar y_{i\cdot}-\bar y_{\cdot\cdot})\underbrace{\sum_j(y_{ij}-\bar y_{i\cdot})}_{=0}$$
+      より $S_T=S_A+S_E$ です。この恒等式は分布の仮定なしに、どんなデータでも成り立ちます。
+
+  - id: q20-two-way-anova-with-replication-1
+    term: two-way-anova-with-replication
+    level: 基本
+    type: choice
+    question: |
+      因子Aが3水準、因子Bが4水準で、各組合せで2回ずつ観測した繰り返しのある二元配置分散分析を行う。
+      交互作用A×Bの自由度と誤差の自由度の組はどれか。
+    choices:
+      - '（6, 12）'
+      - '（6, 17）'
+      - '（12, 12）'
+      - '（6, 24）'
+    answer: 0
+    hint: |
+      $\phi_{A\times B}=(a-1)(b-1)$、$\phi_E=ab(r-1)$。
+    explanation: |
+      $\phi_{A\times B}=2\times3=6$、$\phi_E=3\times4\times(2-1)=12$ です。
+      確認として $\phi_A+\phi_B+\phi_{A\times B}+\phi_E=2+3+6+12=23=abr-1$ になります。
+      17 は交互作用を誤差に含めた（繰り返しなしの扱い）値、24 は総データ数と取り違えた値です。
+
+  - id: q20-two-way-anova-with-replication-2
+    term: two-way-anova-with-replication
+    level: 標準
+    type: numeric
+    question: |
+      2×2 の繰り返しのある二元配置（各セル2回）で次のデータを得た。
+      $A_1B_1$：$3,5$、$A_1B_2$：$6,8$、$A_2B_1$：$5,7$、$A_2B_2$：$12,14$。
+      交互作用A×Bの $F$ 値を小数第1位まで求めよ。
+    answer: 4
+    tolerance: 0.05
+    hint: |
+      セル平均 $\bar y_{ij\cdot}$ から $\bar y_{ij\cdot}-\bar y_{i\cdot\cdot}-\bar y_{\cdot j\cdot}+\bar y_{\cdot\cdot\cdot}$ を求め、2乗和を $r$ 倍する。
+    explanation: |
+      セル平均は $4,\ 7,\ 6,\ 13$、A の平均は $5.5,\ 9.5$、B の平均は $5,\ 10$、総平均は $7.5$ です。
+      $A_1B_1$ の交互作用は $4-5.5-5+7.5=1$ で、他のセルは $\pm1$ なので
+      $$S_{A\times B}=2\times(1+1+1+1)=8\quad(\phi=1)$$
+      $S_E$ は各セル $(\pm1)^2\times2=2$ の合計 $8$（$\phi_E=4$）で $V_E=2$ です。$F=8/2=4.0$ で、$F_{0.05}(1,4)=7.71$ に届かず有意ではありません。
+
+  - id: q20-two-way-anova-without-replication-1
+    term: two-way-anova-without-replication
+    level: 標準
+    type: numeric
+    question: |
+      因子A（3水準）と因子B（3水準）の各組合せで1回ずつ観測し、次の表を得た（行がA、列がB）。
+      $A_1$：$4,6,8$、$A_2$：$6,9,9$、$A_3$：$8,9,13$。因子Aの $F$ 値を求めよ（整数で答えよ）。
+    answer: 12
+    tolerance: 0.05
+    hint: |
+      $S_A=b\sum(\bar y_{i\cdot}-\bar y)^2$、$S_B$ も同様に求め、$S_E=S_T-S_A-S_B$（自由度 $(a-1)(b-1)$）。
+    explanation: |
+      総平均は $8$、行平均は $6,8,10$、列平均は $6,8,10$ なので $S_A=3(4+0+4)=24$、$S_B=24$ です。
+      $S_T=\sum(y_{ij}-8)^2=52$ より $S_E=52-24-24=4$（$\phi_E=4$）、$V_E=1$。
+      $$F_A=\frac{24/2}{1}=12$$
+      で、$F_{0.05}(2,4)=6.94$ を超えるので A は有意です。
+
+  - id: q20-two-way-anova-without-replication-2
+    term: two-way-anova-without-replication
+    level: 基本
+    type: truefalse
+    question: |
+      繰り返しのない二元配置分散分析でも、交互作用A×Bの有無を $F$ 検定で調べることができる。
+    answer: false
+    hint: |
+      各セルにデータが1つしかないとき、セル内のばらつき（純粋な誤差）は計算できるか。
+    explanation: |
+      各セルが1個なので、交互作用の平方和 $\sum\sum(y_{ij}-\bar y_{i\cdot}-\bar y_{\cdot j}+\bar y)^2$ と誤差を分けられません。
+      そのため「交互作用はない」と仮定し、この部分を誤差 $S_E$（自由度 $(a-1)(b-1)$）として使います。
+      交互作用を調べたいなら、各セルで繰り返しをとる必要があります。
+
+  - id: q20-main-effect-and-interaction-1
+    term: main-effect-and-interaction
+    level: 標準
+    type: numeric
+    question: |
+      2×2 のセル平均が $\mu_{11}=10$、$\mu_{12}=14$、$\mu_{21}=12$、$\mu_{22}=22$ である。
+      制約 $\sum_i(\alpha\beta)_{ij}=\sum_j(\alpha\beta)_{ij}=0$ のもとでの交互作用 $(\alpha\beta)_{22}$ を小数第1位まで求めよ。
+    answer: 1.5
+    tolerance: 0.05
+    hint: |
+      $(\alpha\beta)_{ij}=\mu_{ij}-\bar\mu_{i\cdot}-\bar\mu_{\cdot j}+\bar\mu_{\cdot\cdot}$。
+    explanation: |
+      $\bar\mu_{2\cdot}=17$、$\bar\mu_{\cdot2}=18$、$\bar\mu_{\cdot\cdot}=14.5$ なので
+      $$(\alpha\beta)_{22}=22-17-18+14.5=1.5$$
+      です。「差の差」$(22-12)-(14-10)=6$ はこの4倍にあたります（2×2では $(\alpha\beta)_{22}=\text{差の差}/4$）。
+
+  - id: q20-main-effect-and-interaction-2
+    term: main-effect-and-interaction
+    level: 標準
+    type: truefalse
+    question: |
+      二元配置で交互作用A×Bが大きく、因子Aの主効果がほぼ0であった。このとき、因子AはBのどの水準においても $y$ にほとんど影響しないと結論できる。
+    answer: false
+    hint: |
+      セル平均 $\mu_{11}=10,\ \mu_{12}=14,\ \mu_{21}=14,\ \mu_{22}=10$ のような例で、A の主効果と、B の各水準での A の効果を比べる。
+    explanation: |
+      上の例では A の主効果（B で平均した効果）は $12-12=0$ ですが、$B_1$ では A を変えると $+4$、$B_2$ では $-4$ と、効果が打ち消し合っているだけです。
+      交互作用が大きいときは主効果だけで判断せず、もう一方の因子の水準ごとの効果（単純主効果）やセル平均の図を見ます。
+
+  - id: q20-fisher-three-principles-1
+    term: fisher-three-principles
+    level: 基本
+    type: choice
+    question: |
+      フィッシャーの3原則のうち、「未知の系統的な偏り（例：実験の時間帯による温度変化）を偶然誤差に変え、誤差の独立性を保証する」役割をもつのはどれか。
+    choices:
+      - '無作為化'
+      - '反復'
+      - '局所管理'
+      - '直交化'
+    answer: 0
+    hint: |
+      処理の順序や配置を乱数で決めると、偏りはどうなるか。
+    explanation: |
+      処理の割り付けや実施順を乱数で決める**無作為化**により、気づいていない系統誤差が特定の処理に偏らず、偶然誤差として扱えるようになります。
+      反復は誤差分散を推定し精度を上げるため、局所管理はブロック間の差を誤差から取り除くための原則です。直交化は3原則に含まれません。
+
+  - id: q20-fisher-three-principles-2
+    term: fisher-three-principles
+    level: 標準
+    type: numeric
+    question: |
+      誤差の標準偏差が $\sigma=3$ の実験で、2つの処理を各 $r$ 回ずつ反復し、処理平均の差の標準誤差 $\sqrt{2\sigma^2/r}$ を $1.5$ 以下にしたい。必要な最小の反復数 $r$ を求めよ。
+    answer: 8
+    tolerance: 0.1
+    hint: |
+      $\sqrt{2\times9/r}\le1.5$ を $r$ について解く。
+    explanation: |
+      $$\frac{18}{r}\le2.25\quad\Longleftrightarrow\quad r\ge8$$
+      なので $r=8$ です。標準誤差を半分にするには反復を4倍にする必要があります（$\sqrt r$ に反比例）。
+
+  - id: q20-randomized-block-design-1
+    term: randomized-block-design
+    level: 標準
+    type: numeric
+    question: |
+      4種類の処理を5つのブロックで乱塊法により比較した。平方和は 処理 $S_\tau=36$、ブロック $S_\beta=60$、総平方和 $S_T=120$ であった。
+      処理の $F$ 値を求めよ（小数第1位まで）。
+    answer: 6
+    tolerance: 0.05
+    hint: |
+      $S_E=S_T-S_\tau-S_\beta$、誤差の自由度は $(t-1)(b-1)$。
+    explanation: |
+      $S_E=120-36-60=24$、$\phi_E=3\times4=12$ より $V_E=2$。$V_\tau=36/3=12$ なので
+      $$F=\frac{12}{2}=6.0$$
+      で、$F_{0.05}(3,12)=3.49$ を超えて有意です。
+
+  - id: q20-randomized-block-design-2
+    term: randomized-block-design
+    level: 応用
+    type: numeric
+    question: |
+      前問と同じデータ（処理4種類×ブロック5つ、$S_\tau=36$、$S_\beta=60$、$S_T=120$）で、ブロックを無視して一元配置分散分析を行った場合の処理の $F$ 値を小数第2位まで求めよ。
+    answer: 2.29
+    tolerance: 0.005
+    hint: |
+      ブロックを無視すると、ブロックの平方和と自由度が誤差に入る。
+    explanation: |
+      誤差は $S_\beta+S_E=60+24=84$、自由度は $4+12=16$ で $V_E=5.25$ になるので
+      $$F=\frac{12}{5.25}=2.29$$
+      です。$F_{0.05}(3,16)=3.24$ に届かず有意でなくなります。ブロック間の差を誤差から取り除く局所管理の効果がよくわかる例です。
+
+  - id: q20-latin-square-design-1
+    term: latin-square-design
+    level: 基本
+    type: numeric
+    question: |
+      5種類の処理を $5\times5$ のラテン方格で比較する。誤差の自由度を求めよ。
+    answer: 12
+    tolerance: 0.1
+    hint: |
+      総自由度 $p^2-1$ から、行・列・処理の自由度（各 $p-1$）を引く。
+    explanation: |
+      $$\phi_E=(p^2-1)-3(p-1)=24-12=12=(p-1)(p-2)$$
+      です。$p=3$ では誤差の自由度が2しかなく、検出力が低くなります。
+
+  - id: q20-latin-square-design-2
+    term: latin-square-design
+    level: 標準
+    type: truefalse
+    question: |
+      ラテン方格法では、行因子・列因子・処理因子の主効果に加えて、行×処理の交互作用も推定できる。
+    answer: false
+    hint: |
+      $p\times p$ の方格で観測数は $p^2$。主効果だけで自由度をいくつ使うか。
+    explanation: |
+      観測数 $p^2$ に対し、行・列・処理の主効果で $3(p-1)$、残りは $(p-1)(p-2)$ しかなく、交互作用（行×処理だけで $(p-1)^2$）を推定する余地がありません。
+      ラテン方格は全組合せ $p^3$ の $1/p$ だけを実施する一部実施の計画で、交互作用はないと仮定します。
+
+  - id: q20-orthogonal-array-1
+    term: orthogonal-array
+    level: 標準
+    type: numeric
+    question: |
+      直交表 $L_8(2^7)$ の第1列に因子Aを割り付けた。8回の実験のうち、第1列が水準1のデータの合計が $T_1=52$、水準2の合計が $T_2=40$ であった。
+      因子Aの平方和を求めよ。
+    answer: 18
+    tolerance: 0.05
+    hint: |
+      2水準の列の平方和は $(T_1-T_2)^2/N$。
+    explanation: |
+      $$S_A=\frac{(52-40)^2}{8}=\frac{144}{8}=18$$
+      です（自由度1）。各水準4個の平均 $13$ と $10$、総平均 $11.5$ から $8\times1.5^2=18$ としても同じです。
+
+  - id: q20-orthogonal-array-2
+    term: orthogonal-array
+    level: 応用
+    type: choice
+    question: |
+      直交表 $L_8(2^7)$（成分：列1 $a$、列2 $b$、列3 $ab$、列4 $c$、列5 $ac$、列6 $bc$、列7 $abc$）の
+      第1列に因子A、第2列に因子B、第4列に因子Cを割り付けた。交互作用B×Cが現れる列はどれか。
+    choices:
+      - '第6列'
+      - '第3列'
+      - '第5列'
+      - '第7列'
+    answer: 0
+    hint: |
+      2つの列の交互作用は、成分を掛け合わせて2乗の文字を消した成分をもつ列に現れる。
+    explanation: |
+      B は $b$、C は $c$ なので、B×C の成分は $b\times c=bc$ で、第6列です。
+      第3列（$ab$）は A×B、第5列（$ac$）は A×C、第7列（$abc$）は3因子交互作用 A×B×C の列です。
+      交互作用の列に別の因子を割り付けると、その因子と交互作用が交絡します。
+
+  - id: q20-tukey-multiple-comparison-1
+    term: tukey-multiple-comparison
+    level: 標準
+    type: numeric
+    question: |
+      4群（各6個）の一元配置分散分析で $V_E=8$（自由度20）を得た。スチューデント化された範囲の上側5%点は $q_{0.05}(4,20)=3.958$ である。
+      テューキー法の HSD（有意となる平均の差の最小値）を小数第2位まで求めよ。
+    answer: 4.57
+    tolerance: 0.005
+    hint: |
+      $\mathrm{HSD}=q_\alpha(k,\nu)\sqrt{V_E/n}$。
+    explanation: |
+      $$\mathrm{HSD}=3.958\times\sqrt{\frac{8}{6}}=3.958\times1.1547=4.57$$
+      です。平均の差が $4.57$ を超えるペアを有意とします。$q$ に差の標準誤差 $\sqrt{2V_E/n}$ を掛けると $6.46$ となりますが、
+      これは誤りです。差の標準誤差を使う形なら $\mathrm{HSD}=\dfrac{q}{\sqrt2}\sqrt{\dfrac{2V_E}{n}}$ で、同じ $4.57$ になります。
+
+  - id: q20-tukey-multiple-comparison-2
+    term: tukey-multiple-comparison
+    level: 基本
+    type: truefalse
+    question: |
+      4群のすべてのペア（6組）に、それぞれ有意水準5%の2標本 $t$ 検定を繰り返すと、すべての群の母平均が等しいときでも、
+      少なくとも1組で有意となる確率は5%より大きくなる。
+    answer: true
+    hint: |
+      6回の検定のどれか1つで誤って棄却する確率を考える。
+    explanation: |
+      個々の検定の誤りは5%でも、6回のうちどれかで誤る確率（ファミリーワイズの過誤率）は5%を大きく超えます（4群では約20%）。
+      テューキー法は、最大の差の分布（スチューデント化された範囲の分布）を基準にして、この確率を全体で5%に抑えます。
+
+  - id: q20-studentized-range-distribution-1
+    term: studentized-range-distribution
+    level: 応用
+    type: numeric
+    question: |
+      $k=2$ のとき、スチューデント化された範囲 $Q=W/S$ と $t$ 分布には $Q=\sqrt2\,|T|$ の関係がある。
+      $t_{0.025}(10)=2.228$ を用いて、$q_{0.05}(2,10)$ を小数第2位まで求めよ。
+    answer: 3.15
+    tolerance: 0.005
+    hint: |
+      $k=2$ の範囲は $|X_1-X_2|$ で、その標準偏差は $\sqrt2\sigma$。
+    explanation: |
+      $|X_1-X_2|/(\sqrt2S)$ は自由度10の $t$ 分布の絶対値に従うので、$P(Q>q)=P(|T|>q/\sqrt2)$ です。
+      上側5%点は $|T|$ の両側5%点 $t_{0.025}(10)$ に対応して
+      $$q_{0.05}(2,10)=\sqrt2\times2.228=3.15$$
+      です。2群ならテューキー法と通常の $t$ 検定は一致します。
+
+  - id: q20-effect-size-eta-squared-1
+    term: effect-size-eta-squared
+    level: 標準
+    type: numeric
+    question: |
+      3群・合計33個の一元配置分散分析で、$S_A=40$、$S_T=200$ であった。
+      誤差の分を差し引いた寄与率 $\rho_A=(S_A-\phi_AV_E)/S_T$ を小数第3位まで求めよ。
+    answer: 0.147
+    tolerance: 0.001
+    hint: |
+      $S_E=S_T-S_A$、$V_E=S_E/(N-k)$、$\phi_A=k-1$。
+    explanation: |
+      $S_E=160$、$V_E=160/30=5.333$、$\phi_A=2$ なので
+      $$\rho_A=\frac{40-2\times5.333}{200}=\frac{29.33}{200}=0.147$$
+      です。$\eta^2=40/200=0.200$ より小さく、偶然による群間のばらつきの分を差し引いています。
+
+  - id: q20-fixed-and-random-effects-1
+    term: fixed-and-random-effects
+    level: 標準
+    type: numeric
+    question: |
+      ランダムに選んだ製造ロットから各5個を測定し、一元配置の変量模型で $V_A=26$、$V_E=6$ を得た。
+      ロット間の分散成分 $\sigma_A^2$ の推定値を求めよ（小数第1位まで）。
+    answer: 4
+    tolerance: 0.05
+    hint: |
+      $E[V_A]=\sigma^2+n\sigma_A^2$、$E[V_E]=\sigma^2$。
+    explanation: |
+      $$\hat\sigma_A^2=\frac{V_A-V_E}{n}=\frac{26-6}{5}=4.0$$
+      です。全分散 $4+6=10$ のうちロット間が占める割合（級内相関）は $0.4$ です。
+      $V_A-V_E$ を $n$ で割り忘れると $20$ となり誤りです。
+
+  - id: q20-fixed-and-random-effects-2
+    term: fixed-and-random-effects
+    level: 基本
+    type: choice
+    question: |
+      次の実験のうち、因子を**変量模型**（変量因子）として扱うのが最も自然なものはどれか。
+    choices:
+      - '工場の多数の作業者から無作為に5人を選び、作業者による製品のばらつきの大きさを調べる'
+      - '市販の3種類の肥料のうち、どれが最も収量が多いかを比べる'
+      - '温度を 100℃、150℃、200℃ の3水準に設定して強度を比べる'
+      - '新薬・既存薬・偽薬の効果を比べる'
+    answer: 0
+    hint: |
+      関心があるのは「その水準そのものの効果」か、「水準を選んだ母集団のばらつき」か。
+    explanation: |
+      作業者5人は多数の作業者からの無作為標本で、関心は「作業者間のばらつき $\sigma_A^2$」なので変量模型です。
+      残りの3つは、選んだ水準そのもの（特定の肥料・温度・薬）の効果の比較に関心があるので母数模型です。
+
+  - id: q20-expected-mean-square-1
+    term: expected-mean-square
+    level: 応用
+    type: choice
+    question: |
+      繰り返しのある二元配置で、因子A・Bとも**変量因子**（変量模型）とする。
+      A の分散成分 $\sigma_A^2=0$ を検定するときの $F$ 統計量はどれか。
+    choices:
+      - '$V_A/V_{A\times B}$'
+      - '$V_A/V_E$'
+      - '$V_A/V_B$'
+      - '$V_{A\times B}/V_E$'
+    answer: 0
+    hint: |
+      変量模型では $E[V_A]=\sigma^2+r\sigma_{AB}^2+br\sigma_A^2$。$\sigma_A^2=0$ のとき、これと同じ期待値をもつ平均平方はどれか。
+    explanation: |
+      $\sigma_A^2=0$ のとき $E[V_A]=\sigma^2+r\sigma_{AB}^2$ で、これは $E[V_{A\times B}]$ と一致します。
+      したがって分母は $V_{A\times B}$ で、$F=V_A/V_{A\times B}\sim F(a-1,(a-1)(b-1))$ です。
+      母数模型のように $V_E$ で割ると、交互作用の分散成分まで A の効果と見なしてしまいます。
+
+  - id: q20-factorial-design-1
+    term: factorial-design
+    level: 標準
+    type: numeric
+    question: |
+      $2^2$ 要因計画を各組合せ2回ずつ（$r=2$）行い、各組合せの合計が $T_{(1)}=20$、$T_a=28$、$T_b=24$、$T_{ab}=40$ であった。
+      因子Aの平方和 $S_A$ を求めよ。
+    answer: 72
+    tolerance: 0.05
+    hint: |
+      対比 $C_A=-T_{(1)}+T_a-T_b+T_{ab}$ を求め、$S_A=C_A^2/(2^kr)$。
+    explanation: |
+      $C_A=-20+28-24+40=24$ なので
+      $$S_A=\frac{24^2}{4\times2}=72$$
+      です。A の効果（高水準の平均−低水準の平均）は $C_A/(2r)=6$ です。
+
+  - id: q20-split-plot-design-1
+    term: split-plot-design
+    level: 標準
+    type: choice
+    question: |
+      ブロック3つ（$r=3$）、1次因子A 2水準、2次因子B 4水準の分割法を行った。
+      1次因子Aの主効果の $F$ 検定で使う分母と、その自由度の組はどれか。
+    choices:
+      - '1次誤差 $V_{E_1}$、自由度2'
+      - '2次誤差 $V_{E_2}$、自由度12'
+      - '1次誤差 $V_{E_1}$、自由度6'
+      - '2次誤差 $V_{E_2}$、自由度18'
+    answer: 0
+    hint: |
+      A は大区画ごとに割り付けられる。$E[V_A]$ と同じ形で $\alpha$ を含まない期待平均平方をもつのはどちらの誤差か。
+    explanation: |
+      $E[V_A]=\sigma_2^2+b\sigma_1^2+rb\sum\alpha_i^2/(a-1)$ なので、分母は $E[V_{E_1}]=\sigma_2^2+b\sigma_1^2$ の1次誤差です。
+      その自由度は $(r-1)(a-1)=2\times1=2$ です。2次誤差の自由度は $a(r-1)(b-1)=2\times2\times3=12$ で、B と A×B の検定に使います。
+      A を2次誤差で検定すると、大区画間のばらつきを無視して有意になりすぎます。
+
+  - id: q20-confounding-1
+    term: confounding
+    level: 標準
+    type: choice
+    question: |
+      $2^3$ 要因計画（因子A, B, C）の一部実施で、定義関係 $I=ABC$ の $2^{3-1}$ 計画を行った。因子Bの主効果と交絡する（別名の）効果はどれか。
+    choices:
+      - 'AC'
+      - 'AB'
+      - 'BC'
+      - 'ABC'
+    answer: 0
+    hint: |
+      定義関係の両辺に B を掛け、$B^2=I$ として消す。
+    explanation: |
+      $B\times I=B\times ABC=AB^2C=AC$ なので、$B=AC$ が別名関係です。
+      B の推定値には AC の交互作用が混ざるので、AC が無視できるときに限って B の効果として解釈できます。
+
+  - id: q20-confounding-2
+    term: confounding
+    level: 標準
+    type: choice
+    question: |
+      $2^3$ 要因計画の8通り $(1),a,b,ab,c,ac,bc,abc$ を、3因子交互作用 ABC をブロックと交絡させて大きさ4のブロック2つに分ける。
+      $(1)$ と同じブロックに入る組合せはどれか。
+    choices:
+      - '$ab$'
+      - '$a$'
+      - '$abc$'
+      - '$c$'
+    answer: 0
+    hint: |
+      ABC の符号は、高水準の因子の数（小文字の個数）が偶数か奇数かで決まる。
+    explanation: |
+      $(1)$ は高水準の文字が0個（偶数）で ABC の符号は $-$ です。同じく偶数個の $ab,\ ac,\ bc$ が同じブロックに入り、
+      奇数個の $a,\ b,\ c,\ abc$ がもう一方のブロックになります。
+      ブロック差は ABC の対比と一致し、ABC はブロックと区別できなくなりますが、主効果と2因子交互作用はブロック差の影響を受けません。

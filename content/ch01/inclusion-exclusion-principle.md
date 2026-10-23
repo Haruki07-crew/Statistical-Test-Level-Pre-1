@@ -3,7 +3,7 @@ id: inclusion-exclusion-principle
 title: 包除原理
 reading: ほうじょげんり
 en: Inclusion-exclusion principle
-aliases: [包除定理, 包含と排除の原理, 和事象の確率の公式, ボンフェローニの不等式]
+aliases: [包除定理, 包含と排除の原理, 和事象の確率の公式]
 chapter: 1
 importance: B
 tags: [和事象, 加法定理, 数え上げ, 完全順列]

@@ -796,3 +796,41 @@ check(T, "乱数4万表（H0）：d の分散≈1（許容 0.03）、e の分散
 ok = sum(results)
 ng = len(results) - ok
 print(f"\n合計: OK {ok} / NG {ng}")
+
+# --- 重要度A への加筆: yates-correction ---
+T = "yates-correction"
+_a, _b, _c, _d = sp.symbols("a b c d")
+check(T, "周辺固定で a→a+1 のとき ad−bc は n 増える", sp.expand((_a + 1) * (_d + 1) - (_b - 1) * (_c - 1) - (_a * _d - _b * _c) - (_a + _b + _c + _d)) == 0, "")
+_t2 = np.array([[240, 1760], [200, 1800]])
+_c0 = stats.chi2_contingency(_t2, correction=False); _c1 = stats.chi2_contingency(_t2, correction=True)
+_ad = 240 * 1800 - 1760 * 200
+check(T, "例2 ad−bc=80000, n/2=2000 は 2.5%", _ad == 80000 and close(2000 / _ad, 0.025, 1e-12), _ad)
+check(T, "例2 補正なし χ²=4.086, p=0.0432", close(_c0[0], 4.086, 5e-4) and close(_c0[1], 0.0432), (round(_c0[0], 4), round(_c0[1], 5)))
+check(T, "例2 補正あり χ²=3.884, p=0.0487", close(_c1[0], 3.884, 5e-4) and close(_c1[1], 0.0487), (round(_c1[0], 4), round(_c1[1], 5)))
+_yf = 4000 * (abs(_ad) - 2000) ** 2 / (2000 * 2000 * 440 * 3560)
+check(T, "例2 補正式 n(|ad−bc|−n/2)²/(n1n2m1m2) と scipy が一致", close(_yf, _c1[0], 1e-9), round(_yf, 5))
+check(T, "例2 フィッシャー両側 p=0.0486", close(stats.fisher_exact(_t2)[1], 0.0486), round(stats.fisher_exact(_t2)[1], 5))
+check(T, "例2 統計量の比 ≈0.95（差は約5%）, 例1 20/140≈14%", close(_c1[0] / _c0[0], 0.95, 0.005) and close(20 / 140, 0.14, 0.005), round(_c1[0] / _c0[0], 4))
+_t3 = np.array([[4, 6], [4, 5]])
+_c30 = stats.chi2_contingency(_t3, correction=False)
+check(T, "例3 |ad−bc|=4<9.5, χ²_Y=0（scipy も 0）, 補正なし 0.0384, p=0.8447",
+      abs(4 * 5 - 6 * 4) == 4 and 4 < 9.5 and stats.chi2_contingency(_t3, correction=True)[0] == 0 and close(_c30[0], 0.0384) and close(_c30[1], 0.8447) and close(19 * 16 / (10 * 9 * 8 * 11), 0.0384),
+      (round(_c30[0], 5), round(_c30[1], 5)))
+check(T, "例3 期待度数 a=80/19≈4.21 に最も近い整数が 4", round(10 * 8 / 19) == 4, round(10 * 8 / 19, 3))
+for _tt in (np.array([[12, 8], [5, 15]]), _t2):
+    _n1, _n2 = _tt.sum(1); _p1, _p2 = _tt[0, 0] / _n1, _tt[1, 0] / _n2; _pb = _tt[:, 0].sum() / _tt.sum()
+    _se2 = _pb * (1 - _pb) * (1 / _n1 + 1 / _n2)
+    _z0 = (_p1 - _p2) ** 2 / _se2; _zy = (abs(_p1 - _p2) - 0.5 * (1 / _n1 + 1 / _n2)) ** 2 / _se2
+    check(T, f"比率の差の z²（補正なし・補正あり）= χ²・χ²_Y（表 {_tt.tolist()}）",
+          close(_z0, stats.chi2_contingency(_tt, correction=False)[0], 1e-9) and close(_zy, stats.chi2_contingency(_tt, correction=True)[0], 1e-9), (round(_z0, 4), round(_zy, 4)))
+
+# --- B への格上げ: residual-analysis-contingency のグラフ ---
+T = "residual-analysis-contingency"
+_ch = front(T)["charts"][0]
+_tb = np.array(_ch["params"]["table"])
+check(T, "charts mosaic の表 = 本文の表（20代 10/30/40 など）, ラベル", _tb.tolist() == [[10, 30, 40], [25, 35, 20], [40, 25, 15]] and _ch["params"]["rowLabels"] == ["20代", "40代", "60代"] and _ch["params"]["colLabels"] == ["現金", "カード", "スマホ決済"], _tb.tolist())
+check(T, "グラフ節 列割合 75/240=0.3125, 20代現金 10/80=0.125, 60代現金 40/80=0.5", close(75 / 240, 0.3125, 1e-12) and 10 / 80 == 0.125 and 40 / 80 == 0.5, "")
+
+ok = sum(results)
+ng = len(results) - ok
+print(f"\n合計（重要度A への加筆を含む）: OK {ok} / NG {ng}")

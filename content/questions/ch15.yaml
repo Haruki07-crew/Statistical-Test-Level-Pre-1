@@ -1,0 +1,497 @@
+chapter: 15
+questions:
+  - id: q15-stochastic-process-1
+    term: stochastic-process
+    level: 標準
+    type: truefalse
+    question: |
+      確率過程 $\{X_t\}$ の性質は、各時刻 $t$ ごとの周辺分布（$X_t$ 単独の分布）がすべてわかれば完全に決まる。
+    answer: false
+    hint: |
+      標準ブラウン運動 $W(t)$ と、$Z\sim N(0,1)$ を使った $X_t=\sqrt t\,Z$ を比べる。
+    explanation: |
+      どちらも各時刻で $N(0,t)$ に従いますが、自己共分散は $\mathrm{Cov}(W(s),W(t))=\min(s,t)$、
+      $\mathrm{Cov}(X_s,X_t)=\sqrt{st}$ で異なります（例えば $s=1,t=4$ で $1$ と $2$）。
+      確率過程を決めるのは、有限個の時刻の**同時分布**（有限次元分布）の全体です。
+
+  - id: q15-counting-process-1
+    term: counting-process
+    level: 標準
+    type: numeric
+    question: |
+      強度 $\lambda=1.5$ のポアソン過程で、3番目の出来事が時刻2までに起こる確率 $P(S_3\le2)$ を小数第3位まで求めよ。
+    answer: 0.577
+    tolerance: 0.001
+    hint: |
+      計数過程では $\{S_n\le t\}=\{N(t)\ge n\}$。
+    explanation: |
+      $N(2)\sim\mathrm{Po}(3)$ なので
+      $$P(S_3\le2)=P(N(2)\ge3)=1-e^{-3}\left(1+3+\frac92\right)=1-8.5e^{-3}=0.577$$
+      ガンマ分布（形状3、レート1.5）の累積分布関数を直接計算しても同じ値です。
+
+  - id: q15-poisson-process-1
+    term: poisson-process
+    level: 基本
+    type: numeric
+    question: |
+      ある問い合わせ窓口には、1時間あたり強度3のポアソン過程で電話がかかってくる。
+      2時間でちょうど4本かかってくる確率を小数第3位まで求めよ。
+    answer: 0.134
+    tolerance: 0.001
+    hint: |
+      長さ2の区間の件数は $\mathrm{Po}(3\times2)$ に従う。
+    explanation: |
+      $$P(N(2)=4)=\frac{e^{-6}6^4}{4!}=\frac{1296}{24}e^{-6}=54e^{-6}=0.134$$
+
+  - id: q15-poisson-process-2
+    term: poisson-process
+    level: 応用
+    type: numeric
+    question: |
+      強度 $\lambda$ のポアソン過程で、時刻4までにちょうど6回の出来事が起こったことがわかっている。
+      このとき、時刻1までにちょうど2回起こっていた確率を小数第3位まで求めよ。
+    answer: 0.297
+    tolerance: 0.001
+    hint: |
+      $N(4)=n$ を与えたとき、$N(1)$ は二項分布 $\mathrm{Bin}(n,1/4)$ に従う（$\lambda$ は消える）。
+    explanation: |
+      独立増分より
+      $$P(N(1)=2\mid N(4)=6)=\frac{P(N(1)=2)P(N(4)-N(1)=4)}{P(N(4)=6)}=\binom62\left(\frac14\right)^2\left(\frac34\right)^4$$
+      $=15\times\dfrac1{16}\times\dfrac{81}{256}=0.297$ です。$N(4)=6$ のもとで6回の時刻は $[0,4]$ 上の一様分布の順序統計量と同じに振る舞います。
+
+  - id: q15-poisson-process-3
+    term: poisson-process
+    level: 標準
+    type: choice
+    question: |
+      強度 $\lambda=3$ のポアソン過程 $N(t)$ について、$\mathrm{Cov}(N(2),N(5))$ はどれか。
+    choices:
+      - '$6$'
+      - '$15$'
+      - '$0$'
+      - '$9$'
+    answer: 0
+    hint: |
+      $N(5)=N(2)+\{N(5)-N(2)\}$ と分け、独立増分を使う。
+    explanation: |
+      $$\mathrm{Cov}(N(2),N(5))=V[N(2)]+\mathrm{Cov}(N(2),N(5)-N(2))=3\times2+0=6$$
+      一般に $\lambda\min(s,t)$ です。$15$ は $\max$ を使った誤り、$0$ は $N(2)$ と $N(5)$ 自体を独立と誤ったもの、$9$ は $\lambda(t-s)$ にあたります。
+
+  - id: q15-interarrival-time-1
+    term: interarrival-time
+    level: 基本
+    type: numeric
+    question: |
+      客が1時間あたり強度4のポアソン過程で到着する。ある客が到着してから次の客が来るまで30分以上かかる確率を小数第3位まで求めよ。
+    answer: 0.135
+    tolerance: 0.001
+    hint: |
+      到着間隔は $\mathrm{Exp}(4)$（時間の単位は「時間」）。30分は0.5時間。
+    explanation: |
+      $$P(T>0.5)=e^{-4\times0.5}=e^{-2}=0.135$$
+      単位をそろえずに $e^{-4\times30}$ などとしないよう注意します。
+
+  - id: q15-interarrival-time-2
+    term: interarrival-time
+    level: 標準
+    type: choice
+    question: |
+      バスが1時間あたり強度2のポアソン過程で来る。停留所に着いてからすでに10分待ったがまだ来ない。
+      ここからさらに15分以上待つ確率はどれか。
+    choices:
+      - '$e^{-0.5}\approx0.607$'
+      - '$e^{-5/6}\approx0.435$'
+      - '$e^{-1/3}\approx0.717$'
+      - '$1-e^{-0.5}\approx0.393$'
+    answer: 0
+    hint: |
+      指数分布の無記憶性 $P(T>s+t\mid T>s)=P(T>t)$ を使う。
+    explanation: |
+      $$P(T>\tfrac{25}{60}\mid T>\tfrac{10}{60})=\frac{e^{-2\times25/60}}{e^{-2\times10/60}}=e^{-2\times15/60}=e^{-0.5}=0.607$$
+      すでに待った10分は関係ありません。$e^{-5/6}$ は合計25分以上待つ（条件なし）確率、$e^{-1/3}$ は最初の10分に来ない確率、$1-e^{-0.5}$ は逆に15分以内に来る確率です。
+
+  - id: q15-interarrival-time-3
+    term: interarrival-time
+    level: 応用
+    type: numeric
+    question: |
+      強度 $\lambda=2$ のポアソン過程で、2番目の到着時刻 $S_2$ が1以下である確率を小数第3位まで求めよ。
+    answer: 0.594
+    tolerance: 0.001
+    hint: |
+      $S_2$ はガンマ分布（形状2、レート2）に従う。$\{S_2\le1\}=\{N(1)\ge2\}$ を使うと楽。
+    explanation: |
+      $N(1)\sim\mathrm{Po}(2)$ なので
+      $$P(S_2\le1)=1-P(N(1)\le1)=1-e^{-2}(1+2)=1-3e^{-2}=0.594$$
+      密度 $4te^{-2t}$ を $0$ から $1$ まで積分しても同じです。
+
+  - id: q15-superposition-thinning-poisson-1
+    term: superposition-thinning-poisson
+    level: 標準
+    type: numeric
+    question: |
+      窓口Aへの客は強度2、窓口Bへの客は強度3の独立なポアソン過程で到着する。
+      両方の窓口を合わせて見たとき、最初の2人の客がどちらも窓口Aの客である確率を小数第2位まで求めよ。
+    answer: 0.16
+    tolerance: 0.005
+    hint: |
+      合成した過程の各到着がAである確率は $\lambda_A/(\lambda_A+\lambda_B)$ で、到着ごとに独立。
+    explanation: |
+      各到着がAである確率は $2/5=0.4$ で互いに独立なので
+      $$0.4^2=0.16$$
+
+  - id: q15-superposition-thinning-poisson-2
+    term: superposition-thinning-poisson
+    level: 標準
+    type: numeric
+    question: |
+      ある店に客が1時間あたり強度10のポアソン過程で来店し、各客は他と独立に確率0.3で商品を買う。
+      ある1時間に買った客が1人もいない確率を小数第3位まで求めよ。
+    answer: 0.050
+    tolerance: 0.001
+    hint: |
+      間引きにより、買う客の到着は強度 $10\times0.3$ のポアソン過程になる。
+    explanation: |
+      買う客は強度3のポアソン過程なので
+      $$P(N_1(1)=0)=e^{-3}=0.0498$$
+      来店数で条件づけて $\sum_n P(N=n)0.7^n=e^{-10}e^{7}$ と計算しても同じです。
+
+  - id: q15-random-walk-1
+    term: random-walk
+    level: 標準
+    type: numeric
+    question: |
+      $S_0=0$、各歩で $+1$ の確率 $0.6$、$-1$ の確率 $0.4$ の単純ランダムウォークで、$P(S_6=2)$ を小数第3位まで求めよ。
+    answer: 0.311
+    tolerance: 0.001
+    hint: |
+      6歩で位置2にいるには、上に何歩・下に何歩進む必要があるか。
+    explanation: |
+      上 $u$ 歩・下 $d$ 歩として $u+d=6$、$u-d=2$ より $u=4$、$d=2$。
+      $$P(S_6=2)=\binom64(0.6)^4(0.4)^2=15\times0.1296\times0.16=0.311$$
+
+  - id: q15-random-walk-2
+    term: random-walk
+    level: 基本
+    type: choice
+    question: |
+      $S_0=0$、$+1$ の確率 $p=0.55$、$-1$ の確率 $q=0.45$ の単純ランダムウォークで、$V[S_{100}]$ はどれか。
+    choices:
+      - '$99$'
+      - '$24.75$'
+      - '$100$'
+      - '$9.95$'
+    answer: 0
+    hint: |
+      1歩 $X_i$ の分散は $E[X_i^2]-(p-q)^2$。
+    explanation: |
+      $V[X_i]=1-(p-q)^2=1-0.01=0.99=4pq$ なので $V[S_{100}]=100\times0.99=99$ です。
+      $24.75=npq$ は二項分布（上に進む回数）の分散で、$S_n=2U-n$ の係数 $2^2$ を掛け忘れたもの。
+      $100$ は対称の場合の値、$9.95$ は標準偏差です。
+
+  - id: q15-gambler-ruin-problem-1
+    term: gambler-ruin-problem
+    level: 基本
+    type: numeric
+    question: |
+      公平な賭け（勝てば $+1$、負ければ $-1$、それぞれ確率 $1/2$）を、所持金3から始め、0になるか10に達するまで続ける。
+      ゲームが終わるまでの回数の期待値を求めよ。
+    answer: 21
+    tolerance: 0.4
+    hint: |
+      $p=q$ のとき $D_i=i(N-i)$。
+    explanation: |
+      $$D_3=3\times(10-3)=21$$
+      10に達する確率は $3/10$ です。
+
+  - id: q15-gambler-ruin-problem-2
+    term: gambler-ruin-problem
+    level: 標準
+    type: numeric
+    question: |
+      1回の勝率が $p=0.4$（勝てば $+1$、負ければ $-1$）の賭けを所持金5から始め、0か10に達するまで続ける。
+      10に先に達する確率を小数第3位まで求めよ。
+    answer: 0.116
+    tolerance: 0.001
+    hint: |
+      $r=q/p$ として $P_i=\dfrac{1-r^i}{1-r^N}$。
+    explanation: |
+      $r=0.6/0.4=1.5$ なので
+      $$P_5=\frac{1-1.5^5}{1-1.5^{10}}=\frac{1-7.594}{1-57.665}=\frac{6.594}{56.665}=0.116$$
+      1回の不利はわずかでも、ちょうど中間から始めて目標に届く確率は1割強しかありません。
+
+  - id: q15-gambler-ruin-problem-3
+    term: gambler-ruin-problem
+    level: 応用
+    type: numeric
+    question: |
+      1回の勝率が $p=0.6$ の賭けを所持金3から始め、相手の資金は無限（目標なし）とする。最終的に破産する確率を小数第3位まで求めよ。
+    answer: 0.296
+    tolerance: 0.001
+    hint: |
+      $p>q$ のとき、$N\to\infty$ での破産確率は $(q/p)^i$。
+    explanation: |
+      $$\left(\frac{0.4}{0.6}\right)^3=\left(\frac23\right)^3=\frac{8}{27}=0.296$$
+      $p\le q$ なら破産確率は1になります。
+
+  - id: q15-brownian-motion-1
+    term: brownian-motion
+    level: 基本
+    type: numeric
+    question: |
+      標準ブラウン運動 $W(t)$ について、$P(W(4)>3)$ を小数第3位まで求めよ。
+    answer: 0.067
+    tolerance: 0.001
+    hint: |
+      $W(4)\sim N(0,4)$。標準偏差は2。
+    explanation: |
+      $$P(W(4)>3)=P\left(Z>\frac32\right)=1-\Phi(1.5)=0.0668$$
+      分散4を標準偏差と取り違えて $3/4$ で標準化しないよう注意します。
+
+  - id: q15-brownian-motion-2
+    term: brownian-motion
+    level: 標準
+    type: numeric
+    question: |
+      標準ブラウン運動 $W(t)$ について、$V[W(3)-2W(1)]$ を求めよ。
+    answer: 3
+    tolerance: 0.01
+    hint: |
+      $V[W(3)]+4V[W(1)]-4\,\mathrm{Cov}(W(1),W(3))$ を計算する。共分散は $\min(s,t)$。
+    explanation: |
+      $$V[W(3)-2W(1)]=3+4\times1-4\times\min(1,3)=3$$
+      増分で書くと $W(3)-2W(1)=\{W(3)-W(1)\}-W(1)$ で、独立な2項の分散 $2+1=3$ とも計算できます。
+
+  - id: q15-martingale-1
+    term: martingale
+    level: 応用
+    type: truefalse
+    question: |
+      $S_0=0$ の対称単純ランダムウォーク（各歩 $\pm1$ が確率1/2）について、$M_n=S_n^2-n$ はマルチンゲールである。
+    answer: true
+    hint: |
+      $S_{n+1}=S_n+X_{n+1}$ として $E[S_{n+1}^2\mid\mathcal F_n]$ を計算する。
+    explanation: |
+      $$E[S_{n+1}^2\mid\mathcal F_n]=S_n^2+2S_nE[X_{n+1}]+E[X_{n+1}^2]=S_n^2+1$$
+      より $E[M_{n+1}\mid\mathcal F_n]=S_n^2+1-(n+1)=M_n$ です。
+      任意停止定理を使うと、破産問題の平均継続時間 $i(N-i)$ が導けます。
+
+  - id: q15-birth-death-process-1
+    term: birth-death-process
+    level: 標準
+    type: numeric
+    question: |
+      状態 $\{0,1,2\}$ の出生死滅過程で、出生率 $\lambda_0=\lambda_1=2$、死亡率 $\mu_1=1$、$\mu_2=2$ である。定常分布の $\pi_2$ を小数第1位まで求めよ。
+    answer: 0.4
+    tolerance: 0.05
+    hint: |
+      $\pi_n=\pi_0\dfrac{\lambda_0\cdots\lambda_{n-1}}{\mu_1\cdots\mu_n}$ で比を出し、和が1になるようにする。
+    explanation: |
+      $\pi_1=\pi_0\cdot\dfrac21=2\pi_0$、$\pi_2=\pi_0\cdot\dfrac{2\times2}{1\times2}=2\pi_0$ なので
+      $$\pi_0(1+2+2)=1,\qquad\pi_0=0.2,\quad\pi_2=0.4$$
+
+  - id: q15-birth-death-process-2
+    term: birth-death-process
+    level: 応用
+    type: numeric
+    question: |
+      行列が長いと客が並ぶのをためらう窓口を、出生率 $\lambda_n=\dfrac{\lambda}{n+1}$、死亡率 $\mu_n=\mu$（$n\ge1$）の出生死滅過程で表す。
+      $\lambda=2$、$\mu=1$ のとき、定常状態で窓口が空いている確率 $\pi_0$ を小数第3位まで求めよ。
+    answer: 0.135
+    tolerance: 0.001
+    hint: |
+      $\dfrac{\lambda_0\lambda_1\cdots\lambda_{n-1}}{\mu^n}=\dfrac{(\lambda/\mu)^n}{n!}$ となる。どの分布の形か。
+    explanation: |
+      $\pi_n=\pi_0\dfrac{(\lambda/\mu)^n}{n!}$ なので、和が1となるには
+      $$\pi_0=\Bigl(\sum_{n\ge0}\frac{2^n}{n!}\Bigr)^{-1}=e^{-2}=0.135$$
+      系内人数はポアソン分布 $\mathrm{Po}(\lambda/\mu)$ に従います。
+
+  - id: q15-pure-birth-process-1
+    term: pure-birth-process
+    level: 標準
+    type: numeric
+    question: |
+      $X(0)=1$ のユール過程（$\lambda_n=n\lambda$）で $\lambda=0.5$ のとき、$P(X(2)=3)$ を小数第3位まで求めよ。
+    answer: 0.147
+    tolerance: 0.001
+    hint: |
+      $X(t)$ は成功確率 $e^{-\lambda t}$ の幾何分布（台 $\{1,2,\dots\}$）に従う。
+    explanation: |
+      $e^{-\lambda t}=e^{-1}=0.368$ なので
+      $$P(X(2)=3)=e^{-1}(1-e^{-1})^2=0.368\times0.632^2=0.147$$
+      期待値は $E[X(2)]=e^{1}=2.72$ です。
+
+  - id: q15-queueing-theory-1
+    term: queueing-theory
+    level: 応用
+    type: numeric
+    question: |
+      ポアソン到着（到着率 $\lambda=0.5$）、サービス時間が一定値1（分散0）、窓口1つの M/D/1 待ち行列で、平均待ち人数 $L_q$ を小数第2位まで求めよ。
+    answer: 0.25
+    tolerance: 0.005
+    hint: |
+      ポラチェック・ヒンチンの公式 $L_q=\dfrac{\lambda^2\sigma^2+\rho^2}{2(1-\rho)}$ で $\sigma^2=0$。
+    explanation: |
+      $\rho=\lambda\times1=0.5$ なので
+      $$L_q=\frac{0+0.25}{2\times0.5}=0.25$$
+      同じ平均の指数サービス（M/M/1）なら $\sigma^2=1$ で $L_q=0.5$ となり、サービス時間のばらつきが待ちを倍にしています。
+
+  - id: q15-mm1-queue-1
+    term: mm1-queue
+    level: 標準
+    type: numeric
+    question: |
+      客が1時間あたり4人のポアソン到着で、サービス時間は平均12分の指数分布、窓口1つの M/M/1 待ち行列がある。
+      平均待ち時間 $W_q$（サービスを受ける前に並ぶ時間）は何分か。整数で答えよ。
+    answer: 48
+    tolerance: 0.5
+    hint: |
+      $\mu=60/12=5$（人/時間）。$W_q=\dfrac{\rho}{\mu-\lambda}$。
+    explanation: |
+      $\rho=4/5=0.8$ なので
+      $$W_q=\frac{0.8}{5-4}=0.8\ \text{時間}=48\ \text{分}$$
+      系内時間は $W=1/(\mu-\lambda)=1$ 時間で、$W=W_q+1/\mu$ となっています。
+
+  - id: q15-mm1-queue-2
+    term: mm1-queue
+    level: 基本
+    type: numeric
+    question: |
+      利用率 $\rho=0.8$ の M/M/1 待ち行列で、定常状態で系内人数が3人以上である確率を小数第3位まで求めよ。
+    answer: 0.512
+    tolerance: 0.001
+    hint: |
+      $P(N=n)=(1-\rho)\rho^n$ を $n\ge3$ で足す。
+    explanation: |
+      $$P(N\ge3)=\sum_{n\ge3}(1-\rho)\rho^n=\rho^3=0.512$$
+
+  - id: q15-mm1-queue-3
+    term: mm1-queue
+    level: 応用
+    type: choice
+    question: |
+      サービス率 $\mu=5$ の M/M/1 待ち行列で、到着率が $\lambda=4$ から $4.5$ に増えた。平均系内時間 $W$ は何倍になるか。
+    choices:
+      - '$2$ 倍'
+      - '$1.125$ 倍'
+      - '$1.5$ 倍'
+      - '$4$ 倍'
+    answer: 0
+    hint: |
+      $W=\dfrac1{\mu-\lambda}$ を2つの $\lambda$ で比べる。
+    explanation: |
+      $W$ は $1/(5-4)=1$ から $1/(5-4.5)=2$ になり、2倍です。
+      到着率は $1.125$ 倍しか増えていませんが、$\rho$ が1に近いと待ち時間は急増します。
+      平均系内人数 $L=\lambda W$ は $4$ から $9$ へ $2.25$ 倍になります。
+
+  - id: q15-traffic-intensity-1
+    term: traffic-intensity
+    level: 基本
+    type: numeric
+    question: |
+      窓口が1つで、客は1時間に平均8人到着し、サービス時間の平均は6分である。利用率 $\rho$ を小数第1位まで求めよ。
+    answer: 0.8
+    tolerance: 0.05
+    hint: |
+      $\rho=\lambda\times(\text{平均サービス時間})$。単位をそろえる。
+    explanation: |
+      平均サービス時間は $6/60=0.1$ 時間なので
+      $$\rho=8\times0.1=0.8$$
+      窓口は時間の80%ふさがっていて、空いている確率は $1-\rho=0.2$ です。
+
+  - id: q15-traffic-intensity-2
+    term: traffic-intensity
+    level: 標準
+    type: choice
+    question: |
+      窓口が3つあり、客は1時間に12人のポアソン到着、1人のサービス時間は平均12分である。利用率 $\rho$ はどれか。
+    choices:
+      - '$0.8$'
+      - '$2.4$'
+      - '$0.267$'
+      - '$1.25$'
+    answer: 0
+    hint: |
+      窓口が $c$ 個なら $\rho=\lambda/(c\mu)$。
+    explanation: |
+      $\mu=60/12=5$（人/時間）なので、呼量 $a=\lambda/\mu=2.4$、利用率は
+      $$\rho=\frac{12}{3\times5}=0.8$$
+      $2.4$ は窓口数で割る前の呼量、$1.25=1/\rho$、$0.267$ は $\rho$ をさらに窓口数で割った誤りです。$\rho<1$ なので行列は安定します。
+
+  - id: q15-littles-law-1
+    term: littles-law
+    level: 基本
+    type: numeric
+    question: |
+      ある店では、店内に平均30人の客がいて、客は1分あたり平均2人来店する（定常状態）。客1人の平均滞在時間は何分か。
+    answer: 15
+    tolerance: 0.4
+    hint: |
+      リトルの公式 $L=\lambda W$。
+    explanation: |
+      $$W=\frac{L}{\lambda}=\frac{30}{2}=15\ \text{分}$$
+      到着の分布やサービスの仕組みによらず成り立つのがリトルの公式の強みです。
+
+  - id: q15-compound-poisson-process-1
+    term: compound-poisson-process
+    level: 標準
+    type: numeric
+    question: |
+      保険の請求は1年あたり強度3のポアソン過程で起こり、1件の請求額は平均2、標準偏差1（単位：百万円）で、件数と独立である。
+      1年間の請求総額の分散を求めよ。
+    answer: 15
+    tolerance: 0.01
+    hint: |
+      $V[S(t)]=\lambda t\,E[Y^2]$。$E[Y^2]=V[Y]+E[Y]^2$。
+    explanation: |
+      $E[Y^2]=1+4=5$ なので
+      $$V[S(1)]=3\times1\times5=15$$
+      $\lambda tV[Y]=3$ としてしまうのは、件数のばらつきによる分 $\lambda tE[Y]^2=12$ を落とした誤りです。
+
+  - id: q15-independent-stationary-increments-1
+    term: independent-stationary-increments
+    level: 標準
+    type: choice
+    question: |
+      次のうち、独立増分性はもつが、定常増分性はもたない過程はどれか。
+    choices:
+      - '強度が時刻とともに変わる（非斉次の）ポアソン過程'
+      - '強度一定のポアソン過程'
+      - '標準ブラウン運動'
+      - '$X(t)=tZ$（$Z\sim N(0,1)$）'
+    answer: 0
+    hint: |
+      増分の分布が「区間の長さ」だけで決まるか、「区間の位置」にもよるかを考える。
+    explanation: |
+      非斉次ポアソン過程の増分は $\mathrm{Po}\bigl(\int_s^{s+h}\lambda(u)du\bigr)$ で、重ならない区間では独立ですが、分布が位置 $s$ によります。
+      ポアソン過程とブラウン運動は両方をもち、$X(t)=tZ$ は逆に、増分が $hZ$ で定常ですが、どの増分も同じ $Z$ を含むので独立ではありません。
+
+  - id: q15-mmc-queue-1
+    term: mmc-queue
+    level: 応用
+    type: numeric
+    question: |
+      到着率 $\lambda=2$、1窓口のサービス率 $\mu=1.5$、窓口数 $c=2$ の M/M/2 待ち行列で、到着した客が待たされる確率（アーランのC式）を小数第3位まで求めよ。
+    answer: 0.533
+    tolerance: 0.001
+    hint: |
+      $a=\lambda/\mu$、$\rho=a/c$ として、まず $\pi_0=\Bigl(1+a+\dfrac{a^2}{2(1-\rho)}\Bigr)^{-1}$ を求める。
+    explanation: |
+      $a=4/3$、$\rho=2/3$ です。
+      $$\pi_0=\left(1+\frac43+\frac{16/9}{2\times1/3}\right)^{-1}=\left(\frac73+\frac83\right)^{-1}=0.2$$
+      $$C=\frac{a^2}{2!(1-\rho)}\pi_0=\frac83\times0.2=0.533$$
+
+  - id: q15-reflection-principle-1
+    term: reflection-principle
+    level: 応用
+    type: numeric
+    question: |
+      標準ブラウン運動 $W(t)$ について、時刻4までに一度でも2以上の値に達する確率 $P\bigl(\max_{0\le s\le4}W(s)\ge2\bigr)$ を小数第3位まで求めよ。
+    answer: 0.317
+    tolerance: 0.001
+    hint: |
+      反射原理 $P(\max_{s\le t}W(s)\ge a)=2P(W(t)\ge a)$。
+    explanation: |
+      $W(4)\sim N(0,4)$ なので
+      $$2P(W(4)\ge2)=2\{1-\Phi(1)\}=2\times0.1587=0.317$$
+      最終時刻だけを見た $P(W(4)\ge2)=0.159$ のちょうど2倍になります。

@@ -784,3 +784,25 @@ check(T, "乱数2万回：回答者平均は≈0.407 に偏り、尤度に基づ
 n_ok = sum(results)
 n_ng = len(results) - n_ok
 print(f"\n合計: OK {n_ok} / NG {n_ng}")
+
+# --- 重要度A への加筆: complete-case-analysis ---
+T = "complete-case-analysis"
+_m = np.r_[np.full(500, 452.13), np.full(500, 547.87)]
+_sd = 60.0
+_reps = 4000; _b0 = np.empty(_reps); _b1 = np.empty(_reps); _mcc = np.empty(_reps); _mw = np.empty(_reps)
+_x = np.r_[np.zeros(500), np.ones(500)]
+for _r in range(_reps):
+    _y = _m + rng.normal(0, _sd, 1000)
+    _obs = np.r_[rng.permutation(np.r_[np.ones(400, bool), np.zeros(100, bool)]), rng.permutation(np.r_[np.ones(100, bool), np.zeros(400, bool)])]
+    _bb = np.polyfit(_x[_obs], _y[_obs], 1); _b1[_r], _b0[_r] = _bb
+    _mcc[_r] = _y[_obs].mean()
+    _mw[_r] = 0.5 * _y[_obs & (_x == 0)].mean() + 0.5 * _y[_obs & (_x == 1)].mean()
+check(T, "例3 β̂0=452.13, β̂1=95.74（期待値, 乱数 4000回, 許容0.5）", abs(_b0.mean() - 452.13) < 0.5 and abs(_b1.mean() - 95.74) < 0.5 and close(547.87 - 452.13, 95.74, 5e-3), (round(_b0.mean(), 3), round(_b1.mean(), 3)))
+check(T, "例3 完全ケース平均≈471.28（偏る）, 重みづけし直すと≈500（許容0.5）", abs(_mcc.mean() - 471.28) < 0.5 and abs(_mw.mean() - 500) < 0.5 and close(0.5 * 452.13 + 0.5 * 547.87, 500.0, 5e-3), (round(_mcc.mean(), 3), round(_mw.mean(), 3)))
+check(T, "例4 √(1000/590)≈1.302", close(math.sqrt(1000 / 590), 1.302, 5e-4), round(math.sqrt(1000 / 590), 5))
+_R = np.array([[1, 0.9, 0.9], [0.9, 1, 0], [0.9, 0, 1]])
+check(T, "例5 det=−0.62, 最小固有値≈−0.273", close(np.linalg.det(_R), -0.62, 1e-9) and close(np.linalg.eigvalsh(_R)[0], -0.273, 5e-4), np.round(np.linalg.eigvalsh(_R), 5))
+
+n_ok = sum(results)
+n_ng = len(results) - n_ok
+print(f"\n合計（重要度A への加筆を含む）: OK {n_ok} / NG {n_ng}")

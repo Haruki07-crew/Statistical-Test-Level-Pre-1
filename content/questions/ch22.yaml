@@ -1,0 +1,484 @@
+chapter: 22
+questions:
+  - id: q22-principal-component-analysis-1
+    term: principal-component-analysis
+    level: 基本
+    type: truefalse
+    question: |
+      分散共分散行列 $\Sigma$ の固有値を $\lambda_1\ge\lambda_2$、対応する主成分を $Y_1,Y_2$ とする。
+      このとき $\mathrm{Cov}[Y_1,Y_2]=\lambda_1\lambda_2$ である。
+    answer: false
+    hint: |
+      主成分は「互いに無相関」になるように作られる。$\mathrm{Cov}[Y_1,Y_2]=\boldsymbol{h}_1^\top\Sigma\boldsymbol{h}_2$ を計算してみる。
+    explanation: |
+      $\Sigma\boldsymbol{h}_2=\lambda_2\boldsymbol{h}_2$ と固有ベクトルの直交性 $\boldsymbol{h}_1^\top\boldsymbol{h}_2=0$ より
+      $$\mathrm{Cov}[Y_1,Y_2]=\boldsymbol{h}_1^\top\Sigma\boldsymbol{h}_2=\lambda_2\,\boldsymbol{h}_1^\top\boldsymbol{h}_2=0$$
+      です。主成分どうしは無相関で、$\lambda_k$ は共分散ではなく各主成分の**分散** $V[Y_k]$ です。
+
+  - id: q22-principal-component-analysis-2
+    term: principal-component-analysis
+    level: 標準
+    type: numeric
+    question: |
+      2変数 $\boldsymbol{X}=(X_1,X_2)^\top$ の分散共分散行列が
+      $$\Sigma=\begin{pmatrix}5&2\\2&2\end{pmatrix}$$
+      である。第1主成分 $Y_1=h_{11}X_1+h_{21}X_2$（$h_{11}^2+h_{21}^2=1$、$h_{11}>0$）の係数 $h_{11}$ を小数第3位まで求めよ。
+    answer: 0.894
+    tolerance: 0.001
+    hint: |
+      固有方程式 $\det(\Sigma-\lambda I)=0$ で最大の固有値を求め、$(\Sigma-\lambda_1 I)\boldsymbol{h}=\boldsymbol{0}$ を解いて長さ1にする。
+    explanation: |
+      $\det(\Sigma-\lambda I)=(5-\lambda)(2-\lambda)-4=\lambda^2-7\lambda+6=(\lambda-6)(\lambda-1)$ より $\lambda_1=6$。
+      $(5-6)h_{11}+2h_{21}=0$ から $h_{21}=h_{11}/2$、つまり方向は $(2,1)$ です。長さ1にすると
+      $$\boldsymbol{h}_1=\frac{1}{\sqrt5}(2,\ 1)^\top,\qquad h_{11}=\frac{2}{\sqrt5}=0.894$$
+      分散の大きい $X_1$ の重みが大きくなっています。
+
+  - id: q22-principal-component-analysis-3
+    term: principal-component-analysis
+    level: 応用
+    type: derivation
+    question: |
+      $X_1,X_2$ の分散がともに $\sigma^2$、相関係数が $\rho>0$ のとき、第1・第2主成分とその分散を求めよ。
+    steps:
+      - |
+        $\Sigma=\sigma^2\begin{pmatrix}1&\rho\\\rho&1\end{pmatrix}$。固有方程式は $(\sigma^2-\lambda)^2-\sigma^4\rho^2=0$ なので $\lambda=\sigma^2(1\pm\rho)$。
+      - |
+        $\lambda_1=\sigma^2(1+\rho)$ のとき $(\Sigma-\lambda_1I)\boldsymbol{h}=\boldsymbol{0}$ は $-h_1+h_2=0$ となり、$\boldsymbol{h}_1=(1,1)^\top/\sqrt2$。
+      - |
+        $\lambda_2=\sigma^2(1-\rho)$ のときは $h_1+h_2=0$ となり、$\boldsymbol{h}_2=(1,-1)^\top/\sqrt2$。
+    answer: "$Y_1=\\dfrac{X_1+X_2}{\\sqrt2},\\ V[Y_1]=\\sigma^2(1+\\rho);\\quad Y_2=\\dfrac{X_1-X_2}{\\sqrt2},\\ V[Y_2]=\\sigma^2(1-\\rho)$"
+    hint: |
+      $2\times2$ の対称行列で対角成分が等しいときは、固有ベクトルが $(1,1)$ と $(1,-1)$ の方向になる。
+    explanation: |
+      固有値は $\sigma^2(1\pm\rho)$、固有ベクトルは $(1,\pm1)^\top/\sqrt2$ です。
+      $$Y_1=\frac{X_1+X_2}{\sqrt2},\quad V[Y_1]=\sigma^2(1+\rho),\qquad Y_2=\frac{X_1-X_2}{\sqrt2},\quad V[Y_2]=\sigma^2(1-\rho)$$
+      分散が等しいとき、主成分の**方向**は $\rho$ の大きさによらず「和」と「差」です。$\rho$ が大きいほど第1主成分の分散の割合 $(1+\rho)/2$ が大きくなります。
+
+  - id: q22-principal-component-1
+    term: principal-component
+    level: 基本
+    type: truefalse
+    question: |
+      $p$ 個の主成分 $Y_1,\dots,Y_p$ の分散の和 $V[Y_1]+\dots+V[Y_p]$ は、元の変数の分散の和 $V[X_1]+\dots+V[X_p]$ に等しい。
+    answer: true
+    hint: |
+      $V[Y_k]=\lambda_k$ と、固有値の和とトレースの関係を使う。
+    explanation: |
+      $V[\boldsymbol{Y}]=H^\top\Sigma H=\mathrm{diag}(\lambda_1,\dots,\lambda_p)$ で、$H$ は直交行列なので
+      $$\sum_k V[Y_k]=\mathrm{tr}(H^\top\Sigma H)=\mathrm{tr}(\Sigma HH^\top)=\mathrm{tr}\,\Sigma=\sum_j V[X_j]$$
+      です。主成分への変換は回転なので、総分散は変わらず、配り方だけが変わります。
+
+  - id: q22-eigenvalue-and-eigenvector-1
+    term: eigenvalue-and-eigenvector
+    level: 基本
+    type: numeric
+    question: |
+      行列 $A=\begin{pmatrix}3&1\\1&3\end{pmatrix}$ の最大の固有値を求めよ（整数）。
+    answer: 4
+    tolerance: 0.01
+    hint: |
+      $\det(A-\lambda I)=0$ を解く。トレース（固有値の和）と行列式（固有値の積）からも求められる。
+    explanation: |
+      $(3-\lambda)^2-1=0$ より $3-\lambda=\pm1$、$\lambda=4,\ 2$ です。
+      確かに和 $4+2=6=\mathrm{tr}\,A$、積 $4\times2=8=\det A$ になっています。最大固有値は $4$ で、固有ベクトルは $(1,1)^\top/\sqrt2$ です。
+
+  - id: q22-eigenvalue-and-eigenvector-2
+    term: eigenvalue-and-eigenvector
+    level: 標準
+    type: choice
+    question: |
+      $$A=\begin{pmatrix}2&1&0\\1&2&0\\0&0&5\end{pmatrix}$$
+      の固有値の組として正しいものはどれか。
+    choices:
+      - '$1,\ 3,\ 5$'
+      - '$2,\ 2,\ 5$'
+      - '$1,\ 3,\ 4$'
+      - '$0,\ 4,\ 5$'
+    answer: 0
+    hint: |
+      第3の変数は他と無関係なので、左上の $2\times2$ ブロックと右下の $5$ に分けて考える。
+    explanation: |
+      ブロック対角なので、$\begin{pmatrix}2&1\\1&2\end{pmatrix}$ の固有値 $2\pm1=1,\ 3$ と、$5$ が固有値です。
+      確認：和 $1+3+5=9=\mathrm{tr}\,A$、積 $15=\det A=(4-1)\times5$。
+      $2,2,5$ は対角成分をそのまま並べた誤り、$1,3,4$ と $0,4,5$ はトレースは合っても行列式が合いません。
+
+  - id: q22-eigenvalue-and-eigenvector-3
+    term: eigenvalue-and-eigenvector
+    level: 応用
+    type: numeric
+    question: |
+      $\boldsymbol{h}_1=(1,1)^\top/\sqrt2$、$\boldsymbol{h}_2=(1,-1)^\top/\sqrt2$ として、
+      $$A=4\,\boldsymbol{h}_1\boldsymbol{h}_1^\top+1\cdot\boldsymbol{h}_2\boldsymbol{h}_2^\top$$
+      とする。逆行列 $A^{-1}$ の $(1,2)$ 成分を小数第3位まで求めよ。
+    answer: -0.375
+    tolerance: 0.001
+    hint: |
+      スペクトル分解 $A=\sum\lambda_k\boldsymbol{h}_k\boldsymbol{h}_k^\top$ のとき、$A^{-1}=\sum\lambda_k^{-1}\boldsymbol{h}_k\boldsymbol{h}_k^\top$。
+    explanation: |
+      $\boldsymbol{h}_1\boldsymbol{h}_1^\top$ の $(1,2)$ 成分は $1/2$、$\boldsymbol{h}_2\boldsymbol{h}_2^\top$ の $(1,2)$ 成分は $-1/2$ です。
+      $$A^{-1}=\frac14\boldsymbol{h}_1\boldsymbol{h}_1^\top+\frac11\boldsymbol{h}_2\boldsymbol{h}_2^\top,\qquad (A^{-1})_{12}=\frac14\cdot\frac12-\frac12=-0.375$$
+      検算：$A=\begin{pmatrix}2.5&1.5\\1.5&2.5\end{pmatrix}$、$\det A=4$ なので $(A^{-1})_{12}=-1.5/4=-0.375$ です。
+
+  - id: q22-contribution-ratio-1
+    term: contribution-ratio
+    level: 基本
+    type: numeric
+    question: |
+      3変数の分散共分散行列から主成分分析を行い、固有値 $5.2,\ 2.1,\ 0.7$ を得た。第1主成分の寄与率を小数第3位まで求めよ。
+    answer: 0.65
+    tolerance: 0.001
+    hint: |
+      寄与率＝その固有値 $\div$ 固有値の総和。
+    explanation: |
+      総和は $5.2+2.1+0.7=8.0$ なので
+      $$c_1=\frac{5.2}{8.0}=0.650$$
+      です。総和は元の3変数の分散の和（$\mathrm{tr}\,S$）にも等しくなります。
+
+  - id: q22-contribution-ratio-2
+    term: contribution-ratio
+    level: 標準
+    type: choice
+    question: |
+      5変数の相関行列から主成分分析を行うと、第1・第2固有値が $2.6,\ 1.2$ であった。第2主成分の寄与率はどれか。
+    choices:
+      - '$0.240$'
+      - '$0.316$'
+      - '$0.760$'
+      - '$0.462$'
+    answer: 0
+    hint: |
+      相関行列の固有値の総和は、変数の個数に等しい。
+    explanation: |
+      相関行列なので固有値の総和は $p=5$ です。
+      $$c_2=\frac{1.2}{5}=0.240$$
+      $0.316=1.2/(2.6+1.2)$ は第2固有値までの和で割った誤り、$0.760=(2.6+1.2)/5$ は累積寄与率、$0.462=1.2/2.6$ は第1固有値との比です。
+
+  - id: q22-contribution-ratio-3
+    term: contribution-ratio
+    level: 応用
+    type: numeric
+    question: |
+      2変数の相関行列 $R=\begin{pmatrix}1&r\\r&1\end{pmatrix}$ から主成分分析を行ったところ、第1主成分の寄与率が $0.85$ であった。$|r|$ を小数第2位まで求めよ。
+    answer: 0.7
+    tolerance: 0.005
+    hint: |
+      $R$ の固有値は $1\pm r$ で、総和は $2$。
+    explanation: |
+      最大固有値は $1+|r|$、総和は $2$ なので
+      $$\frac{1+|r|}{2}=0.85\quad\Longrightarrow\quad |r|=0.70$$
+      2変数の相関行列の主成分分析では、第1主成分の寄与率は相関の強さ $|r|$ だけで決まります。
+
+  - id: q22-cumulative-contribution-ratio-1
+    term: cumulative-contribution-ratio
+    level: 基本
+    type: truefalse
+    question: |
+      分散共分散行列からの主成分分析で、分析に変数を1つ追加すると、第1主成分の累積寄与率 $C_1$ が小さくなることはない（同じか大きくなる）。
+    answer: false
+    hint: |
+      元の変数と無相関な変数を追加すると、総分散（分母）はどう変わるか考える。
+    explanation: |
+      例えば $V[X_1]=V[X_2]=1$、相関 $0.9$ のとき固有値は $1.9,\ 0.1$ で $C_1=1.9/2=0.95$ です。
+      ここに $X_1,X_2$ と無相関で分散1の $X_3$ を加えると、固有値は $1.9,\ 1,\ 0.1$ で
+      $$C_1=\frac{1.9}{3}=0.633$$
+      に下がります。分母の総分散が増えるので、累積寄与率は変数の組み方しだいで上がりも下がりもします。
+
+  - id: q22-cumulative-contribution-ratio-2
+    term: cumulative-contribution-ratio
+    level: 標準
+    type: numeric
+    question: |
+      4変数の分散共分散行列の固有値が $6,\ 3,\ 2,\ 1$ であった。累積寄与率が $0.8$ 以上になる最小の主成分数 $m$ を答えよ。
+    answer: 3
+    tolerance: 0.4
+    hint: |
+      総和で割って、上から順に足していく。
+    explanation: |
+      総和は $12$ です。
+      $$C_1=\frac{6}{12}=0.5,\quad C_2=\frac{9}{12}=0.75,\quad C_3=\frac{11}{12}=0.917$$
+      $C_2<0.8\le C_3$ なので $m=3$ です。
+
+  - id: q22-cumulative-contribution-ratio-3
+    term: cumulative-contribution-ratio
+    level: 応用
+    type: numeric
+    question: |
+      3変数のどの2つの相関係数も $0.5$ である相関行列から主成分分析を行う。第1主成分の累積寄与率 $C_1$ を小数第3位まで求めよ。
+    answer: 0.667
+    tolerance: 0.001
+    hint: |
+      $R=(1-\rho)I+\rho\,\boldsymbol{1}\boldsymbol{1}^\top$ と書ける。$\boldsymbol{1}=(1,1,1)^\top$ は固有ベクトルになる。
+    explanation: |
+      $R\boldsymbol{1}=(1+2\rho)\boldsymbol{1}$ より最大固有値は $1+2\rho=2$、$\boldsymbol{1}$ に直交する方向の固有値は $1-\rho=0.5$（2重）です。
+      $$C_1=\frac{2}{3}=0.667$$
+      一般に $p$ 変数の等相関 $\rho>0$ なら $C_1=\{1+(p-1)\rho\}/p$ です。
+
+  - id: q22-principal-component-loading-1
+    term: principal-component-loading
+    level: 基本
+    type: numeric
+    question: |
+      相関行列から主成分分析を行い、第1固有値 $\lambda_1=2.25$、第1固有ベクトルの変数 $X_1$ の成分 $h_{11}=0.6$ を得た。
+      第1主成分と $X_1$ の相関（主成分負荷量）を小数第2位まで求めよ。
+    answer: 0.9
+    tolerance: 0.005
+    hint: |
+      相関行列の場合、負荷量は $\sqrt{\lambda_k}\,h_{jk}$。
+    explanation: |
+      $$r(Y_1,X_1)=\sqrt{2.25}\times0.6=1.5\times0.6=0.90$$
+      係数 $h_{11}=0.6$ そのものではなく、主成分の標準偏差 $\sqrt{\lambda_1}$ を掛けた値が相関になります。
+
+  - id: q22-principal-component-loading-2
+    term: principal-component-loading
+    level: 標準
+    type: numeric
+    question: |
+      分散共分散行列 $\Sigma=\begin{pmatrix}5&2\\2&2\end{pmatrix}$ の第1固有値は $6$、固有ベクトルは $(2,1)^\top/\sqrt5$ である。
+      第1主成分と $X_2$ の相関係数（主成分負荷量）を小数第3位まで求めよ。
+    answer: 0.775
+    tolerance: 0.001
+    hint: |
+      共分散行列の場合は $r(Y_k,X_j)=\sqrt{\lambda_k}\,h_{jk}/\sqrt{\sigma_{jj}}$。$\sigma_{jj}$ で割るのを忘れない。
+    explanation: |
+      $h_{21}=1/\sqrt5$、$\sigma_{22}=2$ なので
+      $$r(Y_1,X_2)=\frac{\sqrt6\times(1/\sqrt5)}{\sqrt2}=\sqrt{\frac{3}{5}}=0.775$$
+      $\sigma_{22}$ で割らずに $\sqrt6/\sqrt5=1.095$ とすると、相関が1を超えてしまいます。
+
+  - id: q22-principal-component-loading-3
+    term: principal-component-loading
+    level: 応用
+    type: truefalse
+    question: |
+      相関行列から主成分分析を行ったとき、ある変数 $X_j$ について、全 $p$ 個の主成分との負荷量の2乗和 $\sum_{k=1}^{p}r(Y_k,X_j)^2$ は必ず $1$ になる。
+    answer: true
+    hint: |
+      $\sum_k\lambda_k h_{jk}^2$ はスペクトル分解 $R=\sum_k\lambda_k\boldsymbol{h}_k\boldsymbol{h}_k^\top$ のどの成分か。
+    explanation: |
+      $r(Y_k,X_j)^2=\lambda_k h_{jk}^2$ なので
+      $$\sum_{k=1}^{p}\lambda_k h_{jk}^2=\Bigl(\sum_k\lambda_k\boldsymbol{h}_k\boldsymbol{h}_k^\top\Bigr)_{jj}=R_{jj}=1$$
+      です。主成分を $m$ 個だけ使ったときの和は、その変数の分散のうち $m$ 個の主成分で説明される割合になります。
+
+  - id: q22-principal-component-score-1
+    term: principal-component-score
+    level: 基本
+    type: numeric
+    question: |
+      2変数の分散共分散行列から主成分分析を行い、第1固有ベクトル $\boldsymbol{h}_1=(0.6,\ 0.8)^\top$ を得た。標本平均は $(60,\ 50)$ である。
+      観測値 $(70,\ 55)$ の第1主成分得点（中心化した値に係数を掛けたもの）を求めよ。
+    answer: 10
+    tolerance: 0.01
+    hint: |
+      $z=\boldsymbol{h}_1^\top(\boldsymbol{x}-\bar{\boldsymbol{x}})$。先に平均を引く。
+    explanation: |
+      偏差は $(10,\ 5)$ なので
+      $$z=0.6\times10+0.8\times5=6+4=10$$
+      です。平均を引かずに $0.6\times70+0.8\times55=86$ とすると、中心化しない流儀の値になります。
+
+  - id: q22-principal-component-score-2
+    term: principal-component-score
+    level: 標準
+    type: numeric
+    question: |
+      2変数の相関行列から主成分分析を行い、第1固有ベクトル $(1/\sqrt2,\ 1/\sqrt2)^\top$ を得た。2変数の標準偏差はそれぞれ $10,\ 5$ である。
+      平均からの偏差が $(15,\ 2.5)$ の個体の第1主成分得点を小数第3位まで求めよ。
+    answer: 1.414
+    tolerance: 0.001
+    hint: |
+      相関行列からの主成分では、偏差を標準偏差で割った標準化得点に係数を掛ける。
+    explanation: |
+      標準化すると $u=(15/10,\ 2.5/5)=(1.5,\ 0.5)$ です。
+      $$z=\frac{1.5+0.5}{\sqrt2}=\frac{2}{\sqrt2}=\sqrt2=1.414$$
+      偏差をそのまま使うと $(15+2.5)/\sqrt2=12.37$ となり、相関行列の係数とは整合しません。
+
+  - id: q22-principal-component-score-3
+    term: principal-component-score
+    level: 標準
+    type: choice
+    question: |
+      5個体の第1主成分得点（中心化済み）が $-2,\ -1,\ 0,\ 1,\ 2$ であった。主成分分析に使った標本分散共分散行列は $n-1$ で割って作ったものである。第1固有値 $\lambda_1$ はどれか。
+    choices:
+      - '$2.5$'
+      - '$2.0$'
+      - '$1.58$'
+      - '$10$'
+    answer: 0
+    hint: |
+      主成分得点の（$n-1$ で割った）分散が、その主成分の固有値に等しい。
+    explanation: |
+      得点の平均は0で、2乗和は $4+1+0+1+4=10$ です。
+      $$\lambda_1=\frac{1}{n-1}\sum_i z_{i1}^2=\frac{10}{4}=2.5$$
+      $2.0$ は $n$ で割った値、$1.58$ は標準偏差 $\sqrt{2.5}$、$10$ は2乗和そのものです。
+
+  - id: q22-pca-on-correlation-matrix-1
+    term: pca-on-correlation-matrix
+    level: 基本
+    type: truefalse
+    question: |
+      身長を cm で測るか m で測るかによって、相関行列からの主成分分析の寄与率は変わる。
+    answer: false
+    hint: |
+      単位を変えると分散は変わるが、相関係数は変わるか。
+    explanation: |
+      単位の変更は変数を定数倍すること（$X_j\to cX_j$）で、相関係数は変わりません。
+      相関行列 $R$ が同じなので、固有値も寄与率も同じです。
+      一方、分散共分散行列からの主成分分析は、$V[cX_j]=c^2V[X_j]$ と分散が変わるので結果が変わります。
+
+  - id: q22-pca-on-correlation-matrix-2
+    term: pca-on-correlation-matrix
+    level: 標準
+    type: numeric
+    question: |
+      2変数の分散共分散行列が $\Sigma=\begin{pmatrix}16&6\\6&4\end{pmatrix}$ である。
+      相関行列から主成分分析を行ったときの第1主成分の寄与率を小数第3位まで求めよ。
+    answer: 0.875
+    tolerance: 0.001
+    hint: |
+      まず相関係数 $r=\sigma_{12}/\sqrt{\sigma_{11}\sigma_{22}}$ を求める。2変数の相関行列の固有値は $1\pm r$。
+    explanation: |
+      $$r=\frac{6}{\sqrt{16\times4}}=\frac{6}{8}=0.75$$
+      相関行列の固有値は $1.75,\ 0.25$ なので、寄与率は $1.75/2=0.875$ です。
+      なお同じ $\Sigma$ から分散共分散行列で分析すると、固有値は $10\pm\sqrt{72}$ で寄与率は $0.924$ となり、分散の大きい $X_1$ に引っぱられて値が変わります。
+
+  - id: q22-scree-plot-1
+    term: scree-plot
+    level: 基本
+    type: choice
+    question: |
+      6変数の相関行列の固有値が大きい順に $3.1,\ 1.6,\ 0.4,\ 0.35,\ 0.3,\ 0.25$ であった。
+      スクリープロットの「肘」の手前までを残すとき、主成分はいくつ残すのが妥当か。
+    choices:
+      - '$2$'
+      - '$1$'
+      - '$3$'
+      - '$4$'
+    answer: 0
+    hint: |
+      隣り合う固有値の差を並べ、落ち込みが急から緩やかに変わる番号を探す。
+    explanation: |
+      差は $1.5,\ 1.2,\ 0.05,\ 0.05,\ 0.05$ で、第3固有値以降はほぼ平らです。
+      折れ線は第3主成分の位置で曲がる（肘）ので、その手前の $2$ 個を残します。
+      この例ではカイザー基準（固有値1以上）でも $2$ 個になります。
+
+  - id: q22-kaiser-criterion-1
+    term: kaiser-criterion
+    level: 基本
+    type: numeric
+    question: |
+      6変数の相関行列の固有値が $2.9,\ 1.3,\ 0.95,\ 0.4,\ 0.3,\ 0.15$ であった。カイザー基準で残す主成分の数を答えよ。
+    answer: 2
+    tolerance: 0.4
+    hint: |
+      固有値が $1$ 以上のものを数える。
+    explanation: |
+      $1$ 以上は $2.9$ と $1.3$ の2つなので $m=2$ です。
+      $0.95$ は1にわずかに届かないため除かれます。基準の境目の近くでは、スクリープロットや解釈のしやすさもあわせて判断します。
+
+  - id: q22-kaiser-criterion-2
+    term: kaiser-criterion
+    level: 標準
+    type: truefalse
+    question: |
+      分散共分散行列から主成分分析を行った場合も、相関行列と同じく「固有値が1以上」を基準に主成分の数を決めるのが適切である。
+    answer: false
+    hint: |
+      相関行列で「1」が基準になるのは、固有値の平均が1だからである。
+    explanation: |
+      相関行列では $\sum\lambda_k=p$ なので固有値の平均が1で、「1以上」は「平均以上」を意味します。
+      分散共分散行列では固有値の和は $\mathrm{tr}\,S$ で、単位によって変わります。1と比べることに意味はなく、固有値の平均 $\mathrm{tr}\,S/p$ と比べるのが自然です。
+
+  - id: q22-singular-value-decomposition-1
+    term: singular-value-decomposition
+    level: 標準
+    type: numeric
+    question: |
+      $$X=\begin{pmatrix}2&1\\1&2\\1&-1\end{pmatrix}$$
+      の最大特異値 $d_1$ を求めよ。
+    answer: 3
+    tolerance: 0.01
+    hint: |
+      特異値の2乗は $X^\top X$ の固有値。
+    explanation: |
+      $$X^\top X=\begin{pmatrix}6&3\\3&6\end{pmatrix}$$
+      の固有値は $6\pm3=9,\ 3$ です。特異値はその平方根なので $d_1=3$、$d_2=\sqrt3$ です。
+
+  - id: q22-singular-value-decomposition-2
+    term: singular-value-decomposition
+    level: 基本
+    type: truefalse
+    question: |
+      行列 $X$ の特異値の2乗の和 $\sum_k d_k^2$ は、$X$ の全成分の2乗和に等しい。
+    answer: true
+    hint: |
+      全成分の2乗和は $\mathrm{tr}(X^\top X)$ と書ける。
+    explanation: |
+      $X^\top X=VD^2V^\top$ より
+      $$\sum_{i,j}x_{ij}^2=\mathrm{tr}(X^\top X)=\mathrm{tr}(D^2)=\sum_k d_k^2$$
+      です。中心化したデータ行列なら、これは $(n-1)\times$（総分散）に当たります。
+
+  - id: q22-lagrange-multiplier-pca-1
+    term: lagrange-multiplier-pca
+    level: 標準
+    type: choice
+    question: |
+      $\Sigma=\begin{pmatrix}2&1\\1&2\end{pmatrix}$ のとき、制約 $\boldsymbol{a}^\top\boldsymbol{a}=1$ のもとでの $\boldsymbol{a}^\top\Sigma\boldsymbol{a}$ の最大値はどれか。
+    choices:
+      - '$3$'
+      - '$6$'
+      - '$2$'
+      - '$1$'
+    answer: 0
+    hint: |
+      ラグランジュ乗数法で $\Sigma\boldsymbol{a}=\lambda\boldsymbol{a}$ が導かれ、目的関数の値は $\lambda$ になる。
+    explanation: |
+      固有値は $2\pm1=3,\ 1$ で、最大値は $\lambda_1=3$（$\boldsymbol{a}=(1,1)^\top/\sqrt2$ のとき）です。
+      $6$ は $\boldsymbol{a}=(1,1)^\top$ を長さ1にせずに代入した誤り、$2$ は対角成分、$1$ は最小値です。
+
+  - id: q22-lagrange-multiplier-pca-2
+    term: lagrange-multiplier-pca
+    level: 応用
+    type: derivation
+    question: |
+      $\boldsymbol{a}^\top\boldsymbol{a}=1$ のもとで $\boldsymbol{a}^\top\Sigma\boldsymbol{a}$ を最大にする $\boldsymbol{a}$ が $\Sigma$ の固有ベクトルであり、最大値が最大固有値であることを、ラグランジュ乗数法で示せ。
+    steps:
+      - |
+        $L(\boldsymbol{a},\lambda)=\boldsymbol{a}^\top\Sigma\boldsymbol{a}-\lambda(\boldsymbol{a}^\top\boldsymbol{a}-1)$ とおく。
+      - |
+        $\partial L/\partial\boldsymbol{a}=2\Sigma\boldsymbol{a}-2\lambda\boldsymbol{a}=\boldsymbol{0}$ より $\Sigma\boldsymbol{a}=\lambda\boldsymbol{a}$。つまり $\boldsymbol{a}$ は固有ベクトル、$\lambda$ は固有値。
+      - |
+        このとき $\boldsymbol{a}^\top\Sigma\boldsymbol{a}=\lambda\boldsymbol{a}^\top\boldsymbol{a}=\lambda$。停留点での値は固有値のどれかなので、最大値は $\lambda_1$。
+    answer: "$\\Sigma\\boldsymbol{a}=\\lambda\\boldsymbol{a}$、最大値は $\\lambda_1$（$\\boldsymbol{a}=\\boldsymbol{h}_1$）"
+    hint: |
+      対称行列 $A$ について $\partial(\boldsymbol{a}^\top A\boldsymbol{a})/\partial\boldsymbol{a}=2A\boldsymbol{a}$。
+    explanation: |
+      停留条件 $\Sigma\boldsymbol{a}=\lambda\boldsymbol{a}$ から、候補は固有ベクトルに限られます。
+      各候補での値は $\boldsymbol{a}^\top\Sigma\boldsymbol{a}=\lambda$ なので、最大固有値 $\lambda_1$ に対応する $\boldsymbol{h}_1$ が第1主成分の係数です。
+      ラグランジュ乗数 $\lambda$ がそのまま主成分の分散になる点が要点です。
+
+  - id: q22-biplot-1
+    term: biplot
+    level: 標準
+    type: truefalse
+    question: |
+      中心化したデータ行列 $X=UDV^\top$ のバイプロットで $\alpha=1$ とすると、個体の点 $G=U_2D_2$ は第1・第2主成分得点に一致する。
+    answer: true
+    hint: |
+      主成分得点は $XV$ で計算できる。$XV$ を特異値分解で書き直す。
+    explanation: |
+      $X^\top X=VD^2V^\top$ なので $V$ の列は主成分の係数ベクトルで、主成分得点の行列は
+      $$XV=UDV^\top V=UD$$
+      です。その最初の2列が $U_2D_2$ なので、$\alpha=1$ の個体の点は主成分得点そのものです。
+
+  - id: q22-low-rank-approximation-1
+    term: low-rank-approximation
+    level: 標準
+    type: numeric
+    question: |
+      行列 $X$ の特異値が $6,\ 3,\ 2,\ 1$ であった。階数2の最良近似 $X_2$ を使うとき、相対誤差 $\|X-X_2\|_F^2/\|X\|_F^2$ を小数第2位まで求めよ。
+    answer: 0.1
+    tolerance: 0.005
+    hint: |
+      エッカート・ヤングの定理より、誤差の2乗は捨てた特異値の2乗和。
+    explanation: |
+      $\|X\|_F^2=36+9+4+1=50$、$\|X-X_2\|_F^2=4+1=5$ なので
+      $$\frac{5}{50}=0.10$$
+      特異値そのもの（$3/12$ など）ではなく、**2乗**で比べる点に注意します。

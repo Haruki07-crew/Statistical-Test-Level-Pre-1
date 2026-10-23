@@ -1,0 +1,566 @@
+chapter: 10
+questions:
+  - id: q10-null-and-alternative-hypothesis-1
+    term: null-and-alternative-hypothesis
+    level: 基本
+    type: choice
+    question: |
+      従来の治療での収縮期血圧の平均は $\mu_0=140$ である。新しい治療が「平均を下げる」ことを示したい。
+      母平均 $\mu$ についての帰無仮説と対立仮説の組として適切なものはどれか。
+    choices:
+      - '$H_0:\mu=140$、$H_1:\mu<140$'
+      - '$H_0:\mu<140$、$H_1:\mu=140$'
+      - '$H_0:\mu=140$、$H_1:\mu>140$'
+      - '$H_0:\mu\ne140$、$H_1:\mu=140$'
+    answer: 0
+    hint: |
+      示したい主張は対立仮説に置き、帰無仮説には「効果がない」を等号で置く。
+    explanation: |
+      検定は帰無仮説を否定することで主張を示す枠組みなので、示したい「下げる」を $H_1:\mu<140$ に置きます。
+      等号を含む $\mu=140$（または $\mu\ge140$）を $H_0$ にすると、そのもとで検定統計量の分布が決まります。
+      $H_1:\mu>140$ は向きが逆、主張を $H_0$ に置く組は検定の論理になっていません。
+
+  - id: q10-null-and-alternative-hypothesis-2
+    term: null-and-alternative-hypothesis
+    level: 基本
+    type: truefalse
+    question: |
+      有意水準5%の検定で帰無仮説が棄却されなかったときは、帰無仮説が正しいことが統計的に示されたと結論してよい。
+    answer: false
+    hint: |
+      棄却されない原因として、第2種の過誤（検出力不足）が考えられる。
+    explanation: |
+      棄却されないのは「帰無仮説と矛盾する証拠が十分でなかった」というだけで、帰無仮説が正しい証明ではありません。
+      標本が小さく検出力が低いと、帰無仮説が誤りでもしばしば棄却されません。結論は「棄却できない（判断を保留する）」とします。
+
+  - id: q10-type-i-and-ii-errors-1
+    term: type-i-and-ii-errors
+    level: 基本
+    type: numeric
+    question: |
+      $N(\mu,1)$ から $n=9$ 個の標本をとり、$H_0:\mu=0$ 対 $H_1:\mu=1$ を「$\bar X>0.6$ なら $H_0$ を棄却」で検定する。
+      第1種の過誤の確率を小数第3位まで求めよ。
+    answer: 0.036
+    tolerance: 0.001
+    hint: |
+      $H_0$ のもとで $\bar X\sim N(0,1/9)$。
+    explanation: |
+      $$\alpha=P_0(\bar X>0.6)=P\!\left(Z>\frac{0.6}{1/3}\right)=P(Z>1.8)=0.0359$$
+
+  - id: q10-type-i-and-ii-errors-2
+    term: type-i-and-ii-errors
+    level: 標準
+    type: numeric
+    question: |
+      前問と同じ検定（$N(\mu,1)$、$n=9$、「$\bar X>0.6$ なら棄却」）で、$\mu=1$ が真のときの第2種の過誤の確率を小数第3位まで求めよ。
+    answer: 0.115
+    tolerance: 0.001
+    hint: |
+      第2種の過誤は「$H_1$ が真なのに棄却しない」こと。$\mu=1$ のもとで $\bar X\le0.6$ の確率。
+    explanation: |
+      $$\beta=P_1(\bar X\le0.6)=P\!\left(Z\le\frac{0.6-1}{1/3}\right)=\Phi(-1.2)=0.1151$$
+      検出力は $1-\beta=0.885$ です。
+
+  - id: q10-type-i-and-ii-errors-3
+    term: type-i-and-ii-errors
+    level: 基本
+    type: truefalse
+    question: |
+      標本サイズを変えずに、棄却域「$\bar X>c$」の境目 $c$ を大きくすると、第1種の過誤の確率と第2種の過誤の確率はどちらも小さくなる。
+    answer: false
+    hint: |
+      $c$ を大きくすると棄却しにくくなる。それぞれの過誤はどちらの向きに動くか。
+    explanation: |
+      $c$ を大きくすると棄却しにくくなるので $\alpha$ は小さくなりますが、「$H_1$ が真なのに棄却しない」確率 $\beta$ は大きくなります。
+      前の問題の設定で $c=0.6\to0.8$ とすると、$\alpha$ は $0.036\to0.008$、$\beta$ は $0.115\to0.274$ です。
+      両方を同時に小さくするには、標本サイズを増やす必要があります。
+
+  - id: q10-significance-level-1
+    term: significance-level
+    level: 標準
+    type: numeric
+    question: |
+      $X\sim B(10,p)$ で $H_0:p=0.5$ 対 $H_1:p>0.5$ を「$X\ge9$ なら棄却」で検定する。この検定のサイズを小数第4位まで求めよ。
+    answer: 0.0107
+    tolerance: 0.0001
+    hint: |
+      $P(X=9)+P(X=10)$ を $p=0.5$ で計算する。
+    explanation: |
+      $$P(X\ge9)=\frac{\binom{10}9+\binom{10}{10}}{2^{10}}=\frac{11}{1024}=0.0107$$
+      $X\ge8$ にすると $56/1024=0.0547$ で5%を超えるので、整数の棄却域ではサイズをちょうど5%にできません（離散分布の性質）。
+
+  - id: q10-significance-level-2
+    term: significance-level
+    level: 標準
+    type: truefalse
+    question: |
+      $N(\mu,1)$ からの標本で、複合帰無仮説 $H_0:\mu\le0$ 対 $H_1:\mu>0$ を「$\sqrt n\bar X>1.645$ なら棄却」で検定する。
+      この検定のサイズは $0.05$ である。
+    answer: true
+    hint: |
+      サイズは $H_0$ に含まれるすべての $\mu$ での棄却確率の上限。$\mu$ が小さいほど棄却確率はどうなるか。
+    explanation: |
+      棄却確率は $P_\mu(\sqrt n\bar X>1.645)=1-\Phi(1.645-\sqrt n\mu)$ で、$\mu$ について増加です。
+      $\mu\le0$ での上限は境目 $\mu=0$ でとられ、その値は $0.05$ です。したがってサイズは $0.05$ です。
+
+  - id: q10-p-value-1
+    term: p-value
+    level: 基本
+    type: numeric
+    question: |
+      両側の $z$ 検定で、検定統計量の観測値が $z=2.3$ であった。p 値を小数第4位まで求めよ。
+    answer: 0.0214
+    tolerance: 0.0001
+    hint: |
+      両側なら $2\{1-\Phi(|z|)\}$。
+    explanation: |
+      $$p=2\{1-\Phi(2.3)\}=2\times0.01072=0.0214$$
+      片側（右側）なら $0.0107$ です。
+
+  - id: q10-p-value-2
+    term: p-value
+    level: 標準
+    type: numeric
+    question: |
+      硬貨を12回投げて表が10回出た。$H_0:p=0.5$ 対 $H_1:p>0.5$ の正確な（二項分布による）p 値を小数第4位まで求めよ。
+    answer: 0.0193
+    tolerance: 0.0001
+    hint: |
+      観測値以上に極端な結果は $X=10,11,12$。
+    explanation: |
+      $$p=P(X\ge10)=\frac{\binom{12}{10}+\binom{12}{11}+\binom{12}{12}}{2^{12}}=\frac{66+12+1}{4096}=0.0193$$
+      $P(X=10)$ だけを計算するのは誤りで、「観測値と同じかそれ以上に極端」な確率を足します。
+
+  - id: q10-p-value-3
+    term: p-value
+    level: 応用
+    type: truefalse
+    question: |
+      帰無仮説が単純仮説で正しく、検定統計量が連続分布に従うとき、p 値は区間 $(0,1)$ の一様分布に従う。
+    answer: true
+    hint: |
+      $p=1-F(T)$（$F$ は $H_0$ のもとでの $T$ の分布関数）と書き、確率積分変換を使う。
+    explanation: |
+      $F$ が連続なら $F(T)\sim U(0,1)$ なので、$p=1-F(T)$ も $U(0,1)$ に従います。
+      したがって $P(p\le\alpha)=\alpha$ で、「p 値が $\alpha$ 以下なら棄却」はちょうどサイズ $\alpha$ の検定です。
+      離散分布では $P(p\le\alpha)\le\alpha$ となり、一様にはなりません。
+
+  - id: q10-rejection-region-1
+    term: rejection-region
+    level: 基本
+    type: choice
+    question: |
+      $Z$ が $H_0$ のもとで $N(0,1)$ に従う。有意水準1%の両側検定の棄却域はどれか。
+    choices:
+      - '$|Z|>2.576$'
+      - '$|Z|>2.326$'
+      - '$|Z|>1.960$'
+      - '$Z>2.326$'
+    answer: 0
+    hint: |
+      両側なので、左右に $0.5\%$ ずつ割り当てる。
+    explanation: |
+      上側 $0.5\%$ 点は $z_{0.005}=2.576$ なので、棄却域は $|Z|>2.576$ です。
+      $|Z|>2.326$ はサイズ2%、$|Z|>1.960$ はサイズ5%の両側検定です。$Z>2.326$ は1%の右片側検定です。
+
+  - id: q10-rejection-region-2
+    term: rejection-region
+    level: 標準
+    type: numeric
+    question: |
+      $N(\mu,6^2)$ から $n=36$ 個の標本をとり、$H_0:\mu=50$ 対 $H_1:\mu>50$ を有意水準5%で検定する。棄却域を $\bar X\ge c$ と書くとき、
+      $c$ を小数第3位まで求めよ（$z_{0.05}=1.645$）。
+    answer: 51.645
+    tolerance: 0.001
+    hint: |
+      $\sqrt n(\bar X-50)/\sigma\ge z_{0.05}$ を $\bar X$ について解く。
+    explanation: |
+      $\sigma/\sqrt n=6/6=1$ なので
+      $$c=50+1.645\times1=51.645$$
+
+  - id: q10-power-function-1
+    term: power-function
+    level: 標準
+    type: numeric
+    question: |
+      $N(\mu,10^2)$ から $n=25$ 個をとり、$H_0:\mu=100$ 対 $H_1:\mu>100$ を有意水準5%の $z$ 検定で検定する。
+      真の平均が $\mu=105$ のときの検出力を小数第3位まで求めよ（$z_{0.05}=1.645$）。
+    answer: 0.804
+    tolerance: 0.001
+    hint: |
+      $\delta=\sqrt n(\mu-\mu_0)/\sigma$ とすると、片側検定の検出力は $\Phi(\delta-z_\alpha)$。
+    explanation: |
+      $\delta=\sqrt{25}\times5/10=2.5$ なので
+      $$K(105)=\Phi(2.5-1.645)=\Phi(0.855)=0.804$$
+
+  - id: q10-power-function-2
+    term: power-function
+    level: 応用
+    type: numeric
+    question: |
+      前問と同じ設定（$\sigma=10$、$n=25$、$\mu_0=100$、真の $\mu=105$）で、対立仮説を両側 $H_1:\mu\ne100$ とした有意水準5%の $z$ 検定の検出力を
+      小数第3位まで求めよ（$z_{0.025}=1.96$）。
+    answer: 0.705
+    tolerance: 0.001
+    hint: |
+      両側検定の検出力は $\Phi(\delta-z_{\alpha/2})+\Phi(-\delta-z_{\alpha/2})$。
+    explanation: |
+      $\delta=2.5$ なので
+      $$\Phi(2.5-1.96)+\Phi(-2.5-1.96)=\Phi(0.54)+\Phi(-4.46)=0.7054+0.0000=0.705$$
+      向きがわかっているなら片側検定（0.804）のほうが検出力は高くなります。
+
+  - id: q10-one-sided-two-sided-test-1
+    term: one-sided-two-sided-test
+    level: 標準
+    type: truefalse
+    question: |
+      $z$ 検定の統計量の観測値が $z=1.8$ のとき、有意水準5%の右片側検定では $H_0$ が棄却され、有意水準5%の両側検定では棄却されない。
+    answer: true
+    hint: |
+      片側の棄却限界は $1.645$、両側は $1.960$。
+    explanation: |
+      $1.8>1.645$ なので右片側では棄却、$|1.8|<1.960$ なので両側では棄却されません。
+      p 値は片側 $0.036$、両側 $0.072$ です。片側か両側かは、データを見る前に研究の目的から決めておく必要があります。
+
+  - id: q10-neyman-pearson-lemma-1
+    term: neyman-pearson-lemma
+    level: 標準
+    type: derivation
+    question: |
+      $X_1,\dots,X_n$ を $N(\mu,1)$ からの i.i.d. 標本とする。$H_0:\mu=0$ 対 $H_1:\mu=1$ の有意水準 $\alpha$ の最強力検定の棄却域を求めよ。
+    steps:
+      - |
+        尤度比 $\dfrac{f(\boldsymbol x;1)}{f(\boldsymbol x;0)}=\exp\left\{-\dfrac12\sum(x_i-1)^2+\dfrac12\sum x_i^2\right\}=\exp\left(\sum x_i-\dfrac n2\right)$。
+      - |
+        これは $\bar x$ の増加関数なので、「尤度比 $>k$」は「$\bar x>c$」と同値。
+      - |
+        $H_0$ のもとで $\sqrt n\bar X\sim N(0,1)$ なので、$P_0(\bar X>c)=\alpha$ から $c=z_\alpha/\sqrt n$。
+    answer: "棄却域 $\\{\\bar x>z_\\alpha/\\sqrt n\\}$"
+    hint: |
+      尤度比を整理すると、データは $\sum x_i$ だけを通して現れる。
+    explanation: |
+      ネイマン・ピアソンの補題より、尤度比が大きい点から棄却域に入れる検定が最強力です。尤度比が $\bar x$ の増加関数なので、
+      棄却域は $\bar X>z_\alpha/\sqrt n$ です。この棄却域は $\mu_1=1$ の値によらず、$\mu_1>0$ ならいつも同じになります（一様最強力検定につながる）。
+
+  - id: q10-neyman-pearson-lemma-2
+    term: neyman-pearson-lemma
+    level: 応用
+    type: numeric
+    question: |
+      1個の観測 $X$ がレート $\lambda$ の指数分布（密度 $\lambda e^{-\lambda x}$）に従う。$H_0:\lambda=1$ 対 $H_1:\lambda=2$ の有意水準5%の
+      最強力検定の検出力を小数第4位まで求めよ。
+    answer: 0.0975
+    tolerance: 0.0001
+    hint: |
+      尤度比 $2e^{-x}$ は $x$ の減少関数なので、棄却域は $\{X<c\}$ の形になる。
+    explanation: |
+      $P_{\lambda=1}(X<c)=1-e^{-c}=0.05$ より $c=-\log0.95=0.0513$ です。検出力は
+      $$P_{\lambda=2}(X<c)=1-e^{-2c}=1-0.95^2=0.0975$$
+      観測が1個だけなので、最強力検定でも検出力は低くなります。レートが大きい（平均が小さい）ほうを検出するので、棄却域が「小さい $X$」になる点に注意します。
+
+  - id: q10-uniformly-most-powerful-test-1
+    term: uniformly-most-powerful-test
+    level: 標準
+    type: choice
+    question: |
+      $N(\mu,1)$ からの標本で、$H_0:\mu=0$ 対 **両側** $H_1:\mu\ne0$ を有意水準5%で検定する。正しい記述はどれか。
+    choices:
+      - |
+        すべての $\mu\ne0$ で検出力が最大となる検定（一様最強力検定）は存在しない
+      - |
+        $|\bar X|$ が大きいとき棄却する両側検定が一様最強力検定である
+      - |
+        $\bar X$ が大きいとき棄却する右片側検定が一様最強力検定である
+      - |
+        ネイマン・ピアソンの補題により、どんな対立仮説にも一様最強力検定が存在する
+    answer: 0
+    hint: |
+      $\mu>0$ に対する最強力検定と $\mu<0$ に対する最強力検定の棄却域を比べる。
+    explanation: |
+      $\mu_1>0$ に対する最強力検定は「$\bar X$ が大きいとき棄却」、$\mu_1<0$ に対しては「$\bar X$ が小さいとき棄却」で、棄却域が異なります。
+      1つの検定で両方の向きに最強力にはなれないので、両側対立仮説には一様最強力検定がありません。
+      両側検定はこの場合「一様最強力不偏検定」になります。
+
+  - id: q10-uniformly-most-powerful-test-2
+    term: uniformly-most-powerful-test
+    level: 応用
+    type: numeric
+    question: |
+      $X\sim B(20,p)$ で $H_0:p\le0.3$ 対 $H_1:p>0.3$ を検定する。無作為化しない棄却域 $\{X\ge c\}$ でサイズが $0.05$ 以下となる
+      一様最強力検定のうち、最も小さい $c$ を求めよ。
+    answer: 10
+    tolerance: 0.5
+    hint: |
+      二項分布は $X$ について単調尤度比をもつ。$p=0.3$ で $P(X\ge c)\le0.05$ となる最小の $c$ を探す。
+    explanation: |
+      $p=0.3$ で $P(X\ge9)=0.113$、$P(X\ge10)=0.048$ なので $c=10$ です。
+      単調尤度比があるのでカーリン・ルビンの定理により、この検定は（サイズ $0.048$ の）一様最強力検定です。
+      サイズをちょうど $0.05$ にしたいときは、$X=9$ で無作為化します。
+
+  - id: q10-monotone-likelihood-ratio-1
+    term: monotone-likelihood-ratio
+    level: 基本
+    type: truefalse
+    question: |
+      ポアソン分布 $Po(\lambda)$ からの i.i.d. 標本の分布族は、$T=\sum X_i$ について単調尤度比をもつ。
+    answer: true
+    hint: |
+      $\lambda_1>\lambda_0$ として、尤度比を $T$ の関数として書く。
+    explanation: |
+      $$\frac{f(\boldsymbol x;\lambda_1)}{f(\boldsymbol x;\lambda_0)}=\left(\frac{\lambda_1}{\lambda_0}\right)^{T}e^{-n(\lambda_1-\lambda_0)}$$
+      で、$\lambda_1/\lambda_0>1$ なので $T$ の増加関数です。ポアソン分布は自然母数 $\log\lambda$ が増加関数の指数型分布族なので、単調尤度比をもちます。
+
+  - id: q10-likelihood-ratio-test-1
+    term: likelihood-ratio-test
+    level: 標準
+    type: numeric
+    question: |
+      $Po(\lambda)$ からの標本 $n=10$ 個の合計が $\sum x_i=30$ であった。$H_0:\lambda=2$ の尤度比検定統計量 $-2\log\Lambda$ を小数第3位まで求めよ。
+    answer: 4.328
+    tolerance: 0.001
+    hint: |
+      $\hat\lambda=3$。$\ell(\lambda)=30\log\lambda-10\lambda$（定数を除く）。
+    explanation: |
+      $$-2\log\Lambda=2\{\ell(3)-\ell(2)\}=2\left\{30\log\frac32-10(3-2)\right\}=2(12.164-10)=4.328$$
+      $\chi^2(1)$ の上側5%点 $3.841$ を超えるので、5%水準で棄却されます。
+
+  - id: q10-likelihood-ratio-test-2
+    term: likelihood-ratio-test
+    level: 応用
+    type: derivation
+    question: |
+      $X_1,\dots,X_n$ を $N(\mu,\sigma^2)$（$\sigma^2$ 既知）からの i.i.d. 標本とする。$H_0:\mu=\mu_0$ の尤度比検定統計量 $-2\log\Lambda$ を求めよ。
+    steps:
+      - |
+        $\ell(\mu)=-\dfrac{1}{2\sigma^2}\sum(x_i-\mu)^2+\text{定数}$、制約なしの最尤推定量は $\hat\mu=\bar x$。
+      - |
+        $\sum(x_i-\mu_0)^2=\sum(x_i-\bar x)^2+n(\bar x-\mu_0)^2$ を使うと $\ell(\bar x)-\ell(\mu_0)=\dfrac{n(\bar x-\mu_0)^2}{2\sigma^2}$。
+    answer: "$-2\\log\\Lambda=\\dfrac{n(\\bar X-\\mu_0)^2}{\\sigma^2}=Z^2$"
+    hint: |
+      偏差平方和の分解 $\sum(x_i-\mu_0)^2=\sum(x_i-\bar x)^2+n(\bar x-\mu_0)^2$ を使う。
+    explanation: |
+      $-2\log\Lambda=2\{\ell(\bar x)-\ell(\mu_0)\}=\frac{n(\bar x-\mu_0)^2}{\sigma^2}$ で、$z$ 検定の統計量の2乗 $Z^2$ です。
+      $H_0$ のもとで $Z\sim N(0,1)$ なので、この場合は近似ではなく正確に $-2\log\Lambda\sim\chi^2(1)$ です。
+
+  - id: q10-wilks-theorem-1
+    term: wilks-theorem
+    level: 基本
+    type: choice
+    question: |
+      共通の分散 $\sigma^2$（未知）をもつ3つの正規母集団 $N(\mu_j,\sigma^2)$ について、$H_0:\mu_1=\mu_2=\mu_3$ の尤度比検定を行う。
+      ウィルクスの定理による $-2\log\Lambda$ の漸近分布の自由度はどれか。
+    choices:
+      - '$2$'
+      - '$3$'
+      - '$4$'
+      - '$1$'
+    answer: 0
+    hint: |
+      自由度＝（全体の自由な母数の数）－（$H_0$ のもとで自由な母数の数）。
+    explanation: |
+      全体の母数は $(\mu_1,\mu_2,\mu_3,\sigma^2)$ の4個、$H_0$ のもとでは $(\mu,\sigma^2)$ の2個なので、自由度は $4-2=2$ です。
+      $3$ は群の数、$4$ は全体の母数の数をそのまま使った誤りです。共通の $\sigma^2$ は両方で推定するので差に入りません。
+
+  - id: q10-wilks-theorem-2
+    term: wilks-theorem
+    level: 標準
+    type: numeric
+    question: |
+      ある尤度比検定で $-2\log\Lambda=6.2$ を得た。ウィルクスの定理により自由度2のカイ二乗分布で近似したときの p 値を小数第3位まで求めよ。
+    answer: 0.045
+    tolerance: 0.001
+    hint: |
+      $\chi^2(2)$ は平均2の指数分布なので、上側確率は $e^{-x/2}$。
+    explanation: |
+      $$P(\chi^2(2)>6.2)=e^{-3.1}=0.0450$$
+      5%水準では棄却、1%水準では棄却されません。
+
+  - id: q10-wald-test-1
+    term: wald-test
+    level: 標準
+    type: numeric
+    question: |
+      $100$ 回の試行で成功が $60$ 回だった。$H_0:p=0.5$ のワルド検定統計量 $Z_W=\dfrac{\hat p-p_0}{\sqrt{\hat p(1-\hat p)/n}}$ を小数第3位まで求めよ。
+    answer: 2.041
+    tolerance: 0.001
+    hint: |
+      分散の推定には $\hat p=0.6$ を使う。
+    explanation: |
+      $$Z_W=\frac{0.6-0.5}{\sqrt{0.6\times0.4/100}}=\frac{0.1}{0.04899}=2.041$$
+      $p_0=0.5$ で分散を計算するスコア検定では $Z_S=0.1/0.05=2.000$ です。
+
+  - id: q10-wald-test-2
+    term: wald-test
+    level: 基本
+    type: truefalse
+    question: |
+      ワルド検定では、最尤推定量の分散を帰無仮説の値 $\theta_0$ でのフィッシャー情報量 $I(\theta_0)$ を使って推定する。
+    answer: false
+    hint: |
+      ワルド・スコア・尤度比の3つの検定は、どこで計算する量を使うかが違う。
+    explanation: |
+      ワルド検定は推定値 $\hat\theta$ での情報量 $I(\hat\theta)$ を使います。$I(\theta_0)$ を使うのはスコア検定です。
+      ワルド検定は制約なしの推定だけ、スコア検定は $H_0$ のもとの推定だけ、尤度比検定は両方を必要とします。
+
+  - id: q10-score-test-1
+    term: score-test
+    level: 標準
+    type: numeric
+    question: |
+      $100$ 回の試行で成功が $60$ 回だった。$H_0:p=0.5$ のスコア検定統計量 $Z_S=\dfrac{U(p_0)}{\sqrt{nI(p_0)}}$ を小数第3位まで求めよ。
+    answer: 2.0
+    tolerance: 0.001
+    hint: |
+      ベルヌーイでは $U(p)=\dfrac{\sum X_i-np}{p(1-p)}$、$nI(p)=\dfrac{n}{p(1-p)}$。
+    explanation: |
+      整理すると $Z_S=\dfrac{\hat p-p_0}{\sqrt{p_0(1-p_0)/n}}$ になります。
+      $$Z_S=\frac{0.6-0.5}{\sqrt{0.25/100}}=\frac{0.1}{0.05}=2.000$$
+      これは比率の検定で教科書によく出る $z$ 統計量そのものです。
+
+  - id: q10-score-test-2
+    term: score-test
+    level: 応用
+    type: numeric
+    question: |
+      $Po(\lambda)$ からの標本 $n=10$ 個の合計が $\sum x_i=30$ であった。$H_0:\lambda=2$ のスコア統計量 $S=U(\lambda_0)^2/\{nI(\lambda_0)\}$ を小数第3位まで求めよ。
+    answer: 5
+    tolerance: 0.001
+    hint: |
+      $U(\lambda)=\sum x_i/\lambda-n$、$I(\lambda)=1/\lambda$。
+    explanation: |
+      $U(2)=30/2-10=5$、$nI(2)=10/2=5$ なので $S=25/5=5.000$ です（$=(\sum x_i-n\lambda_0)^2/(n\lambda_0)$）。
+      同じデータで尤度比統計量は $4.328$、ワルド統計量は $nI(\hat\lambda)(\hat\lambda-\lambda_0)^2=\frac{10}{3}\times1=3.333$ で、
+      3つは漸近的に同等ですが有限標本では値が異なります。
+
+  - id: q10-multiple-testing-1
+    term: multiple-testing
+    level: 基本
+    type: numeric
+    question: |
+      帰無仮説がすべて正しい独立な10個の検定を、それぞれ有意水準5%で行う。少なくとも1つを誤って棄却する確率（FWER）を小数第3位まで求めよ。
+    answer: 0.401
+    tolerance: 0.001
+    hint: |
+      1つも棄却しない確率は $0.95^{10}$。
+    explanation: |
+      $$\text{FWER}=1-0.95^{10}=0.401$$
+      個々の検定は5%でも、10個まとめると約40%の確率で偽陽性が出ます。これが多重検定の問題です。
+
+  - id: q10-multiple-testing-2
+    term: multiple-testing
+    level: 標準
+    type: numeric
+    question: |
+      独立な5個の検定で FWER をちょうど5%にしたい。各検定に共通の有意水準 $\alpha'$ を $1-(1-\alpha')^5=0.05$ から求め、小数第4位まで答えよ（シダックの補正）。
+    answer: 0.0102
+    tolerance: 0.0001
+    hint: |
+      $\alpha'=1-0.95^{1/5}$。
+    explanation: |
+      $$\alpha'=1-0.95^{1/5}=0.01021$$
+      ボンフェローニ補正の $0.05/5=0.01$ よりわずかに大きく、独立性を仮定できるぶんだけゆるくなります。
+
+  - id: q10-bonferroni-correction-1
+    term: bonferroni-correction
+    level: 基本
+    type: numeric
+    question: |
+      8個の帰無仮説を FWER 5%で同時に検定する。ボンフェローニ補正での各検定の有意水準を小数第5位まで求めよ。
+    answer: 0.00625
+    tolerance: 0.00001
+    hint: |
+      $\alpha/m$。
+    explanation: |
+      $$\frac{0.05}{8}=0.00625$$
+      各 p 値をこれと比べるか、調整済み p 値 $\min(1,8p_j)$ を $0.05$ と比べます。
+
+  - id: q10-bonferroni-correction-2
+    term: bonferroni-correction
+    level: 標準
+    type: choice
+    question: |
+      4つの検定の p 値が $0.004,\ 0.011,\ 0.020,\ 0.30$ であった。FWER 5%のボンフェローニ補正で棄却される帰無仮説の個数はどれか。
+    choices:
+      - '2個'
+      - '1個'
+      - '3個'
+      - '4個'
+    answer: 0
+    hint: |
+      各 p 値を $0.05/4=0.0125$ と比べる。
+    explanation: |
+      $0.004$ と $0.011$ が $0.0125$ 以下なので2個です。補正しないと（5%と比べると）3個棄却されます。
+      同じ p 値にホルム法を使うと3個棄却され、ボンフェローニより検出力が高くなります。
+
+  - id: q10-holm-method-1
+    term: holm-method
+    level: 標準
+    type: numeric
+    question: |
+      4つの検定の p 値が $0.004,\ 0.011,\ 0.020,\ 0.30$ であった。FWER 5%のホルム法で棄却される帰無仮説の個数を答えよ。
+    answer: 3
+    tolerance: 0.5
+    hint: |
+      小さい順に $\alpha/4,\ \alpha/3,\ \alpha/2,\ \alpha/1$ と比べ、初めて超えたところで止める。
+    explanation: |
+      $0.004\le0.0125$、$0.011\le0.0167$、$0.020\le0.025$ と3つ続けて満たし、$0.30>0.05$ で止まります。棄却は3個です。
+      ボンフェローニ補正（2個）より多く棄却でき、しかも FWER は5%以下に保たれます。
+
+  - id: q10-holm-method-2
+    term: holm-method
+    level: 基本
+    type: truefalse
+    question: |
+      同じ p 値と同じ $\alpha$ に対して、ホルム法はボンフェローニ補正で棄却される帰無仮説をすべて棄却する（棄却数は少なくならない）。
+    answer: true
+    hint: |
+      ホルム法の各段の基準 $\alpha/(m-k+1)$ は、$\alpha/m$ 以上である。
+    explanation: |
+      ボンフェローニで棄却される p 値は $\alpha/m$ 以下です。ホルム法の基準は $\alpha/m\le\alpha/(m-k+1)$ なので、
+      $\alpha/m$ 以下の p 値は小さい順に並べたとき途中で止まることなく棄却されます。したがってホルム法はボンフェローニ法より一様に強力です。
+
+  - id: q10-false-discovery-rate-1
+    term: false-discovery-rate
+    level: 応用
+    type: numeric
+    question: |
+      5つの検定の p 値が $0.010,\ 0.028,\ 0.035,\ 0.039,\ 0.60$ であった。目標 FDR $q=0.05$ のベンジャミーニ・ホッホバーグ法で棄却される個数を答えよ。
+    answer: 4
+    tolerance: 0.5
+    hint: |
+      $p_{(k)}\le\frac k5q$ を満たす**最大の** $k$ を探す。途中で満たさない $k$ があっても止まらない。
+    explanation: |
+      基準は $0.01,\ 0.02,\ 0.03,\ 0.04,\ 0.05$ です。$p_{(4)}=0.039\le0.04$ を満たす $k=4$ が最大なので、小さい順に4個棄却します。
+      $p_{(2)}=0.028>0.02$、$p_{(3)}=0.035>0.03$ ですが、BH 法は上から探す（ステップアップ）ので、$k^*=4$ までまとめて棄却されます。
+      同じ p 値にホルム法を使うと、$0.028>0.05/4$ で止まり1個しか棄却されません。
+
+  - id: q10-sample-size-determination-test-1
+    term: sample-size-determination-test
+    level: 標準
+    type: numeric
+    question: |
+      $N(\mu,10^2)$ で $H_0:\mu=\mu_0$ 対 $H_1:\mu>\mu_0$ を有意水準5%で検定する。差 $\delta=4$ を検出力80%で検出するのに必要な最小の $n$ を求めよ
+      （$z_{0.05}=1.645$、$z_{0.20}=0.842$）。
+    answer: 39
+    tolerance: 0.5
+    hint: |
+      $n\ge\{(z_\alpha+z_\beta)\sigma/\delta\}^2$。
+    explanation: |
+      $$\left\{\frac{(1.645+0.842)\times10}{4}\right\}^2=(6.2175)^2=38.66$$
+      切り上げて $39$ です。両側検定なら $z_{0.025}=1.96$ を使い、$\{(1.96+0.842)\times2.5\}^2=49.1$ より $50$ です。
+
+  - id: q10-randomized-test-1
+    term: randomized-test
+    level: 応用
+    type: numeric
+    question: |
+      $X\sim B(10,p)$ で $H_0:p=0.5$ 対 $H_1:p>0.5$ のサイズちょうど $0.05$ の検定を、$X\ge9$ なら棄却、$X=8$ なら確率 $\gamma$ で棄却、
+      $X\le7$ なら棄却しない、として作る。$\gamma$ を小数第3位まで求めよ。
+    answer: 0.893
+    tolerance: 0.001
+    hint: |
+      $P(X\ge9)+\gamma P(X=8)=0.05$ を解く。
+    explanation: |
+      $P(X\ge9)=11/1024=0.01074$、$P(X=8)=45/1024=0.04395$ なので
+      $$\gamma=\frac{0.05-0.01074}{0.04395}=0.893$$
+      無作為化により、離散分布でもサイズをちょうど $\alpha$ にでき、ネイマン・ピアソンの補題の最強力検定が作れます。
