@@ -944,7 +944,7 @@
       '<div class="sess-bar" aria-hidden="true"><span style="width:' + (100 * cs.i / cs.list.length) + '%"></span></div>' +
       '<div class="fc"><p class="crumb">第' + t.chapter + '章 ' + esc(chapterOf(t.chapter).title) + '</p><h2 class="fc-title">' + esc(t.title) + impMark(t.importance) + '</h2>' +
       (t.en ? '<p class="term-meta"><span class="en" lang="en">' + esc(t.en) + '</span></p>' : '') +
-      '<div class="fc-back body" hidden>' + summaryHtml(id) + '<p>' + termBtn(id) + '</p></div>' +
+      '<div class="fc-back body" hidden>' + summaryHtml(id) + '<p><button type="button" class="rel-btn" data-go="' + id + '">解説を読む →</button></p></div>' +
       '<button type="button" class="big-btn" data-card-flip>めくる</button>' +
       '<div class="fc-judge q-row" hidden><button type="button" class="q-btn primary" data-card-judge="1">覚えた</button><button type="button" class="q-btn" data-card-judge="0">まだ</button></div></div></div>';
     detailEl.scrollTop = 0;
@@ -1005,6 +1005,14 @@
         '<td>' + done + '/' + qs.length + '</td></tr>';
     });
     h += '</tbody></table></div>';
+    // 最近間違えた問題（間違えたままのもの、新しい順）
+    var wrongQs = QS.filter(function (q) { var a = DB.ans[q.id]; return a && a.r === 0; })
+      .sort(function (x, y) { return DB.ans[y.id].t - DB.ans[x.id].t; }).slice(0, 10);
+    if (wrongQs.length) {
+      h += '<h2 class="home-h">最近間違えた問題</h2><ul class="wrong-list">' + wrongQs.map(function (q) {
+        return '<li><div class="lazy-math wrong-q">' + q.q + '</div>' + termBtn(q.term) + '</li>';
+      }).join('') + '</ul><a class="big-btn ghost" href="#review">復習で解き直す</a>';
+    }
     var weak = weakTerms();
     h += '<h2 class="home-h">苦手な用語</h2>' + (weak.length ? '<div class="related-list">' + weak.slice(0, 40).map(function (id) { return termBtn(id); }).join('') + '</div>' : '<p class="screen-sub">まだありません。問題を解いて間違えた用語がここに並びます。</p>');
     var bms = Object.keys(DB.bm).filter(isWritten).sort(function (a, b) { return DB.bm[b] - DB.bm[a]; });
@@ -1026,6 +1034,7 @@
       '</div>';
     detailEl.innerHTML = h;
     detailEl.scrollTop = 0;
+    Array.prototype.forEach.call(detailEl.querySelectorAll('.lazy-math'), lazy);
   }
 
   function setFont(f) {
