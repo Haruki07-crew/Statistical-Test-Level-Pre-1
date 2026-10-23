@@ -449,11 +449,15 @@
       '<button type="button" class="home-card" data-random><small>ランダムに1語</small><b>どれか開く</b></button>' +
       '<a class="home-card" href="#formulas"><small>公式まとめ</small><b>分布・検定・推定</b></a>' +
       '</div>';
+    // 今日の1問：日付で決まる1問（復習待ちがあればその先頭）
+    var dq = dueList()[0];
+    if (!dq && QS.length) { var seed = Number(todayKey().replace(/-/g, '')); dq = QS[(seed * 2654435761 % 4294967296) % QS.length]; }
+    if (dq) h += '<h2 class="home-h">今日の1問</h2><div class="home-q"></div>';
     var recent = DB.recent.filter(isWritten).slice(0, 8);
     if (recent.length) h += '<h2 class="home-h">最近見た用語</h2><div class="related-list">' + recent.map(function (id) { return termBtn(id); }).join('') + '</div>';
     var bms = Object.keys(DB.bm).filter(isWritten).sort(function (a, b) { return DB.bm[b] - DB.bm[a]; });
     if (bms.length) h += '<h2 class="home-h">ブックマーク</h2><div class="related-list">' + bms.slice(0, 30).map(function (id) { return termBtn(id); }).join('') + '</div>';
-    h += '<p class="home-note">『統計学実践ワークブック』の全32章の章立てに沿って、用語の定義・数式・具体例・試験のポイントをまとめています。解説と問題はすべてオリジナルです。' +
+    h += '<p class="home-note">『統計学実践ワークブック』（増補版）の全33章の章立てに沿って、用語の定義・数式・具体例・試験のポイントをまとめています。解説と問題はすべてオリジナルです。' +
       '作成済み ' + wr + ' 語 ／ 予定 ' + tot + ' 語（うち数値検算済み ' + vf + ' 語）、検算済みの問題 ' + QS.length + ' 問。</p>' +
       '<h2 class="home-h">使い方</h2>' +
       '<ul class="home-list"><li>一覧の上のタブで部を選び、章の見出しを押すと用語が開きます。上の検索欄に用語・読み・英語名を入れると全章から探せます（「ガウス」「がんま」「MGF」など）。</li>' +
@@ -465,6 +469,8 @@
       '<div class="legend"><span>' + impMark('A') + '必須・頻出</span><span>' + impMark('B') + '重要</span><span>' + impMark('C') + '補足</span></div>' +
       '</div>';
     detailEl.innerHTML = h;
+    var hq = detailEl.querySelector('.home-q');
+    if (hq) hq.appendChild(qCard(dq, { termLink: true, retry: true }));
     detailEl.scrollTop = 0;
   }
 

@@ -1,0 +1,114 @@
+{
+ "q18-deviance-1": {
+  "hash": "9b37a8a79286d504",
+  "ok": true
+ },
+ "q18-deviance-2": {
+  "hash": "ba5d3e3d9e83a4ce",
+  "ok": true
+ },
+ "q18-exponential-dispersion-family-1": {
+  "hash": "fc2a7fcb829ca3ac",
+  "ok": true
+ },
+ "q18-exponential-dispersion-family-2": {
+  "hash": "3e33985d1c8322fc",
+  "ok": true
+ },
+ "q18-generalized-linear-model-1": {
+  "hash": "e2ade3f996a66329",
+  "ok": true
+ },
+ "q18-generalized-linear-model-2": {
+  "hash": "6add9e38bad56c7d",
+  "ok": true
+ },
+ "q18-iteratively-reweighted-least-squares-1": {
+  "hash": "e34d92dffadad06c",
+  "ok": true
+ },
+ "q18-link-function-1": {
+  "hash": "70a95fd236aaf01d",
+  "ok": true
+ },
+ "q18-link-function-2": {
+  "hash": "bd7408844c3ee9cc",
+  "ok": true
+ },
+ "q18-logistic-likelihood-estimation-1": {
+  "hash": "e20ce4b9dcf0535f",
+  "ok": true
+ },
+ "q18-logistic-likelihood-estimation-2": {
+  "hash": "d7d27d94e5f61572",
+  "ok": true
+ },
+ "q18-logistic-regression-1": {
+  "hash": "964825ae06b626cc",
+  "ok": true
+ },
+ "q18-logistic-regression-2": {
+  "hash": "9d53be692ca37ef3",
+  "ok": true
+ },
+ "q18-logistic-regression-3": {
+  "hash": "636daea972ee73c0",
+  "ok": true
+ },
+ "q18-multinomial-logit-model-1": {
+  "hash": "09448f52ad12ed9e",
+  "ok": true
+ },
+ "q18-multinomial-logit-model-2": {
+  "hash": "7819e942e99d18ea",
+  "ok": true
+ },
+ "q18-odds-and-odds-ratio-1": {
+  "hash": "2350f0c310db0a6d",
+  "ok": true
+ },
+ "q18-odds-and-odds-ratio-2": {
+  "hash": "c57b3f14c808fa3c",
+  "ok": true
+ },
+ "q18-odds-and-odds-ratio-3": {
+  "hash": "5d378555a895b895",
+  "ok": true
+ },
+ "q18-offset-term-1": {
+  "hash": "001830c8fb258231",
+  "ok": true
+ },
+ "q18-ordered-logit-model-1": {
+  "hash": "5938f9945336acbe",
+  "ok": true
+ },
+ "q18-overdispersion-1": {
+  "hash": "3416427fd729d4de",
+  "ok": true
+ },
+ "q18-overdispersion-2": {
+  "hash": "d3ca6d55bc2d418f",
+  "ok": true
+ },
+ "q18-poisson-regression-1": {
+  "hash": "82d62e9d99087272",
+  "ok": true
+ },
+ "q18-poisson-regression-2": {
+  "hash": "44d9578f055e7c78",
+  "ok": true
+ },
+ "q18-poisson-regression-3": {
+  "hash": "62e8e7bc755a3523",
+  "ok": true
+ },
+ "q18-probit-model-1": {
+  "hash": "acadd9ee35c75fc0",
+  "ok": true
+ },
+ "q18-tobit-model-1": {
+  "hash": "7d3eb13f2311d957",
+  "ok": true
+ }
+}

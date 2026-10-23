@@ -1,0 +1,480 @@
+chapter: 14
+questions:
+  - id: q14-markov-property-1
+    term: markov-property
+    level: 基本
+    type: truefalse
+    question: |
+      $\{X_n\}$ がマルコフ性を持つなら、$X_{n+1}$ と $X_{n-1}$ は（$X_n$ で条件づけなくても）互いに独立である。
+    answer: false
+    hint: |
+      マルコフ性は「現在 $X_n$ を与えたもとで」の性質。条件をはずすとどうなるか。
+    explanation: |
+      マルコフ性は、$X_n$ を与えたもとで未来 $X_{n+1}$ と過去 $X_{n-1}$ が**条件付き独立**になることです。
+      条件をはずすと、$X_{n-1}$ が $X_n$ を通して $X_{n+1}$ に影響するので、一般には独立ではありません。
+      例えば「晴れが続きやすい」天気の連鎖では、2日前が晴れなら今日も晴れの確率が高くなります。
+
+  - id: q14-markov-chain-1
+    term: markov-chain
+    level: 基本
+    type: numeric
+    question: |
+      状態 $\{1,2,3\}$ のマルコフ連鎖の推移確率行列が
+      $$P=\begin{pmatrix}0.5&0.3&0.2\\0.2&0.6&0.2\\0.1&0.3&0.6\end{pmatrix}$$
+      で、初期分布が $(0.5,\ 0.3,\ 0.2)$ である。$P(X_0=1,\ X_1=2,\ X_2=2)$ を小数第2位まで求めよ。
+    answer: 0.09
+    tolerance: 0.005
+    hint: |
+      経路の確率は「初期確率 × 推移確率 × 推移確率」。
+    explanation: |
+      $$P(X_0=1,X_1=2,X_2=2)=\pi^{(0)}_1\,p_{12}\,p_{22}=0.5\times0.3\times0.6=0.09$$
+
+  - id: q14-markov-chain-2
+    term: markov-chain
+    level: 標準
+    type: numeric
+    question: |
+      前問と同じ推移確率行列 $P$ と初期分布 $(0.5,\ 0.3,\ 0.2)$ のもとで、$P(X_1=3)$ を小数第2位まで求めよ。
+    answer: 0.28
+    tolerance: 0.005
+    hint: |
+      $\boldsymbol\pi^{(1)}=\boldsymbol\pi^{(0)}P$ の第3成分、つまり $P$ の第3列との内積。
+    explanation: |
+      $$P(X_1=3)=0.5\times0.2+0.3\times0.2+0.2\times0.6=0.10+0.06+0.12=0.28$$
+      全体では $\boldsymbol\pi^{(1)}=(0.33,\ 0.39,\ 0.28)$ です。
+
+  - id: q14-transition-probability-matrix-1
+    term: transition-probability-matrix
+    level: 基本
+    type: choice
+    question: |
+      「行＝現在の状態、列＝次の状態」とするとき、推移確率行列として正しいものはどれか。
+    choices:
+      - '$\begin{pmatrix}0.2&0.8\\0.5&0.5\end{pmatrix}$'
+      - '$\begin{pmatrix}0.2&0.8\\0.6&0.6\end{pmatrix}$'
+      - '$\begin{pmatrix}0.3&0.5\\0.7&0.5\end{pmatrix}$'
+      - '$\begin{pmatrix}1.2&-0.2\\0.4&0.6\end{pmatrix}$'
+    answer: 0
+    hint: |
+      成分がすべて0以上で、**各行**の和が1になっているか確かめる。
+    explanation: |
+      1つ目は成分が非負で、行和が $1,1$ です。
+      2つ目は第2行の和が $1.2$、3つ目は列の和が1（行の和は $0.8,1.2$）で行と列を取り違えたもの、4つ目は負の成分を含みます。
+
+  - id: q14-transition-probability-matrix-2
+    term: transition-probability-matrix
+    level: 基本
+    type: truefalse
+    question: |
+      推移確率行列 $P$（行和が1）は、各列の和も必ず1になる。
+    answer: false
+    hint: |
+      $P=\begin{pmatrix}0.5&0.3&0.2\\0.2&0.6&0.2\\0.1&0.3&0.6\end{pmatrix}$ の列和を計算してみる。
+    explanation: |
+      例の行列の列和は $0.8,\ 1.2,\ 1.0$ で、1になりません。
+      列和も1になる行列は**二重確率行列**と呼ばれる特別な場合で、そのとき（有限・既約なら）定常分布は一様分布になります。
+
+  - id: q14-n-step-transition-probability-1
+    term: n-step-transition-probability
+    level: 標準
+    type: numeric
+    question: |
+      推移確率行列
+      $$P=\begin{pmatrix}0.5&0.3&0.2\\0.2&0.6&0.2\\0.1&0.3&0.6\end{pmatrix}$$
+      の連鎖で、2段階推移確率 $p^{(2)}_{21}=P(X_{n+2}=1\mid X_n=2)$ を小数第2位まで求めよ。
+    answer: 0.24
+    tolerance: 0.005
+    hint: |
+      $P^2$ の $(2,1)$ 成分＝$P$ の第2行と第1列の内積。中間の状態で場合分けする。
+    explanation: |
+      $$p^{(2)}_{21}=p_{21}p_{11}+p_{22}p_{21}+p_{23}p_{31}=0.2\times0.5+0.6\times0.2+0.2\times0.1=0.24$$
+
+  - id: q14-n-step-transition-probability-2
+    term: n-step-transition-probability
+    level: 応用
+    type: numeric
+    question: |
+      2状態の連鎖 $P=\begin{pmatrix}0.7&0.3\\0.1&0.9\end{pmatrix}$ で、$p^{(5)}_{11}=P(X_5=1\mid X_0=1)$ を小数第3位まで求めよ。
+    answer: 0.308
+    tolerance: 0.001
+    hint: |
+      $a=0.3$、$b=0.1$ として2状態の公式 $p^{(n)}_{11}=\dfrac{b}{a+b}+\dfrac{a}{a+b}(1-a-b)^n$ を使う。
+    explanation: |
+      $a+b=0.4$、$1-a-b=0.6$ なので
+      $$p^{(5)}_{11}=\frac{0.1}{0.4}+\frac{0.3}{0.4}(0.6)^5=0.25+0.75\times0.07776=0.308$$
+      $n\to\infty$ で定常分布の $\pi_1=0.25$ に近づきます。
+
+  - id: q14-chapman-kolmogorov-equation-1
+    term: chapman-kolmogorov-equation
+    level: 標準
+    type: numeric
+    question: |
+      ある3状態の連鎖の2段階推移確率行列が
+      $$P^{(2)}=\begin{pmatrix}0.33&0.39&0.28\\0.24&0.48&0.28\\0.17&0.39&0.44\end{pmatrix}$$
+      である。4段階推移確率 $p^{(4)}_{12}$ を小数第3位まで求めよ。
+    answer: 0.425
+    tolerance: 0.001
+    hint: |
+      チャップマン・コルモゴロフ方程式 $P^{(4)}=P^{(2)}P^{(2)}$ を使い、2段階後の状態で場合分けする。
+    explanation: |
+      $$p^{(4)}_{12}=\sum_kp^{(2)}_{1k}p^{(2)}_{k2}=0.33\times0.39+0.39\times0.48+0.28\times0.39=0.1287+0.1872+0.1092=0.4251$$
+      もとの $P$ を知らなくても、2段階の行列だけで計算できます。
+
+  - id: q14-chapman-kolmogorov-equation-2
+    term: chapman-kolmogorov-equation
+    level: 基本
+    type: truefalse
+    question: |
+      任意の状態 $i,j,k$ と $m,n\ge0$ について $p^{(m+n)}_{ij}\ge p^{(m)}_{ik}\,p^{(n)}_{kj}$ が成り立つ。
+    answer: true
+    hint: |
+      チャップマン・コルモゴロフ方程式の右辺は、非負の項の和である。
+    explanation: |
+      $p^{(m+n)}_{ij}=\sum_lp^{(m)}_{il}p^{(n)}_{lj}$ で、各項は0以上なので、和は特定の1項 $l=k$ 以上です。
+      「$i\to k$ と $k\to j$ が可能なら $i\to j$ も可能」（到達可能性の推移律）の根拠になる不等式です。
+
+  - id: q14-stationary-distribution-1
+    term: stationary-distribution
+    level: 基本
+    type: numeric
+    question: |
+      2状態の連鎖 $P=\begin{pmatrix}0.8&0.2\\0.3&0.7\end{pmatrix}$ の定常分布 $(\pi_1,\pi_2)$ について、$\pi_1$ を小数第2位まで求めよ。
+    answer: 0.60
+    tolerance: 0.005
+    hint: |
+      $\pi_1p_{12}=\pi_2p_{21}$（1から出る流れ＝1に入る流れ）と $\pi_1+\pi_2=1$ を連立する。
+    explanation: |
+      $0.2\pi_1=0.3\pi_2$ と $\pi_1+\pi_2=1$ から
+      $$\pi_1=\frac{0.3}{0.2+0.3}=0.60,\qquad\pi_2=0.40$$
+      $1$ から出やすさ $a=0.2$ と戻りやすさ $b=0.3$ で $\pi_1=b/(a+b)$ と覚えられます。
+
+  - id: q14-stationary-distribution-2
+    term: stationary-distribution
+    level: 標準
+    type: numeric
+    question: |
+      推移確率行列
+      $$P=\begin{pmatrix}0.5&0.3&0.2\\0.2&0.6&0.2\\0.1&0.3&0.6\end{pmatrix}$$
+      の定常分布 $\boldsymbol\pi=(\pi_1,\pi_2,\pi_3)$ の $\pi_2$ を小数第3位まで求めよ。
+    answer: 0.429
+    tolerance: 0.001
+    hint: |
+      $\boldsymbol\pi P=\boldsymbol\pi$ の3本の式のうち2本と $\sum\pi_i=1$ を連立する。
+    explanation: |
+      第2列の式は $\pi_2=0.3\pi_1+0.6\pi_2+0.3\pi_3$ より $0.4\pi_2=0.3(\pi_1+\pi_3)=0.3(1-\pi_2)$、
+      よって $\pi_2=0.3/0.7=3/7=0.429$ です。
+      残りを解くと $\boldsymbol\pi=(5/21,\ 9/21,\ 7/21)$ になります。
+
+  - id: q14-stationary-distribution-3
+    term: stationary-distribution
+    level: 応用
+    type: choice
+    question: |
+      状態 $\{1,2,3\}$ の連鎖 $P=\begin{pmatrix}1&0&0\\0.5&0&0.5\\0&0&1\end{pmatrix}$ の定常分布について正しいものはどれか。
+    choices:
+      - '$(c,\ 0,\ 1-c)$（$0\le c\le1$）がすべて定常分布で、無数にある'
+      - '$(1/2,\ 0,\ 1/2)$ だけがただ1つの定常分布である'
+      - '$(1/3,\ 1/3,\ 1/3)$ がただ1つの定常分布である'
+      - '既約でないので、定常分布は存在しない'
+    answer: 0
+    hint: |
+      状態1と3は吸収状態。$\boldsymbol\pi P=\boldsymbol\pi$ を成分ごとに書くと、$\pi_2$ について何がわかるか。
+    explanation: |
+      第2列の式は $\pi_2=0$、第1列・第3列は $\pi_1=\pi_1+0.5\pi_2$、$\pi_3=\pi_3+0.5\pi_2$ で、$\pi_2=0$ なら自動的に成り立ちます。
+      よって $\pi_1+\pi_3=1$ を満たす $(c,0,1-c)$ はすべて定常分布です。
+      既約でないと一意性は崩れますが、有限なら存在はします。$(1/2,0,1/2)$ は状態2から出発したときの極限ですが、ただ1つではありません。
+
+  - id: q14-irreducibility-1
+    term: irreducibility
+    level: 標準
+    type: choice
+    question: |
+      状態 $\{1,2,3\}$ の推移確率行列のうち、**既約**な連鎖を与えるものはどれか。
+    choices:
+      - '$\begin{pmatrix}0.5&0.5&0\\0&0.5&0.5\\0.5&0&0.5\end{pmatrix}$'
+      - '$\begin{pmatrix}1&0&0\\0.3&0.4&0.3\\0&0.5&0.5\end{pmatrix}$'
+      - '$\begin{pmatrix}0.5&0.5&0\\0.5&0.5&0\\0&0&1\end{pmatrix}$'
+      - '$\begin{pmatrix}0&1&0\\0&0&1\\0&0&1\end{pmatrix}$'
+    answer: 0
+    hint: |
+      正の成分を矢印にした図を描き、どの状態からどの状態へもたどり着けるか確かめる。
+    explanation: |
+      1つ目は $1\to2\to3\to1$ の輪があるので、すべての状態が互いに到達可能です。
+      2つ目は状態1が吸収状態で1から出られません。3つ目は $\{1,2\}$ と $\{3\}$ が行き来できません。
+      4つ目は3に入ると出られず、3から1へ戻れません。
+
+  - id: q14-irreducibility-2
+    term: irreducibility
+    level: 標準
+    type: truefalse
+    question: |
+      状態が有限個で既約なマルコフ連鎖なら、$P^n$ は $n\to\infty$ で必ず収束し、すべての行が定常分布に一致する。
+    answer: false
+    hint: |
+      $P=\begin{pmatrix}0&1\\1&0\end{pmatrix}$ の $P^n$ を考える。
+    explanation: |
+      例の $P$ は既約ですが周期2で、$P^n$ は $n$ の偶奇で $I$ と $P$ を交互にとり、収束しません。
+      有限・既約なら定常分布はただ1つ（例では $(1/2,1/2)$）ですが、$P^n$ の収束にはさらに**非周期性**が必要です。
+
+  - id: q14-communicating-class-1
+    term: communicating-class
+    level: 標準
+    type: choice
+    question: |
+      状態 $\{1,2,3,4\}$ の推移確率行列
+      $$P=\begin{pmatrix}0.5&0.5&0&0\\0.5&0.5&0&0\\0.25&0.25&0.25&0.25\\0&0&0&1\end{pmatrix}$$
+      について、（互いに到達可能な状態の）類の個数と、そのうち閉じた類の個数の組はどれか。
+    choices:
+      - '類は3個、閉じた類は2個'
+      - '類は2個、閉じた類は2個'
+      - '類は3個、閉じた類は1個'
+      - '類は4個、閉じた類は2個'
+    answer: 0
+    hint: |
+      状態3からはどこへでも行けるが、3へ戻ってこられる状態はあるか。
+    explanation: |
+      類は $\{1,2\}$、$\{3\}$、$\{4\}$ の3個です。$\{1,2\}$ と $\{4\}$（吸収状態）は外へ出られないので閉じていて、
+      $\{3\}$ は外へ出られるので閉じていません（状態3は過渡的）。
+      状態3を他の類に含めてしまうと「2個」になりますが、3には戻れないので別の類です。
+
+  - id: q14-periodicity-1
+    term: periodicity
+    level: 標準
+    type: numeric
+    question: |
+      状態 $\{1,2,3,4\}$ の連鎖で、推移が $1\to2$（確率1）、$2\to1$ と $2\to3$（各確率0.5）、$3\to4$（確率1）、$4\to1$（確率1）だけである。
+      状態1の周期を求めよ。
+    answer: 2
+    tolerance: 0.4
+    hint: |
+      1から出て1に戻る経路の長さを列挙し、その最大公約数をとる。
+    explanation: |
+      1に戻る経路は $1\to2\to1$（長さ2）と $1\to2\to3\to4\to1$（長さ4）、およびその組み合わせで、長さはすべて偶数です。
+      $\gcd\{2,4,6,\dots\}=2$ なので周期は2です。既約なので、他の状態の周期も2です。
+
+  - id: q14-periodicity-2
+    term: periodicity
+    level: 基本
+    type: truefalse
+    question: |
+      既約な連鎖で、ある1つの状態 $i$ について $p_{ii}>0$ なら、連鎖全体が非周期的である。
+    answer: true
+    hint: |
+      $p_{ii}>0$ なら状態 $i$ の周期はいくつか。周期は類の性質。
+    explanation: |
+      $p_{ii}>0$ なら長さ1で戻れるので $d(i)=1$ です。既約な連鎖ではすべての状態の周期が等しいので、連鎖全体が非周期的になります。
+
+  - id: q14-recurrence-and-transience-1
+    term: recurrence-and-transience
+    level: 標準
+    type: numeric
+    question: |
+      ある状態 $i$ から出発して、いずれ $i$ に戻ってくる確率が $f_{ii}=0.6$ である。
+      時刻0を含めて $i$ を訪れる回数の期待値を小数第1位まで求めよ。
+    answer: 2.5
+    tolerance: 0.05
+    hint: |
+      訪問回数は「戻るのに失敗するまでの回数」。幾何分布の期待値と同じ形。
+    explanation: |
+      毎回確率 $0.6$ で戻り、$0.4$ で二度と戻らないので、訪問回数 $V$ は $P(V=k)=0.6^{k-1}\times0.4$（$k\ge1$）です。
+      $$E[V]=\frac{1}{1-f_{ii}}=\frac{1}{0.4}=2.5$$
+      有限なので状態 $i$ は過渡的です。$f_{ii}=1$ なら期待値は無限大（再帰的）になります。
+
+  - id: q14-recurrence-and-transience-2
+    term: recurrence-and-transience
+    level: 標準
+    type: truefalse
+    question: |
+      状態が有限個のマルコフ連鎖では、すべての状態が過渡的になることがある。
+    answer: false
+    hint: |
+      過渡的な状態を訪れる回数は有限。無限の時間をどこで過ごすか。
+    explanation: |
+      過渡的な状態は（確率1で）有限回しか訪れません。状態が有限個なら、すべてが過渡的だと無限の時刻を埋められず矛盾します。
+      よって有限な連鎖には少なくとも1つ再帰的な状態があります。状態が無限個なら、非対称なランダムウォークのように全部が過渡的になり得ます。
+
+  - id: q14-absorbing-state-1
+    term: absorbing-state
+    level: 標準
+    type: numeric
+    question: |
+      状態 $\{0,1,2,3\}$ で、0と3は吸収状態、状態1と2からは隣の状態へ確率 $1/2$ ずつ移る。
+      過渡状態どうしの推移を $Q=\begin{pmatrix}0&0.5\\0.5&0\end{pmatrix}$（順に状態1,2）とするとき、
+      基本行列 $N=(I-Q)^{-1}$ を使って、状態1から出発して吸収されるまでの平均ステップ数を求めよ（小数第1位まで）。
+    answer: 2.0
+    tolerance: 0.05
+    hint: |
+      平均吸収時間は $N\boldsymbol 1$（$N$ の行和）。
+    explanation: |
+      $I-Q=\begin{pmatrix}1&-0.5\\-0.5&1\end{pmatrix}$、行列式は $0.75$ なので
+      $$N=\frac{1}{0.75}\begin{pmatrix}1&0.5\\0.5&1\end{pmatrix}=\begin{pmatrix}4/3&2/3\\2/3&4/3\end{pmatrix}$$
+      第1行の和は $4/3+2/3=2$ です。状態1を平均 $4/3$ 回、状態2を平均 $2/3$ 回訪れてから吸収されます。
+
+  - id: q14-absorbing-state-2
+    term: absorbing-state
+    level: 基本
+    type: choice
+    question: |
+      吸収的マルコフ連鎖の基本行列 $N=(I-Q)^{-1}$ の $(i,j)$ 成分 $N_{ij}$ の意味として正しいものはどれか。
+    choices:
+      - '過渡状態 $i$ から出発して、吸収されるまでに過渡状態 $j$ を訪れる回数の期待値'
+      - '過渡状態 $i$ から出発して、吸収状態 $j$ に吸収される確率'
+      - '過渡状態 $i$ から $j$ へ1ステップで移る確率'
+      - '過渡状態 $i$ から出発して、初めて $j$ に着くまでの平均ステップ数'
+    answer: 0
+    hint: |
+      $N=I+Q+Q^2+\cdots$ で、$Q^n$ の $(i,j)$ 成分は「$n$ ステップ後に $j$ にいる確率」。
+    explanation: |
+      $N_{ij}=\sum_{n\ge0}(Q^n)_{ij}=\sum_nP(X_n=j\mid X_0=i)$ は、$j$ にいる時刻の個数の期待値です。
+      吸収確率は $B=NR$、1ステップの確率は $Q$ の成分、初到達時間は別の方程式で求めます。
+
+  - id: q14-ergodicity-1
+    term: ergodicity
+    level: 標準
+    type: numeric
+    question: |
+      推移確率行列 $P=\begin{pmatrix}0.5&0.3&0.2\\0.2&0.6&0.2\\0.1&0.3&0.6\end{pmatrix}$ の連鎖（定常分布 $(5/21,\ 9/21,\ 7/21)$）で、
+      状態1,2,3にいるときに1期あたり $10,\ 20,\ 30$ の費用がかかる。長期間の1期あたり平均費用を小数第2位まで求めよ。
+    answer: 20.95
+    tolerance: 0.01
+    hint: |
+      エルゴード定理により、時間平均 $\frac1n\sum f(X_k)$ は $\sum_i\pi_if(i)$ に収束する。
+    explanation: |
+      連鎖は有限・既約・非周期（$p_{ii}>0$）なのでエルゴード的です。
+      $$\frac{5\times10+9\times20+7\times30}{21}=\frac{440}{21}=20.95$$
+
+  - id: q14-ergodicity-2
+    term: ergodicity
+    level: 応用
+    type: truefalse
+    question: |
+      $P=\begin{pmatrix}0&1\\1&0\end{pmatrix}$ のように周期2の既約な有限連鎖では、$P^n$ が収束しないので、
+      状態1で過ごす時間の割合 $\frac1n\#\{k\le n:X_k=1\}$ も収束しない。
+    answer: false
+    hint: |
+      例の連鎖が実際にどう動くか、状態1にいる時刻の割合を数えてみる。
+    explanation: |
+      例の連鎖は $1,2,1,2,\dots$ と交互に動くので、状態1にいる割合は $1/2$ に収束します。
+      時間平均のエルゴード定理は既約・正再帰なら周期的でも成り立ち、極限は定常分布 $\pi_1=1/2$ です。
+      収束しないのは各時刻の分布 $P^n$ のほうです。
+
+  - id: q14-detailed-balance-1
+    term: detailed-balance
+    level: 標準
+    type: truefalse
+    question: |
+      推移確率行列 $P=\begin{pmatrix}0.5&0.3&0.2\\0.2&0.6&0.2\\0.1&0.3&0.6\end{pmatrix}$ の連鎖は、詳細つり合い条件を満たす（可逆である）。
+    answer: false
+    hint: |
+      コルモゴロフの判定法：$p_{12}p_{23}p_{31}$ と $p_{13}p_{32}p_{21}$ を比べる。
+    explanation: |
+      $$p_{12}p_{23}p_{31}=0.3\times0.2\times0.1=0.006,\qquad p_{13}p_{32}p_{21}=0.2\times0.3\times0.2=0.012$$
+      で等しくないので、可逆ではありません。実際、定常分布 $(5/21,9/21,7/21)$ で $\pi_1p_{12}=15/210$、$\pi_2p_{21}=18/210$ と一致しません。
+      定常分布は存在しても、詳細つり合いを満たすとは限りません。
+
+  - id: q14-detailed-balance-2
+    term: detailed-balance
+    level: 応用
+    type: numeric
+    question: |
+      状態 $\{0,1,2\}$ の連鎖で、$p_{01}=0.4$、$p_{10}=0.3$、$p_{12}=0.4$、$p_{21}=0.6$ であり、残りの確率はその場にとどまる。
+      詳細つり合い条件を使って定常分布の $\pi_2$ を小数第3位まで求めよ。
+    answer: 0.276
+    tolerance: 0.001
+    hint: |
+      隣どうしでしか移らないので、$\pi_0p_{01}=\pi_1p_{10}$、$\pi_1p_{12}=\pi_2p_{21}$ で順に比を出す。
+    explanation: |
+      $\pi_1=\pi_0\cdot\dfrac{0.4}{0.3}=\dfrac43\pi_0$、$\pi_2=\pi_1\cdot\dfrac{0.4}{0.6}=\dfrac89\pi_0$。和が1より
+      $$\pi_0\left(1+\frac43+\frac89\right)=\frac{29}{9}\pi_0=1,\qquad\pi_2=\frac89\cdot\frac{9}{29}=\frac{8}{29}=0.276$$
+      このような出生死滅型の連鎖は、必ず詳細つり合いを満たします。
+
+  - id: q14-limiting-distribution-1
+    term: limiting-distribution
+    level: 標準
+    type: numeric
+    question: |
+      2状態の連鎖 $P=\begin{pmatrix}0.5&0.5\\0.25&0.75\end{pmatrix}$ で、$\displaystyle\lim_{n\to\infty}P(X_n=2\mid X_0=1)$ を小数第3位まで求めよ。
+    answer: 0.667
+    tolerance: 0.001
+    hint: |
+      有限・既約・非周期なので、極限は定常分布になる。
+    explanation: |
+      $a=0.5$、$b=0.25$ として定常分布は $\pi_2=a/(a+b)=0.5/0.75=2/3$ です。
+      極限分布は出発点によらないので、$X_0=2$ から出発しても同じ $0.667$ になります。
+
+  - id: q14-absorption-probability-1
+    term: absorption-probability
+    level: 標準
+    type: numeric
+    question: |
+      状態 $\{0,1,2,3\}$ で0と3は吸収状態。状態1からは0へ0.4、2へ0.6、状態2からは1へ0.4、3へ0.6で移る。
+      状態1から出発して状態3に吸収される確率を小数第3位まで求めよ。
+    answer: 0.474
+    tolerance: 0.001
+    hint: |
+      $h_1=0.6h_2$、$h_2=0.4h_1+0.6$（最初の1ステップで場合分け）を解く。
+    explanation: |
+      $h_1=0.6(0.4h_1+0.6)=0.24h_1+0.36$ より
+      $$h_1=\frac{0.36}{0.76}=\frac{9}{19}=0.474$$
+      $h_2=0.4\times9/19+0.6=15/19$ です。
+
+  - id: q14-absorption-probability-2
+    term: absorption-probability
+    level: 応用
+    type: numeric
+    question: |
+      前問と同じ連鎖で、状態1から出発して（0か3のどちらかに）吸収されるまでの平均ステップ数を小数第2位まで求めよ。
+    answer: 2.11
+    tolerance: 0.01
+    hint: |
+      $t_1=1+0.6t_2$、$t_2=1+0.4t_1$ を解く。
+    explanation: |
+      $t_1=1+0.6(1+0.4t_1)=1.6+0.24t_1$ より
+      $$t_1=\frac{1.6}{0.76}=\frac{40}{19}=2.11$$
+      基本行列 $N=(I-Q)^{-1}$ の第1行の和としても同じ値になります。
+
+  - id: q14-first-passage-time-1
+    term: first-passage-time
+    level: 標準
+    type: numeric
+    question: |
+      2状態の連鎖 $P=\begin{pmatrix}0.8&0.2\\0.3&0.7\end{pmatrix}$ で、状態1から出発して初めて状態1に戻るまでの平均ステップ数（平均再帰時間）$m_1$ を小数第2位まで求めよ。
+    answer: 1.67
+    tolerance: 0.01
+    hint: |
+      $m_1=1/\pi_1$ を使うか、$m_1=1+p_{12}m_{21}$、$m_{21}=1/p_{21}$ で直接計算する。
+    explanation: |
+      定常分布は $\pi_1=0.3/0.5=0.6$ なので $m_1=1/0.6=1.67$ です。
+      直接計算しても、状態2から1への平均初到達時間は $m_{21}=1/0.3$ なので
+      $$m_1=1+0.2\times\frac{1}{0.3}=1.67$$
+      と一致します。
+
+  - id: q14-positive-recurrence-1
+    term: positive-recurrence
+    level: 応用
+    type: truefalse
+    question: |
+      整数上の対称な単純ランダムウォーク（毎回 $\pm1$ を確率 $1/2$ ずつ）は再帰的なので、定常分布（確率分布）を持つ。
+    answer: false
+    hint: |
+      再帰的でも、平均再帰時間が有限（正再帰）でなければ定常分布はない。
+    explanation: |
+      対称な単純ランダムウォークは再帰的ですが、平均再帰時間が無限大の**零再帰**です。
+      既約な連鎖が定常分布を持つのは正再帰のときだけなので、定常分布はありません
+      （定数列 $\pi_i=c$ は $\pi P=\pi$ を満たしますが、和が1にできません）。
+
+  - id: q14-continuous-time-markov-chain-1
+    term: continuous-time-markov-chain
+    level: 応用
+    type: numeric
+    question: |
+      2状態 $\{0,1\}$ の連続時間マルコフ連鎖で、状態0から1への推移率が $\lambda=2$、1から0への推移率が $\mu=3$ である。
+      $P(X(0.5)=0\mid X(0)=0)$ を小数第3位まで求めよ。
+    answer: 0.633
+    tolerance: 0.001
+    hint: |
+      $p_{00}(t)=\dfrac{\mu}{\lambda+\mu}+\dfrac{\lambda}{\lambda+\mu}e^{-(\lambda+\mu)t}$（コルモゴロフの前進方程式の解）。
+    explanation: |
+      $p_{00}'(t)=-\lambda p_{00}(t)+\mu(1-p_{00}(t))$ を $p_{00}(0)=1$ で解くと上の式になります。
+      $$p_{00}(0.5)=\frac35+\frac25e^{-2.5}=0.6+0.4\times0.0821=0.633$$
+      $t\to\infty$ で定常分布の $\pi_0=\mu/(\lambda+\mu)=0.6$ に近づきます。

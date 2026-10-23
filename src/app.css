@@ -342,7 +342,7 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
 .modes a:hover { background: var(--surface-2); color: var(--fg); }
 .modes a[aria-current="page"] { color: var(--accent); background: var(--accent-soft); font-weight: 700; }
 .modes .badge {
-  position: absolute; top: 4px; left: 26px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px;
+  position: absolute; top: 1px; left: 22px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px;
   background: var(--imp-a); color: var(--surface); font-size: .68rem; line-height: 18px; text-align: center; font-weight: 700; font-family: var(--mono);
 }
 .search { margin-left: 0; }
@@ -514,3 +514,4 @@ textarea.note:focus { outline: none; border-color: var(--accent); box-shadow: 0 
 /* 長い行内数式で枠が広がらないようにする（その数式だけ横スクロール） */
 .qlist > *, .sess-card, .qcard > * { min-width: 0; }
 .qcard m, .body m, .wrong-q m { display: inline-block; max-width: 100%; overflow-x: auto; overflow-y: hidden; vertical-align: middle; }
+[hidden] { display: none !important; }

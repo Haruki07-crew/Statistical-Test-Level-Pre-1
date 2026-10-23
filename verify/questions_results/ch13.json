@@ -1,0 +1,110 @@
+{
+ "q13-asymptotic-relative-efficiency-1": {
+  "hash": "c28e2ce3efb279e7",
+  "ok": true
+ },
+ "q13-concordant-discordant-pairs-1": {
+  "hash": "e184969e54bff4f5",
+  "ok": true
+ },
+ "q13-friedman-test-1": {
+  "hash": "b0a41468ac993249",
+  "ok": true
+ },
+ "q13-friedman-test-2": {
+  "hash": "f5b47d9891419882",
+  "ok": true
+ },
+ "q13-kendall-rank-correlation-1": {
+  "hash": "c25974bb9047ecaa",
+  "ok": true
+ },
+ "q13-kendall-rank-correlation-2": {
+  "hash": "92dab09ae1716422",
+  "ok": true
+ },
+ "q13-kruskal-wallis-test-1": {
+  "hash": "fcd25f88a98f160d",
+  "ok": true
+ },
+ "q13-kruskal-wallis-test-2": {
+  "hash": "3736350c0d823639",
+  "ok": true
+ },
+ "q13-kruskal-wallis-test-3": {
+  "hash": "0690ad8ccc9d3fa1",
+  "ok": true
+ },
+ "q13-mann-whitney-u-test-1": {
+  "hash": "23302e32a9fc1cf9",
+  "ok": true
+ },
+ "q13-nonparametric-methods-overview-1": {
+  "hash": "33da04f9ece63369",
+  "ok": true
+ },
+ "q13-normal-approximation-rank-tests-1": {
+  "hash": "a71461a1644e94ae",
+  "ok": true
+ },
+ "q13-permutation-test-1": {
+  "hash": "bef88834b3a19fe9",
+  "ok": true
+ },
+ "q13-permutation-test-2": {
+  "hash": "7d524ee6922374ed",
+  "ok": true
+ },
+ "q13-rank-and-ties-1": {
+  "hash": "1176bd625fc55c2a",
+  "ok": true
+ },
+ "q13-rank-and-ties-2": {
+  "hash": "7bc060d56cf6bc65",
+  "ok": true
+ },
+ "q13-runs-test-1": {
+  "hash": "dae9f696589020c9",
+  "ok": true
+ },
+ "q13-sign-test-1": {
+  "hash": "1dac95fc35d19890",
+  "ok": true
+ },
+ "q13-sign-test-2": {
+  "hash": "1dc151211afc0dba",
+  "ok": true
+ },
+ "q13-sign-test-3": {
+  "hash": "2144d2867f00d30e",
+  "ok": true
+ },
+ "q13-spearman-rank-correlation-1": {
+  "hash": "020f61039d3b7393",
+  "ok": true
+ },
+ "q13-spearman-rank-correlation-2": {
+  "hash": "64ecec71a586180c",
+  "ok": true
+ },
+ "q13-wilcoxon-rank-sum-test-1": {
+  "hash": "81d070d2b645ffc7",
+  "ok": true
+ },
+ "q13-wilcoxon-rank-sum-test-2": {
+  "hash": "b9cc37f4a99c4eb7",
+  "ok": true
+ },
+ "q13-wilcoxon-signed-rank-test-1": {
+  "hash": "359799c958eeb6a2",
+  "ok": true
+ },
+ "q13-wilcoxon-signed-rank-test-2": {
+  "hash": "07f3c3ea65df1a07",
+  "ok": true
+ },
+ "q13-wilcoxon-signed-rank-test-3": {
+  "hash": "dcb997a13fbf0cbf",
+  "ok": true
+ }
+}

@@ -1,0 +1,162 @@
+{
+ "q08-asymptotic-normality-of-mle-1": {
+  "hash": "b23ff31a84644050",
+  "ok": true
+ },
+ "q08-asymptotic-normality-of-mle-2": {
+  "hash": "1c05489be94811bd",
+  "ok": true
+ },
+ "q08-asymptotic-normality-of-mle-3": {
+  "hash": "d8bfea48480cbdc9",
+  "ok": true
+ },
+ "q08-complete-statistic-1": {
+  "hash": "0c8c9d25b25ca396",
+  "ok": true
+ },
+ "q08-consistent-estimator-1": {
+  "hash": "e362af4b1d93ed56",
+  "ok": true
+ },
+ "q08-consistent-estimator-2": {
+  "hash": "26197fa4603e79bf",
+  "ok": true
+ },
+ "q08-cramer-rao-inequality-1": {
+  "hash": "7f345aacda6027d2",
+  "ok": true
+ },
+ "q08-cramer-rao-inequality-2": {
+  "hash": "ccfd6a9b67b17c73",
+  "ok": true
+ },
+ "q08-cramer-rao-inequality-3": {
+  "hash": "b9ca64faccde9ac8",
+  "ok": true
+ },
+ "q08-efficient-estimator-1": {
+  "hash": "3e8dc61a0b73b5f7",
+  "ok": true
+ },
+ "q08-efficient-estimator-2": {
+  "hash": "063d0d3d7d2e5d49",
+  "ok": true
+ },
+ "q08-exponential-family-1": {
+  "hash": "f187994107e02775",
+  "ok": true
+ },
+ "q08-exponential-family-2": {
+  "hash": "c573a8b0af6653ff",
+  "ok": true
+ },
+ "q08-factorization-theorem-1": {
+  "hash": "5089376431b3a200",
+  "ok": true
+ },
+ "q08-factorization-theorem-2": {
+  "hash": "e61d94b1bdddc3c4",
+  "ok": true
+ },
+ "q08-fisher-information-1": {
+  "hash": "4f6a62e423761480",
+  "ok": true
+ },
+ "q08-fisher-information-2": {
+  "hash": "8190f029ef36cd65",
+  "ok": true
+ },
+ "q08-fisher-information-3": {
+  "hash": "bdd4e2856e20790d",
+  "ok": true
+ },
+ "q08-invariance-of-mle-1": {
+  "hash": "76702d35ff0eea77",
+  "ok": true
+ },
+ "q08-invariance-of-mle-2": {
+  "hash": "c3c064e3359d72f0",
+  "ok": true
+ },
+ "q08-likelihood-function-1": {
+  "hash": "ff35677070131487",
+  "ok": true
+ },
+ "q08-likelihood-function-2": {
+  "hash": "466c7db1a7fde37f",
+  "ok": true
+ },
+ "q08-maximum-likelihood-estimator-1": {
+  "hash": "a6eed30faa069252",
+  "ok": true
+ },
+ "q08-maximum-likelihood-estimator-2": {
+  "hash": "e7251d637f0b130f",
+  "ok": true
+ },
+ "q08-maximum-likelihood-estimator-3": {
+  "hash": "fa17aa9ab6eee9c4",
+  "ok": true
+ },
+ "q08-mean-squared-error-1": {
+  "hash": "92278248e1f7ef04",
+  "ok": true
+ },
+ "q08-mean-squared-error-2": {
+  "hash": "3b02e35d494f09cd",
+  "ok": true
+ },
+ "q08-mean-squared-error-3": {
+  "hash": "dc758a42cc1f82f8",
+  "ok": true
+ },
+ "q08-method-of-moments-1": {
+  "hash": "86c95a1bd9aae5d3",
+  "ok": true
+ },
+ "q08-method-of-moments-2": {
+  "hash": "a98503e34927c525",
+  "ok": true
+ },
+ "q08-observed-fisher-information-1": {
+  "hash": "c77befe3cd03e53e",
+  "ok": true
+ },
+ "q08-point-estimation-1": {
+  "hash": "d214b76027b2d58e",
+  "ok": true
+ },
+ "q08-rao-blackwell-theorem-1": {
+  "hash": "515297e21de4933f",
+  "ok": true
+ },
+ "q08-score-function-1": {
+  "hash": "34306074791a5ac1",
+  "ok": true
+ },
+ "q08-score-function-2": {
+  "hash": "bd4fdb15a55ccfbf",
+  "ok": true
+ },
+ "q08-sufficient-statistic-1": {
+  "hash": "9523047f7f976f81",
+  "ok": true
+ },
+ "q08-sufficient-statistic-2": {
+  "hash": "8c21c2afbecd4ef3",
+  "ok": true
+ },
+ "q08-unbiased-estimator-1": {
+  "hash": "764807a662bb5ddc",
+  "ok": true
+ },
+ "q08-unbiased-estimator-2": {
+  "hash": "989b0659f7a9cfc1",
+  "ok": true
+ },
+ "q08-unbiased-estimator-3": {
+  "hash": "c4754818acddfc33",
+  "ok": true
+ }
+}

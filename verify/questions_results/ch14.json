@@ -1,0 +1,126 @@
+{
+ "q14-absorbing-state-1": {
+  "hash": "940ed84da176ba85",
+  "ok": true
+ },
+ "q14-absorbing-state-2": {
+  "hash": "8935ac7597d1ca57",
+  "ok": true
+ },
+ "q14-absorption-probability-1": {
+  "hash": "baab5fe316ee80cb",
+  "ok": true
+ },
+ "q14-absorption-probability-2": {
+  "hash": "9c68b47c6cb97dcd",
+  "ok": true
+ },
+ "q14-chapman-kolmogorov-equation-1": {
+  "hash": "fd2aa7e8ee8474e1",
+  "ok": true
+ },
+ "q14-chapman-kolmogorov-equation-2": {
+  "hash": "73a4de4f0d622621",
+  "ok": true
+ },
+ "q14-communicating-class-1": {
+  "hash": "5ae403ae4c17fc60",
+  "ok": true
+ },
+ "q14-continuous-time-markov-chain-1": {
+  "hash": "ea37e7aece1508d6",
+  "ok": true
+ },
+ "q14-detailed-balance-1": {
+  "hash": "3da8171f9ccb827c",
+  "ok": true
+ },
+ "q14-detailed-balance-2": {
+  "hash": "e39f41f9087938d0",
+  "ok": true
+ },
+ "q14-ergodicity-1": {
+  "hash": "d2f4376659e5c58d",
+  "ok": true
+ },
+ "q14-ergodicity-2": {
+  "hash": "5823529d3e1f8015",
+  "ok": true
+ },
+ "q14-first-passage-time-1": {
+  "hash": "0b73d0758fc9e50f",
+  "ok": true
+ },
+ "q14-irreducibility-1": {
+  "hash": "ab0383e69747b504",
+  "ok": true
+ },
+ "q14-irreducibility-2": {
+  "hash": "9c810756a40b5293",
+  "ok": true
+ },
+ "q14-limiting-distribution-1": {
+  "hash": "d12a8cdb79d1d0fb",
+  "ok": true
+ },
+ "q14-markov-chain-1": {
+  "hash": "8ad2379df4e2f72e",
+  "ok": true
+ },
+ "q14-markov-chain-2": {
+  "hash": "f779d573925ed3b6",
+  "ok": true
+ },
+ "q14-markov-property-1": {
+  "hash": "490be03bbb6f3365",
+  "ok": true
+ },
+ "q14-n-step-transition-probability-1": {
+  "hash": "b17044bb931eb9ff",
+  "ok": true
+ },
+ "q14-n-step-transition-probability-2": {
+  "hash": "5479549c7c4d6029",
+  "ok": true
+ },
+ "q14-periodicity-1": {
+  "hash": "5bd91071e8b30a1c",
+  "ok": true
+ },
+ "q14-periodicity-2": {
+  "hash": "d1c68ea1c97fc1f9",
+  "ok": true
+ },
+ "q14-positive-recurrence-1": {
+  "hash": "cdd592f58c3340c2",
+  "ok": true
+ },
+ "q14-recurrence-and-transience-1": {
+  "hash": "ecf00176c2ecbc59",
+  "ok": true
+ },
+ "q14-recurrence-and-transience-2": {
+  "hash": "4008cf465ac78405",
+  "ok": true
+ },
+ "q14-stationary-distribution-1": {
+  "hash": "77ac7051f7ed005b",
+  "ok": true
+ },
+ "q14-stationary-distribution-2": {
+  "hash": "75b8cac78f27d2fd",
+  "ok": true
+ },
+ "q14-stationary-distribution-3": {
+  "hash": "9db8e61ead9b2483",
+  "ok": true
+ },
+ "q14-transition-probability-matrix-1": {
+  "hash": "0031a1ed1168cbe5",
+  "ok": true
+ },
+ "q14-transition-probability-matrix-2": {
+  "hash": "646f900f781c0bef",
+  "ok": true
+ }
+}

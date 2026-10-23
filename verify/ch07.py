@@ -393,3 +393,32 @@ check(T, "分散安定化 V[arcsin√p̂]≈1/(4n)（n=200, 相対誤差5%）", 
 
 print()
 print(f"合計（追加用語を含む）: OK {sum(results)} / NG {len(results) - sum(results)}")
+
+# --- 重要度A への加筆: almost-sure-convergence ---
+T = "almost-sure-convergence"
+check(T, "例3 Σ1/n² 収束（=π²/6）, E[X_n²]=n²·(1/n²)=1, n=10: P=0.01", sp.summation(1 / n**2, (n, 1, sp.oo)) == sp.pi**2 / 6 and zero(n**2 * (1 / n**2) - 1) and close(1 / 10**2, 0.01), "")
+_M = 200_000; _nn = np.arange(1, _M + 1)
+# 1/n² の列で n≥10 に 1 が出る確率 ≈ 1 − Π(1−1/n²) = 1/10（有限 M で近似）
+_p10 = 1 - np.prod(1 - 1 / _nn[9:] ** 2)
+check(T, "例2・例3 n≥10 で非零が出る確率 ≈0.1（M=2e5 で近似）", abs(_p10 - 0.1) < 1e-4, round(_p10, 6))
+_n = 1000; _k = int(np.floor(np.log2(_n))); _j = _n - 2**_k
+check(T, "例4 n=1000: k=9, j=488, 区間[0.953125, 0.955078), 幅1/512≈0.00195", _k == 9 and _j == 488 and 488 / 512 == 0.953125 and close(489 / 512, 0.955078, 5e-7) and close(1 / 512, 0.00195, 5e-6), (_k, _j))
+_w = rng.uniform(size=50)
+_cnt = [sum(1 for jj in range(2**kk) if jj / 2**kk <= ww < (jj + 1) / 2**kk) for ww in _w for kk in range(1, 12)]
+check(T, "例4 どの ω も各周でちょうど1回山に入る（k=1..11, ω 50個）", all(c == 1 for c in _cnt), "")
+check(T, "例4 部分列 n=2^k: 山 [0,2^-k) → ω>0 は最終的に0", all(not (ww < 2.0**-kk) for ww in _w[_w > 1e-3] for kk in range(10, 20)), "")
+
+# --- 重要度A への加筆: continuous-mapping-theorem ---
+T = "continuous-mapping-theorem"
+check(T, "例3 p̂=100/500=0.2, オッズ0.25, log0.25≈−1.3863", close(100 / 500, 0.2) and close(0.2 / 0.8, 0.25) and close(log(0.25), -1.3863), round(log(0.25), 5))
+_ph = rng.binomial(20000, 0.2, 200_000) / 20000
+check(T, "例3 シミュ n=20000 で p̂/(1−p̂) は 0.25 に集中（|差|>0.02 の割合 <0.001）", np.mean(np.abs(_ph / (1 - _ph) - 0.25) > 0.02) < 0.001, round(float(np.mean(np.abs(_ph / (1 - _ph) - 0.25) > 0.02)), 5))
+_g = lambda xx: 1 if xx > 0 else 0
+check(T, "例4 g(1/n)=1（n=1..10^4）だが g(0)=0", all(_g(1 / i) == 1 for i in range(1, 10001)) and _g(0) == 0, "")
+_Z = rng.standard_normal((300_000, 3))
+check(T, "ベクトル版 3成分の二乗和 ~ χ²(3)（KS p>0.001）", stats.kstest((_Z**2).sum(axis=1), stats.chi2(3).cdf).pvalue > 0.001, "")
+_Zs = rng.standard_normal(300_000)
+check(T, "同時収束が必要: X_n=Z, Y_n=−Z で X_n+Y_n=0（独立N(0,1)の和の分散2と違う）", np.all(_Zs + (-_Zs) == 0), "")
+
+print()
+print(f"合計（重要度A への加筆を含む）: OK {sum(results)} / NG {len(results) - sum(results)}")

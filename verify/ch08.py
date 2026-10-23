@@ -639,3 +639,43 @@ check(T, "ポアソン J(λ̂)=Σx/λ̂²=n/x̄（n=4）", sp.simplify(Jp - 4 / 
 
 print()
 print(f"合計: OK {sum(results)} / NG {len(results) - sum(results)}")
+
+# --- 追加用語（用語の見直し）: order-statistics ---
+T = "order-statistics"
+check(T, "例1 直列: 最小値は平均200の指数, P(>100)=e^-0.5≈0.6065", close(exp(-0.5), 0.6065) and close(stats.expon(scale=1000).sf(100) ** 5, exp(-0.5), 1e-12), round(exp(-0.5), 5))
+check(T, "例1 並列: (1−e^-1)^5≈0.1009, 0.6321, 平均≈2283.3", close((1 - exp(-1)) ** 5, 0.1009) and close(1 - exp(-1), 0.6321) and close(1000 * sum(1 / j for j in range(1, 6)), 2283.3, 0.05), round((1 - exp(-1)) ** 5, 5))
+L = rng.exponential(1000, (400_000, 5))
+check(T, "例1 シミュ E[min]≈200（許容2）, E[max]≈2283.3（許容8）, P(max≤1000)（許容0.002）", abs(L.min(axis=1).mean() - 200) < 2 and abs(L.max(axis=1).mean() - 2283.3) < 8 and abs((L.max(axis=1) <= 1000).mean() - 0.1009) < 0.002, (round(L.min(axis=1).mean(), 2), round(L.max(axis=1).mean(), 2)))
+xo = sp.symbols("x", positive=True)
+def f_k(nv, kv, Fx, fx):
+    return sp.factorial(nv) / (sp.factorial(kv - 1) * sp.factorial(nv - kv)) * Fx ** (kv - 1) * (1 - Fx) ** (nv - kv) * fx
+f2 = sp.expand(f_k(4, 2, xo, 1))
+check(T, "例2 f_(2)=12x(1−x)², E=0.4, V=0.04", sp.simplify(f2 - 12 * xo * (1 - xo) ** 2) == 0 and sp.integrate(xo * f2, (xo, 0, 1)) == sp.Rational(2, 5)
+      and sp.integrate(xo**2 * f2, (xo, 0, 1)) - sp.Rational(4, 25) == sp.Rational(1, 25), "")
+check(T, "例2 P(X_(2)≤0.5)=11/16=0.6875（積分・二項和・Beta）", sp.integrate(f2, (xo, 0, sp.Rational(1, 2))) == sp.Rational(11, 16) and sum(comb(4, j) for j in range(2, 5)) == 11 and close(stats.beta(2, 3).cdf(0.5), 0.6875, 1e-12), "")
+ok = True
+for nv, kv in [(4, 2), (5, 1), (5, 5), (7, 3), (10, 6)]:
+    ok &= close(stats.beta(kv, nv - kv + 1).mean(), kv / (nv + 1), 1e-12) and close(stats.beta(kv, nv - kv + 1).var(), kv * (nv - kv + 1) / ((nv + 1) ** 2 * (nv + 2)), 1e-12)
+    ok &= np.allclose([float(f_k(nv, kv, xo, 1).subs(xo, xv_)) for xv_ in (0.1, 0.37, 0.8)], stats.beta(kv, nv - kv + 1).pdf([0.1, 0.37, 0.8]), rtol=1e-12)
+check(T, "U(0,1) の X_(k) ~ Beta(k,n−k+1), E=k/(n+1), V 公式（5組）", ok, "")
+Us = np.sort(rng.uniform(size=(400_000, 4)), axis=1)
+check(T, "例2 シミュ E[X_(2)]≈0.4, V≈0.04, P(≤0.5)≈0.6875（許容0.002）", abs(Us[:, 1].mean() - 0.4) < 0.002 and abs(Us[:, 1].var() - 0.04) < 0.002 and abs((Us[:, 1] <= 0.5).mean() - 0.6875) < 0.002, round(Us[:, 1].mean(), 4))
+F1 = Phi(1)
+pm = 1 - (3 * F1**2 - 2 * F1**3)
+check(T, "例3 3F²(1−F)+F³=3F²−2F³, P(med>1)≈0.0675, 単独≈0.1587", close(F1, 0.8413) and close(pm, 0.0675) and close(1 - F1, 0.1587) and close(3 * F1**2 * (1 - F1) + F1**3, 3 * F1**2 - 2 * F1**3, 1e-12), round(pm, 5))
+Ms = np.median(rng.standard_normal((400_000, 3)), axis=1)
+check(T, "例3 シミュ P(med>1)（許容0.002）", abs((Ms > 1).mean() - 0.0675) < 0.002, round((Ms > 1).mean(), 4))
+R = Us[:, 3] - Us[:, 0]
+check(T, "範囲 R ~ Beta(n−1,2), E[R]=(n−1)/(n+1)（n=4: 0.6, KS p>0.001）", abs(R.mean() - 0.6) < 0.002 and stats.kstest(R[:50000], stats.beta(3, 2).cdf).pvalue > 0.001, round(R.mean(), 4))
+xv, yv = sp.symbols("x y", positive=True)
+fj = 4 * 3 * (yv - xv) ** 2
+fR = sp.integrate(fj.subs(yv, xv + sp.Symbol("r", positive=True)), (xv, 0, 1 - sp.Symbol("r", positive=True)))
+rr = sp.Symbol("r", positive=True)
+check(T, "同時密度 n(n−1)(y−x)^{n−2} から R の密度 = 12r²(1−r)（Beta(3,2)）", sp.simplify(fR - 12 * rr**2 * (1 - rr)) == 0, sp.factor(fR))
+check(T, "U(0,θ) 最大値 E=nθ/(n+1), 不偏 (n+1)/n·X_(n)（θ=1,n=10: 10/11≈0.9091, 範囲 9/11≈0.8182）", close(stats.beta(10, 1).mean(), 10 / 11, 1e-12) and close(10 / 11, 0.9091) and close(9 / 11, 0.8182), "")
+sp_ = np.diff(np.sort(rng.exponential(1, (200_000, 5)), axis=1), axis=1)
+check(T, "指数の間隔 X_(j+1)−X_(j) の平均 1/(n−j)（n=5, 許容0.01）", np.allclose(sp_.mean(axis=0), [1 / 4, 1 / 3, 1 / 2, 1], atol=0.01), sp_.mean(axis=0).round(3).tolist())
+check(T, "係数 n!/((k−1)!(n−k)!) = n·C(n−1,k−1)（n=4,k=2 → 12）", all(factorial(nv) // (factorial(kv - 1) * factorial(nv - kv)) == nv * comb(nv - 1, kv - 1) for nv in range(1, 9) for kv in range(1, nv + 1)) and factorial(4) // (factorial(1) * factorial(2)) == 12, 12)
+
+print()
+print(f"合計（追加用語を含む）: OK {sum(results)} / NG {len(results) - sum(results)}")

@@ -1,0 +1,440 @@
+chapter: 13
+questions:
+  - id: q13-rank-and-ties-1
+    term: rank-and-ties
+    level: 基本
+    type: choice
+    question: |
+      6個のデータ $3,\ 5,\ 5,\ 8,\ 5,\ 10$ に小さい順の順位を付ける。同じ値には平均順位を与えるとき、値 $5$ の順位はどれか。
+    choices:
+      - '$3$'
+      - '$2$'
+      - '$4$'
+      - '$2.5$'
+    answer: 0
+    hint: |
+      3個の $5$ が本来占める順位は何番目から何番目か。
+    explanation: |
+      $3$ が1位で、3個の $5$ は2位・3位・4位を占めます。平均順位は
+      $$\frac{2+3+4}{3}=3$$
+      です。$2$ は最小の順位をそろって与えた場合、$2.5$ はタイが2個だと思って平均した誤りです。
+
+  - id: q13-rank-and-ties-2
+    term: rank-and-ties
+    level: 標準
+    type: numeric
+    question: |
+      $N=10$ 個のデータに、大きさ3のタイが1組と大きさ2のタイが1組あった。
+      順位統計量の分散にかける同順位補正の係数 $C=1-\dfrac{\sum(t^3-t)}{N^3-N}$ を小数第3位まで求めよ。
+    answer: 0.970
+    tolerance: 0.001
+    hint: |
+      $t=3$ と $t=2$ のそれぞれで $t^3-t$ を計算して足す。
+    explanation: |
+      $\sum(t^3-t)=(27-3)+(8-2)=30$、$N^3-N=990$ なので
+      $$C=1-\frac{30}{990}=0.970$$
+      タイがあると平均順位どうしが近づき、順位の分散が少し小さくなります。
+
+  - id: q13-nonparametric-methods-overview-1
+    term: nonparametric-methods-overview
+    level: 基本
+    type: truefalse
+    question: |
+      母集団が正規分布のとき、ウィルコクソンの順位和検定の $t$ 検定に対する漸近相対効率は約 $0.64$ である
+      （$t$ 検定と同じ検出力を得るのに約1.6倍の標本が必要になる）。
+    answer: false
+    hint: |
+      正規分布のもとでの値は、符号検定が $2/\pi$、順位和検定が $3/\pi$。
+    explanation: |
+      順位和検定（符号付き順位検定も同じ）の正規分布での漸近相対効率は $3/\pi\approx0.955$ で、ほとんど損をしません。
+      約 $0.64$（$2/\pi$）は**符号検定**の値です。裾の重い分布では順位検定の効率が1を超えることもあります。
+
+  - id: q13-sign-test-1
+    term: sign-test
+    level: 基本
+    type: numeric
+    question: |
+      12人に新旧2つの枕を試してもらい、睡眠の質の差（新−旧）を調べたところ、正が9人、負が2人、差が0の人が1人だった。
+      $H_0$：差の中央値は0、$H_1$：中央値は正 の符号検定の p値を小数第3位まで求めよ。
+    answer: 0.033
+    tolerance: 0.001
+    hint: |
+      差が0の人は除くので $n=11$。$S\sim\mathrm{Bin}(11,1/2)$ で $P(S\ge9)$ を求める。
+    explanation: |
+      $n=11$、$S=9$ です。
+      $$P(S\ge9)=\frac{\binom{11}{9}+\binom{11}{10}+\binom{11}{11}}{2^{11}}=\frac{55+11+1}{2048}=0.0327$$
+      5%で $H_0$ は棄却されます。0の人を残して $n=12$ とするのは誤りです。
+
+  - id: q13-sign-test-2
+    term: sign-test
+    level: 標準
+    type: numeric
+    question: |
+      $n=100$ 組（差が0の組はない）のうち、差が正の組が62組だった。符号検定の統計量を連続修正つきの正規近似で標準化した
+      $Z=\dfrac{S-n/2-0.5}{\sqrt n/2}$ の値を小数第2位まで求めよ。
+    answer: 2.30
+    tolerance: 0.01
+    hint: |
+      $H_0$ のもとで $E[S]=n/2$、$V[S]=n/4$。
+    explanation: |
+      $E[S]=50$、$\sqrt{V[S]}=\sqrt{25}=5$ なので
+      $$Z=\frac{62-50-0.5}{5}=2.30$$
+      修正なしなら $2.40$ です。
+
+  - id: q13-sign-test-3
+    term: sign-test
+    level: 基本
+    type: truefalse
+    question: |
+      符号検定を使うには、差 $D_i$ の分布が0について左右対称であることを仮定する必要がある。
+    answer: false
+    hint: |
+      符号検定が使う情報は「差が正か負か」だけ。$H_0$ のもとで $P(D_i>0)$ はいくらか。
+    explanation: |
+      符号検定は $H_0$：中央値が0 のもとで $P(D_i>0)=1/2$ となることだけを使い、$S\sim\mathrm{Bin}(n,1/2)$ になります。対称性は不要です。
+      対称性を仮定するのは、差の大きさ（絶対値の順位）も使う**符号付き順位検定**です。
+
+  - id: q13-wilcoxon-signed-rank-test-1
+    term: wilcoxon-signed-rank-test
+    level: 基本
+    type: numeric
+    question: |
+      8組の差が $1.2,\ -0.4,\ 2.5,\ 0.8,\ -1.5,\ 3.1,\ 0.6,\ 2.0$ だった。
+      ウィルコクソンの符号付き順位検定の統計量 $T^+$（正の差の順位和）を求めよ。
+    answer: 30
+    tolerance: 0.4
+    hint: |
+      絶対値に小さいほうから順位を付け、もとの差が正のものの順位を足す。
+    explanation: |
+      絶対値の順位は $0.4(1),0.6(2),0.8(3),1.2(4),1.5(5),2.0(6),2.5(7),3.1(8)$ です。
+      負の差は $-0.4$（1位）と $-1.5$（5位）なので $T^-=6$、
+      $$T^+=\frac{8\times9}{2}-6=36-6=30$$
+
+  - id: q13-wilcoxon-signed-rank-test-2
+    term: wilcoxon-signed-rank-test
+    level: 標準
+    type: numeric
+    question: |
+      差が0でない $n=20$ 組で、符号付き順位検定の統計量が $T^+=160$ だった（タイなし）。
+      正規近似の $Z=\dfrac{T^+-E[T^+]}{\sqrt{V[T^+]}}$ を連続修正なしで計算し、小数第2位まで答えよ。
+    answer: 2.05
+    tolerance: 0.01
+    hint: |
+      $E[T^+]=n(n+1)/4$、$V[T^+]=n(n+1)(2n+1)/24$。
+    explanation: |
+      $E[T^+]=20\times21/4=105$、$V[T^+]=20\times21\times41/24=717.5$ なので
+      $$Z=\frac{160-105}{\sqrt{717.5}}=\frac{55}{26.79}=2.05$$
+      両側5%で有意です。
+
+  - id: q13-wilcoxon-signed-rank-test-3
+    term: wilcoxon-signed-rank-test
+    level: 標準
+    type: choice
+    question: |
+      対応のある2標本の差 $D_i$ について、符号検定ではなく符号付き順位検定を使うために追加で必要になる仮定はどれか。
+    choices:
+      - '差の分布が中央値について左右対称である'
+      - '差が正規分布に従う'
+      - '差の分散が既知である'
+      - '2つの群が独立である'
+    answer: 0
+    hint: |
+      符号付き順位検定は「正の差の順位」と「負の差の順位」が同じように並ぶことを $H_0$ の分布に使う。
+    explanation: |
+      $H_0$ のもとで各順位が正負どちらにも確率1/2で付くには、差の分布が0について対称である必要があります。
+      正規性や分散の既知は不要で（それなら $t$ 検定や $z$ 検定）、対応のあるデータなので2群は独立ではありません。
+
+  - id: q13-wilcoxon-rank-sum-test-1
+    term: wilcoxon-rank-sum-test
+    level: 応用
+    type: numeric
+    question: |
+      新しい教え方の群A（3人）の点数が $12,15,21$、従来の群B（5人）の点数が $10,14,18,25,30$ だった。
+      群Aの順位和 $W$ を統計量とし、$H_1$：Aのほうが小さい値をとりやすい、とする順位和検定の正確な p値 $P(W\le w_{\text{obs}})$ を
+      小数第3位まで求めよ。
+    answer: 0.393
+    tolerance: 0.001
+    hint: |
+      まず合併順位から $W$ を求める。$H_0$ のもとでは、$\{1,\dots,8\}$ から3個を選ぶ $\binom83=56$ 通りが等確率。
+    explanation: |
+      合併すると $10(1),12(2),14(3),15(4),18(5),21(6),25(7),30(8)$ なので $W=2+4+6=12$ です。
+      和が12以下になる3個の組を数えると22通りあり、
+      $$P(W\le12)=\frac{22}{56}=0.393$$
+      $E[W]=3\times9/2=13.5$ に近く、差があるとはいえません。
+
+  - id: q13-wilcoxon-rank-sum-test-2
+    term: wilcoxon-rank-sum-test
+    level: 標準
+    type: numeric
+    question: |
+      $n_1=10$、$n_2=15$ の2群で、第1群の順位和が $W=160$ だった（タイなし）。
+      正規近似の $Z=\dfrac{W-E[W]}{\sqrt{V[W]}}$ を連続修正なしで計算し、小数第2位まで答えよ。
+    answer: 1.66
+    tolerance: 0.01
+    hint: |
+      $E[W]=n_1(N+1)/2$、$V[W]=n_1n_2(N+1)/12$、$N=n_1+n_2$。
+    explanation: |
+      $N=25$ なので $E[W]=10\times26/2=130$、$V[W]=10\times15\times26/12=325$。
+      $$Z=\frac{160-130}{\sqrt{325}}=\frac{30}{18.03}=1.66$$
+      期待値の式で $n_1$ と $n_2$ を取り違える（$15\times26/2=195$）誤りに注意します。
+
+  - id: q13-mann-whitney-u-test-1
+    term: mann-whitney-u-test
+    level: 標準
+    type: numeric
+    question: |
+      群A $=\{12,15,21\}$、群B $=\{10,14,18,25,30\}$ について、
+      $U=\#\{(i,j):X_i>Y_j\}$（$X$ は群A、$Y$ は群B）を求めよ。
+    answer: 6
+    tolerance: 0.4
+    hint: |
+      Aの各値について、それより小さいBの値の個数を数えて足す。順位和 $W$ からも $U=W-n_1(n_1+1)/2$ で求まる。
+    explanation: |
+      $12$ より小さいBは $10$ の1個、$15$ は $10,14$ の2個、$21$ は $10,14,18$ の3個なので $U=1+2+3=6$ です。
+      順位和 $W=12$ から $U=12-3\times4/2=6$ とも一致します。
+
+  - id: q13-kruskal-wallis-test-1
+    term: kruskal-wallis-test
+    level: 標準
+    type: numeric
+    question: |
+      3群（各4個、合計12個、タイなし）を合併して順位を付けたところ、順位和が $R_1=10,\ R_2=26,\ R_3=42$ だった。
+      クラスカル・ウォリスの統計量 $H$ を小数第2位まで求めよ。
+    answer: 9.85
+    tolerance: 0.01
+    hint: |
+      $H=\dfrac{12}{N(N+1)}\sum\dfrac{R_j^2}{n_j}-3(N+1)$。
+    explanation: |
+      $$H=\frac{12}{12\times13}\cdot\frac{100+676+1764}{4}-3\times13=\frac{12}{156}\times635-39=48.85-39=9.85$$
+      自由度2のカイ二乗分布の上側1%点 $9.21$ を超えます（各群が完全に分かれた、最も極端な配置です）。
+
+  - id: q13-kruskal-wallis-test-2
+    term: kruskal-wallis-test
+    level: 基本
+    type: choice
+    question: |
+      $k=4$ 群、合計 $N=40$ 個のデータにクラスカル・ウォリス検定を行う。$H_0$ のもとで $H$ が近似的に従う分布はどれか。
+    choices:
+      - '自由度3のカイ二乗分布'
+      - '自由度4のカイ二乗分布'
+      - '自由度36のカイ二乗分布'
+      - '自由度 $(3,36)$ の $F$ 分布'
+    answer: 0
+    hint: |
+      一元配置分散分析の「群間」の自由度に対応する。
+    explanation: |
+      $H\ \xrightarrow{d}\ \chi^2(k-1)=\chi^2(3)$ です。$36=N-k$ は分散分析の残差の自由度で、$F(3,36)$ は正規性を仮定した分散分析の場合の分布です。
+
+  - id: q13-kruskal-wallis-test-3
+    term: kruskal-wallis-test
+    level: 応用
+    type: truefalse
+    question: |
+      群が2つ（$k=2$）でタイがないとき、クラスカル・ウォリスの統計量 $H$ は、ウィルコクソンの順位和検定の
+      $Z=\dfrac{W-n_1(N+1)/2}{\sqrt{n_1n_2(N+1)/12}}$ の2乗に一致する。
+    answer: true
+    hint: |
+      $R_2=N(N+1)/2-R_1$ を使って $H$ を $R_1$ だけで書く。
+    explanation: |
+      $\bar R_j-(N+1)/2$ を $d_j$ とすると $n_1d_1+n_2d_2=0$ なので
+      $$H=\frac{12}{N(N+1)}(n_1d_1^2+n_2d_2^2)=\frac{12}{N(N+1)}\cdot\frac{N}{n_1n_2}(n_1d_1)^2=\frac{(W-n_1(N+1)/2)^2}{n_1n_2(N+1)/12}=Z^2$$
+      となり、2群のときは順位和検定（両側）と同じ検定です。
+
+  - id: q13-friedman-test-1
+    term: friedman-test
+    level: 標準
+    type: numeric
+    question: |
+      6人の評価者が3種類の試作品に順位（1〜3、タイなし）を付けた。試作品ごとの順位和が $8,\ 12,\ 16$ のとき、
+      フリードマンの統計量 $Q$ を小数第2位まで求めよ。
+    answer: 5.33
+    tolerance: 0.01
+    hint: |
+      $Q=\dfrac{12}{bk(k+1)}\sum R_j^2-3b(k+1)$、$b=6$、$k=3$。
+    explanation: |
+      順位和の合計が $bk(k+1)/2=36$ になることを確かめてから計算します。
+      $$Q=\frac{12}{6\times3\times4}(64+144+256)-3\times6\times4=\frac{464}{6}-72=5.33$$
+      自由度2の上側5%点 $5.99$ に届かず、5%では有意ではありません。
+
+  - id: q13-friedman-test-2
+    term: friedman-test
+    level: 応用
+    type: derivation
+    question: |
+      処理が2つ（$k=2$）のフリードマン検定で、$b$ ブロック中で処理2が処理1より大きい値をとったブロック数を $S$ とする（タイなし）。
+      $Q$ が符号検定の $Z=\dfrac{S-b/2}{\sqrt b/2}$ の2乗に一致することを示せ。
+    steps:
+      - |
+        各ブロックで順位は1と2。処理2の順位和は $R_2=b+S$（$S$ ブロックで2位、残りで1位）。期待値 $b(k+1)/2=3b/2$。
+      - |
+        $R_1=3b-R_2$ より $R_1-3b/2=-(R_2-3b/2)$。どちらも偏差の大きさは $S-b/2$。
+      - |
+        $Q=\dfrac{12}{b\cdot2\cdot3}\cdot2\left(S-\dfrac b2\right)^2=\dfrac{4(S-b/2)^2}{b}=Z^2$。
+    answer: "$Q=\\dfrac{(S-b/2)^2}{b/4}=Z^2$"
+    hint: |
+      $Q=\dfrac{12}{bk(k+1)}\sum_j\left(R_j-\dfrac{b(k+1)}2\right)^2$ の形を使う。
+    explanation: |
+      $k=2$ では2つの順位和の偏差は符号だけが逆なので
+      $$Q=\frac{2}{b}\cdot2\left(S-\frac b2\right)^2=\frac{(S-b/2)^2}{b/4}$$
+      で、符号検定の $Z^2$ に一致します。フリードマン検定は符号検定を3処理以上に広げたものといえます。
+
+  - id: q13-spearman-rank-correlation-1
+    term: spearman-rank-correlation
+    level: 基本
+    type: numeric
+    question: |
+      5人について、科目Xの順位が $1,2,3,4,5$、科目Yの順位がそれぞれ $2,1,4,3,5$ だった。
+      スピアマンの順位相関係数 $r_s$ を小数第2位まで求めよ。
+    answer: 0.80
+    tolerance: 0.01
+    hint: |
+      順位の差 $d_i$ の2乗和を $r_s=1-\dfrac{6\sum d_i^2}{n(n^2-1)}$ に代入する。
+    explanation: |
+      $d_i=-1,1,-1,1,0$ なので $\sum d_i^2=4$。
+      $$r_s=1-\frac{6\times4}{5\times24}=1-0.2=0.80$$
+
+  - id: q13-spearman-rank-correlation-2
+    term: spearman-rank-correlation
+    level: 標準
+    type: numeric
+    question: |
+      $n=26$ 組のデータでスピアマンの順位相関係数が $r_s=0.45$ だった。
+      $H_0$：独立 のもとでの正規近似 $Z=r_s\sqrt{n-1}$ の値を小数第2位まで求めよ。
+    answer: 2.25
+    tolerance: 0.01
+    hint: |
+      $H_0$ のもとで $E[r_s]=0$、$V[r_s]=1/(n-1)$。
+    explanation: |
+      $$Z=0.45\times\sqrt{25}=2.25$$
+      両側5%（1.96）で有意です。分散を $1/n$ と覚え違えると $Z=0.45\sqrt{26}=2.29$ となります。
+
+  - id: q13-kendall-rank-correlation-1
+    term: kendall-rank-correlation
+    level: 標準
+    type: numeric
+    question: |
+      5人について、科目Xの順位が $1,2,3,4,5$、科目Yの順位がそれぞれ $2,1,4,3,5$ だった。
+      ケンドールの順位相関係数 $\tau=\dfrac{C-D}{n(n-1)/2}$ を小数第2位まで求めよ。
+    answer: 0.60
+    tolerance: 0.01
+    hint: |
+      Xの順に並んでいるので、Yの並びで「後ろのほうが小さい」組（逆転）を数えると不一致対の数になる。
+    explanation: |
+      Yの並び $2,1,4,3,5$ で逆転しているのは $(2,1)$ と $(4,3)$ の2組なので $D=2$、$C=10-2=8$。
+      $$\tau=\frac{8-2}{10}=0.60$$
+      同じデータのスピアマンの $r_s=0.80$ より小さく、一般に $|\tau|$ は $|r_s|$ より小さめに出ます。
+
+  - id: q13-kendall-rank-correlation-2
+    term: kendall-rank-correlation
+    level: 応用
+    type: numeric
+    question: |
+      $n=10$ 組（タイなし）で一致対と不一致対の差が $S=C-D=21$ だった。$H_0$：独立 のもとで、
+      $S$ を連続修正つき（$|S|$ から1を引く）で標準化した $Z$ を小数第2位まで求めよ。
+    answer: 1.79
+    tolerance: 0.01
+    hint: |
+      $V[S]=n(n-1)(2n+5)/18$。$S$ は2刻みの値をとるので修正量は1。
+    explanation: |
+      $V[S]=10\times9\times25/18=125$ なので
+      $$Z=\frac{21-1}{\sqrt{125}}=\frac{20}{11.18}=1.79$$
+      修正なしなら $1.88$ です。このときの $\tau=21/45=0.467$ です。
+
+  - id: q13-permutation-test-1
+    term: permutation-test
+    level: 標準
+    type: numeric
+    question: |
+      処置群の値が $7,9$、対照群の値が $3,4,6$ だった。統計量を処置群の合計 $T$ とし、
+      合併した5個を2個と3個に分け直すすべての並べ替えにもとづく右片側の並べ替え検定の p値を求めよ（小数第2位まで）。
+    answer: 0.10
+    tolerance: 0.005
+    hint: |
+      $\{3,4,6,7,9\}$ から2個を選ぶ $\binom52=10$ 通りの合計を列挙し、観測値 $T=16$ 以上のものを数える。
+    explanation: |
+      2個の合計は $7,9,10,12,10,11,13,13,15,16$ の10通りで、16以上は観測値自身の1通りだけです。
+      $$p=\frac{1}{10}=0.10$$
+      標本が小さいと、どんなに極端な配置でも p値は $1/10$ より小さくなりません。
+
+  - id: q13-permutation-test-2
+    term: permutation-test
+    level: 応用
+    type: numeric
+    question: |
+      前問と同じデータ（合併値 $3,4,6,7,9$、処置群2個）で、並べ替え分布における $T$（処置群の合計）の分散を小数第2位まで求めよ。
+    answer: 6.84
+    tolerance: 0.01
+    hint: |
+      $V[T]=\dfrac{n_1n_2}{N(N-1)}\sum(z_i-\bar z)^2$（非復元抽出の分散）。
+    explanation: |
+      $\bar z=5.8$、$\sum(z_i-\bar z)^2=7.84+3.24+0.04+1.44+10.24=22.8$ なので
+      $$V[T]=\frac{2\times3}{5\times4}\times22.8=6.84$$
+      10通りの合計値の分散を直接計算しても同じ値になります。
+
+  - id: q13-normal-approximation-rank-tests-1
+    term: normal-approximation-rank-tests
+    level: 基本
+    type: choice
+    question: |
+      差が0でない $n=10$ 組の符号付き順位検定で、$H_0$ のもとでの $T^+$ の分散（タイなし）はどれか。
+    choices:
+      - '$96.25$'
+      - '$192.5$'
+      - '$27.5$'
+      - '$385$'
+    answer: 0
+    hint: |
+      $V[T^+]=n(n+1)(2n+1)/24$。
+    explanation: |
+      $$V[T^+]=\frac{10\times11\times21}{24}=96.25$$
+      $385$ は $\sum k^2=n(n+1)(2n+1)/6$ そのもの、$192.5$ は12で割った値、$27.5$ は期待値 $n(n+1)/4$ です。
+      各順位 $k$ が確率1/2で $T^+$ に入るので分散は $\sum k^2/4$ になります。
+
+  - id: q13-asymptotic-relative-efficiency-1
+    term: asymptotic-relative-efficiency
+    level: 標準
+    type: numeric
+    question: |
+      母集団が正規分布のとき、符号検定の $t$ 検定に対する漸近相対効率は $2/\pi$ である。
+      $t$ 検定が $n=100$ で達成する検出力を符号検定で達成するには、おおよそ何個の標本が必要か。整数に四捨五入して答えよ。
+    answer: 157
+    tolerance: 0.5
+    hint: |
+      $\mathrm{ARE}(\text{符号},t)=n_t/n_{\text{符号}}$。
+    explanation: |
+      $n_t/n_{\text{符号}}=2/\pi$ より
+      $$n_{\text{符号}}=\frac{100}{2/\pi}=50\pi=157.1$$
+      約157個です。順位和・符号付き順位検定なら $100/(3/\pi)=105$ 個で済みます。
+
+  - id: q13-runs-test-1
+    term: runs-test
+    level: 標準
+    type: numeric
+    question: |
+      記号Aが8個、Bが12個の合計20個がランダムに並ぶとき、ランの総数 $R$ の期待値を小数第1位まで求めよ。
+    answer: 10.6
+    tolerance: 0.05
+    hint: |
+      $E[R]=\dfrac{2n_1n_2}{N}+1$。
+    explanation: |
+      $$E[R]=\frac{2\times8\times12}{20}+1=9.6+1=10.6$$
+      観測されたランの数がこれよりかなり少なければ「同じ記号が固まっている」、多すぎれば「交互に並びすぎている」と考えます。
+
+  - id: q13-concordant-discordant-pairs-1
+    term: concordant-discordant-pairs
+    level: 応用
+    type: choice
+    question: |
+      5組のデータ $(1,1),(1,2),(2,2),(3,1),(3,3)$ について、グッドマン・クラスカルのガンマ $\gamma=\dfrac{C-D}{C+D}$ はどれか。
+    choices:
+      - '$1/3$'
+      - '$1/5$'
+      - '$1/4$'
+      - '$3/5$'
+    answer: 0
+    hint: |
+      $\binom52=10$ 組を一致対・不一致対・タイに分ける。ガンマの分母にはタイの組を入れない。
+    explanation: |
+      一致対は $C=4$、不一致対は $D=2$、$x$ だけタイが2組、$y$ だけタイが2組です。
+      $$\gamma=\frac{4-2}{4+2}=\frac13$$
+      $1/5$ は全10組で割った $\tau_a$、$1/4$ はタイを補正した $\tau_b=2/\sqrt{8\times8}$ で、同じデータでも指標ごとに値が変わります。

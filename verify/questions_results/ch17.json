@@ -1,0 +1,114 @@
+{
+ "q17-breusch-pagan-test-1": {
+  "hash": "ec7b2f5a10fa2ebd",
+  "ok": true
+ },
+ "q17-cooks-distance-1": {
+  "hash": "9a40ab0fe4460664",
+  "ok": true
+ },
+ "q17-cooks-distance-2": {
+  "hash": "ad89d3b73cf4c3ba",
+  "ok": true
+ },
+ "q17-dfbetas-1": {
+  "hash": "24dc47785d0abbe6",
+  "ok": true
+ },
+ "q17-dffits-1": {
+  "hash": "87534ab52e06f5d4",
+  "ok": true
+ },
+ "q17-durbin-watson-statistic-1": {
+  "hash": "d03471cb4cda8fea",
+  "ok": true
+ },
+ "q17-durbin-watson-statistic-2": {
+  "hash": "3c7d390c5f5816b4",
+  "ok": true
+ },
+ "q17-durbin-watson-statistic-3": {
+  "hash": "29fc4ab2a8b3c8ea",
+  "ok": true
+ },
+ "q17-heteroscedasticity-1": {
+  "hash": "c8e01b3e7fb014c3",
+  "ok": true
+ },
+ "q17-heteroscedasticity-2": {
+  "hash": "af136ee10064881c",
+  "ok": true
+ },
+ "q17-leverage-1": {
+  "hash": "00d4c79ed6b3709e",
+  "ok": true
+ },
+ "q17-leverage-2": {
+  "hash": "98cd4b24ff9bc398",
+  "ok": true
+ },
+ "q17-leverage-3": {
+  "hash": "210c48c7bdb0dedc",
+  "ok": true
+ },
+ "q17-normal-qq-plot-1": {
+  "hash": "a1b6d6f19879487f",
+  "ok": true
+ },
+ "q17-normal-qq-plot-2": {
+  "hash": "e1b4031804b0f959",
+  "ok": true
+ },
+ "q17-outlier-and-influential-point-1": {
+  "hash": "6c47ecbeb2d9ad1d",
+  "ok": true
+ },
+ "q17-outlier-and-influential-point-2": {
+  "hash": "cd7e039b77716b3b",
+  "ok": true
+ },
+ "q17-residual-1": {
+  "hash": "7395f5e3f47b43cc",
+  "ok": true
+ },
+ "q17-residual-2": {
+  "hash": "d86de61abd9c7ee0",
+  "ok": true
+ },
+ "q17-residual-plot-1": {
+  "hash": "90d32d21cf3bcbd7",
+  "ok": true
+ },
+ "q17-residual-plot-2": {
+  "hash": "cefe60433a864836",
+  "ok": true
+ },
+ "q17-robust-standard-error-1": {
+  "hash": "9943408d0c21085c",
+  "ok": true
+ },
+ "q17-serial-correlation-1": {
+  "hash": "c0c7fa31a9f1221c",
+  "ok": true
+ },
+ "q17-serial-correlation-2": {
+  "hash": "b111514be7bbb50c",
+  "ok": true
+ },
+ "q17-standardized-residual-1": {
+  "hash": "55d36bb7e737729e",
+  "ok": true
+ },
+ "q17-standardized-residual-2": {
+  "hash": "a650a5f5e1391996",
+  "ok": true
+ },
+ "q17-studentized-residual-1": {
+  "hash": "10c940c68fdd1644",
+  "ok": true
+ },
+ "q17-studentized-residual-2": {
+  "hash": "2ec838f34f2ae921",
+  "ok": true
+ }
+}

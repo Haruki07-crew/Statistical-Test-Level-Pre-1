@@ -261,3 +261,21 @@ check(T, "V[2X]=4σ², V[X1+X2]=2σ²（σ=1, シミュ許容0.02）", abs(np.va
 
 ok_n = sum(results); ng_n = len(results) - ok_n
 print(f"\n合計（追加用語を含む）: OK {ok_n} / NG {ng_n}")
+
+# --- 重要度A への加筆: box-cox-transformation ---
+T = "box-cox-transformation"
+_y = np.array([1, 2, 3, 5, 8, 13, 21, 34.0]); _n = len(_y); _sl = np.log(_y).sum()
+def _lp(l):
+    zz = np.log(_y) if l == 0 else (_y ** l - 1) / l
+    return -_n / 2 * np.log(zz.var()) + (l - 1) * _sl
+_r = optimize.minimize_scalar(lambda l: -_lp(l), bounds=(-2, 2), method="bounded")
+check(T, "例3 ℓp(λ̂)≈−15.574, λ̂≈0.039", close(_lp(_r.x), -15.574, 5e-4) and close(_r.x, 0.039, 5e-4), (round(_r.x, 5), round(_lp(_r.x), 4)))
+_lr1 = 2 * (_lp(_r.x) - _lp(1)); _lr0 = 2 * (_lp(_r.x) - _lp(0))
+check(T, "例3 LR(λ=1)≈6.836>3.841, LR(λ=0)≈0.013, χ²1(0.05)/2≈1.921", close(_lr1, 6.836, 5e-4) and _lr1 > 3.841 and close(_lr0, 0.013, 5e-4) and close(stats.chi2.ppf(0.95, 1) / 2, 1.921, 5e-4), (round(_lr1, 4), round(_lr0, 4)))
+_c = stats.chi2.ppf(0.95, 1) / 2
+_lo = optimize.brentq(lambda l: _lp(_r.x) - _lp(l) - _c, -2, _r.x); _hi = optimize.brentq(lambda l: _lp(_r.x) - _lp(l) - _c, _r.x, 2)
+check(T, "例3 λ の95%区間 ≈[−0.646, 0.744]（0と0.5を含み1を含まない）", close(_lo, -0.646, 5e-4) and close(_hi, 0.744, 5e-4) and _lo < 0 < 0.5 < _hi < 1, (round(_lo, 4), round(_hi, 4)))
+check(T, "例4 mean(log y)≈1.8271, exp≈6.216=幾何平均, 算術平均10.875", close(np.log(_y).mean(), 1.8271) and close(np.exp(np.log(_y).mean()), 6.216, 5e-4) and close(stats.gmean(_y), 6.216, 5e-4) and _y.mean() == 10.875, round(np.exp(np.log(_y).mean()), 4))
+
+ok_n = sum(results); ng_n = len(results) - ok_n
+print(f"\n合計（重要度A への加筆を含む）: OK {ok_n} / NG {ng_n}")

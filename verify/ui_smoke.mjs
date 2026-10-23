@@ -150,6 +150,13 @@ try {
   await ev(`document.querySelector('[data-back]').click()`); await sleep(600);
   const after = await ev(`document.getElementById('list').scrollTop`);
   check('スマホで戻るとスクロール位置を保つ', Math.abs(before - after) < 4, `${before} → ${after}`);
+  // ライトモードのホーム
+  await ev(`localStorage.clear(); localStorage.setItem('jd-theme', 'light')`);
+  await open('', 1280, 900);
+  check('ホームに今日の1問', await ev(`!!document.querySelector('.home-q .qcard')`));
+  await shot('home-light-1280');
+  await open('#quiz', 375, 780);
+  await shot('quiz-light-375');
   check('ページのエラーなし', errors.length === 0, errors.slice(0, 3).join(' | '));
 } catch (e) {
   console.log('NG  例外: ' + e.message);

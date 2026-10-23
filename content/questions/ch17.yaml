@@ -415,7 +415,7 @@ questions:
     explanation: |
       $$d\approx2\{1-(-0.35)\}=2.7$$
       です。負の系列相関では $d$ は2より大きく4に近づきます。$1.3$ は符号を取り違えた値（$r_1=+0.35$ のとき）、
-      $0.7$ や $-0.7$ は2倍し忘れた値です。$d$ は必ず $0\le d\le4$ です。
+      $0.7$ や $-0.7$ は $2r_1$ の大きさを $d$ と取り違えた値です。$d$ は必ず $0\le d\le4$ です。
 
   - id: q17-durbin-watson-statistic-3
     term: durbin-watson-statistic

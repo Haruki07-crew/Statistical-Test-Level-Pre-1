@@ -1,0 +1,455 @@
+chapter: 18
+questions:
+  - id: q18-logistic-regression-1
+    term: logistic-regression
+    level: 基本
+    type: numeric
+    question: |
+      ロジスティック回帰 $\log\dfrac{p}{1-p}=-2+0.5x$ が得られた。$x=6$ のときの確率 $p$ を小数第3位まで求めよ。
+    answer: 0.731
+    tolerance: 0.001
+    hint: |
+      まず線形予測子 $\eta=-2+0.5x$ を計算し、$p=1/(1+e^{-\eta})$ に入れる。
+    explanation: |
+      $\eta=-2+0.5\times6=1$ なので
+      $$p=\frac{1}{1+e^{-1}}=\frac{1}{1+0.3679}=0.731$$
+      です。$\eta=1$ を確率そのものと読まないよう注意します（$\eta$ は対数オッズ）。
+
+  - id: q18-logistic-regression-2
+    term: logistic-regression
+    level: 応用
+    type: numeric
+    question: |
+      ロジスティック回帰 $\log\dfrac{p}{1-p}=-2+0.5x$ で、$x=6$ における確率の傾き $\dfrac{dp}{dx}$ を小数第3位まで求めよ。
+    answer: 0.098
+    tolerance: 0.001
+    hint: |
+      $p=1/(1+e^{-\eta})$ を $\eta$ で微分すると $p(1-p)$ になる。連鎖律を使う。
+    explanation: |
+      $\dfrac{dp}{d\eta}=p(1-p)$、$\dfrac{d\eta}{dx}=0.5$ なので
+      $$\frac{dp}{dx}=\beta_1p(1-p)=0.5\times0.731\times0.269=0.098$$
+      です。傾きは $p=0.5$ のとき最大の $\beta_1/4=0.125$ で、確率が0や1に近いほど小さくなります。
+      係数 $0.5$ をそのまま「確率の増え方」と読むのは誤りです。
+
+  - id: q18-logistic-regression-3
+    term: logistic-regression
+    level: 基本
+    type: truefalse
+    question: |
+      ロジスティック回帰 $\operatorname{logit}p=\beta_0+\beta_1x$ では、$x$ が1増えると、$x$ の値によらず確率 $p$ が $\beta_1$ だけ増える。
+    answer: false
+    hint: |
+      $x$ について一次式になっているのは $p$ そのものか、それとも何か。
+    explanation: |
+      一次式なのは対数オッズ $\log\{p/(1-p)\}$ です。$x$ が1増えると対数オッズが $\beta_1$ 増え、オッズが $e^{\beta_1}$ 倍になります。
+      確率 $p$ の増え方は $\beta_1p(1-p)$ で、$x$ の位置によって変わります。
+
+  - id: q18-odds-and-odds-ratio-1
+    term: odds-and-odds-ratio
+    level: 基本
+    type: numeric
+    question: |
+      ある調査で、群1は100人中30人、群2は100人中15人に症状が出た。群1の群2に対する標本オッズ比を小数第2位まで求めよ。
+    answer: 2.43
+    tolerance: 0.005
+    hint: |
+      2×2表 $\begin{pmatrix}a&b\\c&d\end{pmatrix}$ のオッズ比は $ad/(bc)$。
+    explanation: |
+      $a=30,\ b=70,\ c=15,\ d=85$ なので
+      $$\widehat{\mathrm{OR}}=\frac{30\times85}{70\times15}=\frac{2550}{1050}=2.43$$
+      です。リスク比 $0.30/0.15=2$ とは異なり、事象がまれでないほどオッズ比はリスク比より1から離れます。
+
+  - id: q18-odds-and-odds-ratio-2
+    term: odds-and-odds-ratio
+    level: 標準
+    type: numeric
+    question: |
+      2×2表 $a=30,\ b=70,\ c=15,\ d=85$ について、オッズ比の95%信頼区間の**下限**を、
+      対数オッズ比の近似標準誤差 $\sqrt{1/a+1/b+1/c+1/d}$ を用いて小数第2位まで求めよ。
+    answer: 1.21
+    tolerance: 0.005
+    hint: |
+      対数スケールで「推定値 $-1.96\times$SE」を求めてから指数をとる。
+    explanation: |
+      $\log\widehat{\mathrm{OR}}=\log2.4286=0.8873$、
+      $$\mathrm{SE}=\sqrt{\frac1{30}+\frac1{70}+\frac1{15}+\frac1{85}}=\sqrt{0.1261}=0.3550$$
+      なので下限は $\exp(0.8873-1.96\times0.3550)=\exp(0.1914)=1.21$ です（上限は $4.87$）。
+      区間が1を含まないので、有意水準5%でオッズ比は1と異なります。区間はオッズ比について左右非対称になります。
+
+  - id: q18-odds-and-odds-ratio-3
+    term: odds-and-odds-ratio
+    level: 標準
+    type: choice
+    question: |
+      ロジスティック回帰で説明変数 $x$ の係数が $\hat\beta=0.4$ と推定された（他の変数は固定）。
+      $x$ が3増えたとき、オッズは何倍になるか。
+    choices:
+      - '約 $3.32$ 倍'
+      - '約 $1.20$ 倍'
+      - '約 $1.49$ 倍'
+      - '約 $4.47$ 倍'
+    answer: 0
+    hint: |
+      1単位あたりオッズは $e^{\beta}$ 倍。3単位ならそれを3回掛ける。
+    explanation: |
+      対数オッズが $3\times0.4=1.2$ 増えるので、オッズは $e^{1.2}=3.32$ 倍です。
+      $1.20$ は指数をとり忘れた値、$1.49=e^{0.4}$ は1単位分だけ、$4.47=3e^{0.4}$ は「倍率を3倍した」誤りです。
+
+  - id: q18-generalized-linear-model-1
+    term: generalized-linear-model
+    level: 基本
+    type: choice
+    question: |
+      一般化線形モデル（GLM）を構成する3つの要素に**含まれない**ものはどれか。
+    choices:
+      - '誤差の分散がすべての観測で等しいという仮定'
+      - '応答が従う指数分散型分布族の分布（ランダム成分）'
+      - '説明変数の一次式である線形予測子'
+      - '平均と線形予測子を結ぶリンク関数'
+    answer: 0
+    hint: |
+      ポアソン回帰では、平均が大きい観測ほど分散はどうなるか。
+    explanation: |
+      GLM は「分布」「線形予測子 $\eta=\boldsymbol x^\top\boldsymbol\beta$」「リンク関数 $g(\mu)=\eta$」の3要素からなります。
+      分散は $V[Y_i]=a(\phi)V(\mu_i)$ のように平均の関数として決まり、ポアソンなら $\mu_i$、二項なら $\mu_i(1-\mu_i)$ で、等分散は仮定しません。
+
+  - id: q18-generalized-linear-model-2
+    term: generalized-linear-model
+    level: 標準
+    type: truefalse
+    question: |
+      カウントデータ $y$ に対し、「$\log y$ を応答にした線形回帰」と「対数リンクのポアソン回帰」は、どちらも $\log E[Y]$ を一次式でモデル化しているので本質的に同じである。
+    answer: false
+    hint: |
+      $E[\log Y]$ と $\log E[Y]$ は等しいか。また $y=0$ のとき $\log y$ はどうなるか。
+    explanation: |
+      対数変換した線形回帰がモデル化するのは $E[\log Y]$ で、イェンセンの不等式より $E[\log Y]<\log E[Y]$ なので別物です。
+      さらに $y=0$ では $\log y$ が定義できず、分散の構造（ポアソンなら $V=\mu$）も扱えません。
+      GLM はデータを変換せず、平均 $\mu$ をリンク関数で変換する点が本質的な違いです。
+
+  - id: q18-link-function-1
+    term: link-function
+    level: 基本
+    type: choice
+    question: |
+      ポアソン分布 $\mathrm{Po}(\mu)$ の正準リンク（自然パラメータ $\theta$ を $\mu$ で表した関数）はどれか。
+    choices:
+      - '$\log\mu$'
+      - '$\mu$'
+      - '$\log\dfrac{\mu}{1-\mu}$'
+      - '$1/\mu$'
+    answer: 0
+    hint: |
+      $P(Y=y)=\exp\{y\log\mu-\mu-\log y!\}$ と書き直し、$y$ に掛かっている部分を見る。
+    explanation: |
+      $\exp\{y\log\mu-\mu-\log y!\}$ より自然パラメータは $\theta=\log\mu$ なので、正準リンクは対数リンクです。
+      恒等は正規、ロジットは二項、逆数（符号を除く）はガンマの正準リンクです。
+
+  - id: q18-link-function-2
+    term: link-function
+    level: 標準
+    type: numeric
+    question: |
+      2値応答のモデルで補対数対数リンク $g(p)=\log\{-\log(1-p)\}$ を使う。線形予測子が $\eta=0$ のときの確率 $p$ を小数第3位まで求めよ。
+    answer: 0.632
+    tolerance: 0.001
+    hint: |
+      $\log\{-\log(1-p)\}=\eta$ を $p$ について解くと $p=1-\exp(-e^{\eta})$。
+    explanation: |
+      $$p=1-\exp(-e^{0})=1-e^{-1}=0.632$$
+      です。ロジットやプロビットでは $\eta=0$ で $p=0.5$ ですが、補対数対数リンクは0と1について非対称なので $0.5$ にはなりません。
+
+  - id: q18-exponential-dispersion-family-1
+    term: exponential-dispersion-family
+    level: 応用
+    type: derivation
+    question: |
+      ポアソン分布 $P(Y=y)=e^{-\lambda}\lambda^y/y!$ を指数分散型分布族の形
+      $\exp\left\{\dfrac{y\theta-b(\theta)}{a(\phi)}+c(y,\phi)\right\}$ で表し、$b(\theta)$ の微分から平均と分散を求めよ。
+    steps:
+      - |
+        $P(Y=y)=\exp\{y\log\lambda-\lambda-\log y!\}$ と書き直す。
+      - |
+        $\theta=\log\lambda$、$b(\theta)=e^{\theta}$、$a(\phi)=1$、$c(y,\phi)=-\log y!$ と対応する。
+      - |
+        $E[Y]=b'(\theta)=e^{\theta}=\lambda$、$V[Y]=a(\phi)b''(\theta)=e^{\theta}=\lambda$。
+    answer: "$E[Y]=V[Y]=\\lambda$（分散関数 $V(\\mu)=\\mu$）"
+    hint: |
+      $\lambda^y=e^{y\log\lambda}$ として、$y$ に掛かっている部分を $\theta$ とみる。
+    explanation: |
+      $\theta=\log\lambda$ とおくと $b(\theta)=\lambda=e^\theta$ なので
+      $$E[Y]=b'(\theta)=e^\theta=\lambda,\qquad V[Y]=b''(\theta)=e^\theta=\lambda$$
+      です。分散関数は $V(\mu)=\mu$ で、ポアソン分布の「平均＝分散」が $b$ の微分で一度に出てきます。
+
+  - id: q18-exponential-dispersion-family-2
+    term: exponential-dispersion-family
+    level: 標準
+    type: numeric
+    question: |
+      ガンマ分布を平均 $\mu$、形状パラメータ $\nu$ で表すと、指数分散型分布族として $a(\phi)=1/\nu$、分散関数 $V(\mu)=\mu^2$ となる。
+      平均 $\mu=4$、形状 $\nu=2$ のときの分散を求めよ（整数で答えよ）。
+    answer: 8
+    tolerance: 0.01
+    hint: |
+      $V[Y]=a(\phi)V(\mu)$。
+    explanation: |
+      $$V[Y]=\frac{1}{\nu}\mu^2=\frac{16}{2}=8$$
+      です。形状 $\nu=2$、尺度 $\mu/\nu=2$ のガンマ分布の分散 $\nu\cdot(\text{尺度})^2=2\times4=8$ とも一致します。
+      分散が平均の2乗に比例するので、変動係数 $\sqrt{V}/\mu=1/\sqrt\nu$ が一定のデータに向きます。
+
+  - id: q18-probit-model-1
+    term: probit-model
+    level: 標準
+    type: numeric
+    question: |
+      プロビットモデル $P(Y=1\mid x)=\Phi(-1+0.8x)$ が得られた（$\Phi$ は標準正規分布の分布関数）。
+      $x=2$ のときの $P(Y=1)$ を小数第3位まで求めよ。
+    answer: 0.726
+    tolerance: 0.001
+    hint: |
+      線形予測子を計算してから標準正規分布表を引く。
+    explanation: |
+      $\eta=-1+0.8\times2=0.6$ なので
+      $$P(Y=1)=\Phi(0.6)=0.726$$
+      です。潜在変数で言えば、$Y^*=-1+0.8x+\varepsilon$（$\varepsilon\sim N(0,1)$）が0を超える確率です。
+      ロジスティック関数 $1/(1+e^{-0.6})=0.646$ を使うのは誤りです。
+
+  - id: q18-logistic-likelihood-estimation-1
+    term: logistic-likelihood-estimation
+    level: 応用
+    type: numeric
+    question: |
+      40人中12人が「1」と答えた。切片だけのロジスティック回帰 $\operatorname{logit}p=\beta_0$ を最尤法で当てはめたときの $\hat\beta_0$ を小数第3位まで求めよ。
+    answer: -0.847
+    tolerance: 0.001
+    hint: |
+      スコア方程式 $\sum(y_i-p)=0$ から $\hat p$ を求め、ロジットに変換する。
+    explanation: |
+      スコア方程式 $X^\top(\boldsymbol y-\boldsymbol\mu)=\sum_i(y_i-p)=0$ より $\hat p=12/40=0.3$ なので
+      $$\hat\beta_0=\log\frac{0.3}{0.7}=-0.847$$
+      です。標準誤差は $(X^\top\hat WX)^{-1/2}=1/\sqrt{40\times0.3\times0.7}=0.345$ になります。
+
+  - id: q18-logistic-likelihood-estimation-2
+    term: logistic-likelihood-estimation
+    level: 標準
+    type: truefalse
+    question: |
+      ロジスティック回帰で、ある説明変数の値の境目で応答が完全に 0 と 1 に分かれる（完全分離が起こる）と、
+      その係数の最尤推定値は有限の値として存在しない。
+    answer: true
+    hint: |
+      完全分離のとき、係数を大きくしていくと対数尤度はどうなるか。
+    explanation: |
+      完全分離では、係数を大きくするほど各点の当てはめ確率が $y_i$（0か1）に近づき、対数尤度は増え続けて0に近づくだけで最大値に達しません。
+      そのため推定値は $\pm\infty$ に発散し、ソフトウェアでは巨大な係数と標準誤差が出たり、収束しない警告が出たりします。
+      対処として、罰則付き（ファースの方法など）の推定を使います。
+
+  - id: q18-iteratively-reweighted-least-squares-1
+    term: iteratively-reweighted-least-squares
+    level: 標準
+    type: numeric
+    question: |
+      対数リンクのポアソン回帰を IRLS で解いている途中、ある観測で現在の当てはめ値が $\mu_i=4$、観測値が $y_i=6$ であった。
+      作業応答 $z_i=\eta_i+(y_i-\mu_i)\dfrac{d\eta_i}{d\mu_i}$ を小数第3位まで求めよ。
+    answer: 1.886
+    tolerance: 0.001
+    hint: |
+      $\eta=\log\mu$ なので $d\eta/d\mu=1/\mu$。
+    explanation: |
+      $$z_i=\log4+\frac{6-4}{4}=1.386+0.500=1.886$$
+      で、この観測の重みは $w_i=\mu_i=4$ です。作業応答を重み付き最小二乗で $\boldsymbol x_i$ に回帰し、係数を更新します。
+      $z_i$ は $\log y_i=1.792$ そのものではない点に注意します。
+
+  - id: q18-multinomial-logit-model-1
+    term: multinomial-logit-model
+    level: 標準
+    type: numeric
+    question: |
+      3カテゴリの多項ロジットモデル（カテゴリ1が基準）で、ある $\boldsymbol x$ において
+      $\log(\pi_2/\pi_1)=0.5$、$\log(\pi_3/\pi_1)=-0.2$ であった。$\pi_2$ を小数第3位まで求めよ。
+    answer: 0.475
+    tolerance: 0.001
+    hint: |
+      $\pi_k=\dfrac{e^{\eta_k}}{1+e^{\eta_2}+e^{\eta_3}}$（基準カテゴリは $\eta_1=0$）。
+    explanation: |
+      分母は $1+e^{0.5}+e^{-0.2}=1+1.6487+0.8187=3.4674$ なので
+      $$\pi_2=\frac{1.6487}{3.4674}=0.475,\qquad \pi_1=0.288,\qquad \pi_3=0.236$$
+      です。2つ目の式を無視して $e^{0.5}/(1+e^{0.5})=0.622$ とするのは誤りです。
+
+  - id: q18-multinomial-logit-model-2
+    term: multinomial-logit-model
+    level: 基本
+    type: numeric
+    question: |
+      応答が4カテゴリ（順序なし）、説明変数が3個（切片あり）の多項ロジットモデルで推定するパラメータの個数を求めよ。
+    answer: 12
+    tolerance: 0.1
+    hint: |
+      基準以外のカテゴリごとに、切片を含む係数ベクトルが1本ずつある。
+    explanation: |
+      基準以外のカテゴリは $K-1=3$ 個、それぞれ切片を含めて $p+1=4$ 個の係数をもつので
+      $$(K-1)(p+1)=3\times4=12$$
+      です。同じ条件の順序ロジットモデルなら $(K-1)+p=6$ 個で済みます。
+
+  - id: q18-ordered-logit-model-1
+    term: ordered-logit-model
+    level: 標準
+    type: numeric
+    question: |
+      3段階の順序ロジットモデル $\operatorname{logit}P(Y\le j\mid x)=\alpha_j-\beta x$（$j=1,2$）で、
+      $\alpha_1=-1$、$\alpha_2=1.5$、$\beta=0.8$ と推定された。$x=1$ のとき $P(Y=2)$ を小数第3位まで求めよ。
+    answer: 0.526
+    tolerance: 0.001
+    hint: |
+      累積確率 $P(Y\le1)$ と $P(Y\le2)$ を求めて差をとる。
+    explanation: |
+      $$P(Y\le1)=\frac{1}{1+e^{-(-1-0.8)}}=0.142,\qquad P(Y\le2)=\frac{1}{1+e^{-(1.5-0.8)}}=0.668$$
+      なので $P(Y=2)=0.668-0.142=0.526$ です（$P(Y=3)=0.332$）。
+      $\beta>0$ なので、$x$ が大きいほど高いカテゴリになりやすいモデルです。
+
+  - id: q18-tobit-model-1
+    term: tobit-model
+    level: 標準
+    type: numeric
+    question: |
+      0で左から打ち切られたトービットモデル $y^*=\boldsymbol x^\top\boldsymbol\beta+\varepsilon$（$\varepsilon\sim N(0,\sigma^2)$）、$y=\max(0,y^*)$ で、
+      ある個人について $\boldsymbol x^\top\boldsymbol\beta=1$、$\sigma=2$ である。$y=0$ と観測される確率を小数第3位まで求めよ。
+    answer: 0.309
+    tolerance: 0.001
+    hint: |
+      $P(y=0)=P(y^*\le0)=1-\Phi(\boldsymbol x^\top\boldsymbol\beta/\sigma)$。
+    explanation: |
+      $$P(y=0)=1-\Phi\!\left(\frac{1}{2}\right)=1-0.6915=0.309$$
+      です。$\sigma$ で割り忘れて $1-\Phi(1)=0.159$ とするのはよくある誤りです。
+
+  - id: q18-overdispersion-1
+    term: overdispersion
+    level: 標準
+    type: numeric
+    question: |
+      $n=40$ 件のカウントデータに係数3個のポアソン回帰を当てはめたところ、ピアソンのカイ二乗統計量が $X^2=84$ であった。
+      準ポアソンモデルにすると、各係数の標準誤差はポアソン回帰の何倍になるか。小数第2位まで求めよ。
+    answer: 1.51
+    tolerance: 0.005
+    hint: |
+      $\hat\phi=X^2/(n-p)$ を求め、標準誤差は $\sqrt{\hat\phi}$ 倍になる。
+    explanation: |
+      $$\hat\phi=\frac{84}{40-3}=2.270,\qquad\sqrt{2.270}=1.51$$
+      です。$\hat\phi$ そのもの（2.27倍）にしたり、$n$ で割ったり（$\sqrt{2.1}=1.45$）するのは誤りです。
+      過分散を無視すると標準誤差が約2/3に過小評価されていたことになります。
+
+  - id: q18-overdispersion-2
+    term: overdispersion
+    level: 基本
+    type: truefalse
+    question: |
+      ポアソン回帰を準ポアソンモデルに切り替えると、回帰係数の推定値は変わらず、標準誤差だけが $\sqrt{\hat\phi}$ 倍になる。
+    answer: true
+    hint: |
+      準尤度の推定方程式は、ポアソンのスコア方程式を $\phi$ で割っただけの形になる。
+    explanation: |
+      準ポアソンは $V[Y]=\phi\mu$ とし、推定方程式 $\sum(y_i-\mu_i)\boldsymbol x_i/\phi=\boldsymbol0$ を解きます。$\phi$ は定数なので解はポアソン回帰と同じです。
+      分散共分散行列が $\hat\phi$ 倍になるので、標準誤差は $\sqrt{\hat\phi}$ 倍、$z$ 値は $1/\sqrt{\hat\phi}$ 倍になります。
+      負の二項回帰に切り替えた場合は係数も変わります。
+
+  - id: q18-poisson-regression-1
+    term: poisson-regression
+    level: 基本
+    type: numeric
+    question: |
+      ポアソン回帰 $\log\mu=\beta_0+0.3x$ で、$x$ が2増えると平均件数 $\mu$ は何倍になるか。小数第3位まで求めよ。
+    answer: 1.822
+    tolerance: 0.001
+    hint: |
+      $\log\mu$ が $0.3\times2$ 増える。
+    explanation: |
+      $$\frac{\mu(x+2)}{\mu(x)}=e^{0.3\times2}=e^{0.6}=1.822$$
+      です。率比は $x$ の位置によらず一定です。$0.6$ 増える（差）と読むのは、恒等リンクと取り違えた誤りです。
+
+  - id: q18-poisson-regression-2
+    term: poisson-regression
+    level: 標準
+    type: numeric
+    question: |
+      ポアソン回帰 $\log\mu=0.5+0.2x$ が得られた。$x=3$ の個体で件数が0となる確率を小数第3位まで求めよ。
+    answer: 0.05
+    tolerance: 0.001
+    hint: |
+      $\mu=e^{0.5+0.2\times3}$ を求め、$P(Y=0)=e^{-\mu}$。
+    explanation: |
+      $\mu=e^{1.1}=3.004$ なので
+      $$P(Y=0)=e^{-3.004}=0.0496\approx0.050$$
+      です。$e^{-1.1}=0.333$ とするのは、線形予測子 $\eta$ と平均 $\mu$ を取り違えた誤りです。
+
+  - id: q18-poisson-regression-3
+    term: poisson-regression
+    level: 応用
+    type: derivation
+    question: |
+      2群（$x_i=0$ が $n_0$ 個、$x_i=1$ が $n_1$ 個）のカウントデータにポアソン回帰 $\log\mu_i=\beta_0+\beta_1x_i$ を当てはめる。
+      各群の標本平均を $\bar y_0,\ \bar y_1$ とするとき、$\hat\beta_0$ と $\hat\beta_1$ を求めよ。
+    steps:
+      - |
+        スコア方程式 $X^\top(\boldsymbol y-\boldsymbol\mu)=\boldsymbol0$ の2本は $\sum_i(y_i-\mu_i)=0$ と $\sum_{x_i=1}(y_i-\mu_i)=0$。
+      - |
+        群1では $\mu_i=e^{\beta_0+\beta_1}$ が一定なので $n_1e^{\beta_0+\beta_1}=\sum_{x_i=1}y_i$、つまり $e^{\hat\beta_0+\hat\beta_1}=\bar y_1$。
+      - |
+        1本目から2本目を引くと群0について $n_0e^{\beta_0}=\sum_{x_i=0}y_i$、つまり $e^{\hat\beta_0}=\bar y_0$。
+    answer: "$\\hat\\beta_0=\\log\\bar y_0,\\quad \\hat\\beta_1=\\log(\\bar y_1/\\bar y_0)$"
+    hint: |
+      正準リンクなのでスコア方程式は $X^\top(\boldsymbol y-\boldsymbol\mu)=\boldsymbol0$。群ごとに $\mu$ が一定であることを使う。
+    explanation: |
+      スコア方程式から各群で「当てはめ値の和＝観測値の和」が成り立つので、$\hat\mu$ は群の平均に一致します。
+      $$\hat\beta_0=\log\bar y_0,\qquad \hat\beta_1=\log\bar y_1-\log\bar y_0=\log\frac{\bar y_1}{\bar y_0}$$
+      $e^{\hat\beta_1}$ は2群の平均の比（率比）です。
+
+  - id: q18-deviance-1
+    term: deviance
+    level: 標準
+    type: numeric
+    question: |
+      ポアソン回帰の3つの観測値が $y=(2,\ 5,\ 0)$、当てはめ値が $\hat\mu=(3,\ 4,\ 1)$ であった。
+      逸脱度 $D=2\sum\{y_i\log(y_i/\hat\mu_i)-(y_i-\hat\mu_i)\}$ を小数第3位まで求めよ（$0\log0=0$ とする）。
+    answer: 2.61
+    tolerance: 0.001
+    hint: |
+      3つの項を別々に計算する。$y_i=0$ の項は $\hat\mu_i$ だけが残る。
+    explanation: |
+      $$\begin{aligned}
+      &2\log\tfrac23-(2-3)=-0.8109+1=0.1891\\
+      &5\log\tfrac54-(5-4)=1.1157-1=0.1157\\
+      &0-(0-1)=1
+      \end{aligned}$$
+      合計 $1.3048$ を2倍して $D=2.610$ です。$y_i=0$ の観測も $\hat\mu_i$ の分だけ逸脱度に寄与します。
+
+  - id: q18-deviance-2
+    term: deviance
+    level: 標準
+    type: numeric
+    question: |
+      同じデータに入れ子のポアソン回帰を当てはめた。小さいモデルの逸脱度は $45.2$（残差自由度30）、
+      説明変数を2つ加えた大きいモデルの逸脱度は $38.1$（残差自由度28）であった。追加した2変数の係数がともに0という仮説の尤度比検定の $p$ 値を小数第3位まで求めよ。
+    answer: 0.029
+    tolerance: 0.001
+    hint: |
+      逸脱度の差は尤度比検定統計量で、自由度は残差自由度の差。自由度2のカイ二乗分布の上側確率は $e^{-x/2}$。
+    explanation: |
+      $D_0-D_1=45.2-38.1=7.1$、自由度は $30-28=2$ なので
+      $$p=P(\chi^2_2\ge7.1)=e^{-3.55}=0.029$$
+      です。有意水準5%で棄却し、追加した変数のうち少なくとも一方は効いていると判断します。
+      $45.2$ や $38.1$ を単独で $\chi^2_{30}$ などと比べるのは適合度の検定で、ここで問うている比較ではありません。
+
+  - id: q18-offset-term-1
+    term: offset-term
+    level: 標準
+    type: numeric
+    question: |
+      事故件数のポアソン回帰で、観察人年 $t$ をオフセットに入れて $\log\mu=\log t-2+0.5x$ と推定された。
+      $t=200$ 人年、$x=1$ の集団の期待事故件数を小数第1位まで求めよ。
+    answer: 44.6
+    tolerance: 0.05
+    hint: |
+      $\mu=t\cdot\exp(-2+0.5x)$。オフセットの係数は1に固定されている。
+    explanation: |
+      $$\mu=200\times e^{-2+0.5}=200\times e^{-1.5}=200\times0.2231=44.6$$
+      です。$e^{-1.5}=0.223$ は1人年あたりの発生率で、オフセットがあるので係数は「率」の対数として読みます。

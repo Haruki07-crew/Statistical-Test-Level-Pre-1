@@ -32,7 +32,7 @@ chapters:
   - id: probability-mass-and-density-function
     title: 確率関数と確率密度関数
     importance: A
-    status: planned
+    status: verified
   - id: cumulative-distribution-function
     title: 累積分布関数
     importance: A
@@ -91,7 +91,7 @@ chapters:
   - id: moments
     title: モーメント
     importance: A
-    status: planned
+    status: verified
   - id: expectation-variance-properties
     title: 期待値と分散の性質
     importance: A
@@ -174,7 +174,7 @@ chapters:
   - id: sum-of-random-variables
     title: 確率変数の和と再生性
     importance: A
-    status: planned
+    status: verified
 - 'no': 5
   title: 離散型分布
   terms:
@@ -359,7 +359,7 @@ chapters:
   - id: normal-approximation-binomial-poisson
     title: 二項分布・ポアソン分布の正規近似
     importance: A
-    status: planned
+    status: verified
   - id: extreme-value-distribution
     title: 極値分布
     importance: B
@@ -446,7 +446,7 @@ chapters:
   - id: order-statistics
     title: 順序統計量
     importance: A
-    status: planned
+    status: verified
   - id: standard-error
     title: 標準誤差
     importance: B
@@ -2137,16 +2137,16 @@ chapters:
   - id: causal-effect
     title: 因果効果と潜在結果
     importance: A
-    status: planned
+    status: verified
   - id: backdoor-criterion
     title: バックドア基準
     importance: A
-    status: planned
+    status: verified
   - id: d-separation
     title: 有向分離（d分離）
     importance: A
-    status: planned
+    status: verified
   - id: frontdoor-criterion
     title: フロントドア基準
     importance: B
-    status: planned
+    status: verified

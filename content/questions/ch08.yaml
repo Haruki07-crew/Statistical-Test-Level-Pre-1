@@ -1,0 +1,632 @@
+chapter: 8
+questions:
+  - id: q08-point-estimation-1
+    term: point-estimation
+    level: 基本
+    type: truefalse
+    question: |
+      $X_1,\dots,X_n$ を母平均 $\mu$（未知）の母集団からの標本とする。$\bar X-\mu$ は統計量である。
+    answer: false
+    hint: |
+      統計量は「標本だけから計算できる」関数である。
+    explanation: |
+      $\bar X-\mu$ は未知の母数 $\mu$ を含むので、データから値を計算できず、統計量ではありません。
+      $\bar X$ や $S^2$ は統計量です。なお $\sqrt n(\bar X-\mu)/S$ のように母数を含み分布が母数によらない量は、
+      統計量ではなく「ピボット量」と呼ばれ、区間推定で使います。
+
+  - id: q08-unbiased-estimator-1
+    term: unbiased-estimator
+    level: 基本
+    type: choice
+    question: |
+      母分散 $\sigma^2=5$ の母集団から大きさ $n=10$ の標本をとる。$\hat\sigma^2=\frac1n\sum_{i=1}^n(X_i-\bar X)^2$ の期待値はどれか。
+    choices:
+      - '$4.5$'
+      - '$5$'
+      - '$5.556$'
+      - '$0.5$'
+    answer: 0
+    hint: |
+      $E\left[\sum(X_i-\bar X)^2\right]=(n-1)\sigma^2$。
+    explanation: |
+      $$E[\hat\sigma^2]=\frac{n-1}{n}\sigma^2=\frac{9}{10}\times5=4.5$$
+      $n$ で割ると平均的に小さめになります（偏りは $-\sigma^2/n=-0.5$）。
+      $5$ は $n-1$ で割る不偏分散の期待値、$5.556$ は $\frac{n}{n-1}\sigma^2$ と逆に補正した値、$0.5$ は偏りの大きさです。
+
+  - id: q08-unbiased-estimator-2
+    term: unbiased-estimator
+    level: 標準
+    type: numeric
+    question: |
+      $X_1,\dots,X_4$ を一様分布 $U(0,\theta)$ からの i.i.d. 標本、$M=\max_iX_i$ とする。
+      $cM$ が $\theta$ の不偏推定量となる定数 $c$ を小数第2位まで求めよ。
+    answer: 1.25
+    tolerance: 0.005
+    hint: |
+      $M$ の密度は $f_M(m)=\frac{n m^{n-1}}{\theta^n}$（$0<m<\theta$）。
+    explanation: |
+      $$E[M]=\int_0^\theta m\cdot\frac{nm^{n-1}}{\theta^n}dm=\frac{n}{n+1}\theta$$
+      なので $c=\frac{n+1}{n}=\frac54=1.25$ です。最大値は必ず $\theta$ 以下なので、そのままでは小さめに偏ります。
+
+  - id: q08-unbiased-estimator-3
+    term: unbiased-estimator
+    level: 応用
+    type: truefalse
+    question: |
+      正規母集団からの標本で、不偏分散 $S^2$ は $\sigma^2$ の不偏推定量なので、その正の平方根 $S$ も $\sigma$ の不偏推定量である。
+    answer: false
+    hint: |
+      $\sqrt{\cdot}$ は凹関数。イェンセンの不等式、または $V[S]=E[S^2]-(E[S])^2\ge0$ を考える。
+    explanation: |
+      $V[S]>0$ なので $(E[S])^2<E[S^2]=\sigma^2$、つまり $E[S]<\sigma$ です。
+      正規分布では
+      $$E[S]=\sqrt{\frac{2}{n-1}}\frac{\Gamma(n/2)}{\Gamma((n-1)/2)}\sigma$$
+      で、$n=5$ なら $0.940\sigma$ です。不偏性は非線形な変換で保たれません。
+
+  - id: q08-consistent-estimator-1
+    term: consistent-estimator
+    level: 基本
+    type: truefalse
+    question: |
+      $X_1,\dots,X_n$ を $N(\mu,1)$ からの i.i.d. 標本とする。推定量 $\hat\mu=X_1$（最初の1個だけを使う）は不偏なので、$\mu$ の一致推定量でもある。
+    answer: false
+    hint: |
+      $n$ を大きくしても $X_1$ の分布は変わるか。
+    explanation: |
+      $E[X_1]=\mu$ で不偏ですが、$P(|X_1-\mu|\ge\varepsilon)=2\{1-\Phi(\varepsilon)\}$ は $n$ によらず一定で0に近づきません。
+      たとえば $\varepsilon=1$ なら常に約 $0.317$ です。不偏性と一致性は別の性質で、どちらか一方だけを満たす推定量があります。
+
+  - id: q08-consistent-estimator-2
+    term: consistent-estimator
+    level: 標準
+    type: choice
+    question: |
+      $X_1,\dots,X_n$ を $N(\mu,1)$ からの i.i.d. 標本とする。$\mu$ の**一致推定量でない**ものはどれか。
+    choices:
+      - '$(X_1+X_n)/2$'
+      - '$\bar X$'
+      - '$\frac{1}{n+1}\sum_{i=1}^nX_i$'
+      - '標本中央値'
+    answer: 0
+    hint: |
+      $E\to\mu$ かつ $V\to0$ なら一致推定量。分散が0に近づかないものを探す。
+    explanation: |
+      $(X_1+X_n)/2$ の分散は $n$ によらず $1/2$ で、0に近づかないので一致推定量ではありません。
+      $\bar X$ は分散 $1/n\to0$。$\frac{1}{n+1}\sum X_i$ は偏り $-\mu/(n+1)\to0$、分散 $n/(n+1)^2\to0$ なので（偏っていても）一致推定量です。
+      標本中央値も分散がおよそ $\pi/(2n)\to0$ で一致推定量です。
+
+  - id: q08-efficient-estimator-1
+    term: efficient-estimator
+    level: 基本
+    type: numeric
+    question: |
+      $X_1,\dots,X_{10}$ を $N(\mu,\sigma^2)$（$\sigma^2$ 既知）からの i.i.d. 標本とする。$\mu$ の不偏推定量 $T=(X_1+X_2)/2$ の効率
+      $\dfrac{1/\{nI(\mu)\}}{V[T]}$ を小数第2位まで求めよ。
+    answer: 0.2
+    tolerance: 0.005
+    hint: |
+      $N(\mu,\sigma^2)$ の1個あたりの情報量は $I(\mu)=1/\sigma^2$。
+    explanation: |
+      クラメール・ラオの下限は $\frac{\sigma^2}{10}$、$V[T]=\frac{\sigma^2}{2}$ なので
+      $$\mathrm{eff}(T)=\frac{\sigma^2/10}{\sigma^2/2}=0.2$$
+      10個中2個しか使っていないので、情報の2割しか生かせていません。$\bar X$ は効率1（有効推定量）です。
+
+  - id: q08-efficient-estimator-2
+    term: efficient-estimator
+    level: 標準
+    type: numeric
+    question: |
+      正規母集団 $N(\mu,\sigma^2)$ からの大標本で、標本平均に対する標本中央値の漸近相対効率
+      $\lim_{n\to\infty}V[\bar X]/V[\text{中央値}]$ を小数第3位まで求めよ。
+    answer: 0.637
+    tolerance: 0.001
+    hint: |
+      標本中央値の漸近分散は $\dfrac{1}{4nf(m)^2}$（$f(m)$ は中央値での密度）。
+    explanation: |
+      $f(\mu)=\frac{1}{\sqrt{2\pi}\sigma}$ なので中央値の漸近分散は $\frac{2\pi\sigma^2}{4n}=\frac{\pi\sigma^2}{2n}$ です。
+      $$\frac{\sigma^2/n}{\pi\sigma^2/(2n)}=\frac2\pi=0.6366$$
+      中央値で平均と同じ精度を得るには、約 $\pi/2\approx1.57$ 倍の標本が必要です。
+
+  - id: q08-mean-squared-error-1
+    term: mean-squared-error
+    level: 基本
+    type: numeric
+    question: |
+      ある推定量の偏りが $0.2$、分散が $0.05$ である。平均二乗誤差（MSE）を小数第2位まで求めよ。
+    answer: 0.09
+    tolerance: 0.005
+    hint: |
+      MSE＝分散＋（偏り）$^2$。
+    explanation: |
+      $$\mathrm{MSE}=0.05+0.2^2=0.09$$
+      偏りを2乗せずに足すと $0.25$ になってしまいます。
+
+  - id: q08-mean-squared-error-2
+    term: mean-squared-error
+    level: 標準
+    type: numeric
+    question: |
+      成功確率 $p$ のベルヌーイ試行を $n=96$ 回行い、成功回数を $Y$ とする。推定量 $\tilde p=\dfrac{Y+2}{n+4}$ の、$p=0.3$ における
+      平均二乗誤差を小数第5位まで求めよ。
+    answer: 0.00208
+    tolerance: 0.00001
+    hint: |
+      $E[Y]=np$、$V[Y]=np(1-p)$ から $\tilde p$ の偏りと分散を求める。
+    explanation: |
+      $E[\tilde p]=\frac{28.8+2}{100}=0.308$ なので偏りは $0.008$、分散は $\frac{96\times0.21}{100^2}=0.002016$ です。
+      $$\mathrm{MSE}=0.002016+0.008^2=0.00208$$
+      不偏な $\hat p=Y/n$ の MSE は $0.21/96=0.002188$ なので、$p=0.3$ では少し偏った $\tilde p$ のほうが MSE は小さくなります。
+
+  - id: q08-mean-squared-error-3
+    term: mean-squared-error
+    level: 応用
+    type: choice
+    question: |
+      $X_1,\dots,X_n$ を $N(\mu,\sigma^2)$ からの i.i.d. 標本とし、$\sigma^2$ を $c\sum_{i=1}^n(X_i-\bar X)^2$ で推定する。
+      MSE を最小にする $c$ はどれか。
+    choices:
+      - '$\dfrac{1}{n+1}$'
+      - '$\dfrac{1}{n-1}$'
+      - '$\dfrac{1}{n}$'
+      - '$\dfrac{1}{n-2}$'
+    answer: 0
+    hint: |
+      $W=\sum(X_i-\bar X)^2$ は $\sigma^2\chi^2(n-1)$ に従い、$E[W]=(n-1)\sigma^2$、$V[W]=2(n-1)\sigma^4$。
+    explanation: |
+      $$\mathrm{MSE}(c)=c^2\cdot2(n-1)\sigma^4+\{c(n-1)-1\}^2\sigma^4$$
+      を $c$ で微分して0とおくと $2c+c(n-1)-1=0$、つまり $c=\frac1{n+1}$ です。
+      $\frac1{n-1}$ は不偏（MSE 最小ではない）、$\frac1n$ は最尤推定量です。MSE は $\frac1{n+1}<\frac1n<\frac1{n-1}$ の順に小さくなります。
+
+  - id: q08-likelihood-function-1
+    term: likelihood-function
+    level: 基本
+    type: truefalse
+    question: |
+      尤度関数 $L(\theta)$ は $\theta$ についての確率密度なので、母数空間全体で $\theta$ について積分すると1になる。
+    answer: false
+    hint: |
+      ベルヌーイ試行1回で成功が出たとき、$L(p)=p$ を $0\le p\le1$ で積分してみる。
+    explanation: |
+      $L(p)=p$ の積分は $\int_0^1p\,dp=1/2$ で、1になりません。
+      尤度はデータを固定して $\theta$ の関数とみたもので、$\theta$ の確率分布ではありません。意味があるのは尤度の比（どの $\theta$ がどれだけもっともらしいか）です。
+
+  - id: q08-likelihood-function-2
+    term: likelihood-function
+    level: 標準
+    type: numeric
+    question: |
+      ポアソン分布 $Po(\lambda)$ からの観測値 $2,0,3,1$ が得られた。尤度比 $L(2)/L(1)$ を小数第3位まで求めよ。
+    answer: 1.172
+    tolerance: 0.001
+    hint: |
+      $L(\lambda)\propto\lambda^{\sum x_i}e^{-n\lambda}$。$\prod x_i!$ は比では消える。
+    explanation: |
+      $\sum x_i=6$、$n=4$ なので
+      $$\frac{L(2)}{L(1)}=\frac{2^6e^{-8}}{1^6e^{-4}}=64e^{-4}=1.172$$
+      $\lambda=2$ のほうが $\lambda=1$ より約1.17倍もっともらしい、と読みます（最尤推定値は $\bar x=1.5$）。
+
+  - id: q08-maximum-likelihood-estimator-1
+    term: maximum-likelihood-estimator
+    level: 基本
+    type: numeric
+    question: |
+      レート $\lambda$ の指数分布（密度 $\lambda e^{-\lambda x}$, $x>0$）から、観測値 $1.2,\ 3.1,\ 0.7,\ 4.0,\ 3.5$ を得た。
+      $\lambda$ の最尤推定値を小数第2位まで求めよ。
+    answer: 0.4
+    tolerance: 0.005
+    hint: |
+      $\ell(\lambda)=n\log\lambda-\lambda\sum x_i$ を微分して0とおく。
+    explanation: |
+      $\ell'(\lambda)=\frac n\lambda-\sum x_i=0$ より $\hat\lambda=\frac{n}{\sum x_i}=\frac{5}{12.5}=0.4$ です。
+      平均（尺度）$\theta=1/\lambda$ で表す流儀なら、最尤推定値は $\bar x=2.5$ です。
+
+  - id: q08-maximum-likelihood-estimator-2
+    term: maximum-likelihood-estimator
+    level: 標準
+    type: numeric
+    question: |
+      $N(\mu,\sigma^2)$（両方未知）から観測値 $4,\ 7,\ 5,\ 9,\ 5$ を得た。$\sigma^2$ の最尤推定値を小数第1位まで求めよ。
+    answer: 3.2
+    tolerance: 0.05
+    hint: |
+      $\hat\mu=\bar x$ を代入したあと、偏差平方和を $n$ で割る。
+    explanation: |
+      $\bar x=6$、偏差は $-2,1,-1,3,-1$ で偏差平方和は $16$ です。
+      $$\hat\sigma^2=\frac{16}{5}=3.2$$
+      $n-1=4$ で割った $4$ は不偏分散で、最尤推定値ではありません。
+
+  - id: q08-maximum-likelihood-estimator-3
+    term: maximum-likelihood-estimator
+    level: 応用
+    type: choice
+    question: |
+      $X_1,\dots,X_n$ を一様分布 $U(0,\theta)$ からの i.i.d. 標本とする。$\theta$ の最尤推定量はどれか。
+    choices:
+      - '$\max_iX_i$'
+      - '$2\bar X$'
+      - '$\frac{n+1}{n}\max_iX_i$'
+      - '$\min_iX_i$'
+    answer: 0
+    hint: |
+      $L(\theta)=\theta^{-n}$（$\theta\ge\max x_i$ のとき）、それ以外は0。尤度方程式は使えない。
+    explanation: |
+      $\theta<\max x_i$ では尤度が0、$\theta\ge\max x_i$ では $\theta^{-n}$ で単調減少なので、最大は $\hat\theta=\max x_i$ です。
+      台が $\theta$ に依存するので微分して0とおく方法は使えません。$2\bar X$ はモーメント推定量、$\frac{n+1}{n}\max$ は不偏になるよう補正したものです。
+
+  - id: q08-score-function-1
+    term: score-function
+    level: 基本
+    type: truefalse
+    question: |
+      ポアソン分布 $Po(\lambda)$ の1個あたりのスコア関数 $s(\lambda;X)=X/\lambda-1$ の期待値は、真の $\lambda$ のもとで0である。
+    answer: true
+    hint: |
+      $E[X]=\lambda$ を代入する。
+    explanation: |
+      $\log f=X\log\lambda-\lambda-\log X!$ を $\lambda$ で微分して $s=X/\lambda-1$、
+      $$E[s]=\frac{\lambda}{\lambda}-1=0$$
+      正則条件のもとでは一般に $E[s]=0$ で、分散 $V[s]=V[X]/\lambda^2=1/\lambda$ がフィッシャー情報量です。
+
+  - id: q08-score-function-2
+    term: score-function
+    level: 標準
+    type: derivation
+    question: |
+      成功確率 $p$ のベルヌーイ分布からの i.i.d. 標本 $X_1,\dots,X_n$ について、標本全体のスコア $U(p)$ を求め、その分散を求めよ。
+    steps:
+      - |
+        $\ell(p)=\sum x_i\log p+(n-\sum x_i)\log(1-p)$ より $U(p)=\dfrac{\sum X_i}{p}-\dfrac{n-\sum X_i}{1-p}=\dfrac{\sum X_i-np}{p(1-p)}$。
+      - |
+        $V[\sum X_i]=np(1-p)$ なので $V[U(p)]=\dfrac{np(1-p)}{p^2(1-p)^2}$。
+    answer: "$U(p)=\\dfrac{\\sum X_i-np}{p(1-p)}$、$V[U(p)]=\\dfrac{n}{p(1-p)}$"
+    hint: |
+      通分して、分子が $\sum X_i-np$ の形になることを使う。
+    explanation: |
+      $U(p)=0$ を解くと最尤推定量 $\hat p=\bar X$ が得られます。
+      $V[U(p)]=\frac{n}{p(1-p)}=nI(p)$ で、1個あたりのフィッシャー情報量は $I(p)=\frac{1}{p(1-p)}$ です。
+
+  - id: q08-fisher-information-1
+    term: fisher-information
+    level: 基本
+    type: choice
+    question: |
+      成功確率 $p=0.2$ のベルヌーイ分布の、1個あたりのフィッシャー情報量 $I(p)$ はどれか。
+    choices:
+      - '$6.25$'
+      - '$0.16$'
+      - '$5$'
+      - '$1.25$'
+    answer: 0
+    hint: |
+      $I(p)=\dfrac{1}{p(1-p)}$。
+    explanation: |
+      $$I(0.2)=\frac{1}{0.2\times0.8}=6.25$$
+      $0.16$ は分散 $p(1-p)$ そのもので、情報量はその逆数です。$5=1/p$、$1.25=1/(1-p)$ は一方の項だけを使った誤りです。
+
+  - id: q08-fisher-information-2
+    term: fisher-information
+    level: 標準
+    type: numeric
+    question: |
+      ポアソン分布 $Po(\lambda)$ からの大きさ $n=10$ の i.i.d. 標本がもつ $\lambda$ についてのフィッシャー情報量を、$\lambda=2.5$ で求めよ（小数第1位まで）。
+    answer: 4
+    tolerance: 0.05
+    hint: |
+      1個あたり $I(\lambda)=1/\lambda$、標本全体ではその $n$ 倍。
+    explanation: |
+      $\frac{\partial^2}{\partial\lambda^2}\log f=-X/\lambda^2$ より $I(\lambda)=E[X]/\lambda^2=1/\lambda=0.4$ です。
+      加法性から $I_n=10\times0.4=4.0$ です。
+
+  - id: q08-fisher-information-3
+    term: fisher-information
+    level: 応用
+    type: derivation
+    question: |
+      $X\sim N(\mu,\sigma^2)$ で $\mu$ は既知とする。$v=\sigma^2$ を母数とみたときの1個あたりのフィッシャー情報量 $I(v)$ を求めよ。
+    steps:
+      - |
+        $\log f=-\dfrac12\log(2\pi v)-\dfrac{(X-\mu)^2}{2v}$。
+      - |
+        $\dfrac{\partial^2}{\partial v^2}\log f=\dfrac{1}{2v^2}-\dfrac{(X-\mu)^2}{v^3}$。
+      - |
+        $E[(X-\mu)^2]=v$ を使って $-E[\cdot]=-\dfrac1{2v^2}+\dfrac{v}{v^3}$。
+    answer: "$I(\\sigma^2)=\\dfrac{1}{2\\sigma^4}$"
+    hint: |
+      $\sigma$ ではなく $v=\sigma^2$ で微分する。2階微分の期待値にマイナスを付ける形が楽。
+    explanation: |
+      $$I(v)=-\frac{1}{2v^2}+\frac{1}{v^2}=\frac{1}{2v^2}=\frac{1}{2\sigma^4}$$
+      したがって CR 下限は $\frac{2\sigma^4}{n}$ です。$\sigma$ を母数にとると $I(\sigma)=2/\sigma^2$ となり、母数の取り方で値が変わる点に注意します。
+
+  - id: q08-cramer-rao-inequality-1
+    term: cramer-rao-inequality
+    level: 標準
+    type: numeric
+    question: |
+      平均 $\theta$ の指数分布（密度 $\frac1\theta e^{-x/\theta}$）からの i.i.d. 標本 $n=25$ 個について、$\theta$ の不偏推定量の分散の
+      クラメール・ラオの下限を $\theta=2$ で求めよ（小数第2位まで）。
+    answer: 0.16
+    tolerance: 0.005
+    hint: |
+      $\log f=-\log\theta-x/\theta$ から $I(\theta)$ を求める。
+    explanation: |
+      $\frac{\partial^2}{\partial\theta^2}\log f=\frac1{\theta^2}-\frac{2X}{\theta^3}$ で、期待値にマイナスを付けると $I(\theta)=\frac1{\theta^2}$ です。
+      $$\frac{1}{nI(\theta)}=\frac{\theta^2}{n}=\frac{4}{25}=0.16$$
+      $V[\bar X]=\theta^2/n$ なので、$\bar X$ は下限を達成する有効推定量です。
+
+  - id: q08-cramer-rao-inequality-2
+    term: cramer-rao-inequality
+    level: 応用
+    type: numeric
+    question: |
+      $Po(\lambda)$ からの i.i.d. 標本 $n=50$ 個で、$g(\lambda)=P(X=0)=e^{-\lambda}$ を推定する。
+      $g(\lambda)$ の不偏推定量の分散のクラメール・ラオの下限を、$\lambda=1$ で小数第4位まで求めよ。
+    answer: 0.0027
+    tolerance: 0.0001
+    hint: |
+      $g(\theta)$ の不偏推定量では下限は $\dfrac{\{g'(\lambda)\}^2}{nI(\lambda)}$。$I(\lambda)=1/\lambda$。
+    explanation: |
+      $g'(\lambda)=-e^{-\lambda}$ なので
+      $$\frac{e^{-2\lambda}}{n/\lambda}=\frac{\lambda e^{-2\lambda}}{n}=\frac{e^{-2}}{50}=0.00271$$
+      分子に $\{g'(\lambda)\}^2$ が付くのを忘れると $1/50=0.02$ となり、大きく外れます。
+
+  - id: q08-cramer-rao-inequality-3
+    term: cramer-rao-inequality
+    level: 標準
+    type: truefalse
+    question: |
+      $U(0,\theta)$ からの標本では、$\theta$ のどんな不偏推定量の分散も $\dfrac{1}{nI(\theta)}=\dfrac{\theta^2}{n}$（形式的に計算した下限）を下回らない。
+    answer: false
+    hint: |
+      不偏推定量 $\frac{n+1}{n}\max X_i$ の分散 $\frac{\theta^2}{n(n+2)}$ と比べる。
+    explanation: |
+      $\frac{n+1}{n}\max X_i$ は不偏で、分散は $\frac{\theta^2}{n(n+2)}$ です。これは $\frac{\theta^2}{n}$ より小さく、形式的な「下限」を下回ります。
+      一様分布は台 $(0,\theta)$ が $\theta$ に依存し、クラメール・ラオの不等式の正則条件を満たさないので、不等式が使えません。
+
+  - id: q08-sufficient-statistic-1
+    term: sufficient-statistic
+    level: 標準
+    type: truefalse
+    question: |
+      成功確率 $p$ のベルヌーイ分布からの標本 $X_1,\dots,X_4$ について、$T=\sum X_i=2$ が与えられたときに
+      $(X_1,X_2,X_3,X_4)=(1,1,0,0)$ となる条件付き確率は、$p$ の値によらず $1/6$ である。
+    answer: true
+    hint: |
+      $P(X=x\mid T=2)=P(X=x)/P(T=2)$ を計算する。
+    explanation: |
+      $$\frac{p^2(1-p)^2}{\binom42p^2(1-p)^2}=\frac16$$
+      で $p$ が消えます。$T$ を知れば、並び方は $p$ についての情報をもたないので、$T$ は十分統計量です。
+
+  - id: q08-sufficient-statistic-2
+    term: sufficient-statistic
+    level: 基本
+    type: choice
+    question: |
+      $X_1,\dots,X_n$ を $U(0,\theta)$ からの i.i.d. 標本とする。$\theta$ の（1次元の）十分統計量はどれか。
+    choices:
+      - '$\max_iX_i$'
+      - '$\sum_iX_i$'
+      - '$\min_iX_i$'
+      - '$\bar X$'
+    answer: 0
+    hint: |
+      同時密度 $\theta^{-n}\,\mathbf 1\{\max x_i\le\theta\}\,\mathbf 1\{\min x_i\ge0\}$ を分解定理の形に見る。
+    explanation: |
+      $\theta$ を含む部分 $\theta^{-n}\mathbf 1\{\max x_i\le\theta\}$ は、データについては $\max x_i$ だけに依存するので、$\max X_i$ が十分統計量です。
+      和や平均（モーメント推定量の材料）は十分統計量ではありません。
+
+  - id: q08-factorization-theorem-1
+    term: factorization-theorem
+    level: 標準
+    type: choice
+    question: |
+      $X_1,\dots,X_n$ を $N(\mu,\sigma^2)$（$\mu,\sigma^2$ ともに未知）からの i.i.d. 標本とする。$(\mu,\sigma^2)$ の十分統計量として正しいものはどれか。
+    choices:
+      - '$\left(\sum X_i,\ \sum X_i^2\right)$'
+      - '$\sum X_i$ だけ'
+      - '$\sum X_i^2$ だけ'
+      - '$\left(\max X_i,\ \min X_i\right)$'
+    answer: 0
+    hint: |
+      同時密度の指数部 $-\frac{1}{2\sigma^2}\sum(x_i-\mu)^2$ を展開する。
+    explanation: |
+      $$\sum(x_i-\mu)^2=\sum x_i^2-2\mu\sum x_i+n\mu^2$$
+      なので、同時密度は $(\sum x_i,\sum x_i^2)$ と母数の関数 $g$ に、$h(x)=1$ を掛けた形に分解できます。
+      $\sigma^2$ が既知なら $\sum X_i$ だけで十分ですが、両方未知では2つとも必要です。
+
+  - id: q08-factorization-theorem-2
+    term: factorization-theorem
+    level: 応用
+    type: derivation
+    question: |
+      密度 $f(x;\theta)=\theta x^{\theta-1}$（$0<x<1$、$\theta>0$）からの i.i.d. 標本 $X_1,\dots,X_n$ について、分解定理を用いて $\theta$ の十分統計量を求めよ。
+    steps:
+      - |
+        同時密度は $\prod_{i=1}^n\theta x_i^{\theta-1}=\theta^n\left(\prod x_i\right)^{\theta-1}$（すべての $x_i\in(0,1)$ のとき）。
+      - |
+        $g(t;\theta)=\theta^nt^{\theta-1}$、$h(x)=\mathbf 1\{0<x_i<1\ \forall i\}$ とおくと $f=g\left(\prod x_i;\theta\right)h(x)$。
+    answer: "$T=\\prod_{i=1}^nX_i$（同値に $\\sum\\log X_i$）が十分統計量"
+    hint: |
+      $x_i^{\theta-1}$ の積をまとめ、$\theta$ がデータとどの形でからむかを見る。
+    explanation: |
+      $\theta$ を含む部分 $\theta^n(\prod x_i)^{\theta-1}$ がデータを $\prod x_i$ を通してしか使わないので、$\prod X_i$ が十分統計量です。
+      1対1の変換も十分統計量なので、$\sum\log X_i$ でもかまいません。台 $(0,1)$ は $\theta$ によらないので $h$ に入れられます。
+
+  - id: q08-method-of-moments-1
+    term: method-of-moments
+    level: 標準
+    type: numeric
+    question: |
+      $U(0,\theta)$ から観測値 $2.0,\ 7.0,\ 1.5,\ 3.0,\ 2.0$ を得た。$\theta$ のモーメント推定値を小数第1位まで求めよ。
+    answer: 6.2
+    tolerance: 0.05
+    hint: |
+      $E[X]=\theta/2$ を標本平均と等しいとおく。
+    explanation: |
+      $\bar x=15.5/5=3.1$ なので $\hat\theta=2\bar x=6.2$ です。
+      ところが観測値に $7.0$ があり、$\theta\ge7$ は確実です。モーメント推定値はこのように「ありえない値」になることがあります（最尤推定値は $7.0$）。
+
+  - id: q08-method-of-moments-2
+    term: method-of-moments
+    level: 応用
+    type: numeric
+    question: |
+      形状 $\alpha$・**尺度** $\beta$ のガンマ分布（平均 $\alpha\beta$、分散 $\alpha\beta^2$）からの標本で、標本平均が $\bar x=6$、
+      $n$ で割った標本分散が $12$ であった。$\alpha$ のモーメント推定値を求めよ（小数第1位まで）。
+    answer: 3
+    tolerance: 0.05
+    hint: |
+      $\alpha\beta=6$、$\alpha\beta^2=12$ を連立して解く。
+    explanation: |
+      2式の比から $\hat\beta=12/6=2$、$\hat\alpha=6/2=3$ です。一般に $\hat\alpha=\bar x^2/\hat\sigma^2$、$\hat\beta=\hat\sigma^2/\bar x$ です。
+      レート $\lambda=1/\beta$ の流儀なら $\hat\lambda=\bar x/\hat\sigma^2=0.5$ で、$\hat\alpha$ は同じです。
+
+  - id: q08-asymptotic-normality-of-mle-1
+    term: asymptotic-normality-of-mle
+    level: 標準
+    type: numeric
+    question: |
+      成功確率 $p=0.3$ のベルヌーイ試行 $n=400$ 回で、最尤推定量 $\hat p$ の漸近分布 $N(p,\ 1/\{nI(p)\})$ の標準偏差を小数第3位まで求めよ。
+    answer: 0.023
+    tolerance: 0.001
+    hint: |
+      $I(p)=1/\{p(1-p)\}$。
+    explanation: |
+      $$\frac{1}{nI(p)}=\frac{p(1-p)}{n}=\frac{0.21}{400}=0.000525$$
+      標準偏差は $\sqrt{0.000525}=0.0229$ です。ベルヌーイでは $\hat p=\bar X$ なので、中心極限定理の結果と一致します。
+
+  - id: q08-asymptotic-normality-of-mle-2
+    term: asymptotic-normality-of-mle
+    level: 応用
+    type: numeric
+    question: |
+      レート $\lambda$ の指数分布からの標本 $n=50$ 個で、最尤推定値は $\hat\lambda=1/\bar x=0.4$ であった。
+      最尤推定量の漸近正規性を使い、$\hat\lambda$ の標準誤差（$I(\lambda)$ の $\lambda$ に $\hat\lambda$ を代入）を小数第3位まで求めよ。
+    answer: 0.057
+    tolerance: 0.001
+    hint: |
+      $\log f=\log\lambda-\lambda x$ から $I(\lambda)=1/\lambda^2$。
+    explanation: |
+      $I(\lambda)=1/\lambda^2$ なので漸近分散は $\lambda^2/n$、標準誤差は
+      $$\frac{\hat\lambda}{\sqrt n}=\frac{0.4}{\sqrt{50}}=0.0566$$
+      デルタ法で $g(\bar X)=1/\bar X$ の分散を計算しても同じ結果になります。
+
+  - id: q08-asymptotic-normality-of-mle-3
+    term: asymptotic-normality-of-mle
+    level: 基本
+    type: truefalse
+    question: |
+      正則条件のもとで、最尤推定量の漸近分散 $1/\{nI(\theta)\}$ はクラメール・ラオの下限と一致する。このため最尤推定量は漸近有効といわれる。
+    answer: true
+    hint: |
+      CR 下限の式と漸近正規性の分散を見比べる。
+    explanation: |
+      CR 下限は $1/\{nI(\theta)\}$、最尤推定量の漸近分散も $1/\{nI(\theta)\}$ で一致します。
+      ただしこれは大標本での性質で、有限の $n$ では最尤推定量が偏っていたり、分散が下限より大きかったりすることがあります。
+
+  - id: q08-invariance-of-mle-1
+    term: invariance-of-mle
+    level: 標準
+    type: numeric
+    question: |
+      ポアソン分布 $Po(\lambda)$ からの標本の平均が $\bar x=1.5$ であった。$P(X=0)=e^{-\lambda}$ の最尤推定値を小数第3位まで求めよ。
+    answer: 0.223
+    tolerance: 0.001
+    hint: |
+      $\lambda$ の最尤推定値を求め、最尤推定量の不変性を使う。
+    explanation: |
+      $\hat\lambda=\bar x=1.5$ なので、不変性より
+      $$\widehat{P(X=0)}=e^{-1.5}=0.2231$$
+      尤度を $e^{-\lambda}$ の関数として書き直して最大化し直す必要はありません。
+
+  - id: q08-invariance-of-mle-2
+    term: invariance-of-mle
+    level: 基本
+    type: truefalse
+    question: |
+      $\hat\theta$ が $\theta$ の不偏な最尤推定量なら、不変性により $g(\hat\theta)$ は $g(\theta)$ の最尤推定量であり、しかも不偏推定量でもある。
+    answer: false
+    hint: |
+      不変性が保証するのは「最尤推定量であること」だけ。$E[g(\hat\theta)]$ と $g(E[\hat\theta])$ は一般に等しくない。
+    explanation: |
+      ポアソン分布で $\hat\lambda=\bar X$ は不偏ですが、$E[e^{-\bar X}]=\exp\{n\lambda(e^{-1/n}-1)\}\ne e^{-\lambda}$ です
+      （$n=4,\lambda=1.5$ なら $0.2652$ と $0.2231$）。不変性は最尤推定量であることを保つだけで、不偏性は保ちません。
+
+  - id: q08-rao-blackwell-theorem-1
+    term: rao-blackwell-theorem
+    level: 応用
+    type: numeric
+    question: |
+      ベルヌーイ分布からの標本 $X_1,\dots,X_5$ で、$p$ の粗い不偏推定量 $\delta=X_1$ を十分統計量 $T=\sum X_i$ で条件付けて改良する。
+      $T=3$ のときの $E[\delta\mid T]$ の値を小数第1位まで求めよ。
+    answer: 0.6
+    tolerance: 0.05
+    hint: |
+      $T=t$ のもとで、成功の位置は $n$ 個の中から一様に選ばれる。
+    explanation: |
+      $$E[X_1\mid T=t]=P(X_1=1\mid T=t)=\frac{\binom{n-1}{t-1}}{\binom nt}=\frac tn$$
+      なので $T=3$ で $3/5=0.6$ です。改良後は $\bar X$ になり、分散は $p(1-p)$ から $p(1-p)/5$ に下がります。
+
+  - id: q08-complete-statistic-1
+    term: complete-statistic
+    level: 応用
+    type: numeric
+    question: |
+      $Po(\lambda)$ からの標本 $n=4$ 個で $T=\sum X_i$ は完備十分統計量であり、$\left(\frac{n-1}{n}\right)^T$ は $e^{-\lambda}$ の不偏推定量である。
+      $T=6$ のときこの UMVUE の値を小数第3位まで求めよ。
+    answer: 0.178
+    tolerance: 0.001
+    hint: |
+      $(3/4)^6$ を計算する。
+    explanation: |
+      $$\left(\frac34\right)^6=0.1780$$
+      不偏性は $E[s^T]=e^{n\lambda(s-1)}$（$T\sim Po(n\lambda)$ の確率母関数）に $s=\frac{n-1}{n}$ を入れると $e^{-\lambda}$ になることから確かめられます。
+      $T$ が完備なので、レーマン・シェフェの定理によりこれが唯一の UMVUE です。最尤推定値 $e^{-6/4}=0.223$ とは異なります。
+
+  - id: q08-exponential-family-1
+    term: exponential-family
+    level: 基本
+    type: choice
+    question: |
+      次の分布族のうち、（1母数の）指数型分布族に**含まれない**ものはどれか。
+    choices:
+      - '一様分布 $U(0,\theta)$'
+      - 'ポアソン分布 $Po(\lambda)$'
+      - '試行回数 $n$ が既知の二項分布 $B(n,p)$'
+      - '分散既知の正規分布 $N(\mu,1)$'
+    answer: 0
+    hint: |
+      指数型分布族では台が母数に依存しない。
+    explanation: |
+      $U(0,\theta)$ は台 $(0,\theta)$ が $\theta$ に依存するので、$h(x)\exp\{\eta(\theta)T(x)-A(\theta)\}$ の形に書けません。
+      ポアソン（$\eta=\log\lambda$）、二項（$\eta=\log\frac{p}{1-p}$）、正規（$\eta=\mu$）はいずれも指数型分布族です。
+
+  - id: q08-exponential-family-2
+    term: exponential-family
+    level: 応用
+    type: numeric
+    question: |
+      ベルヌーイ分布を正準形 $f(x;\eta)=\exp\{\eta x-A(\eta)\}$、$A(\eta)=\log(1+e^\eta)$ で表す。
+      $\eta=\log3$ のとき $V[X]=A''(\eta)$ を小数第4位まで求めよ。
+    answer: 0.1875
+    tolerance: 0.0001
+    hint: |
+      $A'(\eta)=\dfrac{e^\eta}{1+e^\eta}=p$ となる。
+    explanation: |
+      $A'(\eta)=\frac{e^\eta}{1+e^\eta}$、$A''(\eta)=\frac{e^\eta}{(1+e^\eta)^2}=p(1-p)$ です。$e^\eta=3$ より $p=3/4$ で
+      $$A''=\frac34\times\frac14=0.1875$$
+      正準形では対数正規化項の微分から期待値と分散が得られます。
+
+  - id: q08-observed-fisher-information-1
+    term: observed-fisher-information
+    level: 標準
+    type: numeric
+    question: |
+      $Po(\lambda)$ からの標本 $n=10$ 個の合計が $\sum x_i=30$ であった。最尤推定値での観測情報量 $J(\hat\lambda)$ を小数第3位まで求めよ。
+    answer: 3.333
+    tolerance: 0.001
+    hint: |
+      $\ell''(\lambda)=-\sum x_i/\lambda^2$。
+    explanation: |
+      $\hat\lambda=3$ なので
+      $$J(\hat\lambda)=\frac{\sum x_i}{\hat\lambda^2}=\frac{30}{9}=3.333$$
+      ポアソンでは期待情報量 $n/\hat\lambda=10/3$ と一致します。標準誤差は $1/\sqrt{3.333}=0.548$ です。
