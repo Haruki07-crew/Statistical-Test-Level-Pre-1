@@ -1,0 +1,1 @@
+https://haruki07-crew.github.io/Statistical-Test-Level-Pre-1/#moment-generating-function
