@@ -531,3 +531,13 @@ textarea.note:focus { outline: none; border-color: var(--accent); box-shadow: 0 
 .sess-timer { font-family: var(--mono); font-size: .9rem; color: var(--accent); padding: 2px 8px; border: 1px solid var(--line); border-radius: 999px; }
 .sess-timer.low { color: var(--imp-a); border-color: var(--imp-a); }
 .see-note { margin: 12px 0 0; padding: 8px 12px; border: 1px dashed var(--line); border-radius: 8px; background: var(--bg); font-size: .85rem; color: var(--muted); }
+
+/* ===== 左の一覧をたたむ（PC・iPad） ===== */
+.list-toggle { display: none; }
+@media (min-width: 600px) {
+  .list-toggle { display: grid; margin-left: -6px; }
+  body.list-collapsed[data-mode="dict"] .layout { grid-template-columns: minmax(0, 1fr); }
+  body.list-collapsed[data-mode="dict"] .list { display: none; }
+  body.list-collapsed .list-toggle .arrow { transform: rotate(180deg); transform-origin: 14.25px 12px; }
+  body.list-collapsed .list-toggle { color: var(--accent); }
+}

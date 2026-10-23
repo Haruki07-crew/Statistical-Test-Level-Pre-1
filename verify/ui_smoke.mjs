@@ -86,6 +86,18 @@ try {
   // j で次の用語
   await ev(`document.body.dispatchEvent(new KeyboardEvent('keydown', {key: 'j', bubbles: true}))`); await sleep(400);
   check('j で次の用語', await ev(`location.hash !== '#bayes-theorem'`), await ev('location.hash'));
+  // 左の一覧をたたむ／ひらく
+  await open('#gamma-distribution', 1280, 860);
+  await ev(`document.getElementById('btn-list').click()`); await sleep(300);
+  check('一覧をたたむと解説が全幅になる', await ev(`getComputedStyle(document.getElementById('list')).display === 'none' && document.getElementById('detail').getBoundingClientRect().width > 1200`));
+  await shot('collapsed-1280');
+  await open('#gamma-distribution', 1280, 860);
+  check('たたんだ状態を覚えている', await ev(`document.body.classList.contains('list-collapsed')`));
+  await ev(`(() => { const q = document.getElementById('q'); q.value = 'ガンマ'; q.dispatchEvent(new Event('input')); })()`); await sleep(300);
+  check('検索すると一覧がひらく', await ev(`getComputedStyle(document.getElementById('list')).display !== 'none'`));
+  await ev(`(() => { const q = document.getElementById('q'); q.value = ''; q.dispatchEvent(new Event('input')); })()`); await sleep(200);
+  await open('#gamma-distribution', 375, 780);
+  check('スマホではたたむボタンを出さない', await ev(`getComputedStyle(document.getElementById('btn-list')).display === 'none'`));
   // 統合候補のページに統合先の案内
   await open('#mann-whitney-u-test', 1280, 860);
   check('統合先の案内を表示', await ev(`document.querySelector('.see-note [data-go]')?.dataset.go === 'wilcoxon-rank-sum-test'`));

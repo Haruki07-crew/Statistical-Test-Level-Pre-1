@@ -478,6 +478,7 @@
       '<ul class="home-list"><li>一覧の上のタブで部を選び、章の見出しを押すと用語が開きます。上の検索欄に用語・読み・英語名を入れると全章から探せます（「ガウス」「がんま」「MGF」など）。</li>' +
       '<li>用語ページで「覚えた」チェック・★ブックマーク・自分のメモを付けられます。ページの最後にその用語の問題があります。</li>' +
       '<li>「問題」で範囲と問題数を選んで解き、「復習」で間違えた問題や時間が経った問題を解き直します（正解が続くほど 1→3→7→14→30 日と間隔が空きます）。</li>' +
+      '<li>PC・iPad では、左上のボタン（PCは <kbd>\\</kbd> キーでも）で左の一覧をたたんで、解説を広く読めます。</li>' +
       '<li>PCでは <kbd>/</kbd> で検索、<kbd>j</kbd>／<kbd>k</kbd> で次・前の用語、<kbd>b</kbd> でブックマーク、<kbd>Esc</kbd> で検索の解除。問題演習では <kbd>1</kbd>〜<kbd>4</kbd> で選択、<kbd>Enter</kbd> で次へ、<kbd>h</kbd> でヒント。</li>' +
       '<li>「記録」で文字サイズの変更と、学習データのファイルへの書き出し・読み込み（iPad とスマホの間で移す）ができます。</li></ul>' +
       '<h2 class="home-h">重要度の印</h2>' +
@@ -1290,6 +1291,7 @@
     if (m) {
       var n = Number(m[1]);
       if (n >= 1 && n <= CHAPTERS.length) {
+        if (state.collapsed) setCollapsed(false);   // 章を開く操作では一覧を見せる
         focusChapter(n);
         renderList(); showListView(); revealTab();
         if (!fromDetail && !state.query) scrollChapterIntoView(n);
@@ -1329,9 +1331,25 @@
     DB.searches = [s].concat(DB.searches.filter(function (x) { return x !== s; })).slice(0, 8);
     persist();
   }
+  // PC・iPad で左の一覧をたたむ（解説を広く読むため）。状態は保存する
+  var listBtn = $('btn-list');
+  function setCollapsed(v) {
+    state.collapsed = !!v;
+    document.body.classList.toggle('list-collapsed', state.collapsed);
+    listBtn.setAttribute('aria-expanded', String(!state.collapsed));
+    listBtn.setAttribute('aria-label', state.collapsed ? '用語の一覧をひらく' : '用語の一覧をたたむ');
+    save('jd-list-collapsed', state.collapsed);
+    if (window.Charts) setTimeout(function () { Charts.redrawAll(); }, 50);
+  }
+  listBtn.addEventListener('click', function () {
+    if (state.mode !== 'dict') { setCollapsed(false); go(state.dictHash); return; }
+    setCollapsed(!state.collapsed);
+    if (!state.collapsed) { revealTab(); scrollRowIntoView(); }
+  });
   function runSearch() {
     var was = state.query;
     state.query = qEl.value.trim();
+    if (state.query && state.collapsed) setCollapsed(false);   // 検索結果は一覧に出すので、ひらく
     if (state.mode !== 'dict') { go(state.dictHash); }
     renderList();
     if (state.query) { listEl.scrollTop = 0; showListView(); }
@@ -1359,6 +1377,7 @@
     var typing = tag === 'input' || tag === 'textarea' || tag === 'select' || e.target.isContentEditable;
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     if (e.key === '/' && !typing) { e.preventDefault(); qEl.focus(); qEl.select(); }
+    else if (e.key === '\\' && !typing && state.mode === 'dict') { e.preventDefault(); listBtn.click(); }
     else if (e.key === 'Escape') {
       if (qEl.value || document.activeElement === qEl) { qEl.value = ''; state.query = ''; renderList(); revealTab(); scrollRowIntoView(); qEl.blur(); }
     } else if (!typing && state.mode === 'dict' && (e.key === 'j' || e.key === 'k')) {
@@ -1400,6 +1419,7 @@
 
   // ---------- 開始 ----------
   document.documentElement.setAttribute('data-font', DB.font);
+  setCollapsed(!!load('jd-list-collapsed', false));
   if (!location.hash) {
     var last = DB.recent.filter(isWritten)[0];
     if (last && window.innerWidth >= 600) {
