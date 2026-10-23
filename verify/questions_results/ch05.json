@@ -1,0 +1,90 @@
+{
+ "q05-bernoulli-distribution-1": {
+  "hash": "0e1a15527f905e6f",
+  "ok": true
+ },
+ "q05-bernoulli-distribution-2": {
+  "hash": "d0e0d001958057fa",
+  "ok": true
+ },
+ "q05-binomial-distribution-1": {
+  "hash": "cb48886ce8c41b1f",
+  "ok": true
+ },
+ "q05-binomial-distribution-2": {
+  "hash": "8c47658f564d407d",
+  "ok": true
+ },
+ "q05-binomial-distribution-3": {
+  "hash": "9f220da4756e38fb",
+  "ok": true
+ },
+ "q05-finite-population-correction-1": {
+  "hash": "919fdfca5ebf698c",
+  "ok": true
+ },
+ "q05-finite-population-correction-2": {
+  "hash": "d62610a552122de5",
+  "ok": true
+ },
+ "q05-fisher-exact-test-1": {
+  "hash": "eb5de5d3bbc7ecfc",
+  "ok": true
+ },
+ "q05-fisher-exact-test-2": {
+  "hash": "13c580bdcf022e7b",
+  "ok": true
+ },
+ "q05-geometric-distribution-1": {
+  "hash": "aa44be103b6b0338",
+  "ok": true
+ },
+ "q05-geometric-distribution-2": {
+  "hash": "73750e1dbdd75014",
+  "ok": true
+ },
+ "q05-geometric-distribution-3": {
+  "hash": "603c495010abca38",
+  "ok": true
+ },
+ "q05-hypergeometric-distribution-1": {
+  "hash": "9f98a58acb7c7b99",
+  "ok": true
+ },
+ "q05-hypergeometric-distribution-2": {
+  "hash": "50f56ca99ddfc1f1",
+  "ok": true
+ },
+ "q05-hypergeometric-distribution-3": {
+  "hash": "ad5b42acb88c8b3b",
+  "ok": true
+ },
+ "q05-multinomial-distribution-1": {
+  "hash": "a01f66153a7b37f7",
+  "ok": true
+ },
+ "q05-multinomial-distribution-2": {
+  "hash": "c5fcdc30d270f2ef",
+  "ok": true
+ },
+ "q05-negative-binomial-distribution-1": {
+  "hash": "bcf7494d8b869671",
+  "ok": true
+ },
+ "q05-negative-binomial-distribution-2": {
+  "hash": "2ad074a3087b9d20",
+  "ok": true
+ },
+ "q05-poisson-distribution-1": {
+  "hash": "dc158098545f3463",
+  "ok": true
+ },
+ "q05-poisson-distribution-2": {
+  "hash": "af1dacbfe129e6a4",
+  "ok": true
+ },
+ "q05-poisson-distribution-3": {
+  "hash": "119ea92dbf1e491f",
+  "ok": true
+ }
+}

@@ -5,7 +5,7 @@ reading: いぇーつのれんぞくしゅうせい
 en: Yates's continuity correction
 aliases: [イェーツの補正, イエーツの補正, "Yates correction"]
 chapter: 28
-importance: B
+importance: A
 tags: [2×2分割表, カイ二乗検定, 連続修正, 正規近似]
 related: [continuity-correction, two-by-two-table, fisher-exact-test, pearson-chi-square-statistic, chi-square-approximation-condition]
 charts:

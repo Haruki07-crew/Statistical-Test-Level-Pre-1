@@ -7,7 +7,7 @@ aliases: [MCA, 多重対応分析, バート行列, 指示行列]
 chapter: 26
 importance: C
 tags: [コレスポンデンス分析, カテゴリカルデータ, アンケート, 可視化]
-related: [correspondence-analysis, quantification-type-3, singular-value-decomposition, contingency-table, dummy-variable, biplot]
+related: [quantification-type-3, correspondence-analysis, singular-value-decomposition, contingency-table, dummy-variable, biplot]
 ---
 
 ## 一言でいうと

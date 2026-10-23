@@ -1,0 +1,224 @@
+chapter: 4
+questions:
+  - id: q04-change-of-variables-1
+    term: change-of-variables
+    level: 基本
+    type: truefalse
+    question: |
+      連続型確率変数 $X$ の密度関数を $f_X(x)$ とし、$Y=2X+3$ とおく。
+      このとき $Y$ の密度関数は $f_Y(y)=f_X\!\left(\dfrac{y-3}{2}\right)$ である。
+    answer: false
+    hint: |
+      $x=(y-3)/2$ を代入するだけでよいか、$dx/dy$ の扱いを考える。
+    explanation: |
+      逆変換 $x=(y-3)/2$ の微分は $dx/dy=1/2$ なので、正しくは
+      $$f_Y(y)=f_X\!\left(\frac{y-3}{2}\right)\left|\frac{dx}{dy}\right|=\frac12 f_X\!\left(\frac{y-3}{2}\right)$$
+      です。係数 $1/2$ がないと $\int f_Y(y)\,dy=2$ となり、密度の条件を満たしません。
+
+  - id: q04-change-of-variables-2
+    term: change-of-variables
+    level: 標準
+    type: numeric
+    question: |
+      $X$ が区間 $(0,1)$ の一様分布に従うとき、$Y=-2\log X$ とおく。
+      $P(1<Y<4)$ を小数第3位まで（四捨五入）求めよ。
+    answer: 0.471
+    tolerance: 0.001
+    hint: |
+      $Y$ の分布を変数変換で求めるか、$\{1<Y<4\}$ を $X$ の範囲に直す。
+    explanation: |
+      $x=e^{-y/2}$、$|dx/dy|=\tfrac12 e^{-y/2}$ なので $f_Y(y)=\tfrac12 e^{-y/2}\ (y>0)$、
+      つまり $Y$ はレート $1/2$ の指数分布（自由度2のカイ二乗分布）です。
+      $$P(1<Y<4)=e^{-1/2}-e^{-2}=0.6065-0.1353=0.4712$$
+      $X$ の範囲に直しても $e^{-2}<X<e^{-1/2}$ となり、同じ値になります。
+
+  - id: q04-change-of-variables-3
+    term: change-of-variables
+    level: 応用
+    type: derivation
+    question: |
+      $X,Y$ が独立にレート1の指数分布（密度 $e^{-x}$, $x>0$）に従うとする。
+      $U=X+Y$, $V=X/(X+Y)$ とおき、$(U,V)$ の同時密度を求めて、$U$ と $V$ の分布と独立性を答えよ。
+    steps:
+      - |
+        逆変換は $x=uv$, $y=u(1-v)$（$u>0$, $0<v<1$）。
+      - |
+        ヤコビアンは
+        $$\frac{\partial(x,y)}{\partial(u,v)}=\begin{vmatrix} v & u\\ 1-v & -u\end{vmatrix}=-uv-u(1-v)=-u$$
+        なので絶対値は $u$。
+      - |
+        $f_{X,Y}(x,y)=e^{-(x+y)}=e^{-u}$ より $f_{U,V}(u,v)=u\,e^{-u}$（$u>0$, $0<v<1$）。
+      - |
+        $u$ だけの関数 $u e^{-u}$ と $v$ だけの関数 $1$ の積に分解できる。
+    answer: "$f_{U,V}(u,v)=u e^{-u}\\ (u>0,\\ 0<v<1)$。$U$ は形状2・尺度1のガンマ分布、$V$ は $(0,1)$ の一様分布で、$U$ と $V$ は独立"
+    hint: |
+      逆変換 $x=x(u,v)$, $y=y(u,v)$ を書き、$\partial(x,y)/\partial(u,v)$ の行列式の絶対値を掛ける。
+    explanation: |
+      逆変換 $x=uv$, $y=u(1-v)$ のヤコビアンの絶対値は $u$ です。よって
+      $$f_{U,V}(u,v)=e^{-u}\cdot u\qquad(u>0,\ 0<v<1)$$
+      これは $u e^{-u}$（形状2・尺度1のガンマ分布の密度）と $1$（一様分布の密度）の積なので、
+      $U\sim\mathrm{Ga}(2,1)$、$V\sim U(0,1)$ で、両者は独立です。
+      ヤコビアンを掛け忘れると $e^{-u}$ となり、$U$ の分布を誤ります。
+
+  - id: q04-log-transformation-1
+    term: log-transformation
+    level: 標準
+    type: numeric
+    question: |
+      正の確率変数 $X$ の期待値が $50$、標準偏差が $5$ である。
+      デルタ法（1次の近似）を使うと、$\log X$（自然対数）の標準偏差は近似的にいくらか。小数第3位まで答えよ。
+    answer: 0.1
+    tolerance: 0.001
+    hint: |
+      $g(x)=\log x$ として $V[g(X)]\approx\{g'(\mu)\}^2V[X]$ を使う。
+    explanation: |
+      $g'(x)=1/x$ なので
+      $$V[\log X]\approx\left(\frac{1}{50}\right)^2\cdot 5^2=0.01,\qquad \text{標準偏差}\approx 0.1$$
+      $\log X$ の標準偏差はおよそ元の変動係数 $\sigma/\mu=5/50$ に等しくなります。
+      これが「対数をとると、平均に比例してばらつくデータの分散がそろう」理由です。
+
+  - id: q04-log-transformation-2
+    term: log-transformation
+    level: 基本
+    type: choice
+    question: |
+      データ $1,\ 4,\ 16,\ 64$ を常用対数に変換して平均をとり、その平均を $10^{(\cdot)}$ で元の尺度に戻した値はどれか。
+    choices:
+      - '$8$（幾何平均）'
+      - '$21.25$（算術平均）'
+      - '$10$（中央値）'
+      - '$3.01$（調和平均）'
+    answer: 0
+    hint: |
+      $\log_{10}$ の平均は $\log_{10}$ の積を個数で割ったもの。
+    explanation: |
+      $$\frac{1}{4}\sum\log_{10}x_i=\frac14\log_{10}(1\cdot4\cdot16\cdot64)=\frac14\log_{10}4096$$
+      なので、戻した値は $4096^{1/4}=8$ で、幾何平均です。
+      対数の平均を戻すと算術平均ではなく幾何平均になる（算術平均以下になる）ことに注意します。
+
+  - id: q04-power-transformation-1
+    term: power-transformation
+    level: 標準
+    type: numeric
+    question: |
+      正の値をとるデータで、各グループの標準偏差が平均の $1.5$ 乗に比例している（$\sigma\propto\mu^{1.5}$）。
+      べき乗変換 $Y=X^{\lambda}$ で分散を近似的に一定にするには、$\lambda$ をいくつにすればよいか。
+    answer: -0.5
+    tolerance: 0.01
+    hint: |
+      デルタ法で $V[X^{\lambda}]\approx(\lambda\mu^{\lambda-1})^2\sigma^2$ とし、$\mu$ の指数が0になる $\lambda$ を探す。
+    explanation: |
+      $\sigma=c\mu^{1.5}$ を代入すると
+      $$V[X^{\lambda}]\approx\lambda^2\mu^{2(\lambda-1)}c^2\mu^{3}=\lambda^2c^2\mu^{2\lambda+1}$$
+      $\mu$ によらないためには $2\lambda+1=0$、つまり $\lambda=-0.5$（$1/\sqrt{X}$ の変換）です。
+      一般に $\sigma\propto\mu^{\beta}$ なら $\lambda=1-\beta$ です。
+
+  - id: q04-box-cox-transformation-1
+    term: box-cox-transformation
+    level: 基本
+    type: numeric
+    question: |
+      Box-Cox 変換 $y^{(\lambda)}=(y^{\lambda}-1)/\lambda$（$\lambda\ne0$）で、$y=9$、$\lambda=-1$ のときの値を小数第3位まで求めよ。
+    answer: 0.889
+    tolerance: 0.001
+    hint: |
+      $9^{-1}=1/9$ を代入する。$\lambda$ が負なので符号に注意。
+    explanation: |
+      $$y^{(-1)}=\frac{9^{-1}-1}{-1}=1-\frac19=\frac89=0.889$$
+      $\lambda<0$ でも分母に $\lambda$ があるおかげで、$y$ が大きいほど変換後の値も大きくなります（順序が保たれる）。
+
+  - id: q04-box-cox-transformation-2
+    term: box-cox-transformation
+    level: 標準
+    type: truefalse
+    question: |
+      Box-Cox 変換の $\lambda$ を最尤法で選ぶとき、候補の $\lambda$ ごとに変換後のデータの残差平方和を計算し、
+      それが最小になる $\lambda$ を選べばよい。
+    answer: false
+    hint: |
+      $\lambda$ を変えると変換後のデータの尺度（単位）も変わる。元のデータ $y$ の尤度に直すには何が必要か。
+    explanation: |
+      元のデータの対数尤度にはヤコビアン $\prod y_i^{\lambda-1}$ に由来する項 $(\lambda-1)\sum\log y_i$ が入り、
+      プロファイル対数尤度は
+      $$\ell_p(\lambda)=-\frac n2\log\hat\sigma^2(\lambda)+(\lambda-1)\sum\log y_i+\text{定数}$$
+      です。変換後の残差平方和だけでは尺度の違う量を比べることになり、正しく選べません。
+
+  - id: q04-logit-logistic-transformation-1
+    term: logit-logistic-transformation
+    level: 基本
+    type: numeric
+    question: |
+      確率 $p=0.8$ のロジット $\operatorname{logit}(p)=\log\dfrac{p}{1-p}$（自然対数）を小数第3位まで求めよ。
+    answer: 1.386
+    tolerance: 0.001
+    hint: |
+      まずオッズ $p/(1-p)$ を求める。
+    explanation: |
+      オッズは $0.8/0.2=4$ なので
+      $$\operatorname{logit}(0.8)=\log4=1.386$$
+      $p=0.5$ でロジットは0、$p>0.5$ で正になります。
+
+  - id: q04-logit-logistic-transformation-2
+    term: logit-logistic-transformation
+    level: 標準
+    type: choice
+    question: |
+      ロジスティック回帰モデル $\operatorname{logit}(p)=-2+0.5x$ で、$x$ を $2$ 増やしたときの変化として正しいものはどれか。
+    choices:
+      - 'オッズ $p/(1-p)$ が $e^{1}\approx2.72$ 倍になる'
+      - 'オッズ $p/(1-p)$ が $e^{0.5}\approx1.65$ 倍になる'
+      - '確率 $p$ が $e^{1}\approx2.72$ 倍になる'
+      - 'オッズ $p/(1-p)$ が $1$ だけ増える'
+    answer: 0
+    hint: |
+      ロジット（対数オッズ）がいくつ増えるかを考え、指数をとる。
+    explanation: |
+      $x$ を2増やすと対数オッズは $0.5\times2=1$ 増えます。オッズはその指数なので
+      $$\frac{\text{新しいオッズ}}{\text{元のオッズ}}=e^{1}\approx2.72$$
+      倍になります。確率 $p$ そのものは一定の倍率では変わらず、変化量は $x$ の位置によります。
+
+  - id: q04-logit-logistic-transformation-3
+    term: logit-logistic-transformation
+    level: 応用
+    type: numeric
+    question: |
+      $n=100$ 回の独立な試行で成功が $20$ 回あり、$\hat p=0.2$ を得た。
+      デルタ法を使って $\operatorname{logit}(\hat p)$ の標準誤差を近似的に求めよ（$V[\hat p]$ は $\hat p(1-\hat p)/n$ で推定する）。小数第3位まで答えよ。
+    answer: 0.25
+    tolerance: 0.001
+    hint: |
+      $\dfrac{d}{dp}\operatorname{logit}(p)$ を求め、$V[g(\hat p)]\approx\{g'(p)\}^2V[\hat p]$ に代入する。
+    explanation: |
+      $\dfrac{d}{dp}\operatorname{logit}(p)=\dfrac{1}{p(1-p)}$ なので
+      $$V[\operatorname{logit}(\hat p)]\approx\frac{1}{\{p(1-p)\}^2}\cdot\frac{p(1-p)}{n}=\frac{1}{np(1-p)}=\frac{1}{100\times0.16}=0.0625$$
+      標準誤差は $\sqrt{0.0625}=0.25$ です。
+
+  - id: q04-probit-transformation-1
+    term: probit-transformation
+    level: 基本
+    type: numeric
+    question: |
+      $\operatorname{probit}(0.975)=\Phi^{-1}(0.975)$ の値を小数第3位まで求めよ（$\Phi$ は標準正規分布の累積分布関数）。
+    answer: 1.96
+    tolerance: 0.001
+    hint: |
+      $\Phi(z)=0.975$ となる $z$、つまり標準正規分布の上側2.5%点。
+    explanation: |
+      $\Phi(1.960)=0.975$ なので $\operatorname{probit}(0.975)=1.960$ です。
+      プロビット変換は「確率を標準正規分布の分位点に直す」変換です。
+
+  - id: q04-probit-transformation-2
+    term: probit-transformation
+    level: 標準
+    type: numeric
+    question: |
+      プロビットモデル $p=\Phi(-1+0.4x)$ で、$x=5$ における限界効果 $\dfrac{dp}{dx}$ を小数第3位まで求めよ。
+      必要なら $\phi(1)=0.2420$（標準正規分布の密度）を使ってよい。
+    answer: 0.097
+    tolerance: 0.001
+    hint: |
+      合成関数の微分 $\dfrac{d}{dx}\Phi(a+bx)=b\,\phi(a+bx)$ を使う。
+    explanation: |
+      $x=5$ で線形予測子は $-1+0.4\times5=1$ なので
+      $$\frac{dp}{dx}=0.4\,\phi(1)=0.4\times0.2420=0.0968$$
+      係数 $0.4$ そのものは確率の変化量ではなく、密度 $\phi$ を掛けて初めて確率の変化率になります。

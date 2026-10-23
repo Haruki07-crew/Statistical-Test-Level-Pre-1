@@ -3,7 +3,7 @@ id: structural-equation-modeling
 title: 構造方程式モデリング
 reading: こうぞうほうていしきもでりんぐ
 en: Structural equation modeling
-aliases: [SEM, 共分散構造分析, 確認的因子分析]
+aliases: [SEM, 共分散構造分析, 確認的因子分析, 潜在変数]
 chapter: 26
 importance: A
 tags: [多変量解析, 潜在変数, パス図, 共分散構造, 識別性]

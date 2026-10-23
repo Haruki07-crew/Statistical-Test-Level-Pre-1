@@ -3,7 +3,7 @@ id: common-factor-unique-factor
 title: 共通因子と独自因子
 reading: きょうつういんしとどくじいんし
 en: Common factor and unique factor
-aliases: [共通因子, 独自因子, 独自性, 独自分散, 特殊因子]
+aliases: [共通因子, 独自因子, 独自性, 独自分散, 特殊因子, 潜在因子]
 chapter: 25
 importance: A
 tags: [因子分析, 潜在変数, 分散の分解]

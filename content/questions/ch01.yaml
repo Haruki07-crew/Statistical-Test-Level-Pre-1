@@ -1,0 +1,253 @@
+chapter: 1
+questions:
+  # ---------- 条件付き確率と乗法定理 (A) ----------
+  - id: q01-conditional-probability-1
+    term: conditional-probability
+    level: 基本
+    type: truefalse
+    question: |
+      $P(A)>0,\ P(B)>0$ である任意の事象 $A, B$ について、$P(A\mid B)=P(B\mid A)$ が成り立つ。
+    answer: false
+    hint: |
+      2つの条件付き確率を定義どおりに書き、分母を比べる。
+    explanation: |
+      $P(A\mid B)=\dfrac{P(A\cap B)}{P(B)}$、$P(B\mid A)=\dfrac{P(A\cap B)}{P(A)}$ で、分子は同じでも分母が違います。
+      等しくなるのは $P(A)=P(B)$（または $P(A\cap B)=0$）のときだけです。
+      たとえば $A$＝「6の目」、$B$＝「偶数の目」なら $P(A\mid B)=1/3$、$P(B\mid A)=1$ です。
+      条件と結果を取り違える誤りは、ベイズの定理で扱う「検査の陽性的中率」の取り違えと同じ構造です。
+
+  - id: q01-conditional-probability-2
+    term: conditional-probability
+    level: 標準
+    type: numeric
+    question: |
+      袋に赤玉 5 個と白玉 3 個が入っている。玉を 1 個ずつ、元に戻さずに 2 回取り出す。
+      2 回とも赤玉である確率を小数第3位まで（四捨五入）求めよ。
+    answer: 0.357
+    tolerance: 0.001
+    hint: |
+      乗法定理 $P(A_1\cap A_2)=P(A_1)\,P(A_2\mid A_1)$ を使う。2回目は袋の中身が変わっている。
+    explanation: |
+      $A_1$＝「1回目が赤」、$A_2$＝「2回目が赤」とすると、
+      $P(A_1)=5/8$、1回目に赤を取ったあとは赤4個・白3個なので $P(A_2\mid A_1)=4/7$。
+      $$P(A_1\cap A_2)=\frac58\times\frac47=\frac{20}{56}=\frac{5}{14}\approx0.357$$
+
+  - id: q01-conditional-probability-3
+    term: conditional-probability
+    level: 応用
+    type: choice
+    question: |
+      公正なサイコロを 2 個投げたところ、出た目の和が 8 であることがわかった。
+      このとき、少なくとも一方の目が 6 である条件付き確率はどれか。
+    choices:
+      - '$2/5$'
+      - '$1/3$'
+      - '$11/36$'
+      - '$5/36$'
+    answer: 0
+    hint: |
+      「和が8」という条件で全体を絞り込み、その中で数える。
+    explanation: |
+      和が 8 になる組は $(2,6),(3,5),(4,4),(5,3),(6,2)$ の 5 通りで、どれも確率 $1/36$ です。
+      このうち 6 を含むのは $(2,6),(6,2)$ の 2 通りなので
+      $$P(\text{6を含む}\mid\text{和が8})=\frac{2/36}{5/36}=\frac25$$
+      $11/36$ は条件なしで「少なくとも一方が6」の確率、$5/36$ は「和が8」の確率で、条件付けを忘れた誤りです。
+
+  # ---------- 全確率の公式 (B) ----------
+  - id: q01-law-of-total-probability-1
+    term: law-of-total-probability
+    level: 標準
+    type: numeric
+    question: |
+      ある部品は 3 つの工場 A, B, C で作られ、生産の割合はそれぞれ 50%, 30%, 20% である。
+      不良品の割合は工場 A で 2%、B で 3%、C で 5% である。
+      全部品から 1 個を無作為に選んだとき、それが不良品である確率を小数第3位まで（四捨五入）求めよ。
+    answer: 0.029
+    tolerance: 0.001
+    hint: |
+      「どの工場で作られたか」で場合分けし、各場合の確率を足し合わせる。
+    explanation: |
+      工場 A, B, C は互いに排反で全体を覆うので、全確率の公式より
+      $$P(D)=0.5\times0.02+0.3\times0.03+0.2\times0.05=0.010+0.009+0.010=0.029$$
+
+  - id: q01-law-of-total-probability-2
+    term: law-of-total-probability
+    level: 基本
+    type: truefalse
+    question: |
+      全確率の公式 $P(B)=\sum_{j} P(B\mid A_j)P(A_j)$ は、事象 $A_1,\dots,A_k$ が互いに排反でなくても、
+      和が全体 $\Omega$ になっていれば成り立つ。
+    answer: false
+    hint: |
+      $A_j$ どうしが重なっていると、$B$ の同じ部分が何回数えられるかを考える。
+    explanation: |
+      公式は $B=\bigcup_j (B\cap A_j)$ が**互いに排反な和**であることを使っています。
+      $A_j$ が重なっていると、重なり部分の $B\cap A_i\cap A_j$ を二重に数えてしまいます。
+      たとえば $A_1=A_2=\Omega$ とすると右辺は $2P(B)$ になります。
+      $A_1,\dots,A_k$ は「互いに排反で、和が全体」（標本空間の分割）である必要があります。
+
+  # ---------- 事象の独立 (A) ----------
+  - id: q01-independence-of-events-1
+    term: independence-of-events
+    level: 基本
+    type: truefalse
+    question: |
+      $P(A)>0,\ P(B)>0$ で、$A$ と $B$ が互いに排反（$A\cap B=\varnothing$）ならば、$A$ と $B$ は独立ではない。
+    answer: true
+    hint: |
+      独立なら $P(A\cap B)$ はいくつになるはずか。排反なら $P(A\cap B)$ はいくつか。
+    explanation: |
+      排反なら $P(A\cap B)=0$ ですが、独立なら $P(A\cap B)=P(A)P(B)>0$ のはずです。
+      両立しないので、正の確率をもつ排反な事象は独立ではありません。
+      むしろ「$A$ が起これば $B$ は絶対に起こらない」という強い従属関係です。排反と独立の混同はよくある誤りです。
+
+  - id: q01-independence-of-events-2
+    term: independence-of-events
+    level: 標準
+    type: numeric
+    question: |
+      事象 $A, B$ は独立で、$P(A)=0.4$、$P(B)=0.5$ である。
+      $P(A\cup B)$ を小数第2位まで求めよ。
+    answer: 0.70
+    tolerance: 0.005
+    hint: |
+      加法定理 $P(A\cup B)=P(A)+P(B)-P(A\cap B)$ と、独立のときの $P(A\cap B)$ を組み合わせる。
+    explanation: |
+      独立なので $P(A\cap B)=0.4\times0.5=0.20$。
+      $$P(A\cup B)=0.4+0.5-0.20=0.70$$
+      別解：$P(A\cup B)=1-P(A^c)P(B^c)=1-0.6\times0.5=0.70$（$A^c,B^c$ も独立）。
+
+  - id: q01-independence-of-events-3
+    term: independence-of-events
+    level: 応用
+    type: choice
+    question: |
+      公正なコインを 2 回投げる。$A$＝「1回目が表」、$B$＝「2回目が表」、$C$＝「1回目と2回目が同じ面」とする。
+      正しいものはどれか。
+    choices:
+      - '$A,B,C$ はどの2つも独立だが、3つは（相互に）独立ではない'
+      - '$A,B,C$ は相互に独立である'
+      - '$A$ と $C$ は独立ではない'
+      - '$A,B,C$ のどの2つも独立ではない'
+    answer: 0
+    hint: |
+      4通りの結果を列挙し、$P(A\cap C)$、$P(B\cap C)$、$P(A\cap B\cap C)$ を積と比べる。
+    explanation: |
+      結果は HH, HT, TH, TT の 4 通り（各 $1/4$）。$P(A)=P(B)=P(C)=1/2$ です。
+      - $A\cap B=\{HH\}$、$A\cap C=\{HH\}$、$B\cap C=\{HH\}$ で、どれも確率 $1/4=\tfrac12\cdot\tfrac12$ → どの2つも独立。
+      - $A\cap B\cap C=\{HH\}$ の確率は $1/4$ ですが、$P(A)P(B)P(C)=1/8$ → 相互独立ではない。
+
+      3事象の独立には、2つずつの条件に加えて $P(A\cap B\cap C)=P(A)P(B)P(C)$ も必要です。
+
+  # ---------- ベイズの定理 (A) ----------
+  - id: q01-bayes-theorem-1
+    term: bayes-theorem
+    level: 基本
+    type: choice
+    question: |
+      ある製品は機械 M1 と M2 で作られ、生産の割合は M1 が 60%、M2 が 40% である。
+      不良率は M1 が 1%、M2 が 3% である。不良品を 1 個見つけたとき、それが M2 で作られた確率はどれか。
+    choices:
+      - '$2/3$'
+      - '$0.4$'
+      - '$0.03$'
+      - '$1/3$'
+    answer: 0
+    hint: |
+      分母は「不良品が出る確率」全体。分子は「M2 で作られ、かつ不良」の確率。
+    explanation: |
+      $$P(\text{M2}\mid\text{不良})=\frac{0.4\times0.03}{0.6\times0.01+0.4\times0.03}=\frac{0.012}{0.006+0.012}=\frac{0.012}{0.018}=\frac23$$
+      $0.4$ は事前確率のまま、$0.03$ は尤度 $P(\text{不良}\mid\text{M2})$ で、どちらも事後確率ではありません。$1/3$ は M1 の事後確率です。
+
+  - id: q01-bayes-theorem-2
+    term: bayes-theorem
+    level: 標準
+    type: numeric
+    question: |
+      ある病気の有病率は 2% である。この病気の検査は、病気の人を 90% の確率で陽性と判定し、
+      病気でない人を 5% の確率で誤って陽性と判定する。
+      検査が陽性だった人が実際に病気である確率を小数第3位まで（四捨五入）求めよ。
+    answer: 0.269
+    tolerance: 0.001
+    hint: |
+      陽性になる道筋は「病気で陽性」と「健康で陽性」の2つ。陽性全体のうち前者が占める割合を求める。
+    explanation: |
+      $$P(\text{病気}\mid\text{陽性})=\frac{0.02\times0.90}{0.02\times0.90+0.98\times0.05}=\frac{0.018}{0.018+0.049}=\frac{0.018}{0.067}\approx0.269$$
+      感度は 90% でも、事前確率（有病率）が小さいため、陽性の人の約 73% は健康な人です。
+
+  - id: q01-bayes-theorem-3
+    term: bayes-theorem
+    level: 応用
+    type: numeric
+    question: |
+      有病率 2%、病気の人が陽性になる確率 90%、病気でない人が陽性になる確率 5% の検査を、
+      同じ人に 2 回行ったところ 2 回とも陽性だった。
+      病気かどうかを与えたもとで 2 回の検査結果は独立（条件付き独立）とする。
+      この人が病気である確率を小数第3位まで（四捨五入）求めよ。
+    answer: 0.869
+    tolerance: 0.001
+    hint: |
+      条件付き独立なので、各状態のもとで「2回とも陽性」の確率は1回の確率の2乗。あとはベイズの定理。
+      （1回目の事後確率を事前確率にしてもう一度更新してもよい。）
+    explanation: |
+      $P(\text{陽陽}\mid\text{病気})=0.9^2=0.81$、$P(\text{陽陽}\mid\text{健康})=0.05^2=0.0025$。
+      $$P(\text{病気}\mid\text{陽陽})=\frac{0.02\times0.81}{0.02\times0.81+0.98\times0.0025}=\frac{0.0162}{0.0162+0.00245}=\frac{0.0162}{0.01865}\approx0.869$$
+      逐次更新でも同じ：1回目の事後確率 $0.018/0.067$ を事前確率として、もう一度ベイズの定理を使うと $0.869$ になります。
+
+  # ---------- 条件付き独立 (A) ----------
+  - id: q01-conditional-independence-1
+    term: conditional-independence
+    level: 基本
+    type: truefalse
+    question: |
+      事象 $A, B$ が事象 $C$ を与えたもとで条件付き独立であり、さらに $C^c$ を与えたもとでも条件付き独立ならば、
+      $A$ と $B$ は（条件なしで）独立である。
+    answer: false
+    hint: |
+      $C$ と $C^c$ で $A$ や $B$ の起こりやすさが違う例（2枚のコインのどちらかを選んで投げる、など）を考える。
+    explanation: |
+      全確率の公式で $P(A\cap B)=P(A\mid C)P(B\mid C)P(C)+P(A\mid C^c)P(B\mid C^c)P(C^c)$ となりますが、
+      これは一般に $P(A)P(B)$ と一致しません。
+      たとえば、表の確率が $0.5$ と $0.8$ のコインを等確率で選んで2回投げると、コインを与えれば2回の結果は独立ですが、
+      1回目が表なら「表の出やすいコインらしい」とわかるので、2回目が表の確率が上がります（次の問題で計算）。
+      条件付き独立と独立は、どちらからどちらも導けない別の性質です。
+
+  - id: q01-conditional-independence-2
+    term: conditional-independence
+    level: 標準
+    type: numeric
+    question: |
+      表の出る確率が 0.5 のコインと 0.8 のコインが 1 枚ずつある。どちらかを確率 1/2 ずつで選び、
+      選んだコインを 2 回投げる。コインを与えたもとで 2 回の結果は独立とする。
+      1 回目が表だったとき、2 回目も表である条件付き確率を小数第3位まで（四捨五入）求めよ。
+    answer: 0.685
+    tolerance: 0.001
+    hint: |
+      $P(\text{2回目表}\mid\text{1回目表})=P(\text{表表})/P(\text{1回目表})$。分子・分母を全確率の公式で求める。
+    explanation: |
+      $P(\text{1回目表})=\tfrac12(0.5)+\tfrac12(0.8)=0.65$。
+      条件付き独立より $P(\text{表表})=\tfrac12(0.5^2)+\tfrac12(0.8^2)=\tfrac12(0.25+0.64)=0.445$。
+      $$P(\text{2回目表}\mid\text{1回目表})=\frac{0.445}{0.65}\approx0.685$$
+      条件なしの $P(\text{2回目表})=0.65$ と違うので、2回の結果は（条件なしでは）独立ではありません。
+
+  - id: q01-conditional-independence-3
+    term: conditional-independence
+    level: 応用
+    type: derivation
+    question: |
+      $P(B\cap C)>0$ とする。$A$ と $B$ が $C$ を与えたもとで条件付き独立、すなわち
+      $P(A\cap B\mid C)=P(A\mid C)\,P(B\mid C)$ ならば、$P(A\mid B\cap C)=P(A\mid C)$ が成り立つことを示せ。
+    steps:
+      - |
+        条件付き確率の定義から $P(A\mid B\cap C)=\dfrac{P(A\cap B\cap C)}{P(B\cap C)}$。
+      - |
+        分子・分母を $P(C)$ で割ると $\dfrac{P(A\cap B\cap C)/P(C)}{P(B\cap C)/P(C)}=\dfrac{P(A\cap B\mid C)}{P(B\mid C)}$。
+      - |
+        仮定 $P(A\cap B\mid C)=P(A\mid C)P(B\mid C)$ を代入すると $\dfrac{P(A\mid C)P(B\mid C)}{P(B\mid C)}$。
+    answer: '$P(A\mid B\cap C)=P(A\mid C)$'
+    hint: |
+      左辺を定義で書き、分子と分母を $P(C)$ で割って「$C$ を与えた条件付き確率」の形にする。
+    explanation: |
+      $$P(A\mid B\cap C)=\frac{P(A\cap B\cap C)}{P(B\cap C)}=\frac{P(A\cap B\mid C)}{P(B\mid C)}=\frac{P(A\mid C)P(B\mid C)}{P(B\mid C)}=P(A\mid C)$$
+      （$P(B\cap C)>0$ より $P(C)>0,\ P(B\mid C)>0$ なので割り算できます。）
+      意味は「$C$ がわかっていれば、さらに $B$ を知っても $A$ の確率は変わらない」で、条件付き独立のもう一つの言い方です。

@@ -1,0 +1,468 @@
+chapter: 17
+questions:
+  - id: q17-residual-1
+    term: residual
+    level: 基本
+    type: truefalse
+    question: |
+      重回帰モデル（切片あり、誤差は独立で等分散 $\sigma^2$）を最小二乗法で当てはめたとき、
+      残差 $e_1,\dots,e_n$ の分散はすべて $\sigma^2$ に等しい。
+    answer: false
+    hint: |
+      $\boldsymbol{e}=(I-H)\boldsymbol{y}$ の分散共分散行列を考える。
+    explanation: |
+      $\boldsymbol{e}=(I-H)\boldsymbol{\varepsilon}$ で、$I-H$ は対称かつべき等なので
+      $$V[\boldsymbol{e}]=\sigma^2(I-H)(I-H)^\top=\sigma^2(I-H),\qquad V[e_i]=\sigma^2(1-h_{ii})$$
+      です。誤差 $\varepsilon_i$ が等分散でも、残差の分散はてこ比 $h_{ii}$ によって異なり、どれも $\sigma^2$ より小さくなります。
+      また残差どうしは無相関でもありません（非対角成分 $-\sigma^2h_{ij}$）。
+
+  - id: q17-residual-2
+    term: residual
+    level: 標準
+    type: numeric
+    question: |
+      5組のデータ $(x,y)=(1,2),(2,3),(3,5),(4,4),(5,8)$ に単回帰 $y=\beta_0+\beta_1x+\varepsilon$ を最小二乗法で当てはめた。
+      誤差分散の不偏推定値 $s^2=\sum e_i^2/(n-2)$ を小数第3位まで求めよ。
+    answer: 1.433
+    tolerance: 0.001
+    hint: |
+      $\hat\beta_1=S_{xy}/S_{xx}$、$\hat\beta_0=\bar y-\hat\beta_1\bar x$ を求め、5つの残差を計算する。自由度は $n-2$。
+    explanation: |
+      $\bar x=3$、$\bar y=4.4$、$S_{xx}=10$、$S_{xy}=13$ より $\hat\beta_1=1.3$、$\hat\beta_0=4.4-3.9=0.5$ です。
+      当てはめ値は $1.8,\ 3.1,\ 4.4,\ 5.7,\ 7.0$ なので、残差は
+      $$e=(0.2,\ -0.1,\ 0.6,\ -1.7,\ 1.0)$$
+      （和が0になることを確認）。$\sum e_i^2=0.04+0.01+0.36+2.89+1.00=4.30$ で、
+      $$s^2=\frac{4.30}{5-2}=1.433$$
+      です。$n$ で割ると $0.86$ となり、これは不偏ではありません。
+
+  - id: q17-standardized-residual-1
+    term: standardized-residual
+    level: 基本
+    type: numeric
+    question: |
+      ある回帰で、点 $i$ の残差が $e_i=2.4$、てこ比が $h_{ii}=0.36$、誤差の標準偏差の推定値が $s=1.5$ であった。
+      標準化残差 $r_i=e_i/(s\sqrt{1-h_{ii}})$ を小数第2位まで求めよ。
+    answer: 2.0
+    tolerance: 0.01
+    hint: |
+      まず $\sqrt{1-h_{ii}}$ を計算する。
+    explanation: |
+      $\sqrt{1-0.36}=0.8$ なので
+      $$r_i=\frac{2.4}{1.5\times0.8}=\frac{2.4}{1.2}=2.00$$
+      です。てこ比で補正しない $e_i/s=1.6$ より大きくなります。てこ比の大きい点ほど残差が小さく出やすいので、その分を割り戻しています。
+
+  - id: q17-standardized-residual-2
+    term: standardized-residual
+    level: 標準
+    type: choice
+    question: |
+      $n=12$ 個の観測に説明変数 $p=2$ 個（切片あり）の重回帰を当てはめた。
+      標準化残差 $r_i=e_i/(s\sqrt{1-h_{ii}})$（$s^2=\sum e_j^2/(n-p-1)$）の絶対値がとりうる最大値はどれか。
+    choices:
+      - '$3$'
+      - '$\sqrt{12}\approx3.46$'
+      - '$\sqrt{10}\approx3.16$'
+      - '上限はない'
+    answer: 0
+    hint: |
+      $e_i^2/(1-h_{ii})\le\sum_j e_j^2$ が成り立つことを使う。
+    explanation: |
+      $e_i^2/(1-h_{ii})\le\sum_j e_j^2=(n-p-1)s^2$ より
+      $$r_i^2=\frac{e_i^2}{s^2(1-h_{ii})}\le n-p-1=9,\qquad |r_i|\le3$$
+      です。$s$ にその点自身の残差が含まれるため、標準化残差には上限があります（$r_i^2/(n-p-1)$ はベータ分布に従う）。
+      $\sqrt{n}$ や $\sqrt{n-p}$ は自由度の数え違い、「上限はない」は外的なスチューデント化残差（$t$ 分布）と混同した誤りです。
+
+  - id: q17-studentized-residual-1
+    term: studentized-residual
+    level: 標準
+    type: numeric
+    question: |
+      $n=20$、説明変数 $p=2$ 個（切片あり）の重回帰で、点 $i$ の標準化残差が $r_i=2.5$ であった。
+      スチューデント化残差（外的スチューデント化残差）$t_i$ を小数第2位まで求めよ。
+    answer: 3.05
+    tolerance: 0.01
+    hint: |
+      $t_i=r_i\sqrt{\dfrac{n-p-2}{n-p-1-r_i^2}}$ を使う。
+    explanation: |
+      $n-p-2=16$、$n-p-1=17$ なので
+      $$t_i=2.5\sqrt{\frac{16}{17-6.25}}=2.5\sqrt{1.4884}=2.5\times1.2200=3.05$$
+      です。点 $i$ を除くと $s$ が小さくなるので、$|t_i|>|r_i|$ となり外れ値がよりはっきり出ます。
+
+  - id: q17-studentized-residual-2
+    term: studentized-residual
+    level: 基本
+    type: choice
+    question: |
+      $n=25$ 個の観測に説明変数 $p=3$ 個（切片あり）の重回帰を当てはめた。誤差が独立に $N(0,\sigma^2)$ に従うとき、
+      スチューデント化残差 $t_i=e_i/(s_{(i)}\sqrt{1-h_{ii}})$ が従う分布はどれか。
+    choices:
+      - '自由度20の $t$ 分布'
+      - '自由度21の $t$ 分布'
+      - '自由度22の $t$ 分布'
+      - '標準正規分布'
+    answer: 0
+    hint: |
+      $s_{(i)}^2$ は $n-1$ 個の観測から $p+1$ 個の係数を推定したときの分散推定値。
+    explanation: |
+      $s_{(i)}^2$ の自由度は $(n-1)-(p+1)=n-p-2=25-3-2=20$ で、分子の $e_i$ と独立になるので
+      $$t_i\sim t(20)$$
+      が正確に成り立ちます。21 は全データの残差の自由度 $n-p-1$、22 は切片を数え忘れた値です。
+
+  - id: q17-leverage-1
+    term: leverage
+    level: 標準
+    type: numeric
+    question: |
+      説明変数の値が $x=1,2,3,4,10$ の5点に単回帰（切片あり）を当てはめる。$x=10$ の点のてこ比 $h_{55}$ を小数第2位まで求めよ。
+    answer: 0.92
+    tolerance: 0.005
+    hint: |
+      単回帰では $h_{ii}=\dfrac1n+\dfrac{(x_i-\bar x)^2}{S_{xx}}$。
+    explanation: |
+      $\bar x=4$、$S_{xx}=9+4+1+0+36=50$ なので
+      $$h_{55}=\frac15+\frac{(10-4)^2}{50}=0.20+0.72=0.92$$
+      です。平均 $\bar h=(p+1)/n=0.4$ の2倍を超えており、この1点が回帰直線をほぼ決めてしまいます。
+
+  - id: q17-leverage-2
+    term: leverage
+    level: 基本
+    type: numeric
+    question: |
+      $n=40$ 個の観測に説明変数 $p=4$ 個（切片あり）の重回帰を当てはめる。
+      「てこ比が平均の2倍を超える点を高てこ比とする」目安での基準値を小数第3位まで求めよ。
+    answer: 0.25
+    tolerance: 0.001
+    hint: |
+      てこ比の和はハット行列のトレース、つまり係数の個数に等しい。
+    explanation: |
+      $\sum_i h_{ii}=\mathrm{tr}(H)=p+1=5$ なので平均は $\bar h=5/40=0.125$、その2倍は
+      $$\frac{2(p+1)}{n}=0.250$$
+      です。切片を数え忘れて $2p/n=0.2$ としないよう注意します。
+
+  - id: q17-leverage-3
+    term: leverage
+    level: 標準
+    type: truefalse
+    question: |
+      ある点の $y$ の値だけを大きく変えると、その点のてこ比 $h_{ii}$ も変わる。
+    answer: false
+    hint: |
+      $h_{ii}=\boldsymbol{x}_i^\top(X^\top X)^{-1}\boldsymbol{x}_i$ に $y$ は現れるか。
+    explanation: |
+      てこ比は計画行列 $X$ だけで決まり、$y$ には依存しません。
+      $h_{ii}=\partial\hat y_i/\partial y_i$ は「$y_i$ を動かしたとき $\hat y_i$ がどれだけ動くか」の比率で、その比率自体は $x$ の配置で決まります。
+      $y$ を変えて変わるのは残差やクックの距離です。
+
+  - id: q17-cooks-distance-1
+    term: cooks-distance
+    level: 標準
+    type: numeric
+    question: |
+      説明変数 $p=2$ 個（切片あり）の重回帰で、点 $i$ の標準化残差が $r_i=1.8$、てこ比が $h_{ii}=0.4$ であった。
+      クックの距離 $D_i$ を小数第2位まで求めよ。
+    answer: 0.72
+    tolerance: 0.005
+    hint: |
+      $D_i=\dfrac{r_i^2}{p+1}\cdot\dfrac{h_{ii}}{1-h_{ii}}$。分母は係数の個数。
+    explanation: |
+      $$D_i=\frac{1.8^2}{3}\cdot\frac{0.4}{0.6}=1.08\times0.6667=0.72$$
+      です。$p+1=3$ ではなく $p=2$ で割ると $1.08$ となり、$D_i>1$ の目安を誤って超えてしまいます。
+
+  - id: q17-cooks-distance-2
+    term: cooks-distance
+    level: 応用
+    type: choice
+    question: |
+      単回帰（切片あり）で、次の2点が気になった。
+      点A：標準化残差 $r=3.0$、てこ比 $h=0.05$。点B：標準化残差 $r=1.2$、てこ比 $h=0.6$。
+      クックの距離について正しいものはどれか。
+    choices:
+      - '点Bのほうが大きく、$D_B\approx1.08$、$D_A\approx0.24$'
+      - '点Aのほうが大きく、$D_A\approx4.5$、$D_B\approx0.72$'
+      - '点Aのほうが大きく、$D_A\approx0.24$、$D_B\approx0.17$'
+      - '2点とも約 $0.5$ で同程度'
+    answer: 0
+    hint: |
+      各点で $\dfrac{r^2}{2}\cdot\dfrac{h}{1-h}$ を計算する。残差の大きさだけで判断しない。
+    explanation: |
+      係数は2個なので
+      $$D_A=\frac{9}{2}\cdot\frac{0.05}{0.95}=0.237,\qquad D_B=\frac{1.44}{2}\cdot\frac{0.6}{0.4}=1.08$$
+      です。残差が大きい点Aは外れ値ですが、$x$ が中心付近にあるため推定はあまり動きません。
+      残差がそれほど大きくなくても、てこ比の大きい点Bのほうが影響点になります。
+      $4.5$ や $0.72$ は $h/(1-h)$ を掛け忘れた値、$0.17$ は $h$ だけを掛けて $1-h$ で割り忘れた値です。
+
+  - id: q17-dffits-1
+    term: dffits
+    level: 標準
+    type: numeric
+    question: |
+      ある点のスチューデント化残差が $t_i=2.2$、てこ比が $h_{ii}=0.3$ であった。$\mathrm{DFFITS}_i$ を小数第2位まで求めよ。
+    answer: 1.44
+    tolerance: 0.005
+    hint: |
+      $\mathrm{DFFITS}_i=t_i\sqrt{\dfrac{h_{ii}}{1-h_{ii}}}$。
+    explanation: |
+      $$\mathrm{DFFITS}_i=2.2\sqrt{\frac{0.3}{0.7}}=2.2\times0.6547=1.44$$
+      です。たとえば $n=30$、$p=2$ なら目安 $2\sqrt{(p+1)/n}=0.632$ を大きく超えるので、影響点の候補です。
+
+  - id: q17-dfbetas-1
+    term: dfbetas
+    level: 基本
+    type: truefalse
+    question: |
+      説明変数 $p$ 個（切片あり）の重回帰では、DFBETAS は1つの観測点ごとに $p+1$ 個の値をもつ。
+    answer: true
+    hint: |
+      DFBETAS は当てはめ全体ではなく、何ごとに影響を測る指標か。
+    explanation: |
+      $\mathrm{DFBETAS}_{j,i}=(\hat\beta_j-\hat\beta_{j(i)})/(s_{(i)}\sqrt{c_{jj}})$ は係数 $j=0,1,\dots,p$ ごとに定義されるので、
+      各点 $i$ について $p+1$ 個（全体では $n\times(p+1)$ 個）の値があります。
+      1点につき1つの値にまとめるのがクックの距離や DFFITS です。
+
+  - id: q17-outlier-and-influential-point-1
+    term: outlier-and-influential-point
+    level: 基本
+    type: truefalse
+    question: |
+      回帰の外れ値（残差が大きい点）は、必ず影響点（除くと推定結果が大きく変わる点）でもある。
+    answer: false
+    hint: |
+      クックの距離が「残差の大きさ」と「てこ比の大きさ」の積の形であることを思い出す。
+    explanation: |
+      $D_i=\dfrac{r_i^2}{p+1}\cdot\dfrac{h_{ii}}{1-h_{ii}}$ なので、残差が大きくても $x$ が中心付近（てこ比が小さい）なら影響は小さく済みます。
+      逆に、残差が小さくてもてこ比が大きい点が影響点になることもあります。外れ値と影響点は別の概念です。
+
+  - id: q17-outlier-and-influential-point-2
+    term: outlier-and-influential-point
+    level: 標準
+    type: choice
+    question: |
+      $n=20$ の単回帰（切片あり）で4つの点を調べた。目安を「$|r_i|>2$ なら外れ値、$h_{ii}>2\cdot2/n=0.2$ なら高てこ比、$D_i>4/n=0.2$ なら影響点」とする。
+      「高てこ比だが外れ値でも影響点でもない」点はどれか。
+    choices:
+      - '点A：$r=0.3$、$h=0.45$'
+      - '点B：$r=2.6$、$h=0.05$'
+      - '点C：$r=2.2$、$h=0.35$'
+      - '点D：$r=0.8$、$h=0.08$'
+    answer: 0
+    hint: |
+      各点で $D_i=\dfrac{r_i^2}{2}\cdot\dfrac{h_{ii}}{1-h_{ii}}$ を計算し、3つの基準に当てはめる。
+    explanation: |
+      $$D_A=\frac{0.09}{2}\cdot\frac{0.45}{0.55}=0.037,\quad D_B=\frac{6.76}{2}\cdot\frac{0.05}{0.95}=0.178,$$
+      $$D_C=\frac{4.84}{2}\cdot\frac{0.35}{0.65}=1.30,\quad D_D=\frac{0.64}{2}\cdot\frac{0.08}{0.92}=0.028$$
+      点Aは高てこ比ですが回帰直線の近くにあり（$r=0.3$）、影響点ではありません。
+      点Bは外れ値だが影響点ではなく、点Cは外れ値・高てこ比・影響点のすべて、点Dはどれにも当たりません。
+
+  - id: q17-residual-plot-1
+    term: residual-plot
+    level: 基本
+    type: choice
+    question: |
+      残差を縦軸、当てはめ値を横軸にとった残差プロットで、当てはめ値が大きくなるにつれて残差の散らばりが広がる「らっぱ形」が見られた。
+      最も疑うべきことはどれか。
+    choices:
+      - '誤差の不均一分散'
+      - '誤差の系列相関'
+      - '説明変数どうしの多重共線性'
+      - '回帰係数の符号の誤り'
+    answer: 0
+    hint: |
+      縦方向の「幅」が変わっているのは、誤差のどの性質が一定でないことを示すか。
+    explanation: |
+      散らばりの幅が当てはめ値とともに変わるのは、誤差の分散が一定でない（不均一分散）サインです。
+      系列相関は時間順に並べた残差の「波打ち」として現れ、多重共線性は残差プロットにはふつう現れません。
+      対処として $y$ の対数変換、加重最小二乗法、頑健標準誤差などを考えます。
+
+  - id: q17-residual-plot-2
+    term: residual-plot
+    level: 標準
+    type: truefalse
+    question: |
+      切片を含む線形回帰を最小二乗法で当てはめたとき、残差 $e_i$ を当てはめ値 $\hat y_i$ に対してプロットすると、
+      モデルが不適切な場合には右上がりの直線的な傾向が現れることがある。
+    answer: false
+    hint: |
+      $\sum e_i=0$ と $\sum\hat y_ie_i=0$ から、残差と当てはめ値の標本相関係数を求める。
+    explanation: |
+      最小二乗法の正規方程式から $\sum e_i=0$、$\sum\hat y_ie_i=0$ がいつも成り立つので、
+      $$\sum(\hat y_i-\bar{\hat y})(e_i-\bar e)=\sum\hat y_ie_i=0$$
+      となり、残差と当てはめ値の相関は**必ず0**です。モデルがどれほど不適切でも直線的な傾きは出ません。
+      残差プロットで見るべきは、曲がり（非線形性）・幅の変化（不均一分散）・並び方の癖です。
+
+  - id: q17-normal-qq-plot-1
+    term: normal-qq-plot
+    level: 標準
+    type: numeric
+    question: |
+      $n=10$ 個の残差で正規Q-Qプロットを描く。プロット位置を $(i-0.5)/n$ とするとき、
+      9番目に小さい残差の横軸の値（理論分位点）$q_9$ を小数第2位まで求めよ。
+    answer: 1.04
+    tolerance: 0.005
+    hint: |
+      $q_i=\Phi^{-1}\!\left(\dfrac{i-0.5}{n}\right)$ に $i=9$ を代入する。
+    explanation: |
+      $(9-0.5)/10=0.85$ なので
+      $$q_9=\Phi^{-1}(0.85)=1.036\approx1.04$$
+      です（標準正規分布の上側15%点）。$i/n=0.9$ を使うと $1.28$、$i/(n+1)$ を使うと $\Phi^{-1}(0.818)=0.91$ となり、プロット位置の流儀で少し変わります。
+
+  - id: q17-normal-qq-plot-2
+    term: normal-qq-plot
+    level: 基本
+    type: choice
+    question: |
+      残差の正規Q-Qプロット（横軸が理論分位点、縦軸が残差の順序統計量）で、中央付近の点は直線に乗っているが、
+      左端の点は直線より下に、右端の点は直線より上に外れていた。残差の分布について最も適切な解釈はどれか。
+    choices:
+      - '正規分布より裾が重い'
+      - '正規分布より裾が軽い'
+      - '右に歪んでいる'
+      - '左に歪んでいる'
+    answer: 0
+    hint: |
+      左端が直線より下とは、小さいほうの値が正規分布の想定よりさらに小さいということ。
+    explanation: |
+      左端が下（想定より小さい値）、右端が上（想定より大きい値）なので、両側とも極端な値が正規分布より出やすい、つまり裾が重い分布（$t$ 分布など）です。
+      逆向き（左端が上、右端が下）なら裾が軽く、両端とも上に曲がる（下に凸）なら右に歪んだ分布です。
+
+  - id: q17-heteroscedasticity-1
+    term: heteroscedasticity
+    level: 基本
+    type: truefalse
+    question: |
+      誤差が不均一分散（ただし平均0で互いに無相関）のとき、最小二乗推定量 $\hat{\boldsymbol\beta}$ は偏りをもつ。
+    answer: false
+    hint: |
+      $E[\hat{\boldsymbol\beta}]$ の計算に、誤差の分散は使われるか。
+    explanation: |
+      $\hat{\boldsymbol\beta}=\boldsymbol\beta+(X^\top X)^{-1}X^\top\boldsymbol\varepsilon$ なので、$E[\boldsymbol\varepsilon]=\boldsymbol0$ だけで $E[\hat{\boldsymbol\beta}]=\boldsymbol\beta$ です。
+      不均一分散で狂うのは分散の方で、本当の分散 $(X^\top X)^{-1}X^\top\Sigma X(X^\top X)^{-1}$ と通常の公式 $\sigma^2(X^\top X)^{-1}$ が一致しなくなり、
+      標準誤差・$t$ 検定・信頼区間が信用できなくなります。また OLS は最良線形不偏推定量ではなくなります。
+
+  - id: q17-heteroscedasticity-2
+    term: heteroscedasticity
+    level: 応用
+    type: numeric
+    question: |
+      $x=1,2,3,4$ の4点で単回帰 $y_i=\beta_0+\beta_1x_i+\varepsilon_i$ を考える。誤差は互いに無相関で $V[\varepsilon_i]=x_i^2$ とする。
+      最小二乗推定量 $\hat\beta_1$ の本当の分散 $V[\hat\beta_1]$ を小数第2位まで求めよ。
+    answer: 1.66
+    tolerance: 0.005
+    hint: |
+      $\hat\beta_1=\sum(x_i-\bar x)y_i/S_{xx}$ と書けるので、$V[\hat\beta_1]=\sum(x_i-\bar x)^2\sigma_i^2/S_{xx}^2$。
+    explanation: |
+      $\bar x=2.5$、偏差は $-1.5,-0.5,0.5,1.5$、$S_{xx}=5$ です。
+      $$V[\hat\beta_1]=\frac{2.25\cdot1+0.25\cdot4+0.25\cdot9+2.25\cdot16}{5^2}=\frac{41.5}{25}=1.66$$
+      分散の平均 $7.5$ を等分散と思って $\sigma^2/S_{xx}$ に入れると $1.5$ となり、端の点の大きな分散が効く分だけ過小評価になります。
+
+  - id: q17-serial-correlation-1
+    term: serial-correlation
+    level: 標準
+    type: numeric
+    question: |
+      回帰の誤差が定常な AR(1) $\varepsilon_t=0.6\,\varepsilon_{t-1}+u_t$（$u_t$ は独立に平均0・分散2）に従う。
+      $\mathrm{Cov}(\varepsilon_t,\ \varepsilon_{t-2})$ を小数第3位まで求めよ。
+    answer: 1.125
+    tolerance: 0.001
+    hint: |
+      $V[\varepsilon_t]=\sigma_u^2/(1-\rho^2)$、ラグ $k$ の相関は $\rho^k$。
+    explanation: |
+      $$V[\varepsilon_t]=\frac{2}{1-0.36}=3.125,\qquad \mathrm{Corr}(\varepsilon_t,\varepsilon_{t-2})=0.6^2=0.36$$
+      より $\mathrm{Cov}=3.125\times0.36=1.125$ です。$\sigma_u^2=2$ をそのまま使うと $0.72$ となり誤りです。
+
+  - id: q17-serial-correlation-2
+    term: serial-correlation
+    level: 基本
+    type: truefalse
+    question: |
+      誤差に正の系列相関があっても最小二乗推定量は不偏であるが、説明変数も正の自己相関をもつ典型的な場面では、
+      通常の公式による標準誤差は過小になりやすく、$t$ 値が大きく出すぎる。
+    answer: true
+    hint: |
+      不偏性に必要なのは $E[\boldsymbol\varepsilon]=\boldsymbol0$ だけ。分散の公式は何を仮定しているか。
+    explanation: |
+      不偏性は誤差の相関の有無と関係なく成り立ちます。一方、通常の標準誤差は誤差が無相関という仮定のもとの式なので正しくありません。
+      誤差と説明変数がともに正の自己相関をもつと、本当の分散は通常の公式より大きくなり、標準誤差が過小 → 有意になりすぎる、という典型的な問題が起こります。
+
+  - id: q17-durbin-watson-statistic-1
+    term: durbin-watson-statistic
+    level: 標準
+    type: numeric
+    question: |
+      時系列の回帰（切片あり）の残差が時間順に $1,\ 2,\ 1,\ -1,\ -2,\ -1$ であった。ダービン・ワトソン比 $d$ を小数第3位まで求めよ。
+    answer: 0.667
+    tolerance: 0.001
+    hint: |
+      分子は隣り合う残差の差の2乗和（5項）、分母は残差の2乗和（6項）。
+    explanation: |
+      差は $1,\ -1,\ -2,\ -1,\ 1$ で2乗和は $1+1+4+1+1=8$、残差の2乗和は $1+4+1+1+4+1=12$ なので
+      $$d=\frac{8}{12}=0.667$$
+      です。2より大きく下回っており、正の系列相関（同じ符号が続く）を示唆します。
+
+  - id: q17-durbin-watson-statistic-2
+    term: durbin-watson-statistic
+    level: 基本
+    type: choice
+    question: |
+      回帰の残差のラグ1の自己相関が $r_1=-0.35$ であった。ダービン・ワトソン比 $d$ のおよその値はどれか。
+    choices:
+      - '$2.7$'
+      - '$1.3$'
+      - '$0.7$'
+      - '$-0.7$'
+    answer: 0
+    hint: |
+      $d\approx2(1-r_1)$。
+    explanation: |
+      $$d\approx2\{1-(-0.35)\}=2.7$$
+      です。負の系列相関では $d$ は2より大きく4に近づきます。$1.3$ は符号を取り違えた値（$r_1=+0.35$ のとき）、
+      $0.7$ や $-0.7$ は2倍し忘れた値です。$d$ は必ず $0\le d\le4$ です。
+
+  - id: q17-durbin-watson-statistic-3
+    term: durbin-watson-statistic
+    level: 応用
+    type: choice
+    question: |
+      ある時系列回帰でダービン・ワトソン比が $d=2.85$ であった。数表の値は $d_L=1.10$、$d_U=1.54$ である。
+      負の系列相関（$\rho<0$）を対立仮説とする検定の結論はどれか。
+    choices:
+      - '判定保留（どちらとも言えない）'
+      - '$H_0:\rho=0$ を棄却し、負の系列相関があるとする'
+      - '$H_0$ を棄却しない'
+      - '$d>2$ なので正の系列相関があるとする'
+    answer: 0
+    hint: |
+      負の系列相関の検定では $d$ ではなく $4-d$ を $d_L,\ d_U$ と比べる。
+    explanation: |
+      $4-d=1.15$ で、$d_L=1.10\le1.15\le d_U=1.54$ なので判定保留です。
+      $4-d<d_L$ なら棄却、$4-d>d_U$ なら棄却しません。$d=2.85$ をそのまま $d_U$ と比べて「棄却しない」としたり、
+      $d>2$ を正の系列相関と読んだりするのは誤りです。
+
+  - id: q17-breusch-pagan-test-1
+    term: breusch-pagan-test
+    level: 標準
+    type: numeric
+    question: |
+      $n=50$ のデータで回帰を当てはめ、残差の2乗 $e_i^2$ を定数と2つの説明変数に回帰した補助回帰の決定係数が $R^2_{\text{aux}}=0.12$ であった。
+      スチューデント化版のブルーシュ・ペイガン検定の漸近 $p$ 値を小数第3位まで求めよ。
+    answer: 0.05
+    tolerance: 0.001
+    hint: |
+      $LM=nR^2_{\text{aux}}$ が自由度 $q$（補助回帰の説明変数の数）のカイ二乗分布に従う。自由度2のカイ二乗分布の上側確率は $e^{-x/2}$。
+    explanation: |
+      $LM=50\times0.12=6.0$、自由度は $q=2$ です。自由度2のカイ二乗分布は平均2の指数分布なので
+      $$p=P(\chi^2_2\ge6)=e^{-3}=0.0498\approx0.050$$
+      有意水準5%ではぎりぎり棄却となり、不均一分散の疑いがあります。
+
+  - id: q17-robust-standard-error-1
+    term: robust-standard-error
+    level: 基本
+    type: truefalse
+    question: |
+      ホワイトの頑健標準誤差を使うと、回帰係数の推定値 $\hat{\boldsymbol\beta}$ そのものも、通常の最小二乗推定値とは異なる値になる。
+    answer: false
+    hint: |
+      頑健標準誤差は、推定量と分散推定のどちらを置き換える方法か。
+    explanation: |
+      頑健標準誤差は $\hat{\boldsymbol\beta}=(X^\top X)^{-1}X^\top\boldsymbol y$ をそのまま使い、分散だけを
+      $$(X^\top X)^{-1}\Big(\sum e_i^2\boldsymbol x_i\boldsymbol x_i^\top\Big)(X^\top X)^{-1}$$
+      で推定し直します。変わるのは標準誤差・$t$ 値・信頼区間だけです。係数自体を変えるのは加重最小二乗法です。

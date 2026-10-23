@@ -5,7 +5,7 @@ reading: まちぎょうれつりろん
 en: Queueing theory
 aliases: [待ち行列, ケンドールの記号, Kendall notation, ポラチェック・ヒンチンの公式]
 chapter: 15
-importance: B
+importance: C
 tags: [待ち行列, ポアソン過程, 出生死滅過程, オペレーションズ・リサーチ]
 related: [mm1-queue, traffic-intensity, littles-law, birth-death-process, poisson-process, mmc-queue]
 charts:

@@ -5,7 +5,7 @@ reading: ぼぶんさんひのくかんすいてい
 en: Confidence interval for the ratio of two variances
 aliases: [母分散の比の信頼区間, 分散比の信頼区間]
 chapter: 9
-importance: B
+importance: A
 tags: [区間推定, F分布, 等分散]
 related: [f-distribution, ci-variance, f-test-equal-variances, pivotal-quantity, ci-two-sample-mean-difference]
 charts:

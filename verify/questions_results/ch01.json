@@ -1,0 +1,58 @@
+{
+ "q01-bayes-theorem-1": {
+  "hash": "10adf0a490adad93",
+  "ok": true
+ },
+ "q01-bayes-theorem-2": {
+  "hash": "452f321ce0fa0ae4",
+  "ok": true
+ },
+ "q01-bayes-theorem-3": {
+  "hash": "fee9218b39ebe8cf",
+  "ok": true
+ },
+ "q01-conditional-independence-1": {
+  "hash": "6b71b601dd353ddc",
+  "ok": true
+ },
+ "q01-conditional-independence-2": {
+  "hash": "665f2b35a03b9ddd",
+  "ok": true
+ },
+ "q01-conditional-independence-3": {
+  "hash": "d8c19e4f1e33f640",
+  "ok": true
+ },
+ "q01-conditional-probability-1": {
+  "hash": "0f1e52d0da75d722",
+  "ok": true
+ },
+ "q01-conditional-probability-2": {
+  "hash": "1a3d9ddd92bfafcb",
+  "ok": true
+ },
+ "q01-conditional-probability-3": {
+  "hash": "00029b50db2913ec",
+  "ok": true
+ },
+ "q01-independence-of-events-1": {
+  "hash": "6b26b9d427a435d6",
+  "ok": true
+ },
+ "q01-independence-of-events-2": {
+  "hash": "6b120cbaafd3c832",
+  "ok": true
+ },
+ "q01-independence-of-events-3": {
+  "hash": "889e66c704be316d",
+  "ok": true
+ },
+ "q01-law-of-total-probability-1": {
+  "hash": "bf1eea2a98b2d7b3",
+  "ok": true
+ },
+ "q01-law-of-total-probability-2": {
+  "hash": "68810bd20dbfc49e",
+  "ok": true
+ }
+}

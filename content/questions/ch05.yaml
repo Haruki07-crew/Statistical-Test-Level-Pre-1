@@ -1,0 +1,354 @@
+chapter: 5
+questions:
+  - id: q05-bernoulli-distribution-1
+    term: bernoulli-distribution
+    level: 基本
+    type: truefalse
+    question: |
+      $X$ が成功確率 $p$ のベルヌーイ分布に従うとき、分散 $V[X]$ は $p=1/2$ で最大となり、その最大値は $1/2$ である。
+    answer: false
+    hint: |
+      $V[X]=p(1-p)$ を $p=1/2$ で評価する。
+    explanation: |
+      $X^2=X$ より $E[X^2]=p$ なので $V[X]=p-p^2=p(1-p)$ です。
+      これは $p=1/2$ で最大ですが、最大値は
+      $$\frac12\cdot\frac12=\frac14$$
+      です。「最大になる場所」と「最大値」を取り違えないようにします。
+
+  - id: q05-bernoulli-distribution-2
+    term: bernoulli-distribution
+    level: 標準
+    type: numeric
+    question: |
+      $X$ が成功確率 $p=0.2$ のベルヌーイ分布に従うとき、3次の中心モーメント $E[(X-p)^3]$ を小数第3位まで求めよ。
+    answer: 0.096
+    tolerance: 0.001
+    hint: |
+      $X$ は $0$ と $1$ の2値しかとらないので、$(X-p)^3$ の期待値を2項の和で直接計算できる。
+    explanation: |
+      $$E[(X-p)^3]=p(1-p)^3+(1-p)(-p)^3=p(1-p)\{(1-p)^2-p^2\}=p(1-p)(1-2p)$$
+      $p=0.2$ を代入して $0.2\times0.8\times0.6=0.096$ です。
+      $p<1/2$ なら正（右に歪む）、$p=1/2$ で0になります。
+
+  - id: q05-binomial-distribution-1
+    term: binomial-distribution
+    level: 基本
+    type: numeric
+    question: |
+      $X\sim\mathrm{Bin}(6,\ 0.4)$ のとき、$P(X=2)$ を小数第3位まで求めよ。
+    answer: 0.311
+    tolerance: 0.001
+    hint: |
+      $P(X=k)=\binom{n}{k}p^k(1-p)^{n-k}$ に代入する。
+    explanation: |
+      $$P(X=2)=\binom62(0.4)^2(0.6)^4=15\times0.16\times0.1296=0.31104$$
+      より $0.311$ です。
+
+  - id: q05-binomial-distribution-2
+    term: binomial-distribution
+    level: 標準
+    type: choice
+    question: |
+      二項分布 $\mathrm{Bin}(n,p)$ に従う $X$ の期待値が $12$、分散が $8.4$ であった。$(n,p)$ はどれか。
+    choices:
+      - '$n=40,\ p=0.3$'
+      - '$n=40,\ p=0.7$'
+      - '$n=60,\ p=0.2$'
+      - '$n=30,\ p=0.4$'
+    answer: 0
+    hint: |
+      分散 $\div$ 期待値 $=1-p$ を使う。
+    explanation: |
+      $np=12$、$np(1-p)=8.4$ より $1-p=8.4/12=0.7$、つまり $p=0.3$、$n=12/0.3=40$ です。
+      $p=0.7$ は $1-p$ と取り違えた誤り（期待値が28になる）、
+      $n=60,p=0.2$ や $n=30,p=0.4$ は期待値は12ですが分散が $9.6$、$7.2$ になります。
+
+  - id: q05-binomial-distribution-3
+    term: binomial-distribution
+    level: 応用
+    type: numeric
+    question: |
+      $X\sim\mathrm{Bin}(100,\ 0.5)$ のとき、$P(X\ge60)$ を連続修正つきの正規近似で求め、小数第3位まで答えよ。
+    answer: 0.029
+    tolerance: 0.001
+    hint: |
+      $E[X]$ と $V[X]$ を求め、$X\ge60$ を連続量では $X\ge59.5$ とみなして標準化する。
+    explanation: |
+      $E[X]=50$、$V[X]=100\times0.5\times0.5=25$、標準偏差は $5$ です。連続修正により
+      $$P(X\ge60)\approx P\!\left(Z\ge\frac{59.5-50}{5}\right)=P(Z\ge1.9)=0.0287$$
+      正確な値は $0.0284$ で、よく近似できています。修正なし（$Z\ge2$）だと $0.0228$ となり、ずれが大きくなります。
+
+  - id: q05-hypergeometric-distribution-1
+    term: hypergeometric-distribution
+    level: 基本
+    type: numeric
+    question: |
+      赤玉5個と白玉7個が入った箱から、4個を同時に（非復元で）取り出す。赤玉がちょうど2個である確率を小数第3位まで求めよ。
+    answer: 0.424
+    tolerance: 0.001
+    hint: |
+      「赤から2個」と「白から2個」の選び方の積を、全体の選び方で割る。
+    explanation: |
+      $$P=\frac{\binom52\binom72}{\binom{12}{4}}=\frac{10\times21}{495}=\frac{210}{495}=0.4242$$
+
+  - id: q05-hypergeometric-distribution-2
+    term: hypergeometric-distribution
+    level: 標準
+    type: numeric
+    question: |
+      当たり8本を含む20本のくじから5本を非復元で引く。当たりの本数 $X$ の分散を小数第3位まで求めよ。
+    answer: 0.947
+    tolerance: 0.001
+    hint: |
+      $p=K/N$ として、二項分布の分散 $np(1-p)$ に有限母集団修正 $(N-n)/(N-1)$ を掛ける。
+    explanation: |
+      $p=8/20=0.4$ なので
+      $$V[X]=5\times0.4\times0.6\times\frac{20-5}{20-1}=1.2\times\frac{15}{19}=0.947$$
+      復元抽出（二項分布）なら $1.2$ で、非復元のほうが分散は小さくなります。
+
+  - id: q05-hypergeometric-distribution-3
+    term: hypergeometric-distribution
+    level: 標準
+    type: truefalse
+    question: |
+      当たり $K$ 本を含む $N$ 本のくじから $n$ 本を非復元で引くとき、各回の当たりは独立ではないので、
+      当たりの本数の期待値は復元抽出の場合の $nK/N$ より小さくなる。
+    answer: false
+    hint: |
+      $i$ 回目に当たる確率だけを考えると、何回目でも同じ値になる。
+    explanation: |
+      $X=\sum_{i=1}^{n}I_i$（$I_i$ は $i$ 回目に当たりなら1）と書くと、どの $i$ でも $P(I_i=1)=K/N$ です。
+      期待値の線形性は独立性を必要としないので
+      $$E[X]=\sum_{i=1}^{n}E[I_i]=\frac{nK}{N}$$
+      で、復元抽出と同じです。非復元で変わるのは分散（有限母集団修正の分だけ小さくなる）です。
+
+  - id: q05-finite-population-correction-1
+    term: finite-population-correction
+    level: 標準
+    type: numeric
+    question: |
+      大きさ $N=500$ の母集団（母分散 $\sigma^2=\frac1N\sum(y_i-\mu)^2=400$）から、$n=100$ を非復元の単純無作為抽出で取る。
+      標本平均 $\bar y$ の標準誤差 $\sqrt{V[\bar y]}$ を小数第3位まで求めよ。
+    answer: 1.791
+    tolerance: 0.001
+    hint: |
+      $V[\bar y]=\dfrac{N-n}{N-1}\cdot\dfrac{\sigma^2}{n}$ を使う。
+    explanation: |
+      $$V[\bar y]=\frac{400}{499}\cdot\frac{400}{100}=3.2064,\qquad\sqrt{3.2064}=1.791$$
+      修正なしの $\sigma/\sqrt n=2$ より約1割小さくなります（抽出率が20%と大きいため）。
+
+  - id: q05-finite-population-correction-2
+    term: finite-population-correction
+    level: 基本
+    type: truefalse
+    question: |
+      母集団の全員を調べる全数調査（$n=N$）では、有限母集団修正 $\dfrac{N-n}{N-1}$ が0になり、標本平均の分散も0になる。
+    answer: true
+    hint: |
+      $n=N$ を代入する。全数調査なら標本平均は何に一致するか。
+    explanation: |
+      $n=N$ なら $\dfrac{N-N}{N-1}=0$ で、$V[\bar y]=0$ です。
+      全員を調べれば標本平均は母平均そのものなので、ばらつきがないことと整合します。
+
+  - id: q05-fisher-exact-test-1
+    term: fisher-exact-test
+    level: 標準
+    type: numeric
+    question: |
+      新しい方法と従来の方法をそれぞれ5人に試し、次の結果を得た。
+
+      | | 成功 | 失敗 |
+      |---|---|---|
+      | 新しい方法 | 4 | 1 |
+      | 従来の方法 | 1 | 4 |
+
+      「新しい方法のほうが成功しやすい」を対立仮説とするフィッシャーの正確検定（片側）の p 値を小数第3位まで求めよ。
+    answer: 0.103
+    tolerance: 0.001
+    hint: |
+      周辺度数（行和5,5・列和5,5）を固定すると、左上のセルは超幾何分布に従う。左上が4以上になる確率を求める。
+    explanation: |
+      左上のセル $a$ は、10人中成功5人のうち新しい方法の5人に入る人数なので
+      $$P(a=k)=\frac{\binom5k\binom5{5-k}}{\binom{10}{5}},\qquad\binom{10}5=252$$
+      です。$P(a=4)=25/252$、$P(a=5)=1/252$ より
+      $$p=\frac{25+1}{252}=0.103$$
+      有意水準5%では有意になりません。
+
+  - id: q05-fisher-exact-test-2
+    term: fisher-exact-test
+    level: 基本
+    type: truefalse
+    question: |
+      2×2分割表のフィッシャーの正確検定では、行和と列和をすべて固定した条件のもとで、
+      帰無仮説（独立・効果なし）が正しければ1つのセルの度数が超幾何分布に従うことを使って p 値を計算する。
+    answer: true
+    hint: |
+      周辺度数を固定すると、表の自由度はいくつになるか。
+    explanation: |
+      周辺度数を固定すると2×2表は1つのセルで決まり、帰無仮説のもとでそのセルは超幾何分布に従います。
+      近似を使わないので、期待度数が小さくカイ二乗近似が当てにならないときに使われます。
+
+  - id: q05-poisson-distribution-1
+    term: poisson-distribution
+    level: 基本
+    type: numeric
+    question: |
+      ある店に10分間に来る客の数が、平均3のポアソン分布に従うとする。10分間の客がちょうど2人である確率を小数第3位まで求めよ。
+    answer: 0.224
+    tolerance: 0.001
+    hint: |
+      $P(X=k)=e^{-\lambda}\lambda^k/k!$。
+    explanation: |
+      $$P(X=2)=e^{-3}\frac{3^2}{2!}=4.5\times0.04979=0.2240$$
+
+  - id: q05-poisson-distribution-2
+    term: poisson-distribution
+    level: 標準
+    type: numeric
+    question: |
+      窓口Aの1時間の来客数 $X\sim\mathrm{Po}(1.5)$、窓口Bの来客数 $Y\sim\mathrm{Po}(2.5)$ が独立であるとき、
+      2つの窓口の合計がちょうど2人である確率を小数第3位まで求めよ。
+    answer: 0.147
+    tolerance: 0.001
+    hint: |
+      ポアソン分布の再生性を使い、$X+Y$ の分布を求める。
+    explanation: |
+      再生性より $X+Y\sim\mathrm{Po}(4)$ なので
+      $$P(X+Y=2)=e^{-4}\frac{4^2}{2!}=8e^{-4}=0.1465$$
+
+  - id: q05-poisson-distribution-3
+    term: poisson-distribution
+    level: 応用
+    type: numeric
+    question: |
+      前問と同じく $X\sim\mathrm{Po}(1.5)$、$Y\sim\mathrm{Po}(2.5)$ が独立とする。合計が $X+Y=4$ であったとき、
+      $X=1$ である条件付き確率を小数第3位まで求めよ。
+    answer: 0.366
+    tolerance: 0.001
+    hint: |
+      $P(X=1\mid X+Y=4)=P(X=1)P(Y=3)/P(X+Y=4)$ を整理すると、ある二項分布になる。
+    explanation: |
+      $$P(X=1\mid X+Y=4)=\frac{e^{-1.5}1.5\cdot e^{-2.5}2.5^3/3!}{e^{-4}4^4/4!}=\binom41\left(\frac{1.5}{4}\right)\left(\frac{2.5}{4}\right)^3$$
+      つまり $X\mid X+Y=4\sim\mathrm{Bin}(4,\ 0.375)$ で、
+      $$4\times0.375\times0.625^3=0.366$$
+
+  - id: q05-geometric-distribution-1
+    term: geometric-distribution
+    level: 基本
+    type: numeric
+    question: |
+      成功確率 $p=0.25$ のベルヌーイ試行を繰り返し、最初の成功までに起きた**失敗の回数** $X$（$P(X=x)=pq^x$, $x=0,1,2,\dots$, $q=1-p$）を考える。
+      $E[X]$ を求めよ。
+    answer: 3
+    tolerance: 0.01
+    hint: |
+      失敗回数で定義した幾何分布の期待値は $q/p$。試行回数で定義した場合（$1/p$）との違いに注意。
+    explanation: |
+      $$E[X]=\frac{q}{p}=\frac{0.75}{0.25}=3$$
+      試行回数 $Y=X+1$ で数える流儀なら $E[Y]=1/p=4$ で、1だけずれます。
+
+  - id: q05-geometric-distribution-2
+    term: geometric-distribution
+    level: 標準
+    type: numeric
+    question: |
+      成功確率 $p=0.2$ の試行で、最初の成功までの**失敗回数** $X$（$P(X=x)=pq^x$, $x=0,1,\dots$）について、
+      $P(X\ge4)$ を小数第3位まで求めよ。
+    answer: 0.41
+    tolerance: 0.001
+    hint: |
+      $X\ge4$ は「最初の4回がすべて失敗」と同じ事象。
+    explanation: |
+      $X\ge4$ は最初の4回が続けて失敗することと同じなので
+      $$P(X\ge4)=q^4=0.8^4=0.4096$$
+      より $0.410$ です。級数 $\sum_{x\ge4}pq^x$ を計算しても同じ値になります。
+
+  - id: q05-geometric-distribution-3
+    term: geometric-distribution
+    level: 応用
+    type: choice
+    question: |
+      成功確率 $p=0.3$ の試行で、最初の成功までの**失敗回数** $X$（$P(X=x)=pq^x$, $x=0,1,\dots$）を考える。
+      $P(X\ge7\mid X\ge3)$ はどれか。
+    choices:
+      - '$0.7^4\approx0.240$'
+      - '$0.7^7\approx0.082$'
+      - '$0.7^3=0.343$'
+      - '$0.3\times0.7^4\approx0.072$'
+    answer: 0
+    hint: |
+      無記憶性 $P(X\ge s+t\mid X\ge s)=P(X\ge t)$ を使う。
+    explanation: |
+      $$P(X\ge7\mid X\ge3)=\frac{P(X\ge7)}{P(X\ge3)}=\frac{0.7^7}{0.7^3}=0.7^4=0.2401$$
+      これは $P(X\ge4)$ に等しく、すでに3回失敗したことは今後に影響しません（無記憶性）。
+      $0.7^7$ は条件付けを忘れた値、$0.3\times0.7^4$ は $P(X=4)$ です。
+
+  - id: q05-negative-binomial-distribution-1
+    term: negative-binomial-distribution
+    level: 標準
+    type: numeric
+    question: |
+      成功確率 $p=0.5$ の試行で、3回目の成功までに起きた**失敗の回数** $X$（負の二項分布 $\mathrm{NB}(3,0.5)$、$P(X=x)=\binom{r+x-1}{x}p^rq^x$）を考える。
+      $P(X=2)$ を小数第4位まで求めよ。
+    answer: 0.1875
+    tolerance: 0.0001
+    hint: |
+      最後（5回目）の試行は必ず成功。それまでの4回で成功2回・失敗2回の並べ方を数える。
+    explanation: |
+      $$P(X=2)=\binom{3+2-1}{2}(0.5)^3(0.5)^2=6\times\frac{1}{32}=0.1875$$
+      「最後が3回目の成功」なので、$\binom{5}{2}$ ではなく $\binom{4}{2}$ になる点に注意します。
+
+  - id: q05-negative-binomial-distribution-2
+    term: negative-binomial-distribution
+    level: 応用
+    type: derivation
+    question: |
+      $X\sim\mathrm{NB}(r,p)$（$r$ 回目の成功までの**失敗回数**）の期待値と分散を、幾何分布の和として求めよ。
+      ただし幾何分布（失敗回数）の期待値 $q/p$、分散 $q/p^2$ は使ってよい。
+    steps:
+      - |
+        $j-1$ 回目の成功の直後から $j$ 回目の成功までの失敗回数を $G_j$ とすると、$G_1,\dots,G_r$ は独立に $\mathrm{Geo}(p)$ に従い、$X=G_1+\dots+G_r$。
+      - |
+        期待値の線形性より $E[X]=r\cdot\dfrac{q}{p}$。
+      - |
+        独立なので分散も足せて $V[X]=r\cdot\dfrac{q}{p^2}$。
+    answer: "$E[X]=\\dfrac{rq}{p},\\quad V[X]=\\dfrac{rq}{p^2}$"
+    hint: |
+      $r$ 回の成功を区切りにして、失敗回数を $r$ 個の部分に分ける。
+    explanation: |
+      $X=\sum_{j=1}^{r}G_j$（$G_j\sim\mathrm{Geo}(p)$ 独立）より
+      $$E[X]=\frac{rq}{p},\qquad V[X]=\frac{rq}{p^2}$$
+      です。$V[X]/E[X]=1/p>1$ なので、負の二項分布は平均より分散が大きい（過分散）データのモデルに使われます。
+
+  - id: q05-multinomial-distribution-1
+    term: multinomial-distribution
+    level: 標準
+    type: numeric
+    question: |
+      ある商品の評価は「良い」「普通」「悪い」がそれぞれ確率 $0.5,\ 0.3,\ 0.2$ で独立に選ばれる。
+      5人の評価が「良い」2人・「普通」2人・「悪い」1人となる確率を小数第3位まで求めよ。
+    answer: 0.135
+    tolerance: 0.001
+    hint: |
+      並べ方の数 $\dfrac{n!}{x_1!x_2!x_3!}$ に各確率のべきを掛ける。
+    explanation: |
+      $$\frac{5!}{2!\,2!\,1!}(0.5)^2(0.3)^2(0.2)^1=30\times0.25\times0.09\times0.2=0.135$$
+
+  - id: q05-multinomial-distribution-2
+    term: multinomial-distribution
+    level: 応用
+    type: choice
+    question: |
+      $(X_1,X_2,X_3)$ が多項分布 $\mathrm{Mult}(10;\ 0.5,0.3,0.2)$ に従うとき、共分散 $\mathrm{Cov}(X_1,X_2)$ はどれか。
+    choices:
+      - '$-1.5$'
+      - '$0$'
+      - '$1.5$'
+      - '$-0.15$'
+    answer: 0
+    hint: |
+      $X_1+X_2$ はどんな分布に従うかを考え、$V[X_1+X_2]=V[X_1]+V[X_2]+2\mathrm{Cov}(X_1,X_2)$ を使う。
+    explanation: |
+      $X_1\sim\mathrm{Bin}(10,0.5)$、$X_2\sim\mathrm{Bin}(10,0.3)$、$X_1+X_2\sim\mathrm{Bin}(10,0.8)$ なので
+      $$2\mathrm{Cov}=10(0.8)(0.2)-10(0.5)(0.5)-10(0.3)(0.7)=1.6-2.5-2.1=-3.0$$
+      より $\mathrm{Cov}(X_1,X_2)=-1.5=-np_1p_2$ です。合計が $n$ に固定されているので、一方が増えれば他方は減りやすく、負の相関になります。

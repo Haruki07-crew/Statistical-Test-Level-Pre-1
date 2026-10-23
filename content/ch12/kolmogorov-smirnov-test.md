@@ -5,7 +5,7 @@ reading: こるもごろふすみるのふけんてい
 en: Kolmogorov-Smirnov test
 aliases: [KS検定, コルモゴロフ・スミルノフの1標本検定, K-S検定]
 chapter: 12
-importance: B
+importance: C
 tags: [適合度検定, 経験分布関数, ノンパラメトリック, 連続分布]
 related: [cumulative-distribution-function, goodness-of-fit-test, kolmogorov-smirnov-two-sample, normal-qq-plot, normality-test, uniform-random-number]
 charts:

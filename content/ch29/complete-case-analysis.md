@@ -3,9 +3,9 @@ id: complete-case-analysis
 title: 完全ケース分析
 reading: かんぜんけーすぶんせき
 en: Complete-case analysis
-aliases: [リストワイズ除去, リストワイズ削除, "listwise deletion", ペアワイズ除去]
+aliases: [リストワイズ除去, リストワイズ削除, "listwise deletion", ペアワイズ除去, 削除法]
 chapter: 29
-importance: B
+importance: A
 tags: [欠測データ, 欠測への対処]
 related: [mcar, mar, missing-data-mechanism, single-imputation, multiple-imputation]
 charts:

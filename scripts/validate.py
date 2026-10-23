@@ -4,6 +4,7 @@
     .venv/bin/python scripts/validate.py              # 全部
     .venv/bin/python scripts/validate.py --only ID    # 1用語だけ
     .venv/bin/python scripts/validate.py --chapter N  # 1章だけ
+    .venv/bin/python scripts/validate.py --questions  # 問題ファイル（content/questions/）だけ
 
 エラーがあれば終了コード1。警告は表示のみ。
 """
@@ -187,8 +188,8 @@ def check_file(path, plan_terms, customs, all_aliases):
                 warn(f"title が plan.yaml（{pt.get('title')}）と違います")
     if fm.get("importance") not in ("A", "B", "C"):
         err(f"importance は A/B/C: {fm.get('importance')}")
-    if not isinstance(fm.get("chapter"), int) or not 1 <= fm.get("chapter", 0) <= 32:
-        err("chapter は1〜32の整数")
+    if not isinstance(fm.get("chapter"), int) or not 1 <= fm.get("chapter", 0) <= 33:
+        err("chapter は1〜33の整数")
     rd = fm.get("reading") or ""
     if rd and not re.fullmatch(r"[ぁ-ゟー・a-zA-Z0-9０-９ 　\-]+", str(rd)):
         warn(f"reading はひらがなで書いてください: {rd}")
@@ -239,13 +240,120 @@ def check_file(path, plan_terms, customs, all_aliases):
     return errors, warnings, fm
 
 
+Q_ID_RE = re.compile(r"^q\d{2}-[a-z0-9]+(-[a-z0-9]+)*$")
+Q_TYPES = {"choice", "numeric", "truefalse", "derivation"}
+Q_LEVELS = {"基本", "標準", "応用"}
+Q_TEXT = ["question", "hint", "explanation"]
+
+
+def check_questions(plan_terms, chapter=None):
+    """content/questions/chNN.yaml の検査。戻り値：(エラー数, 警告数, ファイル数, 問題数)"""
+    n_err = n_warn = n_files = n_q = 0
+    seen = {}
+    files = sorted((CONTENT / "questions").glob("ch*.yaml"))
+    if chapter:
+        files = [p for p in files if p.stem == f"ch{chapter:02d}"]
+    for p in files:
+        n_files += 1
+        rel = p.relative_to(ROOT)
+        errs, warns = [], []
+        try:
+            data = yaml.safe_load(p.read_text(encoding="utf-8")) or {}
+        except yaml.YAMLError as e:
+            print(f"[ERROR] {rel}: YAML として読めません: {str(e).splitlines()[0]}")
+            n_err += 1
+            continue
+        m = re.match(r"ch(\d{2})$", p.stem)
+        chno = int(m.group(1)) if m else None
+        if data.get("chapter") != chno:
+            errs.append(f"chapter が {data.get('chapter')}（ファイル名は第{chno}章）")
+        qs = data.get("questions")
+        if not isinstance(qs, list):
+            errs.append("questions がリストではありません")
+            qs = []
+        for q in qs:
+            n_q += 1
+            if not isinstance(q, dict):
+                errs.append("問題が辞書ではありません")
+                continue
+            qid = q.get("id", "?")
+            E = lambda msg: errs.append(f"{qid}: {msg}")
+            if not isinstance(qid, str) or not Q_ID_RE.match(qid):
+                E("id の形式が不正（q + 章2桁 + 用語id + 連番）")
+            elif not qid.startswith(f"q{chno:02d}-"):
+                E(f"id が q{chno:02d}- で始まっていません")
+            if qid in seen:
+                E(f"id が {seen[qid]} と重複しています")
+            seen[qid] = rel
+            term = q.get("term")
+            if term not in plan_terms:
+                E(f"term '{term}' が plan.yaml にありません")
+            elif plan_terms[term][0][0] != chno:
+                E(f"term '{term}' は第{plan_terms[term][0][0]}章の用語です")
+            if q.get("level") not in Q_LEVELS:
+                E(f"level が不正: {q.get('level')}（基本／標準／応用）")
+            typ = q.get("type")
+            if typ not in Q_TYPES:
+                E(f"type が不正: {typ}")
+            for k in Q_TEXT:
+                v = q.get(k)
+                if not isinstance(v, str) or not v.strip():
+                    E(f"{k} がありません")
+            texts = [q.get(k) for k in Q_TEXT] + list(q.get("choices") or []) + list(q.get("steps") or [])
+            if typ == "derivation" or typ == "choice":
+                texts.append(q.get("answer") if typ == "derivation" else "")
+            for t in texts:
+                if isinstance(t, str):
+                    body = t.replace("\\$", "")
+                    body = re.sub(r"\$\$.+?\$\$", "", body, flags=re.S)
+                    if body.count("$") % 2:
+                        E("$ の数が奇数です（数式の閉じ忘れ）")
+                        break
+            ans = q.get("answer")
+            if typ == "choice":
+                ch = q.get("choices")
+                if not isinstance(ch, list) or len(ch) != 4 or not all(isinstance(c, (str, int, float)) for c in ch):
+                    E("choices は4つの文字列にしてください")
+                elif len({str(c).strip() for c in ch}) != 4:
+                    E("choices に同じ選択肢があります")
+                if not isinstance(ans, int) or isinstance(ans, bool) or not 0 <= ans <= 3:
+                    E("choice の answer は 0〜3 の添字です")
+            elif typ == "numeric":
+                if not isinstance(ans, (int, float)) or isinstance(ans, bool):
+                    E("numeric の answer は数値です")
+                tol = q.get("tolerance")
+                if not isinstance(tol, (int, float)) or isinstance(tol, bool) or tol <= 0:
+                    E("numeric には正の tolerance が必要です")
+            elif typ == "truefalse":
+                if not isinstance(ans, bool):
+                    E("truefalse の answer は true / false です")
+            elif typ == "derivation":
+                st = q.get("steps")
+                if not isinstance(st, list) or len(st) < 2 or not all(isinstance(x, str) and x.strip() for x in st):
+                    E("derivation には2つ以上の steps が必要です")
+                if not isinstance(ans, str) or not ans.strip():
+                    E("derivation の answer は最終結果の文字列です")
+        for e in errs:
+            print(f"[ERROR] {rel}: {e}")
+        for w in warns:
+            print(f"[WARN]  {rel}: {w}")
+        n_err += len(errs)
+        n_warn += len(warns)
+    return n_err, n_warn, n_files, n_q
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--only")
     ap.add_argument("--chapter", type=int)
+    ap.add_argument("--questions", action="store_true")
     args = ap.parse_args()
 
     plan, plan_terms = load_plan()
+    if args.questions:
+        e, w, nf, nq = check_questions(plan_terms, args.chapter)
+        print(f"問題ファイル {nf} 件 / 問題 {nq} 問 / エラー {e} 件 / 警告 {w} 件")
+        sys.exit(1 if e else 0)
     total_err = total_warn = 0
     for tid, occ in plan_terms.items():
         if len(occ) > 1:
@@ -310,6 +418,11 @@ def main():
                 print(f"[WARN]  plan.yaml: {tid} はファイルがありますが status が planned です")
                 total_warn += 1
 
+    if not args.only:
+        e, w, nf, nq = check_questions(plan_terms, args.chapter)
+        print(f"問題ファイル {nf} 件 / 問題 {nq} 問 / エラー {e} 件 / 警告 {w} 件")
+        total_err += e
+        total_warn += w
     print(f"検査ファイル {len(targets)} 件 / エラー {total_err} 件 / 警告 {total_warn} 件")
     sys.exit(1 if total_err else 0)
 

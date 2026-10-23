@@ -5,7 +5,7 @@ reading: がいしゅうそく
 en: Almost sure convergence
 aliases: [確率1での収束, 殆ど確実な収束, a.s.収束]
 chapter: 7
-importance: B
+importance: A
 tags: [収束の概念, 大数の強法則]
 related: [convergence-in-probability, strong-law-of-large-numbers, weak-law-of-large-numbers, convergence-in-distribution, independence-of-events]
 charts:

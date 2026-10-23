@@ -5,7 +5,7 @@ reading: さぽーとべくたーましん
 en: Support vector machine
 aliases: [SVM, サポートベクトルマシン, マージン最大化]
 chapter: 23
-importance: B
+importance: A
 tags: [判別分析, 機械学習, マージン, カーネル法, 二次計画]
 related: [kernel-method, linear-discriminant-analysis, logistic-regression, regularization, k-nearest-neighbors, cross-validation]
 charts:

@@ -5,9 +5,9 @@ reading: けんていのためのひょうほんさいずせっけい
 en: Sample size determination for hypothesis testing
 aliases: [検出力分析, サンプルサイズ設計, 症例数設計, 必要例数]
 chapter: 10
-importance: B
+importance: C
 tags: [仮説検定, 検出力, 標本サイズ, 実験計画]
-related: [power-function, type-i-and-ii-errors, required-sample-size, power-of-t-test, noncentral-t-distribution]
+related: [required-sample-size, power-function, type-i-and-ii-errors, power-of-t-test, noncentral-t-distribution]
 charts:
   - type: custom
     id: power-curve

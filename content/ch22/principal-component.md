@@ -5,7 +5,7 @@ reading: しゅせいぶん
 en: Principal component
 aliases: [第1主成分, 第2主成分, PC]
 chapter: 22
-importance: A
+importance: C
 tags: [主成分分析, 線形結合, 無相関化]
 related: [principal-component-analysis, eigenvalue-and-eigenvector, principal-component-score, principal-component-loading, lagrange-multiplier-pca, variance-covariance-matrix]
 charts:

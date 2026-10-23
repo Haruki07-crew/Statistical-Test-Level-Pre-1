@@ -5,7 +5,7 @@ reading: にじはんべつぶんせき
 en: Quadratic discriminant analysis
 aliases: [QDA, 二次判別関数, 2次判別]
 chapter: 23
-importance: B
+importance: A
 tags: [判別分析, 共分散行列, 多変量正規分布]
 related: [linear-discriminant-analysis, bayes-discriminant-rule, mahalanobis-distance, multivariate-normal-distribution, bias-variance-tradeoff, bartlett-test]
 charts:

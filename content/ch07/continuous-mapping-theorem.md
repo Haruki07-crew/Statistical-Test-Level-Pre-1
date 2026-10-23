@@ -5,7 +5,7 @@ reading: れんぞくしゃぞうていり
 en: Continuous mapping theorem
 aliases: [連続関数定理]
 chapter: 7
-importance: B
+importance: A
 tags: [漸近理論, 確率収束, 分布収束]
 related: [convergence-in-probability, convergence-in-distribution, slutsky-theorem, delta-method, chi-squared-distribution, consistent-estimator]
 charts:

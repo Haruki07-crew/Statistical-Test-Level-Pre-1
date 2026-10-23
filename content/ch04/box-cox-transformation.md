@@ -5,7 +5,7 @@ reading: ぼっくすこっくすへんかん
 en: Box-Cox transformation
 aliases: [ボックス・コックス変換, ボックスコックス変換, Box–Cox変換]
 chapter: 4
-importance: B
+importance: A
 tags: [データ変換, 最尤法, 正規化, べき乗変換]
 related: [power-transformation, log-transformation, change-of-variables, maximum-likelihood-estimator, likelihood-function, normal-qq-plot]
 charts:

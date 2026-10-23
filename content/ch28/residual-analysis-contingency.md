@@ -5,7 +5,7 @@ reading: ぶんかつひょうのざんさぶんせき
 en: Residual analysis for contingency tables
 aliases: [調整済み標準化残差, 調整済み残差, ピアソン残差, "adjusted standardized residual", ハバーマンの残差]
 chapter: 28
-importance: C
+importance: B
 tags: [分割表, 残差, 独立性の検定, 事後分析]
 related: [contingency-table, independence-test, homogeneity-test, expected-frequency, pearson-chi-square-statistic, bonferroni-correction]
 ---

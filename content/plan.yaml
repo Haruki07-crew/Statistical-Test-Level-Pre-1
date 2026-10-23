@@ -22,9 +22,17 @@ chapters:
     title: 条件付き独立
     importance: A
     status: verified
+  - id: inclusion-exclusion-principle
+    title: 包除原理
+    importance: B
+    status: planned
 - 'no': 2
   title: 確率分布と母関数
   terms:
+  - id: probability-mass-and-density-function
+    title: 確率関数と確率密度関数
+    importance: A
+    status: planned
   - id: cumulative-distribution-function
     title: 累積分布関数
     importance: A
@@ -80,6 +88,10 @@ chapters:
 - 'no': 3
   title: 分布の特性値
   terms:
+  - id: moments
+    title: モーメント
+    importance: A
+    status: planned
   - id: expectation-variance-properties
     title: 期待値と分散の性質
     importance: A
@@ -149,7 +161,7 @@ chapters:
     status: verified
   - id: box-cox-transformation
     title: Box-Cox変換
-    importance: B
+    importance: A
     status: verified
   - id: logit-logistic-transformation
     title: ロジット変換・ロジスティック変換
@@ -159,6 +171,10 @@ chapters:
     title: プロビット変換
     importance: B
     status: verified
+  - id: sum-of-random-variables
+    title: 確率変数の和と再生性
+    importance: A
+    status: planned
 - 'no': 5
   title: 離散型分布
   terms:
@@ -290,7 +306,7 @@ chapters:
     status: verified
   - id: almost-sure-convergence
     title: 概収束
-    importance: B
+    importance: A
     status: verified
   - id: convergence-in-distribution
     title: 分布収束
@@ -318,7 +334,7 @@ chapters:
     status: verified
   - id: continuous-mapping-theorem
     title: 連続写像定理
-    importance: B
+    importance: A
     status: verified
   - id: delta-method
     title: デルタ法
@@ -340,6 +356,14 @@ chapters:
     title: ベリー・エッセンの定理
     importance: C
     status: verified
+  - id: normal-approximation-binomial-poisson
+    title: 二項分布・ポアソン分布の正規近似
+    importance: A
+    status: planned
+  - id: extreme-value-distribution
+    title: 極値分布
+    importance: B
+    status: planned
 - 'no': 8
   title: 統計的推定の基礎
   terms:
@@ -419,6 +443,14 @@ chapters:
     title: 観測情報量
     importance: C
     status: verified
+  - id: order-statistics
+    title: 順序統計量
+    importance: A
+    status: planned
+  - id: standard-error
+    title: 標準誤差
+    importance: B
+    status: planned
 - 'no': 9
   title: 区間推定
   terms:
@@ -468,7 +500,7 @@ chapters:
     status: verified
   - id: ci-variance-ratio
     title: 母分散比の区間推定
-    importance: B
+    importance: A
     status: verified
   - id: required-sample-size
     title: 必要な標本サイズ
@@ -490,6 +522,10 @@ chapters:
     title: 信頼区間と検定の対応
     importance: B
     status: verified
+  - id: one-sided-confidence-limit
+    title: 片側信頼限界
+    importance: B
+    status: planned
 - 'no': 10
   title: 検定の基礎と検定法の導出
   terms:
@@ -567,7 +603,7 @@ chapters:
     status: verified
   - id: sample-size-determination-test
     title: 検定のための標本サイズ設計
-    importance: B
+    importance: C
     status: verified
   - id: randomized-test
     title: 無作為化検定
@@ -614,7 +650,7 @@ chapters:
     status: verified
   - id: test-ci-relationship-mean-difference
     title: 母平均の差の検定と信頼区間の関係
-    importance: B
+    importance: C
     status: verified
   - id: test-correlation-coefficient
     title: 母相関係数の検定
@@ -638,7 +674,7 @@ chapters:
     status: verified
   - id: hotelling-t2
     title: ホテリングのT二乗検定
-    importance: B
+    importance: C
     status: verified
   - id: one-way-test-variance-equality-levene
     title: ルビーン検定
@@ -705,7 +741,7 @@ chapters:
     status: verified
   - id: kolmogorov-smirnov-test
     title: コルモゴロフ・スミルノフ検定
-    importance: B
+    importance: C
     status: verified
   - id: dispersion-test
     title: 分散検定（過分散の検定）
@@ -736,7 +772,7 @@ chapters:
     status: verified
   - id: mann-whitney-u-test
     title: マン・ホイットニーのU検定
-    importance: A
+    importance: C
     status: verified
   - id: kruskal-wallis-test
     title: クラスカル・ウォリス検定
@@ -791,7 +827,7 @@ chapters:
   terms:
   - id: markov-property
     title: マルコフ性
-    importance: A
+    importance: C
     status: verified
   - id: markov-chain
     title: マルコフ連鎖
@@ -898,7 +934,7 @@ chapters:
     status: verified
   - id: martingale
     title: マルチンゲール
-    importance: B
+    importance: C
     status: verified
   - id: birth-death-process
     title: 出生死滅過程
@@ -910,7 +946,7 @@ chapters:
     status: verified
   - id: queueing-theory
     title: 待ち行列理論
-    importance: B
+    importance: C
     status: verified
   - id: mm1-queue
     title: M/M/1待ち行列
@@ -1162,7 +1198,7 @@ chapters:
     status: verified
   - id: bias-in-penalized-estimation
     title: 罰則付き推定量のバイアス
-    importance: B
+    importance: C
     status: verified
   - id: nonlinear-regression
     title: 非線形回帰
@@ -1204,6 +1240,10 @@ chapters:
     title: スプライン回帰
     importance: C
     status: verified
+  - id: neural-network-model
+    title: ニューラルネットワークモデル
+    importance: C
+    status: planned
 - 'no': 20
   title: 分散分析と実験計画法
   terms:
@@ -1275,6 +1315,14 @@ chapters:
     title: 効果量と寄与率
     importance: C
     status: verified
+  - id: fractional-factorial-design
+    title: 一部実施要因計画
+    importance: B
+    status: planned
+  - id: incomplete-block-design
+    title: 釣合い型不完備ブロック計画
+    importance: C
+    status: planned
 - 'no': 21
   title: 標本調査法
   terms:
@@ -1351,7 +1399,7 @@ chapters:
     status: verified
   - id: principal-component
     title: 主成分
-    importance: A
+    importance: C
     status: verified
   - id: eigenvalue-and-eigenvector
     title: 固有値と固有ベクトル
@@ -1418,7 +1466,7 @@ chapters:
     status: verified
   - id: quadratic-discriminant-analysis
     title: 二次判別分析
-    importance: B
+    importance: A
     status: verified
   - id: bayes-discriminant-rule
     title: ベイズ判別ルール
@@ -1450,7 +1498,7 @@ chapters:
     status: verified
   - id: support-vector-machine
     title: サポートベクターマシン
-    importance: B
+    importance: A
     status: verified
   - id: kernel-method
     title: カーネル法
@@ -1505,7 +1553,7 @@ chapters:
     status: verified
   - id: non-hierarchical-clustering
     title: 非階層的クラスタリング
-    importance: B
+    importance: C
     status: verified
   - id: distance-measures
     title: 距離（ユークリッド・マンハッタン・ミンコフスキー）
@@ -1588,7 +1636,7 @@ chapters:
     status: verified
   - id: directed-acyclic-graph
     title: 有向非巡回グラフ
-    importance: B
+    importance: A
     status: verified
   - id: graphical-lasso
     title: グラフィカルLasso
@@ -1603,7 +1651,7 @@ chapters:
     status: verified
   - id: classical-mds
     title: 古典的MDS
-    importance: B
+    importance: C
     status: verified
   - id: nonmetric-mds
     title: 非計量MDS
@@ -1643,11 +1691,11 @@ chapters:
     status: verified
   - id: path-analysis
     title: パス解析
-    importance: B
+    importance: A
     status: verified
   - id: independent-component-analysis
     title: 独立成分分析
-    importance: B
+    importance: C
     status: verified
   - id: goodness-of-fit-indices
     title: 適合度指標
@@ -1728,6 +1776,10 @@ chapters:
     title: 予測
     importance: B
     status: verified
+  - id: state-space-model
+    title: 状態空間モデル
+    importance: B
+    status: planned
 - 'no': 28
   title: 分割表
   terms:
@@ -1757,7 +1809,7 @@ chapters:
     status: verified
   - id: yates-correction
     title: イェーツの連続修正
-    importance: B
+    importance: A
     status: verified
   - id: mcnemar-test
     title: マクネマー検定
@@ -1769,7 +1821,7 @@ chapters:
     status: verified
   - id: hierarchical-loglinear-model
     title: 階層モデル
-    importance: B
+    importance: A
     status: verified
   - id: simpsons-paradox
     title: シンプソンのパラドックス
@@ -1793,8 +1845,16 @@ chapters:
     status: verified
   - id: residual-analysis-contingency
     title: 分割表の残差分析
-    importance: C
+    importance: B
     status: verified
+  - id: phi-coefficient-and-association
+    title: ファイ係数とクラメールの連関係数
+    importance: B
+    status: planned
+  - id: cohort-and-case-control-study
+    title: コホート研究とケースコントロール研究
+    importance: B
+    status: planned
 - 'no': 29
   title: 不完全データの統計処理
   terms:
@@ -1816,11 +1876,11 @@ chapters:
     status: verified
   - id: complete-case-analysis
     title: 完全ケース分析
-    importance: B
+    importance: A
     status: verified
   - id: single-imputation
     title: 単一代入法
-    importance: B
+    importance: A
     status: verified
   - id: multiple-imputation
     title: 多重代入法
@@ -1919,7 +1979,7 @@ chapters:
     status: verified
   - id: information-criteria-comparison
     title: 情報量規準によるモデル比較
-    importance: B
+    importance: C
     status: verified
   - id: generalization-error
     title: 汎化誤差
@@ -2071,3 +2131,22 @@ chapters:
     title: モンテカルロ検定
     importance: C
     status: verified
+- 'no': 33
+  title: 統計的因果推論
+  terms:
+  - id: causal-effect
+    title: 因果効果と潜在結果
+    importance: A
+    status: planned
+  - id: backdoor-criterion
+    title: バックドア基準
+    importance: A
+    status: planned
+  - id: d-separation
+    title: 有向分離（d分離）
+    importance: A
+    status: planned
+  - id: frontdoor-criterion
+    title: フロントドア基準
+    importance: B
+    status: planned

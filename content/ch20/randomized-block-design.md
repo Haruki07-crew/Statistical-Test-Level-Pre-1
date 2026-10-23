@@ -3,7 +3,7 @@ id: randomized-block-design
 title: 乱塊法
 reading: らんかいほう
 en: Randomized block design
-aliases: [乱塊法計画, 乱塊計画, randomized complete block design, RCBD]
+aliases: [乱塊法計画, 乱塊計画, randomized complete block design, RCBD, ブロック化]
 chapter: 20
 importance: A
 tags: [実験計画法, ブロック化, 分散分析]

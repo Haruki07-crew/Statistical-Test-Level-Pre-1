@@ -227,3 +227,37 @@ check(T, "係数比 1.6〜1.8（π/√3≈1.814, 1.7, 例1の1.647）", 1.6 <= 1
 
 ok_n = sum(results); ng_n = len(results) - ok_n
 print(f"\n合計: OK {ok_n} / NG {ng_n}")
+
+# --- 追加用語（用語の見直し）: sum-of-random-variables ---
+T = "sum-of-random-variables"
+P1, P2 = stats.poisson(1.2), stats.poisson(1.8)
+terms = [P1.pmf(j) * P2.pmf(2 - j) for j in range(3)]
+check(T, "例1 畳み込み項 ≈0.0807, 0.1075, 0.0358, 和≈0.2240", close(terms[0], 0.0807) and close(terms[1], 0.1075) and close(terms[2], 0.0358) and close(sum(terms), 0.2240), [round(v, 5) for v in terms])
+conv = np.convolve(P1.pmf(np.arange(60)), P2.pmf(np.arange(60)))[:40]
+check(T, "例1 畳み込み全体 = Po(3)（0..39）, P(Z=2)=e^-3·9/2, P(Z≤1)=4e^-3≈0.1991", np.allclose(conv, stats.poisson(3).pmf(np.arange(40)), atol=1e-14) and close(math.exp(-3) * 4.5, 0.2240) and close(4 * math.exp(-3), 0.1991), round(4 * math.exp(-3), 5))
+l1, l2 = sp.symbols("lambda_1 lambda_2", positive=True)
+zi = 5
+conv_s = sum(sp.exp(-l1) * l1**j / sp.factorial(j) * sp.exp(-l2) * l2 ** (zi - j) / sp.factorial(zi - j) for j in range(zi + 1))
+check(T, "ポアソン畳み込み = e^{-(λ1+λ2)}(λ1+λ2)^z/z!（z=5, sympy）", sp.simplify(conv_s - sp.exp(-l1 - l2) * (l1 + l2) ** zi / sp.factorial(zi)) == 0, "")
+pp, tt, mm, nn = sp.symbols("p t m n", positive=True)
+check(T, "二項 MGF の積 (pe^t+q)^m(pe^t+q)^n=(pe^t+q)^{m+n}", sp.simplify((pp * sp.exp(tt) + 1 - pp) ** mm * (pp * sp.exp(tt) + 1 - pp) ** nn - (pp * sp.exp(tt) + 1 - pp) ** (mm + nn)) == 0, "")
+zs = sp.symbols("z", positive=True)
+f1 = sp.integrate(1, (x, 0, zs)); f2 = sp.integrate(1, (x, zs - 1, 1))
+check(T, "例2 三角分布 f=z（0≤z≤1）, 2−z（1≤z≤2）, 積分1, P(Z>1.5)=0.125", f1 == zs and sp.simplify(f2 - (2 - zs)) == 0 and sp.integrate(zs, (zs, 0, 1)) + sp.integrate(2 - zs, (zs, 1, 2)) == 1
+      and sp.integrate(2 - zs, (zs, sp.Rational(3, 2), 2)) == sp.Rational(1, 8), "")
+Zu = rng.uniform(size=N) + rng.uniform(size=N)
+check(T, "例2 シミュ P(Z>1.5)（許容0.002）", abs((Zu > 1.5).mean() - 0.125) < 0.002, round((Zu > 1.5).mean(), 4))
+zD = (0 - 4) / math.sqrt(5)
+check(T, "例3 D~N(4,5), z≈−1.789, P(D<0)≈0.0368", close(zD, -1.789, 5e-4) and close(stats.norm.cdf(zD), 0.0368), (round(zD, 4), round(stats.norm.cdf(zD), 5)))
+Ds = rng.normal(10, 2, N) - rng.normal(6, 1, N)
+check(T, "例3 シミュ 平均4・分散5（許容0.02）, P(D<0)（許容0.001）", abs(Ds.mean() - 4) < 0.02 and abs(Ds.var() - 5) < 0.02 and abs((Ds < 0).mean() - 0.0368) < 0.001, (round(Ds.mean(), 4), round(Ds.var(), 4)))
+Es = rng.exponential(1, (200_000, 5)).sum(axis=1)
+check(T, "図 指数(平均1)5個の和 = ガンマ(5,1)（KS p>0.001）", stats.kstest(Es, stats.gamma(5).cdf).pvalue > 0.001, round(stats.kstest(Es, stats.gamma(5).cdf).pvalue, 4))
+Ga = rng.gamma(2, 3, N) + rng.gamma(3.5, 3, N)
+check(T, "ガンマ再生性 Ga(2,3)+Ga(3.5,3)=Ga(5.5,3)（平均16.5・分散49.5, 許容0.05/0.3）", abs(Ga.mean() - 16.5) < 0.05 and abs(Ga.var() - 49.5) < 0.3, (round(Ga.mean(), 3), round(Ga.var(), 3)))
+Cs_ = stats.cauchy(1, 2).rvs(N, random_state=1) + stats.cauchy(-3, 0.5).rvs(N, random_state=2)
+check(T, "コーシー 位置・尺度が足し算 C(1,2)+C(−3,0.5)=C(−2,2.5)（中央値・四分位）", abs(np.median(Cs_) + 2) < 0.02 and abs((np.quantile(Cs_, 0.75) - np.quantile(Cs_, 0.25)) / 2 - 2.5) < 0.03, round(float(np.median(Cs_)), 4))
+check(T, "V[2X]=4σ², V[X1+X2]=2σ²（σ=1, シミュ許容0.02）", abs(np.var(2 * rng.standard_normal(N)) - 4) < 0.03 and abs(np.var(rng.standard_normal(N) + rng.standard_normal(N)) - 2) < 0.02, "")
+
+ok_n = sum(results); ng_n = len(results) - ok_n
+print(f"\n合計（追加用語を含む）: OK {ok_n} / NG {ng_n}")

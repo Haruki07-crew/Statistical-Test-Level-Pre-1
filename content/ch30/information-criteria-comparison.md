@@ -5,9 +5,9 @@ reading: じょうほうりょうきじゅんによるもでるひかく
 en: Model comparison with information criteria
 aliases: [AIC差, 赤池ウェイト, アカイケウェイト, ΔAIC, 証拠比]
 chapter: 30
-importance: B
+importance: C
 tags: [モデル選択, 情報量規準, モデル平均]
-related: [aic, bic, likelihood-ratio-test, bayes-factor, model-selection, variable-selection]
+related: [model-selection, aic, bic, likelihood-ratio-test, bayes-factor, variable-selection]
 charts:
   - type: custom
     id: bar-data

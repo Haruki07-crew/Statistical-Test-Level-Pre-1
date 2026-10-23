@@ -5,7 +5,7 @@ reading: まるちんげーる
 en: Martingale
 aliases: [劣マルチンゲール, 優マルチンゲール, 任意停止定理, optional stopping theorem]
 chapter: 15
-importance: B
+importance: C
 tags: [確率過程, 条件付き期待値, 停止時刻, 公平な賭け]
 related: [gambler-ruin-problem, random-walk, conditional-expectation, brownian-motion, poisson-process, first-passage-time]
 charts:

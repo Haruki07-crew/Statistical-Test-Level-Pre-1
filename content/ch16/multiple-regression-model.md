@@ -3,7 +3,7 @@ id: multiple-regression-model
 title: 重回帰モデル
 reading: じゅうかいきもでる
 en: Multiple linear regression model
-aliases: [線形回帰モデル, 重回帰, 線形重回帰モデル]
+aliases: [線形回帰モデル, 重回帰, 線形重回帰モデル, 線形模型]
 chapter: 16
 importance: A
 tags: [回帰分析, 行列表示, 偏回帰係数, 誤差の仮定]

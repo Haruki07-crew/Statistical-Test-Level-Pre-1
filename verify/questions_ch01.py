@@ -1,0 +1,84 @@
+"""第1章 事象と確率：問題の検算。"""
+import sys, pathlib; sys.path.insert(0, str(pathlib.Path(__file__).parent))
+from qcheck import Q
+
+from fractions import Fraction as Fr
+from itertools import product
+
+q = Q(1)
+
+# --- 条件付き確率 ---
+# 1: P(A|B) != P(B|A) の反例（6の目 / 偶数の目）
+die = range(1, 7)
+A = {6}; B = {2, 4, 6}
+pAB = Fr(len(A & B), 6) / Fr(len(B), 6)
+pBA = Fr(len(A & B), 6) / Fr(len(A), 6)
+q.check("q01-conditional-probability-1", pAB == Fr(1, 3) and pBA == 1 and pAB != pBA,
+        "反例で P(A|B)=1/3, P(B|A)=1 → 一般には等しくない（answer=false）")
+
+# 2: 非復元抽出、全事象の列挙で確認
+balls = ["R"] * 5 + ["W"] * 3
+cnt = tot = 0
+for i in range(8):
+    for j in range(8):
+        if i == j:
+            continue
+        tot += 1
+        cnt += balls[i] == "R" and balls[j] == "R"
+q.num("q01-conditional-probability-2", cnt / tot)
+
+# 3: 和が8の条件で6を含む確率
+outs = [(a, b) for a in die for b in die]
+cond = [o for o in outs if sum(o) == 8]
+p = Fr(sum(6 in o for o in cond), len(cond))
+choices = [Fr(2, 5), Fr(1, 3), Fr(11, 36), Fr(5, 36)]
+q.check("q01-conditional-probability-3", p == choices[0] and all(c != p for c in choices[1:]),
+        f"正解 {p}、誤答はいずれも一致しない")
+q.check("q01-conditional-probability-3", Fr(sum(6 in o for o in outs), 36) == Fr(11, 36) and Fr(len(cond), 36) == Fr(5, 36),
+        "誤答 11/36（条件なし）・5/36（和が8の確率）の由来")
+
+# --- 全確率の公式 ---
+q.num("q01-law-of-total-probability-1", 0.5 * 0.02 + 0.3 * 0.03 + 0.2 * 0.05)
+# 2: 反例 A1=A2=Ω で右辺 = 2P(B) != P(B)
+pB = Fr(1, 2)
+q.check("q01-law-of-total-probability-2", 1 * pB + 1 * pB != pB, "重なりがあると右辺が 2P(B) になる反例（answer=false）")
+
+# --- 事象の独立 ---
+q.check("q01-independence-of-events-1", 0 != Fr(1, 6) * Fr(1, 2), "排反 P(A∩B)=0 と独立 P(A)P(B)>0 は両立しない（answer=true）")
+q.num("q01-independence-of-events-2", 0.4 + 0.5 - 0.4 * 0.5)
+coins = list(product("HT", repeat=2))
+P = lambda ev: Fr(sum(1 for w in coins if ev(w)), 4)
+EA = lambda w: w[0] == "H"; EB = lambda w: w[1] == "H"; EC = lambda w: w[0] == w[1]
+pair = all(P(lambda w, x=x, y=y: x(w) and y(w)) == P(x) * P(y) for x, y in [(EA, EB), (EA, EC), (EB, EC)])
+mutual = P(lambda w: EA(w) and EB(w) and EC(w)) == P(EA) * P(EB) * P(EC)
+q.check("q01-independence-of-events-3", pair and not mutual, "どの2つも独立・相互独立ではない → 選択肢0のみ正しい")
+
+# --- ベイズの定理 ---
+post = Fr(4, 10) * Fr(3, 100) / (Fr(6, 10) * Fr(1, 100) + Fr(4, 10) * Fr(3, 100))
+ch = [Fr(2, 3), Fr(4, 10), Fr(3, 100), Fr(1, 3)]
+q.check("q01-bayes-theorem-1", post == ch[0] and all(c != post for c in ch[1:]), f"事後確率 {post}、誤答は一致しない")
+q.num("q01-bayes-theorem-2", 0.02 * 0.9 / (0.02 * 0.9 + 0.98 * 0.05))
+p1 = 0.02 * 0.9 / (0.02 * 0.9 + 0.98 * 0.05)
+two = 0.02 * 0.81 / (0.02 * 0.81 + 0.98 * 0.0025)
+seq = p1 * 0.9 / (p1 * 0.9 + (1 - p1) * 0.05)
+q.num("q01-bayes-theorem-3", two)
+q.check("q01-bayes-theorem-3", abs(two - seq) < 1e-12, "逐次更新と一括計算が一致")
+
+# --- 条件付き独立 ---
+pH1 = 0.5 * 0.5 + 0.5 * 0.8
+pHH = 0.5 * 0.5**2 + 0.5 * 0.8**2
+q.check("q01-conditional-independence-1", abs(pHH - pH1 * pH1) > 1e-6, f"反例：P(表表)={pHH} ≠ P(表)^2={pH1**2}（answer=false）")
+q.num("q01-conditional-independence-2", pHH / pH1)
+
+# 3: 導出。ランダムな同時分布で、C の下で条件付き独立なら P(A|B∩C)=P(A|C) を数値確認
+import numpy as np
+rng = np.random.default_rng(1)
+ok = True
+for _ in range(100):
+    pc = rng.uniform(0.1, 0.9); a = rng.uniform(0.05, 0.95); b = rng.uniform(0.05, 0.95)
+    pABC = pc * a * b           # C の下で独立に作る
+    pBC = pc * b
+    ok &= abs(pABC / pBC - a) < 1e-12
+q.check("q01-conditional-independence-3", ok, "条件付き独立な分布で P(A|B∩C)=P(A|C) を数値確認")
+
+q.done()

@@ -81,6 +81,80 @@ def render_body(body):
     return "".join(out)
 
 
+def render_inline(text):
+    """問題の選択肢など短い文を HTML にする（段落1つなら <p> を外す）。"""
+    h = render_body(str(text))
+    m = re.fullmatch(r"\s*<p>(.*?)</p>\s*", h, flags=re.S)
+    return m.group(1) if m and "<p>" not in m.group(1) else h
+
+
+def load_questions(plan_ids):
+    """検算に通り、内容が検算時から変わっていない問題だけを返す。戻り値：(問題の一覧, 章ごとの {全問, 公開})"""
+    sys.path.insert(0, str(ROOT / "verify"))
+    from qcheck import qhash
+    out, stat = [], {}
+    for p in sorted((CONTENT / "questions").glob("ch*.yaml")):
+        data = yaml.safe_load(p.read_text(encoding="utf-8")) or {}
+        res_path = ROOT / "verify" / "questions_results" / f"{p.stem}.json"
+        res = json.loads(res_path.read_text(encoding="utf-8")) if res_path.exists() else {}
+        qs = data.get("questions") or []
+        pub = 0
+        for q in qs:
+            r = res.get(q["id"])
+            if not r or not r.get("ok") or r.get("hash") != qhash(q) or q["term"] not in plan_ids:
+                continue
+            pub += 1
+            item = {"id": q["id"], "term": q["term"], "lv": q["level"], "type": q["type"],
+                    "q": render_body(q["question"]), "h": render_body(q["hint"]), "e": render_body(q["explanation"])}
+            if q["type"] == "choice":
+                item["c"] = [render_inline(c) for c in q["choices"]]
+                item["a"] = q["answer"]
+            elif q["type"] == "numeric":
+                item["a"] = q["answer"]
+                item["tol"] = q["tolerance"]
+            elif q["type"] == "truefalse":
+                item["a"] = bool(q["answer"])
+            else:
+                item["a"] = render_inline(q["answer"])
+                item["steps"] = [render_inline(x) for x in q["steps"]]
+            out.append(item)
+        stat[data.get("chapter")] = (len(qs), pub)
+    return out, stat
+
+
+def render_formulas():
+    """content/formulas.md（公式まとめ）を節ごとの HTML にする。"""
+    p = CONTENT / "formulas.md"
+    if not p.exists():
+        return ""
+    text = p.read_text(encoding="utf-8")
+    if text.startswith("---\n"):
+        text = split_front(text)[1]
+    prot, store = protect_math(text)
+    MD.reset()
+    h = restore_math(MD.convert(prot), store)
+    h = h.replace("<table>", '<div class="table-wrap"><table>').replace("</table>", "</table></div>")
+    parts = re.split(r"<h2>(.*?)</h2>", h)
+    out = [parts[0]] if parts[0].strip() else []
+    for i in range(1, len(parts), 2):
+        k = (i + 1) // 2
+        out.append(f'<section class="sec" data-sec="f{k}" id="sec-f{k}"><h2>{parts[i].strip()}</h2>{parts[i + 1]}</section>')
+    return "".join(out)
+
+
+def write_pwa(index_bytes):
+    """ホーム画面に追加するための manifest・アイコン・service worker を docs/ に置く。"""
+    import hashlib
+    docs = OUT.parent
+    pwa = SRC / "pwa"
+    for f in pwa.iterdir():
+        if f.name == "sw.js":
+            ver = hashlib.sha256(index_bytes).hexdigest()[:12]
+            (docs / f.name).write_text(f.read_text(encoding="utf-8").replace("{{VERSION}}", ver), encoding="utf-8")
+        elif f.is_file():
+            (docs / f.name).write_bytes(f.read_bytes())
+
+
 def plain_text(body):
     t = re.sub(r"\$\$.*?\$\$", " ", body, flags=re.S)
     t = re.sub(r"\$[^$\n]*\$", " ", t)
@@ -118,7 +192,9 @@ def main():
             "terms": [{"id": t["id"], "title": t["title"], "importance": t["importance"], "status": t["status"]}
                       for t in ch.get("terms") or []],
         })
-    data = {"chapters": chapters, "terms": terms}
+    plan_ids = {t["id"] for ch in chapters for t in ch["terms"]}
+    questions, qstat = load_questions(plan_ids)
+    data = {"chapters": chapters, "terms": terms, "questions": questions, "formulas": render_formulas()}
     data_json = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
 
     tpl = (SRC / "template.html").read_text(encoding="utf-8")
@@ -128,6 +204,7 @@ def main():
     OUT.parent.mkdir(exist_ok=True)
     OUT.write_text(out, encoding="utf-8")
     (OUT.parent / ".nojekyll").touch()
+    write_pwa(out.encode("utf-8"))
 
     print("章 | 予定 | 作成 | 検算済 | 章名")
     tot = [0, 0, 0]
@@ -138,6 +215,9 @@ def main():
         tot = [tot[0] + n, tot[1] + w, tot[2] + v]
         print(f"{ch['no']:>2} | {n:>4} | {w:>4} | {v:>6} | {ch['title']}")
     print(f"合計: 予定 {tot[0]} / 作成 {tot[1]} / 検算済 {tot[2]} / 未作成 {tot[0] - tot[1]}")
+    qa = sum(v[0] for v in qstat.values())
+    print("問題（公開／全問）: " + "  ".join(f"第{k}章 {v[1]}/{v[0]}" for k, v in sorted(qstat.items())))
+    print(f"問題 合計: 公開 {len(questions)} / 全問 {qa}（検算に通っていない問題は公開しない）")
     size = OUT.stat().st_size
     print(f"出力: {OUT.relative_to(ROOT)}  {size / 1024 / 1024:.2f} MB" + ("  （5MB超）" if size > 5 * 1024 * 1024 else ""))
 

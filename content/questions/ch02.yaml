@@ -1,0 +1,534 @@
+chapter: 2
+questions:
+  # ---------- 累積分布関数 (A) ----------
+  - id: q02-cumulative-distribution-function-1
+    term: cumulative-distribution-function
+    level: 基本
+    type: truefalse
+    question: |
+      累積分布関数 $F(x)=P(X\le x)$ は、どんな確率変数についても左連続である。
+    answer: false
+    hint: |
+      離散型の分布関数のグラフで、飛びの点の値が上下どちらの段にあるかを考える。
+    explanation: |
+      $F(x)=P(X\le x)$ は「$\le$」で定義するので、どんな確率変数でも**右連続**です。
+      たとえばサイコロの目なら $F(1)=1/6$ ですが、$x\uparrow1$ の左極限は $0$ なので左連続ではありません。
+      左極限は $F(x-)=P(X<x)$ で、飛びの大きさ $F(x)-F(x-)=P(X=x)$ がその点の確率です。
+
+  - id: q02-cumulative-distribution-function-2
+    term: cumulative-distribution-function
+    level: 標準
+    type: numeric
+    question: |
+      確率変数 $X$ の累積分布関数が
+      $$F(x)=\begin{cases}0 & (x<0)\\ 0.2+0.8\,(1-e^{-x}) & (x\ge0)\end{cases}$$
+      で与えられている（$x=0$ に確率の飛びがある）。$P(0<X\le1)$ を小数第3位まで（四捨五入）求めよ。
+    answer: 0.506
+    tolerance: 0.001
+    hint: |
+      $P(a<X\le b)=F(b)-F(a)$。$x=0$ での値 $F(0)$ に飛びの分が含まれていることに注意。
+    explanation: |
+      $F(0)=0.2$（$P(X=0)=0.2$ の飛び）、$F(1)=0.2+0.8(1-e^{-1})$ なので
+      $$P(0<X\le1)=F(1)-F(0)=0.8(1-e^{-1})=0.8\times0.63212\approx0.506$$
+      $P(X\le1)=F(1)\approx0.706$ と取り違えないこと。
+
+  - id: q02-cumulative-distribution-function-3
+    term: cumulative-distribution-function
+    level: 応用
+    type: derivation
+    question: |
+      $X_1,X_2,X_3$ は独立に一様分布 $U(0,2)$ に従う。$M=\max(X_1,X_2,X_3)$ の累積分布関数を求め、
+      それを使って $E[M]$ を求めよ。
+    steps:
+      - |
+        $M\le m$ はすべての $X_i\le m$ と同じ。独立なので $F_M(m)=P(X_1\le m)^3=(m/2)^3\quad(0\le m\le2)$。
+      - |
+        微分して密度 $f_M(m)=\dfrac{3m^2}{8}\quad(0\le m\le2)$。
+      - |
+        $E[M]=\displaystyle\int_0^2 m\cdot\frac{3m^2}{8}\,dm=\frac{3}{8}\cdot\frac{2^4}{4}=\frac32$。
+    answer: '$F_M(m)=m^3/8\ (0\le m\le2)$、$E[M]=3/2$'
+    hint: |
+      「最大値が $m$ 以下」⇔「全員が $m$ 以下」。独立なので確率の積になる。
+    explanation: |
+      $F_M(m)=\{P(X_1\le m)\}^3=(m/2)^3$、$f_M(m)=3m^2/8$。
+      $$E[M]=\int_0^2 \frac{3m^3}{8}\,dm=\frac{3}{8}\cdot4=\frac32$$
+      別解：$E[M]=\int_0^2 \{1-F_M(m)\}\,dm=2-\tfrac{1}{8}\cdot\tfrac{2^4}{4}=2-\tfrac12=\tfrac32$（非負の確率変数の期待値＝生存関数の積分）。
+
+  # ---------- 生存関数 (B) ----------
+  - id: q02-survival-function-1
+    term: survival-function
+    level: 標準
+    type: numeric
+    question: |
+      非負の確率変数 $T$ の生存関数が $S(t)=(1+t)^{-3}\ (t\ge0)$ である。
+      $E[T]$ を小数第2位まで求めよ。
+    answer: 0.50
+    tolerance: 0.005
+    hint: |
+      非負の確率変数では $E[T]=\int_0^\infty S(t)\,dt$。密度を出さなくてよい。
+    explanation: |
+      $$E[T]=\int_0^\infty (1+t)^{-3}\,dt=\left[-\frac{1}{2}(1+t)^{-2}\right]_0^\infty=\frac12$$
+      確認：密度 $f(t)=-S'(t)=3(1+t)^{-4}$ から $\int_0^\infty 3t(1+t)^{-4}dt$ を計算しても $1/2$ です。
+
+  - id: q02-survival-function-2
+    term: survival-function
+    level: 基本
+    type: choice
+    question: |
+      成功確率 $0.2$ の独立な試行を、初めて成功するまで繰り返す。初めて成功するまでの**試行回数**を $T$（$T=1,2,\dots$）とする。
+      生存関数の値 $S(5)=P(T>5)$ に最も近いものはどれか。
+    choices:
+      - '$0.328$'
+      - '$0.410$'
+      - '$0.672$'
+      - '$0.262$'
+    answer: 0
+    hint: |
+      「$T>5$」は「最初の5回がすべて失敗」と同じ。
+    explanation: |
+      $P(T>5)=P(\text{5回連続失敗})=0.8^5=0.32768\approx0.328$。
+      $0.410=0.8^4$ は $P(T>4)=P(T\ge5)$ で、「$>$」と「$\ge$」の取り違えです。$0.672=1-0.8^5$ は $F(5)$、$0.262=0.8^6$ は $P(T>6)$ です。
+
+  # ---------- ハザード関数 (A) ----------
+  - id: q02-hazard-function-1
+    term: hazard-function
+    level: 基本
+    type: choice
+    question: |
+      形状パラメータ $k=0.5$、尺度パラメータ $\eta=1$ のワイブル分布（$S(t)=\exp\{-(t/\eta)^k\}$）に従う寿命について、
+      ハザード関数 $h(t)\ (t>0)$ の形として正しいものはどれか。
+    choices:
+      - '単調に減少する'
+      - '一定である'
+      - '単調に増加する'
+      - '増加したあと減少する'
+    answer: 0
+    hint: |
+      $h(t)=-\dfrac{d}{dt}\log S(t)$ を計算し、$t$ のべき指数の符号を見る。
+    explanation: |
+      $-\log S(t)=t^{0.5}$ なので $h(t)=0.5\,t^{-0.5}$ で、$t$ とともに単調に減少します。
+      ワイブル分布は形状 $k<1$ でハザード減少（初期故障型）、$k=1$ で一定（指数分布）、$k>1$ で増加（摩耗故障型）です。
+
+  - id: q02-hazard-function-2
+    term: hazard-function
+    level: 標準
+    type: numeric
+    question: |
+      ある機器の寿命 $T$（年）のハザード関数が $h(t)=0.02\,t\ (t\ge0)$ である。
+      10 年間故障しなかった機器が、さらに 5 年（15 年目まで）故障しない確率 $P(T>15\mid T>10)$ を小数第3位まで（四捨五入）求めよ。
+    answer: 0.287
+    tolerance: 0.001
+    hint: |
+      累積ハザード $H(t)=\int_0^t h(u)\,du$ を求めると $S(t)=e^{-H(t)}$。条件付き確率は生存関数の比。
+    explanation: |
+      $H(t)=\int_0^t 0.02u\,du=0.01t^2$、$S(t)=e^{-0.01t^2}$。
+      $$P(T>15\mid T>10)=\frac{S(15)}{S(10)}=\exp\{-0.01(225-100)\}=e^{-1.25}\approx0.287$$
+      ハザードが増加しているので、新品が5年もつ確率 $S(5)=e^{-0.25}\approx0.779$ より小さくなります。
+
+  - id: q02-hazard-function-3
+    term: hazard-function
+    level: 応用
+    type: derivation
+    question: |
+      $T_1, T_2$ は独立で、それぞれレート $\lambda_1,\lambda_2$ の指数分布に従う。
+      $T=\min(T_1,T_2)$ のハザード関数を求め、$T$ の分布を答えよ。
+    steps:
+      - |
+        $T>t$ ⇔ $T_1>t$ かつ $T_2>t$。独立なので $S_T(t)=S_1(t)S_2(t)=e^{-\lambda_1t}e^{-\lambda_2t}=e^{-(\lambda_1+\lambda_2)t}$。
+      - |
+        $h_T(t)=-\dfrac{d}{dt}\log S_T(t)=\lambda_1+\lambda_2$（一般に、独立な寿命の最小値のハザードは各ハザードの和）。
+      - |
+        ハザードが一定 $\lambda_1+\lambda_2$ なので、$T$ はレート $\lambda_1+\lambda_2$ の指数分布。
+    answer: '$h_T(t)=\lambda_1+\lambda_2$、$T\sim$ レート $\lambda_1+\lambda_2$ の指数分布'
+    hint: |
+      最小値は「生存関数」で扱うと積になる。そのあと対数をとって微分する。
+    explanation: |
+      $$S_T(t)=P(T_1>t)P(T_2>t)=e^{-(\lambda_1+\lambda_2)t},\qquad h_T(t)=-\frac{d}{dt}\log S_T(t)=\lambda_1+\lambda_2$$
+      直列につないだ2つの部品のどちらかが壊れるとシステムが止まる、という設定で、故障の「勢い」が足し算になります。
+      平均寿命は $1/(\lambda_1+\lambda_2)$ です。
+
+  # ---------- 同時確率関数 (A) ----------
+  - id: q02-joint-probability-function-1
+    term: joint-probability-function
+    level: 基本
+    type: numeric
+    question: |
+      $(X,Y)$ の同時確率関数が次の表で与えられている。
+
+      | | $Y=0$ | $Y=1$ | $Y=2$ |
+      |---|---|---|---|
+      | $X=0$ | 0.10 | 0.20 | 0.10 |
+      | $X=1$ | 0.15 | 0.25 | 0.20 |
+
+      $P(X+Y\ge2)$ を小数第2位まで求めよ。
+    answer: 0.55
+    tolerance: 0.005
+    hint: |
+      条件 $x+y\ge2$ を満たすマスを拾って確率を足す。
+    explanation: |
+      $x+y\ge2$ となるのは $(0,2),(1,1),(1,2)$ の3マスです。
+      $$P(X+Y\ge2)=0.10+0.25+0.20=0.55$$
+
+  - id: q02-joint-probability-function-2
+    term: joint-probability-function
+    level: 標準
+    type: choice
+    question: |
+      $(X,Y)$ の同時確率関数が $p(x,y)=c\,(x+y)$（$x=1,2$、$y=1,2,3$）で与えられている。定数 $c$ はどれか。
+    choices:
+      - '$1/21$'
+      - '$1/12$'
+      - '$1/9$'
+      - '$1/18$'
+    answer: 0
+    hint: |
+      全確率の和が1になる条件 $\sum_x\sum_y p(x,y)=1$ を使う。6マスすべてを足す。
+    explanation: |
+      $$\sum_{x=1}^{2}\sum_{y=1}^{3}(x+y)=(2+3+4)+(3+4+5)=21$$
+      なので $21c=1$、$c=1/21$。$1/12$ は $x=2$ の行だけ、$1/9$ は $x=1$ の行だけを足した誤りです。
+
+  # ---------- 周辺分布 (A) ----------
+  - id: q02-marginal-distribution-1
+    term: marginal-distribution
+    level: 基本
+    type: truefalse
+    question: |
+      $X$ と $Y$ の周辺分布がそれぞれわかれば、$(X,Y)$ の同時分布は一つに決まる。
+    answer: false
+    hint: |
+      同じ周辺分布をもつのに、同時分布が違う例を作れるか考える（たとえば $Y=X$ と、$Y$ が $X$ と独立な場合）。
+    explanation: |
+      $X, Y$ がともに $0,1$ を確率 $1/2$ ずつとる場合でも、
+      - 独立なら $p(0,0)=p(0,1)=p(1,0)=p(1,1)=1/4$
+      - $Y=X$ なら $p(0,0)=p(1,1)=1/2$、$p(0,1)=p(1,0)=0$
+
+      と、同時分布は違います。周辺分布には $X$ と $Y$ の関係（依存構造）の情報がありません。
+      独立と仮定したときに限り、同時分布＝周辺分布の積として決まります。
+
+  - id: q02-marginal-distribution-2
+    term: marginal-distribution
+    level: 標準
+    type: numeric
+    question: |
+      $(X_1,X_2,X_3)$ が試行回数 $10$、確率 $(0.5,\,0.3,\,0.2)$ の多項分布に従う。
+      $P(X_2=3)$ を小数第3位まで（四捨五入）求めよ。
+    answer: 0.267
+    tolerance: 0.001
+    hint: |
+      $X_2$ だけに注目すると、各試行は「カテゴリ2か、それ以外か」の2択になる。
+    explanation: |
+      多項分布の周辺分布は二項分布で、$X_2\sim Bin(10,\,0.3)$ です。
+      $$P(X_2=3)=\binom{10}{3}0.3^3\,0.7^7=120\times0.027\times0.0823543\approx0.267$$
+
+  - id: q02-marginal-distribution-3
+    term: marginal-distribution
+    level: 応用
+    type: choice
+    question: |
+      $(X,Y)$ が平均 $(1,\,2)$、標準偏差 $\sigma_X=2,\ \sigma_Y=3$、相関係数 $\rho=0.5$ の2変量正規分布に従う。
+      $Y$ の周辺分布はどれか（$N(\mu,\sigma^2)$ は平均 $\mu$、分散 $\sigma^2$）。
+    choices:
+      - '$N(2,\ 9)$'
+      - '$N(2,\ 3)$'
+      - '$N(2,\ 6.75)$'
+      - '$N(1,\ 4)$'
+    answer: 0
+    hint: |
+      同時密度を $x$ で積分すると、相関係数はどこに残るか（残らないか）を考える。
+    explanation: |
+      2変量正規分布の周辺分布は、相関係数によらず $Y\sim N(\mu_Y,\sigma_Y^2)=N(2,\,9)$ です。
+      $N(2,3)$ は分散に標準偏差を入れた誤り、$N(2,\,6.75)$ は条件付き分散 $\sigma_Y^2(1-\rho^2)=9\times0.75$ との取り違えです。
+
+  # ---------- 周辺確率関数 (B) ----------
+  - id: q02-marginal-probability-function-1
+    term: marginal-probability-function
+    level: 標準
+    type: numeric
+    question: |
+      $(X,Y)$ の同時確率関数が $p(x,y)=\dfrac{x+2y}{12}$（$x=0,1,2$、$y=0,1$）で与えられている。
+      $X$ の周辺確率関数の値 $p_X(1)$ を小数第3位まで（四捨五入）求めよ。
+    answer: 0.333
+    tolerance: 0.001
+    hint: |
+      $p_X(1)=\sum_y p(1,y)$。$y$ のとりうる値すべてについて足す。
+    explanation: |
+      $$p_X(1)=p(1,0)+p(1,1)=\frac{1}{12}+\frac{3}{12}=\frac{4}{12}=\frac13\approx0.333$$
+      確認：$p_X(0)=2/12,\ p_X(2)=6/12$ で、合計は1になります。
+
+  # ---------- 条件付き確率関数 (A) ----------
+  - id: q02-conditional-probability-function-1
+    term: conditional-probability-function
+    level: 基本
+    type: numeric
+    question: |
+      $(X,Y)$ の同時確率関数が次の表で与えられている。
+
+      | | $Y=0$ | $Y=1$ | $Y=2$ |
+      |---|---|---|---|
+      | $X=0$ | 0.05 | 0.15 | 0.20 |
+      | $X=1$ | 0.30 | 0.10 | 0.20 |
+
+      $P(Y=2\mid X=1)$ を小数第3位まで（四捨五入）求めよ。
+    answer: 0.333
+    tolerance: 0.001
+    hint: |
+      $X=1$ の行だけを取り出し、行の合計で割る。
+    explanation: |
+      $p_X(1)=0.30+0.10+0.20=0.60$ なので
+      $$P(Y=2\mid X=1)=\frac{p(1,2)}{p_X(1)}=\frac{0.20}{0.60}=\frac13\approx0.333$$
+      列の合計 $p_Y(2)=0.40$ で割ると $P(X=1\mid Y=2)=0.5$ になり、条件の向きが逆です。
+
+  - id: q02-conditional-probability-function-2
+    term: conditional-probability-function
+    level: 応用
+    type: choice
+    question: |
+      $X\sim Po(2)$、$Y\sim Po(3)$ は独立である。$X+Y=5$ が与えられたときの $X$ の条件付き分布はどれか。
+    choices:
+      - '二項分布 $Bin(5,\ 0.4)$'
+      - '二項分布 $Bin(5,\ 0.6)$'
+      - 'ポアソン分布 $Po(2)$'
+      - 'ポアソン分布 $Po(2.5)$'
+    answer: 0
+    hint: |
+      $P(X=k\mid X+Y=5)=\dfrac{P(X=k)P(Y=5-k)}{P(X+Y=5)}$。$X+Y\sim Po(5)$ を使う。
+    explanation: |
+      $$P(X=k\mid X+Y=5)=\frac{\dfrac{e^{-2}2^k}{k!}\cdot\dfrac{e^{-3}3^{5-k}}{(5-k)!}}{\dfrac{e^{-5}5^5}{5!}}=\binom5k\left(\frac25\right)^k\left(\frac35\right)^{5-k}$$
+      なので $Bin(5,\,2/5)=Bin(5,\,0.4)$。成功確率は $\lambda_X/(\lambda_X+\lambda_Y)$ です。$0.6$ は $Y$ 側の割合と取り違えた誤りです。
+
+  # ---------- 同時確率密度関数 (A) ----------
+  - id: q02-joint-probability-density-function-1
+    term: joint-probability-density-function
+    level: 標準
+    type: numeric
+    question: |
+      $(X,Y)$ の同時確率密度関数が $f(x,y)=c\,xy\ (0<y<x<1)$、それ以外で $0$ である。定数 $c$ を求めよ。
+    answer: 8
+    tolerance: 0.01
+    hint: |
+      台は三角形 $0<y<x<1$。$x$ を固定して $y$ を $0$ から $x$ まで積分し、次に $x$ で積分する。
+    explanation: |
+      $$\int_0^1\int_0^x xy\,dy\,dx=\int_0^1 x\cdot\frac{x^2}{2}\,dx=\frac12\cdot\frac14=\frac18$$
+      なので $c/8=1$、$c=8$。積分範囲を正方形 $0<x,y<1$ にすると $c=4$ と誤ります。
+
+  - id: q02-joint-probability-density-function-2
+    term: joint-probability-density-function
+    level: 基本
+    type: truefalse
+    question: |
+      $(X,Y)$ の同時確率密度関数が $f(x,y)=8xy\ (0<y<x<1)$、それ以外で $0$ である。
+      $f(x,y)$ が $x$ の関数と $y$ の関数の積の形をしているので、$X$ と $Y$ は独立である。
+    answer: false
+    hint: |
+      台（密度が正の範囲）が長方形かどうかを見る。$X$ が小さいとき $Y$ のとりうる範囲はどうなるか。
+    explanation: |
+      独立には「積の形」に加えて、台が長方形（直積）であることが必要です。
+      ここでは $Y<X$ という制約があり、$X$ の値によって $Y$ の範囲が変わります。
+      実際、周辺密度は $f_X(x)=4x^3$、$f_Y(y)=4y(1-y^2)$ で、$f_X(x)f_Y(y)\ne 8xy$ です。
+
+  - id: q02-joint-probability-density-function-3
+    term: joint-probability-density-function
+    level: 応用
+    type: numeric
+    question: |
+      $(X,Y)$ の同時確率密度関数が $f(x,y)=e^{-x-y}\ (x>0,\ y>0)$ である。
+      $P(X<2Y)$ を小数第3位まで（四捨五入）求めよ。
+    answer: 0.667
+    tolerance: 0.001
+    hint: |
+      領域 $\{0<x<2y\}$ で二重積分する。$y$ を固定して $x$ を $0$ から $2y$ まで積分するとよい。
+    explanation: |
+      $$P(X<2Y)=\int_0^\infty e^{-y}\int_0^{2y}e^{-x}\,dx\,dy=\int_0^\infty e^{-y}(1-e^{-2y})\,dy=1-\frac13=\frac23\approx0.667$$
+
+  # ---------- 周辺確率密度関数 (B) ----------
+  - id: q02-marginal-probability-density-function-1
+    term: marginal-probability-density-function
+    level: 標準
+    type: numeric
+    question: |
+      $(X,Y)$ の同時確率密度関数が $f(x,y)=8xy\ (0<y<x<1)$、それ以外で $0$ である。
+      $Y$ の周辺確率密度関数を求め、$E[Y]$ を小数第3位まで（四捨五入）求めよ。
+    answer: 0.533
+    tolerance: 0.001
+    hint: |
+      $y$ を固定すると、$x$ の範囲は $y<x<1$。
+    explanation: |
+      $$f_Y(y)=\int_y^1 8xy\,dx=4y(1-y^2)\quad(0<y<1)$$
+      $$E[Y]=\int_0^1 y\cdot4y(1-y^2)\,dy=4\left(\frac13-\frac15\right)=\frac{8}{15}\approx0.533$$
+
+  # ---------- 条件付き確率密度関数 (A) ----------
+  - id: q02-conditional-probability-density-function-1
+    term: conditional-probability-density-function
+    level: 標準
+    type: numeric
+    question: |
+      $(X,Y)$ の同時確率密度関数が $f(x,y)=8xy\ (0<y<x<1)$、それ以外で $0$ である。
+      $E[Y\mid X=0.6]$ を小数第2位まで求めよ。
+    answer: 0.40
+    tolerance: 0.005
+    hint: |
+      まず $f_X(x)$ を求め、$f(y\mid x)=f(x,y)/f_X(x)$ を $y$ の密度（$0<y<x$）として使う。
+    explanation: |
+      $f_X(x)=\int_0^x 8xy\,dy=4x^3$ なので、$f(y\mid x)=\dfrac{8xy}{4x^3}=\dfrac{2y}{x^2}\ (0<y<x)$。
+      $$E[Y\mid X=x]=\int_0^x y\cdot\frac{2y}{x^2}\,dy=\frac{2x}{3}$$
+      $x=0.6$ を代入して $0.40$。
+
+  - id: q02-conditional-probability-density-function-2
+    term: conditional-probability-density-function
+    level: 応用
+    type: choice
+    question: |
+      $(X,Y)$ が $\mu_X=50,\ \mu_Y=60,\ \sigma_X=10,\ \sigma_Y=8,\ \rho=0.6$ の2変量正規分布に従う。
+      $X=65$ が与えられたときの $Y$ の条件付き分布はどれか（$N(\mu,\sigma^2)$ は平均 $\mu$、分散 $\sigma^2$）。
+    choices:
+      - '$N(67.2,\ 40.96)$'
+      - '$N(67.2,\ 64)$'
+      - '$N(71.25,\ 40.96)$'
+      - '$N(67.2,\ 23.04)$'
+    answer: 0
+    hint: |
+      条件付き平均は $\mu_Y+\rho\dfrac{\sigma_Y}{\sigma_X}(x-\mu_X)$、条件付き分散は $\sigma_Y^2(1-\rho^2)$。
+    explanation: |
+      $$E[Y\mid X=65]=60+0.6\times\frac{8}{10}\times(65-50)=60+7.2=67.2$$
+      $$V[Y\mid X=65]=64\times(1-0.36)=40.96$$
+      $64$ は分散を減らし忘れた誤り、$71.25$ は $\sigma_X/\sigma_Y$ を逆に使った誤り、$23.04=64\times0.36$ は $1-\rho^2$ と $\rho^2$ の取り違えです。
+
+  # ---------- モーメント母関数 (A) ----------
+  - id: q02-moment-generating-function-1
+    term: moment-generating-function
+    level: 基本
+    type: choice
+    question: |
+      確率変数 $X$ のモーメント母関数が $M_X(t)=\exp(3t+2t^2)$ である。$X$ の分布はどれか（$N(\mu,\sigma^2)$ は平均 $\mu$、分散 $\sigma^2$）。
+    choices:
+      - '$N(3,\ 4)$'
+      - '$N(3,\ 2)$'
+      - '$N(3,\ 16)$'
+      - '$N(4,\ 3)$'
+    answer: 0
+    hint: |
+      正規分布のモーメント母関数 $\exp(\mu t+\sigma^2t^2/2)$ と係数を比べる。
+    explanation: |
+      $\mu t+\dfrac{\sigma^2}{2}t^2=3t+2t^2$ より $\mu=3$、$\sigma^2/2=2$ で $\sigma^2=4$。
+      モーメント母関数の一意性から $X\sim N(3,4)$ です。$N(3,2)$ は $t^2$ の係数をそのまま分散とした誤りです。
+
+  - id: q02-moment-generating-function-2
+    term: moment-generating-function
+    level: 標準
+    type: numeric
+    question: |
+      確率変数 $X$ のモーメント母関数が $M_X(t)=(1-2t)^{-3}\ (t<1/2)$ である。$V[X]$ を求めよ。
+    answer: 12
+    tolerance: 0.01
+    hint: |
+      キュムラント母関数 $K(t)=\log M_X(t)$ を2回微分して $t=0$ を代入すると分散になる。
+    explanation: |
+      $K(t)=-3\log(1-2t)$、$K'(t)=\dfrac{6}{1-2t}$、$K''(t)=\dfrac{12}{(1-2t)^2}$。
+      $E[X]=K'(0)=6$、$V[X]=K''(0)=12$。
+      別解：$M'(0)=6$、$M''(0)=E[X^2]=48$ から $V[X]=48-36=12$。（形状3、尺度2のガンマ分布＝自由度6のカイ二乗分布です。）
+
+  - id: q02-moment-generating-function-3
+    term: moment-generating-function
+    level: 応用
+    type: derivation
+    question: |
+      $X_1,\dots,X_n$ は独立に、レート $\lambda$ の指数分布（密度 $\lambda e^{-\lambda x},\ x>0$）に従う。
+      モーメント母関数を使って $S=X_1+\cdots+X_n$ の分布を求めよ。
+    steps:
+      - |
+        $M_{X_i}(t)=\displaystyle\int_0^\infty e^{tx}\lambda e^{-\lambda x}\,dx=\frac{\lambda}{\lambda-t}\quad(t<\lambda)$。
+      - |
+        独立な和なので $M_S(t)=\prod_{i=1}^n M_{X_i}(t)=\left(\dfrac{\lambda}{\lambda-t}\right)^n$。
+      - |
+        これは形状 $n$・レート $\lambda$ のガンマ分布のモーメント母関数。一意性から分布が決まる。
+    answer: '$M_S(t)=\left(\lambda/(\lambda-t)\right)^n$ より、$S$ は形状 $n$・レート $\lambda$ のガンマ分布'
+    hint: |
+      1個の指数分布のモーメント母関数を求め、「独立な和 → 積」を使う。最後は一意性。
+    explanation: |
+      $$M_S(t)=\left(\frac{\lambda}{\lambda-t}\right)^n\quad(t<\lambda)$$
+      これは密度 $\dfrac{\lambda^n x^{n-1}e^{-\lambda x}}{(n-1)!}\ (x>0)$ のガンマ分布（形状 $n$、レート $\lambda$。尺度で書けば $1/\lambda$）のモーメント母関数なので、一意性より $S$ はこの分布に従います。
+      平均 $n/\lambda$、分散 $n/\lambda^2$ も $K(t)=n\log\lambda-n\log(\lambda-t)$ の微分で確かめられます。
+
+  # ---------- 確率母関数 (A) ----------
+  - id: q02-probability-generating-function-1
+    term: probability-generating-function
+    level: 基本
+    type: truefalse
+    question: |
+      $0,1,2,\dots$ の値をとる確率変数 $X$ の確率母関数 $G_X(s)=E[s^X]$ について、
+      $G_X'(1)=E[X]$、$G_X''(1)=E[X^2]$ が成り立つ。
+    answer: false
+    hint: |
+      $s^x$ を $s$ で2回微分すると係数は何になるか。
+    explanation: |
+      $\dfrac{d^2}{ds^2}s^x=x(x-1)s^{x-2}$ なので、$G_X''(1)=E[X(X-1)]$（2次の階乗モーメント）です。
+      $G_X'(1)=E[X]$ は正しいですが、$E[X^2]=G_X''(1)+G_X'(1)$ で、
+      $$V[X]=G_X''(1)+G_X'(1)-\{G_X'(1)\}^2$$
+      となります。$E[X^k]$ を直接生むのはモーメント母関数 $M_X(t)$ のほうです。
+
+  - id: q02-probability-generating-function-2
+    term: probability-generating-function
+    level: 標準
+    type: numeric
+    question: |
+      $X_1, X_2$ は独立で、どちらも $P(X=0)=0.2,\ P(X=1)=0.5,\ P(X=2)=0.3$ の分布に従う。
+      確率母関数を使って $P(X_1+X_2=2)$ を小数第2位まで求めよ。
+    answer: 0.37
+    tolerance: 0.005
+    hint: |
+      $G_{X_1+X_2}(s)=\{G_X(s)\}^2$。展開したときの $s^2$ の係数が求める確率。
+    explanation: |
+      $G_X(s)=0.2+0.5s+0.3s^2$ なので $G_{X_1+X_2}(s)=(0.2+0.5s+0.3s^2)^2$。
+      $s^2$ の係数は $0.5^2+2\times0.2\times0.3=0.25+0.12=0.37$。
+      （組で数えると $(0,2),(1,1),(2,0)$ で $0.06+0.25+0.06=0.37$ と一致します。）
+
+  - id: q02-probability-generating-function-3
+    term: probability-generating-function
+    level: 応用
+    type: numeric
+    question: |
+      ある鳥の1回の産卵数 $N$ は $Po(4)$ に従い、各卵は他と独立に確率 $0.3$ でふ化する（$N$ とも独立）。
+      ふ化する卵の数を $S$ とする。確率母関数を使って $P(S=0)$ を小数第3位まで（四捨五入）求めよ。
+    answer: 0.301
+    tolerance: 0.001
+    hint: |
+      ランダムな個数の和では $G_S(s)=G_N(G_B(s))$（$G_B$ は1個の卵の確率母関数）。$P(S=0)=G_S(0)$。
+    explanation: |
+      $G_N(s)=e^{4(s-1)}$、$G_B(s)=0.7+0.3s$ なので
+      $$G_S(s)=G_N(G_B(s))=e^{4(0.7+0.3s-1)}=e^{1.2(s-1)}$$
+      これは $Po(1.2)$ の確率母関数なので $S\sim Po(1.2)$（ポアソン分布の間引き）。
+      $$P(S=0)=G_S(0)=e^{-1.2}\approx0.301$$
+
+  # ---------- 特性関数 (B) ----------
+  - id: q02-characteristic-function-1
+    term: characteristic-function
+    level: 基本
+    type: truefalse
+    question: |
+      モーメント母関数が存在しない分布（たとえばコーシー分布）でも、特性関数は必ず存在する。
+    answer: true
+    hint: |
+      $|e^{itx}|$ の大きさを考える。
+    explanation: |
+      $|e^{itX}|=1$ なので $E[e^{itX}]$ は必ず有限で、すべての確率変数に特性関数が存在します（$|\varphi_X(t)|\le1$）。
+      コーシー分布はモーメント母関数も平均も存在しませんが、特性関数は $\exp(i\mu t-\gamma|t|)$ です。
+
+  - id: q02-characteristic-function-2
+    term: characteristic-function
+    level: 標準
+    type: choice
+    question: |
+      $X\sim N(1,\,4)$（平均1、分散4）のとき、$Y=3X+2$ の特性関数 $\varphi_Y(t)$ はどれか。
+    choices:
+      - '$\exp(5it-18t^2)$'
+      - '$\exp(5it-6t^2)$'
+      - '$\exp(3it-18t^2)$'
+      - '$\exp(5it-36t^2)$'
+    answer: 0
+    hint: |
+      $\varphi_{aX+b}(t)=e^{ibt}\varphi_X(at)$ と $\varphi_X(t)=\exp(i\mu t-\sigma^2t^2/2)$ を使う。
+    explanation: |
+      $\varphi_X(t)=\exp(it-2t^2)$ なので
+      $$\varphi_Y(t)=e^{2it}\varphi_X(3t)=e^{2it}\exp(3it-18t^2)=\exp(5it-18t^2)$$
+      これは $N(5,\,36)$ の特性関数で、$E[Y]=3+2=5$、$V[Y]=9\times4=36$ と一致します。
+      $-6t^2$ は分散を $3\times4$ とした誤り、$-36t^2$ は $\sigma^2/2$ の $1/2$ を忘れた誤りです。

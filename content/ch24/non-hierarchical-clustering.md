@@ -5,7 +5,7 @@ reading: ひかいそうてきくらすたりんぐ
 en: Non-hierarchical clustering
 aliases: [非階層的クラスター分析, 分割最適化法, partitional clustering]
 chapter: 24
-importance: B
+importance: C
 tags: [クラスター分析, 教師なし学習, k-medoids]
 related: [k-means-method, hierarchical-clustering, number-of-clusters, mixture-model-clustering, normal-mixture-distribution, distance-measures]
 charts:

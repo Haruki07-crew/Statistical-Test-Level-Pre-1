@@ -5,7 +5,7 @@ reading: どくりつせいぶんぶんせき
 en: Independent component analysis
 aliases: [ICA, ブラインド信号分離]
 chapter: 26
-importance: B
+importance: C
 tags: [多変量解析, 信号分離, 非正規性, 尖度, 白色化]
 related: [principal-component-analysis, factor-analysis-model, skewness-kurtosis, central-limit-theorem, variance-covariance-matrix, normal-distribution]
 charts:

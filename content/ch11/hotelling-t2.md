@@ -5,7 +5,7 @@ reading: ほてりんぐのてぃーにじょうけんてい
 en: Hotelling's T-squared test
 aliases: [ホテリングのT², "T²統計量", 多変量t検定, 平均ベクトルの検定]
 chapter: 11
-importance: B
+importance: C
 tags: [仮説検定, 多変量正規分布, 平均ベクトル, F分布, マハラノビス距離]
 related: [multivariate-normal-distribution, mahalanobis-distance, one-sample-t-test, f-distribution, mean-vector, variance-covariance-matrix]
 charts:

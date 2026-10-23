@@ -5,7 +5,7 @@ reading: ぼへいきんのさのけんていとしんらいくかんのかん�
 en: Relationship between tests and confidence intervals for a mean difference
 aliases: [平均の差の検定と区間推定の対応, p値関数]
 chapter: 11
-importance: B
+importance: C
 tags: [仮説検定, 信頼区間, 母平均の差, 双対性]
 related: [confidence-interval-test-duality, ci-two-sample-mean-difference, two-sample-t-test, welch-test, ci-paired-difference, p-value]
 charts:

@@ -1,0 +1,122 @@
+{
+ "q02-characteristic-function-1": {
+  "hash": "fb5bf2b66ad080e4",
+  "ok": true
+ },
+ "q02-characteristic-function-2": {
+  "hash": "1433169d1a1936fc",
+  "ok": true
+ },
+ "q02-conditional-probability-density-function-1": {
+  "hash": "69022ce1a5bca086",
+  "ok": true
+ },
+ "q02-conditional-probability-density-function-2": {
+  "hash": "2f462b55799fce2f",
+  "ok": true
+ },
+ "q02-conditional-probability-function-1": {
+  "hash": "4f2fa8a49857efd4",
+  "ok": true
+ },
+ "q02-conditional-probability-function-2": {
+  "hash": "0801fb4cfe01d688",
+  "ok": true
+ },
+ "q02-cumulative-distribution-function-1": {
+  "hash": "7a3c1234eeafbc90",
+  "ok": true
+ },
+ "q02-cumulative-distribution-function-2": {
+  "hash": "6512a2aab5ecec18",
+  "ok": true
+ },
+ "q02-cumulative-distribution-function-3": {
+  "hash": "5c6a1bd5a9dbc2de",
+  "ok": true
+ },
+ "q02-hazard-function-1": {
+  "hash": "cf8b93cb743fb15b",
+  "ok": true
+ },
+ "q02-hazard-function-2": {
+  "hash": "e5b6ddaf51443bb0",
+  "ok": true
+ },
+ "q02-hazard-function-3": {
+  "hash": "f63377410f350152",
+  "ok": true
+ },
+ "q02-joint-probability-density-function-1": {
+  "hash": "115fece3f93e684c",
+  "ok": true
+ },
+ "q02-joint-probability-density-function-2": {
+  "hash": "a0ef8528fcf8b0f2",
+  "ok": true
+ },
+ "q02-joint-probability-density-function-3": {
+  "hash": "94b9c9da06c28234",
+  "ok": true
+ },
+ "q02-joint-probability-function-1": {
+  "hash": "e4d91990ad9b757f",
+  "ok": true
+ },
+ "q02-joint-probability-function-2": {
+  "hash": "a53140da934731b0",
+  "ok": true
+ },
+ "q02-marginal-distribution-1": {
+  "hash": "a68733225f979e54",
+  "ok": true
+ },
+ "q02-marginal-distribution-2": {
+  "hash": "779ef3334cb57145",
+  "ok": true
+ },
+ "q02-marginal-distribution-3": {
+  "hash": "adce41a08a6ddd65",
+  "ok": true
+ },
+ "q02-marginal-probability-density-function-1": {
+  "hash": "2b80684052d57ff3",
+  "ok": true
+ },
+ "q02-marginal-probability-function-1": {
+  "hash": "b5cb55de7f42a9dc",
+  "ok": true
+ },
+ "q02-moment-generating-function-1": {
+  "hash": "b7fc0e43ff2405a9",
+  "ok": true
+ },
+ "q02-moment-generating-function-2": {
+  "hash": "8a9e09b96a51b542",
+  "ok": true
+ },
+ "q02-moment-generating-function-3": {
+  "hash": "550dec9d00359f58",
+  "ok": true
+ },
+ "q02-probability-generating-function-1": {
+  "hash": "586a4b92f4fd7977",
+  "ok": true
+ },
+ "q02-probability-generating-function-2": {
+  "hash": "ca2017d449548f05",
+  "ok": true
+ },
+ "q02-probability-generating-function-3": {
+  "hash": "de7c51be0c637603",
+  "ok": true
+ },
+ "q02-survival-function-1": {
+  "hash": "5f0ea6a3c856f1fb",
+  "ok": true
+ },
+ "q02-survival-function-2": {
+  "hash": "545511c829683250",
+  "ok": true
+ }
+}

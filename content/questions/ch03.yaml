@@ -1,0 +1,515 @@
+chapter: 3
+questions:
+  # ---------- 期待値と分散の性質 (A) ----------
+  - id: q03-expectation-variance-properties-1
+    term: expectation-variance-properties
+    level: 基本
+    type: numeric
+    question: |
+      $E[X]=3$、$V[X]=4$ の確率変数 $X$ について、$Y=5-2X$ の分散 $V[Y]$ を求めよ。
+    answer: 16
+    tolerance: 0.01
+    hint: |
+      $V[aX+b]=a^2V[X]$。定数の足し引きは分散に影響しない。
+    explanation: |
+      $$V[5-2X]=(-2)^2\,V[X]=4\times4=16$$
+      係数を2乗するので符号は消えます。$-8$（2乗し忘れ）や $8$ は誤りです。ちなみに $E[Y]=5-2\times3=-1$。
+
+  - id: q03-expectation-variance-properties-2
+    term: expectation-variance-properties
+    level: 標準
+    type: numeric
+    question: |
+      $V[X]=4$、$V[Y]=9$、$\mathrm{Cov}[X,Y]=-2$ のとき、$V[2X-3Y]$ を求めよ。
+    answer: 121
+    tolerance: 0.01
+    hint: |
+      $V[aX+bY]=a^2V[X]+b^2V[Y]+2ab\,\mathrm{Cov}[X,Y]$。$b=-3$ の符号に注意。
+    explanation: |
+      $$V[2X-3Y]=4\times4+9\times9+2\times2\times(-3)\times(-2)=16+81+24=121$$
+      共分散が負で係数の符号も逆なので、共分散の項はプラスになります。独立と思い込むと $97$ になります。
+
+  - id: q03-expectation-variance-properties-3
+    term: expectation-variance-properties
+    level: 応用
+    type: choice
+    question: |
+      $X_1,\dots,X_n$ は独立に、平均 $\mu$、分散 $\sigma^2$ の同じ分布に従う。
+      $\bar X=\frac1n\sum X_i$ とし、$n$ で割った分散 $S^2=\frac1n\sum_{i=1}^n(X_i-\bar X)^2$ を考える。$E[S^2]$ はどれか。
+    choices:
+      - '$\dfrac{n-1}{n}\sigma^2$'
+      - '$\sigma^2$'
+      - '$\dfrac{\sigma^2}{n}$'
+      - '$\dfrac{n}{n-1}\sigma^2$'
+    answer: 0
+    hint: |
+      $\sum(X_i-\bar X)^2=\sum X_i^2-n\bar X^2$ と変形し、$E[X_i^2]=\sigma^2+\mu^2$、$E[\bar X^2]=\sigma^2/n+\mu^2$ を使う。
+    explanation: |
+      $$E\Big[\sum(X_i-\bar X)^2\Big]=n(\sigma^2+\mu^2)-n\left(\frac{\sigma^2}{n}+\mu^2\right)=(n-1)\sigma^2$$
+      なので $E[S^2]=\dfrac{n-1}{n}\sigma^2$ で、$\sigma^2$ より小さく偏ります。
+      $n-1$ で割った不偏分散なら期待値がちょうど $\sigma^2$ になります。$\sigma^2/n$ は $V[\bar X]$ との取り違えです。
+
+  # ---------- 分位点関数 (B) ----------
+  - id: q03-quantile-function-1
+    term: quantile-function
+    level: 標準
+    type: numeric
+    question: |
+      レート $0.5$ の指数分布（密度 $0.5e^{-0.5x},\ x>0$）の中央値を小数第3位まで（四捨五入）求めよ。
+    answer: 1.386
+    tolerance: 0.001
+    hint: |
+      $F(x)=1-e^{-0.5x}$ を $p=0.5$ について解く。
+    explanation: |
+      $Q(p)=-\dfrac{\log(1-p)}{0.5}$ なので
+      $$Q(0.5)=2\log2\approx1.386$$
+      平均 $1/0.5=2$ より小さいのは、右に裾が長い分布だからです。
+
+  - id: q03-quantile-function-2
+    term: quantile-function
+    level: 応用
+    type: choice
+    question: |
+      $X\sim Bin(3,\ 0.5)$ とする。分位点関数を $Q(p)=\inf\{x: F(x)\ge p\}$ で定義するとき、$Q(0.5)$ はどれか。
+    choices:
+      - '$1$'
+      - '$1.5$'
+      - '$2$'
+      - '$0.5$'
+    answer: 0
+    hint: |
+      $F(0),F(1),F(2)$ を計算し、初めて $0.5$ 以上になる点を探す。
+    explanation: |
+      $P(X=k)=1/8,\,3/8,\,3/8,\,1/8$ なので $F(0)=1/8$、$F(1)=4/8=0.5$、$F(2)=7/8$。
+      $F(x)\ge0.5$ となる最小の $x$ は $1$ なので $Q(0.5)=1$。
+      データの中央値のように「$1$ と $2$ の中点 $1.5$」とするのは、この定義では誤りです（分布の値でもありません）。
+
+  # ---------- 変動係数 (B) ----------
+  - id: q03-coefficient-of-variation-1
+    term: coefficient-of-variation
+    level: 標準
+    type: numeric
+    question: |
+      $X$ が一様分布 $U(0,\theta)$（$\theta>0$）に従うとき、変動係数 $\sigma/\mu$ を小数第3位まで（四捨五入）求めよ。
+    answer: 0.577
+    tolerance: 0.001
+    hint: |
+      $E[X]=\theta/2$、$V[X]=\theta^2/12$。$\theta$ は比をとると消える。
+    explanation: |
+      $$\mathrm{CV}=\frac{\theta/\sqrt{12}}{\theta/2}=\frac{2}{\sqrt{12}}=\frac{1}{\sqrt3}\approx0.577$$
+      尺度 $\theta$ によらない値で、変動係数が「単位に依存しない」ことの例になっています。
+
+  - id: q03-coefficient-of-variation-2
+    term: coefficient-of-variation
+    level: 基本
+    type: truefalse
+    question: |
+      正の値をとる確率変数 $X$ について、$Y=X+10$ の変動係数は $X$ の変動係数と等しい。
+    answer: false
+    hint: |
+      $Y$ の平均と標準偏差がそれぞれどう変わるかを考える。
+    explanation: |
+      $\sigma_Y=\sigma_X$ ですが $\mu_Y=\mu_X+10$ なので、$\mathrm{CV}_Y=\dfrac{\sigma_X}{\mu_X+10}<\mathrm{CV}_X$ です。
+      変動係数が変わらないのは $Y=cX\ (c>0)$ のような**定数倍**（単位の変更）のときです。
+      原点をずらすと値が変わるので、変動係数は0に意味がある比率尺度で使います（摂氏温度などには使いません）。
+
+  # ---------- 共分散と相関係数 (A) ----------
+  - id: q03-covariance-and-correlation-1
+    term: covariance-and-correlation
+    level: 基本
+    type: truefalse
+    question: |
+      $\mathrm{Cov}[X,Y]=0$ ならば、$X$ と $Y$ は独立である。
+    answer: false
+    hint: |
+      $X$ が $0$ について対称な分布で、$Y=X^2$ のときを考える。
+    explanation: |
+      独立 ⇒ 無相関は成り立ちますが、逆は一般には成り立ちません。
+      たとえば $X$ が $-1,0,1$ を確率 $1/3$ ずつとり $Y=X^2$ とすると、
+      $E[XY]=E[X^3]=0$、$E[X]=0$ より $\mathrm{Cov}[X,Y]=0$ ですが、$Y$ は $X$ で完全に決まります。
+      共分散がとらえるのは**直線的な**関係だけです（2変量正規分布では無相関と独立が同値）。
+
+  - id: q03-covariance-and-correlation-2
+    term: covariance-and-correlation
+    level: 標準
+    type: choice
+    question: |
+      $X$ と $Y$ の相関係数が $0.6$ である。$U=2X+1$、$V=-3Y+4$ の相関係数はどれか。
+    choices:
+      - '$-0.6$'
+      - '$0.6$'
+      - '$-3.6$'
+      - '$-0.36$'
+    answer: 0
+    hint: |
+      共分散は $ac$ 倍、標準偏差はそれぞれ $|a|$ 倍・$|c|$ 倍になる。
+    explanation: |
+      $\mathrm{Cov}[U,V]=2\times(-3)\,\mathrm{Cov}[X,Y]$、$\sigma_U\sigma_V=|2|\,|{-3}|\,\sigma_X\sigma_Y$ なので
+      $$\rho_{UV}=\frac{-6}{6}\rho_{XY}=-0.6$$
+      相関係数は1次変換で大きさが変わらず、係数の積が負なら符号だけ反転します。$-3.6$ は共分散と同じように $ac$ 倍した誤りで、そもそも $[-1,1]$ の外です。
+
+  - id: q03-covariance-and-correlation-3
+    term: covariance-and-correlation
+    level: 応用
+    type: numeric
+    question: |
+      $V[X]=4$、$V[Y]=1$、$X$ と $Y$ の相関係数が $0.5$ である。$X+Y$ と $X-Y$ の相関係数を小数第3位まで（四捨五入）求めよ。
+    answer: 0.655
+    tolerance: 0.001
+    hint: |
+      まず $\mathrm{Cov}[X,Y]$ を出し、$\mathrm{Cov}[X+Y,X-Y]$、$V[X+Y]$、$V[X-Y]$ を順に求める。
+    explanation: |
+      $\mathrm{Cov}[X,Y]=0.5\times2\times1=1$。
+      $$\mathrm{Cov}[X+Y,\,X-Y]=V[X]-V[Y]=3$$
+      $$V[X+Y]=4+1+2=7,\qquad V[X-Y]=4+1-2=3$$
+      $$\rho=\frac{3}{\sqrt{7\times3}}=\frac{3}{\sqrt{21}}\approx0.655$$
+      （$V[X]=V[Y]$ なら和と差は必ず無相関になります。）
+
+  # ---------- 擬似相関 (B) ----------
+  - id: q03-spurious-correlation-1
+    term: spurious-correlation
+    level: 標準
+    type: numeric
+    question: |
+      $Z,\varepsilon_1,\varepsilon_2$ は互いに独立で、どれも分散 $1$ とする。$X=2Z+\varepsilon_1$、$Y=Z+\varepsilon_2$ のとき、
+      $X$ と $Y$ の相関係数を小数第3位まで（四捨五入）求めよ。
+    answer: 0.632
+    tolerance: 0.001
+    hint: |
+      $X$ と $Y$ の共通部分は $Z$ だけ。$\mathrm{Cov}[X,Y]=2\times1\times V[Z]$。
+    explanation: |
+      $\mathrm{Cov}[X,Y]=2\,V[Z]=2$、$V[X]=4+1=5$、$V[Y]=1+1=2$ なので
+      $$\rho_{XY}=\frac{2}{\sqrt{5\times2}}=\frac{2}{\sqrt{10}}\approx0.632$$
+      $X$ と $Y$ の間に直接の関係はなく、相関はすべて共通の要因 $Z$ から生じています（$Z$ を除いた偏相関は $0$）。
+
+  - id: q03-spurious-correlation-2
+    term: spurious-correlation
+    level: 基本
+    type: truefalse
+    question: |
+      2つの変数の相関係数が大きければ、一方が他方の原因であると結論してよい。
+    answer: false
+    hint: |
+      両方に影響する第3の変数（交絡因子）がある場合を考える。
+    explanation: |
+      相関は「一緒に動く」ことを表すだけで、向きや因果は表しません。
+      気温のような共通の要因 $Z$ が $X$ と $Y$ の両方を動かすと、直接の関係がなくても相関が生じます（擬似相関）。
+      因果を論じるには、$Z$ を固定した比較（偏相関、層別、実験による無作為化など）が必要です。
+
+  # ---------- 偏相関係数 (A) ----------
+  - id: q03-partial-correlation-coefficient-1
+    term: partial-correlation-coefficient
+    level: 標準
+    type: numeric
+    question: |
+      3変数の相関係数が $r_{XY}=0.6$、$r_{XZ}=0.7$、$r_{YZ}=0.8$ である。
+      $Z$ を除いた $X$ と $Y$ の偏相関係数 $r_{XY\cdot Z}$ を小数第3位まで（四捨五入）求めよ。
+    answer: 0.093
+    tolerance: 0.001
+    hint: |
+      $r_{XY\cdot Z}=\dfrac{r_{XY}-r_{XZ}r_{YZ}}{\sqrt{(1-r_{XZ}^2)(1-r_{YZ}^2)}}$
+    explanation: |
+      $$r_{XY\cdot Z}=\frac{0.6-0.7\times0.8}{\sqrt{(1-0.49)(1-0.64)}}=\frac{0.04}{\sqrt{0.51\times0.36}}=\frac{0.04}{0.4285}\approx0.093$$
+      $0.6$ という相関の大部分は $Z$ を通じたもので、$Z$ を除くとほとんど残りません。
+
+  - id: q03-partial-correlation-coefficient-2
+    term: partial-correlation-coefficient
+    level: 応用
+    type: choice
+    question: |
+      3変数の相関係数が $r_{XY}=0$、$r_{XZ}=0.5$、$r_{YZ}=-0.5$ である。$r_{XY\cdot Z}$ はどれか。
+    choices:
+      - '$1/3$'
+      - '$-1/3$'
+      - '$0$'
+      - '$1/4$'
+    answer: 0
+    hint: |
+      分子の $r_{XY}-r_{XZ}r_{YZ}$ の符号に注意。分母は $1$ より小さい。
+    explanation: |
+      $$r_{XY\cdot Z}=\frac{0-0.5\times(-0.5)}{\sqrt{(1-0.25)(1-0.25)}}=\frac{0.25}{0.75}=\frac13$$
+      元の相関が $0$ でも、$Z$ を除くと正の偏相関が現れることがあります。$1/4$ は分母を忘れた誤り、$-1/3$ は分子の符号の誤りです。
+
+  - id: q03-partial-correlation-coefficient-3
+    term: partial-correlation-coefficient
+    level: 基本
+    type: truefalse
+    question: |
+      偏相関係数 $r_{XY\cdot Z}$ の符号は、必ず元の相関係数 $r_{XY}$ の符号と一致する。
+    answer: false
+    hint: |
+      $r_{XY}$ が正でも $r_{XZ}r_{YZ}$ がそれより大きければ、分子はどうなるか。
+    explanation: |
+      分子は $r_{XY}-r_{XZ}r_{YZ}$ なので、たとえば $r_{XY}=0.3$、$r_{XZ}=r_{YZ}=0.8$ なら
+      $$r_{XY\cdot Z}=\frac{0.3-0.64}{1-0.64}=\frac{-0.34}{0.36}\approx-0.94$$
+      と符号が逆転します。偏相関は「$Z$ の影響を取り除いた残差どうしの相関」で、元の相関とは大きさも符号も変わりえます。
+
+  # ---------- 条件付き期待値 (A) ----------
+  - id: q03-conditional-expectation-1
+    term: conditional-expectation
+    level: 基本
+    type: numeric
+    question: |
+      $(X,Y)$ の同時確率関数が次の表で与えられている。
+
+      | | $Y=1$ | $Y=2$ | $Y=3$ |
+      |---|---|---|---|
+      | $X=0$ | 0.10 | 0.20 | 0.10 |
+      | $X=1$ | 0.30 | 0.10 | 0.20 |
+
+      $E[Y\mid X=1]$ を小数第3位まで（四捨五入）求めよ。
+    answer: 1.833
+    tolerance: 0.001
+    hint: |
+      $X=1$ の行を行の合計で割って条件付き確率関数を作り、$y$ で重みづけて足す。
+    explanation: |
+      $p_X(1)=0.30+0.10+0.20=0.60$ なので、条件付き確率は $1/2,\ 1/6,\ 1/3$。
+      $$E[Y\mid X=1]=1\times\frac12+2\times\frac16+3\times\frac13=\frac{1.1}{0.6}\approx1.833$$
+
+  - id: q03-conditional-expectation-2
+    term: conditional-expectation
+    level: 標準
+    type: numeric
+    question: |
+      公正なサイコロを1回投げ、出た目の数 $N$ だけ公正なコインを投げる。表の出た回数を $Y$ とする。
+      $E[Y]$ を小数第2位まで求めよ。
+    answer: 1.75
+    tolerance: 0.005
+    hint: |
+      $E[Y\mid N]=N/2$ と繰り返し期待値の法則 $E[Y]=E[E[Y\mid N]]$ を使う。
+    explanation: |
+      $N$ を与えると $Y\mid N\sim Bin(N,\,1/2)$ なので $E[Y\mid N]=N/2$。
+      $$E[Y]=E\left[\frac N2\right]=\frac{3.5}{2}=1.75$$
+
+  - id: q03-conditional-expectation-3
+    term: conditional-expectation
+    level: 応用
+    type: choice
+    question: |
+      $(X,Y)$ の同時確率密度関数が $f(x,y)=x+y\ (0<x<1,\ 0<y<1)$ である。$E[Y\mid X=x]$ はどれか。
+    choices:
+      - '$\dfrac{3x+2}{6x+3}$'
+      - '$\dfrac{3x+2}{6}$'
+      - '$\dfrac12$'
+      - '$\dfrac{x+1}{2x+1}$'
+    answer: 0
+    hint: |
+      $f_X(x)=\int_0^1(x+y)\,dy$ を求め、$\int_0^1 y\,\dfrac{f(x,y)}{f_X(x)}\,dy$ を計算する。
+    explanation: |
+      $f_X(x)=x+\tfrac12$、$\int_0^1 y(x+y)\,dy=\tfrac x2+\tfrac13$ なので
+      $$E[Y\mid X=x]=\frac{x/2+1/3}{x+1/2}=\frac{3x+2}{6x+3}$$
+      $\dfrac{3x+2}{6}$ は $f_X(x)$ で割り忘れた誤り、$\dfrac12$ は独立と思い込んだ誤りです。
+      $x=0$ で $2/3$、$x=1$ で $5/9$ と、$x$ が大きいほど小さくなります。
+
+  # ---------- 条件付き分散 (A) ----------
+  - id: q03-conditional-variance-1
+    term: conditional-variance
+    level: 基本
+    type: truefalse
+    question: |
+      $E[Y^2]<\infty$ のとき、つねに $V[Y]\ge E\big[V[Y\mid X]\big]$ が成り立つ。
+    answer: true
+    hint: |
+      全分散の公式 $V[Y]=E[V[Y\mid X]]+V[E[Y\mid X]]$ の第2項の符号を考える。
+    explanation: |
+      全分散の公式の第2項 $V[E[Y\mid X]]$ は分散なので $0$ 以上です。よって $V[Y]\ge E[V[Y\mid X]]$。
+      「$X$ がわかると、平均的には $Y$ の不確かさは減る（増えない）」という意味です。
+      等号は $E[Y\mid X]$ が定数のとき（$X$ が $Y$ の平均について情報をもたないとき）です。
+
+  - id: q03-conditional-variance-2
+    term: conditional-variance
+    level: 標準
+    type: numeric
+    question: |
+      公正なサイコロを1回投げ、出た目の数 $N$ だけ公正なコインを投げる。表の出た回数を $Y$ とする。
+      全分散の公式を使って $V[Y]$ を小数第3位まで（四捨五入）求めよ。
+    answer: 1.604
+    tolerance: 0.001
+    hint: |
+      $Y\mid N\sim Bin(N,1/2)$ より $E[Y\mid N]=N/2$、$V[Y\mid N]=N/4$。サイコロの目の分散は $35/12$。
+    explanation: |
+      $$V[Y]=E\left[\frac N4\right]+V\left[\frac N2\right]=\frac{3.5}{4}+\frac14\cdot\frac{35}{12}=0.875+0.7292\approx1.604$$
+      第1項はコインの偶然によるばらつき、第2項は投げる回数が変わることによるばらつきです。
+
+  - id: q03-conditional-variance-3
+    term: conditional-variance
+    level: 応用
+    type: numeric
+    question: |
+      確率 $P$ が一様分布 $U(0,1)$ に従い、$P=p$ が与えられたとき $Y\mid P=p\sim Bin(10,\ p)$ とする。
+      $V[Y]$ を求めよ。
+    answer: 10
+    tolerance: 0.01
+    hint: |
+      $E[Y\mid P]=10P$、$V[Y\mid P]=10P(1-P)$。$E[P]=1/2$、$E[P^2]=1/3$、$V[P]=1/12$。
+    explanation: |
+      $$E[V[Y\mid P]]=10\,E[P-P^2]=10\left(\frac12-\frac13\right)=\frac53$$
+      $$V[E[Y\mid P]]=100\,V[P]=\frac{100}{12}=\frac{25}{3}$$
+      $$V[Y]=\frac53+\frac{25}{3}=10$$
+      $p=1/2$ で固定した $Bin(10,1/2)$ の分散 $2.5$ よりずっと大きく、成功確率の不確かさが分散を押し上げています。
+      （実はこの $Y$ は $0,\dots,10$ の一様分布で、分散 $(11^2-1)/12=10$ と一致します。）
+
+  # ---------- 歪度と尖度 (B) ----------
+  - id: q03-skewness-kurtosis-1
+    term: skewness-kurtosis
+    level: 基本
+    type: choice
+    question: |
+      尖度を $\beta_2=E[(X-\mu)^4]/\sigma^4$（正規分布で $3$）と定義する。次の分布のうち、$\beta_2<3$ となるものはどれか。
+    choices:
+      - '一様分布 $U(0,1)$'
+      - '指数分布'
+      - '自由度 $10$ の $t$ 分布'
+      - 'ポアソン分布 $Po(1)$'
+    answer: 0
+    hint: |
+      裾が正規分布より軽い（端がすぐ打ち切られる）分布はどれか。
+    explanation: |
+      一様分布は $\beta_2=1.8$ で、裾がない分だけ正規分布より小さくなります。
+      指数分布は $9$、自由度 $10$ の $t$ 分布は $3+6/6=4$、$Po(1)$ は $3+1/1=4$ で、いずれも $3$ より大きい（裾が重い）です。
+      超過尖度（$\beta_2-3$）で言えば、一様分布は $-1.2$ です。
+
+  - id: q03-skewness-kurtosis-2
+    term: skewness-kurtosis
+    level: 標準
+    type: numeric
+    question: |
+      $X$ が $P(X=1)=0.2$、$P(X=0)=0.8$ のベルヌーイ分布に従うとき、歪度 $E[(X-\mu)^3]/\sigma^3$ を小数第2位まで求めよ。
+    answer: 1.50
+    tolerance: 0.005
+    hint: |
+      $\mu=0.2$、$\sigma^2=0.16$。$(X-\mu)^3$ は $X=1$ と $X=0$ の2通りだけ計算すればよい。
+    explanation: |
+      $$E[(X-\mu)^3]=0.2\times0.8^3+0.8\times(-0.2)^3=0.1024-0.0064=0.096$$
+      $\sigma^3=0.4^3=0.064$ なので歪度は $0.096/0.064=1.5$。
+      一般に $(1-2p)/\sqrt{p(1-p)}$ で、$p<1/2$ なら右に裾が長く（正の歪度）なります。
+
+  # ---------- 加重平均・幾何平均・調和平均 (B) ----------
+  - id: q03-weighted-geometric-harmonic-mean-1
+    term: weighted-geometric-harmonic-mean
+    level: 標準
+    type: numeric
+    question: |
+      ある店の売上は、3年間でそれぞれ前年比 $+20\%$、$-10\%$、$+5\%$ だった。
+      この3年間の平均成長率（年率、%）を幾何平均で求め、小数第2位まで（四捨五入）答えよ。
+    answer: 4.28
+    tolerance: 0.005
+    hint: |
+      成長率ではなく倍率 $1.2,\ 0.9,\ 1.05$ の幾何平均をとり、最後に $1$ を引く。
+    explanation: |
+      $$\sqrt[3]{1.2\times0.9\times1.05}=\sqrt[3]{1.134}\approx1.04281$$
+      なので平均成長率は約 $4.28\%$。
+      成長率の相加平均 $(20-10+5)/3=5\%$ だと、3年後の売上を過大に見積もります（$1.05^3=1.158\ne1.134$）。
+
+  - id: q03-weighted-geometric-harmonic-mean-2
+    term: weighted-geometric-harmonic-mean
+    level: 標準
+    type: numeric
+    question: |
+      同じ距離の3区間を、それぞれ時速 30 km、60 km、90 km で走った。全体の平均速度（時速 km）を小数第2位まで（四捨五入）求めよ。
+    answer: 49.09
+    tolerance: 0.005
+    hint: |
+      距離が等しいので、平均速度＝総距離÷総時間は速度の調和平均になる。
+    explanation: |
+      1区間の距離を $d$ とすると、総時間は $d(1/30+1/60+1/90)=d\times\frac{11}{180}$。
+      $$\text{平均速度}=\frac{3d}{d\times11/180}=\frac{540}{11}\approx49.09$$
+      速度の相加平均 $60$ は誤りで、遅い区間ほど時間がかかる分だけ平均は下がります。
+
+  # ---------- 期待値ベクトル (B) ----------
+  - id: q03-mean-vector-1
+    term: mean-vector
+    level: 基本
+    type: numeric
+    question: |
+      確率ベクトル $\boldsymbol X=(X_1,X_2,X_3)^\top$ の期待値ベクトルが $\boldsymbol\mu=(2,\,-1,\,3)^\top$ である。
+      $W=\boldsymbol a^\top\boldsymbol X+4$、$\boldsymbol a=(1,\,2,\,-1)^\top$ の期待値を求めよ。
+    answer: 1
+    tolerance: 0.01
+    hint: |
+      $E[\boldsymbol a^\top\boldsymbol X+b]=\boldsymbol a^\top\boldsymbol\mu+b$。各成分が独立かどうかは関係ない。
+    explanation: |
+      $$E[W]=1\times2+2\times(-1)+(-1)\times3+4=2-2-3+4=1$$
+      期待値の線形性は、成分どうしが相関していても成り立ちます。
+
+  # ---------- 分散共分散行列 (A) ----------
+  - id: q03-variance-covariance-matrix-1
+    term: variance-covariance-matrix
+    level: 標準
+    type: numeric
+    question: |
+      $(X_1,X_2)^\top$ の分散共分散行列が $\Sigma=\begin{pmatrix}4&1\\1&9\end{pmatrix}$ である。$V[X_1-2X_2]$ を求めよ。
+    answer: 36
+    tolerance: 0.01
+    hint: |
+      $\boldsymbol a=(1,-2)^\top$ として $V[\boldsymbol a^\top\boldsymbol X]=\boldsymbol a^\top\Sigma\boldsymbol a$。
+    explanation: |
+      $$\boldsymbol a^\top\Sigma\boldsymbol a=1^2\times4+(-2)^2\times9+2\times1\times(-2)\times1=4+36-4=36$$
+
+  - id: q03-variance-covariance-matrix-2
+    term: variance-covariance-matrix
+    level: 基本
+    type: choice
+    question: |
+      次の行列のうち、2変数の分散共分散行列になり**えない**ものはどれか。
+    choices:
+      - '$\begin{pmatrix}1&2\\2&1\end{pmatrix}$'
+      - '$\begin{pmatrix}1&1\\1&1\end{pmatrix}$'
+      - '$\begin{pmatrix}4&-2\\-2&9\end{pmatrix}$'
+      - '$\begin{pmatrix}2&0\\0&5\end{pmatrix}$'
+    answer: 0
+    hint: |
+      分散共分散行列は対称・半正定値。2×2 なら対角成分が非負で、行列式が $0$ 以上かを見る（相関係数が $[-1,1]$ に入るか）。
+    explanation: |
+      $\begin{pmatrix}1&2\\2&1\end{pmatrix}$ は行列式 $1-4=-3<0$（固有値 $3,-1$）で半正定値ではありません。
+      相関係数で言えば $2/\sqrt{1\times1}=2>1$ となり不可能です。
+      $\begin{pmatrix}1&1\\1&1\end{pmatrix}$ は行列式 $0$ で、$X_2=X_1$ のような完全相関として実現できます。
+
+  - id: q03-variance-covariance-matrix-3
+    term: variance-covariance-matrix
+    level: 応用
+    type: numeric
+    question: |
+      2つの資産の収益率 $(X_1,X_2)^\top$ の分散共分散行列が $\Sigma=\begin{pmatrix}4&1\\1&9\end{pmatrix}$ である。
+      $w X_1+(1-w)X_2$ の分散が最小になるように $w$ を選んだときの、最小の分散を小数第3位まで（四捨五入）求めよ。
+    answer: 3.182
+    tolerance: 0.001
+    hint: |
+      $V(w)=4w^2+9(1-w)^2+2w(1-w)$ を $w$ で微分して $0$ とおく。
+    explanation: |
+      $V(w)=4w^2+9(1-w)^2+2w(1-w)=11w^2-16w+9$。
+      $V'(w)=22w-16=0$ より $w=8/11\approx0.727$。
+      $$V\left(\frac{8}{11}\right)=11\cdot\frac{64}{121}-16\cdot\frac{8}{11}+9=\frac{64-128+99}{11}=\frac{35}{11}\approx3.182$$
+      どちらか一方だけ（分散4）よりも小さくなり、分散投資の効果が表れています。
+
+  # ---------- 相関係数行列 (B) ----------
+  - id: q03-correlation-matrix-1
+    term: correlation-matrix
+    level: 標準
+    type: numeric
+    question: |
+      $(X_1,X_2,X_3)^\top$ の分散共分散行列が
+      $$\Sigma=\begin{pmatrix}4&-3&1\\-3&9&0.6\\1&0.6&1\end{pmatrix}$$
+      である。相関係数行列の $(2,3)$ 成分 $\rho_{23}$ を小数第2位まで求めよ。
+    answer: 0.20
+    tolerance: 0.005
+    hint: |
+      $\rho_{ij}=\sigma_{ij}/\sqrt{\sigma_{ii}\sigma_{jj}}$。対角成分は分散なので、平方根をとって標準偏差にする。
+    explanation: |
+      $$\rho_{23}=\frac{0.6}{\sqrt{9\times1}}=\frac{0.6}{3}=0.20$$
+      同様に $\rho_{12}=-3/(2\times3)=-0.5$、$\rho_{13}=1/(2\times1)=0.5$ です。分散で割って $0.6/9$ とする誤りに注意。
+
+  - id: q03-correlation-matrix-2
+    term: correlation-matrix
+    level: 応用
+    type: truefalse
+    question: |
+      3つの確率変数のどの2つの相関係数も $-0.6$ である、という相関係数行列はありうる。
+    answer: false
+    hint: |
+      $V[Z_1+Z_2+Z_3]\ge0$（$Z_i$ は標準化した変数）を使う。あるいは相関係数行列の固有値を調べる。
+    explanation: |
+      標準化した $Z_1,Z_2,Z_3$ で
+      $$V[Z_1+Z_2+Z_3]=3+6\rho=3+6\times(-0.6)=-0.6<0$$
+      となり、分散が負になるので不可能です（固有値 $1+2\rho=-0.2<0$）。
+      3変数がすべて等しい相関 $\rho$ をもつには $\rho\ge-1/2$ が必要です。各成分が $[-1,1]$ に入るだけでは足りず、半正定値でなければなりません。

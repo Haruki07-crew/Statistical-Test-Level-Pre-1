@@ -3,9 +3,9 @@ id: directed-acyclic-graph
 title: 有向非巡回グラフ
 reading: ゆうこうひじゅんかいぐらふ
 en: Directed acyclic graph
-aliases: [DAG, ベイジアンネットワーク, 有向グラフィカルモデル, 非巡回有向グラフ]
+aliases: [DAG, ベイジアンネットワーク, 有向グラフィカルモデル, 非巡回有向グラフ, 因果ダイアグラム]
 chapter: 25
-importance: B
+importance: A
 tags: [グラフィカルモデル, 条件付き独立, 因果, ベイジアンネットワーク]
 related: [graphical-model, undirected-graphical-model, conditional-independence, conditional-probability, path-analysis, structural-equation-modeling]
 charts:

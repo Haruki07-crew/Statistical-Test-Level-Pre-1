@@ -1,0 +1,150 @@
+{
+ "q06-beta-distribution-1": {
+  "hash": "e7e08f28acead463",
+  "ok": true
+ },
+ "q06-beta-distribution-2": {
+  "hash": "b0053514adb678e8",
+  "ok": true
+ },
+ "q06-bivariate-normal-distribution-1": {
+  "hash": "fa64b49e1513bf1c",
+  "ok": true
+ },
+ "q06-bivariate-normal-distribution-2": {
+  "hash": "15d1362150797128",
+  "ok": true
+ },
+ "q06-bivariate-normal-distribution-3": {
+  "hash": "b7f4678e0855dbcb",
+  "ok": true
+ },
+ "q06-cauchy-distribution-1": {
+  "hash": "cd28b0a59c51f087",
+  "ok": true
+ },
+ "q06-cauchy-distribution-2": {
+  "hash": "bc23f2aba5add33f",
+  "ok": true
+ },
+ "q06-chi-squared-distribution-1": {
+  "hash": "9c4389d5c8cd557e",
+  "ok": true
+ },
+ "q06-chi-squared-distribution-2": {
+  "hash": "c74b30aac3125ad7",
+  "ok": true
+ },
+ "q06-chi-squared-distribution-3": {
+  "hash": "48af042e374f7619",
+  "ok": true
+ },
+ "q06-exponential-distribution-1": {
+  "hash": "c6c5d28121e61512",
+  "ok": true
+ },
+ "q06-exponential-distribution-2": {
+  "hash": "6c1164ccd98efa20",
+  "ok": true
+ },
+ "q06-exponential-distribution-3": {
+  "hash": "4bf7a57b894fd1bf",
+  "ok": true
+ },
+ "q06-f-distribution-1": {
+  "hash": "b8dc904d162f7326",
+  "ok": true
+ },
+ "q06-f-distribution-2": {
+  "hash": "1222ff12dca8464d",
+  "ok": true
+ },
+ "q06-gamma-distribution-1": {
+  "hash": "0d78066b529b9a63",
+  "ok": true
+ },
+ "q06-gamma-distribution-2": {
+  "hash": "aabac04299922d4d",
+  "ok": true
+ },
+ "q06-gamma-distribution-3": {
+  "hash": "114c2ee3e0b76fa5",
+  "ok": true
+ },
+ "q06-lognormal-distribution-1": {
+  "hash": "b2d20728dafc8dfb",
+  "ok": true
+ },
+ "q06-lognormal-distribution-2": {
+  "hash": "3d0cbbee3c4561ae",
+  "ok": true
+ },
+ "q06-multivariate-normal-distribution-1": {
+  "hash": "2de7472c311761e6",
+  "ok": true
+ },
+ "q06-multivariate-normal-distribution-2": {
+  "hash": "e3cf5b4f1bd91982",
+  "ok": true
+ },
+ "q06-noncentral-chi-squared-distribution-1": {
+  "hash": "74005c2dc4e1f97b",
+  "ok": true
+ },
+ "q06-noncentral-f-distribution-1": {
+  "hash": "a146ee41eaf0c590",
+  "ok": true
+ },
+ "q06-noncentral-t-distribution-1": {
+  "hash": "ce498ee5bcf7b014",
+  "ok": true
+ },
+ "q06-normal-distribution-1": {
+  "hash": "4305853cb1dc72d1",
+  "ok": true
+ },
+ "q06-normal-distribution-2": {
+  "hash": "94b4f299994d0574",
+  "ok": true
+ },
+ "q06-normal-mixture-distribution-1": {
+  "hash": "3b458b45c7376d5f",
+  "ok": true
+ },
+ "q06-normal-mixture-distribution-2": {
+  "hash": "fd166225859910da",
+  "ok": true
+ },
+ "q06-standard-normal-distribution-1": {
+  "hash": "0c72edc8047e8504",
+  "ok": true
+ },
+ "q06-standard-normal-distribution-2": {
+  "hash": "fc7a56b74dad421d",
+  "ok": true
+ },
+ "q06-t-distribution-1": {
+  "hash": "5e2abbacc101b13f",
+  "ok": true
+ },
+ "q06-t-distribution-2": {
+  "hash": "49b8c3131009cdba",
+  "ok": true
+ },
+ "q06-t-statistic-1": {
+  "hash": "107161d2f3465389",
+  "ok": true
+ },
+ "q06-t-statistic-2": {
+  "hash": "34ef00d9a1517f88",
+  "ok": true
+ },
+ "q06-uniform-distribution-1": {
+  "hash": "44b174e0525225d6",
+  "ok": true
+ },
+ "q06-uniform-distribution-2": {
+  "hash": "be7ce0cb330b7087",
+  "ok": true
+ }
+}

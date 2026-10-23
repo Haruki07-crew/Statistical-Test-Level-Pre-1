@@ -316,3 +316,41 @@ check(T, "(a+b)/2-√(ab)=(√a-√b)²/2 / 2数で GM²=AM·HM", sp.simplify((a
 
 ok_n = sum(results); ng_n = len(results) - ok_n
 print(f"\n合計: OK {ok_n} / NG {ng_n}")
+
+# --- 追加用語（用語の見直し）: moments ---
+T = "moments"
+def central_from_raw(raw, k):
+    """原点モーメント raw[j]=E[X^j]（raw[0]=1）から k 次の中心モーメント（二項展開）。"""
+    return sum(math.comb(k, j) * (-raw[1]) ** (k - j) * raw[j] for j in range(k + 1))
+raw = [sum(F(v**j, 6) for v in range(1, 7)) for j in range(5)]
+cen = [sum(F((v - F(7, 2)) ** j, 6) for v in range(1, 7)) for j in range(5)]
+check(T, "例1 サイコロ μ'=3.5, 91/6, 73.5, 2275/6", raw[1:] == [F(7, 2), F(91, 6), F(147, 2), F(2275, 6)] and close(raw[2], 15.1667) and close(raw[4], 379.1667), [float(r) for r in raw[1:]])
+check(T, "例1 関係式 = 直接計算: μ2=35/12, μ3=0, μ4=707/48≈14.7292", all(central_from_raw(raw, kk) == cen[kk] for kk in (2, 3, 4)) and cen[2] == F(35, 12) and cen[3] == 0 and close(cen[4], 14.7292), [float(c) for c in cen[2:]])
+mu_ = raw[1]
+check(T, "例1 3次の展開 73.5−159.25+85.75=0, 4次の各項", raw[3] - 3 * mu_ * raw[2] + 2 * mu_**3 == 0 and 3 * mu_ * raw[2] == F(637, 4) and close(float(raw[4] - 4 * mu_ * raw[3] + 6 * mu_**2 * raw[2] - 3 * mu_**4), 14.7292), float(3 * mu_ * raw[2]))
+check(T, "例1 尖度 ≈1.7314, μ2²≈8.5069", close(cen[4] / cen[2] ** 2, 1.7314) and close(cen[2] ** 2, 8.5069), round(float(cen[4] / cen[2] ** 2), 5))
+lm, xs_ = sp.symbols("lambda x", positive=True)
+rawE = [sp.integrate(xs_**j * lm * sp.exp(-lm * xs_), (xs_, 0, sp.oo)) for j in range(5)]
+check(T, "例2 指数 μ'_k=k!/λ^k", all(sp.simplify(rawE[j] - sp.factorial(j) / lm**j) == 0 for j in range(5)), rawE[1:])
+cenE = [sp.simplify(central_from_raw(rawE, kk)) for kk in (2, 3, 4)]
+check(T, "例2 μ2=1/λ², μ3=2/λ³, μ4=9/λ⁴", [sp.simplify(c * lm**kk) for c, kk in zip(cenE, (2, 3, 4))] == [1, 2, 9], cenE)
+vals = [r.subs(lm, sp.Rational(1, 2)) for r in rawE[1:]] + [c.subs(lm, sp.Rational(1, 2)) for c in cenE]
+m_, v_, s_, k_ = stats.expon(scale=2).stats("mvsk")
+check(T, "例2 λ=0.5: 2,8,48,384 / 4,16,144, 歪度2, 尖度9（scipy 一致）", vals == [2, 8, 48, 384, 4, 16, 144] and close(s_, 2) and close(k_ + 3, 9), vals)
+xp = sp.symbols("x", positive=True)
+fpar = 3 / xp**4
+check(T, "例3 3/x⁴: 積分1, E[X]=3/2, E[X²]=3, E[X³]=∞, V=0.75", sp.integrate(fpar, (xp, 1, sp.oo)) == 1 and sp.integrate(xp * fpar, (xp, 1, sp.oo)) == sp.Rational(3, 2)
+      and sp.integrate(xp**2 * fpar, (xp, 1, sp.oo)) == 3 and sp.integrate(xp**3 * fpar, (xp, 1, sp.oo)) == sp.oo and 3 - sp.Rational(9, 4) == sp.Rational(3, 4), "")
+mu2, sg = sp.symbols("mu sigma", positive=True)
+zz = sp.symbols("z", real=True)
+phi_ = sp.exp(-(zz - mu2) ** 2 / (2 * sg**2)) / (sg * sp.sqrt(2 * sp.pi))
+check(T, "正規 μ3=0, μ4=3σ⁴", sp.simplify(sp.integrate((zz - mu2) ** 3 * phi_, (zz, -sp.oo, sp.oo))) == 0 and sp.simplify(sp.integrate((zz - mu2) ** 4 * phi_, (zz, -sp.oo, sp.oo)) - 3 * sg**4) == 0, "")
+tt = sp.symbols("t")
+Mexp = lm / (lm - tt)
+check(T, "M^(k)(0)=μ'_k（指数, k=1..4）", all(sp.simplify(sp.diff(Mexp, tt, j).subs(tt, 0) - rawE[j]) == 0 for j in range(1, 5)), "")
+check(T, "ガンマ(α,1): 平均α, 分散α, μ3=2α, 歪度2/√α（α=2,5）", all(close(stats.gamma(al).stats("m"), al) and close(stats.gamma(al).var(), al) and close(stats.gamma(al).stats("s"), 2 / math.sqrt(al))
+      and close(stats.gamma(al).moment(3) - 3 * al * stats.gamma(al).moment(2) + 2 * al**3, 2 * al, 1e-8) for al in (2, 5)), "")
+check(T, "t(ν=4): 3次は存在、4次は発散（scipy）", np.isfinite(stats.t(4).moment(3)) and not np.isfinite(stats.t(4).stats("k")), stats.t(4).stats("k"))
+
+ok_n = sum(results); ng_n = len(results) - ok_n
+print(f"\n合計（追加用語を含む）: OK {ok_n} / NG {ng_n}")

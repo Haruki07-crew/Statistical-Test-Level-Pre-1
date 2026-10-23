@@ -5,7 +5,7 @@ reading: こてんてきえむでぃーえす
 en: Classical multidimensional scaling
 aliases: [計量MDS, 主座標分析, PCoA, トーガソンの方法]
 chapter: 26
-importance: B
+importance: C
 tags: [多次元尺度構成法, 二重中心化, 固有値分解, 距離行列]
 related: [multidimensional-scaling, eigenvalue-and-eigenvector, principal-component-score, singular-value-decomposition, distance-measures, nonmetric-mds]
 charts:

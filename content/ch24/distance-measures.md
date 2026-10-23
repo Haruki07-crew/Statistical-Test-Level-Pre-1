@@ -3,7 +3,7 @@ id: distance-measures
 title: 距離（ユークリッド・マンハッタン・ミンコフスキー）
 reading: きょり・ゆーくりっど・まんはったん・みんこふすきー
 en: Distance measures (Euclidean, Manhattan, Minkowski)
-aliases: [ユークリッド距離, マンハッタン距離, ミンコフスキー距離, チェビシェフ距離, 市街地距離, L1距離, L2距離]
+aliases: [ユークリッド距離, マンハッタン距離, ミンコフスキー距離, チェビシェフ距離, 市街地距離, L1距離, L2距離, 距離行列]
 chapter: 24
 importance: A
 tags: [クラスター分析, 距離, 非類似度, ノルム]

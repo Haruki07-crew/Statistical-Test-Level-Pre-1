@@ -361,3 +361,35 @@ check(T, "実際の誤差 ≤ 上限（4ケース）", all(be_sup(n, p) <= 0.474
 
 print()
 print(f"合計: OK {sum(results)} / NG {len(results) - sum(results)}")
+
+# --- 追加用語（用語の見直し）: normal-approximation-binomial-poisson ---
+T = "normal-approximation-binomial-poisson"
+sd1 = sqrt(400 * 0.3 * 0.7)
+z1, z1n = (134.5 - 120) / sd1, 15 / sd1
+check(T, "例1 σ=√84≈9.1652, z≈1.582, 近似≈0.0568", close(sd1, 9.1652) and close(z1, 1.582, 5e-4) and close(1 - Phi(z1), 0.0568), (round(sd1, 5), round(1 - Phi(z1), 5)))
+check(T, "例1 正確 P(X≥135)≈0.0580, 補正なし z≈1.637 → ≈0.0509", close(stats.binom(400, 0.3).sf(134), 0.0580) and close(z1n, 1.637, 5e-4) and close(1 - Phi(z1n), 0.0509), round(stats.binom(400, 0.3).sf(134), 5))
+check(T, "例2 Po(25): 近似 1−Φ(1.9)≈0.0287, 正確≈0.0338, 補正なし≈0.0228, 歪度0.2", close(1 - Phi(1.9), 0.0287) and close(stats.poisson(25).sf(34), 0.0338) and close(1 - Phi(2), 0.0228)
+      and close(stats.poisson(25).stats("s"), 0.2), round(stats.poisson(25).sf(34), 5))
+sd3 = sqrt(0.25 / 1000)
+b3 = stats.binom(1000, 0.5)
+check(T, "例3 SD≈0.0158, z≈1.897, 近似≈0.9422", close(sd3, 0.0158) and close(0.03 / sd3, 1.897, 5e-4) and close(2 * Phi(0.03 / sd3) - 1, 0.9422), round(2 * Phi(0.03 / sd3) - 1, 5))
+check(T, "例3 正確 P(470≤X≤530)≈0.9463, 補正 30.5/√250≈1.929 → ≈0.9463", close(b3.cdf(530) - b3.cdf(469), 0.9463) and close(30.5 / sqrt(250), 1.929, 5e-4) and close(2 * Phi(30.5 / sqrt(250)) - 1, 0.9463), round(b3.cdf(530) - b3.cdf(469), 5))
+check(T, "間違い B(20,0.05): P(X=0)≈0.3585, 正規近似（補正）≈0.3040", close(0.95**20, 0.3585) and close(Phi(-0.5 / sqrt(0.95)), 0.3040), (round(0.95**20, 5), round(Phi(-0.5 / sqrt(0.95)), 5)))
+logM = -t * sp.sqrt(lam) + lam * (sp.exp(t / sp.sqrt(lam)) - 1)
+check(T, "ポアソン標準化のキュムラント母関数 → t²/2", sp.limit(logM, lam, sp.oo) == t**2 / 2, sp.limit(logM, lam, sp.oo))
+ser = sp.series(logM.subs(lam, 1 / s**2), s, 0, 2).removeO()
+check(T, "展開 t²/2 + t³/(6√λ)（s=1/√λ）", sp.simplify(ser - (t**2 / 2 + t**3 * s / 6)) == 0, ser)
+pp = sp.Symbol("p", positive=True)
+nn = sp.Symbol("n", positive=True)
+logMb = -nn * pp * t / sp.sqrt(nn * pp * (1 - pp)) + nn * sp.log(1 - pp + pp * sp.exp(t / sp.sqrt(nn * pp * (1 - pp))))
+serb = sp.series(logMb.subs(pp, sp.Rational(3, 10)).subs(nn, 1 / s**2), s, 0, 1).removeO()
+numb = [float(logMb.subs({pp: 0.3, nn: nv, t: 1.3})) for nv in (1e4, 1e6)]
+check(T, "二項標準化のキュムラント母関数 → t²/2（p=0.3, 展開と数値 n=1e4,1e6）", sp.simplify(serb - t**2 / 2) == 0 and abs(numb[1] - 0.845) < abs(numb[0] - 0.845) < 0.01, (serb, [round(v, 5) for v in numb]))
+check(T, "歪度 二項(1−2p)/√(np(1−p)), ポアソン 1/√λ（scipy, 2例）", close(stats.binom(30, 0.3).stats("s"), 0.4 / sqrt(6.3), 1e-10) and close(stats.poisson(4).stats("s"), 0.5, 1e-10), "")
+Xs = rng.poisson(30, 1_000_000)
+check(T, "分散安定化 V[√X]≈1/4（Po(30), 許容0.01）", abs(np.sqrt(Xs).var() - 0.25) < 0.01, round(np.sqrt(Xs).var(), 4))
+ph = rng.binomial(200, 0.3, 1_000_000) / 200
+check(T, "分散安定化 V[arcsin√p̂]≈1/(4n)（n=200, 相対誤差5%）", abs(np.arcsin(np.sqrt(ph)).var() * 800 - 1) < 0.05, round(np.arcsin(np.sqrt(ph)).var() * 800, 4))
+
+print()
+print(f"合計（追加用語を含む）: OK {sum(results)} / NG {len(results) - sum(results)}")

@@ -1,0 +1,585 @@
+chapter: 7
+questions:
+  - id: q07-markov-inequality-1
+    term: markov-inequality
+    level: 基本
+    type: numeric
+    question: |
+      非負の確率変数 $X$ の期待値が $E[X]=4$ であることだけがわかっている。
+      マルコフの不等式から得られる $P(X\ge10)$ の上界を小数第2位まで求めよ。
+    answer: 0.4
+    tolerance: 0.005
+    hint: |
+      $P(X\ge a)\le E[X]/a$ に $a=10$ を代入する。
+    explanation: |
+      $$P(X\ge10)\le\frac{E[X]}{10}=\frac{4}{10}=0.4$$
+      たとえば $X$ が平均4の指数分布なら実際は $P(X\ge10)=e^{-2.5}=0.082$ で、上界はかなりゆるい値です。
+      マルコフの不等式は「非負」と「期待値」だけから言える、分布によらない評価です。
+
+  - id: q07-markov-inequality-2
+    term: markov-inequality
+    level: 標準
+    type: numeric
+    question: |
+      非負の確率変数 $X$ について $E[X]=2$、$V[X]=1$ である。
+      マルコフの不等式を $X^2$ に当てはめて（$g(x)=x^2$ として）得られる $P(X\ge4)$ の上界を小数第4位まで求めよ。
+    answer: 0.3125
+    tolerance: 0.0001
+    hint: |
+      $P(X\ge4)=P(X^2\ge16)\le E[X^2]/16$。$E[X^2]$ は分散と期待値から求める。
+    explanation: |
+      $E[X^2]=V[X]+(E[X])^2=1+4=5$ なので
+      $$P(X\ge4)=P(X^2\ge16)\le\frac{5}{16}=0.3125$$
+      $X$ そのものに当てはめた上界 $2/4=0.5$ より小さく（よく）なります。
+      高い次数のモーメントを使うほど、裾の確率の評価が改善することがあります。
+
+  - id: q07-chebyshev-inequality-1
+    term: chebyshev-inequality
+    level: 基本
+    type: numeric
+    question: |
+      確率変数 $X$ の期待値が $50$、標準偏差が $5$ である（分布の形は不明）。
+      チェビシェフの不等式から得られる $P(40<X<60)$ の下界を小数第2位まで求めよ。
+    answer: 0.75
+    tolerance: 0.005
+    hint: |
+      $40<X<60$ は $|X-50|<2\sigma$ と書ける。
+    explanation: |
+      $|X-50|<10=2\times5$ なので $k=2$ として
+      $$P(|X-50|<2\sigma)\ge1-\frac{1}{2^2}=0.75$$
+      正規分布なら約 $0.954$ ですが、分布がわからないときに保証できるのは $0.75$ までです。
+
+  - id: q07-chebyshev-inequality-2
+    term: chebyshev-inequality
+    level: 標準
+    type: numeric
+    question: |
+      表の出る確率が $1/2$ の硬貨を $n$ 回投げ、表の割合を $\hat p$ とする。
+      チェビシェフの不等式による評価で $P(|\hat p-0.5|\ge0.05)\le0.1$ を保証するのに必要な最小の $n$ を求めよ。
+    answer: 1000
+    tolerance: 0.5
+    hint: |
+      $V[\hat p]=p(1-p)/n$ を $\sigma^2/\varepsilon^2$ の形の上界に入れる。
+    explanation: |
+      $V[\hat p]=0.25/n$ なので
+      $$P(|\hat p-0.5|\ge0.05)\le\frac{0.25/n}{0.05^2}=\frac{100}{n}$$
+      これが $0.1$ 以下になるのは $n\ge1000$ です。
+      中心極限定理を使うと約 $271$ 回で足りるので、チェビシェフの評価は安全側（保守的）です。
+
+  - id: q07-chebyshev-inequality-3
+    term: chebyshev-inequality
+    level: 応用
+    type: truefalse
+    question: |
+      チェビシェフの不等式 $P(|X-\mu|\ge k\sigma)\le1/k^2$（$k>1$）は、どんな分布に対しても等号が成り立たない（必ず真に小さい）。
+    answer: false
+    hint: |
+      $\mu\pm k\sigma$ と $\mu$ の3点だけに確率をもつ分布を考える。
+    explanation: |
+      $k=2$ として、$P(X=-2)=P(X=2)=1/8$、$P(X=0)=3/4$ の分布を考えます。
+      $\mu=0$、$\sigma^2=2\times4\times\frac18=1$ なので $k\sigma=2$ で
+      $$P(|X|\ge2)=\frac14=\frac1{k^2}$$
+      となり等号が成り立ちます。一般に $P(X=\pm k\sigma)=\frac{1}{2k^2}$、$P(X=\mu)=1-\frac1{k^2}$ で等号になります。
+      つまりチェビシェフの評価は「分布を限定しない限り」これ以上改善できません。
+
+  - id: q07-convergence-in-probability-1
+    term: convergence-in-probability
+    level: 基本
+    type: truefalse
+    question: |
+      $X_n$ は確率 $1/n$ で値 $n$、確率 $1-1/n$ で値 $0$ をとる。
+      $X_n\xrightarrow{p}0$ なので、期待値についても $E[X_n]\to0$ が成り立つ。
+    answer: false
+    hint: |
+      $P(|X_n|\ge\varepsilon)$ と $E[X_n]$ をそれぞれ計算する。
+    explanation: |
+      $0<\varepsilon<1$ のとき（$n\ge1$）$P(|X_n|\ge\varepsilon)=1/n\to0$ なので確率収束します。
+      しかし
+      $$E[X_n]=n\cdot\frac1n=1$$
+      で、期待値は0に近づきません。確率収束は「外れる確率」の話で、外れたときの大きさは問いません。
+      期待値の収束を言うには、一様可積分性などの追加条件が必要です。
+
+  - id: q07-convergence-in-probability-2
+    term: convergence-in-probability
+    level: 標準
+    type: numeric
+    question: |
+      $X_1,\dots,X_n$ を一様分布 $U(0,1)$ からの i.i.d. 標本、$M_n=\max_i X_i$ とする。
+      $n=20$ のとき $P(M_n\le0.9)$ を小数第3位まで求めよ。
+    answer: 0.122
+    tolerance: 0.001
+    hint: |
+      最大値が $0.9$ 以下 $\Leftrightarrow$ すべての $X_i$ が $0.9$ 以下。
+    explanation: |
+      独立性から
+      $$P(M_n\le0.9)=0.9^{20}=0.1216$$
+      一般に $0<\varepsilon<1$ で $P(|M_n-1|\ge\varepsilon)=(1-\varepsilon)^n\to0$ なので、$M_n\xrightarrow{p}1$（上端 $\theta=1$ の一致推定量）です。
+
+  - id: q07-convergence-in-probability-3
+    term: convergence-in-probability
+    level: 応用
+    type: derivation
+    question: |
+      $X_1,X_2,\dots$ が i.i.d. で $E[X_i]=\mu$、$V[X_i]=\sigma^2<\infty$ とする。
+      $\hat\sigma_n^2=\frac1n\sum_{i=1}^n(X_i-\bar X_n)^2$ が $\sigma^2$ に確率収束することを示せ。
+    steps:
+      - |
+        展開して $\hat\sigma_n^2=\dfrac1n\sum_{i=1}^nX_i^2-\bar X_n^2$。
+      - |
+        大数の弱法則より $\dfrac1n\sum X_i^2\xrightarrow{p}E[X_i^2]=\sigma^2+\mu^2$、$\bar X_n\xrightarrow{p}\mu$。
+      - |
+        連続写像定理（$g(x)=x^2$）より $\bar X_n^2\xrightarrow{p}\mu^2$。確率収束する列の差は差に確率収束する。
+    answer: "$\\hat\\sigma_n^2\\xrightarrow{p}(\\sigma^2+\\mu^2)-\\mu^2=\\sigma^2$"
+    hint: |
+      2乗の平均と平均の2乗の差に分け、それぞれに大数の法則を使う。
+    explanation: |
+      $$\hat\sigma_n^2=\frac1n\sum X_i^2-\bar X_n^2\xrightarrow{p}(\sigma^2+\mu^2)-\mu^2=\sigma^2$$
+      です。$\frac{n}{n-1}\to1$ なので、不偏分散 $s^2=\frac{n}{n-1}\hat\sigma_n^2$ も $\sigma^2$ に確率収束します（一致性）。
+      $X_i^2$ の平均に大数の法則を使うには $E[X_i^2]<\infty$、つまり分散が有限であることが必要です。
+
+  - id: q07-almost-sure-convergence-1
+    term: almost-sure-convergence
+    level: 基本
+    type: choice
+    question: |
+      確率変数列の収束の関係として、**一般に正しい**ものはどれか。
+    choices:
+      - |
+        概収束すれば確率収束する
+      - |
+        確率収束すれば概収束する
+      - |
+        平均二乗収束すれば概収束する
+      - |
+        分布収束すれば（極限が確率変数でも）確率収束する
+    answer: 0
+    hint: |
+      概収束 ⇒ 確率収束 ⇒ 分布収束、平均二乗収束 ⇒ 確率収束 の向きを思い出す。
+    explanation: |
+      正しいのは「概収束 ⇒ 確率収束」です。逆は成り立たず、独立な $X_n\sim$ ベルヌーイ$(1/n)$ が反例です（確率収束するが概収束しない）。
+      平均二乗収束からは確率収束までしか言えず、概収束は一般には言えません（同じ反例で $E[X_n^2]=1/n\to0$）。
+      分布収束から確率収束が言えるのは、極限が**定数**のときだけです。
+
+  - id: q07-almost-sure-convergence-2
+    term: almost-sure-convergence
+    level: 標準
+    type: truefalse
+    question: |
+      $X_1,X_2,\dots$ は独立で、$X_n$ は確率 $1/n$ で $1$、確率 $1-1/n$ で $0$ をとる。このとき $X_n$ は $0$ に概収束する。
+    answer: false
+    hint: |
+      「$m$ 番目以降すべて 0」となる確率 $\prod_{n\ge m}(1-1/n)$ を考える。
+    explanation: |
+      $m\ge2$ として、$m\le n\le N$ のすべてで $X_n=0$ となる確率は
+      $$\prod_{n=m}^{N}\left(1-\frac1n\right)=\frac{m-1}{N}\xrightarrow{N\to\infty}0$$
+      です。つまり確率1で「1」が無限回現れ、$X_n(\omega)$ は0に収束しません（$\sum1/n=\infty$、ボレル・カンテリの第2補題）。
+      一方 $P(|X_n|\ge\varepsilon)=1/n\to0$ なので確率収束はします。確率が $1/n^2$ なら $\sum1/n^2<\infty$ で概収束します。
+
+  - id: q07-almost-sure-convergence-3
+    term: almost-sure-convergence
+    level: 応用
+    type: numeric
+    question: |
+      $X_2,X_3,\dots$ は独立で、$X_n$ は確率 $1/n^2$ で $1$、確率 $1-1/n^2$ で $0$ をとる。
+      $n\ge2$ のすべてで $X_n=0$ となる確率を小数第3位まで求めよ。
+    answer: 0.5
+    tolerance: 0.001
+    hint: |
+      $1-\frac1{n^2}=\frac{(n-1)(n+1)}{n\cdot n}$ と因数分解すると、積が打ち消し合う。
+    explanation: |
+      $$\prod_{n=2}^{N}\frac{(n-1)(n+1)}{n^2}=\frac{1\cdot3}{2\cdot2}\cdot\frac{2\cdot4}{3\cdot3}\cdots=\frac{N+1}{2N}\to\frac12$$
+      同じ計算で「$m$ 番目以降すべて0」の確率は $\frac{m-1}{m}\to1$ となり、$X_n\xrightarrow{a.s.}0$ です。
+      確率 $1/n$ の場合（概収束しない）との違いは、$\sum p_n$ が有限かどうかです。
+
+  - id: q07-convergence-in-distribution-1
+    term: convergence-in-distribution
+    level: 標準
+    type: numeric
+    question: |
+      $X_1,\dots,X_n$ を $U(0,1)$ からの i.i.d. 標本、$M_n=\max_iX_i$ とする。
+      $Y_n=n(1-M_n)$ の極限分布を用いて、$\lim_{n\to\infty}P(Y_n\le2)$ を小数第3位まで求めよ。
+    answer: 0.865
+    tolerance: 0.001
+    hint: |
+      $P(Y_n>y)=P(M_n<1-y/n)=(1-y/n)^n$ の極限を考える。
+    explanation: |
+      $0<y<n$ で
+      $$P(Y_n>y)=\left(1-\frac yn\right)^n\to e^{-y}$$
+      なので $Y_n\xrightarrow{d}\mathrm{Exp}(1)$（平均1の指数分布）です。よって
+      $$\lim P(Y_n\le2)=1-e^{-2}=0.8647$$
+      $M_n$ 自体は定数1に収束するので、$n$ 倍に拡大してはじめて非退化な極限分布が得られます。
+
+  - id: q07-convergence-in-distribution-2
+    term: convergence-in-distribution
+    level: 基本
+    type: truefalse
+    question: |
+      $X_n\xrightarrow{d}X$ かつ $Y_n\xrightarrow{d}Y$ ならば、$X_n$ と $Y_n$ の同時分布によらず $X_n+Y_n\xrightarrow{d}X+Y$ が成り立つ。
+    answer: false
+    hint: |
+      $Z\sim N(0,1)$ として $X_n=Z$、$Y_n=-Z$ を考える（$-Z$ も $N(0,1)$ に従う）。
+    explanation: |
+      $X_n=Z$、$Y_n=-Z$ はどちらも $N(0,1)$ に分布収束します。$X,Y$ を独立な $N(0,1)$ とすると $X+Y\sim N(0,2)$ ですが、
+      $X_n+Y_n=0$ で分散は $0$ です。
+      分布収束は周辺分布だけの性質なので、和の極限を言うには同時分布の収束か、片方が定数に収束する（スラツキーの定理）ことが必要です。
+
+  - id: q07-weak-law-of-large-numbers-1
+    term: weak-law-of-large-numbers
+    level: 基本
+    type: numeric
+    question: |
+      $X_1,\dots,X_{100}$ が i.i.d. で $V[X_i]=4$ のとき、チェビシェフの不等式から得られる
+      $P(|\bar X-\mu|\ge0.5)$ の上界を小数第2位まで求めよ。
+    answer: 0.16
+    tolerance: 0.005
+    hint: |
+      $V[\bar X]=\sigma^2/n$ を使う。
+    explanation: |
+      $$P(|\bar X-\mu|\ge0.5)\le\frac{\sigma^2}{n\varepsilon^2}=\frac{4}{100\times0.25}=0.16$$
+      $n\to\infty$ で右辺は0に近づくので、大数の弱法則 $\bar X_n\xrightarrow{p}\mu$ が得られます。
+
+  - id: q07-weak-law-of-large-numbers-2
+    term: weak-law-of-large-numbers
+    level: 標準
+    type: truefalse
+    question: |
+      標準コーシー分布からの i.i.d. 標本の標本平均 $\bar X_n$ は、$n\to\infty$ で分布の中心（中央値）$0$ に確率収束する。
+    answer: false
+    hint: |
+      標準コーシー分布の特性関数 $e^{-|t|}$ を使い、$\bar X_n$ の分布を求める。
+    explanation: |
+      $\bar X_n$ の特性関数は $\left(e^{-|t|/n}\right)^n=e^{-|t|}$ で、$\bar X_n$ は $n$ によらず標準コーシー分布に従います。
+      したがって $P(|\bar X_n|\ge1)=0.5$ のままで、0には収束しません。
+      コーシー分布は期待値が存在しない（$E|X|=\infty$）ので、大数の法則の仮定を満たしません。
+
+  - id: q07-strong-law-of-large-numbers-1
+    term: strong-law-of-large-numbers
+    level: 基本
+    type: choice
+    question: |
+      i.i.d. の確率変数列について、大数の強法則 $\bar X_n\xrightarrow{a.s.}\mu$ が成り立つための必要十分条件はどれか。
+    choices:
+      - |
+        $E[|X_1|]<\infty$（期待値が存在する）
+      - |
+        $V[X_1]<\infty$（分散が有限）
+      - |
+        $E[X_1^4]<\infty$（4次モーメントが有限）
+      - |
+        モーメント母関数が0の近傍で存在する
+    answer: 0
+    hint: |
+      コルモゴロフの大数の強法則の仮定を思い出す。
+    explanation: |
+      i.i.d. の場合、$E|X_1|<\infty$ が必要十分条件です（コルモゴロフ）。
+      4次モーメントの有限性は、教科書で証明を簡単にするために置かれることが多い「十分条件」で、必要ではありません。
+      分散有限やモーメント母関数の存在も、より強い十分条件にすぎません。
+
+  - id: q07-central-limit-theorem-1
+    term: central-limit-theorem
+    level: 標準
+    type: numeric
+    question: |
+      $X_1,\dots,X_{64}$ が平均 $2$ の指数分布からの i.i.d. 標本である。
+      中心極限定理による正規近似で $P(\bar X>2.5)$ を小数第3位まで求めよ。
+    answer: 0.023
+    tolerance: 0.001
+    hint: |
+      平均2の指数分布の分散は $2^2=4$。$\bar X$ の標準偏差は $2/\sqrt{64}$。
+    explanation: |
+      $E[\bar X]=2$、$\mathrm{SD}[\bar X]=2/8=0.25$ なので
+      $$P(\bar X>2.5)\approx P\!\left(Z>\frac{2.5-2}{0.25}\right)=P(Z>2)=0.0228$$
+      正確には $\sum X_i$ がガンマ分布に従うので $0.0290$ です。指数分布は右に歪んでいるため、$n=64$ でも右裾の近似は少し小さめに出ます。
+
+  - id: q07-central-limit-theorem-2
+    term: central-limit-theorem
+    level: 標準
+    type: numeric
+    question: |
+      $U_1,\dots,U_{48}$ が $U(0,1)$ からの i.i.d. 標本のとき、和 $S=\sum U_i$ について中心極限定理による正規近似で
+      $P(S>27)$ を小数第3位まで求めよ。
+    answer: 0.067
+    tolerance: 0.001
+    hint: |
+      $U(0,1)$ の平均は $1/2$、分散は $1/12$。
+    explanation: |
+      $E[S]=48/2=24$、$V[S]=48/12=4$ なので
+      $$P(S>27)\approx P\!\left(Z>\frac{27-24}{2}\right)=P(Z>1.5)=0.0668$$
+      $S$ は連続型なので連続修正は不要です。
+
+  - id: q07-central-limit-theorem-3
+    term: central-limit-theorem
+    level: 基本
+    type: choice
+    question: |
+      i.i.d. で期待値 $\mu$、分散 $\sigma^2$（$0<\sigma^2<\infty$）をもつ $X_1,X_2,\dots$ について、中心極限定理の内容として正しいものはどれか。
+    choices:
+      - |
+        $\sqrt n(\bar X_n-\mu)$ の分布が $N(0,\sigma^2)$ に近づく
+      - |
+        $n$ を大きくすると、個々の $X_i$ の分布が正規分布に近づく
+      - |
+        $\bar X_n$ の分布が $N(\mu,\sigma^2)$ に近づく
+      - |
+        分散が無限大でも、期待値が存在すれば同じ結論が成り立つ
+    answer: 0
+    hint: |
+      正規分布に近づくのは「何の」分布で、分散がどう $n$ に依存するか。
+    explanation: |
+      正しいのは $\sqrt n(\bar X_n-\mu)\xrightarrow{d}N(0,\sigma^2)$ です。
+      個々の $X_i$（母集団）の分布は $n$ によって変わりません。$\bar X_n$ の分散は $\sigma^2/n$ なので、$N(\mu,\sigma^2)$ ではありません。
+      分散が無限大の場合（裾の重い分布）は、一般に正規分布には近づきません。
+
+  - id: q07-slutsky-theorem-1
+    term: slutsky-theorem
+    level: 標準
+    type: numeric
+    question: |
+      $X_n\xrightarrow{d}N(0,1)$、$Y_n\xrightarrow{p}2$ とする。$W_n=X_nY_n+Y_n$ の極限分布を求め、
+      極限分布で $P(W\le4)$ を小数第3位まで答えよ。
+    answer: 0.841
+    tolerance: 0.001
+    hint: |
+      スラツキーの定理で $Y_n$ を定数2に置き換えてよい。
+    explanation: |
+      $X_nY_n\xrightarrow{d}2X$、さらに $+Y_n$ で $W_n\xrightarrow{d}2X+2\sim N(2,4)$ です。
+      $$P(W\le4)=\Phi\!\left(\frac{4-2}{2}\right)=\Phi(1)=0.8413$$
+
+  - id: q07-slutsky-theorem-2
+    term: slutsky-theorem
+    level: 基本
+    type: truefalse
+    question: |
+      $X_n\xrightarrow{d}X$、$Y_n\xrightarrow{d}Y$（$Y$ は定数でない確率変数）ならば、スラツキーの定理により $X_nY_n\xrightarrow{d}XY$ が成り立つ。
+    answer: false
+    hint: |
+      スラツキーの定理で、$Y_n$ にどんな収束を要求しているか。
+    explanation: |
+      スラツキーの定理は $Y_n$ が**定数** $c$ に確率収束することを仮定しています。
+      両方が非退化な確率変数に分布収束するだけでは、同時分布の情報がないので積の極限分布は決まりません
+      （分布収束の和の反例 $X_n=Z,\ Y_n=-Z$ と同じ理由）。
+
+  - id: q07-slutsky-theorem-3
+    term: slutsky-theorem
+    level: 応用
+    type: derivation
+    question: |
+      $X_1,\dots,X_n$ を成功確率 $p$（$0<p<1$）のベルヌーイ分布からの i.i.d. 標本、$\hat p=\bar X_n$ とする。
+      $$T_n=\frac{\sqrt n(\hat p-p)}{\sqrt{\hat p(1-\hat p)}}\xrightarrow{d}N(0,1)$$
+      を示せ。
+    steps:
+      - |
+        中心極限定理より $\dfrac{\sqrt n(\hat p-p)}{\sqrt{p(1-p)}}\xrightarrow{d}N(0,1)$。
+      - |
+        大数の弱法則より $\hat p\xrightarrow{p}p$。連続写像定理で $\sqrt{\dfrac{p(1-p)}{\hat p(1-\hat p)}}\xrightarrow{p}1$。
+      - |
+        $T_n=\dfrac{\sqrt n(\hat p-p)}{\sqrt{p(1-p)}}\times\sqrt{\dfrac{p(1-p)}{\hat p(1-\hat p)}}$ と分解し、スラツキーの定理を使う。
+    answer: "$T_n\\xrightarrow{d}1\\cdot N(0,1)=N(0,1)$"
+    hint: |
+      未知の $\sqrt{p(1-p)}$ で標準化した量と、「推定値で割ったことによる補正係数」の積に分ける。
+    explanation: |
+      補正係数は1に確率収束するので、スラツキーの定理（積の形）から $T_n\xrightarrow{d}N(0,1)$ です。
+      これが母比率のワルド型信頼区間 $\hat p\pm z_{\alpha/2}\sqrt{\hat p(1-\hat p)/n}$ の根拠です。
+      $p(1-p)>0$ なので、連続写像定理で使う関数は $p$ の近くで連続です。
+
+  - id: q07-continuous-mapping-theorem-1
+    term: continuous-mapping-theorem
+    level: 基本
+    type: numeric
+    question: |
+      $Z_n=\sqrt n(\bar X_n-\mu)/\sigma\xrightarrow{d}N(0,1)$ のとき、$Z_n^2$ の極限分布を用いて
+      $\lim_{n\to\infty}P(Z_n^2\le2.706)$ を小数第2位まで求めよ。
+    answer: 0.9
+    tolerance: 0.005
+    hint: |
+      $g(z)=z^2$ は連続なので、$Z_n^2$ は $N(0,1)$ の2乗の分布に収束する。
+    explanation: |
+      連続写像定理より $Z_n^2\xrightarrow{d}Z^2\sim\chi^2(1)$ です。$2.706$ は $\chi^2(1)$ の上側10%点なので
+      $$\lim P(Z_n^2\le2.706)=0.90$$
+      同じことは $P(|Z|\le\sqrt{2.706})=P(|Z|\le1.645)=0.90$ からも確かめられます。
+
+  - id: q07-continuous-mapping-theorem-2
+    term: continuous-mapping-theorem
+    level: 標準
+    type: truefalse
+    question: |
+      $X_n=1/n$（確率1でこの値をとる）、$g(x)=1$（$x>0$）、$g(x)=0$（$x\le0$）とする。
+      $X_n\xrightarrow{p}0$ なので、連続写像定理より $g(X_n)\xrightarrow{p}g(0)=0$ である。
+    answer: false
+    hint: |
+      $g$ は極限点 $0$ で連続か。実際に $g(X_n)$ の値を求める。
+    explanation: |
+      すべての $n$ で $X_n=1/n>0$ なので $g(X_n)=1$ で、$g(0)=0$ には収束しません。
+      連続写像定理は、極限 $X$ が確率1で $g$ の**不連続点をとらない**ことを仮定しています。
+      この例では極限 $0$ がちょうど $g$ の不連続点なので、定理は使えません。
+
+  - id: q07-delta-method-1
+    term: delta-method
+    level: 基本
+    type: choice
+    question: |
+      $\sqrt n(T_n-3)\xrightarrow{d}N(0,4)$ のとき、$\sqrt n(T_n^2-9)$ の漸近分散はどれか。
+    choices:
+      - '$144$'
+      - '$24$'
+      - '$36$'
+      - '$12$'
+    answer: 0
+    hint: |
+      $g(t)=t^2$ として、漸近分散 $\{g'(\theta)\}^2\sigma^2$ を計算する。
+    explanation: |
+      $g'(t)=2t$ より $g'(3)=6$ なので
+      $$\{g'(3)\}^2\sigma^2=36\times4=144$$
+      $24$ は傾きを2乗し忘れた値（$6\times4$）、$36$ は $\sigma^2$ を掛け忘れた値、$12$ は標準偏差どうしの積 $6\times2$ です。
+
+  - id: q07-delta-method-2
+    term: delta-method
+    level: 標準
+    type: numeric
+    question: |
+      $X_1,\dots,X_{100}$ がポアソン分布 $Po(4)$ からの i.i.d. 標本である。デルタ法により $\sqrt{\bar X}$ の分散の近似値を
+      小数第4位まで求めよ。
+    answer: 0.0025
+    tolerance: 0.0001
+    hint: |
+      $g(x)=\sqrt x$、$g'(\lambda)=\frac1{2\sqrt\lambda}$、$V[\bar X]=\lambda/n$。
+    explanation: |
+      $$V[\sqrt{\bar X}]\approx\left(\frac1{2\sqrt\lambda}\right)^2\frac{\lambda}{n}=\frac1{4n}=\frac{1}{400}=0.0025$$
+      結果が $\lambda$ によらないのが特徴で、平方根はポアソン分布の分散安定化変換です。
+
+  - id: q07-delta-method-3
+    term: delta-method
+    level: 応用
+    type: numeric
+    question: |
+      $n=200$ 人の調査で、ある回答の割合が $\hat p=0.2$ であった。対数オッズ $\log\{\hat p/(1-\hat p)\}$ の標準誤差を、
+      デルタ法で（$p$ に $\hat p$ を代入して）小数第3位まで求めよ。
+    answer: 0.177
+    tolerance: 0.001
+    hint: |
+      $g(p)=\log\frac{p}{1-p}$ の導関数は $\frac{1}{p(1-p)}$。
+    explanation: |
+      $V[\hat p]=p(1-p)/n$ なので
+      $$V[g(\hat p)]\approx\frac{1}{\{p(1-p)\}^2}\cdot\frac{p(1-p)}{n}=\frac{1}{np(1-p)}$$
+      $\hat p=0.2$ を代入して $\frac{1}{200\times0.16}=\frac1{32}$、標準誤差は $1/\sqrt{32}=0.1768$ です。
+
+  - id: q07-continuity-correction-1
+    term: continuity-correction
+    level: 基本
+    type: choice
+    question: |
+      整数値をとる $X$ を平均 $20$、標準偏差 $4$ の正規分布で近似する。連続修正を使って $P(X<15)$ を近似するとき、
+      標準正規分布の分布関数 $\Phi$ に入れる値はどれか。
+    choices:
+      - '$(14.5-20)/4$'
+      - '$(15.5-20)/4$'
+      - '$(15-20)/4$'
+      - '$(14-20)/4$'
+    answer: 0
+    hint: |
+      まず「$X<15$」を整数の範囲 $X\le14$ に直してから、0.5 を足す。
+    explanation: |
+      $P(X<15)=P(X\le14)\approx\Phi\!\left(\frac{14+0.5-20}{4}\right)=\Phi(-1.375)$ です。
+      $15.5$ は $P(X\le15)$ の修正で、「<」を「≤」と取り違えた誤りです。$15$ は修正なし、$14$ は修正なしでさらに範囲を狭めた値です。
+
+  - id: q07-continuity-correction-2
+    term: continuity-correction
+    level: 標準
+    type: numeric
+    question: |
+      $X\sim B(50,\ 0.4)$ のとき、連続修正つきの正規近似で $P(X\le17)$ を小数第3位まで求めよ。
+    answer: 0.235
+    tolerance: 0.001
+    hint: |
+      $\mu=np$、$\sigma=\sqrt{np(1-p)}$ を求め、$17+0.5$ を標準化する。
+    explanation: |
+      $\mu=20$、$\sigma=\sqrt{12}=3.464$ なので
+      $$P(X\le17)\approx\Phi\!\left(\frac{17.5-20}{3.464}\right)=\Phi(-0.722)=0.2352$$
+      正確な値は $0.2369$ です。修正なし（$\Phi(-0.866)=0.193$）より、ずっと近い値になります。
+
+  - id: q07-continuity-correction-3
+    term: continuity-correction
+    level: 応用
+    type: numeric
+    question: |
+      $X\sim B(50,\ 0.4)$ のとき、$P(X=20)$ を連続修正つきの正規近似で小数第3位まで求めよ。
+    answer: 0.115
+    tolerance: 0.001
+    hint: |
+      1点の確率は、幅1の区間 $[19.5,\ 20.5]$ の面積で近似する。
+    explanation: |
+      $\sigma=\sqrt{12}=3.464$ として
+      $$P(X=20)\approx\Phi\!\left(\frac{0.5}{3.464}\right)-\Phi\!\left(\frac{-0.5}{3.464}\right)=2\Phi(0.1443)-1=0.1148$$
+      正確な値は $\binom{50}{20}0.4^{20}0.6^{30}=0.1146$ です。修正しないと区間の幅が0になり、確率0になってしまいます。
+
+  - id: q07-law-of-small-numbers-1
+    term: law-of-small-numbers
+    level: 標準
+    type: numeric
+    question: |
+      不良率 $0.4\%$ の製品を $500$ 個検査する。不良品の個数をポアソン分布で近似して、不良品が1個以下である確率を小数第3位まで求めよ。
+    answer: 0.406
+    tolerance: 0.001
+    hint: |
+      $\lambda=np$ のポアソン分布で $P(X=0)+P(X=1)$ を計算する。
+    explanation: |
+      $\lambda=500\times0.004=2$ なので
+      $$P(X\le1)\approx e^{-2}(1+2)=3e^{-2}=0.4060$$
+      二項分布 $B(500,0.004)$ での正確な値は $0.4055$ で、よく一致します。
+
+  - id: q07-law-of-small-numbers-2
+    term: law-of-small-numbers
+    level: 基本
+    type: truefalse
+    question: |
+      $B(n,p)$ を $Po(np)$ で近似すると、近似分布の分散は $np$ となり、二項分布の分散 $np(1-p)$ とは $p$ が小さいほど近くなる。
+    answer: true
+    hint: |
+      ポアソン分布の期待値と分散の関係を思い出す。
+    explanation: |
+      ポアソン分布は期待値と分散が等しいので、近似分布の分散は $np$ です。二項分布の分散 $np(1-p)$ との比は $1-p$ で、
+      $p$ が小さいほど1に近づきます。たとえば $n=500,p=0.004$ なら $2$ と $1.992$ です。
+      逆に $p$ が大きいと分散を過大に見積もるので、少数の法則は「$p$ が小さい」ときの近似です。
+
+  - id: q07-convergence-in-mean-square-1
+    term: convergence-in-mean-square
+    level: 標準
+    type: numeric
+    question: |
+      $X_1,\dots,X_n$ が i.i.d. で $V[X_i]=9$ のとき、$E[(\bar X_n-\mu)^2]\le0.05$ となる最小の $n$ を求めよ。
+    answer: 180
+    tolerance: 0.5
+    hint: |
+      $E[(\bar X_n-\mu)^2]$ は $\bar X_n$ の分散に等しい。
+    explanation: |
+      $E[(\bar X_n-\mu)^2]=V[\bar X_n]=9/n$ なので、$9/n\le0.05$ より $n\ge180$ です。
+      $9/n\to0$ なので $\bar X_n$ は $\mu$ に平均二乗収束し、したがって確率収束もします。
+
+  - id: q07-lindeberg-levy-clt-1
+    term: lindeberg-levy-clt
+    level: 基本
+    type: truefalse
+    question: |
+      リンデバーグ・レヴィの中心極限定理を使うには、i.i.d. であることと分散の有限性に加えて、3次モーメント $E|X_i|^3$ の有限性が必要である。
+    answer: false
+    hint: |
+      リンデバーグ・レヴィの定理の仮定は何個あるか。
+    explanation: |
+      仮定は「i.i.d.」と「$0<\sigma^2<\infty$」の2つだけで、3次モーメントもモーメント母関数も不要です。
+      3次モーメントの有限性は、近似の速さを評価するベリー・エッセンの定理で必要になる条件です。
+
+  - id: q07-berry-esseen-theorem-1
+    term: berry-esseen-theorem
+    level: 標準
+    type: numeric
+    question: |
+      成功確率 $1/2$ のベルヌーイ分布からの i.i.d. 標本 $n=100$ 個について、標準化した和の分布関数と $\Phi$ の差の上限を
+      ベリー・エッセンの定理（定数 $C=0.4748$）で評価し、小数第3位まで求めよ。
+    answer: 0.047
+    tolerance: 0.001
+    hint: |
+      $\rho=E|X-\mu|^3$ と $\sigma^3$ を計算する。$|X-1/2|$ は常に $1/2$。
+    explanation: |
+      $|X-\frac12|=\frac12$ なので $\rho=\frac18$、$\sigma=\frac12$ より $\sigma^3=\frac18$、$\rho/\sigma^3=1$ です。
+      $$\sup_x|F_n(x)-\Phi(x)|\le\frac{0.4748\times1}{\sqrt{100}}=0.0475$$
+      誤差の上限は $1/\sqrt n$ の速さでしか小さくならず、$n$ を4倍にして半分になります。

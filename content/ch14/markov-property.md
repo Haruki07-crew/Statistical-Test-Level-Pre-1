@@ -4,7 +4,7 @@ title: マルコフ性
 reading: まるこふせい
 en: Markov property
 chapter: 14
-importance: A
+importance: C
 tags: [マルコフ連鎖, 条件付き確率, 確率過程]
 related: [markov-chain, conditional-probability, conditional-independence, transition-probability-matrix, stochastic-process, ar-model]
 charts:

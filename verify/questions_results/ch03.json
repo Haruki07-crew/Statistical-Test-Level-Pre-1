@@ -1,0 +1,126 @@
+{
+ "q03-coefficient-of-variation-1": {
+  "hash": "5094dee5f94885f6",
+  "ok": true
+ },
+ "q03-coefficient-of-variation-2": {
+  "hash": "0d5249c5b0df27c8",
+  "ok": true
+ },
+ "q03-conditional-expectation-1": {
+  "hash": "e87c3ea2e509c4b3",
+  "ok": true
+ },
+ "q03-conditional-expectation-2": {
+  "hash": "a9132806821d1217",
+  "ok": true
+ },
+ "q03-conditional-expectation-3": {
+  "hash": "842400bd848d704c",
+  "ok": true
+ },
+ "q03-conditional-variance-1": {
+  "hash": "3dac405794ec7cba",
+  "ok": true
+ },
+ "q03-conditional-variance-2": {
+  "hash": "ab672f8e013a35f4",
+  "ok": true
+ },
+ "q03-conditional-variance-3": {
+  "hash": "c368d11d132dad2b",
+  "ok": true
+ },
+ "q03-correlation-matrix-1": {
+  "hash": "50784336280c24d4",
+  "ok": true
+ },
+ "q03-correlation-matrix-2": {
+  "hash": "cd7e3ef77fc6ef72",
+  "ok": true
+ },
+ "q03-covariance-and-correlation-1": {
+  "hash": "e31433377b8a1b6a",
+  "ok": true
+ },
+ "q03-covariance-and-correlation-2": {
+  "hash": "00bffe418cba7dda",
+  "ok": true
+ },
+ "q03-covariance-and-correlation-3": {
+  "hash": "5e04db3ab5c19291",
+  "ok": true
+ },
+ "q03-expectation-variance-properties-1": {
+  "hash": "a12603638e8711c4",
+  "ok": true
+ },
+ "q03-expectation-variance-properties-2": {
+  "hash": "84999ded30ccaec1",
+  "ok": true
+ },
+ "q03-expectation-variance-properties-3": {
+  "hash": "f0e3c19ead3718fb",
+  "ok": true
+ },
+ "q03-mean-vector-1": {
+  "hash": "e7839714519a211b",
+  "ok": true
+ },
+ "q03-partial-correlation-coefficient-1": {
+  "hash": "8996fbf6666a9bbd",
+  "ok": true
+ },
+ "q03-partial-correlation-coefficient-2": {
+  "hash": "bb543fc7700c2fd4",
+  "ok": true
+ },
+ "q03-partial-correlation-coefficient-3": {
+  "hash": "8ca451073b3f267d",
+  "ok": true
+ },
+ "q03-quantile-function-1": {
+  "hash": "d959f256e88d8c18",
+  "ok": true
+ },
+ "q03-quantile-function-2": {
+  "hash": "165a0f344c0b2cc8",
+  "ok": true
+ },
+ "q03-skewness-kurtosis-1": {
+  "hash": "d10f6619cdbc818d",
+  "ok": true
+ },
+ "q03-skewness-kurtosis-2": {
+  "hash": "f09beb29c6865ee6",
+  "ok": true
+ },
+ "q03-spurious-correlation-1": {
+  "hash": "1a6660faad30efc0",
+  "ok": true
+ },
+ "q03-spurious-correlation-2": {
+  "hash": "7ce2b891f48a8086",
+  "ok": true
+ },
+ "q03-variance-covariance-matrix-1": {
+  "hash": "977d19f25cd865a1",
+  "ok": true
+ },
+ "q03-variance-covariance-matrix-2": {
+  "hash": "a0d9b041e9c690d1",
+  "ok": true
+ },
+ "q03-variance-covariance-matrix-3": {
+  "hash": "3ab8fd7e344d9307",
+  "ok": true
+ },
+ "q03-weighted-geometric-harmonic-mean-1": {
+  "hash": "5054c77a85212c21",
+  "ok": true
+ },
+ "q03-weighted-geometric-harmonic-mean-2": {
+  "hash": "f76b90a66e378e5f",
+  "ok": true
+ }
+}

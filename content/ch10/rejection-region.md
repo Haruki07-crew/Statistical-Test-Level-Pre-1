@@ -3,7 +3,7 @@ id: rejection-region
 title: 棄却域
 reading: ききゃくいき
 en: Rejection region
-aliases: [臨界域, 棄却限界, 臨界値, 採択域, 受容域]
+aliases: [臨界域, 棄却限界, 臨界値, 採択域, 受容域, 検定統計量]
 chapter: 10
 importance: A
 tags: [仮説検定, 検定の基礎, 有意水準, 検定統計量]

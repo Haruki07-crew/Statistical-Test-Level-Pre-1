@@ -3,3 +3,4 @@ __pycache__/
 .DS_Store
 tmux-*.log
 verify/*.html
+verify/ui_out/

@@ -1,0 +1,114 @@
+{
+ "q12-binomial-test-1": {
+  "hash": "79531114dcee5746",
+  "ok": true
+ },
+ "q12-binomial-test-2": {
+  "hash": "460af0e5ce5352fd",
+  "ok": true
+ },
+ "q12-binomial-test-3": {
+  "hash": "704282e005275308",
+  "ok": true
+ },
+ "q12-chi-square-approximation-condition-1": {
+  "hash": "69e6d7614b568748",
+  "ok": true
+ },
+ "q12-degrees-of-freedom-gof-1": {
+  "hash": "a4411aff66bbdad8",
+  "ok": true
+ },
+ "q12-degrees-of-freedom-gof-2": {
+  "hash": "d779f47378a302a3",
+  "ok": true
+ },
+ "q12-dispersion-test-1": {
+  "hash": "46b87eafe3632a49",
+  "ok": true
+ },
+ "q12-expected-frequency-1": {
+  "hash": "d179ee94ac4d4aed",
+  "ok": true
+ },
+ "q12-g-statistic-1": {
+  "hash": "188e25afd26ed299",
+  "ok": true
+ },
+ "q12-g-statistic-2": {
+  "hash": "541cd6022cc3f2ce",
+  "ok": true
+ },
+ "q12-goodness-of-fit-test-1": {
+  "hash": "af80e7ec8fb28d71",
+  "ok": true
+ },
+ "q12-goodness-of-fit-test-2": {
+  "hash": "bed35277e00dc0d4",
+  "ok": true
+ },
+ "q12-homogeneity-test-1": {
+  "hash": "f2e4758338f07ad1",
+  "ok": true
+ },
+ "q12-independence-test-1": {
+  "hash": "11c75fa75c7ddc9f",
+  "ok": true
+ },
+ "q12-independence-test-2": {
+  "hash": "0ab44b1d7ae1b965",
+  "ok": true
+ },
+ "q12-independence-test-3": {
+  "hash": "f1d1a3f357f48a69",
+  "ok": true
+ },
+ "q12-kolmogorov-smirnov-test-1": {
+  "hash": "c1b3c2a787e542c4",
+  "ok": true
+ },
+ "q12-pearson-chi-square-statistic-1": {
+  "hash": "d39d4fd3f4cb9a3f",
+  "ok": true
+ },
+ "q12-pearson-chi-square-statistic-2": {
+  "hash": "6c7548110a87820c",
+  "ok": true
+ },
+ "q12-poisson-parameter-test-1": {
+  "hash": "3be96945f529605b",
+  "ok": true
+ },
+ "q12-poisson-parameter-test-2": {
+  "hash": "91430935d2bac54c",
+  "ok": true
+ },
+ "q12-poisson-two-sample-test-1": {
+  "hash": "d4c2473ed619ae42",
+  "ok": true
+ },
+ "q12-proportion-test-1": {
+  "hash": "1f671528df44c7be",
+  "ok": true
+ },
+ "q12-proportion-test-2": {
+  "hash": "061905f12d60adeb",
+  "ok": true
+ },
+ "q12-proportion-test-3": {
+  "hash": "1ce2f23e3bc4f421",
+  "ok": true
+ },
+ "q12-two-sample-proportion-test-1": {
+  "hash": "253a29162be41271",
+  "ok": true
+ },
+ "q12-two-sample-proportion-test-2": {
+  "hash": "1f48ee53f1576d0a",
+  "ok": true
+ },
+ "q12-variance-stabilizing-transform-1": {
+  "hash": "0a0ee31bbc34c66c",
+  "ok": true
+ }
+}

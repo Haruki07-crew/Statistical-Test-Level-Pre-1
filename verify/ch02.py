@@ -372,3 +372,21 @@ check(T, "試験 X~U(0,1),Y|X~U(0,x): f_Y=-log y, E[Y]=0.25", zero(fy_marg + sp.
 # ---------------- 集計 ----------------
 ok = sum(results); ng = len(results) - ok
 print(f"\n合計: OK {ok} / NG {ng}")
+
+# --- 追加用語（用語の見直し）: probability-mass-and-density-function ---
+T = "probability-mass-and-density-function"
+pm = {xx: F(xx, 10) for xx in range(1, 5)}
+check(T, "例1 p(x)=x/10: 和1, P(X≥3)=0.7, E[X]=3", sum(pm.values()) == 1 and pm[3] + pm[4] == F(7, 10) and sum(xx * v for xx, v in pm.items()) == 3, (sum(pm.values()), pm[3] + pm[4]))
+cc = sp.symbols("c", positive=True)
+c_sol = sp.solve(sp.integrate(cc * x**2, (x, 0, 2)) - 1, cc)[0]
+fx2 = c_sol * x**2
+EX = sp.integrate(x * fx2, (x, 0, 2)); EX2 = sp.integrate(x**2 * fx2, (x, 0, 2))
+check(T, "例2 c=3/8, P(1≤X≤2)=0.875, f(2)=1.5", c_sol == sp.Rational(3, 8) and sp.integrate(fx2, (x, 1, 2)) == sp.Rational(7, 8) and fx2.subs(x, 2) == sp.Rational(3, 2), c_sol)
+check(T, "例2 E[X]=1.5, E[X²]=2.4, V=0.15", EX == sp.Rational(3, 2) and EX2 == sp.Rational(12, 5) and EX2 - EX**2 == sp.Rational(3, 20), (EX, EX2))
+ex_p = exp(-1) - exp(-1.05)
+check(T, "例3 P(2≤X≤2.1)≈0.0179, f(2)·0.1≈0.0184", close(ex_p, 0.0179) and close(0.5 * exp(-1) * 0.1, 0.0184) and close(stats.expon(scale=2).cdf(2.1) - stats.expon(scale=2).cdf(2), ex_p, 1e-12), (round(ex_p, 5), round(0.05 * exp(-1), 5)))
+check(T, "図 正規密度の山 1/(σ√(2π)): σ=0.3 で>1, σ=0.4 で<1", 1 / (0.3 * sqrt(2 * pi)) > 1 and 1 / (0.4 * sqrt(2 * pi)) < 1, round(1 / (0.3 * sqrt(2 * pi)), 4))
+check(T, "連続型 F'(x)=f(x)（指数分布, sympy）", zero(sp.diff(1 - sp.exp(-x / 2), x) - sp.exp(-x / 2) / 2), "")
+
+ok = sum(results); ng = len(results) - ok
+print(f"\n合計（追加用語を含む）: OK {ok} / NG {ng}")

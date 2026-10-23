@@ -5,7 +5,7 @@ reading: まんほいっとにーのゆーけんてい
 en: Mann-Whitney U test
 aliases: [U検定, マン・ホイットニー検定, Mann-Whitney U test, ウィルコクソン・マン・ホイットニー検定]
 chapter: 13
-importance: A
+importance: C
 tags: [ノンパラメトリック法, 2標本, 順位, 正規近似]
 related: [wilcoxon-rank-sum-test, two-sample-t-test, rank-and-ties, normal-approximation-rank-tests, concordant-discordant-pairs, permutation-test]
 charts:

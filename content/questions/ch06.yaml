@@ -1,0 +1,583 @@
+chapter: 6
+questions:
+  - id: q06-normal-distribution-1
+    term: normal-distribution
+    level: 基本
+    type: numeric
+    question: |
+      ある試験の得点 $X$ が $N(50,\ 10^2)$ に従うとき、$P(X>65)$ を小数第3位まで求めよ。
+    answer: 0.067
+    tolerance: 0.001
+    hint: |
+      $Z=(X-50)/10$ と標準化する。
+    explanation: |
+      $$P(X>65)=P\!\left(Z>\frac{65-50}{10}\right)=P(Z>1.5)=1-\Phi(1.5)=0.0668$$
+
+  - id: q06-normal-distribution-2
+    term: normal-distribution
+    level: 標準
+    type: numeric
+    question: |
+      $X\sim N(10,\ 4)$、$Y\sim N(6,\ 9)$ が独立であるとき（第2引数は分散）、$P(X>Y)$ を小数第3位まで求めよ。
+    answer: 0.866
+    tolerance: 0.001
+    hint: |
+      $X-Y$ の分布を求める。独立な正規分布の差の分散は「足し算」になる。
+    explanation: |
+      $X-Y\sim N(10-6,\ 4+9)=N(4,\ 13)$ なので
+      $$P(X>Y)=P(X-Y>0)=P\!\left(Z>\frac{-4}{\sqrt{13}}\right)=\Phi\!\left(\frac{4}{\sqrt{13}}\right)=\Phi(1.109)=0.866$$
+      差の分散を $9-4=5$ とするのはよくある誤りです。
+
+  - id: q06-standard-normal-distribution-1
+    term: standard-normal-distribution
+    level: 標準
+    type: truefalse
+    question: |
+      $Z\sim N(0,1)$ のとき、$E[Z^4]=3$ である。
+    answer: true
+    hint: |
+      $Z^2$ は自由度1のカイ二乗分布に従う。$E[Z^4]=V[Z^2]+\{E[Z^2]\}^2$。
+    explanation: |
+      $Z^2\sim\chi^2(1)$ なので $E[Z^2]=1$、$V[Z^2]=2$ です。よって
+      $$E[Z^4]=V[Z^2]+\{E[Z^2]\}^2=2+1=3$$
+      モーメント母関数 $e^{t^2/2}$ を4回微分して $t=0$ を代入しても同じ値になります（尖度3の由来）。
+
+  - id: q06-standard-normal-distribution-2
+    term: standard-normal-distribution
+    level: 基本
+    type: numeric
+    question: |
+      $Z\sim N(0,1)$ のとき、$P(-0.5<Z<2)$ を小数第3位まで求めよ。
+    answer: 0.669
+    tolerance: 0.001
+    hint: |
+      $\Phi(2)-\Phi(-0.5)$ を求め、$\Phi(-z)=1-\Phi(z)$ を使う。
+    explanation: |
+      $$P(-0.5<Z<2)=\Phi(2)-\{1-\Phi(0.5)\}=0.9772-(1-0.6915)=0.6687$$
+
+  - id: q06-uniform-distribution-1
+    term: uniform-distribution
+    level: 基本
+    type: numeric
+    question: |
+      $X$ が区間 $(2,\ 8)$ の一様分布に従うとき、$V[X]$ を求めよ。
+    answer: 3
+    tolerance: 0.01
+    hint: |
+      $U(a,b)$ の分散は $(b-a)^2/12$。
+    explanation: |
+      $$V[X]=\frac{(8-2)^2}{12}=\frac{36}{12}=3$$
+
+  - id: q06-uniform-distribution-2
+    term: uniform-distribution
+    level: 応用
+    type: numeric
+    question: |
+      $U_1,\dots,U_4$ が独立に $U(0,1)$ に従うとき、最大値 $M=\max(U_1,\dots,U_4)$ の期待値を求めよ。小数第3位まで答えよ。
+    answer: 0.8
+    tolerance: 0.001
+    hint: |
+      $P(M\le m)=m^4$ から密度を求める。
+    explanation: |
+      $P(M\le m)=P(\text{全部}\le m)=m^4$ なので密度は $4m^3$（$0<m<1$）。
+      $$E[M]=\int_0^1 m\cdot4m^3\,dm=\frac45=0.8$$
+      一般に $n$ 個なら $n/(n+1)$ です。
+
+  - id: q06-exponential-distribution-1
+    term: exponential-distribution
+    level: 基本
+    type: numeric
+    question: |
+      $X$ がレート $\lambda=0.5$ の指数分布（密度 $\lambda e^{-\lambda x}$, $x\ge0$）に従うとき、中央値を小数第3位まで求めよ。
+    answer: 1.386
+    tolerance: 0.001
+    hint: |
+      $F(x)=1-e^{-\lambda x}=0.5$ を解く。
+    explanation: |
+      $e^{-0.5x}=0.5$ より
+      $$x=\frac{\log2}{0.5}=1.386$$
+      期待値 $1/\lambda=2$ より小さく、右に裾が長い分布であることがわかります。
+
+  - id: q06-exponential-distribution-2
+    term: exponential-distribution
+    level: 標準
+    type: choice
+    question: |
+      ある部品の寿命（年）がレート $0.1$ の指数分布（密度 $0.1e^{-0.1x}$）に従う。すでに5年使えている部品が、
+      さらに10年以上使える確率はどれか。
+    choices:
+      - '$e^{-1}\approx0.368$'
+      - '$e^{-1.5}\approx0.223$'
+      - '$e^{-0.5}\approx0.607$'
+      - '$1-e^{-1}\approx0.632$'
+    answer: 0
+    hint: |
+      無記憶性 $P(X>s+t\mid X>s)=P(X>t)$ を使う。
+    explanation: |
+      $$P(X>15\mid X>5)=\frac{e^{-0.1\times15}}{e^{-0.1\times5}}=e^{-0.1\times10}=e^{-1}=0.368$$
+      これまで使えた5年は影響しません。$e^{-1.5}$ は条件付けを忘れた値、$1-e^{-1}$ は「10年以内に壊れる」確率です。
+
+  - id: q06-exponential-distribution-3
+    term: exponential-distribution
+    level: 応用
+    type: numeric
+    question: |
+      独立な3つの部品の寿命がそれぞれレート $0.1,\ 0.3,\ 0.4$ の指数分布に従う。3つのうちどれか1つでも壊れると装置が止まる。
+      装置が時刻 $2$ まで止まらない確率を小数第3位まで求めよ。
+    answer: 0.202
+    tolerance: 0.001
+    hint: |
+      装置の寿命は3つの寿命の最小値。$P(\min>t)$ は各 $P(X_i>t)$ の積。
+    explanation: |
+      $$P(\min>2)=e^{-0.1\cdot2}e^{-0.3\cdot2}e^{-0.4\cdot2}=e^{-0.8\times2}=e^{-1.6}=0.202$$
+      最小値はレート $0.1+0.3+0.4=0.8$ の指数分布に従います。
+
+  - id: q06-gamma-distribution-1
+    term: gamma-distribution
+    level: 基本
+    type: choice
+    question: |
+      $X$ が形状 $\alpha=3$、**尺度** $\beta=2$ のガンマ分布 $\mathrm{Ga}(3,2)$（密度 $\dfrac{x^{\alpha-1}e^{-x/\beta}}{\Gamma(\alpha)\beta^\alpha}$）に従うとき、$V[X]$ はどれか。
+    choices:
+      - '$12$'
+      - '$0.75$'
+      - '$6$'
+      - '$1.5$'
+    answer: 0
+    hint: |
+      尺度表記では期待値 $\alpha\beta$、分散 $\alpha\beta^2$。
+    explanation: |
+      $$V[X]=\alpha\beta^2=3\times2^2=12$$
+      $0.75$ と $1.5$ は第2引数をレートと読んだときの分散 $\alpha/\lambda^2$ と期待値 $\alpha/\lambda$、$6$ は期待値 $\alpha\beta$ です。
+
+  - id: q06-gamma-distribution-2
+    term: gamma-distribution
+    level: 標準
+    type: numeric
+    question: |
+      $X_1,\dots,X_4$ が独立にレート2の指数分布に従うとき、$S=X_1+\dots+X_4$ は形状4・尺度 $1/2$ のガンマ分布に従う。
+      $P(S\le1)$ を小数第3位まで求めよ。
+    answer: 0.143
+    tolerance: 0.001
+    hint: |
+      形状が整数のガンマ分布は「ポアソン過程で4回目の事象が起きる時刻」。$P(S\le1)=P(\text{時間1までに4回以上})$。
+    explanation: |
+      レート2のポアソン過程で、時間1までの事象の数 $N\sim\mathrm{Po}(2)$ です。$S\le1\iff N\ge4$ なので
+      $$P(S\le1)=1-e^{-2}\left(1+2+\frac{2^2}{2}+\frac{2^3}{6}\right)=1-6.333e^{-2}=0.143$$
+
+  - id: q06-gamma-distribution-3
+    term: gamma-distribution
+    level: 応用
+    type: derivation
+    question: |
+      $X\sim\mathrm{Ga}(\alpha,\beta)$（形状 $\alpha>1$、**尺度** $\beta$）のとき、$E[1/X]$ を求めよ。
+    steps:
+      - |
+        $$E[1/X]=\int_0^\infty\frac1x\cdot\frac{x^{\alpha-1}e^{-x/\beta}}{\Gamma(\alpha)\beta^{\alpha}}dx=\frac{1}{\Gamma(\alpha)\beta^{\alpha}}\int_0^\infty x^{(\alpha-1)-1}e^{-x/\beta}dx$$
+      - |
+        積分は $\mathrm{Ga}(\alpha-1,\beta)$ の密度の正規化定数なので $\Gamma(\alpha-1)\beta^{\alpha-1}$（$\alpha>1$ で収束）。
+      - |
+        $$E[1/X]=\frac{\Gamma(\alpha-1)\beta^{\alpha-1}}{\Gamma(\alpha)\beta^{\alpha}}=\frac{1}{(\alpha-1)\beta}$$
+    answer: "$E[1/X]=\\dfrac{1}{(\\alpha-1)\\beta}$"
+    hint: |
+      被積分関数を、形状を1つ下げたガンマ分布の密度の形にそろえる。
+    explanation: |
+      $\Gamma(\alpha)=(\alpha-1)\Gamma(\alpha-1)$ を使うと
+      $$E[1/X]=\frac{1}{(\alpha-1)\beta}$$
+      です。$1/E[X]=1/(\alpha\beta)$ とは一致せず、$E[1/X]>1/E[X]$ です（イェンセンの不等式）。
+      レート表記 $\lambda=1/\beta$ なら $\lambda/(\alpha-1)$ です。
+
+  - id: q06-beta-distribution-1
+    term: beta-distribution
+    level: 基本
+    type: numeric
+    question: |
+      $X\sim\mathrm{Be}(2,3)$（密度 $\propto x^{1}(1-x)^{2}$, $0<x<1$）のとき、$V[X]$ を小数第3位まで求めよ。
+    answer: 0.04
+    tolerance: 0.001
+    hint: |
+      $\mathrm{Be}(a,b)$ の分散は $\dfrac{ab}{(a+b)^2(a+b+1)}$。
+    explanation: |
+      $$V[X]=\frac{2\times3}{5^2\times6}=\frac{6}{150}=0.04$$
+      期待値は $a/(a+b)=0.4$ です。
+
+  - id: q06-beta-distribution-2
+    term: beta-distribution
+    level: 応用
+    type: choice
+    question: |
+      $X\sim\mathrm{Ga}(2,1)$、$Y\sim\mathrm{Ga}(3,1)$（形状・尺度）が独立のとき、$W=\dfrac{X}{X+Y}$ の分布はどれか。
+    choices:
+      - 'ベータ分布 $\mathrm{Be}(2,3)$'
+      - 'ベータ分布 $\mathrm{Be}(3,2)$'
+      - '一様分布 $U(0,1)$'
+      - 'ガンマ分布 $\mathrm{Ga}(5,1)$'
+    answer: 0
+    hint: |
+      $U=X+Y$, $W=X/(X+Y)$ と変数変換し、ヤコビアン $u$ を掛ける。
+    explanation: |
+      逆変換 $x=uw$, $y=u(1-w)$ のヤコビアンは $u$ なので
+      $$f(u,w)\propto (uw)^{1}e^{-uw}\,\{u(1-w)\}^{2}e^{-u(1-w)}\cdot u=u^{4}e^{-u}\cdot w^{1}(1-w)^{2}$$
+      $w$ の部分 $w^{2-1}(1-w)^{3-1}$ より $W\sim\mathrm{Be}(2,3)$（$U=X+Y\sim\mathrm{Ga}(5,1)$ と独立）です。
+      $\mathrm{Be}(3,2)$ は $Y/(X+Y)$ の分布です。
+
+  - id: q06-cauchy-distribution-1
+    term: cauchy-distribution
+    level: 基本
+    type: truefalse
+    question: |
+      $X_1,\dots,X_n$ が独立に標準コーシー分布に従うとき、標本平均 $\bar X$ は $n\to\infty$ で0に確率収束する。
+    answer: false
+    hint: |
+      コーシー分布には期待値が存在しない。$\bar X$ の特性関数を考える。
+    explanation: |
+      標準コーシー分布の特性関数は $e^{-|t|}$ なので、$\bar X$ の特性関数は
+      $$\left(e^{-|t|/n}\right)^n=e^{-|t|}$$
+      となり、$\bar X$ は $n$ によらず標準コーシー分布に従います。期待値が存在しないため大数の法則が使えません。
+
+  - id: q06-cauchy-distribution-2
+    term: cauchy-distribution
+    level: 標準
+    type: numeric
+    question: |
+      $X$ が標準コーシー分布（密度 $\dfrac{1}{\pi(1+x^2)}$）に従うとき、$P(X>\sqrt3)$ を小数第3位まで求めよ。
+    answer: 0.167
+    tolerance: 0.001
+    hint: |
+      累積分布関数は $F(x)=\dfrac12+\dfrac1\pi\arctan x$。
+    explanation: |
+      $\arctan\sqrt3=\pi/3$ なので
+      $$P(X>\sqrt3)=\frac12-\frac1\pi\cdot\frac\pi3=\frac16=0.167$$
+
+  - id: q06-lognormal-distribution-1
+    term: lognormal-distribution
+    level: 標準
+    type: numeric
+    question: |
+      $\log X\sim N(1,\ 0.5^2)$ のとき（自然対数）、$E[X]$ を小数第3位まで求めよ。
+    answer: 3.08
+    tolerance: 0.001
+    hint: |
+      正規分布のモーメント母関数 $E[e^{tY}]=e^{\mu t+\sigma^2t^2/2}$ で $t=1$ とする。
+    explanation: |
+      $$E[X]=E[e^{\log X}]=\exp\!\left(1+\frac{0.25}{2}\right)=e^{1.125}=3.080$$
+      $e^{\mu}=e^1=2.718$ ではない点に注意します（$e^{\mu}$ は中央値）。
+
+  - id: q06-lognormal-distribution-2
+    term: lognormal-distribution
+    level: 基本
+    type: choice
+    question: |
+      $\log X\sim N(1,\ 0.5^2)$ のとき、$X$ の中央値はどれか。
+    choices:
+      - '$e^{1}$'
+      - '$e^{1.125}$'
+      - '$e^{0.75}$'
+      - '$1$'
+    answer: 0
+    hint: |
+      $\log$ は単調増加なので、中央値は変換で保たれる。
+    explanation: |
+      $\log X$ の中央値は $1$ なので、$X$ の中央値は $e^{1}$ です。
+      $e^{1.125}=e^{\mu+\sigma^2/2}$ は期待値、$e^{0.75}=e^{\mu-\sigma^2}$ は最頻値で、最頻値 < 中央値 < 期待値 の順に並びます。
+
+  - id: q06-bivariate-normal-distribution-1
+    term: bivariate-normal-distribution
+    level: 標準
+    type: numeric
+    question: |
+      $(X,Y)$ が2変量正規分布に従い、$E[X]=50$, $E[Y]=60$, $\sqrt{V[X]}=10$, $\sqrt{V[Y]}=15$, 相関係数 $\rho=0.6$ とする。
+      $E[Y\mid X=65]$ を小数第1位まで求めよ。
+    answer: 73.5
+    tolerance: 0.05
+    hint: |
+      $E[Y\mid X=x]=\mu_Y+\rho\dfrac{\sigma_Y}{\sigma_X}(x-\mu_X)$。
+    explanation: |
+      $$E[Y\mid X=65]=60+0.6\times\frac{15}{10}\times(65-50)=60+13.5=73.5$$
+      回帰係数は $\rho\sigma_Y/\sigma_X=0.9$ で、$\rho\sigma_X/\sigma_Y$ と取り違えないようにします。
+
+  - id: q06-bivariate-normal-distribution-2
+    term: bivariate-normal-distribution
+    level: 応用
+    type: numeric
+    question: |
+      前問と同じ設定で、$P(Y>80\mid X=65)$ を小数第3位まで求めよ。
+    answer: 0.294
+    tolerance: 0.001
+    hint: |
+      条件付き分布は正規分布で、分散は $\sigma_Y^2(1-\rho^2)$。
+    explanation: |
+      $Y\mid X=65\sim N(73.5,\ 15^2(1-0.36))=N(73.5,\ 12^2)$ なので
+      $$P(Y>80\mid X=65)=P\!\left(Z>\frac{80-73.5}{12}\right)=P(Z>0.542)=0.294$$
+      条件を付けると標準偏差は $15$ から $12$ に小さくなります。
+
+  - id: q06-bivariate-normal-distribution-3
+    term: bivariate-normal-distribution
+    level: 基本
+    type: truefalse
+    question: |
+      $(X,Y)$ が2変量正規分布に従うとき、$X$ と $Y$ が無相関（$\rho=0$）ならば $X$ と $Y$ は独立である。
+    answer: true
+    hint: |
+      $\rho=0$ を同時密度に代入すると、どんな形になるか。
+    explanation: |
+      $\rho=0$ なら同時密度の指数部分の交差項が消え、
+      $$f(x,y)=\frac{1}{\sqrt{2\pi}\sigma_X}e^{-\frac{(x-\mu_X)^2}{2\sigma_X^2}}\cdot\frac{1}{\sqrt{2\pi}\sigma_Y}e^{-\frac{(y-\mu_Y)^2}{2\sigma_Y^2}}$$
+      と周辺密度の積になるので独立です。ただし「周辺がそれぞれ正規分布」なだけでは成り立たず、同時に2変量正規分布であることが必要です。
+
+  - id: q06-multivariate-normal-distribution-1
+    term: multivariate-normal-distribution
+    level: 応用
+    type: numeric
+    question: |
+      $\boldsymbol X=(X_1,X_2,X_3)^\top$ が3変量正規分布に従い、
+      $$\boldsymbol\mu=\begin{pmatrix}1\\2\\3\end{pmatrix},\qquad\Sigma=\begin{pmatrix}4&1&0\\1&2&-1\\0&-1&3\end{pmatrix}$$
+      とする。$W=X_1-X_2+2X_3$ について $P(W>10)$ を小数第3位まで求めよ。
+    answer: 0.132
+    tolerance: 0.001
+    hint: |
+      $W=\boldsymbol a^\top\boldsymbol X$ は正規分布で、平均 $\boldsymbol a^\top\boldsymbol\mu$、分散 $\boldsymbol a^\top\Sigma\boldsymbol a$。
+    explanation: |
+      $\boldsymbol a=(1,-1,2)^\top$ とすると、$\boldsymbol a^\top\boldsymbol\mu=1-2+6=5$、
+      $\Sigma\boldsymbol a=(3,-3,7)^\top$ より $\boldsymbol a^\top\Sigma\boldsymbol a=3+3+14=20$ です。
+      $$P(W>10)=P\!\left(Z>\frac{10-5}{\sqrt{20}}\right)=P(Z>1.118)=0.132$$
+      共分散の項 $2\cdot1\cdot(-1)\cdot1$ と $2\cdot(-1)\cdot2\cdot(-1)$ を落とさないことが大切です。
+
+  - id: q06-multivariate-normal-distribution-2
+    term: multivariate-normal-distribution
+    level: 標準
+    type: choice
+    question: |
+      $\boldsymbol X\sim N_3(\boldsymbol\mu,\Sigma)$（$\Sigma$ は正則）のとき、$D^2=(\boldsymbol X-\boldsymbol\mu)^\top\Sigma^{-1}(\boldsymbol X-\boldsymbol\mu)$ の分布はどれか。
+    choices:
+      - '自由度3のカイ二乗分布'
+      - '自由度2のカイ二乗分布'
+      - '自由度1のカイ二乗分布に従う変数の3倍'
+      - '平均0・分散3の正規分布'
+    answer: 0
+    hint: |
+      $\boldsymbol Z=\Sigma^{-1/2}(\boldsymbol X-\boldsymbol\mu)$ と変換すると、各成分はどうなるか。
+    explanation: |
+      $\boldsymbol Z=\Sigma^{-1/2}(\boldsymbol X-\boldsymbol\mu)\sim N_3(\boldsymbol 0,I)$ で、
+      $$D^2=\boldsymbol Z^\top\boldsymbol Z=Z_1^2+Z_2^2+Z_3^2\sim\chi^2(3)$$
+      です（平均3、分散6）。$3\chi^2(1)$ は平均は同じ3ですが分散が18になり、別の分布です。
+
+  - id: q06-normal-mixture-distribution-1
+    term: normal-mixture-distribution
+    level: 標準
+    type: numeric
+    question: |
+      $X$ が確率 $0.3$ で $N(0,1)$、確率 $0.7$ で $N(4,1)$ から生成される混合正規分布に従うとき、$V[X]$ を小数第2位まで求めよ。
+    answer: 4.36
+    tolerance: 0.01
+    hint: |
+      どちらの成分かを表す変数 $C$ を使い、$V[X]=E[V[X\mid C]]+V[E[X\mid C]]$。
+    explanation: |
+      $E[V[X\mid C]]=1$、$E[X\mid C]$ は確率 $0.3$ で $0$、$0.7$ で $4$ なので
+      $$V[E[X\mid C]]=0.3\times0.7\times(4-0)^2=3.36$$
+      よって $V[X]=1+3.36=4.36$ です（期待値は $2.8$）。
+
+  - id: q06-normal-mixture-distribution-2
+    term: normal-mixture-distribution
+    level: 基本
+    type: truefalse
+    question: |
+      $X\sim N(0,1)$、$Y\sim N(4,1)$ が独立のとき、$0.3X+0.7Y$ の分布は「確率 $0.3$ で $N(0,1)$、確率 $0.7$ で $N(4,1)$」の混合正規分布と同じである。
+    answer: false
+    hint: |
+      $0.3X+0.7Y$ の分布と分散を、前問の混合分布の分散と比べる。
+    explanation: |
+      $0.3X+0.7Y$ は確率変数の線形結合なので正規分布 $N(2.8,\ 0.09+0.49)=N(2.8,\ 0.58)$ です。
+      混合分布は密度の重み付き和 $0.3\phi(x)+0.7\phi(x-4)$ で、分散は $4.36$、山が2つになることもあります。
+      期待値は同じ $2.8$ ですが、別の分布です。
+
+  - id: q06-chi-squared-distribution-1
+    term: chi-squared-distribution
+    level: 基本
+    type: choice
+    question: |
+      自由度8のカイ二乗分布に従う $W$ の分散はどれか。
+    choices:
+      - '$16$'
+      - '$8$'
+      - '$4$'
+      - '$64$'
+    answer: 0
+    hint: |
+      $\chi^2(k)$ は独立な $Z_i^2$ の $k$ 個の和で、$V[Z_i^2]=2$。
+    explanation: |
+      $$V[W]=2k=16$$
+      $8$ は期待値、$4$ は標準偏差です。
+
+  - id: q06-chi-squared-distribution-2
+    term: chi-squared-distribution
+    level: 標準
+    type: numeric
+    question: |
+      $N(\mu,\ 4)$ からの大きさ $n=10$ の無作為標本の不偏分散を $S^2$ とする。$P(S^2>6)$ を小数第3位まで求めよ。
+    answer: 0.141
+    tolerance: 0.001
+    hint: |
+      $(n-1)S^2/\sigma^2\sim\chi^2(n-1)$ を使う。自由度は $n$ ではない。
+    explanation: |
+      $$P(S^2>6)=P\!\left(\frac{9S^2}{4}>\frac{9\times6}{4}\right)=P(\chi^2(9)>13.5)=0.141$$
+      自由度を $n=10$ と取り違えて $P(\chi^2(10)>13.5)$ を計算すると $0.197$ になり、誤りです。
+
+  - id: q06-chi-squared-distribution-3
+    term: chi-squared-distribution
+    level: 応用
+    type: derivation
+    question: |
+      $Z\sim N(0,1)$ のとき、$Y=Z^2$ の密度関数を変数変換で求め、自由度1のカイ二乗分布の密度になることを示せ。
+    steps:
+      - |
+        $y>0$ で $P(Y\le y)=P(-\sqrt y\le Z\le\sqrt y)=\Phi(\sqrt y)-\Phi(-\sqrt y)$。
+      - |
+        $y$ で微分すると $f_Y(y)=\phi(\sqrt y)\dfrac{1}{2\sqrt y}+\phi(-\sqrt y)\dfrac{1}{2\sqrt y}=\dfrac{\phi(\sqrt y)}{\sqrt y}$。
+      - |
+        $\phi(\sqrt y)=\dfrac{1}{\sqrt{2\pi}}e^{-y/2}$ を代入。
+    answer: "$f_Y(y)=\\dfrac{1}{\\sqrt{2\\pi y}}e^{-y/2}\\ (y>0)$。これは $\\Gamma(1/2)=\\sqrt\\pi$ より形状 $1/2$・尺度2のガンマ分布、すなわち $\\chi^2(1)$ の密度"
+    hint: |
+      $z\mapsto z^2$ は1対1ではないので、累積分布関数から始めて $\pm\sqrt y$ の2つの寄与を足す。
+    explanation: |
+      $z=\pm\sqrt y$ の2つの枝の寄与を足すと
+      $$f_Y(y)=\frac{1}{\sqrt{2\pi y}}e^{-y/2}=\frac{1}{\Gamma(1/2)2^{1/2}}y^{1/2-1}e^{-y/2}$$
+      で、$\chi^2(1)$ の密度です。片方の枝だけを数えると密度の積分が $1/2$ になってしまいます。
+
+  - id: q06-noncentral-chi-squared-distribution-1
+    term: noncentral-chi-squared-distribution
+    level: 標準
+    type: numeric
+    question: |
+      $X_1\sim N(1,1)$、$X_2\sim N(2,1)$、$X_3\sim N(0,1)$ が独立のとき、$W=X_1^2+X_2^2+X_3^2$ の分散を求めよ。
+      非心度は $\lambda=\sum\mu_i^2$ の流儀とする。
+    answer: 26
+    tolerance: 0.01
+    hint: |
+      $W\sim\chi^2(k,\lambda)$ で分散は $2(k+2\lambda)$。
+    explanation: |
+      $k=3$、$\lambda=1+4+0=5$ なので
+      $$V[W]=2(3+2\times5)=26$$
+      （期待値は $k+\lambda=8$）。$\lambda=\frac12\sum\mu_i^2$ の流儀では公式が $2(k+4\lambda)$ に変わる点に注意します。
+
+  - id: q06-t-distribution-1
+    term: t-distribution
+    level: 基本
+    type: numeric
+    question: |
+      自由度10の t 分布の上側2.5%点 $t_{0.025}(10)$ を小数第3位まで求めよ。
+    answer: 2.228
+    tolerance: 0.001
+    hint: |
+      $P(T>t)=0.025$ となる $t$。標準正規分布の $1.960$ より大きい。
+    explanation: |
+      $t_{0.025}(10)=2.228$ です。t 分布は正規分布より裾が重いので、同じ確率の点が外側にきます。
+      自由度が大きくなると $1.960$ に近づきます。
+
+  - id: q06-t-distribution-2
+    term: t-distribution
+    level: 標準
+    type: choice
+    question: |
+      自由度6の t 分布に従う $T$ の分散はどれか。
+    choices:
+      - '$1.5$'
+      - '$1$'
+      - '$1.2$'
+      - '$3$'
+    answer: 0
+    hint: |
+      自由度 $\nu>2$ の t 分布の分散は $\nu/(\nu-2)$。
+    explanation: |
+      $$V[T]=\frac{\nu}{\nu-2}=\frac{6}{4}=1.5$$
+      標準正規分布の分散1より大きく、裾が重いことを反映しています。$\nu\le2$ では分散は存在しません（$\nu=2$ で無限大）。
+
+  - id: q06-t-statistic-1
+    term: t-statistic
+    level: 標準
+    type: numeric
+    question: |
+      ある製品の重さを16個測ったところ、標本平均 $103.5$ g、不偏分散の平方根 $s=6.0$ g であった。
+      $H_0:\mu=100$ を検定する t 統計量の値を小数第3位まで求めよ。
+    answer: 2.333
+    tolerance: 0.001
+    hint: |
+      $t=(\bar x-\mu_0)/(s/\sqrt n)$。
+    explanation: |
+      $$t=\frac{103.5-100}{6.0/\sqrt{16}}=\frac{3.5}{1.5}=2.333$$
+      自由度15の t 分布で評価します（両側5%点は $2.131$ なので、両側5%で棄却）。
+
+  - id: q06-t-statistic-2
+    term: t-statistic
+    level: 応用
+    type: numeric
+    question: |
+      2群のデータで、群1は $n_1=8$、$\bar x_1=24.0$、不偏分散 $s_1^2=9.0$、群2は $n_2=10$、$\bar x_2=20.5$、$s_2^2=7.0$ であった。
+      等分散を仮定した2標本 t 統計量（プールした分散を使う）の値を小数第3位まで求めよ。
+    answer: 2.629
+    tolerance: 0.001
+    hint: |
+      プールした分散 $s_p^2=\dfrac{(n_1-1)s_1^2+(n_2-1)s_2^2}{n_1+n_2-2}$ を求め、$t=\dfrac{\bar x_1-\bar x_2}{\sqrt{s_p^2(1/n_1+1/n_2)}}$。
+    explanation: |
+      $$s_p^2=\frac{7\times9.0+9\times7.0}{16}=\frac{126}{16}=7.875$$
+      $$t=\frac{3.5}{\sqrt{7.875\times(1/8+1/10)}}=\frac{3.5}{\sqrt{1.771875}}=\frac{3.5}{1.3311}=2.629$$
+      自由度は $n_1+n_2-2=16$ です。
+
+  - id: q06-noncentral-t-distribution-1
+    term: noncentral-t-distribution
+    level: 標準
+    type: numeric
+    question: |
+      自由度 $\nu=10$、非心度 $\delta=1$ の非心 t 分布 $T'=(Z+\delta)/\sqrt{W/\nu}$ の期待値を小数第3位まで求めよ。
+      公式 $E[T']=\delta\sqrt{\nu/2}\,\Gamma((\nu-1)/2)/\Gamma(\nu/2)$ を使ってよい（$\Gamma(4.5)=11.632$, $\Gamma(5)=24$）。
+    answer: 1.084
+    tolerance: 0.001
+    hint: |
+      $Z+\delta$ と $1/\sqrt{W/\nu}$ は独立なので、期待値はそれぞれの期待値の積。
+    explanation: |
+      $$E[T']=1\times\sqrt5\times\frac{11.632}{24}=2.2361\times0.48467=1.084$$
+      $\delta=1$ より少し大きくなるのは、$E[1/\sqrt{W/\nu}]>1$ だからです。
+
+  - id: q06-f-distribution-1
+    term: f-distribution
+    level: 基本
+    type: truefalse
+    question: |
+      $T$ が自由度 $\nu$ の t 分布に従うとき、$T^2$ は自由度 $(1,\nu)$ の F 分布に従う。
+      したがって $t_{0.025}(\nu)^2$ は $F(1,\nu)$ の上側5%点に等しい。
+    answer: true
+    hint: |
+      $T=Z/\sqrt{W/\nu}$ を2乗すると、分子は何の分布になるか。
+    explanation: |
+      $T^2=\dfrac{Z^2/1}{W/\nu}$ で、$Z^2\sim\chi^2(1)$ なので $T^2\sim F(1,\nu)$ です。
+      $P(T^2>c^2)=P(|T|>c)$ なので、t の両側5%点（上側2.5%点）の2乗が F の上側5%点になります。例えば $2.228^2=4.965=F_{0.05}(1,10)$ です。
+
+  - id: q06-f-distribution-2
+    term: f-distribution
+    level: 標準
+    type: numeric
+    question: |
+      $F(5,10)$ の**下側**5%点を小数第3位まで求めよ。必要なら $F(10,5)$ の上側5%点が $4.735$ であることを使ってよい。
+    answer: 0.211
+    tolerance: 0.001
+    hint: |
+      $F\sim F(m,n)$ なら $1/F\sim F(n,m)$。
+    explanation: |
+      $P(F<c)=P(1/F>1/c)=0.05$ で $1/F\sim F(10,5)$ なので、$1/c=4.735$。
+      $$c=\frac{1}{4.735}=0.211$$
+      自由度の順番を入れ替えることを忘れないようにします。
+
+  - id: q06-noncentral-f-distribution-1
+    term: noncentral-f-distribution
+    level: 標準
+    type: numeric
+    question: |
+      $U\sim\chi^2(3,\lambda)$（非心度 $\lambda=4$、$\lambda=\sum\mu_i^2$ の流儀）と $V\sim\chi^2(12)$ が独立のとき、
+      $F'=\dfrac{U/3}{V/12}$ の期待値を小数第2位まで求めよ。
+    answer: 2.8
+    tolerance: 0.01
+    hint: |
+      $E[U]=m+\lambda$、$E[1/V]=1/(n-2)$ で、$U$ と $V$ は独立。
+    explanation: |
+      $$E[F']=\frac{n}{m}E[U]\,E\!\left[\frac1V\right]=\frac{12}{3}\times(3+4)\times\frac{1}{10}=2.8$$
+      中心 F 分布の期待値 $n/(n-2)=1.2$ より大きくなり、これが検出力の源になります。

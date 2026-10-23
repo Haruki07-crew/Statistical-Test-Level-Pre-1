@@ -1,0 +1,54 @@
+{
+ "q04-box-cox-transformation-1": {
+  "hash": "cf1010be8cdf568b",
+  "ok": true
+ },
+ "q04-box-cox-transformation-2": {
+  "hash": "2c4f0d3fbcd87e7c",
+  "ok": true
+ },
+ "q04-change-of-variables-1": {
+  "hash": "a0189e91089b85f3",
+  "ok": true
+ },
+ "q04-change-of-variables-2": {
+  "hash": "a0826ef4355d8397",
+  "ok": true
+ },
+ "q04-change-of-variables-3": {
+  "hash": "d9f81526dfb6e64a",
+  "ok": true
+ },
+ "q04-log-transformation-1": {
+  "hash": "05d90d1fa10a31ed",
+  "ok": true
+ },
+ "q04-log-transformation-2": {
+  "hash": "0bd6365cdbe5874e",
+  "ok": true
+ },
+ "q04-logit-logistic-transformation-1": {
+  "hash": "be1f1ab71dfc7ec7",
+  "ok": true
+ },
+ "q04-logit-logistic-transformation-2": {
+  "hash": "f9cce62527138077",
+  "ok": true
+ },
+ "q04-logit-logistic-transformation-3": {
+  "hash": "ce0d85c7d2814be5",
+  "ok": true
+ },
+ "q04-power-transformation-1": {
+  "hash": "c516d45e453dec28",
+  "ok": true
+ },
+ "q04-probit-transformation-1": {
+  "hash": "a566698c91ed514d",
+  "ok": true
+ },
+ "q04-probit-transformation-2": {
+  "hash": "2bed2662bfb0d1df",
+  "ok": true
+ }
+}

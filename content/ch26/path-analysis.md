@@ -3,9 +3,9 @@ id: path-analysis
 title: パス解析
 reading: ぱすかいせき
 en: Path analysis
-aliases: [パス図, パス係数, 直接効果, 間接効果]
+aliases: [パス図, パス係数, 直接効果, 間接効果, 因果図]
 chapter: 26
-importance: B
+importance: A
 tags: [構造方程式モデリング, 因果モデル, 標準化偏回帰係数, 効果の分解]
 related: [structural-equation-modeling, standardized-partial-regression-coefficient, multiple-regression-model, partial-correlation-coefficient, directed-acyclic-graph, spurious-correlation]
 charts:

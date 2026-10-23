@@ -1,0 +1,466 @@
+chapter: 12
+questions:
+  - id: q12-proportion-test-1
+    term: proportion-test
+    level: 基本
+    type: numeric
+    question: |
+      ある政策の支持率が50%かどうかを調べるため、無作為に選んだ400人に聞いたところ228人が支持した。
+      $H_0:p=0.5$ の検定統計量 $Z=\dfrac{\hat p-p_0}{\sqrt{p_0(1-p_0)/n}}$ の値を小数第2位まで求めよ（連続修正なし）。
+    answer: 2.80
+    tolerance: 0.01
+    hint: |
+      分母には $H_0$ の値 $p_0=0.5$ を使う。成功数の形 $(X-np_0)/\sqrt{np_0(1-p_0)}$ で計算すると楽。
+    explanation: |
+      $np_0=200$、$\sqrt{np_0(1-p_0)}=\sqrt{100}=10$ なので
+      $$Z=\frac{228-200}{10}=2.80$$
+      $|Z|\ge1.96$ なので、両側5%で $H_0$ は棄却されます。
+
+  - id: q12-proportion-test-2
+    term: proportion-test
+    level: 標準
+    type: choice
+    question: |
+      ある部品の不良率が20%を超えるかを調べたい。$n=100$ 個を検査し、不良数 $X$ をもとに
+      $H_0:p=0.2$ 対 $H_1:p>0.2$ を、正規近似（連続修正なし）の有意水準5%で検定する。
+      $H_0$ を棄却する最小の不良数 $X$ はどれか。ただし $z_{0.05}=1.645$、$z_{0.025}=1.96$、$z_{0.01}=2.326$ とする。
+    choices:
+      - '$27$'
+      - '$26$'
+      - '$28$'
+      - '$30$'
+    answer: 0
+    hint: |
+      $Z=(X-np_0)/\sqrt{np_0(1-p_0)}\ge z_{0.05}$ を $X$ について解き、整数に切り上げる。
+    explanation: |
+      $np_0=20$、$\sqrt{100\times0.2\times0.8}=4$ なので、棄却域は
+      $$X\ge20+1.645\times4=26.58$$
+      $X$ は整数なので最小値は $27$ です。
+      $26$ は切り捨ててしまった誤り、$28$ は両側の $1.96$ を使った誤り（$27.84$）、$30$ は1%の $2.326$ を使った場合（$29.30$）です。
+
+  - id: q12-proportion-test-3
+    term: proportion-test
+    level: 基本
+    type: truefalse
+    question: |
+      母比率の検定 $H_0:p=p_0$ の統計量 $Z$ の分母は、帰無仮説の値ではなく標本比率を使った $\sqrt{\hat p(1-\hat p)/n}$ である。
+    answer: false
+    hint: |
+      検定統計量の分布は「$H_0$ が正しいとき」に考える。
+    explanation: |
+      検定では $H_0$ のもとでの分布を使うので、分母は $\sqrt{p_0(1-p_0)/n}$ です。
+      $\sqrt{\hat p(1-\hat p)/n}$ を使うのは、$p_0$ が決まっていない **信頼区間**（ワルド型）の場合です。
+
+  - id: q12-binomial-test-1
+    term: binomial-test
+    level: 基本
+    type: numeric
+    question: |
+      コインを10回投げて表が9回出た。$H_0:p=0.5$ 対 $H_1:p>0.5$ の二項検定の p値を小数第3位まで求めよ。
+    answer: 0.011
+    tolerance: 0.001
+    hint: |
+      p値は $P(X\ge9)=P(X=9)+P(X=10)$（$X\sim\mathrm{Bin}(10,0.5)$）。
+    explanation: |
+      $$P(X\ge9)=\frac{\binom{10}{9}+\binom{10}{10}}{2^{10}}=\frac{11}{1024}=0.0107$$
+      5%で $H_0$ は棄却されます。
+
+  - id: q12-binomial-test-2
+    term: binomial-test
+    level: 標準
+    type: choice
+    question: |
+      $X\sim\mathrm{Bin}(15,p)$ で $H_0:p=0.2$ 対 $H_1:p>0.2$ を有意水準5%で正確に検定する。
+      棄却域を $\{X\ge c\}$ とするとき、$P(X\ge c)\le0.05$ を満たす最小の $c$ はどれか。
+    choices:
+      - '$7$'
+      - '$6$'
+      - '$5$'
+      - '$8$'
+    answer: 0
+    hint: |
+      $P(X\ge c)$ を $c=5,6,7,\dots$ と順に計算し、初めて0.05以下になる $c$ を探す。
+    explanation: |
+      $\mathrm{Bin}(15,0.2)$ で計算すると
+      $$P(X\ge5)=0.164,\quad P(X\ge6)=0.061,\quad P(X\ge7)=0.018$$
+      なので $c=7$ です。$c=6$ では0.05をわずかに超えます。
+      離散分布なので、このときの実際の有意水準（サイズ）は $0.018$ で、5%ちょうどにはなりません。
+
+  - id: q12-binomial-test-3
+    term: binomial-test
+    level: 応用
+    type: numeric
+    question: |
+      $n=12$ 回の試行で成功が7回だった。$H_0:p=0.3$ 対 $H_1:p\ne0.3$ を二項検定で行う。
+      両側 p値を「片側 p値の小さいほうを2倍する方法」で求め、小数第3位まで答えよ。
+    answer: 0.077
+    tolerance: 0.001
+    hint: |
+      期待値 $np_0=3.6$ より観測値が大きいので、右側の $P(X\ge7)$ が小さいほうの片側 p値になる。
+    explanation: |
+      $X\sim\mathrm{Bin}(12,0.3)$ で
+      $$P(X\ge7)=\sum_{k=7}^{12}\binom{12}{k}0.3^k0.7^{12-k}=0.0386$$
+      これを2倍して両側 p値は $0.077$ です。両側5%では棄却されません（片側なら棄却）。
+
+  - id: q12-poisson-parameter-test-1
+    term: poisson-parameter-test
+    level: 標準
+    type: numeric
+    question: |
+      ある窓口の苦情件数は、従来1日あたり平均2件のポアソン分布に従っていた。
+      ある5日間の苦情の合計が17件だったとき、$H_0:\lambda=2$ 対 $H_1:\lambda>2$ の正確な p値を小数第3位まで求めよ。
+    answer: 0.027
+    tolerance: 0.001
+    hint: |
+      再生性により、5日間の合計 $T$ は $H_0$ のもとで $\mathrm{Po}(10)$ に従う。
+    explanation: |
+      $T\sim\mathrm{Po}(5\times2)=\mathrm{Po}(10)$ なので
+      $$P(T\ge17)=1-\sum_{t=0}^{16}e^{-10}\frac{10^t}{t!}=0.0270$$
+      5%で $H_0$ は棄却されます。
+
+  - id: q12-poisson-parameter-test-2
+    term: poisson-parameter-test
+    level: 基本
+    type: numeric
+    question: |
+      $X_1,\dots,X_{50}$ が独立に $\mathrm{Po}(\lambda)$ に従い、標本平均が $\bar X=4.5$ だった。
+      $H_0:\lambda=4$ の正規近似の検定統計量 $Z=\dfrac{\bar X-\lambda_0}{\sqrt{\lambda_0/n}}$ を小数第2位まで求めよ。
+    answer: 1.77
+    tolerance: 0.01
+    hint: |
+      ポアソン分布は平均と分散が等しいので、$H_0$ のもとで $V[\bar X]=\lambda_0/n$。
+    explanation: |
+      $$Z=\frac{4.5-4}{\sqrt{4/50}}=\frac{0.5}{0.2828}=1.77$$
+      右片側5%（$1.645$）なら棄却、両側5%（$1.96$）なら棄却されません。
+
+  - id: q12-two-sample-proportion-test-1
+    term: two-sample-proportion-test
+    level: 標準
+    type: numeric
+    question: |
+      広告Aを見た200人のうち60人、広告Bを見た300人のうち66人が商品を購入した。
+      プールした比率を使う2標本の比率の差の検定統計量 $Z$ を小数第2位まで求めよ。
+    answer: 2.02
+    tolerance: 0.01
+    hint: |
+      プールした比率 $\hat p=(X_1+X_2)/(n_1+n_2)$ を分母に使う。
+    explanation: |
+      $\hat p_1=0.30$、$\hat p_2=0.22$、$\hat p=126/500=0.252$ なので
+      $$Z=\frac{0.30-0.22}{\sqrt{0.252\times0.748\times\left(\frac1{200}+\frac1{300}\right)}}=\frac{0.08}{0.03963}=2.02$$
+      両側5%で有意な差があります。
+
+  - id: q12-two-sample-proportion-test-2
+    term: two-sample-proportion-test
+    level: 標準
+    type: truefalse
+    question: |
+      前問と同じデータ（Aは200人中60人、Bは300人中66人が購入）を2×2分割表にして、連続修正なしのピアソンのカイ二乗統計量を計算すると、
+      プールした比率による $Z$ の2乗（約4.07）に一致する。
+    answer: true
+    hint: |
+      2×2表のカイ二乗統計量は $n(ad-bc)^2/\{(a+b)(c+d)(a+c)(b+d)\}$ で計算できる。
+    explanation: |
+      表は $\begin{pmatrix}60&140\\66&234\end{pmatrix}$ で、
+      $$\chi^2=\frac{500(60\times234-140\times66)^2}{200\times300\times126\times374}=4.074$$
+      これは $Z^2=2.0185^2=4.074$ と一致します。連続修正なしなら、両側の $Z$ 検定と自由度1のカイ二乗検定は同じ結論になります。
+
+  - id: q12-goodness-of-fit-test-1
+    term: goodness-of-fit-test
+    level: 基本
+    type: numeric
+    question: |
+      さいころを120回投げ、目1〜6の度数が $25,17,15,23,24,16$ だった。
+      「どの目も確率1/6」という $H_0$ に対するピアソンのカイ二乗統計量を小数第2位まで求めよ。
+    answer: 5.00
+    tolerance: 0.01
+    hint: |
+      期待度数はどの目も $120/6=20$。
+    explanation: |
+      偏差は $5,-3,-5,3,4,-4$ なので
+      $$\chi^2=\frac{25+9+25+9+16+16}{20}=\frac{100}{20}=5.00$$
+      自由度 $6-1=5$ の上側5%点 $11.07$ より小さいので、$H_0$ は棄却されません。
+
+  - id: q12-goodness-of-fit-test-2
+    term: goodness-of-fit-test
+    level: 標準
+    type: choice
+    question: |
+      ある交配実験で、4種類の表現型が理論上 $9:3:3:1$ の比で現れるとされる。160個体を調べたところ、
+      度数は $99,27,24,10$ だった。カイ二乗統計量の値と、有意水準5%の結論の組として正しいものはどれか。
+      ただし $\chi^2_{0.05}(3)=7.815$、$\chi^2_{0.05}(4)=9.488$ とする。
+    choices:
+      - '$\chi^2=2.40$、$H_0$ は棄却されない'
+      - '$\chi^2=2.40$、$H_0$ は棄却される'
+      - '$\chi^2=2.65$、$H_0$ は棄却されない'
+      - '$\chi^2=126$、$H_0$ は棄却される'
+    answer: 0
+    hint: |
+      期待度数は $160\times(9,3,3,1)/16$。自由度はカテゴリ数 $-1$。
+    explanation: |
+      期待度数は $90,30,30,10$ なので
+      $$\chi^2=\frac{81}{90}+\frac{9}{30}+\frac{36}{30}+\frac{0}{10}=0.9+0.3+1.2+0=2.40$$
+      自由度 $4-1=3$ の棄却限界 $7.815$ より小さいので棄却されません。
+      $2.65$ は期待度数ではなく観測度数で割った誤り、$126$ は期待度数で割り忘れた値 $\sum(O-E)^2$ です。
+
+  - id: q12-pearson-chi-square-statistic-1
+    term: pearson-chi-square-statistic
+    level: 基本
+    type: truefalse
+    question: |
+      観測度数の合計と期待度数の合計がともに $n$ のとき、ピアソンのカイ二乗統計量は
+      $\chi^2=\sum_i\dfrac{O_i^2}{E_i}-n$ と書き直せる。
+    answer: true
+    hint: |
+      $(O_i-E_i)^2=O_i^2-2O_iE_i+E_i^2$ を $E_i$ で割って足す。
+    explanation: |
+      $$\sum\frac{(O_i-E_i)^2}{E_i}=\sum\frac{O_i^2}{E_i}-2\sum O_i+\sum E_i=\sum\frac{O_i^2}{E_i}-2n+n$$
+      なので正しいです。電卓で計算するときに便利な形です。
+
+  - id: q12-pearson-chi-square-statistic-2
+    term: pearson-chi-square-statistic
+    level: 応用
+    type: derivation
+    question: |
+      カテゴリが2つ（成功・失敗）の適合度検定で、$H_0:p=p_0$ のもとのピアソンのカイ二乗統計量が、
+      母比率の検定統計量 $Z=\dfrac{X-np_0}{\sqrt{np_0(1-p_0)}}$ の2乗に一致することを示せ（$X$ は成功数）。
+    steps:
+      - |
+        $O_1=X$、$O_2=n-X$、$E_1=np_0$、$E_2=n(1-p_0)$。$O_2-E_2=-(X-np_0)$ なので、2つの偏差の2乗はどちらも $(X-np_0)^2$。
+      - |
+        $\chi^2=(X-np_0)^2\left(\dfrac1{np_0}+\dfrac1{n(1-p_0)}\right)=(X-np_0)^2\cdot\dfrac{1}{np_0(1-p_0)}$。
+      - |
+        これは $Z^2$ そのもの。$Z\sim N(0,1)$ なら $Z^2\sim\chi^2(1)$ で、自由度 $2-1=1$ とも合う。
+    answer: "$\\chi^2=\\dfrac{(X-np_0)^2}{np_0(1-p_0)}=Z^2$"
+    hint: |
+      2つのセルの偏差は符号だけが逆で、大きさは同じになる。
+    explanation: |
+      $\dfrac1{p_0}+\dfrac1{1-p_0}=\dfrac1{p_0(1-p_0)}$ を使うと
+      $$\chi^2=\frac{(X-np_0)^2}{np_0(1-p_0)}=Z^2$$
+      です。両側の $Z$ 検定と自由度1のカイ二乗検定は同じ検定になります。
+
+  - id: q12-independence-test-1
+    term: independence-test
+    level: 基本
+    type: numeric
+    question: |
+      100人を性別と賛否で分類した2×2分割表が $\begin{pmatrix}30&20\\20&30\end{pmatrix}$ だった。
+      独立性の検定のカイ二乗統計量（連続修正なし）を小数第2位まで求めよ。
+    answer: 4.00
+    tolerance: 0.01
+    hint: |
+      $\chi^2=\dfrac{n(ad-bc)^2}{(a+b)(c+d)(a+c)(b+d)}$ を使うか、すべての期待度数が25になることを使う。
+    explanation: |
+      $$\chi^2=\frac{100(30\times30-20\times20)^2}{50\times50\times50\times50}=\frac{100\times250000}{6250000}=4.00$$
+      期待度数25から見るとどのセルも偏差 $\pm5$ なので $4\times25/25=4$ とも計算できます。
+
+  - id: q12-independence-test-2
+    term: independence-test
+    level: 基本
+    type: choice
+    question: |
+      3行4列の分割表で独立性の検定を行う。カイ二乗統計量が近似的に従うカイ二乗分布の自由度はどれか。
+    choices:
+      - '$6$'
+      - '$11$'
+      - '$12$'
+      - '$5$'
+    answer: 0
+    hint: |
+      自由度は（行数 $-1$）×（列数 $-1$）。
+    explanation: |
+      $(3-1)(4-1)=6$ です。$11$ はセル数 $-1$（周辺確率の推定 $(3-1)+(4-1)=5$ 個を引き忘れた）、
+      $12$ はセル数そのもの、$5$ は $(3-1)+(4-1)$ と足してしまった誤りです。
+
+  - id: q12-independence-test-3
+    term: independence-test
+    level: 応用
+    type: numeric
+    question: |
+      100人を所属（2群）と満足度（低・中・高）で分類したところ、次の表になった。
+      独立性の検定のカイ二乗統計量を小数第2位まで求めよ。
+
+      | | 低 | 中 | 高 |
+      |---|---|---|---|
+      | 群1 | 20 | 15 | 15 |
+      | 群2 | 10 | 15 | 25 |
+    answer: 5.83
+    tolerance: 0.01
+    hint: |
+      行和はどちらも50、列和は $30,30,40$。期待度数は行和×列和÷総数。
+    explanation: |
+      期待度数はどちらの行も $15,15,20$ です。偏差は群1で $5,0,-5$、群2で $-5,0,5$ なので
+      $$\chi^2=2\left(\frac{25}{15}+0+\frac{25}{20}\right)=2(1.667+1.25)=5.83$$
+      自由度 $(2-1)(3-1)=2$ の上側5%点 $5.991$ にわずかに届かず、5%では棄却されません。
+
+  - id: q12-homogeneity-test-1
+    term: homogeneity-test
+    level: 標準
+    type: truefalse
+    question: |
+      同質性の検定（各行の標本の大きさを先に決める）と独立性の検定（総数だけを決める）は、データのとり方が違うので、
+      同じ分割表に対しても期待度数とカイ二乗統計量の値が異なる。
+    answer: false
+    hint: |
+      どちらも期待度数は「行和×列和÷総数」で計算される。
+    explanation: |
+      同質性の検定では $E_{ij}=n_i\cdot O_{\cdot j}/n$ ですが、$n_i$ は行和 $O_{i\cdot}$ そのものなので、独立性の検定と同じ式になります。
+      統計量も自由度 $(r-1)(c-1)$ も同じで、違うのは仮説の解釈（構成比が等しいか／2変数が独立か）です。
+
+  - id: q12-g-statistic-1
+    term: g-statistic
+    level: 標準
+    type: numeric
+    question: |
+      3つのカテゴリの理論確率が $(0.25,0.5,0.25)$ とされる。100個の観測で度数が $(30,50,20)$ だったとき、
+      尤度比検定統計量 $G=2\sum O_i\log(O_i/E_i)$ を小数第2位まで求めよ（$\log$ は自然対数）。
+    answer: 2.01
+    tolerance: 0.01
+    hint: |
+      期待度数は $(25,50,25)$。$O_i=E_i$ のセルの項は0になる。
+    explanation: |
+      $$G=2\left(30\log\frac{30}{25}+50\log1+20\log\frac{20}{25}\right)=2(5.470+0-4.463)=2.01$$
+      同じデータのピアソンの統計量は $1+0+1=2.00$ で、$G$ とほぼ同じ値になります。自由度はどちらも2です。
+
+  - id: q12-g-statistic-2
+    term: g-statistic
+    level: 基本
+    type: truefalse
+    question: |
+      $r\times c$ 分割表の独立性の検定で $G$ 統計量を使うとき、自由度はピアソンのカイ二乗統計量とは異なり $rc-1$ である。
+    answer: false
+    hint: |
+      $G$ も「$H_1$ の自由な母数の数 − $H_0$ の自由な母数の数」で自由度が決まる。
+    explanation: |
+      ウィルクスの定理により、$G$ の自由度は $(rc-1)-\{(r-1)+(c-1)\}=(r-1)(c-1)$ で、ピアソンの統計量と同じです。
+      $G$ とピアソンの $\chi^2$ は $H_0$ のもとで漸近的に一致します。
+
+  - id: q12-expected-frequency-1
+    term: expected-frequency
+    level: 基本
+    type: numeric
+    question: |
+      総数 $n=150$ の分割表で、あるセルの行和が60、列和が45だった。独立性の検定でこのセルの期待度数を求めよ（整数で答えよ）。
+    answer: 18
+    tolerance: 0.4
+    hint: |
+      期待度数は行和×列和÷総数。
+    explanation: |
+      $$E=\frac{60\times45}{150}=18$$
+      行の割合 $60/150=0.4$ と列の割合 $45/150=0.3$ の積 $0.12$ に総数150を掛けたものとも読めます。
+
+  - id: q12-degrees-of-freedom-gof-1
+    term: degrees-of-freedom-gof
+    level: 標準
+    type: choice
+    question: |
+      1日の事故件数のデータを「0件」「1件」「2件」「3件」「4件」「5件以上」の6区分に分け、
+      ポアソン分布の $\lambda$ をデータから最尤推定して適合度検定を行う。カイ二乗統計量の自由度はどれか。
+    choices:
+      - '$4$'
+      - '$5$'
+      - '$3$'
+      - '$6$'
+    answer: 0
+    hint: |
+      自由度＝カテゴリ数 $-1-$（推定した母数の数）。
+    explanation: |
+      $6-1-1=4$ です。$5$ は $\lambda$ の推定を引き忘れた誤り、
+      $3$ はポアソン分布の母数を（平均と分散の）2個と数えた誤りです。ポアソン分布の母数は $\lambda$ の1個だけです。
+
+  - id: q12-degrees-of-freedom-gof-2
+    term: degrees-of-freedom-gof
+    level: 基本
+    type: truefalse
+    question: |
+      身長データを8つの階級に分け、平均 $\mu$ と分散 $\sigma^2$ をデータから推定した正規分布に当てはめて適合度検定を行う。このとき自由度は5である。
+    answer: true
+    hint: |
+      正規分布で推定する母数は何個か。
+    explanation: |
+      推定した母数は $\mu,\sigma^2$ の2個なので、自由度は $8-1-2=5$ です。
+
+  - id: q12-chi-square-approximation-condition-1
+    term: chi-square-approximation-condition
+    level: 標準
+    type: choice
+    question: |
+      10個のセルからなる表の期待度数が次のようになった。コクランの規則
+      （期待度数1未満のセルがなく、5未満のセルが全体の20%以下）を満たすものはどれか。
+    choices:
+      - '$12,\ 9,\ 8,\ 8,\ 7,\ 6,\ 6,\ 5,\ 4,\ 3$'
+      - '$12,\ 9,\ 8,\ 8,\ 7,\ 6,\ 5,\ 4,\ 3,\ 2$'
+      - '$15,\ 12,\ 10,\ 9,\ 8,\ 7,\ 6,\ 6,\ 5,\ 0.8$'
+      - '$10,\ 8,\ 6,\ 4.5,\ 4.5,\ 4,\ 3,\ 3,\ 2,\ 2$'
+    answer: 0
+    hint: |
+      各案について「5未満のセルの数」と「1未満のセルがあるか」を数える。10セルの20%は2セル。
+    explanation: |
+      1つ目は5未満が $4,3$ の2セル（20%）で1未満もないので満たします。
+      2つ目は5未満が $4,3,2$ の3セル（30%）、3つ目は5未満は1セルだけですが $0.8<1$ のセルがあり、
+      4つ目は5未満が7セルなので、いずれも満たしません。満たさないときは隣のカテゴリを併合するか、正確検定を使います。
+
+  - id: q12-variance-stabilizing-transform-1
+    term: variance-stabilizing-transform
+    level: 応用
+    type: numeric
+    question: |
+      大きさ $n=28$ の2変量正規分布からの標本で、標本相関係数が $r=0.6$ だった。
+      フィッシャーの $z$ 変換 $z=\tanh^{-1}r$（分散 $1/(n-3)$）を使って母相関係数 $\rho$ の95%信頼区間を求めるとき、
+      その下限を小数第3位まで求めよ。ただし $z_{0.025}=1.96$ とする。
+    answer: 0.292
+    tolerance: 0.001
+    hint: |
+      $z$ のスケールで $z\pm1.96/\sqrt{n-3}$ を作り、$\tanh$ で $\rho$ のスケールに戻す。
+    explanation: |
+      $z=\tanh^{-1}0.6=\frac12\log\frac{1.6}{0.4}=0.6931$、標準誤差は $1/\sqrt{25}=0.2$ です。
+      $z$ のスケールの区間は $0.6931\pm0.392=[0.3011,\ 1.0851]$ で、$\tanh$ で戻すと
+      $$[\tanh0.3011,\ \tanh1.0851]=[0.292,\ 0.795]$$
+      戻した区間は $r=0.6$ について左右非対称になります。
+
+  - id: q12-poisson-two-sample-test-1
+    term: poisson-two-sample-test
+    level: 応用
+    type: numeric
+    question: |
+      工場Aでは200日間に30件、工場Bでは100日間に5件の事故があった。事故はそれぞれ1日あたりの発生率 $\lambda_A,\lambda_B$ のポアソン分布に従うとする。
+      合計件数35を条件とした二項検定で $H_0:\lambda_A=\lambda_B$ 対 $H_1:\lambda_A>\lambda_B$ の p値を小数第3位まで求めよ。
+    answer: 0.010
+    tolerance: 0.001
+    hint: |
+      $H_0$ のもとで $X_A\mid M=35\sim\mathrm{Bin}(35,\ t_A/(t_A+t_B))$。
+    explanation: |
+      $p_0=200/300=2/3$ なので、$X_A\mid M=35\sim\mathrm{Bin}(35,2/3)$ で
+      $$P(X_A\ge30)=\sum_{k=30}^{35}\binom{35}{k}\left(\frac23\right)^k\left(\frac13\right)^{35-k}=0.0099$$
+      5%で $H_0$ は棄却されます。観測期間が違うので $p_0=1/2$ ではない点に注意します。
+
+  - id: q12-kolmogorov-smirnov-test-1
+    term: kolmogorov-smirnov-test
+    level: 標準
+    type: numeric
+    question: |
+      4個のデータ $0.1,\ 0.3,\ 0.35,\ 0.9$ が一様分布 $U(0,1)$ に従うかを、コルモゴロフ・スミルノフ検定で調べる。
+      統計量 $D_n=\sup_x|F_n(x)-F_0(x)|$ の値を小数第2位まで求めよ。
+    answer: 0.40
+    tolerance: 0.01
+    hint: |
+      各 $X_{(i)}$ で $i/n-F_0(X_{(i)})$ と $F_0(X_{(i)})-(i-1)/n$ を計算し、最大のものをとる。
+    explanation: |
+      $F_0(x)=x$ です。各点で
+      $i/n-x_{(i)}=0.15,\ 0.20,\ 0.40,\ 0.10$、$x_{(i)}-(i-1)/n=0.10,\ 0.05,\ -0.15,\ 0.15$
+      となるので、$D_4=0.40$（$x=0.35$ で $F_n$ が $0.75$ に跳ね上がった直後）です。
+
+  - id: q12-dispersion-test-1
+    term: dispersion-test
+    level: 標準
+    type: numeric
+    question: |
+      6区画で数えた虫の数が $2,5,0,7,1,3$ だった。ポアソン分布に従うかを分散指数で調べる。
+      統計量 $D=\sum(X_i-\bar X)^2/\bar X$ の値を小数第2位まで求めよ。
+    answer: 11.33
+    tolerance: 0.01
+    hint: |
+      $\bar X$ を求め、偏差平方和を $\bar X$ で割る。自由度は $n-1$。
+    explanation: |
+      $\bar X=18/6=3$、偏差平方和は $1+4+9+16+4+0=34$ なので
+      $$D=\frac{34}{3}=11.33$$
+      自由度5の上側5%点 $11.07$ を超えるので、5%で「ポアソン分布より過分散」と判断されます。

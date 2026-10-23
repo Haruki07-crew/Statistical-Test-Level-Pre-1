@@ -5,7 +5,7 @@ reading: かいそうもでる
 en: Hierarchical log-linear model
 aliases: [階層的対数線形モデル, 飽和モデル, "saturated model", 階層原理]
 chapter: 28
-importance: B
+importance: A
 tags: [対数線形モデル, 3元分割表, 自由度, モデル選択, 逸脱度]
 related: [loglinear-model, three-way-table, g-statistic, deviance, conditional-independence, mantel-haenszel-test]
 charts:

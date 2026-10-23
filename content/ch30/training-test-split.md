@@ -7,7 +7,7 @@ aliases: [ホールドアウト法, "hold-out method", 訓練データ, 学習�
 chapter: 30
 importance: C
 tags: [モデル選択, 予測, 汎化誤差, 機械学習]
-related: [generalization-error, cross-validation, overfitting, leave-one-out-cv, model-selection, aic]
+related: [cross-validation, generalization-error, overfitting, leave-one-out-cv, model-selection, aic]
 charts:
   - type: custom
     id: line-data

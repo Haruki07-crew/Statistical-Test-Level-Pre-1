@@ -3,9 +3,9 @@ id: single-imputation
 title: 単一代入法
 reading: たんいつだいにゅうほう
 en: Single imputation
-aliases: [平均値代入, 回帰代入, 確率的回帰代入, ホットデック法, 単一補完]
+aliases: [平均値代入, 回帰代入, 確率的回帰代入, ホットデック法, 単一補完, 補完法, 代入法]
 chapter: 29
-importance: B
+importance: A
 tags: [欠測データ, 代入法, 補完]
 related: [multiple-imputation, complete-case-analysis, mar, rubins-rules, least-squares-method]
 charts:

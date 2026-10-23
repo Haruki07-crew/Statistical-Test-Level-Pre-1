@@ -5,7 +5,7 @@ reading: ばっそくつきすいていりょうのばいあす
 en: Bias of penalized estimators
 aliases: [リッジ推定量のバイアス, 縮小推定量のバイアス, 正則化のバイアス]
 chapter: 19
-importance: B
+importance: C
 tags: [正則化, 平均二乗誤差, バイアス・バリアンス, 縮小推定]
 related: [ridge-regression, lasso, regularization, bias-variance-tradeoff, mean-squared-error, unbiased-estimator]
 charts:

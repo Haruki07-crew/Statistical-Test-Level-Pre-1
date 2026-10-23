@@ -3,7 +3,7 @@ id: one-way-anova
 title: 一元配置分散分析
 reading: いちげんはいちぶんさんぶんせき
 en: One-way analysis of variance
-aliases: [一元配置法, 一元配置ANOVA, One-way ANOVA]
+aliases: [一元配置法, 一元配置ANOVA, One-way ANOVA, 分散分析表]
 chapter: 20
 importance: A
 tags: [分散分析, 実験計画法, F検定]
