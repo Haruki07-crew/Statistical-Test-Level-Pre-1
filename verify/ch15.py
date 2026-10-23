@@ -625,6 +625,17 @@ for n in range(1, 13):
 check(T, "全数え上げ（n=1..12, 全 m, b）で道の対応と P(max≥m) の式が成立", okall, "")
 check(T, "BM: 2P(W(1)≥1)=2×0.1587=0.3173", close(2 * stats.norm.sf(1), .3173) and close(stats.norm.sf(1), .1587), 2 * stats.norm.sf(1))
 
+# --- 統合候補からの論点の追記: mm1-queue ---
+_lam, _mu = 6, 10; _r = _lam / _mu
+_LqMM = (_lam ** 2 * (1 / _mu ** 2) + _r ** 2) / (2 * (1 - _r)); _LqMD = (_lam ** 2 * 0 + _r ** 2) / (2 * (1 - _r))
+check("mm1-queue", "P-K 公式：指数分布で M/M/1 の Lq=0.9、M/D/1 で Lq=0.45、Wq=4.5分（9分の半分）", close(_LqMM, 0.9, 1e-12) and close(_LqMD, 0.45, 1e-12) and close(_LqMD / _lam * 60, 4.5, 1e-9) and close(_LqMM / _lam * 60, 9, 1e-9), (_LqMM, _LqMD))
+_rg = np.random.default_rng(7); _n = 400000
+_arr = np.cumsum(_rg.exponential(1 / _lam, _n)); _st = np.full(_n, 1 / _mu)
+_wq = np.zeros(_n)
+for _i in range(1, _n):
+    _wq[_i] = max(0.0, _wq[_i - 1] + _st[_i - 1] - (_arr[_i] - _arr[_i - 1]))
+check("mm1-queue", "M/D/1 シミュレーション：平均待ち時間 ≈4.5分（許容0.15分）", abs(_wq[1000:].mean() * 60 - 4.5) < 0.15, _wq[1000:].mean() * 60)
+
 print()
 print(f"OK {sum(results)} / NG {len(results) - sum(results)}")
 

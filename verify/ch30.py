@@ -603,6 +603,14 @@ trs = sp.simplify((Im * Jm.inv()).trace())
 check(T, "tr(IJ⁻¹)=1+(κ−1)/2, κ=m4/v²（sympy）", sp.simplify(trs - (1 + (m4 / vv ** 2 - 1) / 2)) == 0, trs)
 check(T, "正規なら κ=3 で tr=2=k（I=J）", sp.simplify(trs.subs(m4, 3 * vv ** 2) - 2) == 0 and sp.simplify((Im - Jm).subs({m4: 3 * vv ** 2, m3: 0})) == sp.zeros(2, 2), None)
 
+# --- 統合候補からの論点の追記: model-selection ---
+_A = np.array([23.727, 17.256, 9.621, 11.618]); _d = _A - _A.min(); _w = np.exp(-_d / 2); _w /= _w.sum()
+check("model-selection", "赤池ウェイト 2次≈72%、3次≈26%、Δ3=1.998<2", abs(_w[2] - 0.72) < 0.005 and abs(_w[3] - 0.26) < 0.006 and _d[3] < 2, np.round(_w, 4))
+check("model-selection", "Δ=2 の証拠比 e≈2.72", abs(math.exp(1) - 2.72) < 0.005, math.exp(1))
+_G = 3.7
+check("model-selection", "パラメータ1個差：AIC小−AIC大=G−2（ℓ0, ℓ1 任意）", abs(((-2 * 0 + 2 * 1) - (-2 * (_G / 2) + 2 * 2)) - (_G - 2)) < 1e-12, _G - 2)
+check("model-selection", "G>2 に対応する有意水準 P(χ²₁>2)≈15.7%", abs(stats.chi2.sf(2, 1) - 0.157) < 5e-4, stats.chi2.sf(2, 1))
+
 # ================================================================ 集計
 ok = sum(results)
 ng = len(results) - ok

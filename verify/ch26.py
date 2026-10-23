@@ -767,6 +767,14 @@ _Z = rng.multivariate_normal(np.zeros(3), _C, 400_000); _Z = (_Z - _Z.mean(0)) /
 _b = np.linalg.lstsq(_Z[:, :2], _Z[:, 2], rcond=None)[0]
 check(T, "例3 シミュ 標準化偏回帰係数（許容0.005）", np.all(np.abs(_b - _p) < 0.005), np.round(_b, 4))
 
+# --- 統合候補からの論点の追記: multidimensional-scaling ---
+_D = np.array([[0, 4, 5, 3], [4, 0, 3, 5], [5, 3, 0, 4], [3, 5, 4, 0]], float)
+_J = np.eye(4) - 1 / 4; _B = -0.5 * _J @ (_D ** 2) @ _J
+_ev = np.sort(np.linalg.eigvalsh(_B))[::-1]
+check("multidimensional-scaling", "例1 tr B=Σ_{i<j}d²/n=100/4=25=16+9、固有値0を含む", abs(np.trace(_B) - 25) < 1e-12 and abs((_D ** 2).sum() / 2 - 100) < 1e-12 and np.allclose(_ev, [16, 9, 0, 0], atol=1e-10) and np.allclose(_B @ np.ones(4), 0), np.round(_ev, 6))
+_Xc = np.linalg.eigh(_B)[1][:, ::-1][:, :2] * np.sqrt(_ev[:2])
+check("multidimensional-scaling", "各次元の座標の2乗和＝固有値", np.allclose((_Xc ** 2).sum(0), _ev[:2]), (_Xc ** 2).sum(0))
+
 ok_n = sum(results)
 ng_n = len(results) - ok_n
 print(f"\n合計（重要度A への加筆を含む）: OK {ok_n} / NG {ng_n}")

@@ -737,5 +737,12 @@ check(T, "下側限界 > μ0 ⇔ 右片側 t 検定で棄却（2000ケース）"
 _cO = _fmO["charts"][0]
 check(T, "chart：t(15) の pdf-cdf、F(1.753)≈0.95, F(2.131)≈0.975", _cO["dist"] == "t" and _cO["params"]["df"] == 15 and _clO(stats.t.cdf(1.753, 15), "0.95") and _clO(stats.t.cdf(2.131, 15), "0.975"), "")
 
+# --- 統合候補からの論点の追記: required-sample-size ---
+_za, _zb, _z2 = stats.norm.isf(0.05), stats.norm.isf(0.2), stats.norm.isf(0.025)
+_nci = (_z2 * 10 / 5) ** 2; _npw = ((_z2 + _zb) * 10 / 5) ** 2
+check("required-sample-size", "σ=10, δ=5：区間の半幅5で n≥15.37→16、両側5%・検出力80%で n≥31.40→32", cl(_nci, "15.37") and ceil(_nci) == 16 and cl(_npw, "31.40") and ceil(_npw) == 32 and cl(_zb, "0.842"), (_nci, _npw))
+_pw = stats.norm.sf(_z2 - 5 / (10 / sqrt(32))) + stats.norm.cdf(-_z2 - 5 / (10 / sqrt(32)))
+check("required-sample-size", "n=32 で両側検定の検出力 ≥0.80、n=31 では <0.80", _pw >= 0.8 and stats.norm.sf(_z2 - 5 / (10 / sqrt(31))) < 0.8, _pw)
+
 print()
 print(f"合計（追加用語を含む）: OK {sum(results)} / NG {len(results) - sum(results)}")

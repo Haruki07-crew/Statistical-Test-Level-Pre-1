@@ -745,6 +745,14 @@ kw = stats.kruskal(*G3)
 check(T, "同じデータのクラスカル・ウォリス p=0.0296", close(kw.pvalue, .0296), kw.pvalue)
 check(T, "異なる群どうしの組は (N²−Σn²)/2=48 組", (NN ** 2 - 48) // 2 == 4 * 4 * 3, "48")
 
+# --- 統合候補からの論点の追記: wilcoxon-rank-sum-test ---
+_X = [14, 19, 22, 25]; _Y = [8, 11, 13, 16, 20]
+_U = sum((x > y) + 0.5 * (x == y) for x in _X for y in _Y)
+_Up = sum((y > x) + 0.5 * (x == y) for x in _X for y in _Y)
+check("wilcoxon-rank-sum-test", "例1 U=17, U'=3, U+U'=n1n2=20, U/(n1n2)=0.85, U=W−10", _U == 17 and _Up == 3 and _U + _Up == 20 and abs(_U / 20 - 0.85) < 1e-12 and 27 - 4 * 5 / 2 == _U, (_U, _Up))
+_auc = np.mean([[x > y for y in _Y] for x in _X])
+check("wilcoxon-rank-sum-test", "U/(n1n2) は AUC（全組で X>Y の割合）と一致", abs(_auc - 0.85) < 1e-12, _auc)
+
 # ================= 集計 =================
 nok, nng = sum(results), len(results) - sum(results)
 print(f"\n合計: OK {nok} / NG {nng}")

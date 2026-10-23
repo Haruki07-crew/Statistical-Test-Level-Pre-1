@@ -852,6 +852,11 @@ check(T, "平均を引くだけでは距離は変わらない", allclose(squaref
 mm = (Xs - Xs.min(0)) / (Xs.max(0) - Xs.min(0))
 check(T, "最小最大正規化で各変数の範囲が [0,1]", allclose(mm.min(0), [0] * 3, 1e-12) and allclose(mm.max(0), [1] * 3, 1e-12), "成立")
 
+# --- 統合候補からの論点の追記: k-means-method ---
+_x = [1, 2, 3, 4, 100]
+_sums = {o: sum(abs(a - o) for a in _x) for o in _x}
+check("k-means-method", "1,2,3,4,100：平均22、距離の和最小のデータ点は3（和101）", np.mean(_x) == 22 and min(_sums, key=_sums.get) == 3 and _sums[3] == 101, _sums)
+
 # ---------------------------------------------------------------- 集計
 print()
 print(f"OK {sum(results)} / NG {len(results) - sum(results)}")

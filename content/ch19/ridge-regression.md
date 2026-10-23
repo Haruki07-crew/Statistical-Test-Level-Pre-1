@@ -127,6 +127,8 @@ MSE は OLS の約13%にまで下がります。数値的に MSE を最小にす
 - 解 $(X^\top X+\lambda I)^{-1}X^\top\boldsymbol{y}$ を、目的関数の微分から導かせる問題が典型です。
 - 期待値 $(X^\top X+\lambda I)^{-1}X^\top X\boldsymbol{\beta}$ から、リッジ推定量は**偏りがある**（$\lambda>0$）ことを示せるようにします。
 - 直交計画では $\hat\beta_j/(1+\lambda)$、固有値で見ると $d_j/(d_j+\lambda)$ 倍、という縮小の形を覚えます。
+- 直交計画（$X^\top X=I$）の MSE は係数ごとに $\mathrm{MSE}_j(\lambda)=(\sigma^2+\lambda^2\beta_j^2)/(1+\lambda)^2$ で、$\lambda^*=\sigma^2/\beta_j^2$ のとき最小値 $\sigma^2\beta_j^2/(\sigma^2+\beta_j^2)$ をとります。$\beta_j=1$、$\sigma^2=0.5$ なら $\lambda^*=0.5$ で MSE は OLS の $0.5$ から $0.3333$ に下がります。
+- $\lambda=0$ での MSE の傾きは負なので、どんな $\boldsymbol{\beta}$ でも OLS より MSE が小さくなる $\lambda>0$ が存在します（ホーエルとケナードの定理）。OLS が BLUE（線形不偏推定量の中で最良）であることとは矛盾しません。
 - 説明変数の尺度で罰則の効き方が変わるので、**標準化してから**当てはめ、切片には罰則をかけません。
 - ベイズ的には、$\boldsymbol{\beta}\sim N(\boldsymbol{0},(\sigma^2/\lambda)I)$ を事前分布にしたときの事後モード（＝事後平均）です。
 - $\lambda$ は交差検証法などで選びます。

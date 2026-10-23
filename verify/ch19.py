@@ -981,5 +981,12 @@ check(T, "誤差逆伝播（連鎖律）の勾配＝数値微分", allclose(_g, 
 _cN = _fmN["charts"][0]["params"]
 check(T, "chart：辺の重みが例の重みと一致", _cN["edges"] == [[0, 2], [0, 3], [1, 2], [1, 3], [2, 4], [3, 4]] and _cN["weights"] == [0.5, -0.4, -0.3, 0.6, 1.0, -2.0] and [_W[0, 0], _W[1, 0], _W[0, 1], _W[1, 1], _v[0], _v[1]] == _cN["weights"], "")
 
+# --- 統合候補からの論点の追記: ridge-regression ---
+_lg = np.linspace(0, 5, 500001); _mse = (0.5 + _lg ** 2 * 1) / (1 + _lg) ** 2
+check("ridge-regression", "直交計画 β=1, σ²=0.5：λ*=0.5、最小MSE=0.3333、OLS は 0.5", close(_lg[_mse.argmin()], 0.5, 1e-5) and close(_mse.min(), 1 / 3, 1e-9) and close(_mse[0], 0.5, 1e-12) and close(0.5 * 1 / (0.5 + 1), _mse.min(), 1e-9), (_lg[_mse.argmin()], _mse.min()))
+_ls, _bs, _ss = sp.symbols("lam beta sigma2", positive=True)
+_M = (_ss + _ls ** 2 * _bs ** 2) / (1 + _ls) ** 2
+check("ridge-regression", "dMSE/dλ at λ=0 = −2σ² < 0（ホーエル・ケナードの直感）", sp.simplify(sp.diff(_M, _ls).subs(_ls, 0) + 2 * _ss) == 0, sp.diff(_M, _ls).subs(_ls, 0))
+
 ok = sum(results); ng = len(results) - ok
 print(f"\n合計（追加用語を含む）: OK {ok} / NG {ng}")
