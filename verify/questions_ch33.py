@@ -173,4 +173,33 @@ _ok = abs(_fd - _true) < 1e-12 and abs(_bd_m - _true) > 0.01 and abs(_cond - _tr
 _ok &= dsep([("U", "X"), ("U", "Y"), ("X", "M"), ("M", "Y")], "M", "U", {"X"})
 q.check("q33-frontdoor-criterion-3", _ok, f"真の値 {_true:.4f}＝フロントドア {_fd:.4f}、M で調整 {_bd_m:.4f}・P(y|x) {_cond:.4f} は不一致")
 
+# --- 追加：答えが「正しい」の正誤問題 ---
+import numpy as _np
+_rng = _np.random.default_rng(3333)
+_N = 400000
+_U = _rng.normal(size=_N)                        # 健康意識など（潜在結果に影響）
+_Y0 = 50 + 5 * _U + _rng.normal(size=_N); _Y1 = _Y0 + 3 + 2 * _U
+_ate = (_Y1 - _Y0).mean()
+_Tr = _rng.random(_N) < 0.4                       # 無作為割付
+_Yr = _np.where(_Tr, _Y1, _Y0)
+_dr = _Yr[_Tr].mean() - _Yr[~_Tr].mean()
+_Tc = _rng.random(_N) < 1 / (1 + _np.exp(-1.5 * _U))   # U が大きい人ほど処置を受ける
+_Yc = _np.where(_Tc, _Y1, _Y0)
+_dc = _Yc[_Tc].mean() - _Yc[~_Tc].mean()
+_att = (_Y1 - _Y0)[_Tc].mean(); _sel = _Y0[_Tc].mean() - _Y0[~_Tc].mean()
+q.check("q33-causal-effect-5", abs(_dr - _ate) < 0.06 and abs(_dc - _ate) > 1 and abs(_dc - (_att + _sel)) < 1e-9,
+        f"無作為割付で群間差 {_dr:.3f} ≈ ATE {_ate:.3f}、処置が U に依存すると {_dc:.3f}（= ATT + 選択バイアス）")
+
+_ok, _dep = True, 0
+for _ in range(300):
+    _px = _rng.dirichlet([1, 1]); _pm = _rng.dirichlet([1, 1], size=2); _py = _rng.dirichlet([1, 1], size=2)
+    _J = _np.einsum("x,xm,my->xmy", _px, _pm, _py)
+    for _m in (0, 1):
+        _c = _J[:, _m, :] / _J[:, _m, :].sum()
+        _ok &= _np.allclose(_c, _np.outer(_c.sum(1), _c.sum(0)), atol=1e-12)
+    _mxy = _J.sum(1)
+    _dep += not _np.allclose(_mxy, _np.outer(_mxy.sum(1), _mxy.sum(0)), atol=1e-6)
+q.check("q33-d-separation-4", _ok and _dep > 280,
+        "乱数の条件付き確率300通りで p(x,y|m)=p(x|m)p(y|m)、周辺では一般に従属")
+
 q.done()

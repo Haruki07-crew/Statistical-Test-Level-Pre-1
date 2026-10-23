@@ -931,6 +931,14 @@ for _ in range(R):
 ratioK = np.var(wmK) / np.var(srsK)
 check(T, "乱数 層の平均が同じとき 分散比≈キッシュの 1.053（有限母集団修正込みの正確値 1.057、±0.05）", abs(ratioK - deff) < .05, ratioK)
 
+# --- 統合候補からの論点の追記: horvitz-thompson-estimator ---
+_Nh = np.array([400, 250, 100]); _nh = np.array([20, 15, 10]); _yh = np.array([30, 45, 80])
+_d = np.repeat(_Nh / _nh, _nh); _yy = np.repeat(_yh, _nh)
+_haj = (_d * _yy).sum() / _d.sum()
+_kish = len(_d) * (_d ** 2).sum() / _d.sum() ** 2
+check("horvitz-thompson-estimator", "ハーエック推定量 Σd y/Σd=41.667（Σd=750=N）、キッシュの計画効果 nΣd²/(Σd)²=1.053",
+      abs(_haj - 41.667) < 5e-4 and abs(_d.sum() - 750) < 1e-9 and abs(_kish - 1.053) < 5e-4, (_haj, _kish))
+
 # ================= 集計 =================
 nok = sum(results)
 nng = len(results) - nok

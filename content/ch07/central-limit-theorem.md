@@ -7,7 +7,7 @@ aliases: [CLT]
 chapter: 7
 importance: A
 tags: [極限定理, 分布収束, 正規近似, 標本平均]
-related: [convergence-in-distribution, weak-law-of-large-numbers, normal-distribution, continuity-correction, moment-generating-function, delta-method]
+related: [convergence-in-distribution, weak-law-of-large-numbers, normal-distribution, continuity-correction, lindeberg-levy-clt, delta-method]
 charts:
   - type: custom
     id: clt-sim
@@ -123,6 +123,7 @@ $T$ の正確な分布はガンマ分布（形状 50、尺度 3）で、正確�
 - モーメント母関数（または特性関数）による証明の流れ（$\log M_{Z_n}(t)\to t^2/2$）は重要です。
 - $\sigma$ が未知のときは $\sigma$ を $S$ で置き換えても $N(0,1)$ に分布収束します。この正当化にはスラツキーの定理を使います。
 - 前提は **分散が有限**であること。コーシー分布では成り立ちません。
+- 仮定は「i.i.d.」と「$0<\sigma^2<\infty$」だけで、3次以上のモーメントやモーメント母関数の存在は要りません。同一分布でない独立和には、リンデバーグ条件のもとで成り立つ**リンデバーグ・フェラーの定理**や、3次の絶対モーメントを使う**リャプノフの定理**という拡張があります。
 
 ## よくある間違い
 

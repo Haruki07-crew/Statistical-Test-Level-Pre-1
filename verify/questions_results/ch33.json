@@ -31,6 +31,10 @@
   "hash": "1f26d0b39537c159",
   "ok": true
  },
+ "q33-causal-effect-5": {
+  "hash": "d790ed7a89695191",
+  "ok": true
+ },
  "q33-d-separation-1": {
   "hash": "720cb49b8d9c4eab",
   "ok": true
@@ -41,6 +45,10 @@
  },
  "q33-d-separation-3": {
   "hash": "f30e31632f0d5593",
+  "ok": true
+ },
+ "q33-d-separation-4": {
+  "hash": "649e105ceb21be1e",
   "ok": true
  },
  "q33-frontdoor-criterion-1": {

@@ -57,6 +57,7 @@ $$
 
 - 状態 $n$ にいる時間は指数分布 $\mathrm{Exp}(\lambda_n+\mu_n)$ で、離れるときは確率 $\lambda_n/(\lambda_n+\mu_n)$ で上へ、$\mu_n/(\lambda_n+\mu_n)$ で下へ移ります。
 - 純出生過程（$\mu_n=0$）、ポアソン過程（$\lambda_n=\lambda,\ \mu_n=0$）、M/M/1 待ち行列（$\lambda_n=\lambda,\ \mu_n=\mu$）は特別な場合です。
+- 純出生過程では滞在時間が独立に $\mathrm{Exp}(\lambda_n)$ なので、状態1から $k$ に達するまでの平均時間は $\sum_{n=1}^{k-1}1/\lambda_n$ です。$\lambda_n=n\lambda$、$X(0)=1$ の**ユール過程**では、$X(t)$ は成功確率 $e^{-\lambda t}$、台 $\{1,2,\dots\}$ の幾何分布 $P(X(t)=n)=e^{-\lambda t}(1-e^{-\lambda t})^{n-1}$ に従い、$E[X(t)]=e^{\lambda t}$ です。純出生過程は増える一方なので定常分布をもちません。
 
 **コルモゴロフの前向き方程式**
 

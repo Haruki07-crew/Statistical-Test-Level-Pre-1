@@ -753,6 +753,19 @@ check("wilcoxon-rank-sum-test", "例1 U=17, U'=3, U+U'=n1n2=20, U/(n1n2)=0.85, U
 _auc = np.mean([[x > y for y in _Y] for x in _X])
 check("wilcoxon-rank-sum-test", "U/(n1n2) は AUC（全組で X>Y の割合）と一致", abs(_auc - 0.85) < 1e-12, _auc)
 
+# --- 統合候補からの論点の追記: permutation-test ---
+# H0 下で観測値の順位は B+1 個中で一様 → P(p̂≤α) を正確に数える（B=999, α=0.05）
+_B = 999
+_pv = [(1 + (_B + 1 - r)) / (_B + 1) for r in range(1, _B + 2)]  # r=順位（1=最小）、#{T_b≥t}=B+1−r
+_size = sum(p <= 0.05 for p in _pv) / (_B + 1)
+check("permutation-test", "モンテカルロ p値 (1+#)/(B+1)：B=999 で P(p̂≤0.05)=0.05 ちょうど（≤α）", abs(_size - 0.05) < 1e-12, _size)
+_B2 = 100  # α(B+1) が整数でない場合
+_pvb = [(_B2 + 1 - r) / _B2 for r in range(1, _B2 + 2)]
+_pva = [(1 + (_B2 + 1 - r)) / (_B2 + 1) for r in range(1, _B2 + 2)]
+check("permutation-test", "B=100：+1 なしの #/B では P(p̂≤0.05)=6/101>0.05、+1 ありは 5/101≤0.05",
+      sum(p <= 0.05 for p in _pvb) / (_B2 + 1) > 0.05 and sum(p <= 0.05 for p in _pva) / (_B2 + 1) <= 0.05, (sum(p <= 0.05 for p in _pvb), sum(p <= 0.05 for p in _pva)))
+check("permutation-test", "誤差 √(p(1−p)/B)：p=0.0286, B=9999 で 0.0017", abs(sqrt(0.0286 * 0.9714 / 9999) - 0.0017) < 5e-5, sqrt(0.0286 * 0.9714 / 9999))
+
 # ================= 集計 =================
 nok, nng = sum(results), len(results) - sum(results)
 print(f"\n合計: OK {nok} / NG {nng}")

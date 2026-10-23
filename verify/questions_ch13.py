@@ -169,4 +169,67 @@ _kw0 = stats.kruskal(*_base.T).statistic; _kw1 = stats.kruskal(*_blk.T).statisti
 q.check("q13-friedman-test-3", abs(_fr0 - _fr1) < 1e-12 and abs(_kw0 - _kw1) > 1e-6,
         f"ブロック効果を加えてもフリードマン Q は不変（{_fr0:.3f}→{_fr1:.3f}）、KW は変化（{_kw0:.3f}→{_kw1:.3f}）。順位和・符号付き順位は2群用")
 
+# --- 追加：答えが「正しい」の正誤問題と、重要度Cの3語 ---
+import numpy as _np
+from itertools import permutations as _perms, combinations as _combs
+from scipy import stats as _st
+# ケンドールの τ：n=5 の全順列で -1≤τ≤1、τ=1 は恒等順列だけ
+_ts = {}
+for _pm in _perms(range(5)):
+    _ts[_pm] = _st.kendalltau(range(5), _pm).statistic
+_ones = [p for p, v in _ts.items() if abs(v - 1) < 1e-12]
+_xs = _np.arange(1, 8, dtype=float)
+q.check("q13-kendall-rank-correlation-3", all(-1 - 1e-12 <= v <= 1 + 1e-12 for v in _ts.values()) and _ones == [tuple(range(5))]
+        and abs(_st.kendalltau(_xs, _np.exp(_xs)).statistic - 1) < 1e-12 and _st.pearsonr(_xs, _np.exp(_xs))[0] < 0.95,
+        "n=5 の120順列で τ∈[-1,1]、τ=1 は順位が一致するときだけ。y=e^x で τ=1 だがピアソン相関<1")
+
+# 2標本KS：m=n=4 の全70通りの並びから正確分布、正規・指数の乱数でも同じ分布
+def _ks_stat(x, y):
+    return _st.ks_2samp(x, y).statistic
+_exact = {}
+for _c in _combs(range(8), 4):
+    _x = [i for i in range(8) if i in _c]; _y = [i for i in range(8) if i not in _c]
+    _d = round(_ks_stat(_x, _y), 6); _exact[_d] = _exact.get(_d, 0) + 1 / 70
+_p_exact = sum(v for d, v in _exact.items() if d >= 0.75 - 1e-9)
+_rng = _np.random.default_rng(1313)
+_sim = {}
+for _nm, _gen in [("norm", lambda: _rng.normal(size=8)), ("expon", lambda: _rng.exponential(size=8))]:
+    _cnt = 0
+    for _ in range(20000):
+        _z = _gen(); _cnt += _ks_stat(_z[:4], _z[4:]) >= 0.75 - 1e-9
+    _sim[_nm] = _cnt / 20000
+_zz = _rng.normal(size=12)
+_inv = abs(_ks_stat(_zz[:5], _zz[5:]) - _ks_stat(_np.exp(_zz[:5]), _np.exp(_zz[5:]))) < 1e-12
+q.check("q13-kolmogorov-smirnov-two-sample-1", _inv and all(abs(v - _p_exact) < 0.01 for v in _sim.values()),
+        f"単調変換で D 不変、P(D≥0.75) は正確 {_p_exact:.4f}、正規 {_sim['norm']:.4f}、指数 {_sim['expon']:.4f}")
+
+# 中央値検定
+_A = [21, 34, 28, 40, 25, 37, 31, 45]; _B = [18, 26, 22, 30, 15, 24, 33, 20]
+_M = _np.median(_A + _B)
+_tab = [[sum(v > _M for v in _A), sum(v <= _M for v in _A)], [sum(v > _M for v in _B), sum(v <= _M for v in _B)]]
+_chi = _st.chi2_contingency(_tab, correction=False)
+q.num("q13-median-test-1", _chi[0])
+q.check("q13-median-test-1", _M == 27 and _tab == [[6, 2], [2, 6]] and abs(_chi[1] - 0.0455) < 5e-4
+        and abs(_st.fisher_exact(_tab)[1] - 0.132) < 5e-4, "M=27、表 6,2/2,6、p=0.046、フィッシャー両側 p=0.132")
+
+# ヨンクヒール・タプストラ
+_g = [[1.2, 2.5, 1.9], [2.2, 3.1, 2.8], [3.0, 3.6, 2.7]]
+_U = {(i, j): sum(a < b for a in _g[i] for b in _g[j]) for i in range(3) for j in range(i + 1, 3)}
+_J = sum(_U.values()); _N = 9; _ni = [3, 3, 3]
+_EJ = (_N**2 - sum(k * k for k in _ni)) / 4
+_VJ = (_N**2 * (2 * _N + 3) - sum(k * k * (2 * k + 3) for k in _ni)) / 72
+q.num("q13-jonckheere-terpstra-test-1", (_J - _EJ) / _np.sqrt(_VJ))
+# E[J], V[J] を全並べ替え（9!/(3!3!3!)=1680通り）で確認
+_vals = sorted(sum(_g, []))
+_Js = []
+for _c1 in _combs(range(9), 3):
+    _rest = [i for i in range(9) if i not in _c1]
+    for _c2 in _combs(_rest, 3):
+        _c3 = [i for i in _rest if i not in _c2]
+        _gg = [[_vals[i] for i in _c1], [_vals[i] for i in _c2], [_vals[i] for i in _c3]]
+        _Js.append(sum(sum(a < b for a in _gg[i] for b in _gg[j]) for i in range(3) for j in range(i + 1, 3)))
+q.check("q13-jonckheere-terpstra-test-1", _U == {(0, 1): 8, (0, 2): 9, (1, 2): 6} and len(_Js) == 1680
+        and abs(_np.mean(_Js) - _EJ) < 1e-9 and abs(_np.var(_Js) - _VJ) < 1e-9,
+        "U=8,9,6 で J=23、全1680通りの並べ替えで E[J]=13.5、V[J]=20.25")
+
 q.done()

@@ -830,3 +830,19 @@ questions:
       - $0.0400$ は $\sqrt{0.0016}$ で、漸近標準偏差（分散と標準偏差の取り違え）です。
       - $0.1600$ は $1/I(p)=p(1-p)$ で、標本サイズ $n$ で割り忘れています（1個分の分散）。
       - $0.0025$ は $p=0.5$ の $0.25/100$ で、真の $p$ を使っていません（比率の分散の最大値）。
+
+  - id: q08-efficient-estimator-3
+    term: efficient-estimator
+    level: 標準
+    type: truefalse
+    question: |
+      $X_1,\dots,X_n$ をポアソン分布 $Po(\lambda)$ からの i.i.d. 標本とする。標本平均 $\bar X$ は $\lambda$ の不偏推定量で、その分散はクラメール・ラオの下限 $1/\{nI(\lambda)\}$（$I(\lambda)$ は1個あたりのフィッシャー情報量）に一致する。すなわち $\bar X$ は $\lambda$ の有効推定量である。
+    answer: true
+    hint: |
+      1個あたりのスコア関数 $\dfrac{\partial}{\partial\lambda}\log f(x;\lambda)$ の分散として $I(\lambda)$ を求め、$V[\bar X]$ と比べる。
+    explanation: |
+      $\log f(x;\lambda)=x\log\lambda-\lambda-\log x!$ より、スコアは $\dfrac{x}{\lambda}-1$ で
+      $$I(\lambda)=V\Bigl[\frac X\lambda\Bigr]=\frac{\lambda}{\lambda^2}=\frac1\lambda,\qquad \frac1{nI(\lambda)}=\frac\lambda n$$
+      一方 $E[\bar X]=\lambda$、$V[\bar X]=\lambda/n$ なので、分散は下限に一致します。全体のスコアが $\sum x_i/\lambda-n=\dfrac n\lambda(\bar x-\lambda)$ と $\bar x$ の1次式で書けること（等号成立条件）からもわかります。
+      - 有効推定量はいつも存在するわけではありません。同じポアソン分布でも、$e^{-\lambda}=P(X=0)$ の不偏推定量で分散が下限に達するものはありません。等号はスコアが推定量の1次式になる場合に限られます。
+      - 下限は**不偏**推定量についてのもので、偏りのある推定量は分散がこれより小さくなることがあります。

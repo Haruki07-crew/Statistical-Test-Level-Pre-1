@@ -51,6 +51,10 @@
   "hash": "f63377410f350152",
   "ok": true
  },
+ "q02-hazard-function-4": {
+  "hash": "b582a8cd38008a38",
+  "ok": true
+ },
  "q02-joint-probability-density-function-1": {
   "hash": "115fece3f93e684c",
   "ok": true
@@ -65,6 +69,10 @@
  },
  "q02-joint-probability-density-function-4": {
   "hash": "91a1db61ab48dd37",
+  "ok": true
+ },
+ "q02-joint-probability-density-function-5": {
+  "hash": "b24056d88e01440b",
   "ok": true
  },
  "q02-joint-probability-function-1": {

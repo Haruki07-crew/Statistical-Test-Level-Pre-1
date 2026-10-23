@@ -611,6 +611,24 @@ _G = 3.7
 check("model-selection", "パラメータ1個差：AIC小−AIC大=G−2（ℓ0, ℓ1 任意）", abs(((-2 * 0 + 2 * 1) - (-2 * (_G / 2) + 2 * 2)) - (_G - 2)) < 1e-12, _G - 2)
 check("model-selection", "G>2 に対応する有意水準 P(χ²₁>2)≈15.7%", abs(stats.chi2.sf(2, 1) - 0.157) < 5e-4, stats.chi2.sf(2, 1))
 
+# --- 統合候補からの論点の追記: aic ---
+# 正規モデル N(μ,v) が正しいとき I=J（tr(IJ^{-1})=k=2）、一般の分布では 1+(κ−1)/2
+_m, _vv, _xx = sp.symbols("m v x", real=True)
+_lf = -sp.log(2 * sp.pi * _vv) / 2 - (_xx - _m) ** 2 / (2 * _vv)
+_sc = [sp.diff(_lf, a) for a in (_m, _vv)]
+_mu2, _mu3, _mu4 = sp.symbols("mu2 mu3 mu4", positive=True)
+def _E(expr):  # 真の分布 g のもとで x−m の中心モーメントで期待値をとる（g の平均=m）
+    pe = sp.Poly(sp.expand(expr.subs(_xx, _xx + _m)), _xx)
+    mom = {0: 1, 1: 0, 2: _mu2, 3: _mu3, 4: _mu4}
+    return sum(cf * mom[k[0]] for k, cf in zip(pe.monoms(), pe.coeffs()))
+_I = sp.Matrix(2, 2, lambda a, b: _E(_sc[a] * _sc[b])).subs(_vv, _mu2)
+_Jm = sp.Matrix(2, 2, lambda a, b: _E(-sp.diff(_lf, [_m, _vv][a], [_m, _vv][b]))).subs(_vv, _mu2)
+_tr = sp.simplify((_I * _Jm.inv()).trace())
+_kap = sp.Symbol("kappa", positive=True)
+_trk = sp.simplify(_tr.subs({_mu3: 0, _mu4: _kap * _mu2 ** 2}))
+check("aic", "TIC の罰則 tr(IJ^{-1})：対称な分布で 1+(κ−1)/2、正規（κ=3）で k=2 となり AIC に一致（sympy）",
+      sp.simplify(_trk - (1 + (_kap - 1) / 2)) == 0 and sp.simplify(_trk.subs(_kap, 3) - 2) == 0, _trk)
+
 # ================================================================ 集計
 ok = sum(results)
 ng = len(results) - ok

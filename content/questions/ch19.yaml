@@ -572,3 +572,19 @@ questions:
       - 測定誤差：観測値 $x=x^*+u$ の $u$ が誤差項に入り、$x$ と相関します（係数が0の方向へ偏る）。
       - 欠落変数：落とした変数が誤差項に入り、それが $x$ と相関していれば内生性になります（欠落変数バイアス）。
       - 同時決定：$y$ のショック $\varepsilon$ が $x$ にも影響するので、$x$ と $\varepsilon$ が相関します。
+
+  - id: q19-weighted-least-squares-3
+    term: weighted-least-squares
+    level: 標準
+    type: truefalse
+    question: |
+      重回帰モデル $\boldsymbol y=X\boldsymbol\beta+\boldsymbol\varepsilon$（$X$ は $n\times(p+1)$ で列フルランク）で、誤差は互いに無相関、平均0、$V[\varepsilon_i]=\sigma^2/w_i$（$w_i>0$ は既知）とする。各観測の $y_i$ と $X$ の第 $i$ 行（切片の1も含む）をともに $\sqrt{w_i}$ 倍したデータに通常の最小二乗法を当てはめた推定値は、加重最小二乗推定値 $\hat{\boldsymbol\beta}_W=(X^\top WX)^{-1}X^\top W\boldsymbol y$（$W=\mathrm{diag}(w_1,\dots,w_n)$）に一致する。
+    answer: true
+    hint: |
+      変換後のデータを $\boldsymbol y^*=W^{1/2}\boldsymbol y$、$X^*=W^{1/2}X$ とおき、通常の最小二乗推定量の式 $(X^{*\top}X^*)^{-1}X^{*\top}\boldsymbol y^*$ に代入する。
+    explanation: |
+      $W^{1/2}=\mathrm{diag}(\sqrt{w_1},\dots,\sqrt{w_n})$ は対称で $W^{1/2}W^{1/2}=W$ なので
+      $$(X^{*\top}X^*)^{-1}X^{*\top}\boldsymbol y^*=(X^\top W^{1/2}W^{1/2}X)^{-1}X^\top W^{1/2}W^{1/2}\boldsymbol y=(X^\top WX)^{-1}X^\top W\boldsymbol y$$
+      変換後の誤差 $\sqrt{w_i}\,\varepsilon_i$ の分散は $w_i\cdot\sigma^2/w_i=\sigma^2$ で等分散・無相関になるので、ガウス・マルコフの定理より加重最小二乗推定量は最良線形不偏推定量です。
+      - 重みは分散の逆数（$w_i\propto1/V[\varepsilon_i]$）で、各行に掛けるのはその平方根（標準偏差の逆数に比例）です。行を $w_i$ 倍すると、実質の重みが $w_i^2$ になってしまいます。
+      - 切片の列（すべて1）も $\sqrt{w_i}$ 倍するので、変換後のモデルは「切片なし」の形で当てはめます。

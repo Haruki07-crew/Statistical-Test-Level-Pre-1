@@ -216,4 +216,23 @@ _per = [reduce(gcd, [n for n in range(1, 40) if np.linalg.matrix_power(_Pp, n)[i
 q.check("q14-periodicity-3", _per == [1, 1, 1] and 2 in _ret and 3 in _ret,
         f"各状態の周期 {_per}（状態2の戻れる時刻 {_ret[:5]}…）。2・3・6 は誤り")
 
+# --- 追加：答えが「正しい」の正誤問題 ---
+import numpy as _np
+def _stat_dim(P):
+    """πP=π, Σπ=1 の解空間の次元（固有値1の左固有空間の次元）"""
+    k = P.shape[0]
+    return k - _np.linalg.matrix_rank(P.T - _np.eye(k), tol=1e-10)
+_P2 = _np.array([[0, 1], [1, 0]], dtype=float)
+_pi2 = _np.array([0.5, 0.5])
+# 周期2の4状態（二部グラフ {1,3}↔{2,4}）で既約
+_P4 = _np.array([[0, .3, 0, .7], [.6, 0, .4, 0], [0, .5, 0, .5], [.2, 0, .8, 0]])
+_w, _v = _np.linalg.eig(_P4.T)
+_pi4 = _np.real(_v[:, _np.argmin(abs(_w - 1))]); _pi4 = _pi4 / _pi4.sum()
+_noconv = _np.abs(_np.linalg.matrix_power(_P4, 101) - _np.linalg.matrix_power(_P4, 100)).max() > 0.1
+# 既約でない例（吸収状態2つ）では解空間が2次元
+_Pr = _np.array([[1, 0, 0], [.5, 0, .5], [0, 0, 1]])
+q.check("q14-stationary-distribution-4", _stat_dim(_P2) == 1 and _np.allclose(_pi2 @ _P2, _pi2) and _stat_dim(_P4) == 1
+        and (_pi4 > 0).all() and _np.allclose(_pi4 @ _P4, _pi4) and _noconv and _stat_dim(_Pr) == 2,
+        "周期2の既約連鎖（2状態・4状態）で定常分布は一意（P^n は収束しない）、既約でない例では2次元")
+
 q.done()

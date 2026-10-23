@@ -541,3 +541,22 @@ questions:
       - 2乗項の追加は、残差の**平均**が曲線状に偏るとき（非線形性）の対処です。ここでは平均はほぼ0です。
       - ダービン・ワトソン比は、時間順に並べた残差の**系列相関**を調べるもので、分散の広がりは調べられません。
       - 1点を除いても、全体に広がる扇形のパターンは解消しません。
+
+  - id: q17-residual-3
+    term: residual
+    level: 標準
+    type: truefalse
+    question: |
+      切片を含む重回帰モデル $\boldsymbol y=X\boldsymbol\beta+\boldsymbol\varepsilon$（$X$ は $n\times(p+1)$ で第1列はすべて1、列フルランク）を最小二乗法で当てはめたとき、残差 $e_i=y_i-\hat y_i$ について $\sum_ie_i=0$ であり、さらに当てはめ値との積和も $\sum_i\hat y_ie_i=0$ である。
+    answer: true
+    hint: |
+      正規方程式 $X^\top(\boldsymbol y-X\hat{\boldsymbol\beta})=\boldsymbol 0$ が、残差ベクトルと $X$ の各列についてどんな関係を表しているかを考える。
+    explanation: |
+      正規方程式は $X^\top\boldsymbol e=\boldsymbol 0$ で、残差ベクトル $\boldsymbol e$ が $X$ のすべての列と直交することを表します。
+      - $X$ の第1列はすべて1なので、$\sum_ie_i=0$。
+      - 各説明変数について $\sum_ix_{ij}e_i=0$。
+      - $\hat{\boldsymbol y}=X\hat{\boldsymbol\beta}$ なので $\sum_i\hat y_ie_i=\hat{\boldsymbol\beta}^\top X^\top\boldsymbol e=0$。
+
+      このため、残差と説明変数・当てはめ値の標本相関は0になり、$\sum y_i^2=\sum\hat y_i^2+\sum e_i^2$ の直交分解が成り立ちます。
+      - 切片がないと $\sum_ie_i=0$ は一般に成り立ちません（$\sum_i\hat y_ie_i=0$ は成り立ちます）。
+      - よくある誤解は「残差と $y$ の相関も0」です。$\sum_iy_ie_i=\sum_i(\hat y_i+e_i)e_i=\sum_ie_i^2>0$ なので、$y$ と残差は正の相関をもちます。

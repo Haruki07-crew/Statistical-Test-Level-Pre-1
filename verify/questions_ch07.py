@@ -215,4 +215,28 @@ def _choice07():
             f"シミュレーション（指数分布 n=400）と各候補の累積分布の最大差 {[round(e, 3) for e in errs]}")
 _choice07()
 
+# --- 追加：答えが「正しい」の正誤問題 ---
+import numpy as _np
+from scipy import stats as _st
+# X_n ~ N(c, 1/n)：分布収束の極限は定数 c。上からの評価 F_n(c-ε)+1-F_n(c+ε/2) と実際の確率がともに0へ
+_c, _eps = 2.0, 0.1
+_ok = True; _prev = 1.0
+for _n in (10, 100, 1000, 10000, 100000):
+    _Fn = _st.norm(_c, 1 / _np.sqrt(_n)).cdf
+    _pr = 2 * _st.norm.sf(_eps * _np.sqrt(_n))
+    _bd = _Fn(_c - _eps) + 1 - _Fn(_c + _eps / 2)
+    _ok &= _pr <= _bd + 1e-15 and _bd <= _prev + 1e-15
+    _prev = _bd
+# 反例：X_n=-X は分布収束するが、P(|X_n-X|≥0.1)=P(|X|≥0.05) は n によらず一定
+_cnt = 2 * _st.norm.sf(0.05)
+q.check("q07-convergence-in-distribution-3", _ok and _prev < 1e-6 and _cnt > 0.9,
+        f"N(c,1/n) で評価式が0へ（n=1e5 で {_prev:.1e}）、反例 X_n=-X では {_cnt:.3f} のまま")
+
+# ヒンチン：t(1.5)（期待値0、分散∞）の標本平均。P(|X̄|≥0.2) が n とともに単調に減って0に近づく
+_rng = _np.random.default_rng(707)
+_ns = (100, 1000, 10000, 100000)
+_pp = [_np.mean([abs(_rng.standard_t(1.5, _m).mean()) >= 0.2 for _ in range(300)]) for _m in _ns]
+q.check("q07-weak-law-of-large-numbers-3", _st.t(1.5).var() == _np.inf and all(a > b for a, b in zip(_pp, _pp[1:])) and _pp[-1] < 0.05,
+        "t(1.5) は分散∞、P(|X̄|≥0.2) は n=100,1e3,1e4,1e5 で " + ", ".join(f"{v:.3f}" for v in _pp))
+
 q.done()

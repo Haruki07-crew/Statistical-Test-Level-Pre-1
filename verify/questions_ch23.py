@@ -236,4 +236,25 @@ _wrong = [(round(_spec, 2), round(_sens, 2)), (round(_TP / (_TP + _FP), 2), roun
 _ok &= _wrong == [(0.95, 0.75), (0.67, 0.95), (0.75, 0.05)] and all(w != (0.75, 0.95) for w in _wrong)
 q.check("q23-sensitivity-and-specificity-4", _ok, f"感度 {_sens:.4f}・特異度 {_spec:.4f}、誤答は取り違え・適合率・偽陽性率")
 
+# --- 追加：答えが「正しい」の正誤問題 ---
+import numpy as _np
+_rng = _np.random.default_rng(2323)
+def _md(x, mu, S):
+    d = x - mu
+    return float(_np.sqrt(d @ _np.linalg.solve(S, d)))
+_ok = True
+for _ in range(200):
+    _B = _rng.normal(size=(3, 3)); _S = _B @ _B.T + 0.5 * _np.eye(3)
+    _mu = _rng.normal(size=3); _x = _rng.normal(size=3) * 2
+    _A = _rng.normal(size=(3, 3)); _b = _rng.normal(size=3)
+    if abs(_np.linalg.det(_A)) < 1e-3:
+        continue
+    _ok &= abs(_md(_A @ _x + _b, _A @ _mu + _b, _A @ _S @ _A.T) - _md(_x, _mu, _S)) < 1e-8
+# ユークリッド距離は単位の変更で順位が変わる例
+_p1, _p2 = _np.array([1.0, 0.0]), _np.array([0.0, 0.5]); _D = _np.diag([100.0, 1.0])
+_e_before = _np.linalg.norm(_p1) < _np.linalg.norm(_p2 * 4)
+_e_after = _np.linalg.norm(_D @ _p1) > _np.linalg.norm(_D @ (_p2 * 4))
+q.check("q23-mahalanobis-distance-4", _ok and _e_before and _e_after,
+        "正則な A, b の乱数200通りで距離が不変、ユークリッド距離は1変数を100倍すると近さの順位が逆転")
+
 q.done()

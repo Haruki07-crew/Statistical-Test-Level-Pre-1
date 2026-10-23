@@ -857,6 +857,12 @@ _x = [1, 2, 3, 4, 100]
 _sums = {o: sum(abs(a - o) for a in _x) for o in _x}
 check("k-means-method", "1,2,3,4,100：平均22、距離の和最小のデータ点は3（和101）", np.mean(_x) == 22 and min(_sums, key=_sums.get) == 3 and _sums[3] == 101, _sums)
 
+# --- 統合候補からの論点の追記: distance-measures ---
+_a = np.array([30, 400.]); _c = np.array([50, 420.]); _Sd = np.diag([10 ** 2, 100 ** 2])
+_dstd = math.sqrt((((_a - _c) / np.array([10, 100])) ** 2).sum())
+_dmah = math.sqrt((_a - _c) @ np.linalg.inv(_Sd) @ (_a - _c))
+check("distance-measures", "標準化ユークリッド距離＝対角の共分散行列のマハラノビス距離（2.010）", abs(_dstd - _dmah) < 1e-12 and abs(_dstd - 2.010) < 5e-4, _dstd)
+
 # ---------------------------------------------------------------- 集計
 print()
 print(f"OK {sum(results)} / NG {len(results) - sum(results)}")

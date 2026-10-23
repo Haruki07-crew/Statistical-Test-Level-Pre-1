@@ -199,4 +199,19 @@ q.check("q18-deviance-3",
         [round(r, 2) for r in _rs] == [2.00, 1.95, 1.85, 1.80] and abs(np.mean(_devs) - 36) < 1.5,
         f"72/36={_rs[0]:.3f}（誤答 {[round(r, 3) for r in _rs[1:]]}）。シミュレーションの残差逸脱度の平均 {np.mean(_devs):.2f}≈36")
 
+# --- 追加：答えが「正しい」の正誤問題 ---
+import numpy as _np
+_rng = _np.random.default_rng(1818)
+_ok, _rr_ne = True, 0
+for _ in range(500):
+    _p00, _p01, _p10, _p11 = _rng.dirichlet(_np.ones(4))
+    _or = _p11 * _p00 / (_p10 * _p01)
+    _orY = (_p11 / (_p10 + _p11) / (_p10 / (_p10 + _p11))) / (_p01 / (_p00 + _p01) / (_p00 / (_p00 + _p01)))
+    _orX = (_p11 / (_p01 + _p11) / (_p01 / (_p01 + _p11))) / (_p10 / (_p00 + _p10) / (_p00 / (_p00 + _p10)))
+    _ok &= abs(_orY - _or) < 1e-9 * _or and abs(_orX - _or) < 1e-9 * _or
+    _rrY = (_p11 / (_p10 + _p11)) / (_p01 / (_p00 + _p01)); _rrX = (_p11 / (_p01 + _p11)) / (_p10 / (_p00 + _p10))
+    _rr_ne += abs(_rrY - _rrX) > 1e-6
+q.check("q18-odds-and-odds-ratio-4", _ok and _rr_ne > 450,
+        "乱数の同時確率500通りで、X で条件付けても Y で条件付けてもオッズ比は一致（相対リスクは一般に一致しない）")
+
 q.done()

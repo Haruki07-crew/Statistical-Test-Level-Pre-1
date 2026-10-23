@@ -703,5 +703,14 @@ check(T, "乱数 HC0 の平均≈真の V[β̂1]≈β̂1 の標本分散（n=400
 s2r = (Er ** 2).sum(1) / (nR_ - 2)
 check(T, "乱数 推定値は不偏（平均 2±0.005）", abs(Br[:, 1].mean() - 2) < .005, Br[:, 1].mean())
 
+# --- 統合候補からの論点の追記: dffits ---
+_xD = np.array([1, 2, 3, 4, 5, 6, 7, 12.]); _yD = np.array([3, 5, 6, 9, 10, 13, 14, 20.])
+_XD = np.column_stack([np.ones(8), _xD]); _CD = np.linalg.inv(_XD.T @ _XD)
+_bD = _CD @ _XD.T @ _yD
+_b8 = np.linalg.lstsq(_XD[:7], _yD[:7], rcond=None)[0]
+_s8 = sqrt(((_yD[:7] - _XD[:7] @ _b8) ** 2).sum() / (7 - 2))
+_dfb = (_bD[1] - _b8[1]) / (_s8 * sqrt(_CD[1, 1]))
+check("dffits", "DFBETAS（傾き、店8）=(β̂1−β̂1(8))/(s(8)√c11)=−5.3748、目安 2/√8=0.7071", abs(_dfb - (-5.3748)) < 5e-5 and abs(2 / sqrt(8) - 0.7071) < 5e-5, _dfb)
+
 print()
 print(f"OK {sum(results)} / NG {len(results) - sum(results)}")

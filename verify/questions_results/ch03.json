@@ -143,6 +143,10 @@
   "hash": "3ab8fd7e344d9307",
   "ok": true
  },
+ "q03-variance-covariance-matrix-4": {
+  "hash": "6da94d61767be2a4",
+  "ok": true
+ },
  "q03-weighted-geometric-harmonic-mean-1": {
   "hash": "5054c77a85212c21",
   "ok": true

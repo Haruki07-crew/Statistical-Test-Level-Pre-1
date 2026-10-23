@@ -7,7 +7,7 @@ aliases: [順列検定, ランダマイゼーション検定, randomization test
 chapter: 13
 importance: A
 tags: [ノンパラメトリック法, 正確検定, 再標本化, 2標本]
-related: [wilcoxon-rank-sum-test, two-sample-t-test, bootstrap, fisher-exact-test, wilcoxon-signed-rank-test, p-value]
+related: [wilcoxon-rank-sum-test, two-sample-t-test, bootstrap, fisher-exact-test, permutation-simulation, p-value]
 charts:
   - type: custom
     id: bar-data
@@ -108,7 +108,8 @@ $$
 - 小さなデータで、全通りの並べ替えを数えて p値を求める問題が重要です。「観測値と同じか、より極端」な場合を数えることに注意します。
 - 帰無仮説のもとでの**交換可能性**が根拠であることを説明できるようにします。
 - 順位和検定・符号付き順位検定・フィッシャーの正確検定は、いずれも並べ替え検定の特別な場合です。
-- 全通りが多いときはモンテカルロ近似で p値を推定し、その精度は並べ替え回数 $B$ で決まります。
+- 全通りが多いときはモンテカルロ近似で p値を推定します。分子・分母に1を足すのは観測データ自身も1つの並べ替えとして数えるためで、これにより $P(\hat p\le\alpha)\le\alpha$ が保たれます。推定の誤差は $\sqrt{p(1-p)/B}$ で、$B$ を増やせば小さくできます（$\alpha(B+1)$ が整数になる $B=999$ などがよく使われます）。
+- 帰無仮説に未知の母数が残り交換可能性が使えないときは、母数を推定した分布からデータを生成するパラメトリック・ブートストラップ検定（モンテカルロ検定の一種）を使います。
 - ブートストラップ法との違い（並べ替え＝非復元・ラベルの付け替え、ブートストラップ＝復元抽出）を区別します。
 
 ## よくある間違い

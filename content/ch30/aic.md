@@ -7,7 +7,7 @@ aliases: [赤池情報量規準, 赤池情報量基準]
 chapter: 30
 importance: A
 tags: [モデル選択, 情報量規準, 最尤法, KL情報量]
-related: [kullback-leibler-divergence, expected-log-likelihood, bic, mallows-cp, maximum-likelihood-estimator, variable-selection]
+related: [kullback-leibler-divergence, expected-log-likelihood, bic, mallows-cp, maximum-likelihood-estimator, tic-ebic]
 charts:
   - type: custom
     id: bar-data
@@ -147,6 +147,7 @@ $$
 - 入れ子の2モデルで1個パラメータが違うとき、AIC で大きいモデルが選ばれる条件は「尤度比統計量 $2(\ell_1-\ell_0)>2$」です。これは有意水準約 15.7%（$P(\chi^2_1>2)$）の尤度比検定と同じ判定です。
 - BIC との違い：罰則が $2k$ か $k\log n$ か。$n\ge 8$ なら BIC のほうが罰則が重く、小さいモデルを選びやすくなります。
 - AIC は同じデータ（同じ $n$、同じ目的変数）に当てはめたモデルどうしでしか比べられません。
+- 罰則 $2k$ は「真の分布がモデルに含まれる」ことを前提にした近似です。前提を外すと最大対数尤度の偏りは $\mathrm{tr}(IJ^{-1})$（$I$ はスコアの分散、$J$ は2階微分の期待値の符号を変えたもの）になり、これを推定して罰則にしたのが **TIC**（竹内）です。モデルが正しければ $I=J$ で $\mathrm{tr}(IJ^{-1})=k$ となり AIC に戻ります。最尤法以外の推定量に広げたものが GIC、偏りをブートストラップで推定するのが EIC、ベイズ推測向けが WAIC です。
 
 ## よくある間違い
 

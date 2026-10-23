@@ -211,4 +211,18 @@ _s_raw, _s_log = _spread(_yy), _spread(np.log(_yy))
 q.check("q17-heteroscedasticity-3", _s_raw > 2 and abs(_s_log - 1) < 0.1,
         f"乗法的誤差の例：残差の広がりの比（上半分/下半分）は元のままで {_s_raw:.2f}、対数変換後 {_s_log:.3f}")
 
+# --- 追加：答えが「正しい」の正誤問題 ---
+import numpy as _np
+_rng = _np.random.default_rng(1717)
+_Xv = _rng.normal(size=(25, 2)) + [3, 1]
+_yv = 2 + _Xv @ [1.0, -0.5] + _rng.normal(size=25)
+_Xd = _np.c_[_np.ones(25), _Xv]
+_bh = _np.linalg.lstsq(_Xd, _yv, rcond=None)[0]
+_yh = _Xd @ _bh; _e = _yv - _yh
+_b0 = _np.linalg.lstsq(_Xv, _yv, rcond=None)[0]; _e0 = _yv - _Xv @ _b0
+q.check("q17-residual-3", abs(_e.sum()) < 1e-10 and abs(_yh @ _e) < 1e-9 and _np.allclose(_Xv.T @ _e, 0, atol=1e-9)
+        and abs(_yv @ _e - _e @ _e) < 1e-9 and _np.corrcoef(_yv, _e)[0, 1] > 0.1
+        and abs(_e0.sum()) > 1e-3 and abs((_Xv @ _b0) @ _e0) < 1e-9,
+        "Σe=0、Σŷe=0、Σx e=0、Σy e=Σe²>0（y と残差は正の相関）。切片なしでは Σe≠0 だが Σŷe=0")
+
 q.done()

@@ -221,4 +221,23 @@ _ok &= np.allclose(3.0 * _pm, np.arange(1, 30) * _pp)
 q.check("q15-birth-death-process-3", bool(_ok),
         "ρ=0.5, 3 で積公式の定常分布＝Poisson(ρ)、Poisson(1/ρ)・幾何分布とは不一致、ρ≥1 でも存在")
 
+# --- 追加：答えが「正しい」の正誤問題 ---
+import numpy as _np
+from scipy import stats as _st
+_rng = _np.random.default_rng(1515)
+_l1, _l2, _T = 1.5, 2.5, 5000.0
+_a1 = _np.cumsum(_rng.exponential(1 / _l1, size=int(_l1 * _T * 1.2))); _a1 = _a1[_a1 < _T]
+_a2 = _np.cumsum(_rng.exponential(1 / _l2, size=int(_l2 * _T * 1.2))); _a2 = _a2[_a2 < _T]
+_all = _np.sort(_np.r_[_a1, _a2])
+_gap = _np.diff(_all)
+_ks = _st.kstest(_gap, _st.expon(scale=1 / (_l1 + _l2)).cdf).pvalue
+_frac = len(_a1) / len(_all)
+# 長さ1の区間ごとの件数が Po(4) と平均・分散とも整合
+_cnt = _np.histogram(_all, bins=_np.arange(0, _T + 1))[0]
+# 独立でない反例 N=2N1 は奇数をとらない
+_odd = _np.any(_np.histogram(_np.r_[_a1, _a1], bins=_np.arange(0, _T + 1))[0] % 2 == 1)
+q.check("q15-poisson-process-4", _ks > 0.01 and abs(_frac - 0.375) < 0.015 and abs(_cnt.mean() - 4) < 0.1
+        and abs(_cnt.var() - 4) < 0.3 and not _odd,
+        f"合わせた到着間隔は Exp(4) と整合（KS p={_ks:.3f}）、N1 由来の割合 {_frac:.3f}≈0.375、区間件数の平均 {_cnt.mean():.2f}・分散 {_cnt.var():.2f}")
+
 q.done()

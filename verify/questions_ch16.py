@@ -217,4 +217,19 @@ q.check("q16-variance-inflation-factor-3",
         abs(_vals[0] - _vif) < 1e-9 and all(abs(v - _vif) > 0.1 for v in _vals[1:]),
         f"(X'X)^-1_jj·S_jj={_vif:.4f} は x_j を他に回帰した 1/(1-R²) と一致。他の候補 {[round(v, 3) for v in _vals[1:]]}")
 
+# --- 追加：答えが「正しい」の正誤問題 ---
+import numpy as _np
+_rng = _np.random.default_rng(1616)
+_ok = True
+for _ in range(50):
+    _Xv = _rng.normal(size=(30, 3)) * [1, 3, 0.5] + [2, -1, 4]
+    _yv = 1 + _Xv @ [0.5, -0.2, 2.0] + _rng.normal(size=30)
+    _Xd = _np.c_[_np.ones(30), _Xv]
+    _bh = _np.linalg.lstsq(_Xd, _yv, rcond=None)[0]
+    _ok &= abs(_yv.mean() - _bh @ _np.r_[1, _Xv.mean(0)]) < 1e-10
+_b0 = _np.linalg.lstsq(_Xv, _yv, rcond=None)[0]   # 切片なし（最後のデータで）
+_gap0 = abs(_yv.mean() - _b0 @ _Xv.mean(0))
+q.check("q16-least-squares-method-3", _ok and _gap0 > 1e-3,
+        f"切片ありの50通りで ȳ = β̂'x̄、切片なしではずれる（差 {_gap0:.3f}）")
+
 q.done()

@@ -775,6 +775,25 @@ check("multidimensional-scaling", "例1 tr B=Σ_{i<j}d²/n=100/4=25=16+9、固�
 _Xc = np.linalg.eigh(_B)[1][:, ::-1][:, :2] * np.sqrt(_ev[:2])
 check("multidimensional-scaling", "各次元の座標の2乗和＝固有値", np.allclose((_Xc ** 2).sum(0), _ev[:2]), (_Xc ** 2).sum(0))
 
+# --- 統合候補からの論点の追記: quantification-type-3 ---
+_rgM = np.random.default_rng(26)
+_Jq = [2, 3, 4]; _Q = len(_Jq); _Jt = sum(_Jq)
+_Z = np.hstack([np.eye(j)[_rgM.integers(0, j, 60)] for j in _Jq])
+def _ca_eig(Fm):
+    P = Fm / Fm.sum(); r = P.sum(1); c = P.sum(0)
+    Sm = (P - np.outer(r, c)) / np.sqrt(np.outer(r, c))
+    return np.sort(np.linalg.svd(Sm, compute_uv=False) ** 2)[::-1]
+_eZ = _ca_eig(_Z); _eB = _ca_eig(_Z.T @ _Z)
+check("quantification-type-3", "MCA：指示行列の全イナーシャ=(J−Q)/Q（J=9, Q=3 → 2）", abs(_eZ.sum() - (_Jt - _Q) / _Q) < 1e-10, _eZ.sum())
+check("quantification-type-3", "バート行列の固有値＝指示行列の固有値の2乗", np.allclose(_eB[:_Jt - _Q], _eZ[:_Jt - _Q] ** 2), (_eB[:3], _eZ[:3] ** 2))
+
+# --- 統合候補からの論点の追記: structural-equation-modeling ---
+_S4 = np.array([[1, .48, .42, .40], [.48, 1, .56, .40], [.42, .56, 1, .35], [.40, .40, .35, 1]])
+_chi0 = 199 * (-np.log(np.linalg.det(_S4)))
+_cfi = 1 - max(2.845 - 2, 0) / max(_chi0 - 6, 2.845 - 2, 0)
+check("structural-equation-modeling", "独立モデル χ²0=199(−log|S|)=187.105（df0=6）、CFI=1−0.845/181.105=0.995",
+      abs(_chi0 - 187.105) < 5e-4 and abs(_cfi - 0.995) < 5e-4, (_chi0, _cfi))
+
 ok_n = sum(results)
 ng_n = len(results) - ok_n
 print(f"\n合計（重要度A への加筆を含む）: OK {ok_n} / NG {ng_n}")

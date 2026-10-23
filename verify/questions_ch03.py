@@ -230,4 +230,20 @@ def _choice03():
             f"scipy: σ/μ={cv:.4f}、誤答（σ²/μ², μ/σ, σ）は一致しない")
 _choice03()
 
+# --- 追加：答えが「正しい」の正誤問題 ---
+import numpy as _np
+_rng = _np.random.default_rng(303)
+_X = _rng.normal(size=(500, 3)) @ _rng.normal(size=(3, 3))
+_S = _np.cov(_X, rowvar=False)
+_ok = True
+for _ in range(200):
+    _cv = _rng.normal(size=3)
+    _ok &= abs(_cv @ _S @ _cv - _np.var(_X @ _cv, ddof=1)) < 1e-8 and _cv @ _S @ _cv >= 0
+_x1 = _rng.normal(size=500)
+_Ss = _np.cov(_np.c_[_x1, 2 * _x1], rowvar=False)
+_ev = _np.linalg.eigvalsh(_Ss)
+q.check("q03-variance-covariance-matrix-4", _ok and _np.linalg.eigvalsh(_S).min() > 0 and abs(_ev.min()) < 1e-10
+        and abs(_np.array([2, -1]) @ _Ss @ _np.array([2, -1])) < 1e-10,
+        "c'Σc = V[c'X] ≥ 0（200通り）、X2=2X1 では固有値0（正定値でない）")
+
 q.done()

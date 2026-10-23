@@ -19,12 +19,24 @@
   "hash": "692266c3aa70c8b4",
   "ok": true
  },
+ "q13-jonckheere-terpstra-test-1": {
+  "hash": "dd5fbb21251cb5e0",
+  "ok": true
+ },
  "q13-kendall-rank-correlation-1": {
   "hash": "0e98e2b10f34b27e",
   "ok": true
  },
  "q13-kendall-rank-correlation-2": {
   "hash": "b8703202a319c696",
+  "ok": true
+ },
+ "q13-kendall-rank-correlation-3": {
+  "hash": "a8e67a673ae518ad",
+  "ok": true
+ },
+ "q13-kolmogorov-smirnov-two-sample-1": {
+  "hash": "627a4ce5ffcf5594",
   "ok": true
  },
  "q13-kruskal-wallis-test-1": {
@@ -41,6 +53,10 @@
  },
  "q13-mann-whitney-u-test-1": {
   "hash": "23302e32a9fc1cf9",
+  "ok": true
+ },
+ "q13-median-test-1": {
+  "hash": "6bef482f28f1431c",
   "ok": true
  },
  "q13-nonparametric-methods-overview-1": {

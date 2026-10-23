@@ -572,3 +572,23 @@ questions:
       - $[0.162,\ 0.238]$ は $z_{0.05}=1.645$ を使ったもので、両側95%に片側の確率点を使う誤りです（90%区間になる）。
       - $[0.199,\ 0.201]$ は $\hat p(1-\hat p)/n$ の平方根をとらずに分散のまま使ったものです。
       - $[0.143,\ 0.257]$ は $\hat p$ の代わりに $p=0.5$ を入れた保守的な幅で、問題の指定（$\hat p$ で推定）と違います。
+
+  - id: q09-ci-two-sample-mean-difference-3
+    term: ci-two-sample-mean-difference
+    level: 標準
+    type: truefalse
+    question: |
+      $X_1,\dots,X_m$ が $N(\mu_1,\sigma^2)$、$Y_1,\dots,Y_n$ が $N(\mu_2,\sigma^2)$ からの互いに独立な標本で、**分散 $\sigma^2$ は2群で共通かつ未知**とする。各群の不偏分散を $S_1^2,S_2^2$、プールした分散を $S_p^2=\dfrac{(m-1)S_1^2+(n-1)S_2^2}{m+n-2}$ とすると、
+      $$T=\frac{(\bar X-\bar Y)-(\mu_1-\mu_2)}{S_p\sqrt{1/m+1/n}}$$
+      は自由度 $m+n-2$ の $t$ 分布に従う。
+    answer: true
+    hint: |
+      分子を $\sigma$ で割った標準正規の部分と、$(m+n-2)S_p^2/\sigma^2$ のカイ二乗の部分に分け、$t$ 分布の定義に当てはめる。
+    explanation: |
+      $Z=\dfrac{(\bar X-\bar Y)-(\mu_1-\mu_2)}{\sigma\sqrt{1/m+1/n}}\sim N(0,1)$ です。また $(m-1)S_1^2/\sigma^2\sim\chi^2(m-1)$、$(n-1)S_2^2/\sigma^2\sim\chi^2(n-1)$ が独立なので
+      $$W=\frac{(m+n-2)S_p^2}{\sigma^2}\sim\chi^2(m+n-2)$$
+      正規標本では標本平均と不偏分散が独立なので $Z$ と $W$ は独立で、
+      $$T=\frac{Z}{\sqrt{W/(m+n-2)}}\sim t(m+n-2)$$
+      $\sigma$ が消えるのでピボット量になり、信頼区間 $(\bar x-\bar y)\pm t_{\alpha/2}(m+n-2)\,s_p\sqrt{1/m+1/n}$ が作れます。
+      - 等分散でない（$\sigma_1^2\ne\sigma_2^2$）と、この $T$ は正確には $t$ 分布に従いません。その場合はウェルチの方法（近似の自由度）を使います。
+      - 自由度を $m+n-1$ や $m+n$ とする間違いが多いので注意します。各群で平均を1つずつ推定するので2を引きます。

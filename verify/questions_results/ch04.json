@@ -31,6 +31,10 @@
   "hash": "f048c8dd5e5f15b9",
   "ok": true
  },
+ "q04-change-of-variables-6": {
+  "hash": "3d62f3a95d66f31d",
+  "ok": true
+ },
  "q04-log-transformation-1": {
   "hash": "c50918c67f252d8c",
   "ok": true
@@ -77,6 +81,10 @@
  },
  "q04-sum-of-random-variables-3": {
   "hash": "f24d80935ff0aa93",
+  "ok": true
+ },
+ "q04-sum-of-random-variables-4": {
+  "hash": "fbe7fb55d3581f98",
   "ok": true
  }
 }

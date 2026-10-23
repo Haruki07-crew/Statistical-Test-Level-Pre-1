@@ -163,4 +163,35 @@ def _choice04():
             "誤答の由来：λ=1 で y-1、λ=-1 で 1-1/y")
 _choice04()
 
+# --- 追加：答えが「正しい」の正誤問題 ---
+import numpy as _np
+import sympy as _sp
+from scipy import stats as _st
+# 指数分布：F(x)=1-e^{-x} で P(F(X)≤u)=u（記号計算）
+_u = _sp.symbols("u", positive=True)
+_xq = -_sp.log(1 - _u)  # F^{-1}(u)
+_cdfU = 1 - _sp.exp(-_xq)
+# ガンマ分布の乱数で F(X) が一様か（乱数固定）
+_rng = _np.random.default_rng(404)
+_g = _st.gamma(2.5, scale=1.3)
+_U = _g.cdf(_g.rvs(size=20000, random_state=_rng))
+_ks = _st.kstest(_U, "uniform").pvalue
+# 離散の反例：ベルヌーイ(1/2) の F(X) は {1/2, 1}
+_vals = sorted({_st.bernoulli(0.5).cdf(k) for k in (0, 1)})
+q.check("q04-change-of-variables-6", _sp.simplify(_cdfU - _u) == 0 and _ks > 0.01 and _vals == [0.5, 1.0],
+        f"指数分布で P(U≤u)=u、ガンマ乱数で KS p={_ks:.3f}、ベルヌーイでは F(X)∈{{1/2,1}}")
+
+# V[X-Y]：独立な離散分布の列挙と、相関がある反例
+_px = {0: 0.2, 1: 0.5, 3: 0.3}; _py = {-1: 0.4, 2: 0.6}
+_E = lambda d: sum(k * p for k, p in d.items())
+_V = lambda d: sum(k * k * p for k, p in d.items()) - _E(d) ** 2
+_dz = {}
+for _a, _pa in _px.items():
+    for _b, _pb in _py.items():
+        _dz[_a - _b] = _dz.get(_a - _b, 0) + _pa * _pb
+_Z = _rng.multivariate_normal([0, 0], [[4, 1.5], [1.5, 1]], size=200000)
+_vd = _np.var(_Z[:, 0] - _Z[:, 1])
+q.check("q04-sum-of-random-variables-4", abs(_V(_dz) - (_V(_px) + _V(_py))) < 1e-12 and abs(_vd - (4 + 1 - 3)) < 0.05,
+        "独立なら V[X-Y]=V[X]+V[Y]（列挙で一致）、Cov=1.5 なら V[X-Y]=4+1-3=2（乱数で確認）")
+
 q.done()

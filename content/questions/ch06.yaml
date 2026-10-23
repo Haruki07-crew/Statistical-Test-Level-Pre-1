@@ -674,3 +674,20 @@ questions:
       - 期待値は $E[X]=\dfrac{n}{n-2}$（$n>2$）で、$1$ より大きくなります。
       - $m\ne n$ なら $F(m,n)$ と $F(n,m)$ は別の分布です。たとえば上側5%点は $F_{0.05}(3,10)=3.71$、$F_{0.05}(10,3)=8.79$。
       - $\chi^2$ 変数をそれぞれの自由度で割る必要があります。比 $U/V$ は $\dfrac{m}{n}X$ で、$m\ne n$ なら $F(m,n)$ に従いません（自由度で割り忘れる誤り）。
+
+  - id: q06-gamma-distribution-4
+    term: gamma-distribution
+    level: 標準
+    type: truefalse
+    question: |
+      ガンマ分布 $\mathrm{Ga}(\alpha,\beta)$ を、形状 $\alpha$・**尺度** $\beta$ の分布（密度 $\dfrac{x^{\alpha-1}e^{-x/\beta}}{\Gamma(\alpha)\beta^\alpha}$、$x>0$）とする。
+      $X\sim\mathrm{Ga}(\alpha_1,\beta)$ と $Y\sim\mathrm{Ga}(\alpha_2,\beta)$ が独立で、尺度 $\beta$ が共通であるとき、$X+Y\sim\mathrm{Ga}(\alpha_1+\alpha_2,\ \beta)$ である。
+    answer: true
+    hint: |
+      $\mathrm{Ga}(\alpha,\beta)$ のモーメント母関数を求め、独立な和のモーメント母関数が積になることを使う。
+    explanation: |
+      $\mathrm{Ga}(\alpha,\beta)$ のモーメント母関数は $M(t)=(1-\beta t)^{-\alpha}\ (t<1/\beta)$ です。独立なので
+      $$M_{X+Y}(t)=(1-\beta t)^{-\alpha_1}(1-\beta t)^{-\alpha_2}=(1-\beta t)^{-(\alpha_1+\alpha_2)}$$
+      で、これは $\mathrm{Ga}(\alpha_1+\alpha_2,\beta)$ のモーメント母関数です（再生性）。特別な場合として、同じレートの指数分布 $n$ 個の和はガンマ分布、$\chi^2(k_1)+\chi^2(k_2)=\chi^2(k_1+k_2)$（尺度2のガンマ分布）が得られます。
+      - 尺度が違う（$\beta_1\ne\beta_2$）と、積 $(1-\beta_1t)^{-\alpha_1}(1-\beta_2t)^{-\alpha_2}$ はガンマ分布のモーメント母関数の形にならず、和はガンマ分布になりません。
+      - レートで書く流儀（密度 $\lambda^\alpha x^{\alpha-1}e^{-\lambda x}/\Gamma(\alpha)$）では「レート $\lambda$ が共通」が条件になります。

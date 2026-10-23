@@ -636,6 +636,20 @@ for _i in range(1, _n):
     _wq[_i] = max(0.0, _wq[_i - 1] + _st[_i - 1] - (_arr[_i] - _arr[_i - 1]))
 check("mm1-queue", "M/D/1 シミュレーション：平均待ち時間 ≈4.5分（許容0.15分）", abs(_wq[1000:].mean() * 60 - 4.5) < 0.15, _wq[1000:].mean() * 60)
 
+# --- 統合候補からの論点の追記: poisson-process ---
+check("poisson-process", "{N(t)≥n}={S_n≤t}：P(S_n≤t)=1−Σ_{k<n} Po(k;λt) がガンマ(形状n, レートλ)の分布関数と一致",
+      all(abs(stats.gamma(n_, scale=1 / 1.2).cdf(t_) - (1 - stats.poisson(1.2 * t_).cdf(n_ - 1))) < 1e-12 for n_ in (1, 3, 5) for t_ in (0.5, 2.0, 4.0)), "")
+
+# --- 統合候補からの論点の追記: birth-death-process ---
+_tY, _lY = sp.symbols("t lam", positive=True)
+_pY = lambda n: sp.exp(-_lY * _tY) * (1 - sp.exp(-_lY * _tY)) ** (n - 1)
+_okY = sp.simplify(sp.diff(_pY(1), _tY) + _lY * _pY(1)) == 0 and all(
+    sp.simplify(sp.diff(_pY(n), _tY) - (-n * _lY * _pY(n) + (n - 1) * _lY * _pY(n - 1))) == 0 for n in range(2, 6))
+check("birth-death-process", "ユール過程：幾何分布 e^(−λt)(1−e^(−λt))^(n−1) が前向き方程式 P_n'=−nλP_n+(n−1)λP_{n−1} を満たす（sympy）", _okY, "")
+_qY = exp(-1.0)
+check("birth-death-process", "ユール過程の平均 Σ n p_n = e^(λt)（λt=1）、1→4 の平均時間 Σ1/(nλ)=3.667（λ=0.5）",
+      abs(sum(n * _qY * (1 - _qY) ** (n - 1) for n in range(1, 400)) - exp(1)) < 1e-10 and abs(sum(1 / (n * 0.5) for n in range(1, 4)) - 3.667) < 5e-4, "")
+
 print()
 print(f"OK {sum(results)} / NG {len(results) - sum(results)}")
 

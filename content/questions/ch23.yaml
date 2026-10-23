@@ -646,3 +646,19 @@ questions:
       - $(0.95,\ 0.75)$ は感度と特異度を取り違えています。
       - $0.67$ は判定陽性の列で割った適合率（陽性的中率）$90/134=0.672$ で、感度ではありません。
       - $0.05$ は偽陽性率 $FP/(TN+FP)=44/880=1-\text{特異度}$ です。
+
+  - id: q23-mahalanobis-distance-4
+    term: mahalanobis-distance
+    level: 標準
+    type: truefalse
+    question: |
+      平均ベクトル $\boldsymbol\mu$、分散共分散行列 $\Sigma$（正定値）の分布に対する点 $\boldsymbol x$ のマハラノビス距離を $D(\boldsymbol x)=\sqrt{(\boldsymbol x-\boldsymbol\mu)^\top\Sigma^{-1}(\boldsymbol x-\boldsymbol\mu)}$ とする。正則な行列 $A$ と定数ベクトル $\boldsymbol b$ による変換 $\boldsymbol y=A\boldsymbol x+\boldsymbol b$ を点と分布の両方に施す（変換後の平均は $A\boldsymbol\mu+\boldsymbol b$、分散共分散行列は $A\Sigma A^\top$）と、変換後の点の変換後の分布に対するマハラノビス距離は、元の $D(\boldsymbol x)$ と等しい。
+    answer: true
+    hint: |
+      変換後の距離の2乗を書き、$(A\Sigma A^\top)^{-1}=(A^\top)^{-1}\Sigma^{-1}A^{-1}$ を使う。
+    explanation: |
+      $\boldsymbol y-(A\boldsymbol\mu+\boldsymbol b)=A(\boldsymbol x-\boldsymbol\mu)$ なので
+      $$\{A(\boldsymbol x-\boldsymbol\mu)\}^\top(A\Sigma A^\top)^{-1}A(\boldsymbol x-\boldsymbol\mu)=(\boldsymbol x-\boldsymbol\mu)^\top A^\top(A^\top)^{-1}\Sigma^{-1}A^{-1}A(\boldsymbol x-\boldsymbol\mu)=D(\boldsymbol x)^2$$
+      となり、距離は変わりません。単位の変更（cm から m へ）や、変数の和・差で作り直した変数を使っても、マハラノビス距離による判別やはずれ値の判定は同じ結果になります。
+      - ユークリッド距離にはこの性質がありません。ある変数だけ単位を変える（100倍する）と、距離の値も、どの点が近いかの順位も変わります。
+      - $A$ が正則でない（変数をまとめて次元を落とす）と情報が失われ、一般に値が変わります。

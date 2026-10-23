@@ -235,4 +235,18 @@ q.check("q20-main-effect-and-interaction-3",
         _inter == [-4, 4, -8, 0] and np.allclose(_ab22(_cells[3]), 0) and all(not np.allclose(_ab22(c), 0) for c in _cells[:3]),
         f"対比 μ11-μ12-μ21+μ22 = {_inter}、交互作用0は最後の組だけ")
 
+# --- 追加：答えが「正しい」の正誤問題 ---
+import numpy as _np
+from itertools import combinations as _cb
+_L8 = _np.array([[1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 2, 2, 2, 2], [1, 2, 2, 1, 1, 2, 2], [1, 2, 2, 2, 2, 1, 1],
+                 [2, 1, 2, 1, 2, 1, 2], [2, 1, 2, 2, 1, 2, 1], [2, 2, 1, 1, 2, 2, 1], [2, 2, 1, 2, 1, 1, 2]])
+_orth = all(sorted(map(tuple, _L8[:, [a, b]].tolist())) == sorted([(1, 1), (1, 2), (2, 1), (2, 2)] * 2) for a, b in _cb(range(7), 2))
+_rng = _np.random.default_rng(2020)
+_ok = True
+for _ in range(100):
+    _yy = _rng.normal(10, 3, size=8)
+    _ss = sum((_yy[_L8[:, k] == 1].sum() - _yy[_L8[:, k] == 2].sum()) ** 2 / 8 for k in range(7))
+    _ok &= abs(_ss - ((_yy - _yy.mean()) ** 2).sum()) < 1e-9
+q.check("q20-orthogonal-array-3", _orth and _ok, "L8 のどの2列も各組2回ずつ、乱数データ100通りで 7列の平方和の合計 = S_T")
+
 q.done()

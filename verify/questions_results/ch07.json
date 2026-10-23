@@ -75,6 +75,10 @@
   "hash": "561694b689b0366d",
   "ok": true
  },
+ "q07-convergence-in-distribution-3": {
+  "hash": "852da771e1483ec3",
+  "ok": true
+ },
  "q07-convergence-in-mean-square-1": {
   "hash": "0829eb38d1fb5fde",
   "ok": true
@@ -173,6 +177,10 @@
  },
  "q07-weak-law-of-large-numbers-2": {
   "hash": "7ae1b6e262cdbae6",
+  "ok": true
+ },
+ "q07-weak-law-of-large-numbers-3": {
+  "hash": "3716da034da22468",
   "ok": true
  }
 }

@@ -219,4 +219,18 @@ def _choice10():
             f"誤答の由来：ワルド {wald:.4f}、Z_S²={ZS**2:.4f}、n 忘れ 0.28")
 _choice10()
 
+# --- 追加：答えが「正しい」の正誤問題 ---
+import numpy as _np
+from scipy import stats as _st
+_rng = _np.random.default_rng(1010)
+_mm, _al = 5, 0.05
+_crit = _st.norm.isf(_al / _mm / 2)
+_fw = {}
+for _rho in (0.0, 0.5, 0.9):
+    _C = _np.full((_mm, _mm), _rho) + (1 - _rho) * _np.eye(_mm)
+    _Z = _rng.multivariate_normal(_np.zeros(_mm), _C, size=200000)
+    _fw[_rho] = _np.mean((_np.abs(_Z) >= _crit).any(1))
+q.check("q10-bonferroni-correction-3", all(v <= _al + 0.002 for v in _fw.values()) and _fw[0.9] < _fw[0.0],
+        "m=5 の両側 z 検定（相関 0, 0.5, 0.9）で FWER = " + ", ".join(f"{v:.4f}" for v in _fw.values()) + "（すべて 0.05 以下、相関が強いほど保守的）")
+
 q.done()

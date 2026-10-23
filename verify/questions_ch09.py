@@ -188,4 +188,17 @@ def _choice09():
             "誤答の由来：1.645 を使う／平方根を忘れる／p=0.5 を使う")
 _choice09()
 
+# --- 追加：答えが「正しい」の正誤問題 ---
+import numpy as _np
+from scipy import stats as _st
+_rng = _np.random.default_rng(909)
+_m, _n, _R = 5, 7, 40000
+_X = _rng.normal(3.0, 2.0, size=(_R, _m)); _Y = _rng.normal(1.0, 2.0, size=(_R, _n))
+_sp2 = ((_m - 1) * _X.var(1, ddof=1) + (_n - 1) * _Y.var(1, ddof=1)) / (_m + _n - 2)
+_T = (_X.mean(1) - _Y.mean(1) - 2.0) / _np.sqrt(_sp2 * (1 / _m + 1 / _n))
+_ks = _st.kstest(_T, _st.t(_m + _n - 2).cdf).pvalue
+_cov = _np.mean(_np.abs(_T) <= _st.t.ppf(0.975, _m + _n - 2))
+q.check("q09-ci-two-sample-mean-difference-3", _ks > 0.01 and abs(_cov - 0.95) < 0.005,
+        f"m=5,n=7 の乱数4万回で T は t(10) と整合（KS p={_ks:.3f}、95%区間の被覆率 {_cov:.4f}）")
+
 q.done()

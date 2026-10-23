@@ -201,4 +201,17 @@ def _choice11():
             f"z={z:.3f}、片側 p={p1:.4f}、両側 p={p2:.4f} → 正しい選択肢はちょうど1つ")
 _choice11()
 
+# --- 追加：答えが「正しい」の正誤問題 ---
+import numpy as _np
+from scipy import stats as _st
+_rng = _np.random.default_rng(1111)
+_same, _diff = True, 0
+for _ in range(200):
+    _x = _rng.normal(50, 10, 8); _y = _x - _rng.normal(1.0, 2.0, 8)
+    _r1, _r2 = _st.ttest_rel(_x, _y), _st.ttest_1samp(_x - _y, 0.0)
+    _same &= abs(_r1.statistic - _r2.statistic) < 1e-10 and abs(_r1.pvalue - _r2.pvalue) < 1e-12
+    _diff += abs(_st.ttest_ind(_x, _y).statistic - _r1.statistic) > 1e-6
+q.check("q11-paired-t-test-3", _same and _diff == 200,
+        "乱数200組で ttest_rel と差の ttest_1samp が統計量・p値とも一致、2標本 t とは異なる")
+
 q.done()

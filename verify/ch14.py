@@ -634,6 +634,17 @@ while alive.any():
 p00s = (state == 0).mean()
 check(T, "sim p00(1)≈0.8835（20万本, 許容 0.004）", abs(p00s - .8835) < .004, p00s)
 
+# --- 統合候補からの論点の追記: recurrence-and-transience ---
+_Pr = np.array([[0.5, 0.3, 0.2], [0.2, 0.6, 0.2], [0.3, 0.3, 0.4]])
+_w, _v = np.linalg.eig(_Pr.T)
+_pi = np.real(_v[:, np.argmin(abs(_w - 1))]); _pi = _pi / _pi.sum()
+_mret = []
+for _i in range(3):
+    _o = [j for j in range(3) if j != _i]
+    _h = np.linalg.solve(np.eye(2) - _Pr[np.ix_(_o, _o)], np.ones(2))  # 他の状態から i に初めて着く平均時間
+    _mret.append(1 + _Pr[_i, _o] @ _h)
+check("recurrence-and-transience", "既約・正再帰の連鎖で π_i=1/m_i（3状態の例、平均再帰時間を連立方程式で計算）", np.allclose(_pi, 1 / np.array(_mret)), (_pi, _mret))
+
 # ================= まとめ =================
 ok = sum(results); ng = len(results) - ok
 print(f"\n合計: OK {ok} / NG {ng}")

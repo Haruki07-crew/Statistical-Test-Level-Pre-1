@@ -134,5 +134,9 @@
  "q19-weighted-least-squares-2": {
   "hash": "ac53c46b549ba556",
   "ok": true
+ },
+ "q19-weighted-least-squares-3": {
+  "hash": "f78a2ab3e15bada4",
+  "ok": true
  }
 }

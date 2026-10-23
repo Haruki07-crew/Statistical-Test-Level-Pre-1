@@ -762,3 +762,35 @@ questions:
       - $N(0,\ 1)$ は $Z_n$ そのものの極限で、2乗したことを反映していません。
       - $\chi^2(2)$ は自由度の数え違いです（標準正規の2乗1個なので自由度1）。
       - $N(1,\ 2)$ は $\chi^2(1)$ の平均 $1$・分散 $2$ に合わせた正規分布ですが、$Z_n^2\ge0$ なので極限は正規分布ではありません。
+
+  - id: q07-convergence-in-distribution-3
+    term: convergence-in-distribution
+    level: 標準
+    type: truefalse
+    question: |
+      確率変数の列 $X_1,X_2,\dots$ が定数 $c$ に分布収束する（$X_n$ の分布関数 $F_n$ が、$x<c$ で $0$、$x\ge c$ で $1$ をとる分布関数 $F$ に、$x\ne c$ のすべての点で収束する）ならば、$X_n$ は $c$ に確率収束する。
+    answer: true
+    hint: |
+      任意の $\varepsilon>0$ について $P(|X_n-c|\ge\varepsilon)$ を、$c$ から離れた2点での $F_n$ の値で上から押さえる。
+    explanation: |
+      極限の分布関数 $F$ は $x=c$ だけで不連続なので、$x\ne c$ では $F_n(x)\to F(x)$ です。$\varepsilon>0$ に対して
+      $$P(|X_n-c|\ge\varepsilon)\le P(X_n\le c-\varepsilon)+P(X_n>c+\tfrac{\varepsilon}{2})=F_n(c-\varepsilon)+1-F_n(c+\tfrac{\varepsilon}{2})\to0+1-1=0$$
+      となり、$X_n\xrightarrow{p}c$ です。
+      - 一般には分布収束から確率収束は言えません。$X\sim N(0,1)$、$X_n=-X$ とすると、$X_n$ はすべて $N(0,1)$ なので $X$ に分布収束しますが、$|X_n-X|=2|X|$ は0に近づかず、確率収束しません。極限が**定数**のときだけの性質です。
+      - この性質のおかげで、スルツキーの定理では「$Y_n\xrightarrow{d}c$」と「$Y_n\xrightarrow{p}c$」を同じに扱えます。
+
+  - id: q07-weak-law-of-large-numbers-3
+    term: weak-law-of-large-numbers
+    level: 標準
+    type: truefalse
+    question: |
+      $X_1,X_2,\dots$ が i.i.d. で期待値 $\mu=E[X_i]$ が存在する（$E|X_i|<\infty$）ならば、分散が存在しない（$V[X_i]=\infty$）場合でも、標本平均 $\bar X_n$ は $\mu$ に確率収束する。
+    answer: true
+    hint: |
+      大数の弱法則に本当に必要な条件が「分散が有限」なのか「期待値が存在する」なのかを考える。チェビシェフの不等式を使う証明は、どちらの条件を使っているか。
+    explanation: |
+      i.i.d. なら期待値が存在するだけで $\bar X_n\xrightarrow{p}\mu$ が成り立ちます（ヒンチンの大数の法則）。特性関数を使うと、$\varphi(t)=1+i\mu t+o(t)$ より
+      $$\varphi_{\bar X_n}(t)=\Bigl\{\varphi\bigl(\tfrac tn\bigr)\Bigr\}^n=\Bigl\{1+\tfrac{i\mu t}{n}+o\bigl(\tfrac1n\bigr)\Bigr\}^n\to e^{i\mu t}$$
+      で、$\bar X_n$ は定数 $\mu$ に分布収束し、定数への分布収束は確率収束と同じです。たとえば自由度1.5の $t$ 分布は期待値0で分散が無限大ですが、それでも $\bar X_n\xrightarrow{p}0$ です。
+      - 分散が有限という条件は、チェビシェフの不等式 $P(|\bar X_n-\mu|\ge\varepsilon)\le\sigma^2/(n\varepsilon^2)$ で簡単に証明するために使うもので、結論そのものには不要です（収束の速さの評価はできなくなります）。
+      - 期待値が存在しないコーシー分布では成り立ちません（$\bar X_n$ は $n$ によらず標準コーシー分布）。

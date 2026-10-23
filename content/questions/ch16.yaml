@@ -592,3 +592,19 @@ questions:
       $$V[\hat\beta_j]=\frac{\sigma^2}{S_{jj}(1-R_j^2)}$$
       と書け、$R_j^2$ は $x_j$ を**他の説明変数**に回帰したときの決定係数です。$x_j$ が他の変数でよく説明されるほど $R_j^2\to1$ となり、分散が $1/(1-R_j^2)$ 倍にふくらみます。
       残りの3つはどれも $y$ を目的変数にした決定係数で、モデルの当てはまりの指標です。VIF の計算に $y$ は使いません。
+
+  - id: q16-least-squares-method-3
+    term: least-squares-method
+    level: 基本
+    type: truefalse
+    question: |
+      切片を含む重回帰モデル $y_i=\beta_0+\beta_1x_{i1}+\cdots+\beta_px_{ip}+\varepsilon_i$（$i=1,\dots,n$）を最小二乗法で当てはめると、当てはめた回帰式は点 $(\bar x_1,\dots,\bar x_p,\ \bar y)$ を通る。すなわち $\bar y=\hat\beta_0+\hat\beta_1\bar x_1+\cdots+\hat\beta_p\bar x_p$ が成り立つ。
+    answer: true
+    hint: |
+      残差平方和を $\beta_0$ で偏微分して0とおいた式（正規方程式の1本目）を、$n$ で割ってみる。
+    explanation: |
+      残差平方和 $S=\sum_i(y_i-\beta_0-\sum_j\beta_jx_{ij})^2$ を $\beta_0$ で偏微分して0とおくと
+      $$\frac{\partial S}{\partial\beta_0}=-2\sum_i\Bigl(y_i-\hat\beta_0-\sum_j\hat\beta_jx_{ij}\Bigr)=-2\sum_ie_i=0$$
+      で、両辺を $-2n$ で割ると $\bar y-\hat\beta_0-\sum_j\hat\beta_j\bar x_j=0$ です。したがって $\hat\beta_0=\bar y-\sum_j\hat\beta_j\bar x_j$ で、回帰式は平均の点を通ります。
+      - 切片を含まない（原点を通る）モデルでは $\beta_0$ についての正規方程式がないので、$\sum_ie_i=0$ も、平均の点を通ることも一般には成り立ちません。
+      - 最小二乗の回帰式がデータ点のどれかを通るとは限りません。必ず通るのは平均の点です。

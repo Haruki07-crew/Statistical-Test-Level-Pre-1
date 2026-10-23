@@ -649,3 +649,34 @@ questions:
       - $1/2$ は領域の面積で、密度が一様だと思って $f$ を掛け忘れたものです。
       - $1/6$ は内側の積分のうち $x(1-x)$ の項だけを積分したものです。
       - $2/3$ は余事象 $P(X+Y>1)$ です。
+
+  - id: q02-hazard-function-4
+    term: hazard-function
+    level: 基本
+    type: truefalse
+    question: |
+      連続型の非負の確率変数 $T$ のハザード関数が、すべての $t\ge0$ で定数 $h(t)=\lambda$（$\lambda>0$）であるとき、$T$ は平均 $1/\lambda$ の指数分布に従う。
+    answer: true
+    hint: |
+      累積ハザード $H(t)=\int_0^th(u)\,du$ から生存関数 $S(t)=\exp\{-H(t)\}$ を求め、密度を出す。
+    explanation: |
+      $H(t)=\int_0^t\lambda\,du=\lambda t$ なので
+      $$S(t)=e^{-\lambda t},\qquad f(t)=-S'(t)=\lambda e^{-\lambda t}\quad(t\ge0)$$
+      これはレート $\lambda$ の指数分布で、$E[T]=1/\lambda$ です。ハザード関数は分布を1つに決めるので、ハザードが一定の連続分布は指数分布だけです（無記憶性と同じ内容）。
+      - よくある誤解は「ハザードが一定＝密度が一定（一様分布）」です。一様分布 $U(0,b)$ のハザードは $h(t)=\dfrac{1/b}{1-t/b}=\dfrac1{b-t}\ (0\le t<b)$ で、時間とともに増えます。
+      - 離散型（$T=1,2,\dots$）でハザード $h(k)=p$ が一定なら、指数分布ではなく幾何分布になります。
+
+  - id: q02-joint-probability-density-function-5
+    term: joint-probability-density-function
+    level: 標準
+    type: truefalse
+    question: |
+      $(X,Y)$ の同時確率密度関数 $f(x,y)$ が、長方形の範囲 $a<x<b,\ c<y<d$ では $f(x,y)=g(x)h(y)$（$g,h$ は非負の関数）と書け、それ以外では $0$ である。このとき $X$ と $Y$ は独立である。
+    answer: true
+    hint: |
+      周辺密度 $f_X(x)$、$f_Y(y)$ を $g,h$ とその積分で表し、積が $f(x,y)$ に戻るかを確かめる。
+    explanation: |
+      $G=\int_a^bg(x)\,dx$、$H=\int_c^dh(y)\,dy$ とおくと、全確率が1なので $GH=1$ です。周辺密度は
+      $$f_X(x)=g(x)H\ (a<x<b),\qquad f_Y(y)=h(y)G\ (c<y<d)$$
+      で、長方形の中では $f_X(x)f_Y(y)=g(x)h(y)\,GH=f(x,y)$、外では両辺とも0です。したがって $X$ と $Y$ は独立です（$b=\infty$ や $d=\infty$ の無限の長方形でも同じ）。
+      - 大事なのは「正の値をとる範囲（台）が長方形」という条件です。$f(x,y)=8xy\ (0<y<x<1)$ のように台が三角形だと、$f=8xy\cdot\mathbf 1\{y<x\}$ の指示関数が $x$ の関数と $y$ の関数の積に分かれません。実際 $f_X(x)=4x^3$、$f_Y(y)=4y(1-y^2)$ で、積は $f$ に一致せず、独立ではありません。

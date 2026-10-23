@@ -274,4 +274,15 @@ def _choice08():
             f"sympy: I(p)={I}、1/(nI)={av}、誤答は一致しない")
 _choice08()
 
+# --- 追加：答えが「正しい」の正誤問題 ---
+import sympy as _sp
+_l, _n = _sp.symbols("lambda n", positive=True)
+_k = _sp.symbols("k", integer=True, nonnegative=True)
+_pmf = _sp.exp(-_l) * _l**_k / _sp.factorial(_k)
+_score = _sp.diff(_k * _sp.log(_l) - _l, _l)
+_I = _sp.simplify(_sp.summation(_score**2 * _pmf, (_k, 0, _sp.oo)))
+_VX = _sp.simplify(_sp.summation(_k**2 * _pmf, (_k, 0, _sp.oo)) - _sp.summation(_k * _pmf, (_k, 0, _sp.oo))**2)
+q.check("q08-efficient-estimator-3", _sp.simplify(_I - 1 / _l) == 0 and _sp.simplify(_VX / _n - 1 / (_n * _I)) == 0,
+        "I(λ)=1/λ、V[X̄]=λ/n = 1/(nI(λ))")
+
 q.done()

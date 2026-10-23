@@ -969,6 +969,12 @@ _X = np.array(_rows); _cov = np.linalg.pinv(_X.T @ _X)
 _cvec = np.zeros(8); _cvec[0], _cvec[1] = 1, -1
 check(T, "処理差の分散 2kσ²/(λv)=6/8=0.75、乱塊法 2σ²/r=0.667 との比=E", close(_cvec @ _cov @ _cvec, 0.75, 1e-9) and close((2 / 3) / 0.75, 8 / 9, 1e-9), _cvec @ _cov @ _cvec)
 
+# --- 統合候補からの論点の追記: tukey-multiple-comparison ---
+check("tukey-multiple-comparison", "q_0.05(3,9)=3.948, q_0.05(3,20)=3.578, q_0.05(3,∞)=3.314（scipy studentized_range）",
+      abs(stats.studentized_range.ppf(0.95, 3, 9) - 3.948) < 5e-4 and abs(stats.studentized_range.ppf(0.95, 3, 20) - 3.578) < 5e-4 and abs(stats.studentized_range.ppf(0.95, 3, 1e7) - 3.314) < 5e-4, "")
+_rq = np.random.default_rng(20).normal(size=(200000, 3))
+check("tukey-multiple-comparison", "ν→∞ の極限：標準正規3個の範囲の95%点 ≈3.314（20万回、許容0.02）", abs(np.quantile(np.ptp(_rq, axis=1), 0.95) - 3.314) < 0.02, np.quantile(np.ptp(_rq, axis=1), 0.95))
+
 n_ok = sum(results)
 n_ng = len(results) - n_ok
 print(f"\n合計（追加用語を含む）: OK {n_ok} / NG {n_ng}")

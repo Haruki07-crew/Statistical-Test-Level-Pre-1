@@ -148,4 +148,17 @@ def _choice05():
             "誤答の由来：E[X]=4.5、r/p=7.5、rp/q²=3.33")
 _choice05()
 
+# --- 追加：答えが「正しい」の正誤問題 ---
+from scipy import stats as _st
+_n, _p = 7, (0.2, 0.3, 0.5)
+_ps = {}
+for _a in range(_n + 1):
+    for _b in range(_n + 1 - _a):
+        _ps[_a + _b] = _ps.get(_a + _b, 0) + _st.multinomial.pmf([_a, _b, _n - _a - _b], _n, _p)
+_ok = all(abs(_ps[s] - _st.binom.pmf(s, _n, 0.5)) < 1e-12 for s in range(_n + 1))
+_var = sum(s * s * v for s, v in _ps.items()) - sum(s * v for s, v in _ps.items()) ** 2
+_wrong = _n * 0.2 * 0.8 + _n * 0.3 * 0.7
+q.check("q05-multinomial-distribution-3", _ok and abs(_var - _n * 0.5 * 0.5) < 1e-12 and abs(_var - _wrong) > 0.5,
+        "Mult(7; .2,.3,.5) の X1+X2 は Bin(7, .5) と全点で一致、分散 1.75（独立とみた 2.59 とは異なる）")
+
 q.done()

@@ -142,4 +142,16 @@ def _choice01():
             f"列挙：独立={indep}、C のもとで条件付き独立={cindep} → 正しい選択肢はちょうど1つ")
 _choice01()
 
+# --- 追加：答えが「正しい」の正誤問題 ---
+import numpy as _np
+_rng = _np.random.default_rng(101)
+_ok, _neq = True, 0
+for _ in range(1000):
+    _p = _rng.dirichlet(_np.ones(4))  # (A∩B, A∩B^c, A^c∩B, A^c∩B^c)
+    _pA, _pB, _pAB = _p[0] + _p[1], _p[0] + _p[2], _p[0]
+    _l, _r = (_pAB / _pB) / _pA, (_pAB / _pA) / _pB
+    _ok &= abs(_l - _r) < 1e-9
+    _neq += abs(_pAB / _pB - _pAB / _pA) > 1e-6
+q.check("q01-bayes-theorem-5", _ok and _neq > 900, "乱数の同時確率1000通りで両辺が一致し、P(A|B)≠P(B|A) は一般に成り立たない")
+
 q.done()

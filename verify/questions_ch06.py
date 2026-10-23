@@ -230,4 +230,20 @@ def _choice06():
             f"F0.05(3,10)={_st.f.ppf(0.95, 3, 10):.2f}, F0.05(10,3)={_st.f.ppf(0.95, 10, 3):.2f}")
 _choice06()
 
+# --- 追加：答えが「正しい」の正誤問題 ---
+import numpy as _np
+from scipy import stats as _st, integrate as _ig
+def _conv(d1, d2, z):
+    return _ig.quad(lambda x: d1.pdf(x) * d2.pdf(z - x), 0, z, limit=200)[0]
+_a1, _a2, _be = 1.5, 2.3, 2.0
+_g1, _g2, _gs = _st.gamma(_a1, scale=_be), _st.gamma(_a2, scale=_be), _st.gamma(_a1 + _a2, scale=_be)
+_same = max(abs(_conv(_g1, _g2, z) - _gs.pdf(z)) for z in (0.5, 2, 5, 10, 20)) < 1e-7
+# 反例：尺度が違うと、平均・分散を合わせたガンマ分布とも一致しない
+_h1, _h2 = _st.gamma(1.5, scale=1.0), _st.gamma(2.3, scale=3.0)
+_m = 1.5 * 1 + 2.3 * 3; _v = 1.5 * 1 + 2.3 * 9
+_gm = _st.gamma(_m**2 / _v, scale=_v / _m)
+_diff = max(abs(_conv(_h1, _h2, z) - _gm.pdf(z)) for z in (0.5, 2, 5, 10, 20))
+q.check("q06-gamma-distribution-4", _same and _diff > 1e-3,
+        f"尺度共通なら畳み込み＝Ga(3.8, 2) の密度、尺度が違うとモーメントを合わせたガンマとも差 {_diff:.4f}")
+
 q.done()

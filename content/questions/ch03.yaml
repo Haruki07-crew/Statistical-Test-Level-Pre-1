@@ -661,3 +661,21 @@ questions:
       - $0.25$ は $\sigma^2/\mu^2=1/\alpha$ で、変動係数を2乗したものです。
       - $2$ は $\mu/\sigma$（逆数）で、$\sigma^2/\mu$ と取り違えても同じ値になります。
       - $4$ は標準偏差 $\sigma$ そのもので、平均で割っていません。
+
+  - id: q03-variance-covariance-matrix-4
+    term: variance-covariance-matrix
+    level: 基本
+    type: truefalse
+    question: |
+      確率ベクトル $\boldsymbol X=(X_1,\dots,X_p)^\top$ の各成分の分散が有限であるとき、その分散共分散行列 $\Sigma$ は、任意の定数ベクトル $\boldsymbol c$ について
+      $$\boldsymbol c^\top\Sigma\boldsymbol c=V[\boldsymbol c^\top\boldsymbol X]\ge0$$
+      を満たす（$\Sigma$ は非負定値である）。
+    answer: true
+    hint: |
+      $\boldsymbol\mu=E[\boldsymbol X]$ として、$\Sigma=E[(\boldsymbol X-\boldsymbol\mu)(\boldsymbol X-\boldsymbol\mu)^\top]$ を使い $V[\boldsymbol c^\top\boldsymbol X]$ を計算する。
+    explanation: |
+      $\boldsymbol c^\top\boldsymbol X-E[\boldsymbol c^\top\boldsymbol X]=\boldsymbol c^\top(\boldsymbol X-\boldsymbol\mu)$ はスカラーなので
+      $$V[\boldsymbol c^\top\boldsymbol X]=E\bigl[\boldsymbol c^\top(\boldsymbol X-\boldsymbol\mu)(\boldsymbol X-\boldsymbol\mu)^\top\boldsymbol c\bigr]=\boldsymbol c^\top\Sigma\boldsymbol c$$
+      分散は0以上なので $\boldsymbol c^\top\Sigma\boldsymbol c\ge0$ で、$\Sigma$ の固有値はすべて0以上です。
+      - よくある誤解は「分散共分散行列はいつも正定値（逆行列をもつ）」です。成分の間に $X_2=2X_1$ のような完全な線形関係があると、$\boldsymbol c=(2,-1)^\top$ で $\boldsymbol c^\top\Sigma\boldsymbol c=V[2X_1-X_2]=0$ となり、$\Sigma$ は固有値0をもつ特異行列になります。
+      - 正定値になるのは、どの $\boldsymbol c\ne\boldsymbol 0$ についても $\boldsymbol c^\top\boldsymbol X$ が定数にならないときです。

@@ -158,4 +158,15 @@ q.check("q12-two-sample-proportion-test-3",
         and [round(v, 2) for v in _zs] == [2.29, 3.20, 4.53],
         f"Z={_z:.4f}（Z²=分割表のχ²={_chi:.4f}）。誤答 {[round(v, 4) for v in _zs]}")
 
+# --- 追加：答えが「正しい」の正誤問題 ---
+import numpy as _np
+from scipy import stats as _st
+_ok = True
+for (_nn, _xx, _p0) in [(50, 18, 0.3), (200, 61, 0.25), (37, 30, 0.6), (1000, 512, 0.5)]:
+    _chi = _st.chisquare([_xx, _nn - _xx], [_nn * _p0, _nn * (1 - _p0)])
+    _z = (_xx - _nn * _p0) / _np.sqrt(_nn * _p0 * (1 - _p0))
+    _ok &= abs(_chi.statistic - _z**2) < 1e-9 and abs(_chi.pvalue - 2 * _st.norm.sf(abs(_z))) < 1e-9
+q.check("q12-goodness-of-fit-test-3", _ok and abs(_st.chi2.isf(0.05, 1) - _st.norm.isf(0.025) ** 2) < 1e-9,
+        "4通りの (n, X, p0) で χ²=Z²、p値は両側 z 検定と一致、χ²(1) 上側5%点 = 1.96²")
+
 q.done()

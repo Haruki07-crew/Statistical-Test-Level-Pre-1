@@ -235,4 +235,18 @@ _b_ov = _slope(_x, 1 + 2 * _x + 1.5 * _z + _rng.normal(size=_n))
 q.check("q19-endogeneity-3", abs(_b_het - 2) < 0.02 and abs(_b_me - 1) < 0.02 and abs(_b_ov - 3.2) < 0.02,
         f"不均一分散のみ：傾き {_b_het:.3f}≈2（一致）。測定誤差 {_b_me:.3f}≈1、欠落変数 {_b_ov:.3f}≈3.2（偏る）")
 
+# --- 追加：答えが「正しい」の正誤問題 ---
+import numpy as _np
+_rng = _np.random.default_rng(1919)
+_nn = 40
+_Xd = _np.c_[_np.ones(_nn), _rng.uniform(1, 10, size=(_nn, 2))]
+_w = 1 / _Xd[:, 1]
+_yv = _Xd @ [1.0, 2.0, -0.5] + _rng.normal(size=_nn) / _np.sqrt(_w)
+_bw = _np.linalg.solve(_Xd.T @ (_w[:, None] * _Xd), _Xd.T @ (_w * _yv))
+_sq = _np.sqrt(_w)
+_bt = _np.linalg.lstsq(_sq[:, None] * _Xd, _sq * _yv, rcond=None)[0]
+_bwrong = _np.linalg.lstsq(_w[:, None] * _Xd, _w * _yv, rcond=None)[0]  # 行を w 倍（重み w²）
+q.check("q19-weighted-least-squares-3", _np.allclose(_bw, _bt, atol=1e-10) and _np.abs(_bwrong - _bw).max() > 1e-3,
+        "√w 倍したデータの OLS = (X'WX)^{-1}X'Wy、行を w 倍すると一致しない")
+
 q.done()

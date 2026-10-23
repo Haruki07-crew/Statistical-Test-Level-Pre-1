@@ -672,5 +672,15 @@ mcC(T, "V[歪度]≈6/n（n=2000, 2万回、比）", sk.var() / (6 / 2000), 1.0,
 mcC(T, "V[超過尖度]≈24/n（n=2000、比）", ku.var() / (24 / 2000), 1.0, 0.06)
 
 
+# --- 統合候補からの論点の追記: bartlett-test ---
+_rgL = np.random.default_rng(11)
+_gL = [_rgL.normal(0, s, n) for s, n in ((1, 6), (2, 8), (1.5, 7))]
+_zL = [np.abs(g - g.mean()) for g in _gL]
+_zM = [np.abs(g - np.median(g)) for g in _gL]
+check("bartlett-test", "ルビーン検定＝絶対偏差 |x−x̄| の一元配置分散分析（scipy levene と一致、自由度 (k−1, N−k)）",
+      abs(stats.levene(*_gL, center="mean").statistic - stats.f_oneway(*_zL).statistic) < 1e-10
+      and abs(stats.levene(*_gL, center="mean").pvalue - stats.f.sf(stats.f_oneway(*_zL).statistic, 2, 21 - 3)) < 1e-10, stats.levene(*_gL, center="mean"))
+check("bartlett-test", "ブラウン・フォーサイス検定＝中央値からの絶対偏差の分散分析", abs(stats.levene(*_gL, center="median").statistic - stats.f_oneway(*_zM).statistic) < 1e-10, "")
+
 print()
 print(f"合計: OK {sum(results)} / NG {len(results) - sum(results)}")

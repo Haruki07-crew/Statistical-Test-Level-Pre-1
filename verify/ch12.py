@@ -577,6 +577,10 @@ Ds = ((P - P.mean(1, keepdims=True))**2).sum(1) / P.mean(1)
 mcC(T, "H0 下 P(D>19.675)≈0.05（λ=5, n=12）", (Ds > 19.675).mean(), 0.05, 0.004)
 mcC(T, "H0 下 E[D]≈n-1=11", Ds.mean(), 11, 0.05)
 
+# --- 統合候補からの論点の追記: kolmogorov-smirnov-test ---
+check("kolmogorov-smirnov-test", "2標本の5%棄却限界 1.358√((m+n)/(mn))：コルモゴロフ分布の95%点 1.358、m=n=8 で 0.679",
+      abs(stats.kstwobign.ppf(0.95) - 1.358) < 5e-4 and abs(1.358 * sqrt(16 / 64) - 0.679) < 1e-12, stats.kstwobign.ppf(0.95))
+
 # ================= 集計 =================
 nok, nng = sum(results), len(results) - sum(results)
 print(f"\n合計: OK {nok} / NG {nng}")

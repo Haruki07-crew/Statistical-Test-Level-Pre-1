@@ -708,5 +708,13 @@ check(T, "n を4倍で SE 半分、2倍で 1/√2≈0.707倍", sqrt(1 / 4) == 0.
 _cS = _fmS["charts"][0]["params"]
 check(T, "chart：σ=10 の σ/√n（n=1,4,…,100）", _cS["x"] == [k * k for k in range(1, 11)] and _cS["series"][0]["y"] == [round(10 / k, 4) for k in range(1, 11)], _cS["series"][0]["y"])
 
+# --- 統合候補からの論点の追記: fisher-information ---
+_lam, _xs = sp.symbols("lam xs", positive=True)
+_n8 = sp.Symbol("n", positive=True)
+_ellP = _xs * sp.log(_lam) - _n8 * _lam  # ポアソン対数尤度（xs=Σx_i、定数省略）
+_J = -sp.diff(_ellP, _lam, 2)
+_lhat = _xs / _n8
+check("fisher-information", "ポアソン：J(λ̂)=Σx/λ̂²=n/x̄=nI(λ̂)（sympy）", sp.simplify(_J.subs(_lam, _lhat) - _n8 ** 2 / _xs) == 0 and sp.simplify(_n8 * (1 / _lam) - _J.subs(_xs, _n8 * _lam)) == 0, _J)
+
 print()
 print(f"合計（追加用語を含む）: OK {sum(results)} / NG {len(results) - sum(results)}")

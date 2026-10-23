@@ -232,4 +232,28 @@ def _choice02():
             "誤答の由来：x(1-x) の項だけ 1/6、余事象 2/3、面積 1/2")
 _choice02()
 
+# --- 追加：答えが「正しい」の正誤問題 ---
+import sympy as _sp
+_t, _u, _lam, _b = _sp.symbols("t u lambda b", positive=True)
+_S = _sp.exp(-_sp.integrate(_lam, (_u, 0, _t)))
+_f = -_sp.diff(_S, _t)
+_mean = _sp.integrate(_t * _f, (_t, 0, _sp.oo))
+_hu = _sp.simplify((1 / _b) / (1 - _t / _b))
+q.check("q02-hazard-function-4", _sp.simplify(_f - _lam * _sp.exp(-_lam * _t)) == 0 and _sp.simplify(_mean - 1 / _lam) == 0
+        and _sp.simplify(_hu - 1 / (_b - _t)) == 0,
+        "h=λ → S=e^{-λt}, f=λe^{-λt}, 平均 1/λ。一様分布のハザードは 1/(b-t)")
+
+_x, _y = _sp.symbols("x y", positive=True)
+# 長方形の台：f = c (x+1) e^{-y}（0<x<2, y>0）
+_c = 1 / _sp.integrate(_sp.integrate((_x + 1) * _sp.exp(-_y), (_x, 0, 2)), (_y, 0, _sp.oo))
+_fr = _c * (_x + 1) * _sp.exp(-_y)
+_fX = _sp.integrate(_fr, (_y, 0, _sp.oo)); _fY = _sp.integrate(_fr, (_x, 0, 2))
+_rect_ok = _sp.simplify(_fX * _fY - _fr) == 0
+# 三角形の台：f = 8xy（0<y<x<1）
+_fXt = _sp.integrate(8 * _x * _y, (_y, 0, _x)); _fYt = _sp.integrate(8 * _x * _y, (_x, _y, 1))
+_tri_dep = _sp.simplify(_fXt - 4 * _x**3) == 0 and _sp.simplify(_fYt - 4 * _y * (1 - _y**2)) == 0 \
+    and _sp.simplify(_fXt * _fYt - 8 * _x * _y) != 0
+q.check("q02-joint-probability-density-function-5", _rect_ok and _tri_dep,
+        "長方形の台で積に分解できれば f_X f_Y = f、三角形の台では f_X=4x³, f_Y=4y(1-y²) で積が f に戻らない")
+
 q.done()

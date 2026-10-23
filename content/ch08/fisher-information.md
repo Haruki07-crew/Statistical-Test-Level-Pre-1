@@ -157,6 +157,7 @@ $\sigma^2=4$、$n=10$（$\mu$ 既知）なら $nI(\sigma^2) = 10/(2\times16) = 0
 - 2階微分の形 $-E[\partial^2\log f/\partial\theta^2]$ で計算すると、多くの分布で計算が短くなります。
 - 標本全体の情報量は $nI(\theta)$。1個あたりと全体を取り違えないようにします。
 - 情報量の逆数がクラメール・ラオの下限で、最尤推定量の漸近分散でもあります。$\hat\theta\approx N(\theta, 1/\{nI(\theta)\})$ から信頼区間を作る問題が典型です。
+- 期待値をとらずに手元のデータで計算した $J(\hat\theta)=-\ell''(\hat\theta)$ を**観測情報量**といい、$E_\theta[J(\theta)]=nI(\theta)$ です。標準誤差は $1/\sqrt{J(\hat\theta)}$ と $1/\sqrt{nI(\hat\theta)}$ のどちらでも漸近的に同じで、ポアソン分布などの指数型分布族では $J(\hat\lambda)=\sum x_i/\hat\lambda^2=n/\bar x=nI(\hat\lambda)$ のように一致します。統計ソフトが出す標準誤差の多くは観測情報量（ヘッセ行列）によるものです。
 - 母数の取り換えで $I(\eta)=I(\theta)(d\theta/d\eta)^2$ と変わります。ジェフリーズの事前分布 $\pi(\theta)\propto\sqrt{I(\theta)}$ はこの性質を使います。
 
 ## よくある間違い

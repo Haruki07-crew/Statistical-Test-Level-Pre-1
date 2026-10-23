@@ -75,6 +75,10 @@
   "hash": "0d679ef42b82181a",
   "ok": true
  },
+ "q23-mahalanobis-distance-4": {
+  "hash": "974d1af0134d46b8",
+  "ok": true
+ },
  "q23-misclassification-rate-1": {
   "hash": "8aa9d5523a8638f6",
   "ok": true
