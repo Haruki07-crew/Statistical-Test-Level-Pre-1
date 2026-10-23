@@ -176,11 +176,12 @@ def _deriv18():
 _deriv18()
 
 # --- 4択の追加分 ---
-_b0, _b1 = -2.0, 0.693
+_b0, _b1 = -1.0, 0.693
 _p0, _p1 = expit(_b0), expit(_b0 + _b1)
 _o0, _o1 = _p0 / (1 - _p0), _p1 / (1 - _p1)
 q.check("q18-logistic-regression-5",
-        abs(_o1 / _o0 - 2) < 0.001 and abs(_p1 / _p0 - 2) > 0.1 and abs(_o1 - 2) > 1 and abs((_o1 - _o0) - 0.693) > 0.3,
+        abs(_o1 / _o0 - 2) < 0.001 and abs(_p1 / _p0 - 2) > 0.3 and abs(_o1 - 2) > 1 and abs((_o1 - _o0) - 0.693) > 0.3
+        and round(_p0, 3) == 0.269 and round(_p1, 3) == 0.424 and round(_o1, 3) == 0.736 and round(_o0, 3) == 0.368,
         f"オッズ比={_o1 / _o0:.4f}。確率比={_p1 / _p0:.3f}、喫煙者のオッズ={_o1:.3f}、オッズの差={_o1 - _o0:.3f}")
 _D, _n, _k = 72.0, 40, 4
 _rs = [_D / (_n - _k), _D / (_n - 3), _D / (_n - 1), _D / _n]

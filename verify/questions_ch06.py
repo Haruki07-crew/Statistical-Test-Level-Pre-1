@@ -203,14 +203,17 @@ def _choice06():
             f"シミュレーション 平均≈{w.mean():.3f}, 分散≈{w.var():.3f}")
 
     # 2変量正規の条件付き分散（シューア補元）
-    sx, sy, r = 10.0, 15.0, 0.6
+    sx, sy, r = 4.0, 10.0, 0.8
     Sig = _np.array([[sx ** 2, r * sx * sy], [r * sx * sy, sy ** 2]])
     cv = Sig[1, 1] - Sig[1, 0] ** 2 / Sig[0, 0]
-    ch = [12, 81, 90, 144]
+    ch = [6, 64, 20, 36]
     ans = q.qs["q06-bivariate-normal-distribution-5"]["answer"]
     q.check("q06-bivariate-normal-distribution-5",
             abs(ch[ans] - cv) < 1e-9 and all(abs(c - cv) > 1e-6 for i, c in enumerate(ch) if i != ans),
-            f"Σyy-Σyx²/Σxx={cv}、誤答（SD 12, σ²ρ² 81, σ²(1-ρ) 90）は一致しない")
+            f"Σyy-Σyx²/Σxx={cv}、誤答（SD 6, σ²ρ² 64, σ²(1-ρ) 20）は一致しない")
+    q.check("q06-bivariate-normal-distribution-5",
+            abs(_np.sqrt(cv) - 6) < 1e-9 and abs(sy ** 2 * r ** 2 - 64) < 1e-9 and abs(sy ** 2 * (1 - r) - 20) < 1e-9,
+            "誤答の由来：条件付きSD／σ²ρ²／σ²(1-ρ)")
 
     # F 分布の性質（m=3, n=10 で確かめる。一般の形は explanation のとおり）
     mm, nn = 3, 10

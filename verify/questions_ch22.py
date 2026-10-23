@@ -194,9 +194,10 @@ def _deriv22():
 _deriv22()
 
 # --- 4択の追加分 ---
-_S = np.array([[16., 6], [6, 4]]); _d = np.sqrt(np.diag(_S)); _Rm = _S / np.outer(_d, _d)
+_S = np.array([[9., 3], [3, 4]]); _d = np.sqrt(np.diag(_S)); _Rm = _S / np.outer(_d, _d)
 _ls, _vs = np.linalg.eigh(_S); _lr, _vr = np.linalg.eigh(_Rm)
-_ok = abs(_lr.sum() - 2) < 1e-12 and abs(_ls.sum() - 20) < 1e-9 and abs(_ls.sum() - 2) > 1
+_ok = abs(_lr.sum() - 2) < 1e-12 and abs(_ls.sum() - 13) < 1e-9 and abs(_ls.sum() - 2) > 1
+_ok &= round(_ls[-1] / _ls.sum(), 2) == 0.80 and round(_lr[-1] / _lr.sum(), 3) == 0.750
 _ok &= abs(_ls[-1] / _ls.sum() - _lr[-1] / _lr.sum()) > 0.01
 _ok &= abs(abs(_vs[:, -1] @ _vr[:, -1]) - 1) > 1e-3
 _rng = np.random.default_rng(2203); _A = _rng.normal(size=(5, 5)); _C = _A @ _A.T

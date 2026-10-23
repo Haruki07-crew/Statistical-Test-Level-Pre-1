@@ -349,7 +349,7 @@ questions:
       逆関数は $x=\sqrt y$、$\dfrac{dx}{dy}=\dfrac{1}{2\sqrt y}$ なので
       $$f_Y(y)=f_X(\sqrt y)\left|\frac{dx}{dy}\right|=1\times\frac{1}{2\sqrt y}=\frac{1}{2\sqrt y}\quad(0<y<1)$$
       累積分布関数で確かめると $F_Y(y)=P(X\le\sqrt y)=\sqrt y$ で、微分すると同じ式になります。
-      - $1$ は $f_X(\sqrt y)$ に置き換えただけで、ヤコビアン $|dx/dy|$ を掛け忘れています（積分すると1になりますが、$P(Y\le0.25)=0.5$ と合いません）。
+      - $1$ は $f_X(\sqrt y)$ に置き換えただけで、ヤコビアン $|dx/dy|$ を掛け忘れています（積分すると1になりますが、$P(Y\le0.25)$ が $0.25$ となり、正しい値 $P(X\le0.5)=0.5$ と合いません）。
       - $2\sqrt y$ は $|dy/dx|=2x$ を掛けたもので、微分の向きが逆です。
       - $\sqrt y$ は累積分布関数 $F_Y(y)$ で、密度ではありません。
 

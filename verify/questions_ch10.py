@@ -208,15 +208,15 @@ def _choice10():
     ell = x * _S.log(p) + (n - x) * _S.log(1 - p)
     U = _S.diff(ell, p)
     nI = n / (p * (1 - p))
-    ZS = float((U / _S.sqrt(nI)).subs({p: _S.Rational(1, 2), x: 60, n: 100}))
-    ch = [2.04, 4.00, 2.00, 0.20]
+    ZS = float((U / _S.sqrt(nI)).subs({p: _S.Rational(1, 2), x: 96, n: 150}))
+    ch = [3.57, 11.76, 3.43, 0.28]
     ans = q.qs["q10-score-test-3"]["answer"]
     q.check("q10-score-test-3",
             abs(ch[ans] - ZS) < 0.005 and all(abs(c - ZS) >= 0.005 for i, c in enumerate(ch) if i != ans),
             f"sympy: Z_S={ZS:.4f}、誤答は一致しない")
-    wald = 0.1 / _np.sqrt(0.6 * 0.4 / 100)
-    q.check("q10-score-test-3", abs(wald - 2.04) < 0.005 and abs(ZS ** 2 - 4) < 1e-9 and abs(0.1 / _np.sqrt(0.25) - 0.2) < 1e-12,
-            f"誤答の由来：ワルド {wald:.4f}、Z_S²=4、n 忘れ 0.20")
+    wald = 0.14 / _np.sqrt(0.64 * 0.36 / 150)
+    q.check("q10-score-test-3", abs(wald - 3.57) < 0.005 and abs(ZS ** 2 - 11.76) < 1e-9 and abs(0.14 / _np.sqrt(0.25) - 0.28) < 1e-12,
+            f"誤答の由来：ワルド {wald:.4f}、Z_S²={ZS**2:.4f}、n 忘れ 0.28")
 _choice10()
 
 q.done()

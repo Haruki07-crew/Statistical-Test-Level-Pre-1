@@ -194,10 +194,10 @@ _ve = _vars(_eq_many, 60)
 q.check("q21-stratified-sampling-3",
         _vg[1] / _vg[0] < 0.05 and _vb[1] / _vb[0] > 0.9 and _ve[1] / _ve[0] > 0.9,
         f"比例配分/SRS の分散比：層間の差が大 {_vg[1] / _vg[0]:.4f}、層内が多様 {_vb[1] / _vb[0]:.4f}、等大で10層 {_ve[1] / _ve[0]:.4f}")
-_y = np.array([4, 10, 3.0]); _pi = np.array([0.2, 0.5, 0.1])
-_ht = (_y / _pi).sum(); _wr = [(_y * _pi).sum(), (_y / _pi).mean(), 30 / 3 * _y.sum()]
+_y = np.array([6, 15, 4.0]); _pi = np.array([0.3, 0.6, 0.1]); _N21 = 30
+_ht = (_y / _pi).sum(); _mean = _ht / _N21; _wr = [_y.mean(), _ht / 3, _ht]
 q.check("q21-horvitz-thompson-estimator-4",
-        abs(_ht - 70) < 1e-9 and [round(w, 1) for w in _wr] == [6.1, 23.3, 170.0],
-        f"HT={_ht}。誤答 {[round(w, 2) for w in _wr]}")
+        abs(_ht - 85) < 1e-9 and round(_mean, 2) == 2.83 and [round(w, 2) for w in _wr] == [8.33, 28.33, 85.0],
+        f"HT総計={_ht:.2f}、母平均の推定={_mean:.4f}。誤答 {[round(w, 2) for w in _wr]}")
 
 q.done()

@@ -236,7 +236,7 @@ _ok = abs(_h2 - 0.65) < 1e-12 and abs(_c[1] - 0.62) < 1e-12
 _wr = [(_c[1], _h2), (1 - _h2, _c[1]), (_h2, _c[0])]
 _ok &= all(abs(a - 0.65) + abs(b - 0.62) > 1e-6 for a, b in _wr) and abs(_c[0] - 1.29) < 1e-12 and abs(1 - _h2 - 0.35) < 1e-12
 q.check("q25-communality-4", _ok, f"x2 の共通性 {_h2:.2f}、因子2の寄与 {_c[1]:.2f}（因子1 {_c[0]:.2f}）")
-_Om = _np.array([[2, -1, 0], [-1, 2, -1], [0, -1, 2.0]])
+_Om = _np.array([[2, -1, 0], [-1, 3, -1], [0, -1, 2.0]])
 _Sg = _np.linalg.inv(_Om)
 _r13 = _Sg[0, 2] / _np.sqrt(_Sg[0, 0] * _Sg[2, 2])
 _pc12 = -_Om[0, 1] / _np.sqrt(_Om[0, 0] * _Om[1, 1])
@@ -244,8 +244,12 @@ _cv1 = _Sg[0, 0] - _Sg[0, 1:] @ _np.linalg.inv(_Sg[1:, 1:]) @ _Sg[1:, 0]
 # X2 を与えたときの X1,X3 の条件付き共分散
 _idx = [0, 2]
 _cc = _Sg[_np.ix_(_idx, _idx)] - _Sg[_np.ix_(_idx, [1])] @ _Sg[_np.ix_([1], _idx)] / _Sg[1, 1]
-_ok = abs(_cc[0, 1]) < 1e-12 and _r13 > 0 and abs(_r13 - 1 / 3) < 1e-12
-_ok &= abs(_pc12 - 0.5) < 1e-12 and abs(_cv1 - 0.5) < 1e-12 and abs(_Sg[0, 0] - 0.75) < 1e-12
-q.check("q25-precision-matrix-5", _ok, f"X1⊥X3|X2（条件付き共分散 {_cc[0,1]:.1e}）、周辺相関 {_r13:.4f}>0、偏相関 +{_pc12}、条件付き分散 {_cv1}≠3/4")
+_ok = abs(_cc[0, 1]) < 1e-12 and _r13 > 0 and abs(_r13 - 0.2) < 1e-12
+_ok &= _np.allclose(_Sg * 8, [[5, 2, 1], [2, 4, 2], [1, 2, 5]])
+# X3 だけを与えたときの X1,X2 の偏相関（3変数なので「他すべて」と同じ）を Σ から直接も計算
+_i12 = [0, 1]; _c12 = _Sg[_np.ix_(_i12, _i12)] - _Sg[_np.ix_(_i12, [2])] @ _Sg[_np.ix_([2], _i12)] / _Sg[2, 2]
+_ok &= abs(_c12[0, 1] / _np.sqrt(_c12[0, 0] * _c12[1, 1]) - _pc12) < 1e-12
+_ok &= round(_pc12, 2) == 0.41 and abs(_cv1 - 0.5) < 1e-12 and abs(_Sg[0, 0] - 5 / 8) < 1e-12
+q.check("q25-precision-matrix-5", _ok, f"X1⊥X3|X2（条件付き共分散 {_cc[0,1]:.1e}）、周辺相関 {_r13:.4f}>0、偏相関 +{_pc12:.4f}、条件付き分散 {_cv1:.4f}≠5/8")
 
 q.done()

@@ -173,12 +173,12 @@ def _choice09():
             "誤答の由来：1.96 を使う／√n で割らない／n で割る")
 
     # 比率のワルド区間
-    n, x = 400, 120
+    n, x = 300, 60
     ph = x / n
     z = _st.norm.isf(0.025)
     se = _m.sqrt(ph * (1 - ph) / n)
     ci = (ph - z * se, ph + z * se)
-    ch = [(0.262, 0.338), (0.299, 0.301), (0.251, 0.349), (0.255, 0.345)]
+    ch = [(0.162, 0.238), (0.199, 0.201), (0.143, 0.257), (0.155, 0.245)]
     ans = q.qs["q09-ci-proportion-3"]["answer"]
     q.check("q09-ci-proportion-3",
             same(ch[ans], ci, 3) and not any(same(c, ci, 3) for i, c in enumerate(ch) if i != ans),
