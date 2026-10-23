@@ -528,3 +528,5 @@ textarea.note:focus { outline: none; border-color: var(--accent); box-shadow: 0 
 .q-star[aria-pressed="true"] { color: var(--chart-2); }
 .qcard:focus { outline: none; }
 @media (pointer: coarse) { .q-star { width: 44px; height: 44px; } }
+.sess-timer { font-family: var(--mono); font-size: .9rem; color: var(--accent); padding: 2px 8px; border: 1px solid var(--line); border-radius: 999px; }
+.sess-timer.low { color: var(--imp-a); border-color: var(--imp-a); }

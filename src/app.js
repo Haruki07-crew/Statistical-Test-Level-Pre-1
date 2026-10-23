@@ -807,8 +807,10 @@
     scope: ['all', 'part', 'ch', 'weak', 'new', 'bm'].indexOf(quizCfg.scope) >= 0 ? quizCfg.scope : 'all',
     ch: Number(quizCfg.ch) >= 1 && Number(quizCfg.ch) <= CHAPTERS.length ? Number(quizCfg.ch) : 1,
     part: Number(quizCfg.part) >= 0 && Number(quizCfg.part) < PARTS.length ? Number(quizCfg.part) : 0,
-    count: [5, 10, 20].indexOf(Number(quizCfg.count)) >= 0 ? Number(quizCfg.count) : 10
+    count: [5, 10, 20].indexOf(Number(quizCfg.count)) >= 0 ? Number(quizCfg.count) : 10,
+    timed: quizCfg.timed === true
   };
+  var SEC_PER_Q = 180;   // 模擬試験モードの1問あたりの時間（秒）
 
   function poolFor(cfg) {
     var weak = {};
@@ -843,6 +845,7 @@
     h += '</fieldset><fieldset class="seg"><legend>問題数</legend><div class="seg-row">' + [5, 10, 20].map(function (n) {
       return '<button type="button" class="chip" data-count="' + n + '" aria-pressed="' + (Number(quizCfg.count) === n) + '">' + n + '問</button>';
     }).join('') + '</div></fieldset>' +
+      '<fieldset class="seg"><legend>模擬試験モード</legend><div class="seg-row"><button type="button" class="chip" data-timed aria-pressed="' + quizCfg.timed + '">時間を計る（1問' + SEC_PER_Q / 60 + '分）</button></div></fieldset>' +
       '<p class="screen-sub">この範囲の問題：<b>' + pool.length + '</b> 問' + (pool.length ? '' : '（' + emptyReason(quizCfg.scope) + '）') + '</p>' +
       '<button type="button" class="big-btn" data-start' + (pool.length ? '' : ' disabled') + '>始める</button>' +
       '<button type="button" class="big-btn ghost" data-cards>この範囲の用語カードで覚える（' + cardPool().length + '語）</button>';
@@ -855,7 +858,8 @@
     return { weak: '苦手な用語はまだありません。問題を解くと、間違えた用語がここに入ります', new: 'すべて回答済みです', bm: '★を付けた問題や、★を付けた用語の問題がありません' }[scope] || 'この範囲には問題がまだありません';
   }
   function startSession(kind, list, title) {
-    state.session = { kind: kind, list: list.map(function (q) { return q.id; }), i: 0, res: [], title: title, answered: false };
+    state.session = { kind: kind, list: list.map(function (q) { return q.id; }), i: 0, res: [], title: title, answered: false, start: Date.now() };
+    if (kind === 'quiz' && quizCfg.timed) { state.session.deadline = Date.now() + list.length * SEC_PER_Q * 1000; state.session.title = '模擬試験'; }
     renderSession();
   }
   function renderSession() {
@@ -865,7 +869,7 @@
     if (s.i >= s.list.length) { renderResult(); return; }
     var q = QBY[s.list[s.i]];
     s.answered = false;
-    detailEl.innerHTML = '<div class="article screen"><div class="sess-head"><button type="button" class="q-btn ghost" data-quit>やめる</button><b>' + esc(s.title) + '</b><span class="sess-n">' + (s.i + 1) + ' / ' + s.list.length + '</span></div>' +
+    detailEl.innerHTML = '<div class="article screen"><div class="sess-head"><button type="button" class="q-btn ghost" data-quit>やめる</button><b>' + esc(s.title) + '</b>' + (s.deadline ? '<span class="sess-timer" aria-live="off">' + fmtLeft(s.deadline - Date.now()) + '</span>' : '') + '<span class="sess-n">' + (s.i + 1) + ' / ' + s.list.length + '</span></div>' +
       '<div class="sess-bar" aria-hidden="true"><span style="width:' + (100 * s.i / s.list.length) + '%"></span></div><div class="sess-card"></div>' +
       '<div class="sess-next" hidden><button type="button" class="big-btn" data-next>' + (s.i + 1 < s.list.length ? '次の問題へ' : '結果を見る') + '</button></div></div>';
     var card = qCard(q, {
@@ -881,13 +885,33 @@
     card.tabIndex = -1;
     try { card.focus({ preventScroll: true }); } catch (e) { /* 無視 */ }
   }
+  function fmtLeft(ms) {
+    var t = Math.max(0, Math.round(ms / 1000));
+    return '残り ' + Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0');
+  }
+  function fmtTime(ms) { var t = Math.round(ms / 1000); return Math.floor(t / 60) + '分' + String(t % 60).padStart(2, '0') + '秒'; }
+  // 模擬試験の残り時間（1秒ごと）。時間切れになったら、そこまでの回答で結果を出す
+  setInterval(function () {
+    var s = state.session;
+    if (!s || !s.deadline || s.done) return;
+    var left = s.deadline - Date.now(), el = detailEl.querySelector('.sess-timer');
+    if (el) { el.textContent = fmtLeft(left); el.classList.toggle('low', left < 60000); }
+    if (left <= 0) {
+      s.timeUp = s.list.length - s.res.length;
+      s.list = s.list.slice(0, s.res.length); s.i = s.list.length;
+      if (state.mode === 'quiz' && location.hash === '#quiz') renderResult();
+    }
+  }, 1000);
   function renderResult() {
     var s = state.session, ok = s.res.filter(function (r) { return r.ok; }).length, n = s.res.length;
+    s.done = true;
+    if (!s.end) s.end = Date.now();
     var wrong = s.res.filter(function (r) { return !r.ok; }).map(function (r) { return QBY[r.id]; });
     var terms = {};
     wrong.forEach(function (q) { terms[q.term] = true; });
     var h = '<div class="article screen"><h1 class="screen-h">' + esc(s.title) + 'の結果</h1>' +
-      '<div class="score"><b>' + (n ? Math.round(100 * ok / n) : 0) + '%</b><span>' + ok + ' / ' + n + ' 問正解</span></div>';
+      '<div class="score"><b>' + (n ? Math.round(100 * ok / n) : 0) + '%</b><span>' + ok + ' / ' + n + ' 問正解・かかった時間 ' + fmtTime(s.end - s.start) + '</span></div>' +
+      (s.timeUp ? '<p class="msg ng">時間切れ：' + s.timeUp + ' 問が未回答でした（正答率は回答した問題で計算）。</p>' : '');
     if (wrong.length) {
       h += '<h2 class="home-h">間違えた問題</h2><ul class="wrong-list">' + wrong.map(function (q) {
         return '<li><div class="lazy-math wrong-q">' + q.q + '</div>' + termBtn(q.term) + '</li>';
@@ -1133,6 +1157,7 @@
     // 問題演習
     if (b.dataset.scope) { quizCfg.scope = b.dataset.scope; save('jd-quizcfg', quizCfg); renderQuizSetup(); return; }
     if (b.dataset.count) { quizCfg.count = Number(b.dataset.count); save('jd-quizcfg', quizCfg); renderQuizSetup(); return; }
+    if (b.hasAttribute('data-timed')) { quizCfg.timed = !quizCfg.timed; save('jd-quizcfg', quizCfg); renderQuizSetup(); return; }
     if (b.hasAttribute('data-start') || b.hasAttribute('data-again')) {
       var pool = shuffle(poolFor(quizCfg));
       if (quizCfg.scope === 'weak') pool.sort(function (x, y) { return ((DB.ans[x.id] || {}).r === 0 ? 0 : 1) - ((DB.ans[y.id] || {}).r === 0 ? 0 : 1); });

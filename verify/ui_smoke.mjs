@@ -114,6 +114,13 @@ try {
   }
   check('問題演習の結果画面（キーボードでも操作できる）', await ev(`!!document.querySelector('.score')`), await ev(`document.querySelector('.score')?.textContent`));
   await shot('result-1280');
+  // 模擬試験モード（時間を計る）
+  await open('#quiz', 1280, 860);
+  await ev(`document.querySelector('[data-timed]').click()`);
+  await ev(`document.querySelector('[data-start]').click()`); await sleep(1200);
+  check('模擬試験モードで残り時間を表示', await ev(`/残り \\d+:\\d\\d/.test(document.querySelector('.sess-timer')?.textContent || '')`), await ev(`document.querySelector('.sess-timer')?.textContent`));
+  await ev(`document.querySelector('[data-quit]').click()`);
+  await ev(`document.querySelector('[data-timed]')?.click()`);
   // 用語カード
   await open('#quiz', 1280, 860);
   await ev(`document.querySelector('[data-cards]').click()`); await sleep(500);
