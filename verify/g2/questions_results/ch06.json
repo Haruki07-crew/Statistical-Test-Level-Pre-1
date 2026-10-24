@@ -1,4 +1,12 @@
 {
+ "q06-fisher-three-principles-g1": {
+  "hash": "05307c382fe8e58f",
+  "ok": true
+ },
+ "q06-fisher-three-principles-g2": {
+  "hash": "41f7fe5bbced2b3f",
+  "ok": true
+ },
  "q06-observational-vs-experimental-1": {
   "hash": "02d9d59e78035b70",
   "ok": true
@@ -21,6 +29,22 @@
  },
  "q06-population-and-sample-3": {
   "hash": "dcda454383f18324",
+  "ok": true
+ },
+ "q06-sampling-and-nonsampling-error-g1": {
+  "hash": "9bda0ef466043b7d",
+  "ok": true
+ },
+ "q06-sampling-and-nonsampling-error-g2": {
+  "hash": "d568ba4861d82dcc",
+  "ok": true
+ },
+ "q06-simple-random-sampling-g1": {
+  "hash": "431a86e14a460798",
+  "ok": true
+ },
+ "q06-simple-random-sampling-g2": {
+  "hash": "d415b75378b251b3",
   "ok": true
  }
 }

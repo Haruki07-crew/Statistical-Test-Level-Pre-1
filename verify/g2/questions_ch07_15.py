@@ -39,6 +39,10 @@ q.check("q07-bayes-theorem-g2", abs(0.01 * 0.99 / (0.01 * 0.99 + 0.99 * 0.05) - 
 q.num("q07-bayes-theorem-g3", 0.5 * 0.4 / (0.5 * 0.4 + 0.5 * 0.8))
 box = rng.random(1_000_000) < 0.5; red = rng.random(1_000_000) < np.where(box, 0.4, 0.8)
 q.check("q07-bayes-theorem-g3", abs(box[red].mean() - 1 / 3) < 0.003, f"シミュレーション {box[red].mean():.4f}")
+q.num("q07-conditional-probability-g2", 50 / (50 + 30))
+A_, B_ = {2, 4, 6}, {1, 2, 3, 4}
+q.check("q07-independence-of-events-g1", abs(len(A_ & B_) / 6 - (len(A_) / 6) * (len(B_) / 6)) < 1e-12 and abs(len(A_ & {4, 5, 6}) / 6 - 1 / 4) > 0.05, "P(A∩B)=1/3=P(A)P(B)（answer=true）")
+q.num("q07-independence-of-events-g2", 0.3 + 0.5 - 0.3 * 0.5)
 run(q)
 
 q = Q(10)

@@ -3,7 +3,7 @@ id: anova-table
 title: 分散分析表の読み方
 reading: ぶんさんぶんせきひょうのよみかた
 en: Reading an ANOVA table
-aliases: [分散分析表, 平方和, 自由度, 平均平方, F比, 要因, 誤差, 残差]
+aliases: [分散分析表, 平方和, 自由度, 平均平方, F比, 要因, 誤差]
 chapter: 15
 importance: A
 tags: [分散分析, 実験計画, 検定]

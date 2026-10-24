@@ -139,3 +139,69 @@ questions:
     explanation: |
       行パーセントは行の合計、列パーセントは列の合計で割るので、一般に値は違います。
       何を比べたいか（どちらの変数ごとに分布を比べるか）に合わせて選びます。
+
+  # ---------- 共分散と相関係数（2級向けに書き直した用語） ----------
+  - id: q03-covariance-and-correlation-g1
+    term: covariance-and-correlation
+    level: 基本
+    type: numeric
+    question: |
+      2 つの変数 $x$、$y$ のデータについて、$\sum(x_i-\bar x)^2=25$、$\sum(y_i-\bar y)^2=64$、$\sum(x_i-\bar x)(y_i-\bar y)=30$ だった。相関係数を求めよ。
+    answer: 0.75
+    tolerance: 0.0001
+    hint: |
+      $r=\dfrac{\sum(x_i-\bar x)(y_i-\bar y)}{\sqrt{\sum(x_i-\bar x)^2\sum(y_i-\bar y)^2}}$。
+    explanation: |
+      $r=\dfrac{30}{\sqrt{25\times 64}}=\dfrac{30}{40}=0.75$ です。
+      偏差平方和の「積の平方根」で割ります。和で割ったり、平方根をとり忘れたりしないようにします。
+
+  - id: q03-covariance-and-correlation-g2
+    term: covariance-and-correlation
+    level: 標準
+    type: choice
+    question: |
+      変数 $x$ と $y$ の共分散は 12、相関係数は 0.6 だった。$x$ をすべて 2 倍して 10 を足した $u=2x+10$ と $y$ の共分散と相関係数の組合せはどれか。
+    choices:
+      - 共分散 24、相関係数 0.6
+      - 共分散 34、相関係数 1.2
+      - 共分散 12、相関係数 0.6
+      - 共分散 24、相関係数 1.2
+    answer: 0
+    hint: |
+      定数を足しても偏差は変わらない。2 倍すると偏差が 2 倍、標準偏差も 2 倍。
+    explanation: |
+      $u$ の偏差は $x$ の偏差の 2 倍なので、共分散は $2\times 12=24$ です。相関係数は、共分散も $u$ の標準偏差も 2 倍になって打ち消し合うので 0.6 のままです。
+      相関係数は −1 から 1 の範囲なので、1.2 にはなりません。
+
+  # ---------- 擬似相関（2級向けに書き直した用語） ----------
+  - id: q03-spurious-correlation-g1
+    term: spurious-correlation
+    level: 基本
+    type: choice
+    question: |
+      ある地域の火事の記録で、「出動した消防車の台数」と「火事による損害額」には強い正の相関があった。この相関の解釈として最も適切なものはどれか。
+    choices:
+      - 火事の規模が大きいほど、消防車も多く出動し、損害額も大きくなるため、見かけの相関が生じている
+      - 消防車が多く出動するほど損害額が増えるので、出動する台数を減らすべきである
+      - 損害額が大きいと消防車の台数が増えるという因果関係が示された
+      - 相関が強いので、2 つの変数の間に第 3 の変数の影響はない
+    answer: 0
+    hint: |
+      両方に影響する第 3 の変数を考える。
+    explanation: |
+      火事の規模という第 3 の変数が、消防車の台数と損害額の両方を大きくしています。火事の規模が同じくらいの火事どうしで比べれば、この相関は弱くなる（消えたり逆になったりする）と考えられます。
+      相関が強いことは、第 3 の変数がないことの証拠にはなりません。
+
+  - id: q03-spurious-correlation-g2
+    term: spurious-correlation
+    level: 標準
+    type: numeric
+    question: |
+      3 つの変数の相関係数が $r_{xy}=0.5$、$r_{xz}=0.6$、$r_{yz}=0.5$ だった。$z$ の影響を除いた $x$ と $y$ の偏相関係数を小数第 2 位まで求めよ。
+    answer: 0.29
+    tolerance: 0.005
+    hint: |
+      $r_{xy\cdot z}=\dfrac{r_{xy}-r_{xz}r_{yz}}{\sqrt{(1-r_{xz}^2)(1-r_{yz}^2)}}$。
+    explanation: |
+      分子は $0.5-0.6\times 0.5=0.2$、分母は $\sqrt{0.64\times 0.75}=\sqrt{0.48}\approx 0.693$ なので、$0.2/0.693\approx 0.29$ です。
+      0.5 の相関の一部は $z$ を通じたものでしたが、$z$ の影響を除いても弱い正の相関が残ります。

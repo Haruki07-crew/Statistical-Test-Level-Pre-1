@@ -121,6 +121,48 @@ questions:
       $P(\text{眼鏡}\mid\text{女子})=9/15=0.6$ とは条件の向きが逆なので注意します。
 
   # ---------- ベイズの定理（共通の用語・2級の問題） ----------
+  - id: q07-conditional-probability-g2
+    term: conditional-probability
+    level: 標準
+    type: numeric
+    question: |
+      ある会社の社員は男性 200 人（うち喫煙者 50 人）、女性 300 人（うち喫煙者 30 人）である。喫煙者から 1 人を選んだとき、その人が男性である確率を求めよ。
+    answer: 0.625
+    tolerance: 0.0001
+    hint: |
+      条件は「喫煙者」なので、喫煙者の合計を分母にする。
+    explanation: |
+      喫煙者は $50+30=80$ 人、そのうち男性は 50 人なので、$50/80=0.625$ です。
+      $50/200=0.25$ は「男性が喫煙者である確率」で、条件が逆です。
+
+  # ---------- 事象の独立（2級向けに書き直した用語） ----------
+  - id: q07-independence-of-events-g1
+    term: independence-of-events
+    level: 基本
+    type: truefalse
+    question: |
+      さいころを 1 回振る。事象 $A$「偶数の目が出る」と事象 $B$「4 以下の目が出る」は独立である。
+    answer: true
+    hint: |
+      $P(A\cap B)$ と $P(A)P(B)$ を比べる。
+    explanation: |
+      正しい記述です。$P(A)=1/2$、$P(B)=2/3$、$P(A\cap B)=P(\{2,4\})=1/3$ で、$P(A)P(B)=1/3$ と等しいので独立です。
+      一方、「4 以上の目が出る」事象 $C$ とは、$P(A\cap C)=1/3\ne P(A)P(C)=1/4$ で独立ではありません。
+
+  - id: q07-independence-of-events-g2
+    term: independence-of-events
+    level: 標準
+    type: numeric
+    question: |
+      独立な事象 $A$、$B$ について $P(A)=0.3$、$P(B)=0.5$ である。$P(A\cup B)$ を求めよ。
+    answer: 0.65
+    tolerance: 0.0001
+    hint: |
+      独立なら $P(A\cap B)=P(A)P(B)$。加法定理に入れる。
+    explanation: |
+      $P(A\cup B)=0.3+0.5-0.3\times 0.5=0.65$ です。余事象を使って $1-0.7\times 0.5=0.65$ と求めることもできます。
+      排反と取り違えて $0.3+0.5=0.8$ としないようにします。
+
   - id: q07-bayes-theorem-g1
     term: bayes-theorem
     level: 標準

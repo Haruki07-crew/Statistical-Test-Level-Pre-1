@@ -1,4 +1,12 @@
 {
+ "q03-covariance-and-correlation-g1": {
+  "hash": "883efc5d0df0897c",
+  "ok": true
+ },
+ "q03-covariance-and-correlation-g2": {
+  "hash": "12934bad39ad899e",
+  "ok": true
+ },
  "q03-cross-tabulation-1": {
   "hash": "1106a7142fb77530",
   "ok": true
@@ -21,6 +29,14 @@
  },
  "q03-scatter-plot-3": {
   "hash": "dbc655d87d82702c",
+  "ok": true
+ },
+ "q03-spurious-correlation-g1": {
+  "hash": "f1c75592917c34a7",
+  "ok": true
+ },
+ "q03-spurious-correlation-g2": {
+  "hash": "d11cb4b2b2b1eb8d",
   "ok": true
  },
  "q03-stratified-scatter-1": {

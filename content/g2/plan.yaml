@@ -88,7 +88,6 @@ chapters:
     title: 共分散と相関係数
     importance: A
     status: verified
-    from: pre1
   - id: correlation-matrix
     title: 相関係数行列
     importance: B
@@ -102,7 +101,6 @@ chapters:
     title: 擬似相関
     importance: A
     status: verified
-    from: pre1
   - id: partial-correlation-coefficient
     title: 偏相関係数
     importance: B
@@ -132,12 +130,10 @@ chapters:
     title: 決定係数
     importance: A
     status: verified
-    from: pre1
   - id: residual
     title: 残差
     importance: A
     status: verified
-    from: pre1
   - id: residual-plot
     title: 残差プロット
     importance: B
@@ -201,7 +197,6 @@ chapters:
     title: 単純無作為抽出
     importance: A
     status: verified
-    from: pre1
   - id: systematic-sampling
     title: 系統抽出法
     importance: B
@@ -226,7 +221,6 @@ chapters:
     title: 標本誤差と非標本誤差
     importance: A
     status: verified
-    from: pre1
   - id: nonresponse-bias
     title: 無回答バイアス
     importance: C
@@ -236,7 +230,6 @@ chapters:
     title: フィッシャーの3原則
     importance: A
     status: verified
-    from: pre1
 - 'no': 7
   title: 確率
   terms:
@@ -252,12 +245,10 @@ chapters:
     title: 条件付き確率と乗法定理
     importance: A
     status: verified
-    from: pre1
   - id: independence-of-events
     title: 事象の独立
     importance: A
     status: verified
-    from: pre1
   - id: law-of-total-probability
     title: 全確率の公式
     importance: B

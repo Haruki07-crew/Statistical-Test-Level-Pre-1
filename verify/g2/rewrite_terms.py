@@ -233,6 +233,34 @@ T = "sum-of-squares-decomposition"
 g3 = [np.array([1, 2, 3.]), np.array([4, 5, 6.]), np.array([7, 8, 9.])]
 check(T, "S_T=60・S_A=54・S_E=6・90%・F=27", ((np.concatenate(g3) - 5) ** 2).sum() == 60 and sum(3 * (x.mean() - 5) ** 2 for x in g3) == 54 and sum(((x - x.mean()) ** 2).sum() for x in g3) == 6 and close(54 / 60, .9, 1e-12) and close(stats.f_oneway(*g3).statistic, 27, 1e-9), None)
 
+T = "covariance-and-correlation"
+xc = np.array([2, 4, 6, 8, 10.]); yc = np.array([50, 60, 58, 72, 80.])
+check(T, "平均 6・64・偏差の積の和 144・共分散 28.8（n−1 なら 36）・40・568・r≈0.955", xc.mean() == 6 and yc.mean() == 64 and close(((xc - 6) * (yc - 64)).sum(), 144, 1e-9) and close(144 / 5, 28.8, 1e-12) and close(np.cov(xc, yc)[0, 1], 36, 1e-9) and close(((xc - 6) ** 2).sum(), 40, 1e-9) and close(((yc - 64) ** 2).sum(), 568, 1e-9) and close(np.corrcoef(xc, yc)[0, 1], .955, 5e-4), np.corrcoef(xc, yc)[0, 1])
+T = "spurious-correlation"
+check(T, "例2 偏相関 (0.56−0.7×0.8)/√(0.51×0.36)=0", close((0.56 - 0.7 * 0.8) / sqrt(0.51 * 0.36), 0, 1e-12) and close(0.51 * 0.36, 0.1836, 1e-12), None)
+T = "coefficient-of-determination"
+check(T, "1−90/250=0.64・160・r=±0.8", close(1 - 90 / 250, .64, 1e-12) and 250 - 90 == 160 and close(sqrt(.64), .8, 1e-12), None)
+Xm = rng.normal(size=(200, 3)); ym = Xm @ [1, -2, .5] + rng.normal(size=200); Am = np.c_[np.ones(200), Xm]; yh = Am @ np.linalg.lstsq(Am, ym, rcond=None)[0]
+check("coefficient-of-determination", "重回帰の R² = corr(y, ŷ)²", close(1 - ((ym - yh) ** 2).sum() / ((ym - ym.mean()) ** 2).sum(), np.corrcoef(ym, yh)[0, 1] ** 2, 1e-9), None)
+T = "residual"
+xr = np.array([1, 2, 3, 4, 5.]); yr = np.array([3, 7, 5, 11, 9.]); br, ar = np.polyfit(xr, yr, 1); er = yr - ar - br * xr
+check(T, "ŷ=2.2+1.6x・予測 3.8〜10.2・残差 −0.8, 1.6, −2.0, 2.4, −1.2・合計 0・14.4・s≈2.19", close(ar, 2.2, 1e-9) and close(br, 1.6, 1e-9) and np.allclose(ar + br * xr, [3.8, 5.4, 7.0, 8.6, 10.2]) and np.allclose(er, [-.8, 1.6, -2, 2.4, -1.2]) and close(er.sum(), 0, 1e-9) and close((er ** 2).sum(), 14.4, 1e-9) and close(sqrt(14.4 / 3), 2.19, 0.005) and close((er * xr).sum(), 0, 1e-9), None)
+T = "simple-random-sampling"
+import itertools
+ms = [np.mean(c) for c in itertools.combinations([2, 4, 6, 8], 2)]
+check(T, "6 通りの標本平均 3,4,5,5,6,7・平均 5・分散 10/6・公式 5/2×2/3", sorted(ms) == [3, 4, 5, 5, 6, 7] and close(np.mean(ms), 5, 1e-12) and close(np.var(ms), 10 / 6, 1e-12) and close(np.var([2, 4, 6, 8]), 5, 1e-12) and close(5 / 2 * 2 / 3, 10 / 6, 1e-12), None)
+T = "sampling-and-nonsampling-error"
+check(T, "図の値 √(0.25/n)・√(0.25/n+0.03²)・表 0.058・0.034・0.030", np.allclose([round(sqrt(.25 / n_), 4) for n_ in (100, 200, 500, 1000, 2000, 5000, 10000)], [0.05, 0.0354, 0.0224, 0.0158, 0.0112, 0.0071, 0.005]) and np.allclose([round(sqrt(.25 / n_ + .03 ** 2), 4) for n_ in (100, 200, 500, 1000, 2000, 5000, 10000)], [0.0583, 0.0464, 0.0374, 0.0339, 0.032, 0.0308, 0.0304]) and close(sqrt(.05 ** 2 + .03 ** 2), .058, 5e-4) and close(sqrt(.016 ** 2 + .03 ** 2), .034, 5e-4) and close(sqrt(.005 ** 2 + .03 ** 2), .030, 5e-4), None)
+T = "fisher-three-principles"
+d_ = np.array([[10, 12.5, 13.5], [14.5, 16, 18], [18, 20.5, 22], [21.5, 24, 26.5]]); gm_ = d_.mean()
+ST_ = ((d_ - gm_) ** 2).sum(); SA_ = 4 * ((d_.mean(0) - gm_) ** 2).sum(); SB_ = 3 * ((d_.mean(1) - gm_) ** 2).sum()
+check(T, "平均 16・18.25・20・誤差の平均平方 26.806 → 0.194・F 0.60 → 82.7", np.allclose(d_.mean(0), [16, 18.25, 20]) and close((ST_ - SA_) / 9, 26.806, 5e-4) and close((ST_ - SA_ - SB_) / 6, .194, 5e-4) and close((SA_ / 2) / ((ST_ - SA_) / 9), .60, 1e-9) and close((SA_ / 2) / ((ST_ - SA_ - SB_) / 6), 82.7, 0.05) and close(stats.f_oneway(*d_.T).statistic, .6, 1e-9), None)
+T = "conditional-probability"
+check(T, "例1 120/600=0.20・120/160=0.75・図の値 P(B)=0.6×0.2+0.4×0.1=0.16", close(120 / 600, .2, 1e-12) and close(120 / 160, .75, 1e-12) and close(.6 * .2 + .4 * (1 - .9), .16, 1e-12) and close(.6 * .2 / .16, .75, 1e-12), None)
+check(T, "例2 3/10×2/9=6/90≈0.067", close(3 / 10 * 2 / 9, 6 / 90, 1e-12) and close(6 / 90, .067, 5e-4), None)
+T = "independence-of-events"
+check(T, "A∩B={2,4}: 1/3=1/2×2/3（独立）・A∩C={4,6}: 1/3≠1/4・P(A|C)=2/3・図 P(B|Aᶜ)=2/3", close(2 / 6, .5 * 4 / 6, 1e-12) and abs(2 / 6 - .5 * .5) > .05 and close(2 / 3, 2 / 3, 0) and close(1 - 0.3333, 2 / 3, 1e-4) and close(0.6667, 2 / 3, 1e-4), None)
+
 ng = results.count(False)
 print(f"書き直した共通の用語の検算: OK {len(results) - ng} / NG {ng}")
 sys.exit(1 if ng else 0)

@@ -105,3 +105,61 @@ questions:
     explanation: |
       誤りです。2 乗すると大きなずれほど強く数えられるので、外れた点に直線が大きく引き寄せられます。
       例えば $(1,2),(2,4),(3,5),(4,4),(5,6)$ の傾きは 0.8 ですが、最後の点を $(5,\ 12)$ にすると傾きは 2.0 になります。散布図で外れた点を確かめてから当てはめます。
+
+  # ---------- 決定係数（2級向けに書き直した用語） ----------
+  - id: q04-coefficient-of-determination-g1
+    term: coefficient-of-determination
+    level: 基本
+    type: numeric
+    question: |
+      ある単回帰分析で、目的変数の全体の平方和は 400、残差平方和は 100 だった。決定係数を求めよ。
+    answer: 0.75
+    tolerance: 0.0001
+    hint: |
+      $R^2=1-(\text{残差平方和})/(\text{全体の平方和})$。
+    explanation: |
+      $1-100/400=0.75$ です。目的変数の変動の 75% が回帰で説明されます。
+      $100/400=0.25$ は、説明されずに残った割合です。
+
+  - id: q04-coefficient-of-determination-g2
+    term: coefficient-of-determination
+    level: 標準
+    type: choice
+    question: |
+      単回帰分析で、回帰直線の傾きは負、決定係数は 0.81 だった。相関係数はいくらか。
+    choices:
+      - '−0.9'
+      - '0.9'
+      - '−0.81'
+      - '0.81'
+    answer: 0
+    hint: |
+      単回帰では決定係数は相関係数の 2 乗。符号は傾きの符号と同じ。
+    explanation: |
+      $|r|=\sqrt{0.81}=0.9$ で、傾きが負なので $r=-0.9$ です。決定係数からは符号がわからないので、傾きの符号で決めます。
+
+  # ---------- 残差（2級向けに書き直した用語） ----------
+  - id: q04-residual-g1
+    term: residual
+    level: 基本
+    type: numeric
+    question: |
+      回帰直線 $\hat y=30+0.5x$ が得られた。$x=40$ で $y=47$ のデータの残差を求めよ。
+    answer: -3
+    tolerance: 0.001
+    hint: |
+      残差 ＝ 実際の値 − 予測値。
+    explanation: |
+      予測値は $30+0.5\times 40=50$ なので、残差は $47-50=-3$ です。負の残差は、そのデータが回帰直線より下にある（予測より小さい）ことを表します。
+
+  - id: q04-residual-g2
+    term: residual
+    level: 基本
+    type: truefalse
+    question: |
+      切片を含む単回帰を最小二乗法で当てはめたとき、当てはまりが悪いデータほど、残差の合計は大きな正の値になる。
+    answer: false
+    hint: |
+      最小二乗法の直線は平均の点 $(\bar x,\bar y)$ を通る。
+    explanation: |
+      誤りです。切片を含む最小二乗法では、当てはまりのよしあしにかかわらず残差の合計は必ず 0 になります。当てはまりの悪さは、残差の 2 乗の合計（残差平方和）や決定係数で見ます。

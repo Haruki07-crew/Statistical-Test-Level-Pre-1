@@ -34,6 +34,13 @@ t = np.array([[40, 60], [20, 80]])
 q.num("q03-cross-tabulation-1", np.outer(t.sum(1), t.sum(0))[0, 0] / t.sum())
 q.check("q03-cross-tabulation-2", round(56 / 86 * 100) == 65 and chosen(q, "q03-cross-tabulation-2") == "65%" and round(56 / 80 * 100) == 70 and round(86 / 200 * 100) == 43, "56/86≈65%（70%・43%・25% は別の割合）")
 q.check("q03-cross-tabulation-3", 30 / 120 != 30 / 86, "行と列で分母が違う（answer=false）")
+q.num("q03-covariance-and-correlation-g1", 30 / np.sqrt(25 * 64))
+xc = np.array([1, 3, 4, 6, 9.]); yc = np.array([2, 5, 4, 8, 9.]); uc = 2 * xc + 10
+q.check("q03-covariance-and-correlation-g2", abs(np.cov(uc, yc)[0, 1] - 2 * np.cov(xc, yc)[0, 1]) < 1e-9 and abs(np.corrcoef(uc, yc)[0, 1] - np.corrcoef(xc, yc)[0, 1]) < 1e-12 and chosen(q, "q03-covariance-and-correlation-g2") == "共分散 24、相関係数 0.6", "u=2x+10 で共分散 2 倍・相関係数は不変")
+rs = np.random.default_rng(31); size = rs.normal(0, 1, 5000); trucks = size + 0.5 * rs.normal(0, 1, 5000); loss = size + 0.5 * rs.normal(0, 1, 5000)
+rr = np.corrcoef(trucks, loss)[0, 1]; part = [np.corrcoef(trucks[m], loss[m])[0, 1] for m in (size < -0.5, np.abs(size) <= 0.5, size > 0.5)]
+q.check("q03-spurious-correlation-g1", rr > 0.7 and max(abs(np.array(part))) < 0.6 and chosen(q, "q03-spurious-correlation-g1").startswith("火事の規模が大きいほど"), f"規模が両方に影響すると r={rr:.2f}、規模で層別すると {np.round(part, 2)}")
+q.num("q03-spurious-correlation-g2", (0.5 - 0.6 * 0.5) / np.sqrt((1 - 0.36) * (1 - 0.25)))
 run(q)
 
 # ---------- 第4章 ----------
@@ -55,6 +62,11 @@ q.num("q04-least-squares-method-g2", sy / n_ - b_ls * sx / n_)
 q.check("q04-least-squares-method-g2", abs(b_ls - 1.5) < 1e-12 and abs(sxy / sxx - 2.39) < 0.005, "傾き 1.5・誤り 215/90≈2.39")
 y12 = ys.copy(); y12[4] = 12
 q.check("q04-least-squares-method-g3", abs(bs - 0.8) < 1e-9 and abs(np.polyfit(xs, y12, 1)[0] - 2.0) < 1e-9, "傾き 0.8 → 2.0（answer=false）")
+q.num("q04-coefficient-of-determination-g1", 1 - 100 / 400)
+q.check("q04-coefficient-of-determination-g2", chosen(q, "q04-coefficient-of-determination-g2") == "−0.9" and abs(np.sqrt(0.81) - 0.9) < 1e-12, "√0.81=0.9、傾きが負なので −0.9")
+q.num("q04-residual-g1", 47 - (30 + 0.5 * 40))
+xr = np.array([1, 3, 4, 8, 9.]); yr = np.array([2, 9, 4, 3, 12.]); br, ar = np.polyfit(xr, yr, 1)
+q.check("q04-residual-g2", abs((yr - ar - br * xr).sum()) < 1e-9 and np.corrcoef(xr, yr)[0, 1] < 0.6, "当てはまりの悪いデータでも残差の合計は 0（answer=false）")
 run(q)
 
 # ---------- 第5章 ----------
@@ -96,5 +108,15 @@ q.check("q06-population-and-sample-1", chosen(q, "q06-population-and-sample-1").
 pop = rng.random(1_000_000) < 0.4; volunteer = rng.random(1_000_000) < np.where(pop, 0.02, 0.005)
 q.check("q06-population-and-sample-2", abs(pop[volunteer].mean() - 0.4) > 0.2 and volunteer.sum() > 10000, f"偏った 1 万件以上でも推定 {pop[volunteer].mean():.2f}（真 0.40、answer=false）")
 q.num("q06-population-and-sample-3", 400 * (0.02 / 0.01) ** 2)
+q.check("q06-simple-random-sampling-g1", chosen(q, "q06-simple-random-sampling-g1").startswith("学生名簿の全員に番号を付け"), "名簿と乱数")
+q.num("q06-simple-random-sampling-g2", 200 / 8000)
+rs6 = np.random.default_rng(6); hit6 = np.mean([0 in rs6.choice(8000, 200, replace=False) for _ in range(40000)])
+q.check("q06-simple-random-sampling-g2", abs(hit6 - 0.025) < 0.003, f"番号 0 の学生が選ばれた割合 {hit6:.4f}")
+q.check("q06-sampling-and-nonsampling-error-g1", chosen(q, "q06-sampling-and-nonsampling-error-g1").startswith("無作為に選んだ標本に、たまたま"), "選ばれ方の偶然 → 標本誤差")
+q.concept("q06-sampling-and-nonsampling-error-g2", "全数調査でも非標本誤差は生じる（answer=false）")
+q.check("q06-fisher-three-principles-g1", chosen(q, "q06-fisher-three-principles-g1") == "無作為化", "乱数による割り付け")
+d_ = np.array([[10, 12.5, 13.5], [14.5, 16, 18], [18, 20.5, 22], [21.5, 24, 26.5]]); gm_ = d_.mean()
+ST_ = ((d_ - gm_) ** 2).sum(); SA_ = 4 * ((d_.mean(0) - gm_) ** 2).sum(); SB_ = 3 * ((d_.mean(1) - gm_) ** 2).sum()
+q.check("q06-fisher-three-principles-g2", (ST_ - SA_) / 9 > 100 * (ST_ - SA_ - SB_) / 6 and chosen(q, "q06-fisher-three-principles-g2").startswith("区域の違いによる変動を誤差から取り除き"), f"誤差の平均平方 {(ST_ - SA_) / 9:.3f} → {(ST_ - SA_ - SB_) / 6:.3f}")
 run(q)
 raise SystemExit(1 if ng else 0)

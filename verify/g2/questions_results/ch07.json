@@ -15,6 +15,10 @@
   "hash": "367c266abf2a8e1a",
   "ok": true
  },
+ "q07-conditional-probability-g2": {
+  "hash": "e3bfb9281d2b39d6",
+  "ok": true
+ },
  "q07-counting-1": {
   "hash": "206108523c3a8ca8",
   "ok": true
@@ -41,6 +45,14 @@
  },
  "q07-events-and-probability-4": {
   "hash": "d1f701e5cf3d9003",
+  "ok": true
+ },
+ "q07-independence-of-events-g1": {
+  "hash": "9f0175bc72a33b36",
+  "ok": true
+ },
+ "q07-independence-of-events-g2": {
+  "hash": "6d64700ed4507003",
   "ok": true
  }
 }
