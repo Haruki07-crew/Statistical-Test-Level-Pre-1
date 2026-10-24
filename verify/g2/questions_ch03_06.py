@@ -43,6 +43,8 @@ q.check("q03-spurious-correlation-g1", rr > 0.7 and max(abs(np.array(part))) < 0
 q.num("q03-spurious-correlation-g2", (0.5 - 0.6 * 0.5) / np.sqrt((1 - 0.36) * (1 - 0.25)))
 q.check("q03-correlation-matrix-g1", chosen(q, "q03-correlation-matrix-g1") == "来客数と雨量" and max([("来客数と気温", .45), ("来客数と雨量", -.82), ("気温と雨量", -.30)], key=lambda t: abs(t[1]))[0] == "来客数と雨量", "絶対値の最大は 0.82")
 q.num("q03-partial-correlation-coefficient-g1", (0.6 - 0.5 * 0.4) / np.sqrt(0.75 * 0.84))
+q.num("q03-simpsons-paradox-g1", (30 * .8 + 70 * .4) / 100)
+q.check("q03-simpsons-paradox-g1", (80 * .7 + 20 * .3) / 100 == 0.62 and .8 > .7 and .4 > .3, "A さんは 0.62（どちらの種類でも B が高いのに全体では A）")
 run(q)
 
 # ---------- 第4章 ----------
@@ -99,6 +101,12 @@ q.num("q05-moving-average-1", (15 + 18 + 13) / 3)
 yv = np.array([3., 8, 1, 6, 9])
 centered = 0.5 * ((yv[0:4].sum()) / 4 + (yv[1:5].sum()) / 4)
 q.check("q05-moving-average-2", abs(centered - np.dot([1 / 8, 1 / 4, 1 / 4, 1 / 4, 1 / 8], yv)) < 1e-12 and chosen(q, "q05-moving-average-2").startswith("両端が 1/8"), "重み 1/8・1/4・1/4・1/4・1/8")
+ar = [0.0]; rr5 = np.random.default_rng(5)
+for _ in range(5000): ar.append(-0.6 * ar[-1] + rr5.normal())
+ar = np.array(ar[1:]); r1_ = np.corrcoef(ar[:-1], ar[1:])[0, 1]
+q.check("q05-autocovariance-autocorrelation-g1", r1_ < -0.5 and np.mean(np.sign(np.diff(ar[:-1])) != np.sign(np.diff(ar[1:]))) > 0.6 and chosen(q, "q05-autocovariance-autocorrelation-g1").startswith("前の時点より大きい値の次は小さい値"), f"ラグ 1 の自己相関 {r1_:.2f} の系列で上がり下がりが入れかわる割合 {np.mean(np.sign(np.diff(ar[:-1])) != np.sign(np.diff(ar[1:]))):.2f}")
+tq = np.arange(80); yq = 50 + 8 * np.array([1, 0, -1, 0] * 20) + rr5.normal(0, 1, 80); yq -= yq.mean(); acq = lambda k: (yq[:-k] * yq[k:]).sum() / (yq ** 2).sum()
+q.check("q05-correlogram-g1", acq(4) > 0.7 and acq(8) > 0.7 and acq(2) < -0.3 and acq(6) < -0.3 and chosen(q, "q05-correlogram-g1") == "1 年（4 四半期）周期の季節変動がある", f"4 期周期の系列でラグ 2・4・6・8 の自己相関 {acq(2):.2f}・{acq(4):.2f}・{acq(6):.2f}・{acq(8):.2f}")
 run(q)
 
 # ---------- 第6章 ----------

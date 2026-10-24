@@ -109,7 +109,6 @@ chapters:
     title: シンプソンのパラドックス
     importance: B
     status: verified
-    from: pre1
 - 'no': 4
   title: 単回帰と予測
   terms:
@@ -164,12 +163,10 @@ chapters:
     title: 自己共分散・自己相関
     importance: B
     status: verified
-    from: pre1
   - id: correlogram
     title: コレログラム
     importance: B
     status: verified
-    from: pre1
   - id: seasonal-adjustment
     title: 季節調整
     importance: C
@@ -265,7 +262,6 @@ chapters:
     title: 同時確率関数
     importance: B
     status: verified
-    from: pre1
   - id: marginal-distribution
     title: 周辺分布
     importance: C
@@ -335,7 +331,6 @@ chapters:
     title: チェビシェフの不等式
     importance: B
     status: verified
-    from: pre1
   - id: weak-law-of-large-numbers
     title: 大数の弱法則
     importance: A

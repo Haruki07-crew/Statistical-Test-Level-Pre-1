@@ -36,6 +36,7 @@ q.check("q08-sum-of-random-variables-g1", abs(np.var(rng.binomial(20, .4, 1_000_
 uu = rng.random((1_000_000, 2)).sum(1)
 q.check("q08-sum-of-random-variables-g2", chosen(q, "q08-sum-of-random-variables-g2").startswith("平均 2 と平均 3 のポアソン分布の和") and abs(np.mean(uu < 0.5) - 0.125) < 0.002, f"一様分布 2 つの和は三角形（P(<0.5)={np.mean(uu < 0.5):.4f}、一様なら 0.25）")
 q.num("q08-cumulative-distribution-function-g1", 0.8 - 0.35)
+q.num("q08-joint-probability-function-g1", 0.25 / (0.15 + 0.25))
 run(q)
 
 q = Q(9)

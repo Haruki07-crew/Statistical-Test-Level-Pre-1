@@ -98,6 +98,8 @@ fl = rng.random((200000, 7)) < 0.5; six = fl[:, :6].all(1)
 q.check("q10-weak-law-of-large-numbers-g3", abs(np.mean(~fl[six, 6]) - 0.5) < 0.05, f"表が 6 回続いたあとの裏の割合 {np.mean(~fl[six, 6]):.3f}（answer=false）")
 bb = stats.binom(40, .3); nn = stats.norm(12, sqrt(40 * .3 * .7))
 q.check("q10-continuity-correction-g1", chosen(q, "q10-continuity-correction-g1") == "11.5 以上" and abs(nn.sf(11.5) - bb.sf(11)) < abs(nn.sf(12.5) - bb.sf(11)) and abs(nn.sf(11.5) - bb.sf(11)) < abs(nn.sf(12) - bb.sf(11)), f"B(40,0.3) の P(X≥12)={bb.sf(11):.4f}：11.5 以上 {nn.sf(11.5):.4f}・12 以上 {nn.sf(12):.4f}・12.5 以上 {nn.sf(12.5):.4f}")
+q.num("q10-chebyshev-inequality-g1", 1 - 1 / 2.5 ** 2)
+q.check("q10-chebyshev-inequality-g1", abs(1 - 2 * stats.norm.sf(2.5) - 0.988) < 5e-4 and np.mean(np.abs(rng.exponential(4, 1_000_000) - 4) < 10) >= 0.84, "正規分布なら 0.988・指数分布（平均 4・SD 4）でも下限 0.84 を満たす")
 run(q)
 
 q = Q(14)

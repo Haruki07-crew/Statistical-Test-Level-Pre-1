@@ -1,4 +1,12 @@
 {
+ "q05-autocovariance-autocorrelation-g1": {
+  "hash": "22cff06df46f25fe",
+  "ok": true
+ },
+ "q05-correlogram-g1": {
+  "hash": "f9e988a35f01a447",
+  "ok": true
+ },
  "q05-growth-rate-1": {
   "hash": "80948ff1fefe4b0d",
   "ok": true

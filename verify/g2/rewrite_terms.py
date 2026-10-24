@@ -384,6 +384,23 @@ check(T, "平均 35.3・38.7・42.0／33.7・39.0・43.3・S_A≈66.7・S_B≈14
 T = "main-effect-and-interaction"
 check(T, "B2 の効果 6 と 18・交互作用の目安 12・肥料の主効果 12・品種の主効果 10", 56 - 50 == 6 and 72 - 54 == 18 and 18 - 6 == 12 and (6 + 18) / 2 == 12 and ((54 - 50) + (72 - 56)) / 2 == 10, None)
 
+T = "simpsons-paradox"
+check(T, "A：小口 56/80=70%・大口 6/20=30%・全体 62%／B：24/30=80%・28/70=40%・全体 52%", 56 / 80 == .7 and 6 / 20 == .3 and (56 + 6) / 100 == .62 and 24 / 30 == .8 and 28 / 70 == .4 and (24 + 28) / 100 == .52, None)
+T = "autocovariance-autocorrelation"
+xa_ = np.array([3, 5, 4, 6, 7, 6, 8.]); ma_ = xa_.mean(); ca_ = lambda k: ((xa_[:7 - k] - ma_) * (xa_[k:] - ma_)).sum() / 7
+check(T, "平均≈5.57・c0≈2.53・c1≈0.57・r1≈0.22・r2≈0.29・±2/√n", close(ma_, 5.57, 0.005) and close(ca_(0), 2.53, 0.005) and close(ca_(1), .57, 0.005) and close(ca_(1) / ca_(0), .22, 0.005) and close(ca_(2) / ca_(0), .29, 0.005), (ca_(1) / ca_(0), ca_(2) / ca_(0)))
+T = "correlogram"
+rs_ = np.random.default_rng(12); ys_ = 100 + 10 * np.sin(2 * np.pi * np.arange(72) / 12) + rs_.normal(0, 3, 72); yc_ = ys_ - ys_.mean()
+acf_ = [round((yc_[:72 - k] * yc_[k:]).sum() / (yc_ ** 2).sum(), 2) + 0.0 for k in range(1, 25)]
+check(T, "図の値（同じ乱数の種で再計算）・±2/√72≈0.24", np.allclose(acf_, [0.78, 0.47, 0.03, -0.36, -0.65, -0.76, -0.67, -0.43, -0.06, 0.31, 0.59, 0.70, 0.61, 0.35, 0.01, -0.34, -0.57, -0.67, -0.56, -0.33, 0.00, 0.30, 0.51, 0.59], atol=0.005) and close(2 / sqrt(72), .24, 0.005), None)
+T = "joint-probability-function"
+JT = np.array([[.10, .20], [.15, .25], [.05, .25]]); pxj = JT.sum(1); pyj = JT.sum(0)
+EXj = (np.arange(3) * pxj).sum(); EYj = pyj[1]; EXYj = sum(i * j * JT[i, j] for i in range(3) for j in range(2))
+check(T, "周辺 0.3・0.4・0.3／0.3・0.7・0.09≠0.10・P(Y=1|X=2)≈0.83・E[X]=1・E[Y]=0.7・E[XY]=0.75・Cov=0.05", np.allclose(pxj, [.3, .4, .3]) and np.allclose(pyj, [.3, .7]) and close(pxj[0] * pyj[0], .09, 1e-12) and close(JT[2, 1] / pxj[2], .83, 0.005) and close(EXj, 1, 1e-12) and close(EYj, .7, 1e-12) and close(EXYj, .75, 1e-12) and close(EXYj - EXj * EYj, .05, 1e-12), None)
+T = "chebyshev-inequality"
+check(T, "図の値 1/k² と正規分布の 2P(Z≥k)・表 25%・11.1%・6.3%・75%・88.9%・93.8%", np.allclose([round(1 / k ** 2, 4) for k in (1, 1.5, 2, 2.5, 3, 3.5, 4)], [1, 0.4444, 0.25, 0.16, 0.1111, 0.0816, 0.0625]) and np.allclose([round(2 * stats.norm.sf(k), 4) for k in (1, 1.5, 2, 2.5, 3, 3.5, 4)], [0.3173, 0.1336, 0.0455, 0.0124, 0.0027, 0.0005, 0.0001]) and close(1 / 9, .111, 5e-4) and close(1 / 16, .0625, 1e-12) and close(1 - 1 / 16, .9375, 1e-12), None)
+check(T, "例 54〜86 は 2 標準偏差・46〜94 は 3 標準偏差・正規分布なら 95.4%", (70 - 54) / 8 == 2 and (94 - 70) / 8 == 3 and close(1 - 2 * stats.norm.sf(2), .954, 5e-4), None)
+
 ng = results.count(False)
 print(f"書き直した共通の用語の検算: OK {len(results) - ng} / NG {ng}")
 sys.exit(1 if ng else 0)
