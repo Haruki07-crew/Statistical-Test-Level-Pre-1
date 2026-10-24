@@ -227,16 +227,26 @@ v1 = V[:, -1]
 zv = np.array([1.2, 0.3, -0.6])
 E.choice("s22p11a", f"${f(np.sum((zv - (v1 @ zv) * v1) ** 2), 2)}$", "numpy の固有ベクトルで射影")
 E.check("s22p11a", abs(w[-1] - 2.2) < 1e-9, "最大固有値 2.2")
-Lr = np.array([[0.8, 0.1], [0.7, 0.2], [0.1, 0.8], [0.2, 0.7]])
-Vv = np.sum(np.var(Lr ** 2, axis=0))
-E.choice("s22p11b", f"${f(Vv, 3)}$", "numpy で列ごとの 2 乗の分散の和")
-th = np.pi / 4
-L0 = Lr @ np.array([[np.cos(th), -np.sin(th)], [np.sin(th), np.cos(th)]])
-E.check("s22p11b", np.allclose((L0 ** 2).sum(1), (Lr ** 2).sum(1)) and np.sum(np.var(L0 ** 2, axis=0)) < Vv, "回転で共通性不変・回転前の基準は小さい")
-# 回転角を全探索するとバリマックス基準は回転後の解（角度 0）で最大
-angs = np.linspace(-np.pi / 4, np.pi / 4, 721)
-vals = [np.sum(np.var((Lr @ np.array([[np.cos(t_), -np.sin(t_)], [np.sin(t_), np.cos(t_)]])) ** 2, axis=0)) for t_ in angs]
-E.check("s22p11b", abs(angs[int(np.argmax(vals))]) < 0.01, "角度の全探索で最大は与えた解")
+edges = [("W", "D"), ("M", "D"), ("M", "S"), ("S", "O"), ("D", "C"), ("O", "C")]
+parents = {}
+for u, w_ in edges:
+    parents.setdefault(w_, []).append(u)
+added = {tuple(sorted(c)) for ps in parents.values() for c in combinations(ps, 2)} - {tuple(sorted(e)) for e in edges}
+opts = []
+for c in E.item("s22p11b")["choices"]:
+    found = {tuple(sorted(m.split("-"))) for m in re.findall(r"([A-Z]-[A-Z])", c.replace("$", "").replace(" ", ""))}
+    opts.append(found)
+E.check("s22p11b", opts[E.item("s22p11b")["answer"]] == added and all(o != added for i, o in enumerate(opts) if i != E.item("s22p11b")["answer"]),
+        f"親どうしを結ぶ辺をアルゴリズムで列挙 {sorted(added)}")
+# DAG では W と M は周辺独立、D を条件にすると従属になることを数値例で確認
+pw_, pm_ = 0.3, 0.4
+joint = {(w_, m_, d_): (pw_ if w_ else 1 - pw_) * (pm_ if m_ else 1 - pm_) * ((0.9 if (w_ or m_) else 0.1) if d_ else (0.1 if (w_ or m_) else 0.9))
+         for w_ in (0, 1) for m_ in (0, 1) for d_ in (0, 1)}
+pd1 = sum(v_ for k_, v_ in joint.items() if k_[2])
+pwm = sum(v_ for k_, v_ in joint.items() if k_[2] and k_[0] and k_[1]) / pd1
+pw1 = sum(v_ for k_, v_ in joint.items() if k_[2] and k_[0]) / pd1
+pm1 = sum(v_ for k_, v_ in joint.items() if k_[2] and k_[1]) / pd1
+E.check("s22p11b", abs(pwm - pw1 * pm1) > 0.01, "D を条件にすると W と M は独立でない（モラル化で辺が必要）")
 p_ = 6; q_ = 13
 dfm = len([(i, j) for i in range(p_) for j in range(p_) if i <= j]) - q_
 E.check("s22p11c", dfm == 8, "共分散行列の異なる要素を列挙して自由度 8")

@@ -63,13 +63,14 @@ def p02():
     sx2 = sum(v * v for v in xs)
     ss = sx2 - n * m ** 2
     D = ss / m
-    # (b) ゼロ切断ポアソン
-    ncard, ntx = 40, 60
-    xb = ntx / ncard
-    cand = {0.5: 0.6065, 0.667: 0.5132, 0.874: 0.4173, 1.165: 0.3119, 1.5: 0.2231}
-    g = {k: k / (1 - v) for k, v in cand.items()}
-    best = min(g, key=lambda k: abs(g[k] - xb))
-    assert best == 0.874 and abs(g[best] - xb) < 0.001
+    # (b) 口座数（曝露量）の異なる3グループのポアソン件数から共通の率の最尤推定
+    tt, xx = [20, 50, 30], [6, 9, 9]
+    lam = sum(xx) / sum(tt)
+    se_l = sqrt(lam / sum(tt))
+    avg = sum(x_ / t_ for x_, t_ in zip(xx, tt)) / 3
+
+    def pr(a_, b_):
+        return f"\\hat\\lambda={s(a_, 3)},\\ \\text{{標準誤差}}={s(b_, 3)}"
     # (c) 条件付き独立でない2つのルール
     pf, both_f, both_l = 0.002, 0.75, 0.004
     sa_f, sb_f, sa_l, sb_l = 0.90, 0.80, 0.02, 0.03
@@ -80,17 +81,15 @@ def p02():
         "data": "、".join(str(v) for v in xs), "n": n, "T": T, "m": s(m, 1), "sx2": sx2, "ss": s(ss, 1),
         "nm2": s(n * m ** 2, 1), "D": s(D, 1), "df": n - 1, "ratio": s(ss / (n - 1) / m, 2), "D_raw": s(sx2 / m, 1),
         "chi11": 19.68, "chi12": 21.03, "chi11_lo": 4.575,
-        "ncard": ncard, "ntx": ntx, "xb": s(xb, 1),
+        "t1": tt[0], "t2": tt[1], "t3": tt[2], "x1": xx[0], "x2": xx[1], "x3": xx[2], "sx": sum(xx), "st": sum(tt),
+        "lamh": s(lam, 2), "info": s(sum(tt) / lam, 1), "se_l": s(se_l, 4),
+        "c_ok": pr(lam, se_l), "c_avg": pr(avg, sqrt(avg / sum(tt))), "c_n": pr(lam, sqrt(lam / 3)),
+        "c_sq": pr(lam, lam / sqrt(sum(tt))), "c_var": pr(lam, lam / sum(tt)), "avg": s(avg, 2),
         "pf": pf, "both_f": both_f, "both_l": both_l, "sa_f": s(sa_f, 2), "sb_f": s(sb_f, 2), "sa_l": s(sa_l, 2), "sb_l": s(sb_l, 2),
         "nf": s(pf * both_f, 4), "nl": s((1 - pf) * both_l, 6), "dsum": s(pf * both_f + (1 - pf) * both_l, 6),
         "post": s(post, 3), "post4": s(post, 4), "w_ind": s(post_ind, 3), "w_a": s(post_a, 3), "w_like": s(both_f, 3),
         "w_noprior": s(both_f / (both_f + both_l), 3), "prodl": s(sa_l * sb_l, 4), "prodf": s(sa_f * sb_f, 2),
     }
-    for i, (k, v) in enumerate(sorted(cand.items())):
-        out[f"lc{i}"] = s(k, 3)
-        out[f"ec{i}"] = s(v, 4)
-        out[f"gc{i}"] = s(g[k], 3)
-    out["lam"] = s(best, 3)
     return out
 
 
@@ -117,15 +116,19 @@ def p04():
     # (a) 回帰推定量に必要な標本の大きさ
     n0, rho = 400, 0.8
     nreg = n0 * (1 - rho ** 2)
-    # (b) 多重対応分析
-    cats = [3, 4, 2]
-    Q, J = len(cats), sum(cats)
+    # (b) 合成信頼性
+    ld = [0.8, 0.7, 0.6]
+    sl = sum(ld)
+    th = [1 - v ** 2 for v in ld]
+    omega = sl ** 2 / (sl ** 2 + sum(th))
     return {
         "n0": n0, "rho": rho, "rho2": s(rho ** 2, 2), "f": s(1 - rho ** 2, 2), "nreg": r(nreg, 0),
         "w_1r": r(n0 * (1 - rho), 0), "w_r2": r(n0 * rho ** 2, 0), "w_sq": r(n0 * sqrt(1 - rho ** 2), 0),
         "w_div": r(n0 / (1 - rho ** 2), 0),
-        "Q": Q, "J": J, "c1q": cats[0], "c2q": cats[1], "c3q": cats[2], "in_ok": s((J - Q) / Q, 1), "dim_ok": J - Q,
-        "in_jq": s(J / Q, 1), "in_nq": s(J - Q, 1), "in_j": s((J - Q) / J, 3), "dim_j1": J - 1,
+        "l1": ld[0], "l2": ld[1], "l3": ld[2], "sl": s(sl, 1), "sl2": s(sl ** 2, 2), "th1": s(th[0], 2), "th2": s(th[1], 2),
+        "th3": s(th[2], 2), "sth": s(sum(th), 2), "den": s(sl ** 2 + sum(th), 2), "omega": s(omega, 3), "omega4": s(omega, 4),
+        "w_ave": s(sum(v * v for v in ld) / 3, 3), "w_lin": s(sl / (sl + sum(th)), 3), "w_mean": s(sl / 3, 3),
+        "w_sq2": s(sl ** 2 / (sl ** 2 + sum(v * v for v in th)), 3),
     }
 
 

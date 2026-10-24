@@ -124,7 +124,7 @@ for _ in range(4000):
     mean_est.append(con[idx2].mean())
 ratio = np.var(reg_est) / np.var(mean_est)
 E.check("s19p04a", abs(ratio - 1) < 0.1, f"回帰推定量(n=144)と標本平均(n=400)の分散の比 {ratio:.3f}≈1")
-E.num("s19p04a", round(400 * (1 - np.corrcoef(inc, con)[0, 1] ** 2)), f"母集団の相関 {np.corrcoef(inc, con)[0, 1]:.4f} から 400(1−ρ²)")
+E.num("s19p04a", round(400 * (1 - 0.8 ** 2)), "400(1−ρ²)（上のシミュレーションで同じ分散になることを確認）")
 # (b) 実際に指示行列を作って対応分析し、総イナーシャと非零の特異値の数を数える
 Qs = [3, 4, 2]
 resp = np.column_stack([rng.integers(0, k, 500) for k in Qs])

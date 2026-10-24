@@ -162,17 +162,12 @@ E.check("s17p08b", abs(np.mean(bs) - 2) < 0.02 and np.mean(ses) < np.std(bs), f"
 E.check("s17p08b", "不均一分散" in ans_text("s17p08b"), "正解は不均一分散")
 
 # ---- 大問9
-# MA(1) の自己相関を ψ 重みから、偏自己相関をダービン・レビンソンで
-r1, r2 = 0.5 / 1.25, 0.0
-phi11 = r1
-phi22 = (r2 - phi11 * r1) / (1 - phi11 * r1)
-xs_ = rng.normal(size=400_001)
-ma = xs_[1:] + 0.5 * xs_[:-1]
-R = np.array([[1, np.corrcoef(ma[1:], ma[:-1])[0, 1]], [np.corrcoef(ma[1:], ma[:-1])[0, 1], 1]])
-rr = np.array([np.corrcoef(ma[1:], ma[:-1])[0, 1], np.corrcoef(ma[2:], ma[:-2])[0, 1]])
-pacf2 = np.linalg.solve(R, rr)[1]
-E.choice("s17p09a", f"${f(phi22, 3)}$", "ダービン・レビンソンの漸化式")
-E.check("s17p09a", abs(pacf2 - phi22) < 0.01, f"シミュレーションの偏自己相関 {pacf2:.4f}")
+# 中心化移動平均を numpy の畳み込み（重み 1/8,1/4,1/4,1/4,1/8）で
+yq = np.array([40, 60, 80, 50, 44, 64, 84, 54], dtype=float)
+cma = np.convolve(yq, np.array([1, 2, 2, 2, 1]) / 8, mode="valid")    # 第3四半期から始まる
+E.choice("s17p09a", f"${f(yq[2] / cma[0], 2)}$", f"畳み込みのトレンド {cma[0]:.2f}")
+E.check("s17p09a", abs(cma[0] - (yq[0:4].mean() + yq[1:5].mean()) / 2) < 1e-12, "2 つの 4 項平均の平均と一致")
+distinct_rounded("s17p09a", 2)
 relu = lambda u: np.maximum(0, u)
 x_in = np.array([1.0, 1.0])
 W1 = np.array([[1.0, -2.0], [0.5, 3.0]])
