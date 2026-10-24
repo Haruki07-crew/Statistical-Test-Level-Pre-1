@@ -95,6 +95,8 @@ mb = rng.exponential(10, (20000, 400)).mean(1)
 q.check("q10-weak-law-of-large-numbers-g2", np.mean(np.abs(mb - 10) >= 1) <= 0.25 and abs(2 * stats.norm.sf(2) - 0.046) < 5e-4, f"標準偏差 10 の指数分布で n=400 のとき外れる割合 {np.mean(np.abs(mb - 10) >= 1):.4f}（上限 0.25 以下）")
 fl = rng.random((200000, 7)) < 0.5; six = fl[:, :6].all(1)
 q.check("q10-weak-law-of-large-numbers-g3", abs(np.mean(~fl[six, 6]) - 0.5) < 0.05, f"表が 6 回続いたあとの裏の割合 {np.mean(~fl[six, 6]):.3f}（answer=false）")
+bb = stats.binom(40, .3); nn = stats.norm(12, sqrt(40 * .3 * .7))
+q.check("q10-continuity-correction-g1", chosen(q, "q10-continuity-correction-g1") == "11.5 以上" and abs(nn.sf(11.5) - bb.sf(11)) < abs(nn.sf(12.5) - bb.sf(11)) and abs(nn.sf(11.5) - bb.sf(11)) < abs(nn.sf(12) - bb.sf(11)), f"B(40,0.3) の P(X≥12)={bb.sf(11):.4f}：11.5 以上 {nn.sf(11.5):.4f}・12 以上 {nn.sf(12):.4f}・12.5 以上 {nn.sf(12.5):.4f}")
 run(q)
 
 q = Q(14)

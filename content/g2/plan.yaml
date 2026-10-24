@@ -304,12 +304,10 @@ chapters:
     title: 幾何分布と無記憶性
     importance: B
     status: verified
-    from: pre1
   - id: hypergeometric-distribution
     title: 超幾何分布
     importance: B
     status: verified
-    from: pre1
   - id: negative-binomial-distribution
     title: 負の二項分布
     importance: C
@@ -319,7 +317,6 @@ chapters:
     title: 一様分布
     importance: B
     status: verified
-    from: pre1
   - id: exponential-distribution
     title: 指数分布
     importance: A
@@ -365,7 +362,6 @@ chapters:
     title: 連続修正
     importance: B
     status: verified
-    from: pre1
   - id: chi-squared-distribution
     title: カイ二乗分布
     importance: A

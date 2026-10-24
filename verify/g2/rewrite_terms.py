@@ -277,6 +277,19 @@ check(T, "例2 B(25,0.3) の分散 5.25", close(stats.binom(25, .3).var(), 5.25,
 T = "cumulative-distribution-function"
 check(T, "例1 F(3)=0.5・P(2<X≤5)=1/2・例2 0.512−0.125=0.387・中央値≈0.794", close(3 / 6, .5, 1e-12) and close(5 / 6 - 2 / 6, .5, 1e-12) and close(.8 ** 3 - .5 ** 3, .387, 1e-9) and close(.5 ** (1 / 3), .794, 5e-4), None)
 
+T = "geometric-distribution"
+g4 = stats.geom(.25)
+check(T, "P(3)=0.140625・P(≤2)=0.4375・P(>4)≈0.316・E=4・V=12・P(X>6|X>2)=P(X>4)", close(g4.pmf(3), .140625, 1e-12) and close(g4.cdf(2), .4375, 1e-12) and close(g4.sf(4), .316, 5e-4) and close(g4.mean(), 4, 1e-12) and close(g4.var(), 12, 1e-12) and close(g4.sf(6) / g4.sf(2), g4.sf(4), 1e-12), None)
+T = "uniform-distribution"
+u20 = stats.uniform(0, 20)
+check(T, "U(0,20)：平均 10・分散 33.3・SD 5.77・P(5〜12)=0.35・P(≥15)=0.25・SD≈0.29×幅", close(u20.mean(), 10, 1e-12) and close(u20.var(), 33.3, 0.05) and close(u20.std(), 5.77, 0.005) and close(u20.cdf(12) - u20.cdf(5), .35, 1e-12) and close(u20.sf(15), .25, 1e-12) and close(1 / sqrt(12), .29, 0.005), None)
+T = "hypergeometric-distribution"
+h20 = stats.hypergeom(20, 6, 5)
+check(T, "P(0)=2002/15504≈0.129・0.871・E=1.5・V≈0.829・二項なら 0.168 と 1.05", close(h20.pmf(0), 2002 / 15504, 1e-12) and close(2002 / 15504, .129, 5e-4) and close(h20.sf(0), .871, 5e-4) and close(h20.mean(), 1.5, 1e-12) and close(h20.var(), .829, 5e-4) and close(.7 ** 5, .168, 5e-4), h20.var())
+T = "continuity-correction"
+b20 = stats.binom(20, .4); sd20 = sqrt(4.8)
+check(T, "B(20,0.4)：SD≈2.19・修正あり P(Z≤−1.14)≈0.127・なし P(Z≤−1.37)≈0.085・正確 ≈0.126", close(sd20, 2.19, 0.005) and close((5.5 - 8) / sd20, -1.14, 0.005) and close(stats.norm.cdf(-1.14), .127, 5e-4) and close((5 - 8) / sd20, -1.37, 0.005) and close(stats.norm.cdf(-1.37), .085, 5e-4) and close(b20.cdf(5), .126, 5e-4), b20.cdf(5))
+
 ng = results.count(False)
 print(f"書き直した共通の用語の検算: OK {len(results) - ng} / NG {ng}")
 sys.exit(1 if ng else 0)

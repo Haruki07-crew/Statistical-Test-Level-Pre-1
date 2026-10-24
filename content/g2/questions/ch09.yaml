@@ -267,3 +267,47 @@ questions:
     explanation: |
       平均 8 分なので $\lambda=1/8$、分散は $1/\lambda^2=64$ です（標準偏差は平均と同じ 8 分）。
       分散を平均と同じ 8 とするのは、ポアソン分布（平均 ＝ 分散）と混同した誤りです。$1/64$ はレートの 2 乗 $\lambda^2$ です。
+
+  # ---------- 幾何分布（2級向けに書き直した用語） ----------
+  - id: q09-geometric-distribution-g1
+    term: geometric-distribution
+    level: 基本
+    type: numeric
+    question: |
+      成功の確率が 0.4 の独立な試行をくり返す。初めて成功するのがちょうど 2 回目である確率を求めよ。
+    answer: 0.24
+    tolerance: 0.0001
+    hint: |
+      1 回目は失敗、2 回目は成功。
+    explanation: |
+      $0.6\times 0.4=0.24$ です。初めて成功するまでの回数の期待値は $1/0.4=2.5$ 回です。
+
+  # ---------- 一様分布（2級向けに書き直した用語） ----------
+  - id: q09-uniform-distribution-g1
+    term: uniform-distribution
+    level: 基本
+    type: numeric
+    question: |
+      確率変数 $X$ が 2 から 14 の一様分布にしたがうとき、$X$ の分散を求めよ。
+    answer: 12
+    tolerance: 0.001
+    hint: |
+      $U(a,\ b)$ の分散は $(b-a)^2/12$。
+    explanation: |
+      $(14-2)^2/12=144/12=12$ です。期待値は $(2+14)/2=8$ です。
+
+  # ---------- 超幾何分布（2級向けに書き直した用語） ----------
+  - id: q09-hypergeometric-distribution-g1
+    term: hypergeometric-distribution
+    level: 標準
+    type: numeric
+    question: |
+      12 個の部品のうち 4 個が不良品である箱から、3 個を同時に取り出す。不良品が 1 個も含まれない確率を小数第 3 位まで求めよ。
+    answer: 0.255
+    tolerance: 0.0005
+    hint: |
+      良品 8 個から 3 個を選ぶ選び方を、12 個から 3 個を選ぶ選び方で割る。
+    explanation: |
+      $\dfrac{\binom{8}{3}}{\binom{12}{3}}=\dfrac{56}{220}\approx 0.255$ です。
+      戻して取り出す二項分布で計算すると $(8/12)^3\approx 0.296$ で、全体が小さいと違いが出ます。
+

@@ -69,6 +69,10 @@ q.num("q09-exponential-distribution-g2", stats.expon(scale=8).sf(12) / stats.exp
 w8 = rng.exponential(8, 2_000_000)
 q.check("q09-exponential-distribution-g2", abs(np.mean(w8[w8 > 4] > 12) - exp(-1)) < 0.003 and abs(exp(-1) - 0.3679) < 5e-5, f"シミュレーション {np.mean(w8[w8 > 4] > 12):.4f}")
 q.check("q09-exponential-distribution-g3", abs(stats.expon(scale=8).var() - 64) < 1e-9 and chosen(q, "q09-exponential-distribution-g3") == "64", "分散 1/λ² = 64")
+q.num("q09-geometric-distribution-g1", stats.geom(.4).pmf(2))
+q.num("q09-uniform-distribution-g1", stats.uniform(2, 12).var())
+q.num("q09-hypergeometric-distribution-g1", stats.hypergeom(12, 4, 3).pmf(0))
+q.check("q09-hypergeometric-distribution-g1", abs((8 / 12) ** 3 - 0.296) < 5e-4, "二項分布なら 0.296")
 run(q)
 
 q = Q(11)
