@@ -383,7 +383,6 @@ chapters:
     title: 一致推定量
     importance: B
     status: verified
-    from: pre1
   - id: standard-error
     title: 標準誤差
     importance: A
@@ -396,7 +395,6 @@ chapters:
     title: 信頼係数
     importance: B
     status: verified
-    from: pre1
   - id: ci-mean-known-variance
     title: 母平均の区間推定（分散既知）
     importance: A
@@ -409,7 +407,6 @@ chapters:
     title: 母分散の区間推定
     importance: B
     status: verified
-    from: pre1
   - id: ci-proportion
     title: 母比率の区間推定
     importance: A
@@ -418,7 +415,6 @@ chapters:
     title: 2標本の母平均の差の区間推定
     importance: B
     status: verified
-    from: pre1
   - id: ci-variance-ratio
     title: 母分散比の区間推定
     importance: C
@@ -428,12 +424,10 @@ chapters:
     title: 2標本の母比率の差の区間推定
     importance: B
     status: verified
-    from: pre1
   - id: required-sample-size
-    title: 必要な標本サイズ
+    title: 必要な標本の大きさ
     importance: B
     status: verified
-    from: pre1
   - id: fisher-z-transformation
     title: フィッシャーのz変換
     importance: C

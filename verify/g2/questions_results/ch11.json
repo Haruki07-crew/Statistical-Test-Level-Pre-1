@@ -23,6 +23,22 @@
   "hash": "c9f4de0a3b59d441",
   "ok": true
  },
+ "q11-ci-two-sample-mean-difference-g1": {
+  "hash": "385d19b26f312773",
+  "ok": true
+ },
+ "q11-ci-two-sample-proportion-g1": {
+  "hash": "731b05801ca8b96b",
+  "ok": true
+ },
+ "q11-ci-variance-g1": {
+  "hash": "779fff05bffb524d",
+  "ok": true
+ },
+ "q11-confidence-coefficient-g1": {
+  "hash": "d64c0bb34278df44",
+  "ok": true
+ },
  "q11-confidence-interval-g1": {
   "hash": "3d58fe87b4a9afb0",
   "ok": true
@@ -31,12 +47,20 @@
   "hash": "a12dcf0da37d2e8a",
   "ok": true
  },
+ "q11-consistent-estimator-g1": {
+  "hash": "226fe69608692fee",
+  "ok": true
+ },
  "q11-point-estimation-g1": {
   "hash": "70121af25c3dce63",
   "ok": true
  },
  "q11-point-estimation-g2": {
   "hash": "6b95ddfa07cb5390",
+  "ok": true
+ },
+ "q11-required-sample-size-g1": {
+  "hash": "9cd7f867eec079b1",
   "ok": true
  },
  "q11-standard-error-g1": {

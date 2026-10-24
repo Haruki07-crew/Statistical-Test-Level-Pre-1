@@ -355,6 +355,23 @@ check(T, "境目 103.29・検出力 0.05・0.26・0.64・0.91・0.99・P(Z>−0.
 T = "chi-square-test-variance"
 check(T, "χ²=14×6.4/4=22.4・5% 点 23.68・p≈0.07・2.5% 点 26.12・97.5% 点 5.629", close(14 * 6.4 / 4, 22.4, 1e-9) and close(stats.chi2.isf(.05, 14), 23.68, 0.005) and close(stats.chi2.sf(22.4, 14), .07, 0.005) and close(stats.chi2.isf(.025, 14), 26.12, 0.005) and close(stats.chi2.isf(.975, 14), 5.629, 5e-4), stats.chi2.sf(22.4, 14))
 
+T = "confidence-coefficient"
+check(T, "半幅 3.29・3.92・5.15・比 2.576/1.96≈1.3", close(1.645 * 2, 3.29, 1e-9) and close(1.96 * 2, 3.92, 1e-9) and close(2.576 * 2, 5.15, 0.005) and close(2.576 / 1.96, 1.3, 0.02), None)
+T = "ci-two-sample-mean-difference"
+sp_ = (9 * 30 + 11 * 24) / 20; se_ = sqrt(sp_ * (1 / 10 + 1 / 12))
+check(T, "例1 sp²=26.7・SE≈2.212・6±4.62 → (1.38, 10.62)", close(sp_, 26.7, 1e-9) and close(se_, 2.212, 5e-4) and close(2.086 * se_, 4.62, 0.005) and close(6 - 2.086 * se_, 1.38, 0.005) and close(6 + 2.086 * se_, 10.62, 0.005), None)
+se2_ = sqrt(400 / 150 + 324 / 120)
+check(T, "例2 SE≈2.317・8±4.54 → (3.46, 12.54)", close(se2_, 2.317, 5e-4) and close(1.96 * se2_, 4.54, 0.005) and close(8 - 1.96 * se2_, 3.46, 0.005) and close(8 + 1.96 * se2_, 12.54, 0.005), None)
+T = "ci-two-sample-proportion"
+sep_ = sqrt(.42 * .58 / 300 + .34 * .66 / 250)
+check(T, "0.000812+0.000898・SE≈0.0413・±0.081 → (−0.001, 0.161)", close(.42 * .58 / 300, .000812, 5e-7) and close(.34 * .66 / 250, .000898, 5e-7) and close(sep_, .0413, 5e-5) and close(1.96 * sep_, .081, 5e-4) and close(.08 - 1.96 * sep_, -.001, 5e-4) and close(.08 + 1.96 * sep_, .161, 5e-4), None)
+T = "ci-variance"
+check(T, "34.17・9.591・(14.63, 52.13)・SD (3.83, 7.22)", close(stats.chi2.isf(.025, 20), 34.17, 0.005) and close(stats.chi2.isf(.975, 20), 9.591, 5e-4) and close(500 / 34.17, 14.63, 0.005) and close(500 / 9.591, 52.13, 0.005) and close(sqrt(500 / 34.17), 3.83, 0.005) and close(sqrt(500 / 9.591), 7.22, 0.005), None)
+T = "consistent-estimator"
+check(T, "母標準偏差 10：標本平均の SD 1（n=100）・0.1（n=10000）", close(10 / sqrt(100), 1, 1e-12) and close(10 / sqrt(10000), .1, 1e-12), None)
+T = "required-sample-size"
+check(T, "母平均 9.8²=96.04 → 97・母比率 78.4²×0.25≈1536.6 → 1537・±5 で 385・図の値", close(9.8 ** 2, 96.04, 1e-9) and close(78.4 ** 2 * .25, 1536.64, 1e-6) and int(np.ceil((1.96 / .05) ** 2 * .25)) == 385 and [int(np.ceil((1.96 / (e / 100)) ** 2 * .25 - 1e-9)) for e in range(1, 11)] == [9604, 2401, 1068, 601, 385, 267, 196, 151, 119, 97], None)
+
 ng = results.count(False)
 print(f"書き直した共通の用語の検算: OK {len(results) - ng} / NG {ng}")
 sys.exit(1 if ng else 0)

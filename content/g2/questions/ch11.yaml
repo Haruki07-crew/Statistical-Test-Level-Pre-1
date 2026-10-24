@@ -215,3 +215,97 @@ questions:
     explanation: |
       $n\ge(1.96/0.02)^2\times 0.25=98^2\times 0.25=2401$ なので、2401 人です。
       誤差の範囲を 0.04 にするなら、その 1/4 の約 600 人で足ります。誤差を半分にするには標本を 4 倍にする必要があります。
+
+  # ---------- 信頼係数（2級向けに書き直した用語） ----------
+  - id: q11-confidence-coefficient-g1
+    term: confidence-coefficient
+    level: 基本
+    type: choice
+    question: |
+      母分散が既知の正規母集団で、母平均の 90% 信頼区間を「標本平均 ± 係数 × 標準誤差」で作る。係数として正しいものはどれか。
+    choices:
+      - '1.645'
+      - '1.282'
+      - '1.96'
+      - '2.576'
+    answer: 0
+    hint: |
+      両側で 10% なので、上側 5% 点。
+    explanation: |
+      90% 信頼区間では、左右に 5% ずつを除くので上側 5% 点 1.645 を使います。1.96 は 95%、2.576 は 99%、1.282 は上側 10% 点（80% 信頼区間）です。
+
+  # ---------- 2標本の母平均の差の区間推定（2級向けに書き直した用語） ----------
+  - id: q11-ci-two-sample-mean-difference-g1
+    term: ci-two-sample-mean-difference
+    level: 標準
+    type: numeric
+    question: |
+      2 つの独立な大きな標本で、群 1（50 人）の平均は群 2（40 人）の平均より 5 大きく、標準偏差はそれぞれ 10 と 8 だった。母平均の差の 95% 信頼区間の上限を、正規近似で小数第 2 位まで求めよ。
+    answer: 8.72
+    tolerance: 0.005
+    hint: |
+      差の標準誤差は $\sqrt{10^2/50+8^2/40}$。
+    explanation: |
+      標準誤差は $\sqrt{2+1.6}=\sqrt{3.6}\approx 1.897$ なので、上限は $5+1.96\times 1.897\approx 8.72$ です（下限は 1.28）。区間が 0 を含まないので、差があるといえます。
+
+  # ---------- 2標本の母比率の差の区間推定（2級向けに書き直した用語） ----------
+  - id: q11-ci-two-sample-proportion-g1
+    term: ci-two-sample-proportion
+    level: 標準
+    type: numeric
+    question: |
+      地域 A の 200 人のうち 50%、地域 B の 150 人のうち 40% がある政策に賛成した。母比率の差（A − B）の区間推定で使う標準誤差を小数第 3 位まで求めよ。
+    answer: 0.053
+    tolerance: 0.0005
+    hint: |
+      $\sqrt{\hat p_A(1-\hat p_A)/n_A+\hat p_B(1-\hat p_B)/n_B}$。
+    explanation: |
+      $\sqrt{0.25/200+0.24/150}=\sqrt{0.00125+0.0016}=\sqrt{0.00285}\approx 0.053$ です。95% 信頼区間は $0.10\pm 1.96\times 0.053=0.10\pm 0.105$ で、0 をわずかに含みます。
+
+  # ---------- 母分散の区間推定（2級向けに書き直した用語） ----------
+  - id: q11-ci-variance-g1
+    term: ci-variance
+    level: 標準
+    type: numeric
+    question: |
+      正規母集団から大きさ 10 の標本をとったところ、不偏分散は 18 だった。母分散の 95% 信頼区間の下限を小数第 2 位まで求めよ。ただし $\chi^2_{0.025}(9)=19.02$、$\chi^2_{0.975}(9)=2.700$ とする。
+    answer: 8.52
+    tolerance: 0.005
+    hint: |
+      下限は $(n-1)s^2$ を大きいほうの点で割る。
+    explanation: |
+      $(n-1)s^2=9\times 18=162$ なので、下限は $162/19.02\approx 8.52$、上限は $162/2.700=60$ です。
+
+  # ---------- 一致推定量（2級向けに書き直した用語） ----------
+  - id: q11-consistent-estimator-g1
+    term: consistent-estimator
+    level: 標準
+    type: choice
+    question: |
+      母平均 $\mu$ の母集団から大きさ $n$ の標本 $X_1,\dots,X_n$ をとる。不偏推定量だが一致推定量ではないものはどれか。
+    choices:
+      - 1 つ目の観測値 $X_1$
+      - 標本平均 $\bar X$
+      - $\bar X+1/n$
+      - 標本の最初の半分の平均
+    answer: 0
+    hint: |
+      標本を大きくしても、ぶれが小さくならないもの。
+    explanation: |
+      $X_1$ は期待値が $\mu$ で不偏ですが、標本をいくら大きくしても使うのは 1 個なので、ぶれ（分散 $\sigma^2$）が小さくならず、一致推定量ではありません。
+      $\bar X$ と最初の半分の平均は不偏かつ一致、$\bar X+1/n$ は不偏ではないが一致です。
+
+  # ---------- 必要な標本の大きさ（2級向けに書き直した用語） ----------
+  - id: q11-required-sample-size-g1
+    term: required-sample-size
+    level: 標準
+    type: numeric
+    question: |
+      母標準偏差が 10 とわかっている母集団で、母平均の 95% 信頼区間の幅の半分を 1.5 以下にしたい。必要な標本の大きさの最小値を求めよ。
+    answer: 171
+    tolerance: 0.4
+    hint: |
+      $n\ge(1.96\times 10/1.5)^2$ を計算し、切り上げる。
+    explanation: |
+      $(1.96\times 10/1.5)^2\approx 13.07^2\approx 170.7$ なので、171 個必要です。切り捨てて 170 にすると、幅の半分がわずかに 1.5 を超えます。
+

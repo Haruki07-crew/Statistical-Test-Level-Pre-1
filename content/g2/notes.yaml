@@ -10,13 +10,7 @@ marginal-distribution: 同時確率の表の行や列を足して求めること
 negative-binomial-distribution: 出題はまれ。幾何分布を「r 回成功するまで」に広げたものと知っておけば十分。
 bivariate-normal-distribution: 出題はまれ。相関係数が 0 なら独立になる、という性質だけ知っておけば十分。
 chebyshev-inequality: 分布の形によらず、平均から標準偏差の k 倍以上離れる確率は 1/k² 以下、という使い方を押さえる。
-consistent-estimator: 標本を大きくすると母数に近づく推定量のこと。不偏性との違いを押さえる。
-confidence-coefficient: 信頼係数を上げると区間が広くなること、90%・95%・99% に対応する点（1.645・1.96・2.576）を押さえる。
-ci-variance: カイ二乗分布の上側と下側の2つの点を使う区間の計算を押さえる。
-ci-two-sample-mean-difference: 2つの分散を足して標準誤差を作ること、等分散を仮定するときはプールした分散と自由度 n₁＋n₂－2 を使うことを押さえる。
 ci-variance-ratio: 出題はまれ。F 分布の2つの点を使うことだけ知っておけば十分。
-ci-two-sample-proportion: 2つの比率の分散を足して標準誤差を作る計算を押さえる。
-required-sample-size: 誤差の範囲を決めて n について解く計算（比率で見当がなければ p＝0.5）と、小数は切り上げることを押さえる。
 fisher-z-transformation: 相関係数を z 変換し、標準偏差 1/√(n－3) で区間を作って元に戻す手順を押さえる。
 finite-population-correction: 戻さずに抽出するとき、標本平均の分散に (N－n)/(N－1) を掛けることを押さえる。
 pooled-variance: （n₁－1）s₁²＋（n₂－1）s₂² を n₁＋n₂－2 で割る計算を押さえる。
