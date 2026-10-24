@@ -24,13 +24,19 @@
 {{CSS}}
 </style>
 <script>
+// 数式の設定。\boldsymbol は自動読み込みだと描画の途中で追加のファイルを取りに行くため、最初に読み込んでおく（sw.js でも保存する）
+// 準備ができたら mathjax-ready、読み込みに失敗したら mathjax-failed を送る（app.js の showMath が受け取る）
 window.MathJax = {
-  tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true },
+  loader: { load: ['[tex]/boldsymbol'] },
+  tex: { packages: { '[+]': ['boldsymbol'] }, inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true },
   svg: { fontCache: 'global' },
-  startup: { typeset: false, pageReady: function () { return MathJax.startup.defaultPageReady().then(function () { document.dispatchEvent(new Event('mathjax-ready')); }); } }
+  startup: { typeset: false, pageReady: function () {
+    return MathJax.startup.defaultPageReady().then(function () { document.dispatchEvent(new Event('mathjax-ready')); },
+      function () { window.__mjFailed = 1; document.dispatchEvent(new Event('mathjax-failed')); });
+  } }
 };
 </script>
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js" defer onerror="window.__mjFailed=1;document.dispatchEvent(new Event('mathjax-failed'))"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js" defer></script>
 </head>
 <body>

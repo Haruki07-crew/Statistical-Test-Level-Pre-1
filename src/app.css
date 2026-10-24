@@ -589,3 +589,7 @@ textarea.note:focus { outline: none; border-color: var(--accent); box-shadow: 0 
   .menu > li, .step { padding: 12px; }
 }
 @media (prefers-reduced-motion: reduce) { .howto summary::before { transition: none; } }
+
+/* 数式を読み込めなかったとき（app.js の mathFail） */
+m.mj-miss { color: var(--muted); font-size: .9em; }
+.mj-banner { position: fixed; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); z-index: 50; display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap; padding: 10px 14px; border-radius: 10px; background: var(--surface); color: var(--fg); border: 1px solid var(--line); box-shadow: 0 4px 16px rgba(0,0,0,.18); }

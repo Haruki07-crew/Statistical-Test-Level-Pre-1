@@ -10,6 +10,7 @@
 """
 import argparse
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -427,6 +428,18 @@ def main():
         print(f"問題ファイル {nf} 件 / 問題 {nq} 問 / エラー {e} 件 / 警告 {w} 件")
         total_err += e
         total_warn += w
+    if not args.only and not args.chapter:
+        # 数式の全数チェック（scripts/check_math.py）。MJ_DIR があれば MathJax での変換テストも行う
+        r = subprocess.run([sys.executable, str(ROOT / "scripts" / "check_math.py")], capture_output=True, text=True)
+        out = r.stdout.strip().splitlines()
+        for ln in out:
+            if ln.startswith(("[MATH]", "[TEX]")) or r.returncode:
+                print(ln)
+            elif ln.startswith(("数式チェック", "MathJax")):
+                print(ln)
+        if r.returncode:
+            total_err += 1
+            print("[ERROR] check_math.py で数式の問題が見つかりました")
     print(f"検査ファイル {len(targets)} 件 / エラー {total_err} 件 / 警告 {total_warn} 件")
     sys.exit(1 if total_err else 0)
 

@@ -233,7 +233,93 @@
     return '<button type="button" class="' + (cls || 'rel-btn') + '" data-go="' + id + '"' + (isWritten(id) ? '' : ' disabled') + '>' + esc(p.title) + '</button>';
   }
 
-  // ---------- 数式とグラフの遅延描画（見える部分だけ） ----------
+  // ---------- 数式の描画（どの画面も showMath を使う） ----------
+  // 数式は build.py が <m>$…$</m> と <div class="math-display">$$…$$</div> にしている。
+  // ・MathJax の読み込み完了を待ってから組む（待っている間は列に積む）
+  // ・typesetPromise は同時に走らせず、1本の Promise の列で順番に実行する（同時実行は自動読み込みの再試行と衝突して組み残しが出る）
+  // ・隠れている部分（ヒント・解説など）もその場で組む（SVG 出力は表示されていなくても組める）
+  // ・読み込みに失敗したら、TeX の文字の代わりに案内を表示する
+  var MATH_SEL = 'm, .math-display';
+  var mjState = 'wait', mjChain = Promise.resolve(), mjBusy = 0, mjWait = [];
+  function rawMath(el) {
+    if (!el || el.nodeType !== 1) return [];
+    var list = el.matches(MATH_SEL) ? [el] : Array.prototype.slice.call(el.querySelectorAll(MATH_SEL));
+    return list.filter(function (m) { return !m.querySelector('mjx-container') && !m.classList.contains('mj-miss'); });
+  }
+  function showMath(el) {
+    if (!el || !rawMath(el).length) return;
+    if (mjState === 'fail') { mathFail(el); return; }
+    if (mjState !== 'ready') { if (mjWait.indexOf(el) < 0) mjWait.push(el); return; }
+    mjBusy++;
+    var tries = 0;
+    function run() {
+      // まだ画面に付いていない要素（作った直後のカードなど）は、付くまで少し待つ
+      if (!el.isConnected) { if (++tries > 20) return; return new Promise(function (r) { setTimeout(r, 50); }).then(run); }
+      return window.MathJax.typesetPromise([el]);
+    }
+    mjChain = mjChain.then(run).catch(function (err) { if (window.console) console.warn(err); }).then(function () { mjBusy--; });
+  }
+  function showMathAll(els) { Array.prototype.forEach.call(els, showMath); }
+  function mathFail(el) {
+    rawMath(el).forEach(function (m) {
+      m.setAttribute('data-tex', m.textContent);
+      m.classList.add('mj-miss');
+      m.textContent = '［数式］';
+    });
+    if (!document.querySelector('.mj-banner')) {
+      var b = document.createElement('div');
+      b.className = 'mj-banner'; b.setAttribute('role', 'alert');
+      b.innerHTML = '<span>数式を読み込めませんでした。再読み込みしてください。</span><button type="button" class="q-btn" onclick="location.reload()">再読み込み</button>';
+      document.body.appendChild(b);
+    }
+  }
+  function mathReady() {
+    if (mjState === 'ready' || !window.MathJax || !window.MathJax.typesetPromise) return;
+    var wasFail = mjState === 'fail';
+    mjState = 'ready';
+    if (wasFail) {   // 遅れて読み込めた場合は、案内を消して元の数式を組み直す
+      Array.prototype.forEach.call(document.querySelectorAll('.mj-miss'), function (m) { m.textContent = m.getAttribute('data-tex') || ''; m.classList.remove('mj-miss'); });
+      var bn = document.querySelector('.mj-banner'); if (bn) bn.remove();
+      showMath(document.body);
+    }
+    var els = mjWait; mjWait = [];
+    els.forEach(function (el) { if (el.isConnected) showMath(el); });
+  }
+  function mathFailAll() {
+    if (mjState !== 'wait') return;
+    mjState = 'fail';
+    var els = mjWait; mjWait = [];
+    els.forEach(mathFail);
+  }
+  document.addEventListener('mathjax-ready', mathReady);
+  document.addEventListener('mathjax-failed', mathFailAll);
+  if (window.__mjFailed) setTimeout(mathFailAll, 0);
+  // 合図を取りこぼした場合に備えて、MathJax 自身の準備完了の Promise も見る。25秒たっても準備できなければ失敗とする
+  window.addEventListener('load', function () {
+    var MJ = window.MathJax;
+    if (MJ && MJ.startup && MJ.startup.promise) MJ.startup.promise.then(mathReady, mathFailAll);
+  });
+  setTimeout(function () { if (mjState === 'wait') mathFailAll(); }, 25000);
+  // 安全網：showMath を呼び忘れた部分があっても、画面に足された数式は自動で組む
+  if (window.MutationObserver) {
+    var moQueue = [], moTimer = 0;
+    new MutationObserver(function (recs) {
+      recs.forEach(function (r) {
+        Array.prototype.forEach.call(r.addedNodes, function (n) {
+          if (n.nodeType === 1 && !/^MJX-/.test(n.nodeName) && moQueue.indexOf(n) < 0) moQueue.push(n);
+        });
+      });
+      if (moQueue.length && !moTimer) moTimer = setTimeout(function () {
+        moTimer = 0;
+        var q = moQueue; moQueue = [];
+        q.forEach(function (n) { if (n.isConnected) showMath(n); });
+      }, 30);
+    }).observe(document.body, { childList: true, subtree: true });
+  }
+  // 自動確認（verify/math_webkit.mjs）用：組み終わったか
+  window.__mathIdle = function () { return mjState !== 'wait' && mjBusy === 0 && !mjWait.length; };
+
+  // ---------- グラフの遅延描画（見える部分だけ） ----------
   var io = window.IntersectionObserver ? new IntersectionObserver(function (ents) {
     ents.forEach(function (en) {
       if (!en.isIntersecting) return;
@@ -242,31 +328,16 @@
     });
   }, { root: null, rootMargin: '600px 0px' }) : null;
   function activate(el) {
-    if (el.__spec) {
-      try { Charts.render(el, el.__spec); } catch (e) { if (window.console) console.error(e); }
-      el.classList.remove('chart-lazy');
-      return;
-    }
-    typeset(el);
+    if (!el.__spec || !el.isConnected || !el.classList.contains('chart-lazy')) return;
+    try { Charts.render(el, el.__spec); } catch (e) { if (window.console) console.error(e); }
+    el.classList.remove('chart-lazy');
   }
-  function lazy(el) { if (io) io.observe(el); else activate(el); }
-  var mjReady = false, waitTypeset = [];
-  function typeset(el) {
-    var MJ = window.MathJax;
-    if (!el) return;
-    if (!mjReady || !MJ || !MJ.typesetPromise) { if (waitTypeset.indexOf(el) < 0) waitTypeset.push(el); return; }
-    MJ.typesetPromise([el]).catch(function (err) { if (window.console) console.warn(err); });
+  // 画面に付いてから監視を始める。監視が働かない環境（古い Safari など）でも 2 秒後には描く
+  function lazy(el) {
+    if (!io) { setTimeout(function () { activate(el); }, 0); return; }
+    setTimeout(function () { if (el.isConnected) io.observe(el); }, 0);
+    setTimeout(function () { if (el.isConnected && el.getBoundingClientRect().top < window.innerHeight + 600) activate(el); }, 2000);
   }
-  function mathReady() {
-    if (mjReady || !window.MathJax || !window.MathJax.typesetPromise) return;
-    mjReady = true;
-    var els = waitTypeset.filter(function (el) { return el.isConnected; });
-    waitTypeset = [];
-    els.forEach(typeset);
-  }
-  document.addEventListener('mathjax-ready', mathReady);
-  // 準備完了の合図が届かない場合（オフラインで一部の読み込みに失敗したときなど）にも描けるようにする
-  window.addEventListener('load', function () { setTimeout(mathReady, 1500); });
   window.addEventListener('load', function () { if (window.Charts) Charts.redrawAll(); });
 
   function clearDetail() {
@@ -715,8 +786,8 @@
       qs.forEach(function (q, i) { ql.appendChild(qCard(q, { label: '問' + (i + 1), retry: true })); });
     }
     detailEl.scrollTop = 0;
-    Array.prototype.forEach.call(detailEl.querySelectorAll('.term-title, .term-meta'), typeset);
-    Array.prototype.forEach.call(detailEl.querySelectorAll('.sec'), lazy);
+    showMathAll(detailEl.querySelectorAll('.term-title, .term-meta, .sec'));   // 上から順に組む
+    showMath(detailEl);   // 残り（節の外・問題のカードなど）
     spySetup();
   }
 
@@ -818,7 +889,7 @@
       Array.prototype.forEach.call(el.querySelectorAll('.q-opt, .q-num, [data-act="submit"]'), function (b) { b.disabled = true; });
       var after = el.querySelector('.q-after');
       if (opts.retry) { after.hidden = false; after.innerHTML = '<button type="button" class="q-btn" data-act="retry">もう一度解く</button>'; }
-      typeset(el);
+      showMath(el);
       if (opts.onAnswer) opts.onAnswer(ok, el);
     }
     el.addEventListener('click', function (e) {
@@ -827,7 +898,7 @@
       var act = b.dataset.act;
       if (act === 'hint') {
         var hh = el.querySelector('.q-hint'); hh.hidden = !hh.hidden; b.setAttribute('aria-expanded', String(!hh.hidden));
-        if (!hh.hidden) typeset(hh);
+        if (!hh.hidden) showMath(hh);
         return;
       }
       if (act === 'retry') { el.replaceWith(qCard(q, opts)); return; }
@@ -858,10 +929,10 @@
         var ol = el.querySelector('.q-steps'), li = document.createElement('li');
         li.innerHTML = q.steps[stepI++];
         ol.appendChild(li);
-        typeset(li);
+        showMath(li);
         if (stepI >= q.steps.length) {
           b.hidden = true;
-          var fin = el.querySelector('.q-final'); fin.hidden = false; typeset(fin);
+          var fin = el.querySelector('.q-final'); fin.hidden = false; showMath(fin);
           el.querySelector('.q-self').hidden = false;
         } else b.textContent = '途中式を1つ見る（' + (stepI + 1) + '/' + q.steps.length + '）';
       } else if (b.dataset.self) {
@@ -873,7 +944,7 @@
       if (e.key === 'Enter' && e.target.classList.contains('q-num')) { e.preventDefault(); var s = el.querySelector('[data-act="submit"]'); if (s) s.click(); }
     });
     el.addEventListener('input', function (e) { if (e.target.classList.contains('q-num')) e.target.classList.remove('bad'); });
-    lazy(el);
+    showMath(el);
     return el;
   }
 
@@ -1053,7 +1124,7 @@
     clearDetail();
     detailEl.innerHTML = h;
     detailEl.scrollTop = 0;
-    Array.prototype.forEach.call(detailEl.querySelectorAll('.lazy-math'), lazy);
+    showMathAll(detailEl.querySelectorAll('.lazy-math'));
   }
 
   // ---------- 用語カード（用語名を見て意味を思い出す） ----------
@@ -1107,7 +1178,7 @@
       '<button type="button" class="big-btn" data-card-flip>めくる</button>' +
       '<div class="fc-judge q-row" hidden><button type="button" class="q-btn primary" data-card-judge="1">覚えた</button><button type="button" class="q-btn" data-card-judge="0">まだ</button></div></div></div>';
     detailEl.scrollTop = 0;
-    typeset(detailEl.querySelector('.fc-title'));
+    showMath(detailEl.querySelector('.fc'));
   }
 
   function renderReview() {
@@ -1193,7 +1264,7 @@
       '</div>';
     detailEl.innerHTML = h;
     detailEl.scrollTop = 0;
-    Array.prototype.forEach.call(detailEl.querySelectorAll('.lazy-math'), lazy);
+    showMathAll(detailEl.querySelectorAll('.lazy-math'));
   }
 
   function setFont(f) {
@@ -1264,7 +1335,8 @@
       }).join('');
     }
     detailEl.scrollTop = 0;
-    Array.prototype.forEach.call(detailEl.querySelectorAll('.sec'), lazy);
+    showMathAll(detailEl.querySelectorAll('.sec'));
+    showMath(detailEl);   // 最初の見出しより前の「記号の約束」なども組む
   }
 
   // ---------- 解説側のクリック ----------
@@ -1315,7 +1387,7 @@
     if (b.hasAttribute('data-exam-clear')) { DB.exam = ''; persist(true); renderStats(); return; }
     // 用語カード
     if (b.hasAttribute('data-cards')) { startCards(); return; }
-    if (b.hasAttribute('data-card-flip')) { var bk = detailEl.querySelector('.fc-back'); bk.hidden = false; b.hidden = true; detailEl.querySelector('.fc-judge').hidden = false; typeset(bk); return; }
+    if (b.hasAttribute('data-card-flip')) { var bk = detailEl.querySelector('.fc-back'); bk.hidden = false; b.hidden = true; detailEl.querySelector('.fc-judge').hidden = false; showMath(bk); return; }
     if (b.dataset.cardJudge) {
       var cs = state.cards, cid = cs.list[cs.i];
       if (b.dataset.cardJudge === '1') { cs.known++; if (!DB.memo[cid]) { DB.memo[cid] = Date.now(); persist(); } }
@@ -1546,7 +1618,10 @@
   // ---------- オフライン（GitHub Pages など https のときだけ） ----------
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
     window.addEventListener('load', function () {
-      try { navigator.serviceWorker.register('sw.js').catch(function () { /* 使えなくても続ける */ }); } catch (e) { /* 無視 */ }
+      // sw.js 自体は HTTP キャッシュを使わずに確かめ、開くたびに新しい版がないか見る
+      try {
+        navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then(function (reg) { try { reg.update(); } catch (e) { /* 無視 */ } }).catch(function () { /* 使えなくても続ける */ });
+      } catch (e) { /* 無視 */ }
     });
   }
 
