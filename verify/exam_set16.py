@@ -168,17 +168,22 @@ tval = (41.0 - 40.0) / (1.6 / np.sqrt(10))
 E.choice("s16p06a", f"$t={f(tval, 2)}$で、自由度9の上側5%点1.833を超える", "t 統計量")
 E.check("s16p06a", stats.t.sf(tval, 9) < 0.05 < 2 * stats.t.sf(tval, 9), "片側 p<0.05、両側 p>0.05")
 E.check("s16p06a", table_ok([(stats.t.isf(0.05, 9), 1.833), (stats.t.isf(0.025, 9), 2.262), (stats.t.isf(0.05, 10), 1.812)], 5e-4), "t 分布の点")
-v1, v2 = 1.6 ** 2 / 10, 3.2 ** 2 / 8
-nu = (v1 + v2) ** 2 / (v1 ** 2 / 9 + v2 ** 2 / 7)
-hwW = stats.t.isf(0.025, np.floor(nu)) * np.sqrt(v1 + v2)
-E.choice("s16p06b", f"$({f(2.5 - hwW, 2)},\\ {f(2.5 + hwW, 2)})$", f"scipy の t 点、自由度 {nu:.3f} を切り捨て")
-E.check("s16p06b", table_ok([(stats.t.isf(0.025, 9), 2.262), (stats.t.isf(0.025, 10), 2.228), (stats.t.isf(0.025, 16), 2.120)], 5e-4), "t 分布の点")
-A_ = rng.normal(0, 1.6, (200_000, 10))
-B_ = rng.normal(0, 3.2, (200_000, 8))
-se_ = np.sqrt(A_.var(1, ddof=1) / 10 + B_.var(1, ddof=1) / 8)
-df_ = se_ ** 4 / ((A_.var(1, ddof=1) / 10) ** 2 / 9 + (B_.var(1, ddof=1) / 8) ** 2 / 7)
-cover = np.abs(B_.mean(1) - A_.mean(1)) <= stats.t.isf(0.025, np.floor(df_)) * se_
-E.check("s16p06b", abs(cover.mean() - 0.95) < 0.006, f"ウェルチ区間の被覆率 {cover.mean():.4f}")
+# (b) 2 変量正規から r の分布をシミュレーションし、z 変換の区間の被覆率を確かめ、正確な tanh で区間を求める
+zr = np.arctanh(0.70)
+lo_, hi_ = np.tanh(zr - stats.norm.isf(0.025) / np.sqrt(7)), np.tanh(zr + stats.norm.isf(0.025) / np.sqrt(7))
+E.choice("s16p06b", f"$({f(lo_, 2)},\\ {f(hi_, 2)})$", "numpy の arctanh・tanh と scipy の正規分布の点")
+cov_ = np.array([[1, 0.5], [0.5, 1]])
+XY = rng.multivariate_normal([0, 0], cov_, size=(100_000, 10))
+xc = XY - XY.mean(1, keepdims=True)
+rs = (xc[..., 0] * xc[..., 1]).sum(1) / np.sqrt((xc[..., 0] ** 2).sum(1) * (xc[..., 1] ** 2).sum(1))
+hw_ = 1.96 / np.sqrt(7)
+cover = (np.abs(np.arctanh(rs) - np.arctanh(0.5)) <= hw_).mean()
+E.check("s16p06b", abs(cover - 0.95) < 0.006 and abs(np.arctanh(rs).var() * 7 - 1) < 0.08, f"n=10 で z 区間の被覆率 {cover:.4f}、z の分散×7 = {np.arctanh(rs).var() * 7:.3f}")
+xs_ = [0.127, 0.174, 0.247, 0.497, 1.238, 1.487, 1.560, 1.608, 1.739]
+tab_ = [0.1263, 0.1723, 0.2421, 0.4598, 0.8449, 0.9028, 0.9154, 0.9229, 0.9401]
+E.check("s16p06b", table_ok(list(zip(np.tanh(xs_), tab_)), 5e-5) and abs(np.log(17 / 3) - 1.7346) < 5e-5 and abs(stats.t.isf(0.025, 8) - 2.306) < 5e-4, "問題文の tanh・ln・t の値")
+txt = E.item("s16p06b")["question"]
+E.check("s16p06b", all(f"{x:.3f}" in txt for x in xs_) and all(f"{y:.4f}" in txt for y in tab_), "問題文の表に表の値がすべてある")
 
 # ---- 大問7：複合ポアソンを実際に発生させて平均と分散、予算
 Nn = rng.poisson(300, 200_000)
@@ -345,18 +350,21 @@ d2 = lambda u_, v_: float(((u_.mean(0) - v_.mean(0)) ** 2).sum())
 E.check("s16p12b", [round(d2(A_, B_), 9), round(d2(A_, C_), 9), round(d2(B_, C_), 9)] == [4, 18, 10], "作った点の重心間距離が表と一致")
 E.choice("s16p12b", f"${f(d2(np.vstack([A_, B_]), C_), 2)}$", "併合後の重心から直接計算")
 
-# ---- 大問13：AR(2) の当てはめ（ユール・ウォーカー方程式を行列で解く）と、AR(1) からのシミュレーションで偏自己相関の目安を確認
-r1, r2 = 0.55, 0.40
-sol = np.linalg.solve(np.array([[1, r1], [r1, 1]]), np.array([r1, r2]))
-E.num("s16p13a", rnd(sol[1], 3), f"ユール・ウォーカー方程式 AR(2) の係数 {sol}")
-ar = np.zeros((4000, 300))
-e_ = rng.normal(size=(4000, 300))
-for t_ in range(1, 300):
-    ar[:, t_] = 0.55 * ar[:, t_ - 1] + e_[:, t_]
-xx3 = ar[:, 200:] - ar[:, 200:].mean(1, keepdims=True)
-acf = lambda k: (xx3[:, k:] * xx3[:, :-k]).sum(1) / (xx3 ** 2).sum(1)
-pac = (acf(2) - acf(1) ** 2) / (1 - acf(1) ** 2)
-E.check("s16p13a", abs(pac.std() - 0.1) < 0.01 and (np.abs(pac) > 0.2).mean() < 0.06, f"AR(1) での φ22 の標準偏差 {pac.std():.4f} ≈ 1/√n、|φ22|>0.2 の割合 {(np.abs(pac) > 0.2).mean():.3f}")
+# ---- 大問13：ARMA(1,1) の理論自己相関を φ・θ の連立方程式として数値で解き、シミュレーションで標本自己相関の比を確かめる
+def arma_acf(phi_, th_):
+    g0 = (1 + 2 * phi_ * th_ + th_ ** 2) / (1 - phi_ ** 2)
+    g1 = (1 + phi_ * th_) * (phi_ + th_) / (1 - phi_ ** 2)
+    return g1 / g0, phi_ * g1 / g0
+sol = optimize.fsolve(lambda p: np.array(arma_acf(*p)) - [0.55, 0.40], [0.5, 0.0])
+E.num("s16p13a", rnd(sol[0], 3), f"ARMA(1,1) の理論自己相関の連立方程式の解 φ={sol[0]:.5f}, θ={sol[1]:.5f}")
+E.check("s16p13a", abs(sol[1]) < 1 and abs(sol[1] - (-0.260)) < 5e-4, "θ は反転可能で解説の値と一致")
+e_ = rng.normal(size=(2000, 2300))
+yy = np.zeros_like(e_)
+for t_ in range(1, e_.shape[1]):
+    yy[:, t_] = sol[0] * yy[:, t_ - 1] + e_[:, t_] + sol[1] * e_[:, t_ - 1]
+yy = yy[:, 300:] - yy[:, 300:].mean(1, keepdims=True)
+ac = lambda k: (yy[:, k:] * yy[:, :-k]).sum() / (yy ** 2).sum()
+E.check("s16p13a", abs(ac(1) - 0.55) < 0.01 and abs(ac(3) / ac(2) - sol[0]) < 0.02, f"シミュレーション r1={ac(1):.4f}, r3/r2={ac(3) / ac(2):.4f}")
 
 # ---- 大問14
 u_ = sp.symbols("u")

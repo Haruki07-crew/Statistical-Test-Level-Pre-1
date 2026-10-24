@@ -179,26 +179,37 @@ def p06():
     t = (xbar - mu0) / se
     t1, t2, t10 = 1.833, 2.262, 1.812
     assert t1 < t < t2
-    # (b) ウェルチの信頼区間（従来 − 新型）
-    n2, x2, sd2 = 8, 43.5, 3.2
-    v1, v2 = sd ** 2 / n, sd2 ** 2 / n2
-    seW = sqrt(v1 + v2)
-    dfW = (v1 + v2) ** 2 / (v1 ** 2 / (n - 1) + v2 ** 2 / (n2 - 1))
-    assert 9 < dfW < 10
-    tc = {9: 2.262, 10: 2.228, 16: 2.120}
-    d = x2 - xbar
-    sp2 = ((n - 1) * sd ** 2 + (n2 - 1) * sd2 ** 2) / (n + n2 - 2)
-    seP = sqrt(sp2 * (1 / n + 1 / n2))
-    ci = lambda hw: f"({s(d - hw, 2)},\\ {s(d + hw, 2)})"
     return {
         "n": n, "xbar": s(xbar, 1), "sd": s(sd, 1), "mu0": s(mu0, 1), "sqn": s(sqrt(n), 4), "se": s(se, 4),
         "diff": s(xbar - mu0, 1), "t": s(t, 2), "t4": s(t, 4), "t_s": s((xbar - mu0) / sd, 2), "t_n": s((xbar - mu0) / (sd / n), 2),
         "tc1": t1, "tc2": t2, "tc10": t10, "df": n - 1,
-        "n2": n2, "x2": s(x2, 1), "sd2": s(sd2, 1), "v1": s(v1, 3), "v2": s(v2, 3), "vs": s(v1 + v2, 3), "seW": s(seW, 4),
-        "dfn": s((v1 + v2) ** 2, 6), "dfd1": s(v1 ** 2 / (n - 1), 7), "dfd2": s(v2 ** 2 / (n2 - 1), 7), "dfW": s(dfW, 2),
-        "t9": tc[9], "t10": tc[10], "t16": tc[16], "dd": s(d, 1), "hwW": s(tc[9] * seW, 4),
-        "ci_ok": ci(tc[9] * seW), "ci_pool": ci(tc[16] * seP), "ci_z": ci(1.96 * seW), "ci_16": ci(tc[16] * seW), "ci_10": ci(tc[10] * seW),
-        "sp2": s(sp2, 2), "seP": s(seP, 4),
+        **p06b(),
+    }
+
+
+def p06b():
+    """(b) フィッシャーの z 変換による相関係数の区間。tanh は問題文の表（x を小数第 3 位に丸めた値）で戻す。"""
+    rr, n = 0.70, 10
+    ln = 1.7346                               # ln(17/3)
+    z = ln / 2
+    sq = {7: 2.6458, 8: 2.8284, 10: 3.1623}
+    t8 = 2.306
+    tanh = lambda x: math.tanh(r(x, 3))
+    def ci(lo, hi):
+        f2 = lambda v: s(v, 2).replace("-0.00", "0.00")
+        return f"({f2(lo)},\\ {f2(hi)})"
+    h = 1.96 / sq[7]
+    cands = {"ok": (z - h, z + h), "n": (z - 1.96 / sq[10], z + 1.96 / sq[10]), "n2": (z - 1.96 / sq[8], z + 1.96 / sq[8]),
+             "t": (z - t8 / sq[7], z + t8 / sq[7]), "half": ((ln - h) / 2, (ln + h) / 2)}
+    out = {k: ci(tanh(a), tanh(b)) for k, (a, b) in cands.items()}
+    assert len(set(out.values())) == 5
+    xs = sorted({r(v, 3) for ab in cands.values() for v in ab if abs(v) > 0.01})
+    return {
+        "r": s(rr, 2), "ln": s(ln, 4), "sq7": s(sq[7], 4), "sq8": s(sq[8], 4), "sq10": s(sq[10], 4), "t8": s(t8, 3),
+        "tabx": " | ".join(s(x, 3) for x in xs), "tabsep": "---|" * len(xs), "taby": " | ".join(s(math.tanh(x), 4) for x in xs),
+        "z": s(z, 4), "h": s(h, 4), "zl": s(z - h, 4), "zu": s(z + h, 4), "zl3": s(z - h, 3), "zu3": s(z + h, 3),
+        "tl": s(tanh(z - h), 2), "tu": s(tanh(z + h), 2),
+        **{"ci_" + k: v for k, v in out.items()},
     }
 
 
@@ -347,11 +358,15 @@ def p12():
 
 def p13():
     n, r1, r2 = 100, 0.55, 0.40
+    phi = r2 / r1
     phi22 = (r2 - r1 ** 2) / (1 - r1 ** 2)
+    # ρ1 = (1+φθ)(φ+θ)/(1+2φθ+θ²) を θ の 2 次方程式 (ρ1-φ)θ² + (2φρ1-1-φ²)θ + (ρ1-φ) = 0 として解き、|θ|<1 の解をとる
+    a, b = r1 - phi, 2 * phi * r1 - 1 - phi ** 2
+    th = [(-b + sg_ * sqrt(b * b - 4 * a * a)) / (2 * a) for sg_ in (1, -1)]
+    theta = [x for x in th if abs(x) < 1][0]
     return {
-        "n": n, "r1": s(r1, 2), "r2": s(r2, 2), "r1sq": s(r1 ** 2, 4), "num": s(r2 - r1 ** 2, 4), "den": s(1 - r1 ** 2, 4),
-        "phi22": r(phi22, 3), "phi22_s": s(phi22, 3), "phi22_5": s(phi22, 5), "bound": s(2 / sqrt(n), 2),
-        "w_num": s(r2 - r1 ** 2, 3), "w_r2": s(r2, 3), "w_ratio": s(r2 / r1, 3),
+        "n": n, "r1": s(r1, 2), "r2": s(r2, 2), "r1sq": s(r1 ** 2, 4),
+        "phi": r(phi, 3), "phi_s": s(phi, 3), "phi5": s(phi, 5), "theta": s(theta, 3), "phi22": s(phi22, 3),
     }
 
 
