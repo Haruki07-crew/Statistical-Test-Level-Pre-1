@@ -5,15 +5,15 @@
  },
  "s17p02a": {
   "ok": true,
-  "hash": "4178e8d2cffc042d"
+  "hash": "e685d23b966a9c2d"
  },
  "s17p02b": {
   "ok": true,
-  "hash": "f714268a39db84af"
+  "hash": "08624bb7f696d9c9"
  },
  "s17p02c": {
   "ok": true,
-  "hash": "e77e4ec8bf1fafda"
+  "hash": "57e2442db274ed25"
  },
  "s17p03a": {
   "ok": true,
@@ -21,67 +21,71 @@
  },
  "s17p03b": {
   "ok": true,
-  "hash": "0fa45cfefc81030a"
+  "hash": "080d2eb1582f4fa6"
  },
  "s17p03c": {
   "ok": true,
-  "hash": "7f40f01f15b76316"
+  "hash": "832af1b320fd5ebf"
  },
  "s17p04a": {
   "ok": true,
-  "hash": "93e028fdb4eae3dc"
+  "hash": "fd799afb19ed5f71"
  },
  "s17p04b": {
   "ok": true,
-  "hash": "92989267e7676c0c"
+  "hash": "56faaec19367a45a"
+ },
+ "s17p04c": {
+  "ok": true,
+  "hash": "2938f5d00822a595"
  },
  "s17p05a": {
   "ok": true,
-  "hash": "393b0fb615d854f2"
+  "hash": "9477950143202463"
  },
  "s17p05b": {
   "ok": true,
-  "hash": "25bbc37aa7507f84"
- },
- "s17p05c": {
-  "ok": true,
-  "hash": "01dcc4e4cb6b4688"
+  "hash": "43da52c004bdf2a2"
  },
  "s17p06a": {
   "ok": true,
-  "hash": "d9a3e6bc701a558d"
- },
- "s17p06b": {
-  "ok": true,
-  "hash": "b805c55b6274172d"
+  "hash": "d63ae8e9ab7f2e53"
  },
  "s17p07a": {
   "ok": true,
-  "hash": "8a806ca6b5d6b9ee"
+  "hash": "f6407cc49cc08f27"
+ },
+ "s17p07b": {
+  "ok": true,
+  "hash": "deb82e00970638f4"
  },
  "s17p08a": {
   "ok": true,
-  "hash": "546dbbfd6160bcf7"
+  "hash": "5850258c19a5d0e9"
+ },
+ "s17p08b": {
+  "ok": true,
+  "hash": "59033c6590821c9a"
  },
  "s17p09a": {
   "ok": true,
-  "hash": "4498f6b669dc4bbb"
+  "hash": "eea6fbbce657ac96"
  },
  "s17p09b": {
   "ok": true,
-  "hash": "e5d06c4f954cc18d"
+  "hash": "83acfb8e519fd6b8"
  },
  "s17p10a": {
   "ok": true,
-  "hash": "81d5d4be9bbe0e64"
+  "hash": "42d1890ca17a36b4"
  },
  "s17p11a": {
   "ok": true,
-  "hash": "0750fdba8a71292a"
+  "hash": "f7edcfe7d988d2f8"
  },
  "s17p12a": {
   "ok": true,
-  "hash": "bdb9b2ee194ce609"
+  "hash": "4ee0c0459c14c2cd"
  },
  "s17p13a": {
   "ok": true,
@@ -89,14 +93,10 @@
  },
  "s17p13b": {
   "ok": true,
-  "hash": "7558707eba9c35db"
+  "hash": "7f043d07546da5e8"
  },
  "s17p13c": {
   "ok": true,
-  "hash": "bc4f92e76ccf3a5a"
- },
- "s17p14a": {
-  "ok": true,
-  "hash": "31d76120f23b169a"
+  "hash": "714a352394462428"
  }
 }

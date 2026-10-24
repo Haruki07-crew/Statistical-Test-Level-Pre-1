@@ -38,7 +38,11 @@ def main():
         lines.append(f"| {s:02d} | {' '.join(str(c) for c in planned(s))} |")
     lines += ["", "## 実績：作ったセット", "", "| セット | 公開 | 章（数） | 基本/標準/応用 | 5肢/数値 |", "|---|---|---|---|---|"]
     for p in L.set_files():
-        data, _ = L.load_set(p)
+        try:
+            data, _ = L.load_set(p)
+        except Exception:  # 書きかけのセットは数えない
+            lines.append(f"| {p.stem[3:]} | × | （作成中） | | |")
+            continue
         its = [it for _, it in L.items_of(data)]
         chs = Counter(it.get("chapter") for it in its)
         lv = Counter(it.get("level") for it in its)

@@ -28,12 +28,12 @@
   "hash": "ecb8d795eccd8e3f"
  },
  "s19p04a": {
-  "ok": true,
-  "hash": "a5a3aa8847df643d"
+  "ok": false,
+  "hash": "96ae14bbc352500f"
  },
  "s19p04b": {
   "ok": true,
-  "hash": "303d4f7756fe3183"
+  "hash": "d3dfc2c998fd44a5"
  },
  "s19p05a": {
   "ok": true,
@@ -57,7 +57,7 @@
  },
  "s19p07b": {
   "ok": true,
-  "hash": "cb0e1009519c36e1"
+  "hash": "7aa138fcc8a2e843"
  },
  "s19p07c": {
   "ok": true,
@@ -73,7 +73,7 @@
  },
  "s19p09a": {
   "ok": true,
-  "hash": "c8e8dee1cbf9767c"
+  "hash": "b96ae78eaaa16e05"
  },
  "s19p09b": {
   "ok": true,
@@ -93,7 +93,7 @@
  },
  "s19p12a": {
   "ok": true,
-  "hash": "7eea93a2594b684f"
+  "hash": "904dab55baedd0b3"
  },
  "s19p13a": {
   "ok": true,

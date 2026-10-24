@@ -109,13 +109,22 @@ E.num("s19p03b", rnd(100 * stats.beta(4, 1).std(), 2), "Beta(4,1) の標準偏�
 E.check("s19p03b", abs(100 * Dsim.std() - 16.33) < 0.05, f"シミュレーション {100 * Dsim.std():.3f}")
 
 # ---- 大問4
-# (a) 総標本 370 のもとで層別の分散 Σ N_h^2 S_h^2/n_h を、費用 Σ c_h n_h 一定の制約で最小化（ラグランジュではなく総当たり）
-N1, S1, c1, N2, S2, c2 = 8000, 40, 1, 500, 400, 16
-cost = 320 * c1 + 50 * c2   # 最適解での総費用
-best = min(((N1 ** 2 * S1 ** 2 / n1_ + N2 ** 2 * S2 ** 2 / ((cost - c1 * n1_) / c2)), (cost - c1 * n1_) / c2)
-           for n1_ in range(1, cost) if (cost - c1 * n1_) > 0)
-E.num("s19p04a", best[1], "総費用一定で分散を最小にする n2 を総当たり")
-E.check("s19p04a", 320 + 50 == 370, "合計 370 件")
+# (a) 母集団を作り、回帰推定量と標本平均の分散をシミュレーションで比べる（相関 0.8）
+Npop = 200_000
+inc = rng.normal(0, 1, Npop)
+con = 0.8 * inc + 0.6 * rng.normal(0, 1, Npop)
+Xbar_pop = inc.mean()
+reg_est, mean_est = [], []
+for _ in range(4000):
+    idx = rng.choice(Npop, 144, replace=False)
+    xs_, ys_ = inc[idx], con[idx]
+    bb = np.cov(xs_, ys_)[0, 1] / xs_.var(ddof=1)
+    reg_est.append(ys_.mean() + bb * (Xbar_pop - xs_.mean()))
+    idx2 = rng.choice(Npop, 400, replace=False)
+    mean_est.append(con[idx2].mean())
+ratio = np.var(reg_est) / np.var(mean_est)
+E.check("s19p04a", abs(ratio - 1) < 0.1, f"回帰推定量(n=144)と標本平均(n=400)の分散の比 {ratio:.3f}≈1")
+E.num("s19p04a", round(400 * (1 - np.corrcoef(inc, con)[0, 1] ** 2)), f"母集団の相関 {np.corrcoef(inc, con)[0, 1]:.4f} から 400(1−ρ²)")
 # (b) 実際に指示行列を作って対応分析し、総イナーシャと非零の特異値の数を数える
 Qs = [3, 4, 2]
 resp = np.column_stack([rng.integers(0, k, 500) for k in Qs])
@@ -174,16 +183,13 @@ def vote(k):
 
 nb3 = "・".join(f"P{i + 1}" for i in order[:3])
 E.choice("s19p07a", f"$k=3$ の近傍は {nb3} で「{vote(3)}」、$k=5$ では「{vote(5)}」と判定される", "numpy の距離で最近傍")
-# (b) 直交計画のデータを作り、目的関数を座標ごとに数値最小化
-bols = np.array([1.20, -0.50, 0.25])
-from scipy.optimize import minimize  # noqa: E402
-obj = lambda be: np.sum((be - bols) ** 2) + 0.6 * np.sum(np.abs(be)) + 0.5 * np.sum(be ** 2)
-grid = np.linspace(-1.5, 1.5, 30001)
-en = [grid[np.argmin((grid - b) ** 2 + 0.6 * np.abs(grid) + 0.5 * grid ** 2)] for b in bols]
-E.choice("s19p07b", "$(" + ",\\ ".join(f(v + 0.0, 3) for v in en) + ")$", "目的関数を格子で最小化（係数ごと）")
-Q_, _ = np.linalg.qr(rng.normal(size=(50, 3)))
-yv = Q_ @ bols + rng.normal(size=50) * 0.0
-E.check("s19p07b", np.allclose(Q_.T @ Q_, np.eye(3)) and np.allclose(np.linalg.lstsq(Q_, yv, rcond=None)[0], bols), "X'X=I のとき ||y−Xβ||² = ||β−b||² + 定数 になる設定")
+# (b) 平均二乗誤差を λ の格子で数値的に最小化し、シミュレーションでも確かめる
+lams = np.linspace(0, 5, 50001)
+msev = (0.25 + lams ** 2) / (1 + lams) ** 2
+k = int(np.argmin(msev))
+E.choice("s19p07b", f"$\\lambda={f(lams[k], 2)}$、平均二乗誤差 {f(msev[k], 3)}", "格子で最小化")
+bs = rng.normal(1.0, 0.5, 1_000_000)
+E.check("s19p07b", abs(np.mean((bs / 1.25 - 1.0) ** 2) - 0.200) < 0.002, f"シミュレーションの平均二乗誤差 {np.mean((bs / 1.25 - 1.0) ** 2):.4f}")
 post = stats.beta(6, 94)
 prof = integrate.quad(lambda th_: (6 - 96 * th_) * post.pdf(th_), 0, 1)[0]
 E.choice("s19p07c", f"期待利益 {f(prof, 2)} 万円で、貸出を{'続ける' if prof > 0 else 'やめる'}", "事後分布で期待利益を数値積分")
@@ -199,16 +205,13 @@ res = stats.binomtest(int((nz > 0).sum()), len(nz), 0.5, alternative="greater")
 E.num("s19p08b", rnd(res.pvalue, 3), "scipy binomtest（0 を除く）")
 
 # ---- 大問9
-for dfv, tv in ((9, 2.262), (13, 2.160), (23, 2.069)):
-    table_ok("s19p09a", tv, stats.t.ppf(0.975, dfv), 0.0006, f"t_0.025({dfv})")
-r1 = stats.ttest_ind_from_stats(5.2, np.sqrt(0.9), 10, 4.4, np.sqrt(0.3), 15, equal_var=False)
-se9 = 0.8 / r1.statistic
-nu = (0.09 + 0.02) ** 2 / (0.09 ** 2 / 9 + 0.02 ** 2 / 14)
-tq = {9: 2.262, 13: 2.160, 23: 2.069}[math.floor(nu)]   # 問題文の数表の値（上で scipy と照合済み）
-h = tq * se9
-E.choice("s19p09a", f"({f(0.8 - h, 3)},\\ {f(0.8 + h, 3)})", f"scipy ttest_ind_from_stats(equal_var=False) の SE と自由度 {nu:.2f}・数表の t 点")
-h_exact = stats.t.ppf(0.975, math.floor(nu)) * se9
-E.check("s19p09a", abs(h_exact - h) < 0.001, f"正確な t 点でも半幅の差は {abs(h_exact - h):.5f}")
+# (a) √μ の区間を作って 2 乗する（scipy の正規分布の点を使う）と、被覆率のシミュレーション
+zq = stats.norm.ppf(0.975)
+lo9, hi9 = (4 - zq / 2) ** 2, (4 + zq / 2) ** 2
+E.choice("s19p09a", f"({f(lo9, 2)},\\ {f(hi9, 2)})", "scipy の 1.96 で区間を作り 2 乗")
+mus = rng.poisson(16, 400_000)
+cov = np.mean(((np.sqrt(mus) - zq / 2) ** 2 < 16) & (16 < (np.sqrt(mus) + zq / 2) ** 2))
+E.check("s19p09a", 0.93 < cov < 0.97, f"μ=16 での被覆率 {cov:.3f}")
 Pm = np.array([[0.9, 0.06, 0.04], [0.5, 0.4, 0.1], [0.6, 0, 0.4]])
 E.choice("s19p09b", f"${f(np.linalg.matrix_power(Pm, 2)[0, 2], 3)}$", "推移確率行列の 2 乗")
 stt = np.zeros(300_000, dtype=int)
@@ -253,13 +256,10 @@ srs = xs_.mean(1) / xs_.std(1, ddof=1)
 E.check("s19p11b", abs(srs.std() - 0.147) < 0.006, f"シミュレーションの標準偏差 {srs.std():.4f}")
 
 # ---- 大問12
-R = np.array([[1, 0.6, 0.4], [0.6, 1, 0.5], [0.4, 0.5, 1]])
-wv, vv = np.linalg.eigh(R)
-wv, vv = wv[::-1], vv[:, ::-1]
-E.check("s19p12a", np.allclose(wv[:2], [2.004, 0.613], atol=6e-4) and np.allclose(np.abs(vv[:, 0]), [0.580, 0.613, 0.536], atol=6e-4)
-        and np.allclose(np.abs(vv[:, 1]), [0.559, 0.179, 0.810], atol=6e-4), "表の固有値・固有ベクトルは相関行列 R のもの（3 桁）")
-E.check("s19p12a", np.sign(vv[0, 1]) == np.sign(vv[1, 1]) != np.sign(vv[2, 1]) and len(set(np.sign(vv[:, 0]))) == 1, "固有ベクトルの成分の符号の関係")
-E.num("s19p12a", rnd(1 - wv[2] * vv[0, 2] ** 2, 3), "1 − 第3主成分の負荷量の2乗（丸めない固有分解）")
+S12 = np.array([[5.1, 3.1, 1.6], [3.1, 5.1, 1.6], [1.6, 1.6, 2.6]])
+wv, vv = np.linalg.eigh(S12)
+E.check("s19p12a", np.allclose(np.abs(vv[:, -1]), [2 / 3, 2 / 3, 1 / 3]) and np.all(wv > 0), f"最大固有値の固有ベクトルが (2/3,2/3,1/3)、固有値 {np.round(wv, 4)}")
+E.num("s19p12a", rnd(wv[-1] / wv.sum(), 3), "numpy の固有値分解")
 
 # ---- 大問13
 Yt = np.array([[9, 13, 11], [7, 10, 7], [12, 15, 15], [8, 10, 9]], float)

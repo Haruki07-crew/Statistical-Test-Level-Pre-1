@@ -11,7 +11,7 @@ problems:
     items:
       - id: s28p01a
         chapter: 5
-        terms: [poisson-distribution, expected-value]
+        terms: [poisson-distribution, bernoulli-distribution]
         topic: 欠陥密度一定のポアソン歩留まりモデルでチップ面積の大きい品種のウェーハ1枚あたり良品チップ数の期待値を求める
         level: 基本
         definition: false
@@ -309,7 +309,7 @@ problems:
           - ちょうど 8 個になる確率だけを求めた
           - 正解
           - 両側 p 値（片側の 2 倍）を答えた
-          - 反対側の確率 P(X≦8)… ではなく P(X≦7) を答えた
+          - 有意でない側の確率 P(X≦7)=1−p を答えた
         explanation: |
           **方針** 帰無仮説（差の中央値が 0）のもとで、正の差の個数 $X$ は $B(«n»,\ 1/2)$ に従う。片側 $p$ 値は、観測値以上に偏る確率 $P(X\ge «pos»)$。
 
@@ -625,11 +625,11 @@ problems:
 
           「新方式がなくても 2 つのラインの不良率は同じだけ変化した」（平行トレンド）と仮定するとき、ライン A での新方式導入の効果（不良率の変化、ポイント）の推定値はどれか。
         choices:
-          - "$«dA}$"
-          - "$«did}$"
-          - "$«post}$"
-          - "$«did_rev}$"
-          - "$+«pre}$"
+          - "$«dA»$"
+          - "$«did»$"
+          - "$«post»$"
+          - "$«did_rev»$"
+          - "$+«pre»$"
         answer: 1
         distractors:
           - ライン A の導入前後の差だけを見て、同じ期間の全体的な変化を差し引かなかった
@@ -644,7 +644,7 @@ problems:
           $$\text{A の変化}=«pa1»-«pa0»=«dA»,\qquad \text{B の変化}=«pb1»-«pb0»=«dB»$$
           $$\text{効果}=(«dA»)-(«dB»)=«did»$$
 
-          **答え** $«did}$ ポイント
+          **答え** $«did»$ ポイント
 
           **間違えやすい点** A の前後差 $«dA»$ には、季節や原料ロットなど両ラインに共通する変化も含まれる。導入後の A と B の差 $«post»$ には、導入前からあったライン間の差 $«pre»$ が混ざる。
           平行トレンドの仮定が崩れていれば（もともと A の不良率が下がる傾向にあったなど）、差の差でも偏りが残る。
@@ -905,7 +905,7 @@ problems:
           待ち時間は $W_q=W-1/\mu$、待ち行列の長さはリトルの公式 $L_q=\lambda W_q$ で求める。
 
           **途中式** 単位を「時間」にそろえる。$\mu=60/«ms»=«mu»$ 枚/時、$\rho=«lam»/«mu»=«rho»$。
-          $$W=\frac{1}{\mu-\lambda}=«Wh}\ \text{時間}=«W»\ \text{分},\qquad W_q=«W»-«ms»=«Wq»\ \text{分}=«Wqh»\ \text{時間}$$
+          $$W=\frac{1}{\mu-\lambda}=«Wh»\ \text{時間}=«W»\ \text{分},\qquad W_q=«W»-«ms»=«Wq»\ \text{分}=«Wqh»\ \text{時間}$$
           $$L_q=\lambda W_q=«lam»\times«Wqh»=«Lq_s»$$
           （公式 $L_q=\rho^2/(1-\rho)=«Lq_f»$ とも一致する。）
 

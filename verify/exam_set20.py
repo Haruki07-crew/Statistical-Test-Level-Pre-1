@@ -138,19 +138,15 @@ Ssim = stats.chi2(15).rvs(size=400_000, random_state=1)
 mses = {dd: np.mean((Ssim / dd - 1) ** 2) for dd in (14, 15, 16, 17, 18)}
 E.check("s20p05b", min(mses, key=mses.get) == 17, "シミュレーションの MSE が 17 で最小")
 
-# (c) ルビーン検定：群平均と群内平方和を再現する z を作り f_oneway で確かめる
-zgrp = []
-for mz in (0.30, 0.50, 0.85):
-    dev = np.array([-2, -1, 0, 1, 2], float)
-    dev = dev / np.sqrt((dev ** 2).sum()) * np.sqrt(0.28)
-    zgrp.append(mz + dev)
-E.check("s20p05c", abs(sum(((g - g.mean()) ** 2).sum() for g in zgrp) - 0.84) < 1e-12, "群内平方和 0.84 を再現")
-Fz = stats.f_oneway(*zgrp).statistic
-E.choice("s20p05c", f"$F={f(Fz, 2)}$で3.885を超えるので", f"scipy f_oneway F={Fz:.4f}")
-table("s20p05c", stats.f.ppf(0.95, 2, 12), 3.885, 3, "F(2,12)")
-raw = [rng.normal(0, s_i, 5) for s_i in (0.5, 0.8, 1.4)]
-E.check("s20p05c", abs(stats.levene(*raw, center="mean").statistic - stats.f_oneway(*[np.abs(g - g.mean()) for g in raw]).statistic) < 1e-9,
-        "scipy の levene(center=mean) は絶対偏差の一元配置 F と同じ")
+# (c) z 検定の検出力：scipy の正規分布で両側とも足して計算し、シミュレーションでも確認
+for zz, sh in ((0.54, 0.7054), (0.86, 0.8051), (1.34, 0.9099), (2.50, 0.9938)):
+    table("s20p05c", stats.norm.cdf(zz), sh, 4, f"Φ({zz})")
+se_ = 0.8 / 4
+pw = stats.norm.sf(1.96 * se_, loc=0.5, scale=se_) + stats.norm.cdf(-1.96 * se_, loc=0.5, scale=se_)
+E.choice("s20p05c", f"${f(pw, 3)}$", f"両側の検出力 {pw:.5f}")
+xbars = rng.normal(94.5, se_, 400_000)
+E.check("s20p05c", abs(np.mean(np.abs((xbars - 94.0) / se_) > 1.96) - pw) < 0.003, "シミュレーションの棄却率")
+distinct("s20p05c", 3)
 
 # ---- 大問6
 # k 平均法の結果を模した 20 点のデータで CH 指標を sklearn を使わず計算
@@ -224,26 +220,24 @@ xnew = np.array([1, 30 + 2, 60 - 3])
 hnew = xnew @ XtXi @ xnew
 E.choice("s20p09b", f"$h_{{ii}}={f(hnew, 3)}$で、目安0.2を上回る", f"ハット行列の式 x'(X'X)^(-1)x={hnew:.5f}")
 E.check("s20p09b", abs(np.trace(H) - 3) < 1e-9, "ハット行列のトレース = 3（目安 2p/n の p=3）")
-# エラスティックネット：Z'Z=I のデータを作り、座標降下法で数値的に最小化する
-Zq, _ = np.linalg.qr(rng.standard_normal((50, 3)))
-bols = np.array([0.9, -0.25, 0.4])
-yv2 = Zq @ bols + (np.eye(50) - Zq @ Zq.T) @ rng.standard_normal(50)
-E.check("s20p09c", np.allclose(Zq.T @ yv2, bols), "最小二乗推定値が (0.9, −0.25, 0.4)")
-import scipy.optimize as so
-obj = lambda bb: ((yv2 - Zq @ bb) ** 2).sum() + 0.6 * np.abs(bb).sum() + 0.5 * (bb ** 2).sum()
-best = min((so.minimize(obj, x0, method="Powell", options={"xtol": 1e-10, "ftol": 1e-14}) for x0 in ([0, 0, 0], [0.5, -0.2, 0.2])), key=lambda r_: r_.fun).x
-E.check("s20p09c", np.allclose(best, [0.4, 0, 1 / 15], atol=1e-4), f"数値最小化 {np.round(best, 4)}")
-E.choice("s20p09c", "$(0.400,\\ 0,\\ 0.067)$", "正解の選択肢")
+# ニューラルネット：行列で順伝播し、パラメータを数える
+W1 = np.array([[0.8, 0.4], [-0.6, 0.3]]); c1 = np.array([-0.1, 0.2]); w2 = np.array([1.5, 2.0]); c2 = 0.3
+hid = np.maximum(W1 @ np.array([1.0, -0.5]) + c1, 0)
+yhat = w2 @ hid + c2
+npar = W1.size + c1.size + w2.size + 1
+E.choice("s20p09c", f"$\\hat y={f(yhat, 2)}$、パラメータ {npar} 個", f"行列計算で ŷ={yhat:.4f}, パラメータ {npar}")
 
 # ---- 大問10
 zz = (78 - 60) / math.sqrt(60)
 E.choice("s20p10a", f"$z={f(zz, 2)}$で1.645を超える", f"z={zz:.4f}")
 E.check("s20p10a", stats.poisson(60).sf(77) < 0.05, f"正確なポアソンの片側 p 値 {stats.poisson(60).sf(77):.4f} も 5% 未満")
-for v, sh, d in ((math.e, 2.718, 3), (math.exp(-1), 0.3679, 4), (math.exp(-0.3679), 0.6922, 4)):
-    table("s20p10b", v, sh, d, f"{sh}")
-pcl = 1 - math.exp(-math.exp(-3.0 + 0.5 * 4))
-E.choice("s20p10b", f"${f(pcl, 3)}$", f"逆リンクを正確な指数で {pcl:.5f}")
-E.check("s20p10b", abs(stats.poisson(math.exp(-1)).sf(0) - pcl) < 1e-12, "平均 e^η のポアソン回数が 1 以上の確率と一致")
+# IRLS：重み付き最小二乗（作業変数）として 1 回解く
+yb = np.r_[np.ones(30), np.zeros(70)]; Xb = np.ones((100, 1)); beta = np.zeros(1)
+pb = 1 / (1 + np.exp(-Xb @ beta)); Wd = pb * (1 - pb)
+zwork = Xb @ beta + (yb - pb) / Wd
+beta1 = np.linalg.lstsq(Xb * np.sqrt(Wd)[:, None], zwork * np.sqrt(Wd), rcond=None)[0][0]
+E.choice("s20p10b", f"${f(beta1, 3)}$", f"作業変数の重み付き最小二乗で β1={beta1:.5f}")
+E.check("s20p10b", abs(math.log(30 / 70) - (-0.8473)) < 1e-4, "収束後の最尤推定値 log(3/7) は別の値（誤答の確認）")
 distinct("s20p10b", 3)
 
 # ---- 大問11
@@ -259,17 +253,15 @@ E.choice("s20p11b", f"$({math.ceil(40 * math.pi / 3)},\\ {math.ceil(40 * math.pi
 E.check("s20p11b", abs(3 / math.pi - 0.955) < 0.001 and abs(2 / math.pi - 0.637) < 0.001, "3/π=0.955, 2/π=0.637")
 
 # ---- 大問12
-# 費用つき最適配分：総費用一定で分散を最小にする n_h を数値最適化で求める
-Nh = np.array([6000, 4000]); Sh = np.array([200, 100]); ch_ = np.array([9, 1])
-Wh = Nh / Nh.sum()
-best = None
-for n1 in range(1, 500):
-    n2 = 500 - n1
-    # 総費用を 9*n1+n2 に固定したときの分散を比べるため、費用 C あたりの分散 × 費用 を最小化（総費用一定と同値）
-    var = (Wh[0] ** 2 * Sh[0] ** 2 / n1 + Wh[1] ** 2 * Sh[1] ** 2 / n2) * (ch_[0] * n1 + ch_[1] * n2)
-    if best is None or var < best[0]:
-        best = (var, n1)
-E.num("s20p12a", best[1], f"分散×総費用を最小にする n1 = {best[1]}")
+# 抽出ウェイト：個票を作って重み付き平均
+yy1 = np.full(250, 420.0); yy2 = np.full(250, 250.0)
+wts = np.r_[np.full(250, 6000 / 250), np.full(250, 4000 / 250)]
+est = np.average(np.r_[yy1, yy2], weights=wts)
+E.num("s20p12a", rnd(est, 1), f"ウェイト付き平均 {est}")
+# 層別抽出の期待値のシミュレーション（不偏性）
+pop1 = rng.normal(420, 80, 6000); pop2 = rng.normal(250, 40, 4000)
+ests = [np.average(np.r_[rng.choice(pop1, 250, replace=False), rng.choice(pop2, 250, replace=False)], weights=wts) for _ in range(2000)]
+E.check("s20p12a", abs(np.mean(ests) - np.r_[pop1, pop2].mean()) < 1.0, "ウェイト付き推定量はほぼ不偏")
 cfi = 1 - max(36 - 24, 0) / max(420 - 36, 36 - 24, 0)
 E.choice("s20p12b", f"${f(cfi, 3)}$", f"CFI={cfi:.5f}")
 distinct("s20p12b", 3)

@@ -160,7 +160,9 @@ sol = sp.solve(sp.Eq(2.0 + 0.5 * xx, 2.0 + 0.5 * xx + 1.5 - 0.30 * xx), xx)
 E.choice("s22p07a", f"${f(float(sol[0]), 1)}$", "sympy で 2 直線の交点")
 # (b) FWL 定理：x2 と誤差を作り、指定の残差になるデータで重回帰係数と一致することを確かめる
 ex = np.array([-2, -1, 0, 1, 2.0]); ey = np.array([-1.6, -0.4, 0.2, 0.6, 1.2])
-x2 = np.array([3.0, 5.0, 4.0, 7.0, 6.0])
+# 残差が [1, x2] と直交するように、[1, e1, eY] に直交する方向から x2 を作る（与えた残差と矛盾しない説明変数が存在することの確認）
+ns = np.linalg.svd(np.c_[np.ones(5), ex, ey].T)[2][-1]
+x2 = 5 + 3 * ns / np.abs(ns).max()
 H = np.c_[np.ones(5), x2]
 P = H @ np.linalg.pinv(H)
 M = np.eye(5) - P
@@ -169,7 +171,7 @@ ex2 = M @ ex; ey2 = M @ ey
 x1 = ex2 + 0.5 * x2 + 10; yv = ey2 + 0.3 * x2 + 1
 coef = np.linalg.lstsq(np.c_[np.ones(5), x1, x2], yv, rcond=None)[0]
 E.choice("s22p07b", f"${f(coef[1], 2)}$", "M で射影した残差から作ったデータの重回帰係数（FWL）")
-E.check("s22p07b", abs(coef[1] - (ex2 @ ey2) / (ex2 @ ex2)) < 1e-10, "射影後の残差の傾きと重回帰係数が一致")
+E.check("s22p07b", np.allclose(ex2, ex) and np.allclose(ey2, ey), "与えた残差は [1, x2] と直交し、射影しても変わらない")
 E.check("s22p07b", abs((ex @ ey) / (ex @ ex) - 0.66) < 1e-12, "与えた残差の傾き 0.66")
 
 # ---- 大問8

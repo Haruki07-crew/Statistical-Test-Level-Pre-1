@@ -235,7 +235,7 @@ problems:
         chapter: 18
         terms: [logistic-regression, odds-and-odds-ratio, wald-test]
         topic: 予約経路ダミー1つのロジスティック回帰の係数と標準誤差を2×2表のオッズ比から求めワルド統計量を出す
-        level: 応用
+        level: 標準
         definition: false
         type: numeric
         question: |
@@ -345,7 +345,7 @@ problems:
         chapter: 9
         terms: [ci-mean-unknown-variance, t-distribution, confidence-interval]
         topic: 別店舗の対数客単価の母平均の95%信頼区間を不偏分散とt分布で作り下限を求める
-        level: 基本
+        level: 標準
         definition: false
         type: numeric
         question: |

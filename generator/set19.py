@@ -257,7 +257,7 @@ def p09():
         return f"({s(a_, 2)},\\ {s(b_, 2)})"
     out = {"x": x, "rt": s(rt, 0), "h": s(h, 2), "rlo": s(rt - h, 2), "rhi": s(rt + h, 2),
            "ci_ok": iv(lo, hi), "ci_wald": iv(x - 1.96 * rt, x + 1.96 * rt), "ci_no2": iv((rt - 1.96) ** 2, (rt + 1.96) ** 2),
-           "ci_raw": iv(rt - h, rt + h), "ci_exact": iv(9.145, 25.98), "c32": 18.29, "c34": 51.97}
+           "ci_raw": iv(rt - h, rt + h), "ci_se": iv((rt - 1.96 / (2 * rt)) ** 2, (rt + 1.96 / (2 * rt)) ** 2)}
     P = [[Fraction(90, 100), Fraction(6, 100), Fraction(4, 100)], [Fraction(5, 10), Fraction(4, 10), Fraction(1, 10)],
          [Fraction(6, 10), Fraction(0), Fraction(4, 10)]]
     names = ["nn", "nm", "ns", "mn", "mm", "ms", "sn", "sm", "ss"]

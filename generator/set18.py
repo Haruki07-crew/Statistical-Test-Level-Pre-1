@@ -186,25 +186,20 @@ def p05():
     ok = lam / (1 - e)
     vals = [lam * (1 - e), lam, ok, lam + 1, lam / e]
     distinct(vals, 2)
-    # (b) 比例配分の層別抽出
-    N1, N2, n1, n2 = 200, 300, 20, 30
-    y1, y2, v1, v2 = 12.0, 5.0, 16.0, 10.0
-    N = N1 + N2
-    W1, W2 = N1 / N, N2 / N
-    t1 = W1 ** 2 * (1 - n1 / N1) * v1 / n1
-    t2 = W2 ** 2 * (1 - n2 / N2) * v2 / n2
-    var = t1 + t2
-    var_nf = W1 ** 2 * v1 / n1 + W2 ** 2 * v2 / n2
-    var_w = W1 * (1 - n1 / N1) * v1 / n1 + W2 * (1 - n2 / N2) * v2 / n2
-    distinct([sqrt(var), sqrt(var_nf), sqrt(var_w), var], 2)
+    # (b) 不比例配分の層別抽出と抽出ウェイト
+    N1, N2, n1, n2 = 200, 900, 50, 30
+    y1, y2 = 11.5, 2.3
+    w1, w2 = N1 / n1, N2 / n2
+    est = (w1 * n1 * y1 + w2 * n2 * y2) / (w1 * n1 + w2 * n2)
+    naive = (n1 * y1 + n2 * y2) / (n1 + n2)
+    wrong_w = (n1 / N1 * n1 * y1 + n2 / N2 * n2 * y2) / (n1 / N1 * n1 + n2 / N2 * n2)
+    distinct([est, naive, wrong_w, (y1 + y2) / 2], 2)
     return {
         "lam": lam, "e": s(e, 4), "e1": s(1 - e, 4), "ok": s(ok, 2), "ok4": s(ok, 4),
         "w_mul": s(vals[0], 2), "w_lam": s(lam, 2), "w_p1": s(lam + 1, 2), "w_div": s(lam / e, 2),
-        "N1": N1, "N2": N2, "n1": n1, "n2": n2, "y1": s(y1, 1), "y2": s(y2, 1), "v1": s(v1, 0), "v2": s(v2, 0),
-        "W1": s(W1, 1), "W2": s(W2, 1), "W1s": s(W1 ** 2, 2), "W2s": s(W2 ** 2, 2), "fr": s(n1 / N1, 1),
-        "f1": s(1 - n1 / N1, 1), "f2": s(1 - n2 / N2, 1), "mean": s(W1 * y1 + W2 * y2, 1),
-        "t1": s(t1, 4), "t2": s(t2, 4), "var": s(var, 4), "se": r(sqrt(var), 2), "se4": s(sqrt(var), 4),
-        "se_nf": s(sqrt(var_nf), 2), "var_nf": s(var_nf, 3), "se_var": s(var, 2), "se_w": s(sqrt(var_w), 2),
+        "N1": N1, "N2": N2, "n1": n1, "n2": n2, "y1": s(y1, 1), "y2": s(y2, 1), "N": N1 + N2,
+        "w1": s(w1, 0), "w2": s(w2, 0), "T1": s(N1 * y1, 0), "T2": s(N2 * y2, 0), "Ttot": s(N1 * y1 + N2 * y2, 0),
+        "est": r(est, 2), "est_s": s(est, 2), "naive": s(naive, 2), "wrong_w": s(wrong_w, 2), "simple": s((y1 + y2) / 2, 2),
     }
 
 
@@ -299,7 +294,22 @@ def p08():
 
 
 def p09():
-    return {"dummy": 0}
+    pL, pP = 0.4, 0.3
+    q = {(0, 0): 0.1, (1, 0): 0.5, (0, 1): 0.5, (1, 1): 0.6}
+    j = {(l, pp): (pL if l else 1 - pL) * (pP if pp else 1 - pP) * q[(l, pp)] for l in (0, 1) for pp in (0, 1)}
+    big = j[(1, 1)] / (j[(1, 1)] + j[(1, 0)])
+    small = j[(0, 1)] / (j[(0, 1)] + j[(0, 0)])
+    rb = j[(1, 1)] / (j[(1, 1)] + j[(0, 1)])
+    rs = j[(1, 0)] / (j[(1, 0)] + j[(0, 0)])
+    sel = sum(j.values())
+    return {
+        "pL": s(pL, 1), "pP": s(pP, 1), "q00": s(q[(0, 0)], 1), "q10": s(q[(1, 0)], 1), "q01": s(q[(0, 1)], 1), "q11": s(q[(1, 1)], 1),
+        "a11": s(pP * q[(1, 1)], 2), "a10": s((1 - pP) * q[(1, 0)], 2), "a01": s(pP * q[(0, 1)], 2), "a00": s((1 - pP) * q[(0, 0)], 2),
+        "s1": s(pP * q[(1, 1)] + (1 - pP) * q[(1, 0)], 2), "s0": s(pP * q[(0, 1)] + (1 - pP) * q[(0, 0)], 2),
+        "big": s(big, 3), "small": s(small, 3), "pPs": s(pP, 3), "j11": s(pP * q[(1, 1)], 3), "j01": s(pP * q[(0, 1)], 3),
+        "rb": s(rb, 3), "rs": s(rs, 3), "sel": s(sel, 3),
+        "orc": s((big / (1 - big)) / (small / (1 - small)), 2),
+    }
 
 
 def p10():
@@ -315,10 +325,19 @@ def p10():
     n = a + b + c + d
     r1, r2, k1, k2 = a + b, c + d, a + c, b + d
     phi = (a * d - b * c) / sqrt(r1 * r2 * k1 * k2)
-    # (c) 重心法とランス・ウィリアムズ
-    dPQ, dPR, dQR = 4.0, 25.0, 17.0
-    lw = (dPR + dQR) / 2 - dPQ / 4
-    vals = [dQR, (dPR + dQR) / 2 - dPQ / 2, lw, (dPR + dQR) / 2, dPR]
+    # (c) カリンスキー・ハラバシュ指標
+    xs = [11, 12, 13, 18, 19, 20, 30, 31]
+    nx = len(xs)
+    gm = sum(xs) / nx
+    T = sum((v - gm) ** 2 for v in xs)
+    def W(parts):
+        return sum(sum((v - sum(g) / len(g)) ** 2 for v in g) for g in parts)
+    W2 = W([xs[:6], xs[6:]])
+    W3 = W([xs[:3], xs[3:6], xs[6:]])
+    ch = lambda Wk, k: ((T - Wk) / (k - 1)) / (Wk / (nx - k))
+    CH2, CH3 = ch(W2, 2), ch(W3, 3)
+    assert CH3 > CH2
+    vals = [CH3, (T - W3) / (W3 / (nx - 3)), ((T - W3) / 2) / (W3 / (nx - 4)), (T - W3) / W3, W3 / (T - W3)]
     distinct(vals, 1)
     out = {
         "pv3": s(pv[3], 3), "pv4": s(pv[4], 3), "pv5": s(pv[5], 3), "D": s(D, 2),
@@ -326,8 +345,9 @@ def p10():
         "adbc": a * d - b * c, "prod": r1 * r2 * k1 * k2, "sq": s(sqrt(r1 * r2 * k1 * k2), 2),
         "phi": r(phi, 3), "phi_s": s(phi, 3), "phi4": s(phi, 4), "chi": s(n * phi ** 2, 2),
         "yq": s((a * d - b * c) / (a * d + b * c), 3), "orr": s(a * d / (b * c), 1),
-        "dPQ": s(dPQ, 0), "dPR": s(dPR, 0), "dQR": s(dQR, 0), "lw": s(lw, 1), "avg": s((dPR + dQR) / 2, 1),
-        "w_half": s(vals[1], 1), "w_single": s(dQR, 1), "w_comp": s(dPR, 1), "q4": s(dPQ / 4, 0),
+        "gm": s(gm, 2), "T": s(T, 1), "W2": s(W2, 1), "W3": s(W3, 1), "Bss3": s(T - W3, 1), "CH2": s(CH2, 1), "CH3": s(CH3, 1),
+        "ch_nok": s(vals[1], 1), "ch_n4": s(vals[2], 1), "ch_raw": s(vals[3], 1), "ch_inv": s(vals[4], 3),
+        "B3h": s((T - W3) / 2, 2), "W3h": s(W3 / (nx - 3), 2),
     }
     for i, v in enumerate(A):
         out[f"A{i}"] = v
@@ -337,41 +357,38 @@ def p10():
 
 
 def p11():
-    # (a) 2次判別
-    m1, s1, m2, s2, x = 40.0, 2.0, 44.0, 4.0, 34.0
-    ln2 = 0.6931
-    g = (-ln2 - (x - m1) ** 2 / (2 * s1 ** 2)) - (-2 * ln2 - (x - m2) ** 2 / (2 * s2 ** 2))
-    g_nolog = -(x - m1) ** 2 / (2 * s1 ** 2) + (x - m2) ** 2 / (2 * s2 ** 2)
-    g_sd = (-ln2 - (x - m1) ** 2 / (2 * s1)) - (-2 * ln2 - (x - m2) ** 2 / (2 * s2))
-    sp2 = (s1 ** 2 + s2 ** 2) / 2
-    lda = (x - (m1 + m2) / 2) * (m1 - m2) / sp2
-    assert g < 0 and g_nolog < 0 and g_sd > 0 and lda > 0
-    distinct([g, g_nolog, g_sd, lda], 2)
-    # (b) 1 因子モデルの因子得点（回帰法）
-    lam = (0.9, 0.8, 0.6)
-    psi = tuple(1 - l * l for l in lam)
-    xs = (1.2, 0.8, -0.5)
-    lp = [l / p for l, p in zip(lam, psi)]
-    num = sum(a * b for a, b in zip(lp, xs))
-    den = sum(l * l / p for l, p in zip(lam, psi))
-    reg = num / (1 + den)
-    bart = num / den
-    lx = sum(l * v for l, v in zip(lam, xs))
-    vals = [sum(xs) / 3, lx / sum(l * l for l in lam), reg, bart, lx]
-    distinct(vals, 2)
-    return {
-        "m1": s(m1, 0), "s1": s(s1, 0), "m2": s(m2, 0), "s2": s(s2, 0), "v1": s(s1 ** 2, 0), "v2": s(s2 ** 2, 0), "x": s(x, 0),
-        "ln2": s(ln2, 4), "d1": s(x - m1, 0), "d2": s(x - m2, 0), "q1": s((x - m1) ** 2 / (2 * s1 ** 2), 3), "q2": s((x - m2) ** 2 / (2 * s2 ** 2), 5),
-        "g": s(g, 2), "g4": s(g, 4), "g_nolog": s(g_nolog, 2), "g_sd": s(g_sd, 2), "lda": s(lda, 2), "sp2": s(sp2, 0),
-        "mid": s((m1 + m2) / 2, 0), "dist1": s(abs(x - m1), 0), "dist2": s(abs(x - m2), 0),
-        "l1": lam[0], "l2": lam[1], "l3": lam[2], "p1": s(psi[0], 2), "p2": s(psi[1], 2), "p3": s(psi[2], 2),
-        "x1f": s(xs[0], 1), "x2f": s(xs[1], 1), "x3f": s(xs[2], 1),
-        "lp1": s(lp[0], 4), "lp2": s(lp[1], 4), "lp3": s(lp[2], 4),
-        "q1f": s(lam[0] ** 2 / psi[0], 4), "q2f": s(lam[1] ** 2 / psi[1], 4), "q3f": s(lam[2] ** 2 / psi[2], 4),
-        "num": s(num, 4), "den": s(den, 4), "den1": s(1 + den, 4),
-        "reg": s(reg, 2), "reg4": s(reg, 4), "bart": s(bart, 2), "lx": s(lx, 2), "mean": s(sum(xs) / 3, 2),
-        "lsum": s(lx / sum(l * l for l in lam), 2),
-    }
+    # (a) 環境DNA の検出スコアと閾値
+    pres = [2, 4, 5, 6, 7, 8, 9, 9]
+    absn = [1, 1, 2, 3, 3, 4, 5, 7]
+    out = {}
+    best = None
+    for c in (3, 5, 7):
+        se = sum(v >= c for v in pres) / len(pres)
+        sp_ = sum(v < c for v in absn) / len(absn)
+        J = se + sp_ - 1
+        out[f"se{c}"], out[f"sp{c}"], out[f"J{c}"] = s(se, 3), s(sp_, 3), s(J, 3)
+        out[f"fp{c}"] = s(1 - sp_, 3)
+        if best is None or J > best[1]:
+            best = (c, J)
+    assert best[0] == 5
+    js = sorted(float(out[f"J{c}"]) for c in (3, 5, 7))
+    assert js[-1] > js[-2]
+    # (b) 2因子直交モデル
+    L = {"len": (0.8, 0.3), "hgt": (0.7, 0.4), "wid": (0.3, 0.8), "wt": (0.6, 0.5)}
+    robs = 0.50
+    rep = L["len"][0] * L["wid"][0] + L["len"][1] * L["wid"][1]
+    h_len = sum(v * v for v in L["len"])
+    h_wid = sum(v * v for v in L["wid"])
+    f1 = L["len"][0] * L["wid"][0]
+    distinct([rep, f1, h_len * h_wid, h_len], 2)
+    out.update({
+        "pres": "、".join(map(str, pres)), "absn": "、".join(map(str, absn)), "np": len(pres), "na": len(absn),
+        **{f"{k}{i}": s(v[i], 1) for k, v in L.items() for i in (0, 1)},
+        "robs": s(robs, 2), "rep": s(rep, 2), "res": s(robs - rep, 2), "mres": s(rep - robs, 2), "f1": s(f1, 2), "rf1": s(robs - f1, 2),
+        "hh": s(h_len * h_wid, 2), "rhh": s(robs - h_len * h_wid, 2), "hl": s(h_len, 2), "rhl": s(robs - h_len, 2), "ul": s(1 - h_len, 2),
+        "p1": s(L["len"][0] * L["wid"][0], 2), "p2": s(L["len"][1] * L["wid"][1], 2),
+    })
+    return out
 
 
 def p12():
