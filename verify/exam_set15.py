@@ -62,24 +62,20 @@ for x, v in [(0.298, "1.347"), (0.408, "1.504"), (0.743, "2.102"), (1.219, "3.38
     E.check("s15p01b", f(math.exp(x), 3) == v, f"e^{x}={v}")
 
 # ---- 大問2
-# (a) ハザードを数値積分して条件付き確率
-h = lambda t: 0.06 if t < 1 else (0.02 if t < 4 else 0.01)
-H = integrate.quad(h, 1, 12, points=[4])[0]
-E.num("s15p02a", rnd(1 - math.exp(-H), 3), f"数値積分 H={H:.4f}")
-for x, v in [(0.14, "0.8694"), (0.20, "0.8187"), (0.12, "0.8869")]:
-    E.check("s15p02a", f(math.exp(-x), 4) == v, f"e^-{x}={v}")
-# (b) カプラン・マイヤーとグリーンウッドを手続きで計算
-times = [2, 3, 4, 4, 6, 7, 9, 10, 12, 12]
-event = [1, 0, 1, 1, 0, 1, 0, 1, 0, 0]
-S, g = 1.0, 0.0
-for t in sorted(set(tt for tt, e in zip(times, event) if e)):
-    if t > 7:
-        break
-    n = sum(1 for tt in times if tt >= t)
-    d = sum(1 for tt, e in zip(times, event) if tt == t and e)
-    S *= 1 - d / n
-    g += d / (n * (n - d))
-E.num("s15p02b", rnd(math.sqrt(S * S * g), 3), f"S(7)={S:.4f}")
+# (a) 同時確率表から周辺・条件付き確率
+T = np.array([[0.20, 0.05], [0.25, 0.15], [0.15, 0.20]])
+px, pr = T.sum(axis=1), T.sum(axis=0)
+E.check("s15p02a", abs(T.sum() - 1) < 1e-12, "表の確率の和が 1")
+E.check("s15p02a", not np.allclose(T, np.outer(px, pr)), "独立ではない（積と一致しないセルがある）")
+E.choice("s15p02a", f"$P(R=1)={f(pr[1], 2)}$、$P(R=1\\midX=2)={f(T[2, 1] / px[2], 3)}$で両者が異なるので", "条件付き確率")
+E.check("s15p02a", f((px * np.arange(3)).sum(), 2) != "1.00", "E[X]=1.00 の選択肢は誤り")
+# (b) 仕組みの分類：(イ) は欠測が観測変数（年齢）だけに依存することをシミュレーションで確認
+age = rng.integers(0, 3, 300_000)
+hb = rng.normal(7 + 0.0 * age, 1)
+miss = rng.random(300_000) < np.array([0.2, 0.375, 0.571])[age]
+gap = max(abs(hb[(age == a) & miss].mean() - hb[(age == a) & ~miss].mean()) for a in range(3))
+E.check("s15p02b", gap < 0.02, f"年齢を条件にすると欠測と値が無関係（MAR）差 {gap:.4f}")
+E.choice("s15p02b", "(ア)MCAR、(イ)MAR、(ウ)MNAR", "定義による分類")
 
 # ---- 大問3
 # (a) シミュレーションで対数正規の変動係数
@@ -108,25 +104,22 @@ sp2 = (9 * 0.2 ** 2 + 7 * 0.16 ** 2) / 16
 hw = stats.t.isf(0.025, 16) * math.sqrt(sp2 * (1 / 10 + 1 / 8))
 E.check("s15p04b", f(stats.t.isf(0.025, 16), 3) == "2.120" and f(stats.t.isf(0.05, 16), 3) == "1.746", "t 表")
 E.choice("s15p04b", f"({f(0.22 - hw, 3)},\\{f(0.22 + hw, 3)})", "scipy t.isf で区間")
-# (c) 実データで単位変換して回帰し直す
-x = rng.uniform(60, 300, 50)
-y = 3.6 + 0.98 * x + rng.normal(0, 8, 50)
-
-
-def fit(xx, yy):
-    X = np.column_stack([np.ones(len(xx)), xx])
-    b, rss = np.linalg.lstsq(X, yy, rcond=None)[:2]
-    s2 = rss[0] / (len(xx) - 2)
-    seb = math.sqrt(s2 * np.linalg.inv(X.T @ X)[1, 1])
-    r2 = 1 - rss[0] / ((yy - yy.mean()) ** 2).sum()
-    return b, b[1] / seb, r2
-
-
-b1, t1, r1 = fit(x, y)
-b2, t2, r2 = fit(x / 18, y / 18)
-E.check("s15p04c", abs(b1[1] - b2[1]) < 1e-10 and abs(b1[0] / 18 - b2[0]) < 1e-10 and abs(t1 - t2) < 1e-8 and abs(r1 - r2) < 1e-12,
-        "両方 18 で割ると傾き・t・R² 不変、切片は 1/18")
-E.choice("s15p04c", f"切片は{f(3.6 / 18, 2)}、傾きは0.98のまま、傾きの$t$値と決定係数も変わらない", "正解の文")
+# (c) 偏相関と t 値の関係をデータで確認
+n = 30
+X1 = rng.normal(0, 1, n)
+X2 = 0.5 * X1 + rng.normal(0, 1, n)
+Y = -0.6 * X1 + 0.3 * X2 + rng.normal(0, 1, n)
+Xd = np.column_stack([np.ones(n), X1, X2])
+bh, rss = np.linalg.lstsq(Xd, Y, rcond=None)[:2]
+s2 = rss[0] / (n - 3)
+tval = bh[1] / math.sqrt(s2 * np.linalg.inv(Xd.T @ Xd)[1, 1])
+Z = np.column_stack([np.ones(n), X2])
+ry = Y - Z @ np.linalg.lstsq(Z, Y, rcond=None)[0]
+rx = X1 - Z @ np.linalg.lstsq(Z, X1, rcond=None)[0]
+pc = np.corrcoef(ry, rx)[0, 1]
+E.check("s15p04c", abs(pc - tval / math.sqrt(tval ** 2 + n - 3)) < 1e-10, "残差どうしの相関 = t/√(t²+ν)")
+E.choice("s15p04c", f"${f(-3.2 / math.sqrt(3.2 ** 2 + 27), 3)}$", "t=-3.2, ν=27")
+distinct("s15p04c", 3)
 
 # ---- 大問5
 # (a) 順序統計量をシミュレーション
@@ -141,14 +134,15 @@ E.choice("s15p05b", f"\\sumX_i\\le{f(c, 1)}$", "scipy の χ² 点")
 size = np.mean(rng.exponential(36, (400_000, 5)).sum(axis=1) <= 70.9)
 E.check("s15p05b", abs(size - 0.05) < 0.002, f"大きさのシミュレーション {size:.4f}")
 
-# ---- 大問6：全列挙で最小の k
-k = next(k for k in range(1, 200) if 1 - 0.95 ** k >= 0.5)
-E.num("s15p06a", k, "1−0.95^k≥0.5 を直接探索")
-E.check("s15p06a", f(math.log(0.5), 4) == "-0.6931" and f(math.log(0.95), 4) == "-0.0513", "対数の値")
-# 無記憶性のシミュレーション
-G = rng.geometric(0.05, 2_000_000)
-cond = G[G > 20] - 20
-E.check("s15p06a", abs(np.median(cond) - 14) <= 0.5, f"20 人後の追加人数の中央値 {np.median(cond)}")
+# ---- 大問6：全列挙で分散
+ps = [0.05, 0.10, 0.20, 0.30, 0.35]
+from itertools import product  # noqa: E402
+dist = {}
+for bits in product([0, 1], repeat=5):
+    pr_ = np.prod([q if b else 1 - q for q, b in zip(ps, bits)])
+    dist[sum(bits)] = dist.get(sum(bits), 0) + pr_
+m1 = sum(k * v for k, v in dist.items())
+E.num("s15p06a", rnd(sum(k * k * v for k, v in dist.items()) - m1 ** 2, 3), "32 通りの全列挙で分散")
 
 # ---- 大問7
 # (a) 帰無仮説のもとでの z（プール）
@@ -157,11 +151,13 @@ zz = (14 / 200 - 4 / 160) / math.sqrt(p * (1 - p) * (1 / 200 + 1 / 160))
 E.choice("s15p07a", f"$z={f(zz, 2)}$で1.96を超えないので、帰無仮説を棄却しない", "プールした z")
 chi2, pv, _, _ = stats.chi2_contingency(np.array([[14, 186], [4, 156]]), correction=False)
 E.check("s15p07a", abs(chi2 - zz ** 2) < 1e-9 and pv > 0.05, f"連続修正なしの χ² = z² ({chi2:.4f}, p={pv:.4f})")
-# (b) 経験ベイズ
-yv = np.array([12, 15, 9, 14, 10.0])
-tau2 = yv.var(ddof=1) - 4
-post = yv.mean() + tau2 / (tau2 + 4) * (yv[1] - yv.mean())
-E.num("s15p07b", rnd(post, 2), "事後平均 = (τ²y+σ²μ)/(τ²+σ²)")
+# (b) ジェフリーズ：フィッシャー情報量の平方根を事前密度として数値積分
+prior = lambda q: math.sqrt(60 / (q * (1 - q)))
+lik = lambda q: q ** 2 * (1 - q) ** 58
+Zc = integrate.quad(lambda q: prior(q) * lik(q), 0, 1, limit=200)[0]
+pm = integrate.quad(lambda q: q * prior(q) * lik(q), 0, 1, limit=200)[0] / Zc
+E.num("s15p07b", rnd(pm, 4), f"数値積分の事後平均 {pm:.6f}")
+E.check("s15p07b", abs(stats.beta(2.5, 58.5).mean() - pm) < 1e-8, "Be(2.5, 58.5) の平均と一致")
 
 # ---- 大問8：推移確率行列の固有ベクトル
 P = np.zeros((4, 4))
@@ -180,48 +176,60 @@ E.num("s15p08a", rnd(pi[3], 3), f"固有ベクトル π={np.round(pi, 4)}")
 E.check("s15p08a", np.allclose(np.linalg.matrix_power(P, 200)[0], pi), "P^200 の行が定常分布")
 
 # ---- 大問9
-# (a) データを作って二元配置の平方和から偏 η²（与えた平方和の比で定義どおり）
-E.choice("s15p09a", f"${f(48 / 90, 3)}$", "48/(48+42)")
-distinct("s15p09a", 2)
-# (b) 全並べ替えで J の帰無分布の平均・分散を確かめ z を計算
-vals = [1, 3, 4, 7, 2, 6, 8, 9, 5, 10, 11, 12]
+# (a) 各割り付けで、日のダミーと直交しない（交絡する）効果を調べる
+import itertools  # noqa: E402
+runs = list(itertools.product([-1, 1], repeat=3))
+name = lambda r_: "".join(c for c, v in zip("abc", r_) if v == 1) or "(1)"
+effects = {"".join(e): e for k in (1, 2, 3) for e in itertools.combinations("ABC", k)}
 
 
-def Jstat(arr):
-    g = [arr[0:4], arr[4:8], arr[8:12]]
-    return sum(1 for i in range(3) for j in range(i + 1, 3) for a in g[i] for b in g[j] if a < b)
+def confounded(day1):
+    blk = np.array([1 if name(r_) in day1 else -1 for r_ in runs])
+    out = []
+    for lab, e in effects.items():
+        col = np.array([np.prod([r_["ABC".index(ch)] for ch in e]) for r_ in runs])
+        if abs(col @ blk) == 8:
+            out.append(lab)
+    return out
 
 
-J = Jstat(vals)
-sim = np.array([Jstat(list(rng.permutation(12) + 1)) for _ in range(60_000)])
-E.check("s15p09b", abs(sim.mean() - 24) < 0.1 and abs(sim.var() - 46.667) < 1.0, f"並べ替え分布 平均 {sim.mean():.3f} 分散 {sim.var():.3f}")
-E.num("s15p09b", rnd((J - 24) / math.sqrt(3360 / 72), 2), f"J={J}")
+ans = E.item("s15p09a")["answer"]
+for k, ch in enumerate(E.item("s15p09a")["choices"]):
+    day1 = re.search(r"1 日目 \$\\\{(.*?)\\\}", ch).group(1).split(",")
+    cf = confounded(day1)
+    E.check("s15p09a", (cf == ["ABC"]) == (k == ans), f"選択肢 {k} が交絡させる効果 {cf}")
+# (b) 全 64 通りの符号で正確な p 値、scipy とも比べる
+d = np.array([12, 3, -6, 15, 8, 10])
+rk = stats.rankdata(abs(d))
+wobs = rk[d > 0].sum()
+cnt = sum(1 for sg in itertools.product([0, 1], repeat=6) if sum(r_ for r_, g in zip(range(1, 7), sg) if g) >= wobs)
+E.num("s15p09b", rnd(cnt / 64, 3), f"W+={wobs}, {cnt}/64")
+E.check("s15p09b", abs(stats.wilcoxon(d, alternative="greater", method="exact").pvalue - cnt / 64) < 1e-12, "scipy wilcoxon exact")
 
 # ---- 大問10
-# (a) 折れ線の予測
-E.choice("s15p10a", f"${f(120 - 0.5 * 80 - 0.8 * max(80 - 65, 0), 1)}$", "予測値")
-distinct("s15p10a", 1)
-# (b) 実際にデータで DFBETAS の定義を確認したうえで値を計算
+# (a) 実際にデータで DFBETAS の定義を確認したうえで値を計算
 xx = rng.uniform(40, 90, 40)
-yy = 120 - 0.9 * xx + rng.normal(0, 8, 40)
 X = np.column_stack([np.ones(40), xx])
-b = np.linalg.lstsq(X, yy, rcond=None)[0]
-i = 5
-Xi, yi = np.delete(X, i, 0), np.delete(yy, i)
-bi = np.linalg.lstsq(Xi, yi, rcond=None)[0]
-si = math.sqrt(((yi - Xi @ bi) ** 2).sum() / 37)
 c11 = np.linalg.inv(X.T @ X)[1, 1]
 sxx = ((xx - xx.mean()) ** 2).sum()
-E.check("s15p10b", abs(c11 - 1 / sxx) < 1e-12, "単回帰で c11 = 1/Sxx")
+E.check("s15p10a", abs(c11 - 1 / sxx) < 1e-12, "単回帰で c11 = 1/Sxx")
 dfb = (-0.90 - (-0.84)) / (8.0 * math.sqrt(1 / 4000))
-E.choice("s15p10b", f"${f(dfb, 3)}$", "定義式")
-distinct("s15p10b", 3)
-# (c)
-n = 40
-tbl = {"L": (300.0, 3), "S": (295.6, 4), "Q": (291.0, 6)}
-aic = {m: v + 2 * kk for m, (v, kk) in tbl.items()}
-aicc = {m: aic[m] + 2 * kk * (kk + 1) / (n - kk - 1) for m, (v, kk) in tbl.items()}
-E.choice("s15p10c", f"AICではモデル{min(aic, key=aic.get)}、AICcではモデル{min(aicc, key=aicc.get)}を選ぶ", f"AIC {aic} AICc {aicc}")
+E.choice("s15p10a", f"${f(dfb, 3)}$", "定義式")
+distinct("s15p10a", 3)
+# (b) 目的関数を数値最小化してエラスティックネット推定値
+from scipy.optimize import minimize_scalar  # noqa: E402
+bh = [2.0, -0.6, 0.3]
+est = [minimize_scalar(lambda t: 0.5 * (t - b_) ** 2 + 0.5 * abs(t) + 0.5 * 1.0 * t * t, bounds=(-5, 5), method="bounded",
+                       options={"xatol": 1e-10}).x for b_ in bh]
+txt = "(" + ",\\".join(f(v + 0.0, 2) if abs(v) > 1e-6 else "0.00" for v in est) + ")"
+E.choice("s15p10b", txt, f"数値最小化 {np.round(est, 5)}")
+# (c) シミュレーションで期待二乗予測誤差の分解を確認
+y0 = rng.normal(0, 3, 1_000_000)
+predA = rng.normal(2.0, 1.0, 1_000_000)
+predB = rng.normal(0.5, math.sqrt(4.5), 1_000_000)
+eA, eB = ((y0 - predA) ** 2).mean(), ((y0 - predB) ** 2).mean()
+E.check("s15p10c", abs(eA - 14.0) < 0.1 and abs(eB - 13.75) < 0.1, f"シミュレーション A {eA:.3f} B {eB:.3f}")
+E.choice("s15p10c", f"モデルB（{f(9 + 0.25 + 4.5, 2)}）", "分解の公式")
 
 # ---- 大問11：ガンマ分布のシミュレーションで平均と標準偏差の比
 shape = 2.0
@@ -233,49 +241,51 @@ E.check("s15p11a", abs(Y1.mean() / Y0.mean() - 1.8221) < 0.01 and abs(Y1.std() /
 E.choice("s15p11a", f"期待値{f(math.exp(0.6), 2)}倍、標準偏差{f(math.exp(0.6), 2)}倍", "e^0.6")
 E.check("s15p11a", f(math.exp(0.6), 4) == "1.8221" and f(math.exp(0.5), 4) == "1.6487" and f(math.sqrt(1.8221), 4) == "1.3499", "e^x の値")
 
-# ---- 大問12：小さな母集団を作り 2 段抽出の推定量の不偏性をシミュレーションで確認し、データから推定値を計算
-Mi = rng.integers(20, 100, 40)
-Yi = np.array([rng.integers(0, m + 1) for m in Mi])
-est = []
-for _ in range(20_000):
-    sel = rng.choice(40, 4, replace=False)
-    tot = 0.0
-    for j in sel:
-        units = np.r_[np.ones(Yi[j]), np.zeros(Mi[j] - Yi[j])]
-        smp = rng.choice(units, 10, replace=False)
-        tot += Mi[j] * smp.mean()
-    est.append(40 / 4 * tot)
-E.check("s15p12a", abs(np.mean(est) - Yi.sum()) / Yi.sum() < 0.01, f"不偏性 {np.mean(est):.1f} vs {Yi.sum()}")
-E.num("s15p12a", 40 / 4 * sum(m * x / 10 for m, x in zip([50, 80, 30, 60], [6, 4, 7, 5])), "推定値")
+# ---- 大問12：費用制約つき最小化を数値的に解いて比を確かめる
+from scipy.optimize import minimize  # noqa: E402
+W = np.array([0.75, 0.25])
+Sg = np.array([10, 12])
+cc = np.array([1, 4])
+C = 400.0
+res = minimize(lambda nn: (W ** 2 * Sg ** 2 / nn).sum(), x0=[100, 50], constraints=[{"type": "eq", "fun": lambda nn: cc @ nn - C}],
+               bounds=[(1, 1000), (1, 1000)])
+ratio = res.x[1] / res.x.sum()
+E.check("s15p12a", abs(ratio - 6000 / 36000) < 1e-3, f"費用制約の最適解の割合 {ratio:.5f}")
+E.num("s15p12a", rnd(200 * ratio, 0), "n=200 に換算")
 
-# ---- 大問13：scipy の正規密度で負担率
-w1 = 0.7 * stats.norm.pdf(6.4, 5.6, 0.4)
-w2 = 0.3 * stats.norm.pdf(6.4, 7.2, 0.8)
-E.choice("s15p13a", f"${f(w2 / (w1 + w2), 3)}$", "scipy norm.pdf")
-E.check("s15p13a", f(stats.norm.pdf(1), 4) == "0.2420" and f(stats.norm.pdf(2), 4) == "0.0540", "φ の値")
+# ---- 大問13：距離行列からシルエット係数を一般的な定義で計算
+dA, dB, dC = [2.0, 3.0, 4.0], [5.0, 7.0], [4.0, 6.0, 5.0]
+a_ = np.mean(dA)
+b_ = min(np.mean(dB), np.mean(dC))
+E.choice("s15p13a", f"${f((b_ - a_) / max(a_, b_), 3)}$", "定義どおり")
 distinct("s15p13a", 3)
 
 # ---- 大問14
-# (a) 相関のある因子をシミュレーションして共通部分の分散
-F = rng.multivariate_normal([0, 0], [[1, 0.4], [0.4, 1]], 1_000_000)
-hs = (0.5 * F[:, 0] + 0.3 * F[:, 1]).var()
-E.check("s15p14a", abs(hs - 0.46) < 0.003, f"シミュレーション {hs:.4f}")
-E.choice("s15p14a", f"${f(np.array([0.5, 0.3]) @ np.array([[1, 0.4], [0.4, 1]]) @ np.array([0.5, 0.3]), 3)}$", "λ'Φλ")
-# (b) 単調回帰（PAVA）で d̂ を求め直してストレス
-d = [1.0, 1.4, 1.2, 2.1, 3.2, 2.8]
-blocks = [[v] for v in d]
-changed = True
-while changed:
-    changed = False
-    for j in range(len(blocks) - 1):
-        if np.mean(blocks[j]) > np.mean(blocks[j + 1]):
-            blocks[j] = blocks[j] + blocks.pop(j + 1)
-            changed = True
-            break
-dh = [np.mean(bk) for bk in blocks for _ in bk]
-E.check("s15p14b", np.allclose(dh, [1.0, 1.3, 1.3, 2.1, 3.0, 3.0]), f"PAVA の結果 {dh}")
-st = math.sqrt(sum((a - b) ** 2 for a, b in zip(d, dh)) / sum(a * a for a in d))
-E.choice("s15p14b", f"${f(st, 3)}$", "ストレス")
-distinct("s15p14b", 3)
+# (a) 行列で一般化最小二乗（バートレット）を計算し、シミュレーションで不偏性を確認
+lam = np.array([0.8, 0.7, 0.6])
+Psi = np.diag(1 - lam ** 2)
+xv = np.array([1.2, 0.4, -0.6])
+Pi = np.linalg.inv(Psi)
+bart = (lam @ Pi @ xv) / (lam @ Pi @ lam)
+E.choice("s15p14a", f"${f(bart, 3)}$", "(λ'Ψ⁻¹λ)⁻¹λ'Ψ⁻¹x")
+Fs = 1.5
+xs = Fs * lam + rng.normal(0, np.sqrt(1 - lam ** 2), (500_000, 3))
+bs = (xs @ Pi @ lam) / (lam @ Pi @ lam)
+E.check("s15p14a", abs(bs.mean() - Fs) < 0.01, f"F=1.5 のときのバートレット得点の平均 {bs.mean():.4f}（不偏）")
+distinct("s15p14a", 3)
+# (b) 正準相関を行列の固有値で（一般の公式 Ruu^-1 Ruv Rvv^-1 Rvu）
+Ruv = np.array([[0.5, 0.3], [0.2, 0.4]])
+Ruu = Rvv = np.eye(2)
+Mx = np.linalg.inv(Ruu) @ Ruv @ np.linalg.inv(Rvv) @ Ruv.T
+rho = math.sqrt(max(np.linalg.eigvals(Mx).real))
+E.num("s15p14b", rnd(rho, 3), "固有値の平方根")
+Rfull = np.block([[Ruu, Ruv], [Ruv.T, Rvv]])
+E.check("s15p14b", np.all(np.linalg.eigvalsh(Rfull) > 0), "4 変数の相関行列が正定値")
+data = rng.multivariate_normal(np.zeros(4), Rfull, 400_000)
+U, V = data[:, :2], data[:, 2:]
+from numpy.linalg import svd  # noqa: E402
+Cuu, Cvv, Cuv = np.cov(U.T), np.cov(V.T), np.cov(U.T, V.T)[:2, 2:]
+iu, iv = np.linalg.inv(np.linalg.cholesky(Cuu)), np.linalg.inv(np.linalg.cholesky(Cvv))
+E.check("s15p14b", abs(svd(iu @ Cuv @ iv.T)[1][0] - rho) < 0.005, "シミュレーションデータの正準相関")
 
 E.done()

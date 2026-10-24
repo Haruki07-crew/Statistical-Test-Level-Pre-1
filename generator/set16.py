@@ -83,17 +83,20 @@ def p01():
 def p02():
     ls, lm = 0.0012, 0.0008       # シール・モーターの故障率（/時間）
     lam = ls + lm
-    t = 250
-    e1, e05, e025 = 0.3679, 0.6065, 0.7788
-    assert abs(2 * lam * t - 1) < 1e-12
+    # (a) 冷待機（稼働 1 台＋予備 2 台）
+    t = 1000
+    e2 = 0.1353
+    lt = lam * t
+    assert abs(lt - 2) < 1e-12
     # (b) 300 時間稼働後、次の 200 時間以内にシール故障で止まる
-    e04, e06, e024 = 0.6703, 0.5488, 0.7866
+    e04, e06, e1, e024 = 0.6703, 0.5488, 0.3679, 0.7866
     frac = ls / lam
     return {
-        "ls": ls, "lm": lm, "lam": s(lam, 4), "t": t, "lt2": s(2 * lam * t, 0), "e1": s(e1, 4), "e05": s(e05, 4),
-        "e025": s(e025, 4), "mean1": s(1 / lam, 0),
-        "a_ok": s(e1, 3), "a_one": s(e05, 3), "a_fail": s(1 - e1, 3), "a_mean": s(e025, 3), "a_par": s(2 * e05 - e1, 3),
-        "e04": s(e04, 4), "e06": s(e06, 4), "e024": s(e024, 4), "frac": s(frac, 1), "q04": s(1 - e04, 4),
+        "ls": ls, "lm": lm, "lam": s(lam, 4), "mean1": s(1 / lam, 0), "t": t, "lt": s(lt, 0), "e2": s(e2, 4),
+        "sum3": s(1 + lt + lt ** 2 / 2, 0),
+        "a_ok": s(e2 * (1 + lt + lt ** 2 / 2), 3), "a_ok4": s(e2 * (1 + lt + lt ** 2 / 2), 4), "a_one": s(e2 * (1 + lt), 3),
+        "a_none": s(e2, 3), "a_par": s(1 - (1 - e2) ** 3, 3), "a_up3": s(e2 * (1 + lt + lt ** 2 / 2 + lt ** 3 / 6), 3),
+        "e04": s(e04, 4), "e06": s(e06, 4), "e1": s(e1, 4), "e024": s(e024, 4), "frac": s(frac, 1), "q04": s(1 - e04, 4),
         "b_ok": s(frac * (1 - e04), 3), "b_ok4": s(frac * (1 - e04), 5), "b_joint": s(frac * (e06 - e1), 3),
         "b_alone": s(1 - e024, 3), "b_any": s(1 - e04, 3), "b_frac": s(frac, 3),
     }
@@ -142,28 +145,30 @@ def p04():
     T = sum(x)
     lam0 = 2.0
     m0 = n * lam0
-    z = 2 * (sqrt(T) - sqrt(m0))
-    # (b) a90：Φ^{-1}(0.9)=1.282
-    b0, b1, z90, z95, l9 = -1.600, 2.5, 1.282, 1.645, 2.197
-    la = (z90 - b0) / b1
-    ex = {round(la, 4): 3.1670, round((l9 - b0) / b1, 4): 4.5667, round((z95 - b0) / b1, 4): 3.6620, round((z90 + b0) / b1, 4): 0.8806}
-    assert set(ex) == {1.1528, 1.5188, 1.298, -0.1272}, ex
-    ten = 14.22
+    z = (T - m0) / sqrt(m0)
+    # (b) 2 値の説明変数のロジスティック回帰の最尤推定
+    a1, n1, a0, n0 = 18, 40, 12, 60      # 沿岸：き裂あり/機数、内陸：き裂あり/機数
+    OR = (a1 / (n1 - a1)) / (a0 / (n0 - a0))
+    lnt = {"or": (3.273, 1.186), "rr": (2.25, 0.811), "cnt": (1.5, 0.405), "odds1": (0.818, -0.201)}
+    import math as _m
+    for v, w in lnt.values():
+        assert abs(_m.log(v) - w) < 5e-4
+    assert abs(OR - 3.273) < 5e-4 and abs((a1 / n1) / (a0 / n0) - 2.25) < 1e-12 and abs(a1 / a0 - 1.5) < 1e-12
     # (c) 検出数が与えられたときの総数
-    lam, k, qq = 4.0, 2, 0.969
+    lam, k, qq = 4.0, 2, 0.95
     ans = k + lam * (1 - qq)
-    zq = b0 + b1 * 1.386
     return {
         "x" + str(i): v for i, v in enumerate(x, 1)
     } | {
-        "n": n, "T": T, "lam0": s(lam0, 1), "m0": s(m0, 0), "sT": s(sqrt(T), 4), "sm0": s(sqrt(m0), 4),
-        "z": s(z, 2), "z4": s(z, 4), "z_score": s((T - m0) / sqrt(m0), 2), "z_wald": s((T - m0) / sqrt(T), 2),
-        "z_half": s((sqrt(T) - sqrt(m0)) / 2, 2), "z_quart": s((sqrt(T) - sqrt(m0)) * 4, 2),
-        "b0": s(b0, 3), "b1": s(b1, 1), "z90": z90, "z95": z95, "l9": l9,
-        "la": s(la, 4), "x_ok": s(ex[1.1528], 4), "x_logit": s(ex[1.5188], 4), "x_95": s(ex[1.298], 4), "x_sign": s(ex[-0.1272], 4),
-        "la_logit": s((l9 - b0) / b1, 4), "la_95": s((z95 - b0) / b1, 4), "la_sign": s((z90 + b0) / b1, 4),
-        "a_ok": s(ex[1.1528], 2), "a_logit": s(ex[1.5188], 2), "a_95": s(ex[1.298], 2), "a_sign": s(ex[-0.1272], 2), "a_ten": s(ten, 2),
-        "lam": s(lam, 1), "k": k, "q": s(qq, 3), "q1": s(1 - qq, 3), "lq": s(lam * (1 - qq), 3), "zq": s(zq, 3),
+        "n": n, "T": T, "lam0": s(lam0, 1), "m0": s(m0, 0), "sm0": s(sqrt(m0), 4), "diff": s(T - m0, 0),
+        "z": r(z, 2), "z4": s(z, 4), "z_s": s(z, 2), "z_wald": s((T - m0) / sqrt(T), 2), "z_vst": s(2 * (sqrt(T) - sqrt(m0)), 2),
+        "z_mean": s((T / n - lam0) / sqrt(lam0), 2), "z_var": s((T - m0) / m0, 2),
+        "a1": a1, "n1": n1, "b1": n1 - a1, "a0": a0, "n0": n0, "b0": n0 - a0,
+        "o1": s(a1 / (n1 - a1), 4), "o0": s(a0 / (n0 - a0), 4), "OR": s(OR, 3), "lnOR": lnt["or"][1], "lnRR": lnt["rr"][1],
+        "lncnt": lnt["cnt"][1], "lno1": lnt["odds1"][1], "lnor_s": s(lnt["or"][1], 2), "lnrr_s": s(lnt["rr"][1], 2),
+        "lncnt_s": s(lnt["cnt"][1], 2), "lno1_s": s(lnt["odds1"][1], 2), "OR_s": s(OR, 2), "RR": s((a1 / n1) / (a0 / n0), 2),
+        "p1": s(a1 / n1, 2), "p0": s(a0 / n0, 2), "b0hat": s(math.log(a0 / (n0 - a0)), 3), "se1": s(sqrt(1 / a1 + 1 / (n1 - a1) + 1 / a0 + 1 / (n0 - a0)), 3),
+        "lam": s(lam, 1), "k": k, "q": s(qq, 2), "q1": s(1 - qq, 2), "lq": s(lam * (1 - qq), 2),
         "c_ans": r(ans, 2), "c_ans4": s(ans, 4), "c_scale": s(k / qq, 2), "c_add": s(k + lam, 2), "c_q": s(k + lam * qq, 2),
     }
 
@@ -173,16 +178,11 @@ def p05():
     n = len(t)
     S2 = sum(v * v for v in t)
     th = S2 / n
-    # (b) ベリー・エッセン
-    C, rho3, eps = 0.4748, 2.415, 0.05
-    root = C * rho3 / eps
     return {
         "n": n, "t1": t[0], "t2": t[1], "t3": t[2], "t4": t[3], "t5": t[4], "t6": t[5], "t7": t[6], "t8": t[7],
         "S2": s(S2, 2), "S1": s(sum(t), 1), "th": s(th, 2),
         "a_ok": s(th, 2), "a_n1": s(S2 / (n - 1), 2), "a_mm": s((sum(t) / n) ** 2, 2), "a_mean": s(sum(t) / n, 2),
         "a_inv": s(n / S2, 2),
-        "C": C, "rho3": rho3, "eps": eps, "Cr": s(C * rho3, 6), "root": s(root, 4), "root2": s(root ** 2, 2),
-        "nreq": math.ceil(root ** 2), "w_nosq": math.ceil(root), "w_skew": math.ceil((C * 2 / eps) ** 2),
     }
 
 
@@ -192,14 +192,26 @@ def p06():
     t = (xbar - mu0) / se
     t1, t2, t10 = 1.833, 2.262, 1.812
     assert t1 < t < t2
-    f = sqrt(1 + 1 / n)
+    # (b) ウェルチの信頼区間（従来 − 新型）
+    n2, x2, sd2 = 8, 43.5, 3.2
+    v1, v2 = sd ** 2 / n, sd2 ** 2 / n2
+    seW = sqrt(v1 + v2)
+    dfW = (v1 + v2) ** 2 / (v1 ** 2 / (n - 1) + v2 ** 2 / (n2 - 1))
+    assert 9 < dfW < 10
+    tc = {9: 2.262, 10: 2.228, 16: 2.120}
+    d = x2 - xbar
+    sp2 = ((n - 1) * sd ** 2 + (n2 - 1) * sd2 ** 2) / (n + n2 - 2)
+    seP = sqrt(sp2 * (1 / n + 1 / n2))
+    ci = lambda hw: f"({s(d - hw, 2)},\\ {s(d + hw, 2)})"
     return {
         "n": n, "xbar": s(xbar, 1), "sd": s(sd, 1), "mu0": s(mu0, 1), "sqn": s(sqrt(n), 4), "se": s(se, 4),
         "diff": s(xbar - mu0, 1), "t": s(t, 2), "t4": s(t, 4), "t_s": s((xbar - mu0) / sd, 2), "t_n": s((xbar - mu0) / (sd / n), 2),
-        "tc1": t1, "tc2": t2, "tc10": t10, "df": n - 1, "z95": 1.645,
-        "f": s(f, 4), "hw": s(t1 * sd * f, 4), "up": s(xbar + t1 * sd * f, 2),
-        "u_mean": s(xbar + t1 * se, 2), "u_nof": s(xbar + t1 * sd, 2), "u_two": s(xbar + t2 * sd * f, 2),
-        "u_z": s(xbar + 1.645 * sd * f, 2),
+        "tc1": t1, "tc2": t2, "tc10": t10, "df": n - 1,
+        "n2": n2, "x2": s(x2, 1), "sd2": s(sd2, 1), "v1": s(v1, 3), "v2": s(v2, 3), "vs": s(v1 + v2, 3), "seW": s(seW, 4),
+        "dfn": s((v1 + v2) ** 2, 6), "dfd1": s(v1 ** 2 / (n - 1), 7), "dfd2": s(v2 ** 2 / (n2 - 1), 7), "dfW": s(dfW, 2),
+        "t9": tc[9], "t10": tc[10], "t16": tc[16], "dd": s(d, 1), "hwW": s(tc[9] * seW, 4),
+        "ci_ok": ci(tc[9] * seW), "ci_pool": ci(tc[16] * seP), "ci_z": ci(1.96 * seW), "ci_16": ci(tc[16] * seW), "ci_10": ci(tc[10] * seW),
+        "sp2": s(sp2, 2), "seP": s(seP, 4),
     }
 
 
@@ -228,14 +240,17 @@ def p08():
     tc, zc = 2.030, 1.96
     se = sqrt(s2 * h0)
     ci = lambda hw: f"({s(yhat - hw, 2)},\\ {s(yhat + hw, 2)})"
+    fit = [20, 40, 60]
+    rsd = [2.1, 4.0, 6.1]
     return {
         "n": n, "p": p, "sse": s(sse, 0), "df": df, "s2": s(s2, 4), "yhat": s(yhat, 1), "h0": s(h0, 2), "tc": tc,
         "s2h": s(s2 * h0, 5), "se": s(se, 4), "hw": s(tc * se, 4),
         "ci_ok": ci(tc * se), "ci_pred": ci(tc * sqrt(s2 * (1 + h0))), "ci_z": ci(zc * se),
         "ci_nosq": ci(tc * sqrt(s2) * h0), "ci_n": ci(tc * sqrt(sse / n * h0)),
         "pred_hw": s(tc * sqrt(s2 * (1 + h0)), 4),
-        # (b) 正規 QQ プロット
-        "rmax": s(2.80, 2), "rmin": s(-1.60, 2), "pmax": s((n - 0.5) / n, 4), "pmin": s(0.5 / n, 4), "zq": s(2.24, 2),
+        "f1": fit[0], "f2": fit[1], "f3": fit[2], "r1": s(rsd[0], 1), "r2": s(rsd[1], 1), "r3": s(rsd[2], 1),
+        "q1": s(rsd[0] / fit[0], 3), "q2": s(rsd[1] / fit[1], 3), "q3": s(rsd[2] / fit[2], 3),
+        "v1": s(rsd[0] ** 2 / fit[0], 3), "v2": s(rsd[1] ** 2 / fit[1], 3), "v3": s(rsd[2] ** 2 / fit[2], 3),
     }
 
 
@@ -271,70 +286,75 @@ def p09():
 
 
 def p10():
-    a, b, rr = 4, 3, 2
-    ms = {"A": 48.0, "B": 30.0, "AB": 12.0, "E": 2.0}
-    df = {"A": a - 1, "B": b - 1, "AB": (a - 1) * (b - 1), "E": a * b * (rr - 1)}
-    fc = {(3, 6): 4.76, (3, 12): 3.49, (3, 2): 19.16, (6, 12): 3.00}
-    FA = ms["A"] / ms["AB"]
-    assert FA < fc[(3, 6)] and ms["A"] / ms["E"] > fc[(3, 12)] and ms["AB"] / ms["E"] > fc[(6, 12)]
+    k, m = 4, 6
+    means = {"A": 12.0, "B": 14.6, "C": 15.2, "D": 18.2}
+    mse, dfe = 4.20, k * (m - 1)
+    qc, tc = 3.96, 2.086
+    hsd = qc * sqrt(mse / m)
+    pairs = [(i, j) for i in "ABCD" for j in "ABCD" if i < j]
+    diff = {(i, j): abs(means[j] - means[i]) for i, j in pairs}
+    hsd2 = qc * sqrt(2 * mse / m)
+    lsd = tc * sqrt(2 * mse / m)
+    hsd_nom = qc * sqrt(mse)
+    hsd_half = qc * sqrt(mse / (2 * m))
+    cnt = lambda h: sum(1 for pq in pairs if diff[pq] > h)
+    for h in (hsd, hsd2, lsd, hsd_nom, hsd_half):
+        assert min(abs(d - h) for d in diff.values()) > 0.08, h
     return {
-        "a": a, "b": b, "r": rr, "msA": s(ms["A"], 1), "msB": s(ms["B"], 1), "msAB": s(ms["AB"], 1), "msE": s(ms["E"], 1),
-        "dfA": df["A"], "dfB": df["B"], "dfAB": df["AB"], "dfE": df["E"],
-        "F_ok": s(FA, 2), "F_fix": s(ms["A"] / ms["E"], 2), "F_B": s(ms["A"] / ms["B"], 2), "F_AB": s(ms["AB"] / ms["E"], 2),
-        "f36": fc[(3, 6)], "f312": fc[(3, 12)], "f32": fc[(3, 2)], "f612": fc[(6, 12)],
+        "k": k, "m": m, "mA": s(means["A"], 1), "mB": s(means["B"], 1), "mC": s(means["C"], 1), "mD": s(means["D"], 1),
+        "mse": s(mse, 2), "dfe": dfe, "qc": qc, "tc": tc, "smsen": s(sqrt(mse / m), 4), "hsd": s(hsd, 2), "hsd4": s(hsd, 4),
+        "dBA": s(diff[("A", "B")], 1), "dCA": s(diff[("A", "C")], 1), "dDA": s(diff[("A", "D")], 1),
+        "dCB": s(diff[("B", "C")], 1), "dDB": s(diff[("B", "D")], 1), "dDC": s(diff[("C", "D")], 1),
+        "h_ok": s(hsd, 2), "h_2": s(hsd2, 2), "h_lsd": s(lsd, 2), "h_nom": s(hsd_nom, 2), "h_half": s(hsd_half, 2),
+        "k_ok": cnt(hsd), "k_2": cnt(hsd2), "k_lsd": cnt(lsd), "k_nom": cnt(hsd_nom), "k_half": cnt(hsd_half),
     }
 
 
 def p11():
-    y = [1.0, 1.3, 1.5, 1.8, 2.0, 2.3, 2.6, 2.8, 3.1, 3.3, 3.6, 3.9]
-    N, k = len(y), 3
-    n = N // k
-    samples = [[y[i] for i in range(st, N, k)] for st in range(k)]
-    means = [sum(v) / n for v in samples]
-    Y = sum(y) / N
-    vsys = sum((m_ - Y) ** 2 for m_ in means) / k
-    S2 = sum((v - Y) ** 2 for v in y) / (N - 1)
-    vsrs = (1 - n / N) * S2 / n
-    # (b) ケース・コントロール
-    ca, cb, ka, kb = 30, 70, 90, 110   # 症例：新型・従来、対照：新型・従来
-    OR = ca * kb / (cb * ka)
-    rr_naive = (ca / (ca + ka)) / (cb / (cb + kb))
+    N, n = 800, 50
+    ybar, xbar, sy2, sx2, sxy = 15.0, 10.0, 25.0, 16.0, 18.0
+    R = ybar / xbar
+    num = sy2 - 2 * R * sxy + R ** 2 * sx2
+    eff = num / sy2
+    rho = sxy / sqrt(sy2 * sx2)
+    # (b) リスク差と NNT
+    n1, w1, n0, w0 = 400, 32, 400, 56
+    p1, p0 = w1 / n1, w0 / n0
+    rd = p0 - p1
+    rr = p1 / p0
     return {
-        **{f"y{i}": s(v, 1) for i, v in enumerate(y, 1)}, "N": N, "k": k, "nn": n,
-        "s1": "+".join(s(v, 1) for v in samples[0]), "s2": "+".join(s(v, 1) for v in samples[1]), "s3": "+".join(s(v, 1) for v in samples[2]),
-        "m1": s(means[0], 4), "m2": s(means[1], 4), "m3": s(means[2], 4), "Y": s(Y, 4), "sumy": s(sum(y), 1),
-        "d1": s(means[0] - Y, 4), "d2": s(means[1] - Y, 4), "d3": s(means[2] - Y, 4),
-        "vsys": r(vsys, 4), "vsys6": s(vsys, 6), "vsys_s": s(vsys, 4), "w_k1": s(vsys * k / (k - 1), 4),
-        "S2": s(S2, 4), "vsrs": s(vsrs, 4),
-        "ca": ca, "cb": cb, "ka": ka, "kb": kb, "nc": ca + cb, "nk": ka + kb,
-        "OR": s(OR, 2), "OR_inv": s(1 / OR, 2), "rr_naive": s(rr_naive, 2), "OR_bad": s(ca * ka / (cb * kb), 2),
-        "risk1": s(ca / (ca + ka), 2), "risk0": s(cb / (cb + kb), 3),
+        "N": N, "nn": n, "ybar": s(ybar, 1), "xbar": s(xbar, 1), "sy2": s(sy2, 1), "sx2": s(sx2, 1), "sxy": s(sxy, 1),
+        "R": s(R, 1), "R2": s(R ** 2, 2), "t2": s(2 * R * sxy, 1), "t3": s(R ** 2 * sx2, 1), "num": s(num, 1),
+        "eff": r(eff, 2), "eff_s": s(eff, 2), "rho": s(rho, 2), "w_reg": s(1 - rho ** 2, 2), "w_no2": s((sy2 - R * sxy + R ** 2 * sx2) / sy2, 2),
+        "w_comp": s(1 - eff, 2), "w_inv": s(sy2 / num, 2),
+        "n1": n1, "w1": w1, "n0": n0, "w0": w0, "p1": s(p1, 2), "p0": s(p0, 2), "rd": s(rd, 2), "rr": s(rr, 3),
+        "nnt_raw": s(1 / rd, 1), "nnt": math.ceil(1 / rd), "w_p0": math.ceil(1 / p0), "w_p1": math.ceil(1 / p1), "w_rr": math.ceil(1 / (1 - rr)),
+        "w_pct": round(100 * rd),
     }
 
 
 def p12():
-    ev = [3.10, 1.40, 0.70, 0.40, 0.25, 0.15]
-    p = len(ev)
-    tot = sum(ev)
-    cum = [sum(ev[:i + 1]) / tot for i in range(p)]
-    k80 = next(i + 1 for i, c in enumerate(cum) if c >= 0.8)
-    pct = lambda x: s(100 * x, 1) + "\\%"
-    # (b) 正規混合の負担率
-    pi1, pi2, m1, m2, x = 0.7, 0.3, 2.0, 5.0, 3.8
-    e1, e2 = 0.1979, 0.4868          # e^{-1.62}, e^{-0.72}
-    e1b, e2b = 0.1653, 0.3012        # e^{-1.8}, e^{-1.2}
-    assert abs((x - m1) ** 2 / 2 - 1.62) < 1e-12 and abs((x - m2) ** 2 / 2 - 0.72) < 1e-12
-    resp = pi2 * e2 / (pi1 * e1 + pi2 * e2)
+    L = {1: (0.90, 0.30), 2: (0.80, -0.40), 3: (0.20, 0.95)}
+    r12 = L[1][0] * L[2][0] + L[1][1] * L[2][1]
+    cosv = r12 / (sqrt(L[1][0] ** 2 + L[1][1] ** 2) * sqrt(L[2][0] ** 2 + L[2][1] ** 2))
+    # (b) 重心法（ランス・ウィリアムズ）
+    nA, nB, nC = 2, 3, 1
+    cA, cB, cC = (0.0, 0.0), (2.0, 0.0), (3.0, 3.0)
+    d2 = lambda u, v: (u[0] - v[0]) ** 2 + (u[1] - v[1]) ** 2
+    dAB, dAC, dBC = d2(cA, cB), d2(cA, cC), d2(cB, cC)
+    nn = nA + nB
+    lw = nA / nn * dAC + nB / nn * dBC - nA * nB / nn ** 2 * dAB
     return {
-        "l1": s(ev[0], 2), "l2": s(ev[1], 2), "l3": s(ev[2], 2), "l4": s(ev[3], 2), "l5": s(ev[4], 2), "l6": s(ev[5], 2),
-        "p": p, "tot": s(tot, 2), "c1": pct(cum[0]), "c2": pct(cum[1]), "c3": pct(cum[2]),
-        "s12": s(ev[0] + ev[1], 2), "s123": s(ev[0] + ev[1] + ev[2], 2), "rest": s(tot - ev[0] - ev[1] - ev[2], 2),
-        "lost": pct(1 - cum[k80 - 1]), "lost2": pct(1 - cum[1]), "lost4": pct(1 - cum[3]),
-        "pi1": pi1, "pi2": pi2, "mu1": s(m1, 1), "mu2": s(m2, 1), "xx": x, "dx1": s(x - m1, 1), "dx2": s(x - m2, 1),
-        "e1": s(e1, 4), "e2": s(e2, 4), "e1b": s(e1b, 4), "e2b": s(e2b, 4),
-        "n1": s(pi1 * e1, 5), "n2": s(pi2 * e2, 5), "den": s(pi1 * e1 + pi2 * e2, 5),
-        "g_ok": s(resp, 3), "g_now": s(e2 / (e1 + e2), 3), "g_prior": s(pi2, 3), "g_comp": s(1 - resp, 3),
-        "g_abs": s(pi2 * e2b / (pi1 * e1b + pi2 * e2b), 3),
+        "l11": s(L[1][0], 2), "l12": s(L[1][1], 2), "l21": s(L[2][0], 2), "l22": s(L[2][1], 2), "l31": s(L[3][0], 2), "l32": s(L[3][1], 2),
+        "p1": s(L[1][0] * L[2][0], 2), "p2": s(L[1][1] * L[2][1], 2), "r12": s(r12, 2), "w_pc1": s(L[1][0] * L[2][0], 2),
+        "w_sign": s(L[1][0] * L[2][0] - L[1][1] * L[2][1], 2), "w_cos": s(cosv, 2), "w_pc2": s(L[1][1] * L[2][1], 2),
+        "h1": s(L[1][0] ** 2 + L[1][1] ** 2, 2),
+        "nA": nA, "nB": nB, "nC": nC, "nn": nn, "dAB": s(dAB, 0), "dAC": s(dAC, 0), "dBC": s(dBC, 0),
+        "wA": s(nA / nn, 1), "wB": s(nB / nn, 1), "wAB": s(nA * nB / nn ** 2, 2),
+        "t1": s(nA / nn * dAC, 1), "t2": s(nB / nn * dBC, 1), "t3": s(nA * nB / nn ** 2 * dAB, 2),
+        "lw": s(lw, 2), "nolast": s(nA / nn * dAC + nB / nn * dBC, 2), "median": s(0.5 * dAC + 0.5 * dBC - 0.25 * dAB, 2),
+        "ward": s(((nA + nC) * dAC + (nB + nC) * dBC - nC * dAB) / (nA + nB + nC), 2), "single": s(min(dAC, dBC), 2),
+        "gx": s((nA * cA[0] + nB * cB[0]) / nn, 1),
     }
 
 

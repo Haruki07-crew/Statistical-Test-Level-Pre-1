@@ -32,14 +32,14 @@ def frac(f):
 # ---------------------------------------------------------------- 大問1 ボードゲームのコイン
 def p01():
     half = Fr(1, 2)
-    pab = half * half            # P(A∩B)=P(両方表)
-    pabc = Fr(1, 4)              # A∩B∩C = 両方表
-    prod3 = half ** 3
-    union = 3 * half - 3 * pab + pabc   # 包除原理
-    union_ind = 1 - (1 - half) ** 3
-    return {"half": frac(half), "pab": frac(pab), "pabc": frac(pabc), "prod3": frac(prod3),
-            "union": frac(union), "union_ind": frac(union_ind)}
-
+    p = half * half              # 1 回の手番で 2 枚とも表
+    q = 1 - p
+    win = p / (1 - q ** 2)       # 先手が勝つ確率（等比級数）
+    two = p + q ** 2 * p         # P の 2 回目の手番までで打ち切り
+    return {"half": frac(half), "p": frac(p), "q2": frac(q ** 2), "den": frac(1 - q ** 2), "pfr": frac(win),
+            "qfr": frac(1 - win), "ok4": s(float(win), 4),
+            "c_ok": s(float(win), 3), "c_first": s(float(p), 3), "c_two": s(float(two), 3),
+            "c_q": s(float(1 - win), 3), "c_half": s(0.5, 3)}
 
 # ---------------------------------------------------------------- 大問2 スピードラン
 PHI2 = {0.82: 0.7939, 1.16: 0.8770, 1.40: 0.9192, 1.64: 0.9495, 1.98: 0.9761}
@@ -86,37 +86,33 @@ def p02():
 
 # ---------------------------------------------------------------- 大問3 バスケットボール
 def p03():
-    s1, s2, rho = 6, 8, 0.25
-    cov12 = rho * s1 * s2
-    cov = s1 ** 2 + cov12
-    var = s1 ** 2 + s2 ** 2 + 2 * cov12
-    sd = r(sqrt(var), 3)
-    corr = cov / (s1 * sd)
+    # (a) 多項分布の 2 つの度数の相関
+    ns, p2, p3 = 20, 0.30, 0.15
+    p0 = 1 - p2 - p3
+    cov = -ns * p2 * p3
+    v2 = ns * p2 * (1 - p2)
+    v3 = ns * p3 * (1 - p3)
+    corr = cov / sqrt(v2 * v3)
     # (b) リーグの選手の成功率のベータ分布をモーメント法で
     m, v = 0.76, 0.0064
     tot = m * (1 - m) / v - 1
     a = m * tot
     b = (1 - m) * tot
-    # (c) 標準偏差の 95% 信頼区間
-    n, sd_ = 10, 5.0
-    lo, hi = 2.70, 19.02          # χ²_{0.975}(9), χ²_{0.025}(9)
-    lo10, hi10 = 3.25, 20.48
-    ss = (n - 1) * sd_ ** 2
-    up = sqrt(ss / lo)
+    # (c) 全本成功のときのクロッパー＝ピアソン下限
+    nf = 12
+    r025 = r(0.025 ** (1 / nf), 4)
+    r05 = r(0.05 ** (1 / nf), 4)
+    r025b = r(0.025 ** (1 / (nf - 1)), 4)
     return {
-        "s1": s1, "s2": s2, "rho": rho, "v1": s1 ** 2, "v2": s2 ** 2, "cov12": s(cov12, 0),
-        "cov": s(cov, 0), "var": s(var, 0), "sd": s(sd, 3), "den": s(s1 * sd, 3),
-        "corr": r(corr, 2), "corr4": s(corr, 4),
-        "w_nocov": s(s1 ** 2 / (s1 * sqrt(s1 ** 2 + s2 ** 2)), 2), "w_var": s(cov / var, 2),
+        "ns": ns, "p2": s(p2, 2), "p3": s(p3, 2), "p0": s(p0, 2), "q2": s(1 - p2, 2), "q3": s(1 - p3, 2),
+        "pp": s(p2 * p3, 3), "cov": s(cov, 1), "v2": s(v2, 1), "v3": s(v3, 2), "v23": s(v2 * v3, 2),
+        "corr": r(corr, 3), "corr5": s(corr, 5),
         "m": m, "vv": v, "mq": s(m * (1 - m), 4), "ratio": s(m * (1 - m) / v, 1), "tot": s(tot, 1),
         "a": r(a, 1), "a3": s(a, 3), "as": s(a, 1), "b": s(b, 1),
         "w_nom1": s(m * m * (1 - m) / v, 1), "w_sd": s(m * (m * (1 - m) / sqrt(v) - 1), 1),
-        "n": n, "sdv": s(sd_, 1), "s2v": s(sd_ ** 2, 0), "df": n - 1, "ss": s(ss, 0),
-        "clo": s(lo, 2), "chi": s(hi, 2), "clo10": s(lo10, 2), "chi10": s(hi10, 2),
-        "vup": s(ss / lo, 2), "vlo": s(ss / hi, 2), "up": s(up, 2), "up4": s(up, 4), "low": s(sqrt(ss / hi), 2),
-        "w_n": s(sqrt(n * sd_ ** 2 / lo), 2), "w_df": s(sqrt(ss / lo10), 2), "w_var2": s(ss / lo, 2),
+        "nf": nf, "nf1": nf - 1, "r025": s(r025, 4), "r05": s(r05, 4), "r025b": s(r025b, 4),
+        "c_ok": s(r025, 3), "w_one": s(r05, 3), "w_n1": s(r025b, 3), "w_three": s(1 - 3 / nf, 3), "w_wald": s(1, 3),
     }
-
 
 # ---------------------------------------------------------------- 大問4 ソーシャルゲームの運営
 def p04():

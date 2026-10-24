@@ -173,7 +173,7 @@ def p05():
         "xs": xA + xB, "ns": nA + nB, "pp": s(pp, 5), "qq": s(1 - pp, 5), "inv": s(1 / nA + 1 / nB, 3),
         "se": s(se, 5), "z": r(z, 2), "z_s": s(z, 2), "z4": s(z, 4), "z_u": s((pA - pB) / se_u, 2), "se_u": s(se_u, 5),
         "a": a, "b": b, "c": c, "d": d, "or": s(orr, 3), "lor": s(lor, 4), "v": s(v, 4), "se_l": s(se_l, 4),
-        "ia": s(1 / a, 4), "ib": s(1 / b, 4), "ic": s(1 / c, 4), "id": s(1 / d, 4),
+        "ia": s(1 / a, 5), "ib": s(1 / b, 5), "ic": s(1 / c, 5), "id": s(1 / d, 5), "v5": s(v, 5),
         "half": s(1.96 * se_l, 4), "se_ac": s(se_ac, 4), "lo": s(lo, 4), "hi": s(hi, 4),
         "e068": s(etab[0.068], 4), "e091": s(etab[0.091], 4), "e196": s(etab[0.196], 4),
         "e1533": s(etab[1.533], 4), "e1637": s(etab[1.637], 4), "e1661": s(etab[1.661], 4),
@@ -201,7 +201,8 @@ def p06():
         "n1": n1, "m1": m1, "s1": s1, "n2": n2, "m2": m2, "s2": s2, "df": df, "df2": n1 + n2,
         "ss1": s((n1 - 1) * s1 ** 2, 2), "ss2": s((n2 - 1) * s2 ** 2, 2), "sp2": s(sp2, 4), "inv": s(inv, 3),
         "se": s(se, 4), "diff": s(m1 - m2, 1), "t16": s(t16, 3), "t18": s(t18, 3), "z": s(z, 3),
-        "half": s(t16 * se, 4), "lo": r(lo, 3), "lo4": s(lo, 4), "hi": s((m1 - m2) + t16 * se, 3),
+        "half": s(t16 * r(se, 4), 4), "lo": r(lo, 3), "lo4": s((m1 - m2) - r(t16 * r(se, 4), 4), 4),
+        "hi": s((m1 - m2) + t16 * se, 3),
         "w18": s((m1 - m2) - t18 * se, 3), "wz": s((m1 - m2) - z * se, 3),
     }
 

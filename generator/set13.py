@@ -103,24 +103,24 @@ def p03():
 def p04():
     """選挙前の世論調査"""
     n = 1200
-    pop = [0.30, 0.34, 0.36]
-    obs = [336, 396, 468]
-    exp = [n * p for p in pop]
-    terms = [(o - e) ** 2 / e for o, e in zip(obs, exp)]
-    chi = sum(terms)
-    chi_o = sum((o - e) ** 2 / o for o, e in zip(obs, exp))
-    chi_p = sum((o / n - p) ** 2 / p for o, p in zip(obs, pop))
+    nA, nB, nU = 516, 456, 228
+    pA, pB = nA / n, nB / n
+    vS = (pA + pB) / n                       # H0 のもとの V[p̂A − p̂B]（p_A+p_B を推定値で置換）
+    se = sqrt(vS)
+    z = (pA - pB) / se
+    se_ind = sqrt((pA * (1 - pA) + pB * (1 - pB)) / n)          # 共分散を無視
+    se_sign = sqrt((pA * (1 - pA) + pB * (1 - pB) - 2 * pA * pB) / n)   # 共分散の符号を誤る
+    nAB = nA + nB
     # (b) 回答が得られるまでの発信回数（負の二項分布）
     p = 0.15
     r_ = n
     ev = r_ / p
     var = r_ * (1 - p) / p ** 2
     return {
-        "n": n, "q1": s(pop[0], 2), "q2": s(pop[1], 2), "q3": s(pop[2], 2),
-        "o1": obs[0], "o2": obs[1], "o3": obs[2], "e1": int(exp[0]), "e2": int(exp[1]), "e3": int(exp[2]),
-        "d1": int(obs[0] - exp[0]), "d2": int(obs[1] - exp[1]), "d3": int(obs[2] - exp[2]),
-        "t1": s(terms[0], 4), "t2": s(terms[1], 4), "t3": s(terms[2], 4),
-        "chi": s(chi, 2), "chi4": s(chi, 4), "chi_o": s(chi_o, 2), "chi_p": s(chi_p, 4),
+        "n": n, "nA": nA, "nB": nB, "nU": nU, "pA": s(pA, 2), "pB": s(pB, 2), "pS": s(pA + pB, 2),
+        "vS": s(vS, 6), "se": s(se, 6), "dp": s(pA - pB, 2), "z": s(z, 2), "z4": s(z, 4),
+        "se_ind": s(se_ind, 6), "z_ind": s((pA - pB) / se_ind, 2), "z_sign": s((pA - pB) / se_sign, 2),
+        "nAB": nAB, "nAmh": s(nA - nAB / 2, 0), "sdc": s(sqrt(nAB / 4), 4),
         "p": p, "q": s(1 - p, 2), "p2": s(p ** 2, 4), "ev": s(ev, 0), "var1": s((1 - p) / p ** 2, 4),
         "var": s(var, 2), "sd": r(sqrt(var), 1), "sd4": s(sqrt(var), 4),
         "w_bin": s(sqrt(ev * p * (1 - p)), 1), "w_nop": s(sqrt(r_ * (1 - p) / p), 1), "w_noq": s(sqrt(r_ / p ** 2), 1),
