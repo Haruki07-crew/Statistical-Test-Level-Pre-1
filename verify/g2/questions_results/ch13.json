@@ -1,4 +1,8 @@
 {
+ "q13-expected-frequency-g1": {
+  "hash": "44ab69dc5057713e",
+  "ok": true
+ },
  "q13-goodness-of-fit-test-g1": {
   "hash": "637fb86b2a8f17d4",
   "ok": true
@@ -21,6 +25,10 @@
  },
  "q13-paired-t-test-g2": {
   "hash": "8abf85876ddb6821",
+  "ok": true
+ },
+ "q13-pearson-chi-square-statistic-g1": {
+  "hash": "d46b4bf6c95fb011",
   "ok": true
  },
  "q13-pooled-variance-g1": {

@@ -156,5 +156,7 @@ for c_ in cnt_:
     fitp.append(((o_ - e_) ** 2 / e_).sum() > stats.chi2.isf(.05, 4))
 q.check("q13-goodness-of-fit-test-g2", abs(np.mean(fitp) - 0.05) < 0.015 and chosen(q, "q13-goodness-of-fit-test-g2") == "4", f"平均を推定して自由度 4 で検定すると棄却の割合 {np.mean(fitp):.3f}")
 q.num("q13-independence-test-g2", stats.chi2_contingency([[40, 10], [30, 20]], correction=False).statistic)
+q.num("q13-pearson-chi-square-statistic-g1", stats.chisquare([18, 12, 30], [20, 20, 20]).statistic)
+q.num("q13-expected-frequency-g1", 80 * 45 / 200)
 run(q)
 raise SystemExit(1 if ng else 0)

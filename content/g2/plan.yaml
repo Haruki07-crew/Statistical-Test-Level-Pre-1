@@ -547,12 +547,10 @@ chapters:
     title: ピアソンのカイ二乗統計量
     importance: B
     status: verified
-    from: pre1
   - id: expected-frequency
     title: 期待度数
     importance: B
     status: verified
-    from: pre1
   - id: independence-test
     title: 独立性の検定
     importance: A
@@ -585,17 +583,14 @@ chapters:
     title: 回帰全体のF検定
     importance: B
     status: verified
-    from: pre1
   - id: multicollinearity
     title: 多重共線性
     importance: B
     status: verified
-    from: pre1
   - id: dummy-variable
     title: ダミー変数
     importance: B
     status: verified
-    from: pre1
   - id: confidence-and-prediction-interval-regression
     title: 回帰の信頼区間と予測区間
     importance: C

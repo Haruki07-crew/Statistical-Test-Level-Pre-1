@@ -290,6 +290,22 @@ T = "continuity-correction"
 b20 = stats.binom(20, .4); sd20 = sqrt(4.8)
 check(T, "B(20,0.4)：SD≈2.19・修正あり P(Z≤−1.14)≈0.127・なし P(Z≤−1.37)≈0.085・正確 ≈0.126", close(sd20, 2.19, 0.005) and close((5.5 - 8) / sd20, -1.14, 0.005) and close(stats.norm.cdf(-1.14), .127, 5e-4) and close((5 - 8) / sd20, -1.37, 0.005) and close(stats.norm.cdf(-1.37), .085, 5e-4) and close(b20.cdf(5), .126, 5e-4), b20.cdf(5))
 
+T = "pearson-chi-square-statistic"
+cs = stats.chisquare([30, 20, 25, 45])
+check(T, "季節 30・20・25・45：期待度数 30・χ²=350/30≈11.67・7.815 と 11.34 を超える・冬の寄与 7.5", close(cs.statistic, 350 / 30, 1e-9) and close(350 / 30, 11.67, 0.005) and close(stats.chi2.isf(.05, 3), 7.815) and close(stats.chi2.isf(.01, 3), 11.34, 0.005) and close(225 / 30, 7.5, 1e-12), cs.statistic)
+T = "expected-frequency"
+ce = stats.chi2_contingency([[40, 35, 25], [20, 45, 35]], correction=False)
+check(T, "期待度数 30・40・30・χ²≈9.58・自由度 2・5.991", np.allclose(ce.expected_freq, [[30, 40, 30]] * 2) and close(ce.statistic, 9.58, 0.005) and ce.dof == 2, ce.statistic)
+T = "multicollinearity"
+x1m = np.array([1, 2, 3, 4, 5, 6, 7, 8.]); x2m = np.array([1.1, 1.9, 3.2, 3.9, 5.1, 6.0, 6.8, 8.1]); ym = np.array([4.2, 6.1, 9.8, 12.1, 15.2, 18.3, 20.9, 24.6])
+Am = np.c_[np.ones(8), x1m, x2m]; bm = np.linalg.lstsq(Am, ym, rcond=None)[0]; ym2 = ym.copy(); ym2[2] += .3; ym2[5] -= .3; bm2 = np.linalg.lstsq(Am, ym2, rcond=None)[0]
+check(T, "相関 0.998・VIF≈333・b1 0.649→0.226・b2 2.297→2.703・合計 2.95 と 2.93・単回帰 2.92 と 2.90", close(np.corrcoef(x1m, x2m)[0, 1], .998, 5e-4) and close(1 / (1 - np.corrcoef(x1m, x2m)[0, 1] ** 2), 333, 1) and np.allclose(bm[1:], [.649, 2.297], atol=5e-4) and np.allclose(bm2[1:], [.226, 2.703], atol=5e-4) and close(bm[1] + bm[2], 2.95, 0.005) and close(bm2[1] + bm2[2], 2.93, 0.005) and close(np.polyfit(x1m, ym, 1)[0], 2.92, 0.005) and close(np.polyfit(x1m, ym2, 1)[0], 2.90, 0.005), (bm, bm2))
+check(T, "VIF 5・10、標準偏差 √5≈2.2・√10≈3.2", close(1 / .2, 5, 1e-12) and close(1 / .1, 10, 1e-9) and close(sqrt(5), 2.2, 0.05) and close(sqrt(10), 3.2, 0.05), None)
+T = "overall-f-test-regression"
+check(T, "F=(0.5/3)/(0.5/21)=7.0・F(3,21) 5% 点 3.072・8 件なら 1.33 と 6.59", close((.5 / 3) / (.5 / 21), 7, 1e-9) and close(stats.f.isf(.05, 3, 21), 3.072) and close((.5 / 3) / (.5 / 4), 1.33, 0.005) and close(stats.f.isf(.05, 3, 4), 6.59, 0.005), None)
+T = "dummy-variable"
+check(T, "20+3×25=95・+8=103・図の 2 本の直線", 20 + 3 * 25 == 95 and 20 + 3 * 25 + 8 == 103 and [20 + 3 * x for x in range(0, 40, 5)] == [20, 35, 50, 65, 80, 95, 110, 125] and [28 + 3 * x for x in range(0, 40, 5)] == [28, 43, 58, 73, 88, 103, 118, 133], None)
+
 ng = results.count(False)
 print(f"書き直した共通の用語の検算: OK {len(results) - ng} / NG {ng}")
 sys.exit(1 if ng else 0)

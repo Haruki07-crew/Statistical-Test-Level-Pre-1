@@ -118,6 +118,14 @@ xr = np.linspace(-2, 2, 12); xr = (xr - xr.mean()) / sqrt(((xr - xr.mean()) ** 2
 q.check("q14-regression-coefficient-t-test-g2", abs(((xr - xr.mean()) ** 2).sum() - 16) < 1e-9 and abs(stats.t.isf(.025, 10) - 2.228) < 5e-4 and 2.0 < 2.228, "Sxx=16 のデータ・t(10) の 2.5% 点")
 adj = lambda r2, n_, p_: 1 - (1 - r2) * (n_ - 1) / (n_ - p_ - 1)
 q.check("q14-adjusted-r-squared-g2", abs(adj(.6, 30, 2) - .570) < 5e-4 and abs(adj(.62, 30, 4) - .559) < 5e-4 and chosen(q, "q14-adjusted-r-squared-g2").startswith("モデル 1 は約 0.570、モデル 2 は約 0.559 で、モデル 1 のほうが大きい"), f"{adj(.6, 30, 2):.4f} と {adj(.62, 30, 4):.4f}")
+q.num("q14-multicollinearity-g1", 1 / (1 - 0.75))
+xv2 = rng.normal(size=200000); xv1 = sqrt(.75) * xv2 + sqrt(.25) * rng.normal(size=200000)
+r2v = np.corrcoef(xv1, xv2)[0, 1] ** 2
+q.check("q14-multicollinearity-g1", abs(r2v - .75) < .005 and abs(1 / (1 - r2v) - 4) < 0.1, f"x1 を x2 で回帰した R²={r2v:.4f} → VIF={1 / (1 - r2v):.3f}")
+q.num("q14-overall-f-test-regression-g1", (0.40 / 2) / (0.60 / 27))
+q.check("q14-overall-f-test-regression-g1", abs(stats.f.isf(.05, 2, 27) - 3.35) < 0.005, f"F(2,27) の 5% 点 {stats.f.isf(.05, 2, 27):.3f}")
+D4 = np.eye(4)[rng.integers(0, 4, 50)]; Xd = np.c_[np.ones(50), D4]
+q.check("q14-dummy-variable-g1", np.linalg.matrix_rank(Xd) == 4 and np.linalg.matrix_rank(Xd[:, :4]) == 4 and chosen(q, "q14-dummy-variable-g1") == "3", "切片＋4 個のダミーは列が 1 次従属（階数 4）、3 個なら独立")
 xa = rng.normal(0, 1, 5000); xb = 0.8 * xa + 0.6 * rng.normal(0, 1, 5000); yy = 2 + 1.2 * xa + 2.25 * xb + rng.normal(0, 1, 5000)
 cfm = np.linalg.lstsq(np.c_[np.ones(5000), xa, xb], yy, rcond=None)[0]; cfs = np.polyfit(xa, yy, 1)[0]
 q.check("q14-multiple-regression-model-g3", abs(cfm[1] - 1.2) < 0.05 and abs(cfs - 3.0) < 0.1 and abs(cfs - (cfm[1] + cfm[2] * np.polyfit(xa, xb, 1)[0])) < 1e-9 and chosen(q, "q14-multiple-regression-model-g3").startswith("広告費の多い店ほど面積も広い"), f"相関のある 2 変数のデータで 重回帰 {cfm[1]:.2f}・単回帰 {cfs:.2f}（単回帰 = b1 + b2 × d が成り立つ）")
