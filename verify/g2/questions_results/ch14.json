@@ -1,4 +1,16 @@
 {
+ "q14-adjusted-r-squared-g1": {
+  "hash": "a2fbc1c7ed1b9ebc",
+  "ok": true
+ },
+ "q14-multiple-regression-model-g1": {
+  "hash": "19c6848b97857331",
+  "ok": true
+ },
+ "q14-regression-coefficient-t-test-g1": {
+  "hash": "9f817c31efecec0d",
+  "ok": true
+ },
  "q14-regression-output-1": {
   "hash": "1a800e165f307e2d",
   "ok": true

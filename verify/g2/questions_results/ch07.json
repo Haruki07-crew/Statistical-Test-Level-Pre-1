@@ -1,4 +1,12 @@
 {
+ "q07-bayes-theorem-g1": {
+  "hash": "99b78b298e8ab47b",
+  "ok": true
+ },
+ "q07-conditional-probability-g1": {
+  "hash": "367c266abf2a8e1a",
+  "ok": true
+ },
  "q07-counting-1": {
   "hash": "206108523c3a8ca8",
   "ok": true

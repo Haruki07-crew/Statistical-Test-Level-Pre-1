@@ -1,0 +1,18 @@
+{
+ "q11-ci-mean-unknown-variance-g1": {
+  "hash": "dc7e2e322f026597",
+  "ok": true
+ },
+ "q11-ci-proportion-g1": {
+  "hash": "acbca10177368e76",
+  "ok": true
+ },
+ "q11-confidence-interval-g1": {
+  "hash": "3d58fe87b4a9afb0",
+  "ok": true
+ },
+ "q11-standard-error-g1": {
+  "hash": "3c09ac6ce780c66d",
+  "ok": true
+ }
+}

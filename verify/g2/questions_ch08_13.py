@@ -1,0 +1,68 @@
+"""2級 第8・9・11・12・13章：準1級と共通の用語に足した2級の問題の検算（章ごとに結果を保存する）。"""
+import sys
+import pathlib
+from math import comb, exp, sqrt
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from qhead import Q, chosen  # noqa: E402
+import numpy as np  # noqa: E402
+from scipy import stats  # noqa: E402
+
+ng = 0
+rng = np.random.default_rng(13)
+
+
+def run(q):
+    global ng
+    try:
+        q.done()
+    except SystemExit as e:
+        ng += int(bool(e.code))
+
+
+q = Q(8)
+X = rng.normal(3, sqrt(2), 2_000_000)
+q.num("q08-expectation-variance-properties-g1", 2 + 3 ** 2)
+q.check("q08-expectation-variance-properties-g1", abs(np.mean(X ** 2) - 11) < 0.02, f"シミュレーション {np.mean(X ** 2):.3f}")
+Y = rng.normal(0, sqrt(3), 2_000_000)
+q.check("q08-expectation-variance-properties-g2", abs(np.var(X - 2 * Y) - 14) < 0.05 and chosen(q, "q08-expectation-variance-properties-g2") == "14", f"シミュレーション {np.var(X - 2 * Y):.3f}")
+run(q)
+
+q = Q(9)
+q.num("q09-binomial-distribution-g1", stats.binom(4, .5).pmf(2))
+q.num("q09-binomial-distribution-g2", stats.binom(3, .1).sf(0))
+q.num("q09-poisson-distribution-g1", stats.poisson(2).pmf(0))
+q.check("q09-poisson-distribution-g1", abs(exp(-2) - 0.1353) < 5e-5, "表の値")
+q.num("q09-normal-distribution-g1", stats.norm(170, 6).sf(182))
+q.num("q09-standard-normal-distribution-g1", stats.norm.cdf(1.96) - stats.norm.cdf(-1.96))
+q.num("q09-exponential-distribution-g1", stats.expon(scale=10).cdf(5))
+run(q)
+
+q = Q(11)
+hit = 0
+for _ in range(20):
+    sm = rng.normal(50, 5, (5000, 16)); m = sm.mean(1); s = sm.std(1, ddof=1)
+    hit += np.sum(np.abs(m - 50) <= stats.t.isf(.025, 15) * s / 4)
+q.check("q11-confidence-interval-g1", abs(hit / 100000 - .95) < .005, f"被覆率は方法の性質 {hit / 100000:.4f}（answer=false）")
+q.num("q11-ci-mean-unknown-variance-g1", 20 + stats.t.isf(.025, 15) * 4 / 4)
+q.num("q11-ci-proportion-g1", 1.96 * sqrt(.25 / 400))
+q.num("q11-standard-error-g1", 10 / sqrt(25))
+run(q)
+
+q = Q(12)
+q.check("q12-p-value-g1", 0.01 < 0.03 < 0.05, "0.01 < 0.03 < 0.05（answer=true）")
+q.num("q12-one-sample-t-test-g1", (52 - 50) / (3 / 3))
+q.num("q12-proportion-test-g1", (0.6 - 0.5) / sqrt(.25 / 100))
+q.check("q12-type-i-and-ii-errors-g1", chosen(q, "q12-type-i-and-ii-errors-g1") == "第 1 種の過誤", "正常（帰無仮説が正しい）なのに異常と判定")
+run(q)
+
+q = Q(13)
+q.num("q13-pooled-variance-g1", (5 * 10 + 5 * 14) / 10)
+r = stats.ttest_ind_from_stats(4, sqrt(10), 6, 0, sqrt(14), 6)
+q.num("q13-two-sample-t-test-g1", 4 / sqrt(12 * (1 / 6 + 1 / 6)))
+q.check("q13-two-sample-t-test-g1", abs(r.statistic - 2) < 1e-9, f"scipy の ttest_ind_from_stats {r.statistic:.4f}")
+q.check("q13-paired-t-test-g1", chosen(q, "q13-paired-t-test-g1").startswith("同じ 20 人"), "同じ人の前後")
+q.num("q13-independence-test-g1", 60 * 50 / 200)
+q.num("q13-goodness-of-fit-test-g1", stats.chisquare([25, 15, 20, 20, 18, 22]).statistic)
+q.check("q13-welch-test-g1", True, "ウェルチの検定は等分散を仮定しない（answer=false）")
+run(q)
+raise SystemExit(1 if ng else 0)

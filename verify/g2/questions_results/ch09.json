@@ -1,0 +1,26 @@
+{
+ "q09-binomial-distribution-g1": {
+  "hash": "6afc70b46e75f6ab",
+  "ok": true
+ },
+ "q09-binomial-distribution-g2": {
+  "hash": "6ad6a44a9d01f4c1",
+  "ok": true
+ },
+ "q09-exponential-distribution-g1": {
+  "hash": "c3a8cfd65f9af2ed",
+  "ok": true
+ },
+ "q09-normal-distribution-g1": {
+  "hash": "ec719bfd411cc457",
+  "ok": true
+ },
+ "q09-poisson-distribution-g1": {
+  "hash": "499a0fc89b4146fb",
+  "ok": true
+ },
+ "q09-standard-normal-distribution-g1": {
+  "hash": "6e7470668c1227d8",
+  "ok": true
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "q13-goodness-of-fit-test-g1": {
+  "hash": "637fb86b2a8f17d4",
+  "ok": true
+ },
+ "q13-independence-test-g1": {
+  "hash": "f4455f617d73a589",
+  "ok": true
+ },
+ "q13-paired-t-test-g1": {
+  "hash": "4da731142263cab3",
+  "ok": true
+ },
+ "q13-pooled-variance-g1": {
+  "hash": "b6e511d4d0827429",
+  "ok": true
+ },
+ "q13-two-sample-t-test-g1": {
+  "hash": "8186f11155694aa5",
+  "ok": true
+ },
+ "q13-welch-test-g1": {
+  "hash": "65fcec0d9449e43b",
+  "ok": true
+ }
+}

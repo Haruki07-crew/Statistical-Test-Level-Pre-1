@@ -122,3 +122,59 @@ questions:
     explanation: |
       自由度は $10-1=9$、両側 5% なので上側 2.5% 点と上側 97.5% 点（下側 2.5% 点）を使います。
       カイ二乗分布は左右対称ではないので、符号を変えた値は使えません。
+
+  # ---------- 中心極限定理（共通の用語・2級の問題） ----------
+  - id: q10-central-limit-theorem-g1
+    term: central-limit-theorem
+    level: 標準
+    type: numeric
+    question: |
+      母平均 50、母標準偏差 12 の母集団（分布の形はわからない）から大きさ 36 の標本を抽出する。中心極限定理を使い、標本平均が 54 を超える確率を近似せよ。ただし $P(Z>2)=0.0228$ とする。
+    answer: 0.0228
+    tolerance: 0.0001
+    hint: |
+      標本平均は近似的に平均 50、標準偏差 $12/\sqrt{36}$ の正規分布にしたがう。
+    explanation: |
+      標準偏差は $12/6=2$。$(54-50)/2=2$ なので、$P(\bar X>54)\approx P(Z>2)=0.0228$ です。
+      ただし近似なので、母集団の分布が大きく歪んでいる（例えば指数分布）と、$n=36$ でも実際の確率は 0.03 程度になることがあります。歪みが強いほど、近似に必要な標本の大きさは大きくなります。
+
+  # ---------- 二項分布・ポアソン分布の正規近似（共通の用語・2級の問題） ----------
+  - id: q10-normal-approximation-binomial-poisson-g1
+    term: normal-approximation-binomial-poisson
+    level: 基本
+    type: numeric
+    question: |
+      二項分布 $B(400,\ 0.2)$ を正規分布で近似する。近似に使う正規分布の標準偏差を求めよ。
+    answer: 8
+    tolerance: 0.001
+    hint: |
+      分散は $np(1-p)$。
+    explanation: |
+      分散 $400\times 0.2\times 0.8=64$ なので、標準偏差は 8 です（平均は 80）。
+
+  # ---------- t分布（共通の用語・2級の問題） ----------
+  - id: q10-t-distribution-g1
+    term: t-distribution
+    level: 基本
+    type: truefalse
+    question: |
+      t 分布は自由度が大きくなるほど標準正規分布に近づき、自由度が小さいほど裾が重くなる。
+    answer: true
+    hint: |
+      上側 2.5% 点は、自由度 5 で 2.571、自由度 30 で 2.042、自由度が無限大で 1.96。
+    explanation: |
+      正しい記述です。母分散を標本から推定する不確かさの分だけ裾が重くなり、標本が大きくなるとその影響が小さくなります。
+
+  # ---------- カイ二乗分布（共通の用語・2級の問題） ----------
+  - id: q10-chi-squared-distribution-g1
+    term: chi-squared-distribution
+    level: 基本
+    type: numeric
+    question: |
+      自由度 6 のカイ二乗分布の分散を求めよ。
+    answer: 12
+    tolerance: 0.001
+    hint: |
+      自由度 $k$ のカイ二乗分布の期待値は $k$、分散は $2k$。
+    explanation: |
+      分散は $2\times 6=12$ です（期待値は 6）。

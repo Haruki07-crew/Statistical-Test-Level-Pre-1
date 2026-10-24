@@ -1,7 +1,7 @@
 """2級 第7・10・14・15章：問題の検算（章ごとに結果を保存する）。"""
 import sys
 import pathlib
-from math import comb, perm
+from math import comb, perm, sqrt
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from qhead import Q, chosen  # noqa: E402
 import numpy as np  # noqa: E402
@@ -29,6 +29,12 @@ q.num("q07-events-and-probability-1", 0.5 + 0.4 - 0.2)
 q.check("q07-events-and-probability-2", 0 != 0.3 * 0.4, "排反なら P(A∩B)=0 ≠ P(A)P(B)（answer=false）")
 q.num("q07-events-and-probability-3", 1 - 0.5 ** 4)
 q.check("q07-events-and-probability-4", abs(1 - (0.8 + 0.5 - 0.4) - 0.1) < 1e-12 and chosen(q, "q07-events-and-probability-4") == "10%", "どちらも使わない 10%")
+cls = np.array([("M", 1)] * 10 + [("M", 0)] * 15 + [("F", 1)] * 9 + [("F", 0)] * 6, dtype=object)
+glasses = cls[cls[:, 1] == 1]
+q.num("q07-conditional-probability-g1", np.mean(glasses[:, 0] == "F"))
+fac = rng.random(2_000_000) < 0.4; bad = rng.random(2_000_000) < np.where(fac, 0.05, 0.02)
+q.num("q07-bayes-theorem-g1", 0.4 * 0.05 / (0.6 * 0.02 + 0.4 * 0.05))
+q.check("q07-bayes-theorem-g1", abs(fac[bad].mean() - 0.625) < 0.005, f"シミュレーション {fac[bad].mean():.4f}")
 run(q)
 
 q = Q(10)
@@ -48,6 +54,12 @@ for _ in range(4000):
     x = rng.normal(0, 2, 10); s2 = x.var(ddof=1)
     cov += 9 * s2 / stats.chi2.isf(0.025, 9) <= 4 <= 9 * s2 / stats.chi2.isf(0.975, 9)
 q.check("q10-statistical-tables-4", abs(cov / 4000 - 0.95) < 0.015 and "(9)" in chosen(q, "q10-statistical-tables-4") and "0.025" in chosen(q, "q10-statistical-tables-4"), f"自由度 9 の 2.5%・97.5% 点で被覆率 {cov / 4000:.3f}")
+m36 = rng.uniform(50 - 12 * sqrt(3), 50 + 12 * sqrt(3), (200000, 36)).mean(1)
+q.num("q10-central-limit-theorem-g1", stats.norm.sf((54 - 50) / (12 / 6)))
+q.check("q10-central-limit-theorem-g1", abs(np.mean(m36 > 54) - 0.0228) < 0.002, f"一様分布の母集団でのシミュレーション {np.mean(m36 > 54):.4f}（指数分布のように歪んだ母集団では約 0.03 になり、解説に注意を書いた）")
+q.num("q10-normal-approximation-binomial-poisson-g1", stats.binom(400, 0.2).std())
+q.check("q10-t-distribution-g1", stats.t.isf(.025, 5) > stats.t.isf(.025, 30) > stats.norm.isf(.025), "自由度が大きいほど点が 1.96 に近づく（answer=true）")
+q.num("q10-chi-squared-distribution-g1", stats.chi2(6).var())
 run(q)
 
 q = Q(14)
@@ -58,6 +70,11 @@ n = 200; x = rng.normal(170, 8, n); y = 0.5 * x + rng.normal(0, 3, n)
 b_cm = np.polyfit(x, y, 1)[0]; b_m = np.polyfit(x / 100, y, 1)[0]
 q.check("q14-regression-output-4", abs(b_m / b_cm - 100) < 1e-6, "単位を cm→m にすると係数は 100 倍（answer=false）")
 q.num("q14-regression-output-5", 1.5 + 0.8 * 10 - 0.3 * 4)
+q.num("q14-regression-coefficient-t-test-g1", 1.2 / 4.0)
+q.num("q14-adjusted-r-squared-g1", 1 - 0.30 * 30 / 25)
+hh = rng.normal(165, 8, 3000); ex = rng.uniform(0, 3, 3000); ww = -60 + 0.75 * hh - 1.5 * ex + rng.normal(0, 3, 3000)
+cf = np.linalg.lstsq(np.c_[np.ones(3000), hh, ex], ww, rcond=None)[0]
+q.check("q14-multiple-regression-model-g1", abs(cf[2] + 1.5) < 0.15 and chosen(q, "q14-multiple-regression-model-g1").startswith("身長が同じなら"), f"同じ形のデータで運動時間の係数 {cf[2]:.2f}")
 run(q)
 
 q = Q(15)
@@ -70,5 +87,6 @@ q.check("q15-anova-table-3", abs(stats.f.isf(0.05, 2, 18) - 3.555) < 5e-4 and 6.
 g = [rng.normal(m, 1, 6) for m in (0, 1, 2)]; a = np.concatenate(g)
 ST = ((a - a.mean()) ** 2).sum(); SA = sum(6 * (x.mean() - a.mean()) ** 2 for x in g); SE = sum(((x - x.mean()) ** 2).sum() for x in g)
 q.check("q15-anova-table-4", abs(ST - SA - SE) < 1e-9, "乱数データで S_T = S_A + S_E（answer=true）")
+q.num("q15-one-way-anova-g1", (40 / 4) / (90 / 30))
 run(q)
 raise SystemExit(1 if ng else 0)

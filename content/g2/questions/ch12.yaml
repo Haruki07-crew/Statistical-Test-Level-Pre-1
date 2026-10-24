@@ -1,0 +1,60 @@
+chapter: 12
+questions:
+  # ---------- p値（共通の用語・2級の問題） ----------
+  - id: q12-p-value-g1
+    term: p-value
+    level: 基本
+    type: truefalse
+    question: |
+      ある検定の p 値が 0.03 だった。有意水準 5% では帰無仮説を棄却し、有意水準 1% では棄却しない。
+    answer: true
+    hint: |
+      p 値が有意水準より小さければ棄却する。
+    explanation: |
+      $0.03<0.05$ なので 5% では棄却、$0.03>0.01$ なので 1% では棄却しません。
+
+  # ---------- 1標本t検定（共通の用語・2級の問題） ----------
+  - id: q12-one-sample-t-test-g1
+    term: one-sample-t-test
+    level: 標準
+    type: numeric
+    question: |
+      大きさ 9 の標本の平均は 52、標本標準偏差（不偏分散の平方根）は 3 だった。帰無仮説「母平均 50」の t 検定の検定統計量を求めよ。
+    answer: 2
+    tolerance: 0.001
+    hint: |
+      $t=(\bar x-\mu_0)/(s/\sqrt n)$。
+    explanation: |
+      $t=(52-50)/(3/3)=2$ です。自由度は 8 で、$t_{0.025}(8)=2.306$ より小さいので、有意水準 5% の両側検定では棄却しません。
+
+  # ---------- 母比率の検定（共通の用語・2級の問題） ----------
+  - id: q12-proportion-test-g1
+    term: proportion-test
+    level: 標準
+    type: numeric
+    question: |
+      100 人中 60 人が新しい商品を好んだ。帰無仮説「好む人の割合は 0.5」の検定統計量 $z$（正規近似、連続修正なし）を求めよ。
+    answer: 2
+    tolerance: 0.001
+    hint: |
+      標準誤差は帰無仮説の比率 0.5 で計算する。
+    explanation: |
+      $z=(0.6-0.5)/\sqrt{0.5\times 0.5/100}=0.1/0.05=2$ です。
+
+  # ---------- 第1種の過誤・第2種の過誤（共通の用語・2級の問題） ----------
+  - id: q12-type-i-and-ii-errors-g1
+    term: type-i-and-ii-errors
+    level: 基本
+    type: choice
+    question: |
+      ある工場の機械は正常に動いていたのに、品質検査の検定で「異常あり」と判定してしまった。この誤りはどれか。
+    choices:
+      - 第 1 種の過誤
+      - 第 2 種の過誤
+      - 標本誤差
+      - 検出力
+    answer: 0
+    hint: |
+      帰無仮説は「正常」。それが正しいのに棄却した。
+    explanation: |
+      正しい帰無仮説（正常）を棄却したので第 1 種の過誤です。異常があるのに見逃すのが第 2 種の過誤です。

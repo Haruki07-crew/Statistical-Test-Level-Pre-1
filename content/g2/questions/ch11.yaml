@@ -1,0 +1,56 @@
+chapter: 11
+questions:
+  # ---------- 信頼区間（共通の用語・2級の問題） ----------
+  - id: q11-confidence-interval-g1
+    term: confidence-interval
+    level: 基本
+    type: truefalse
+    question: |
+      ある標本から母平均の 95% 信頼区間 (48, 52) が得られた。このとき「母平均がこの区間 (48, 52) に入る確率は 95% である」と言ってよい。
+    answer: false
+    hint: |
+      母平均は決まった値で、確率的に変わるのは区間のほう。
+    explanation: |
+      95% は「同じ方法で区間を何度も作ると、約 95% の区間が母平均を含む」という方法の性質です。得られた 1 つの区間は、母平均を含むか含まないかのどちらかです。
+
+  # ---------- 母平均の区間推定（分散未知）（共通の用語・2級の問題） ----------
+  - id: q11-ci-mean-unknown-variance-g1
+    term: ci-mean-unknown-variance
+    level: 標準
+    type: numeric
+    question: |
+      正規母集団から大きさ 16 の標本を抽出したところ、標本平均 20、標本標準偏差（不偏分散の平方根）4 だった。母平均の 95% 信頼区間の上限を小数第 2 位まで求めよ。ただし $t_{0.025}(15)=2.131$ とする。
+    answer: 22.13
+    tolerance: 0.01
+    hint: |
+      標準誤差は $4/\sqrt{16}$。
+    explanation: |
+      $20+2.131\times 4/4=20+2.131=22.131\approx 22.13$ です。下限は 17.87。
+
+  # ---------- 母比率の区間推定（共通の用語・2級の問題） ----------
+  - id: q11-ci-proportion-g1
+    term: ci-proportion
+    level: 標準
+    type: numeric
+    question: |
+      無作為に選んだ 400 人のうち 200 人が賛成だった。母比率の 95% 信頼区間の幅の半分（標本比率 ± の値）を小数第 3 位まで求めよ。
+    answer: 0.049
+    tolerance: 0.0005
+    hint: |
+      $1.96\sqrt{\hat p(1-\hat p)/n}$。
+    explanation: |
+      $\hat p=0.5$、$\sqrt{0.25/400}=0.025$、$1.96\times 0.025=0.049$ です。区間はおよそ (0.451, 0.549)。
+
+  # ---------- 標準誤差（共通の用語・2級の問題） ----------
+  - id: q11-standard-error-g1
+    term: standard-error
+    level: 基本
+    type: numeric
+    question: |
+      大きさ 25 の標本の標本標準偏差（不偏分散の平方根）が 10 だった。標本平均の標準誤差を求めよ。
+    answer: 2
+    tolerance: 0.001
+    hint: |
+      $s/\sqrt n$。
+    explanation: |
+      $10/\sqrt{25}=2$ です。

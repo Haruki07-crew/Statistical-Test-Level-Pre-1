@@ -1,0 +1,84 @@
+chapter: 9
+questions:
+  # ---------- 二項分布（共通の用語・2級の問題） ----------
+  - id: q09-binomial-distribution-g1
+    term: binomial-distribution
+    level: 基本
+    type: numeric
+    question: |
+      公正な硬貨を 4 回投げるとき、表がちょうど 2 回出る確率を求めよ。
+    answer: 0.375
+    tolerance: 0.001
+    hint: |
+      $\binom{4}{2}(0.5)^2(0.5)^2$。
+    explanation: |
+      $\binom{4}{2}=6$ 通りあり、どれも確率 $(1/2)^4=1/16$ なので、$6/16=0.375$ です。
+
+  - id: q09-binomial-distribution-g2
+    term: binomial-distribution
+    level: 標準
+    type: numeric
+    question: |
+      不良率 0.1 の製品を 3 個無作為に選ぶ。少なくとも 1 個が不良品である確率を求めよ。
+    answer: 0.271
+    tolerance: 0.001
+    hint: |
+      余事象「3 個とも良品」を使う。
+    explanation: |
+      $1-0.9^3=1-0.729=0.271$ です。
+
+  # ---------- ポアソン分布（共通の用語・2級の問題） ----------
+  - id: q09-poisson-distribution-g1
+    term: poisson-distribution
+    level: 基本
+    type: numeric
+    question: |
+      1 日の問い合わせの件数が平均 2 件のポアソン分布にしたがう。ある日の件数が 0 件である確率を求めよ。ただし $e^{-2}=0.1353$ とする。
+    answer: 0.1353
+    tolerance: 0.0005
+    hint: |
+      $P(X=0)=e^{-\lambda}$。
+    explanation: |
+      $P(X=0)=e^{-2}\lambda^0/0!=e^{-2}=0.1353$ です。
+
+  # ---------- 正規分布（共通の用語・2級の問題） ----------
+  - id: q09-normal-distribution-g1
+    term: normal-distribution
+    level: 標準
+    type: numeric
+    question: |
+      ある集団の身長は $N(170,\ 6^2)$（cm）にしたがう。182 cm を超える人の割合を求めよ。ただし $P(Z>2)=0.0228$ とする。
+    answer: 0.0228
+    tolerance: 0.0001
+    hint: |
+      標準化する：$(182-170)/6$。
+    explanation: |
+      $(182-170)/6=2$ なので、$P(X>182)=P(Z>2)=0.0228$ です。
+
+  # ---------- 標準正規分布（共通の用語・2級の問題） ----------
+  - id: q09-standard-normal-distribution-g1
+    term: standard-normal-distribution
+    level: 基本
+    type: numeric
+    question: |
+      標準正規分布で $P(Z>1.96)=0.025$ である。$P(-1.96<Z<1.96)$ を求めよ。
+    answer: 0.95
+    tolerance: 0.0001
+    hint: |
+      左右対称なので、両側の裾は同じ 0.025。
+    explanation: |
+      $1-2\times 0.025=0.95$ です。95% 信頼区間や両側 5% の検定で使う値です。
+
+  # ---------- 指数分布（共通の用語・2級の問題） ----------
+  - id: q09-exponential-distribution-g1
+    term: exponential-distribution
+    level: 標準
+    type: numeric
+    question: |
+      待ち時間 $T$（分）が平均 10 分の指数分布にしたがう。待ち時間が 5 分以下である確率を求めよ。ただし $e^{-0.5}=0.6065$ とする。
+    answer: 0.3935
+    tolerance: 0.0005
+    hint: |
+      レートは $1/10$。$P(T\le t)=1-e^{-t/10}$。
+    explanation: |
+      $P(T\le 5)=1-e^{-5/10}=1-0.6065=0.3935$ です。

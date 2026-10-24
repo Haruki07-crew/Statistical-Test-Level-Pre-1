@@ -71,3 +71,49 @@ questions:
       係数に値を代入する。
     explanation: |
       $$1.5+0.8\times 10-0.3\times 4=1.5+8-1.2=8.3$$
+
+  # ---------- 回帰係数のt検定（共通の用語・2級の問題） ----------
+  - id: q14-regression-coefficient-t-test-g1
+    term: regression-coefficient-t-test
+    level: 基本
+    type: numeric
+    question: |
+      回帰分析の出力で、ある係数の推定値は 1.2、t 値は 4.0 だった。この係数の標準誤差を求めよ。
+    answer: 0.3
+    tolerance: 0.001
+    hint: |
+      t 値 ＝ 推定値 ÷ 標準誤差。
+    explanation: |
+      $1.2/4.0=0.3$ です。
+
+  # ---------- 自由度調整済み決定係数（共通の用語・2級の問題） ----------
+  - id: q14-adjusted-r-squared-g1
+    term: adjusted-r-squared
+    level: 標準
+    type: numeric
+    question: |
+      データ 31 件、説明変数 5 個の重回帰分析で、決定係数は 0.70 だった。自由度調整済み決定係数を求めよ。
+    answer: 0.64
+    tolerance: 0.001
+    hint: |
+      $1-(1-R^2)(n-1)/(n-p-1)$。
+    explanation: |
+      $1-0.30\times 30/25=1-0.36=0.64$ です。
+
+  # ---------- 重回帰モデル（共通の用語・2級の問題） ----------
+  - id: q14-multiple-regression-model-g1
+    term: multiple-regression-model
+    level: 標準
+    type: choice
+    question: |
+      体重 $y$（kg）を身長 $x_1$（cm）と 1 日の運動時間 $x_2$（時間）で説明する重回帰で、$x_2$ の係数が −1.5 だった。正しい解釈はどれか。
+    choices:
+      - 身長が同じなら、運動時間が 1 時間長いと体重は平均 1.5 kg 軽いと推定される
+      - 運動時間が 1 時間長いと、身長に関係なく体重が必ず 1.5 kg 減る
+      - 運動時間と体重の相関係数は −1.5 である
+      - 身長が 1 cm 高いと、体重は 1.5 kg 軽い
+    answer: 0
+    hint: |
+      重回帰の係数は、他の説明変数を一定にしたときの効果。
+    explanation: |
+      偏回帰係数は「他の説明変数（身長）を一定にしたとき」の平均的な変化を表します。個人ごとに必ずそうなるわけではなく、相関係数とも違います。

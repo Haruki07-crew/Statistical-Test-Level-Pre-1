@@ -1,4 +1,16 @@
 {
+ "q10-central-limit-theorem-g1": {
+  "hash": "7dce44d9d5209d85",
+  "ok": true
+ },
+ "q10-chi-squared-distribution-g1": {
+  "hash": "3b661ad8d38a61fe",
+  "ok": true
+ },
+ "q10-normal-approximation-binomial-poisson-g1": {
+  "hash": "fbf771b705e55e71",
+  "ok": true
+ },
  "q10-sampling-distribution-of-mean-1": {
   "hash": "a8eaa0f38f930446",
   "ok": true
@@ -29,6 +41,10 @@
  },
  "q10-statistical-tables-4": {
   "hash": "6f73fb26a5f7306f",
+  "ok": true
+ },
+ "q10-t-distribution-g1": {
+  "hash": "93ba67bcb2004216",
   "ok": true
  }
 }

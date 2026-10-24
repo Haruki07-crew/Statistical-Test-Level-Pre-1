@@ -1,0 +1,18 @@
+{
+ "q12-one-sample-t-test-g1": {
+  "hash": "40af0e22b6b818bd",
+  "ok": true
+ },
+ "q12-p-value-g1": {
+  "hash": "03ff5736b2fa0ff0",
+  "ok": true
+ },
+ "q12-proportion-test-g1": {
+  "hash": "72a7465ea65848ce",
+  "ok": true
+ },
+ "q12-type-i-and-ii-errors-g1": {
+  "hash": "092995df588ab0f8",
+  "ok": true
+ }
+}

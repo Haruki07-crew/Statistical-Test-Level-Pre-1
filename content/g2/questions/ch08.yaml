@@ -1,0 +1,33 @@
+chapter: 8
+questions:
+  # ---------- 期待値と分散の性質（共通の用語・2級の問題） ----------
+  - id: q08-expectation-variance-properties-g1
+    term: expectation-variance-properties
+    level: 基本
+    type: numeric
+    question: |
+      確率変数 $X$ の期待値は 3、分散は 2 である。$E[X^2]$ を求めよ。
+    answer: 11
+    tolerance: 0.001
+    hint: |
+      $V[X]=E[X^2]-(E[X])^2$ を変形する。
+    explanation: |
+      $E[X^2]=V[X]+(E[X])^2=2+9=11$ です。
+
+  - id: q08-expectation-variance-properties-g2
+    term: expectation-variance-properties
+    level: 標準
+    type: choice
+    question: |
+      独立な確率変数 $X$、$Y$ の分散がそれぞれ 2 と 3 のとき、$V[X-2Y]$ はどれか。
+    choices:
+      - '14'
+      - '−4'
+      - '8'
+      - '5'
+    answer: 0
+    hint: |
+      係数は 2 乗して掛け、独立なら差でも分散は足し算。
+    explanation: |
+      $V[X-2Y]=1^2\times 2+(-2)^2\times 3=2+12=14$ です。
+      分散を引き算すると −4 のように負になりえますが、分散は負になりません。8 は係数 2 を 2 乗しなかった値（$2+2\times 3$）、5 は係数を無視して分散を足した値です。

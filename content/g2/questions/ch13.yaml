@@ -1,0 +1,87 @@
+chapter: 13
+questions:
+  # ---------- 2標本t検定・プールした分散（共通の用語・2級の問題） ----------
+  - id: q13-pooled-variance-g1
+    term: pooled-variance
+    level: 標準
+    type: numeric
+    question: |
+      2 つの群の大きさはどちらも 6、不偏分散は 10 と 14 だった。プールした分散を求めよ。
+    answer: 12
+    tolerance: 0.001
+    hint: |
+      $\{(n_1-1)s_1^2+(n_2-1)s_2^2\}/(n_1+n_2-2)$。
+    explanation: |
+      $(5\times 10+5\times 14)/10=120/10=12$ です。大きさが等しいときは 2 つの不偏分散の平均になります。
+
+  - id: q13-two-sample-t-test-g1
+    term: two-sample-t-test
+    level: 標準
+    type: numeric
+    question: |
+      2 つの群（大きさはどちらも 6）の平均の差は 4、プールした分散は 12 だった。等分散を仮定した 2 標本 t 検定の検定統計量を求めよ。
+    answer: 2
+    tolerance: 0.001
+    hint: |
+      標準誤差は $\sqrt{s_p^2(1/n_1+1/n_2)}$。
+    explanation: |
+      $\sqrt{12\times(1/6+1/6)}=\sqrt 4=2$、$t=4/2=2$ です。自由度は 10。
+
+  # ---------- 対応のあるt検定（共通の用語・2級の問題） ----------
+  - id: q13-paired-t-test-g1
+    term: paired-t-test
+    level: 標準
+    type: choice
+    question: |
+      次のうち、対応のある t 検定を使うのが最も適切な場面はどれか。
+    choices:
+      - 同じ 20 人の、薬を飲む前と飲んだ後の血圧を比べる
+      - A 組 20 人と B 組 25 人の得点を比べる
+      - 男性 100 人と女性 100 人の賛成の割合を比べる
+      - 3 つの地域の平均気温を比べる
+    answer: 0
+    hint: |
+      同じ対象を 2 回測っているか。
+    explanation: |
+      同じ人の前後の測定値は対応があるので、差をとって検定します。別々の人の 2 群は 2 標本の検定、割合の比較は比率の差の検定、3 群以上は分散分析を使います。
+
+  # ---------- 独立性の検定（共通の用語・2級の問題） ----------
+  - id: q13-independence-test-g1
+    term: independence-test
+    level: 標準
+    type: numeric
+    question: |
+      200 人のクロス表で、ある行の合計が 60、ある列の合計が 50 だった。独立性の検定で、この行と列が交わるセルの期待度数を求めよ。
+    answer: 15
+    tolerance: 0.001
+    hint: |
+      行の合計 × 列の合計 ÷ 総数。
+    explanation: |
+      $60\times 50/200=15$ です。
+
+  # ---------- 適合度検定（共通の用語・2級の問題） ----------
+  - id: q13-goodness-of-fit-test-g1
+    term: goodness-of-fit-test
+    level: 標準
+    type: numeric
+    question: |
+      さいころを 120 回投げたところ、1〜6 の目の回数は 25, 15, 20, 20, 18, 22 だった。「どの目も確率 1/6」を帰無仮説とする適合度検定のカイ二乗統計量を求めよ。
+    answer: 2.9
+    tolerance: 0.01
+    hint: |
+      期待度数はどれも 20。
+    explanation: |
+      $(25+25+0+0+4+4)/20=58/20=2.9$ です。自由度 5 の上側 5% 点 11.07 より小さいので棄却しません。
+
+  # ---------- ウェルチの検定（共通の用語・2級の問題） ----------
+  - id: q13-welch-test-g1
+    term: welch-test
+    level: 基本
+    type: truefalse
+    question: |
+      ウェルチの検定は、2 つの母分散が等しいと仮定して 2 つの母平均を比べる方法である。
+    answer: false
+    hint: |
+      プールした分散を使うかどうか。
+    explanation: |
+      ウェルチの検定は、母分散が等しいとは限らないときに使う方法で、標準誤差を $\sqrt{s_1^2/n_1+s_2^2/n_2}$ とします。等分散を仮定するのはプールした分散を使う 2 標本 t 検定です。
