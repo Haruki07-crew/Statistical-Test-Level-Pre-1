@@ -3,7 +3,7 @@ id: regression-output
 title: 回帰分析の出力の読み方
 reading: かいきぶんせきのしゅつりょくのよみかた
 en: Reading regression output
-aliases: [回帰の出力, 係数の表, 推定値, 標準誤差, t値, P値, 統計ソフトウェアの出力, Excelの回帰分析]
+aliases: [回帰の出力, 係数の表, 推定値, 標準誤差, t値, 統計ソフトウェアの出力, Excelの回帰分析]
 chapter: 14
 importance: A
 tags: [回帰, 統計ソフトウェア, 検定]

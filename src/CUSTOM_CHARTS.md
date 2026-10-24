@@ -16,7 +16,7 @@
 | clt-sim | 中心極限定理のシミュレーション | base: expon\|unif\|bernoulli\|poisson\|chi2, n(5), reps(3000), p(0.2), lambda(1) |
 | lln-path | 大数の法則（標本平均の推移） | p(0.5), n(1000), paths(5) |
 | ci-coverage | 信頼区間を何本も描いて被覆率を見る | mu(0), sigma(1), n(10), level(0.95), count(100), known: 1 で z区間／0 で t区間 |
-| power-curve | z検定の α・β と検出力関数 | mu0(0), mu1(0.5), sigma(1), n(20), alpha(0.05), alt: greater\|two-sided |
+| power-curve | z検定の α・β と検出力関数 | mu0(0), mu1(0.5), sigma(1), n(20), alpha(0.05), alt: greater\|less\|two-sided（less は左片側） |
 | markov-chain | 状態遷移図と分布の推移・定常分布 | P: [[...]], labels: [...], start(0), steps(20) |
 | poisson-process | 到着時刻と計数過程 | lambda(1), T(20) |
 | random-walk | ランダムウォーク・破産問題 | p(0.5), steps(200), paths(5), start(0), lower, upper（吸収壁、省略可） |

@@ -133,6 +133,32 @@ check(T, "例2 表の割合の SD：100 回 0.05・10000 回 0.005", close(sqrt(
 fl = rng.random((2000, 10000)) < .5; pr = fl.cumsum(1) / np.arange(1, 10001); diff = np.abs(2 * fl.cumsum(1) - np.arange(1, 10001))
 check(T, "割合は 0.5 に近づくが、表と裏の回数の差は広がる（シミュレーション）", np.abs(pr[:, 9999] - .5).mean() < np.abs(pr[:, 99] - .5).mean() / 5 and diff[:, 9999].mean() > diff[:, 99].mean() * 5, (np.abs(pr[:, 99] - .5).mean(), np.abs(pr[:, 9999] - .5).mean(), diff[:, 99].mean(), diff[:, 9999].mean()))
 
+T = "null-and-alternative-hypothesis"
+check(T, "例1 z=(498−500)/(6/√36)=−2.0 < −1.645", close((498 - 500) / (6 / 6), -2, 1e-12) and -2 < -stats.norm.isf(.05), None)
+T = "significance-level"
+check(T, "棄却域の表 1.645・2.326・1.96・2.576", close(stats.norm.isf(.05), 1.645) and close(stats.norm.isf(.01), 2.326) and close(stats.norm.isf(.025), 1.960) and close(stats.norm.isf(.005), 2.576), None)
+check(T, "例1 z=2.0：5% で棄却・1% で棄却しない", 1.645 < 2.0 < 2.326, None)
+check(T, "例2 1−0.95³≈0.143・20 回に 1 回", close(1 - .95 ** 3, .143, 5e-4) and close(1 / .05, 20, 1e-9), None)
+T = "p-value"
+check(T, "例1 P(Z≥2.05)=0.0202・両側 0.0404", close(stats.norm.sf(2.05), .0202, 5e-5) and close(2 * .0202, .0404, 1e-12), None)
+check(T, "例2 t(12)：2.179・2.681・t=2.3 の両側 p≈0.040（0.02〜0.05）", close(stats.t.isf(.025, 12), 2.179) and close(stats.t.isf(.01, 12), 2.681) and close(2 * stats.t.sf(2.3, 12), 0.040, 5e-4) and 0.02 < 2 * stats.t.sf(2.3, 12) < 0.05, 2 * stats.t.sf(2.3, 12))
+T = "type-i-and-ii-errors"
+check(T, "境目 53.29・β=P(Z≤−0.86)≈0.195・検出力≈0.80・n=100 で ≈0.9996", close(50 + 1.645 * 2, 53.29, 1e-9) and close(stats.norm.cdf(-0.86), .195, 5e-4) and close(stats.norm(55, 2).sf(53.29), .80, 0.005) and close(stats.norm(55, 1).sf(51.645), .9996, 5e-5), stats.norm(55, 2).sf(53.29))
+T = "one-sided-two-sided-test"
+check(T, "z=1.75：片側 p=0.0401・両側 0.0802", close(stats.norm.sf(1.75), .0401, 5e-5) and close(2 * .0401, .0802, 1e-12) and 1.645 < 1.75 < 1.96, None)
+T = "z-test-known-variance"
+check(T, "z=−2.0・両側 p=2×0.0228=0.0456・1% では棄却しない", close((498 - 500) / (6 / sqrt(36)), -2, 1e-12) and close(2 * .0228, .0456, 1e-12) and close(stats.norm.sf(2), .0228, 5e-5) and 2 < 2.576, None)
+check("z-test-known-variance", "95% 信頼区間 498±1.96 → (496.04, 499.96) は 500 を含まない", close(498 - 1.96, 496.04, 1e-9) and close(498 + 1.96, 499.96, 1e-9) and 498 + 1.96 < 500, None)
+T = "one-sample-t-test"
+tt = (103 - 100) / (5 / sqrt(10))
+check(T, "t≈1.90・t0.05(9)=1.833・t0.025(9)=2.262・右側の面積≈0.045・両側 p≈0.09", close(tt, 1.90, 0.005) and close(stats.t.isf(.05, 9), 1.833) and close(stats.t.isf(.025, 9), 2.262) and close(stats.t.sf(tt, 9), .045, 5e-4) and close(2 * stats.t.sf(tt, 9), .09, 0.005) and close(5 / sqrt(10), 1.581, 5e-4), tt)
+check(T, "p 値の範囲：右片側 0.025〜0.05・両側 0.05〜0.10", 0.025 < stats.t.sf(tt, 9) < 0.05 and 0.05 < 2 * stats.t.sf(tt, 9) < 0.10, None)
+check(T, "t0.025(30)=2.042", close(stats.t.isf(.025, 30), 2.042), None)
+T = "proportion-test"
+se0 = sqrt(.05 * .95 / 400)
+check(T, "連続修正 (27.5−20)/4.36≈1.72 > 1.645", close(7.5 / sqrt(19), 1.72, 0.005) and 7.5 / sqrt(19) > 1.645, 7.5 / sqrt(19))
+check(T, "p̂=0.07・SE≈0.0109・z≈1.84・p 値 0.0329・回数で 8/4.36・p̂ を使うと 0.0128 と 1.57", close(28 / 400, .07, 1e-12) and close(se0, .0109, 5e-5) and close(.02 / se0, 1.84, 0.005) and close(stats.norm.sf(1.84), .0329, 5e-5) and close(sqrt(400 * .05 * .95), 4.36, 0.005) and close(8 / sqrt(19), 1.84, 0.005) and close(sqrt(.07 * .93 / 400), .0128, 5e-5) and close(.02 / sqrt(.07 * .93 / 400), 1.57, 0.005), .02 / se0)
+
 ng = results.count(False)
 print(f"書き直した共通の用語の検算: OK {len(results) - ng} / NG {ng}")
 sys.exit(1 if ng else 0)

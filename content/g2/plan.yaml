@@ -485,17 +485,14 @@ chapters:
     title: 帰無仮説と対立仮説
     importance: A
     status: verified
-    from: pre1
   - id: significance-level
     title: 有意水準
     importance: A
     status: verified
-    from: pre1
   - id: p-value
     title: p値
     importance: A
     status: verified
-    from: pre1
   - id: rejection-region
     title: 棄却域
     importance: B
@@ -505,7 +502,6 @@ chapters:
     title: 第1種の過誤・第2種の過誤
     importance: A
     status: verified
-    from: pre1
   - id: power-function
     title: 検出力・検出力関数
     importance: B
@@ -515,17 +511,14 @@ chapters:
     title: 片側検定と両側検定
     importance: A
     status: verified
-    from: pre1
   - id: z-test-known-variance
     title: 母平均の検定（分散既知）
     importance: A
     status: verified
-    from: pre1
   - id: one-sample-t-test
     title: 1標本t検定
     importance: A
     status: verified
-    from: pre1
   - id: chi-square-test-variance
     title: 母分散のカイ二乗検定
     importance: B
@@ -535,7 +528,6 @@ chapters:
     title: 母比率の検定
     importance: A
     status: verified
-    from: pre1
   - id: confidence-interval-test-duality
     title: 信頼区間と検定の対応
     importance: B

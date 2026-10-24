@@ -2125,14 +2125,14 @@ window.MathJax = {
     ctx.fillText('真の μ = ' + a.fmt(mu), X(mu), H - 22);
     a.info.textContent = (known ? 'z区間' : 't区間') + '（信頼係数 ' + a.fmt(lv) + '，n = ' + n + '）を ' + K + ' 本：μ を含んだのは ' + hit + ' 本（太い線が外れ）';
   });
-  // power-curve: { mu0, mu1, sigma, n, alpha, alt: greater|two-sided } z検定の2種類の過誤と検出力関数
+  // power-curve: { mu0, mu1, sigma, n, alpha, alt: greater|less|two-sided } z検定の2種類の過誤と検出力関数（less は左片側）
   reg('power-curve', function (a, p, c) {
-    var mu0 = num(p.mu0, 0), mu1 = num(p.mu1, 0.5), sg = num(p.sigma, 1), n = Math.max(1, Math.round(num(p.n, 20))), al = num(p.alpha, 0.05), two = p.alt === 'two-sided';
+    var mu0 = num(p.mu0, 0), mu1 = num(p.mu1, 0.5), sg = num(p.sigma, 1), n = Math.max(1, Math.round(num(p.n, 20))), al = num(p.alpha, 0.05), two = p.alt === 'two-sided', left = p.alt === 'less';
     var se = sg / Math.sqrt(n), z = Dist.quantile('norm', 1 - (two ? al / 2 : al), {}), cu = mu0 + z * se, cl = mu0 - z * se;
-    var power = function (m) { var r = 1 - Dist.cdf('norm', cu, { mu: m, sigma: se }); if (two) r += Dist.cdf('norm', cl, { mu: m, sigma: se }); return r; };
+    var power = function (m) { if (left) return Dist.cdf('norm', cl, { mu: m, sigma: se }); var r = 1 - Dist.cdf('norm', cu, { mu: m, sigma: se }); if (two) r += Dist.cdf('norm', cl, { mu: m, sigma: se }); return r; };
     var lo = Math.min(mu0, mu1) - 4 * se, hi = Math.max(mu0, mu1) + 4 * se, xs = a.linspace(lo, hi, 301);
     var f0 = function (x) { return Dist.pdf('norm', x, { mu: mu0, sigma: se }); }, f1 = function (x) { return Dist.pdf('norm', x, { mu: mu1, sigma: se }); };
-    var rej = function (x) { return x >= cu || (two && x <= cl); };
+    var rej = function (x) { return left ? x <= cl : (x >= cu || (two && x <= cl)); };
     var ds = [
       a.lineDs('H0 のもとでの X̄', pts(xs, xs.map(f0)), c.c1),
       a.lineDs('H1 のもとでの X̄', pts(xs, xs.map(f1)), c.c2),
@@ -2143,7 +2143,7 @@ window.MathJax = {
     var ms = a.linspace(mu0 - 5 * se, mu0 + 5 * se, 201);
     a.chart('short', { data: { datasets: [a.lineDs('検出力 1−β(μ)', pts(ms, ms.map(power)), c.c1), a.lineDs('α', [{ x: ms[0], y: al }, { x: ms[200], y: al }], c.faint, { borderDash: [4, 4], borderWidth: 1 })] },
       options: opts(a, c, { legend: true, xmin: ms[0], xmax: ms[200], ymax: 1, xTitle: '真の μ' }) });
-    a.info.textContent = '棄却限界 ' + (two ? a.fmt(cl) + ' と ' : '') + a.fmt(cu) + '　μ = ' + a.fmt(mu1) + ' での検出力 = ' + a.fmt(power(mu1)) + '，β = ' + a.fmt(1 - power(mu1));
+    a.info.textContent = '棄却限界 ' + (two ? a.fmt(cl) + ' と ' + a.fmt(cu) : a.fmt(left ? cl : cu)) + '　μ = ' + a.fmt(mu1) + ' での検出力 = ' + a.fmt(power(mu1)) + '，β = ' + a.fmt(1 - power(mu1));
   });
 
   // ---------- 第14〜15章 ----------

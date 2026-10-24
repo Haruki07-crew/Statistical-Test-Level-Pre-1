@@ -1,18 +1,74 @@
 {
+ "q12-null-and-alternative-hypothesis-g1": {
+  "hash": "4dfca2159ed7222f",
+  "ok": true
+ },
+ "q12-null-and-alternative-hypothesis-g2": {
+  "hash": "70397588f4161944",
+  "ok": true
+ },
  "q12-one-sample-t-test-g1": {
   "hash": "40af0e22b6b818bd",
+  "ok": true
+ },
+ "q12-one-sample-t-test-g2": {
+  "hash": "5e9c3e717ab62136",
+  "ok": true
+ },
+ "q12-one-sided-two-sided-test-g1": {
+  "hash": "301b7d6149a7055f",
+  "ok": true
+ },
+ "q12-one-sided-two-sided-test-g2": {
+  "hash": "b89c13e6da06e0dc",
   "ok": true
  },
  "q12-p-value-g1": {
   "hash": "03ff5736b2fa0ff0",
   "ok": true
  },
+ "q12-p-value-g2": {
+  "hash": "be0e9368b5f7a7cd",
+  "ok": true
+ },
+ "q12-p-value-g3": {
+  "hash": "fe564d99a30d37ee",
+  "ok": true
+ },
  "q12-proportion-test-g1": {
   "hash": "72a7465ea65848ce",
   "ok": true
  },
+ "q12-proportion-test-g2": {
+  "hash": "cd1a39aba1be88e9",
+  "ok": true
+ },
+ "q12-significance-level-g1": {
+  "hash": "6e947f3e97e2f97e",
+  "ok": true
+ },
+ "q12-significance-level-g2": {
+  "hash": "648d68809ee70f09",
+  "ok": true
+ },
  "q12-type-i-and-ii-errors-g1": {
   "hash": "092995df588ab0f8",
+  "ok": true
+ },
+ "q12-type-i-and-ii-errors-g2": {
+  "hash": "5f553f57bb659ae0",
+  "ok": true
+ },
+ "q12-type-i-and-ii-errors-g3": {
+  "hash": "97d9721a065f28a5",
+  "ok": true
+ },
+ "q12-z-test-known-variance-g1": {
+  "hash": "3df6bb642033ed4d",
+  "ok": true
+ },
+ "q12-z-test-known-variance-g2": {
+  "hash": "1e4552252199bb83",
   "ok": true
  }
 }
