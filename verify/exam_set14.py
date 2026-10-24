@@ -120,7 +120,7 @@ EX2 = n ** 2 * (1 / n)
 EX = n * (1 / n)
 E.check("s14p04b", sp.limit(1 / n, n, sp.oo) == 0 and sp.limit(EX2, n, sp.oo) == sp.oo and sp.simplify(EX) == 1,
         "P(X_n≠0)→0、E[X_n^2]→∞、E[X_n]=1")
-E.check("s14p04b", E.item("s14p04b")["answer"] == 2, "正しい記述は「確率収束するが平均二乗収束しない」(選択肢2)")
+E.check("s14p04b", E.item("s14p04b")["answer"] == 0, "正しい記述は「確率収束するが平均二乗収束しない」（並べ替え後の位置）")
 
 # ---- 大問5：吸収マルコフ連鎖を線形方程式で解く
 Q = np.zeros((5, 5))
@@ -228,7 +228,7 @@ t_ = 2.6 * np.sqrt(29 / (30 - 2.6 ** 2))
 for k, q, v in [(29, 0.975, 2.045), (29, 1 - 0.05 / 72, 3.54), (30, 1 - 0.05 / 72, 3.52)]:
     E.check("s14p09a", close(stats.t.ppf(q, k), v, 0.006), f"t 点 ({k}, {q:.6f}) = {v}")
 padj = min(1, 72 * stats.t.sf(t_, 29))
-E.check("s14p09a", padj > 0.05 and 2 * stats.t.sf(t_, 29) < 0.05 and E.item("s14p09a")["answer"] == 1,
+E.check("s14p09a", padj > 0.05 and 2 * stats.t.sf(t_, 29) < 0.05 and E.item("s14p09a")["answer"] == 4,
         f"ボンフェローニ調整 p 値 {padj:.3f} > 0.05（未調整は < 0.05）→ 選択肢1")
 E.choice("s14p09a", f"t_i={f(t_, 2)}$で、$t_{{0.05/72}}(29)=3.54$を超えないので", "t_i の値と補正した点")
 dff = t_ * np.sqrt(0.35 / 0.65)

@@ -284,7 +284,7 @@ th = 0.7
 Rot = np.array([[math.cos(th), -math.sin(th)], [math.sin(th), math.cos(th)]])
 E.check("s12p13c", np.allclose(np.cov(Rot @ G2), np.eye(2), atol=0.01) and abs(stats.kurtosis((Rot @ G2)[0])) < 0.03,
         "正規信号は回転後も無相関・尖度0で区別できない（選択肢 2 は誤り）")
-E.check("s12p13c", E.item("s12p13c")["answer"] == 1 and "順序と尺度" in E.item("s12p13c")["choices"][1], "正解は順序と尺度の不定性の記述")
+E.check("s12p13c", "順序と尺度" in E.item("s12p13c")["choices"][E.item("s12p13c")["answer"]], "正解は順序と尺度の不定性の記述")
 
 # ---- 大問14
 tab = np.array([[30, 12], [22, 63]])

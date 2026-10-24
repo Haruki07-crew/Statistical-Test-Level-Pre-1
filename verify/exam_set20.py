@@ -72,7 +72,7 @@ E.num("s20p02a", rnd(tot, 3), f"32 通りの状態の総当たり {tot:.5f}")
 fw = sp.diff(sp.integrate(sp.exp(-x ** 2 / (2 * s_ ** 2)) / (s_ * sp.sqrt(2 * sp.pi)), (x, -sp.sqrt(w), sp.sqrt(w))), w)
 target = sp.exp(-w / (2 * s_ ** 2)) / (s_ * sp.sqrt(2 * sp.pi * w))
 E.check("s20p02b", sp.simplify(fw - target) == 0, "sympy で分布関数を微分した密度が正解の選択肢と一致")
-E.check("s20p02b", E.item("s20p02b")["answer"] == 1 and "\\sigma\\sqrt{2\\pi w}}\\exp\\left(-\\dfrac{w}{2" in E.item("s20p02b")["choices"][1], "正解の選択肢の式")
+E.check("s20p02b", "\\sigma\\sqrt{2\\pi w}}\\exp\\left(-\\dfrac{w}{2" in E.item("s20p02b")["choices"][E.item("s20p02b")["answer"]], "正解の選択肢の式")
 E.check("s20p02b", abs(stats.chi2(1, scale=1.5 ** 2).pdf(0.7) - float(target.subs({w: 0.7, s_: 1.5}))) < 1e-12, "scipy の σ²χ²(1) の密度と一致")
 E.check("s20p02b", abs(float(sp.integrate(target.subs(s_, 1), (w, 0, sp.oo))) - 1) < 1e-9, "正解の密度の積分が 1（片側だけの式なら 1/2）")
 
@@ -177,7 +177,7 @@ E.check("s20p06b", not z0(ccov(2, 3, [0, 1])), "選択肢2は誤り")
 E.check("s20p06b", not z0(ccov(0, 3, [2])), "選択肢3は誤り")
 E.check("s20p06b", not z0(ccov(1, 3, [2])), "選択肢4は誤り")
 E.check("s20p06b", np.all(np.linalg.eigvalsh(Kq) > 0) and np.allclose(Kq, Kq.T), "精度行列は正定値で対称")
-E.check("s20p06b", E.item("s20p06b")["answer"] == 1, "正解の番号")
+E.check("s20p06b", E.item("s20p06b")["answer"] == 0, "正解の番号（並べ替え後の位置。元の「選択肢1は正しい」の記述）")
 E.check("s20p06b", f"{Sg[0, 2]:.3f}" in E.item("s20p06b")["explanation"], "解説の σ13 の値")
 
 # ---- 大問7

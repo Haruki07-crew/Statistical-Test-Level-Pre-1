@@ -229,6 +229,6 @@ E.check("s03p14a", tab["Y"][1] / 100 > 0.5 and tab["Y"][0] / tab["Y"][1] < tab["
 E.check("s03p14a", abs(tot_a - (18 / 20 + 42 / 80) / 2) > 0.05, "合計は単純平均ではない（選択肢 3 は誤り）")
 E.check("s03p14a", 9 / 20 < 42 / 80, "Y 校の中では受講者のほうが高い（選択肢 5 は誤り）")
 it14 = E.item("s03p14a")
-E.check("s03p14a", it14["answer"] == 1 and "学校で層別" in it14["choices"][1], "正解は層別比較を勧める記述")
+E.check("s03p14a", "学校で層別" in it14["choices"][it14["answer"]], "正解は層別比較を勧める記述")
 
 E.done()

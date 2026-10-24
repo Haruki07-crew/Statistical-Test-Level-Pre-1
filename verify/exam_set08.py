@@ -133,7 +133,7 @@ E.choice("s08p04b", f"${f(lh, 2)}$", f"数値最大化 λ̂ = {lh:.5f}（間隔�
 # (c) 二項分布で信頼係数
 cov = {k: 1 - 2 * stats.binom(10, 0.5).cdf(k - 1) for k in range(1, 6)}
 best = max(k for k in cov if cov[k] >= 0.95)
-E.check("s08p04c", best == 2 and E.item("s08p04c")["answer"] == 1, f"95% 以上で最も狭いのは k={best}（信頼係数 {cov}）")
+E.check("s08p04c", best == 2 and E.item("s08p04c")["answer"] == 2, f"95% 以上で最も狭いのは k={best}（信頼係数 {cov}）")
 Xs = rng.lognormal(0, 1, size=(200_000, 10))
 Xs.sort(axis=1)
 c2 = ((Xs[:, 1] <= 1) & (1 <= Xs[:, 8])).mean()
@@ -170,7 +170,7 @@ bA, seA, R2A = ols(np.column_stack([np.ones(n), X1, X2]), yy)
 bB, seB, R2B = ols(np.column_stack([np.ones(n), 1000 * X1, X2]), yy)
 okA = (np.isclose(bB[1], bA[1] / 1000) and np.isclose(seB[1], seA[1] / 1000) and np.isclose(bB[1] / seB[1], bA[1] / seA[1])
        and np.isclose(R2A, R2B) and np.isclose(bA[0], bB[0]) and np.isclose(bA[2], bB[2]))
-E.check("s08p06a", okA and E.item("s08p06a")["answer"] == 1, "乱数データで単位を変えて当てはめ直すと選択肢 1 の通り")
+E.check("s08p06a", okA and E.item("s08p06a")["answer"] == 4, "乱数データで単位を変えて当てはめ直すと正解の選択肢の通り")
 # (b) 中心モーメントが問題文どおりになる 3 点分布を数値的に作り、そのモーメントから JB を計算
 sol = optimize.root(lambda v: [v[3] + v[4] + v[5] - 1,
                                v[3] * v[0] + v[4] * v[1] + v[5] * v[2],
@@ -242,8 +242,8 @@ def affected(day1):
     return [k for k, a, b in zip(cols, e0, e1) if abs(a - b) > 1e-9]
 
 
-cands = {0: (["(1)", "a", "b", "ab"], "C"), 1: (["(1)", "ab", "c", "abc"], "AB"), 2: (["(1)", "a", "b", "c"], "ABC"),
-         3: (["(1)", "ab", "ac", "bc"], None), 4: (["(1)", "ab", "ac", "bc"], "ABC")}
+cands = {0: (["(1)", "a", "b", "ab"], "C"), 1: (["(1)", "ab", "c", "abc"], "AB"), 3: (["(1)", "a", "b", "c"], "ABC"),
+         4: (["(1)", "ab", "ac", "bc"], None), 2: (["(1)", "ab", "ac", "bc"], "ABC")}
 good = []
 for idx, (day1, claim) in cands.items():
     aff = affected(day1)
@@ -324,7 +324,7 @@ bh = optimize.minimize_scalar(npl, bounds=(-5, 5), method="bounded", options={"x
 E.choice("s08p11b", f"${f(np.exp(bh), 3)}$", f"部分尤度の数値最大化 β̂ = {bh:.5f}")
 
 # ---- 大問12：全初期値で周期を総当たり
-for (a_, c_), idx in [((7, 3), 0), ((5, 4), 1), ((3, 5), 2), ((5, 3), 3), ((9, 6), 4)]:
+for (a_, c_), idx in [((7, 3), 0), ((5, 4), 2), ((3, 5), 3), ((5, 3), 1), ((9, 6), 4)]:
     full = True
     for x0 in range(16):
         seen, x = set(), x0

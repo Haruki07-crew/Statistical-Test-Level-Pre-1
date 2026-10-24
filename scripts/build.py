@@ -154,8 +154,11 @@ def load_exams(plan_ids):
                     x["tol"] = float(it["tolerance"])
                     x["fmt"] = render_inline(it["answer_format"])
                 items.append(x)
+        # 版：選択肢の並びと正解が変わると、保存した途中経過の「選んだ番号」がずれるので、画面側で見分けられるようにする
+        import hashlib
+        sig = json.dumps([(x["id"], x.get("c"), x["a"]) for x in items], ensure_ascii=False)
         out.append({"no": data["set"], "title": data.get("title") or f"模擬試験 第{data['set']}回", "min": data["minutes"],
-                    "pts": 100 / L.N_ITEMS, "probs": probs, "items": items})
+                    "pts": 100 / L.N_ITEMS, "probs": probs, "items": items, "v": hashlib.sha1(sig.encode()).hexdigest()[:10]})
     return out, stat
 
 

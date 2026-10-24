@@ -158,7 +158,7 @@ E.check("s13p05a", abs((p_welch < 0.05).mean() - 0.05) < 0.006, f"ウェルチ�
 E.check("s13p05a", (p_pool[pF >= 0.05] < 0.05).mean() > 0.06, f"予備検定を通った後のプールした t 検定の誤り率 {(p_pool[pF >= 0.05] < 0.05).mean():.4f} > 5%（選択肢 0・4 は誤り）")
 b1_ = rng.normal(0, 5, (R, n1_)); b2_ = rng.normal(0, 5, (R, n2_))
 E.check("s13p05a", abs((stats.ttest_ind(b1_, b2_, axis=1, equal_var=False).pvalue < 0.05).mean() - 0.05) < 0.006, "等分散でもウェルチ検定の水準は約 5%（選択肢 2 は誤り）")
-E.check("s13p05a", E.item("s13p05a")["answer"] == 1, "正解は選択肢 1")
+E.check("s13p05a", "ウェルチ" in E.item("s13p05a")["choices"][E.item("s13p05a")["answer"]], "正解ははじめからウェルチの検定を使う記述")
 Fp = 6.8 ** 2 / 3.9 ** 2
 E.check("s13p05a", abs(2 * stats.f.sf(Fp, 7, 11) - 0.10) < 0.005, f"問題文の F 検定の両側 p 値 {2 * stats.f.sf(Fp, 7, 11):.4f} ≈ 0.10")
 
@@ -180,7 +180,7 @@ C_, D_ = card[ia].sum(), 400 - card[ia].sum()
 E.check("s13p06a", abs(np.log(A_ * D_ / (B_ * C_)) - np.log(2)) < 0.35, f"ケース・コントロール抽出のオッズ比 {A_ * D_ / (B_ * C_):.2f} ≈ 母集団の 2")
 E.check("s13p06a", abs(A_ / (A_ + C_) - p1v) > 0.03, f"抽出表の行比率 {A_ / (A_ + C_):.3f} は真の投票率 {p1v:.3f} と一致しない")
 E.check("s13p06a", abs(p1v / p0v - 2.0) > 0.3, f"投票率 55% では相対リスク {p1v / p0v:.3f} はオッズ比 2 から離れる")
-E.check("s13p06a", E.item("s13p06a")["answer"] == 1, "正解はオッズ比の記述")
+E.check("s13p06a", E.item("s13p06a")["answer"] == 3, "正解はオッズ比の記述（並べ替え後の位置）")
 
 # ---- 大問7 状態の分類：到達可能性の推移閉包と、行列のべき乗の極限
 Pm = np.array([[0.90, 0.04, 0.03, 0.03], [0.10, 0.85, 0.02, 0.03], [0, 0, 0.80, 0.20], [0, 0, 0, 1]])
@@ -194,7 +194,7 @@ Pn = np.linalg.matrix_power(Pm, 2000)
 E.check("s13p07a", np.allclose(Pn[:, 3], 1, atol=1e-9), "P^2000 の第 4 列がすべて 1（確率 1 で吸収）")
 w_, vec = np.linalg.eig(Pm.T)
 E.check("s13p07a", np.sum(np.abs(w_ - 1) < 1e-9) == 1, "固有値 1 は 1 個（定常分布は (0,0,0,1) のみ）")
-E.check("s13p07a", E.item("s13p07a")["answer"] == 2, "正解は選択肢 2")
+E.check("s13p07a", "状態 4" in E.item("s13p07a")["choices"][E.item("s13p07a")["answer"]], "正解は状態 4 だけが再帰的という記述")
 
 # ---- 大問8
 # (a) 交互作用：個票を作って最小二乗で β1+β3 とその分散を推定（共分散行列が問題の値に比例することを確認）

@@ -64,10 +64,10 @@
       if (Array.isArray(d.mock.hist)) out.mock.hist = d.mock.hist.filter(isObj).map(function (h) {
         var ch = {};
         if (isObj(h.ch)) Object.keys(h.ch).forEach(function (k) { var a = h.ch[k]; if (Array.isArray(a) && a.length === 2) ch[k] = [num(a[0], 0), num(a[1], 0)]; });
-        return { s: num(h.s, 0), sc: num(h.sc, 0), c: num(h.c, 0), n: num(h.n, 0), t: num(h.t, 0), d: num(h.d, 0), m: h.m === 'p' ? 'p' : 'r', ch: ch, a: cleanA(h.a), tu: h.tu ? 1 : 0 };
+        return { s: num(h.s, 0), sc: num(h.sc, 0), c: num(h.c, 0), n: num(h.n, 0), t: num(h.t, 0), d: num(h.d, 0), m: h.m === 'p' ? 'p' : 'r', ch: ch, a: cleanA(h.a), tu: h.tu ? 1 : 0, v: typeof h.v === 'string' ? h.v.slice(0, 16) : '' };
       }).filter(function (h) { return h.s > 0 && h.t > 0; }).slice(-500);
       var c = d.mock.cur;
-      if (isObj(c) && num(c.s, 0) > 0) out.mock.cur = { s: num(c.s, 0), m: c.m === 'p' ? 'p' : 'r', i: num(c.i, 0), left: num(c.left, 0), el: num(c.el, 0), a: cleanA(c.a), f: flags(c.f), k: flags(c.k), st: num(c.st, 0) };
+      if (isObj(c) && num(c.s, 0) > 0) out.mock.cur = { s: num(c.s, 0), m: c.m === 'p' ? 'p' : 'r', i: num(c.i, 0), left: num(c.left, 0), el: num(c.el, 0), a: cleanA(c.a), f: flags(c.f), k: flags(c.k), st: num(c.st, 0), v: typeof c.v === 'string' ? c.v.slice(0, 16) : '' };
     }
     return out;
   }
@@ -1355,6 +1355,11 @@
   // 本番モードの残り時間は「画面を開いている間だけ」減る（閉じても続きから再開できるように、残り時間を保存する）
   var EXAMS = DATA.exams || [], EXBY = {}, EX_SETS = 30, PASS = 60;
   EXAMS.forEach(function (e) { e.items.forEach(function (it, i) { it.n = i + 1; }); EXBY[e.no] = e; });
+  // 途中経過を保存したあとで問題の版（選択肢の並びなど）が変わったら、選んだ番号がずれるので、その途中経過は使わない
+  (function () {
+    var c = DB.mock.cur, e = c && EXBY[c.s];
+    if (e && c.v !== (e.v || '')) { DB.mock.cur = null; persist(true); }
+  })();
   var CIRC = ['①', '②', '③', '④', '⑤'];
   function exCorrect(it, v) {
     if (v === undefined || v === null || v === '') return false;
@@ -1455,7 +1460,7 @@
   }
   function exStart(no, mode) {
     var e = EXBY[no];
-    DB.mock.cur = { s: no, m: mode, i: 0, left: e.min * 60000, el: 0, a: {}, f: {}, k: {}, st: Date.now() };
+    DB.mock.cur = { s: no, m: mode, i: 0, left: e.min * 60000, el: 0, a: {}, f: {}, k: {}, st: Date.now(), v: e.v || '' };
     persist(true);
     if (location.hash === '#exam/' + no + '/run') renderExamRun(); else go('#exam/' + no + '/run');
   }
@@ -1523,7 +1528,7 @@
       a[1]++; if (ok) { c++; a[0]++; }
     });
     var h = { s: cur.s, sc: Math.round(c * e.pts * 10) / 10, c: c, n: e.items.length, t: Date.now(), d: cur.m === 'r' ? e.min * 60000 - Math.max(0, cur.left) : cur.el,
-      m: cur.m, ch: ch, a: cur.a, tu: timeUp ? 1 : 0 };
+      m: cur.m, ch: ch, a: cur.a, tu: timeUp ? 1 : 0, v: cur.v || '' };
     DB.mock.hist.push(h);
     DB.mock.cur = null;
     persist(true);
@@ -1538,6 +1543,7 @@
     var chs = Object.keys(r.ch).map(Number).sort(function (a, b) { return a - b; });
     var h = '<div class="article screen"><p class="crumb"><a href="#exam">模擬試験</a></p><h1 class="screen-h">' + esc(e.title) + 'の結果</h1>' +
       (r.tu ? '<p class="msg ng">時間切れのため、その時点の解答で自動採点しました。</p>' : '') +
+      ((r.v || '') !== (e.v || '') ? '<p class="msg">この結果のあとで問題が更新されました（選択肢の並べ替えなど）。点数は受験したときのものです。下の正誤と解説は今の問題で表示しているため、当時の解答とずれることがあります。</p>' : '') +
       '<div class="score ex-score"><b>' + r.sc + '<small>点</small></b>' + passTag(r.sc) + '<span>' + r.c + ' / ' + r.n + ' 問正解・' + (r.m === 'p' ? '練習' : '本番') + 'モード・' + fmtTime(r.d) + '</span></div>' +
       '<div class="ex-meter" aria-label="得点 ' + r.sc + ' 点（合格ライン 60 点）"><i style="width:' + r.sc + '%" class="' + (r.sc >= PASS ? 'ok' : 'ng') + '"></i><span class="ex-meter-line" style="left:' + PASS + '%"></span></div>' +
       '<p class="screen-sub">' + (r.sc >= PASS ? '合格ライン（60点）を ' + Math.round((r.sc - PASS) * 10) / 10 + ' 点上回りました。' : '合格ライン（60点）まであと ' + Math.round((PASS - r.sc) * 10) / 10 + ' 点（' + Math.ceil((PASS - r.sc) / e.pts) + ' 問）です。') + '</p>' +
