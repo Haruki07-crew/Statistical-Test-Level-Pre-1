@@ -1,0 +1,1020 @@
+set: 26
+title: 模擬試験 第26回
+minutes: 90
+problems:
+  - id: s26p01
+    title: データセンター間の冗長経路
+    context: |
+      データセンター S から T へは、中継拠点 A と B を経由する 5 本の回線でつながっている。回線は S–A、S–B、A–T、B–T と、A と B を結ぶ連絡回線 A–B である。
+      回線はどちら向きにも使え、ある時刻にそれぞれの回線が使える確率は次のとおりで、回線どうしは互いに独立に故障するとする。
+
+      | 回線 | S–A | S–B | A–T | B–T | A–B |
+      |---|---|---|---|---|---|
+      | 使える確率 | «p1» | «p2» | «p3» | «p4» | «p5» |
+    items:
+      - id: s26p01a
+        chapter: 1
+        terms: [law-of-total-probability, independence-of-events, conditional-probability]
+        topic: 連絡回線をもつブリッジ型ネットワークでSからTへ通信できる確率を連絡回線の状態で場合分けして全確率の公式で求める
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          使える回線だけをたどって S から T へ到達できる確率を求めよ。
+        answer: «rel»
+        tolerance: 0.001
+        answer_format: 小数第3位まで（小数第4位を四捨五入）で答えよ。±0.001 の差まで正解とする。
+        explanation: |
+          **方針** 連絡回線 A–B があるため、単純な直列・並列の組み合わせにならない（ブリッジ型）。A–B が使えるか使えないかで場合分けし、全確率の公式
+          $P(\text{到達})=P(\text{到達}\mid \text{A–B 可})P(\text{A–B 可})+P(\text{到達}\mid \text{A–B 不可})P(\text{A–B 不可})$ を使う。
+
+          **途中式**
+          A–B が使えるとき、A と B は 1 つの拠点とみなせる。S からその拠点へは S–A と S–B の並列、そこから T へは A–T と B–T の並列なので
+          $$\{1-«q1»\times«q2»\}\times\{1-«q3»\times«q4»\}=«sa»\times«at»=«up»$$
+          A–B が使えないとき、経路は S–A–T（確率 $«p1»\times«p3»=«path1»$）と S–B–T（確率 $«p2»\times«p4»=«path2»$）の並列なので
+          $$1-«fail1»\times«fail2»=«down»$$
+          よって
+          $$P=«p5»\times«up»+«q5»\times«down»=«t_up»+«t_down»=«rel5»$$
+
+          **答え** $«rel_s»$
+
+          **間違えやすい点** 連絡回線を無視して 2 経路の並列とすると $«w_down»$、連絡回線が常に使えるとみなすと $«w_up»$ になる。
+          また 4 本の経路（S–A–T、S–B–T、S–A–B–T、S–B–A–T）の確率を足し合わせると、経路が回線を共有しているため重複して数え、1 を超えることさえある。
+
+  - id: s26p02
+    title: Web API の応答時間
+    context: |
+      ある Web API の応答時間 $X$（ミリ秒）について、対数をとった値 $\ln X$ が正規分布に従うかを調べたい。
+      «n» 件の応答時間の対数 $\ln X_1,\ldots,\ln X_{«n»}$ から求めた標本歪度は $S=«sk»$、標本尖度は $K=«ku»$ だった（尖度は正規分布で 3 になる定義）。
+    items:
+      - id: s26p02a
+        chapter: 11
+        terms: [normality-test, skewness-kurtosis, chi-squared-distribution]
+        topic: 応答時間の対数の標本歪度と標本尖度からジャック・ベラ統計量を求め正規性を判定する
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          ジャック・ベラ統計量
+          $$JB=\frac{n}{6}\left\{S^2+\frac{(K-3)^2}{4}\right\}$$
+          は、正規分布の帰無仮説のもとで近似的に自由度 2 のカイ二乗分布に従う。$JB$ の値と、有意水準 5% での結論の組として正しいものはどれか。
+          自由度 2 のカイ二乗分布の上側 5% 点は «c2»、自由度 1 の上側 5% 点は «c1» である。
+        choices:
+          - '$JB=«jb_ex»$ で、正規性は棄却される'
+          - '$JB=«jb_no4»$ で、正規性は棄却されない'
+          - '$JB=«jb»$ で、正規性は棄却されない'
+          - '$JB=«jb_no6»$ で、正規性は棄却される'
+          - '$JB=«jb_24»$ で、正規性は棄却されない'
+        answer: 2
+        distractors:
+          - 尖度 3.30 を超過尖度（正規分布で 0）とみなし K−3 の代わりに K を使った
+          - (K−3)² を 4 で割り忘れた
+          - 正解
+          - n/6 の 6 で割り忘れた
+          - 係数を n/6 ではなく n/24 にした
+        explanation: |
+          **方針** 歪度は正規分布で 0、尖度は 3 なので、$S$ と $K-3$ がともに 0 から離れるほど $JB$ が大きくなる。式に代入して自由度 2 のカイ二乗分布の上側 5% 点と比べる。
+
+          **途中式**
+          $$S^2=«sk»^2=«t1»,\qquad \frac{(K-3)^2}{4}=\frac{«kum3»^2}{4}=«t2»$$
+          $$JB=\frac{«n»}{6}\times(«t1»+«t2»)=«n6»\times«tsum»=«jb»$$
+          $«jb»<«c2»$ なので、有意水準 5% で正規性の帰無仮説は棄却されない。
+
+          **答え** $JB=«jb»$ で、正規性は棄却されない（対数正規分布のモデルと矛盾しない）。
+
+          **間違えやすい点** 尖度の定義に注意する。ここでは正規分布で 3 になる定義なので $K-3$ を使う。$K$ をそのまま使うと $«jb_ex»$ になり、誤って棄却してしまう。
+          $(K-3)^2$ を 4 で割り忘れると $«jb_no4»$、$n/6$ の 6 で割り忘れると $«jb_no6»$ になる。比べる分布は歪度と尖度の 2 つの項の和なので自由度 2（«c2»）であり、自由度 1 の «c1» ではない。
+
+      - id: s26p02b
+        chapter: 6
+        terms: [lognormal-distribution, normal-distribution, standard-normal-distribution]
+        topic: 対数正規分布の平均と中央値の比から対数の分散を求め応答時間が閾値を超える割合を求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          $\ln X\sim N(\mu,\sigma^2)$ とし、応答時間の中央値は «med» ミリ秒、平均は «mean» ミリ秒であることがわかっている。
+          応答時間が «thr» ミリ秒を超える確率 $P(X>«thr»)$ に最も近い値はどれか。必要なら $\ln«ratio»=«ln125»$、$\ln2.5=«ln25»$、$\ln2=«ln2»$ と、次の標準正規分布の分布関数 $\Phi(z)$ の値を使え。
+
+          | $z$ | 0.68 | 1.04 | 1.37 | 1.94 | 2.05 |
+          |---|---|---|---|---|---|
+          | $\Phi(z)$ | «pA» | «pB» | «pC» | «pD» | «pE» |
+        choices:
+          - "$«w_var»$"
+          - "$«w_half»$"
+          - "$«pr3»$"
+          - "$«w_mean»$"
+          - "$«w_low»$"
+        answer: 2
+        distractors:
+          - 標準偏差 σ の代わりに分散 σ² で割って標準化した
+          - 平均と中央値の比の対数を σ² とし、2 倍し忘れた
+          - 正解
+          - 中心を中央値ではなく平均 100 にして ln(200/100) で標準化した
+          - 上側確率ではなく P(X≦200) を答えた
+        explanation: |
+          **方針** 対数正規分布では、中央値 $=e^{\mu}$、平均 $=e^{\mu+\sigma^2/2}$。平均と中央値の比から $\sigma^2$ がわかる。$P(X>«thr»)=P(\ln X>\ln«thr»)$ を標準化する。
+
+          **途中式**
+          $$\frac{\text{平均}}{\text{中央値}}=e^{\sigma^2/2}=\frac{«mean»}{«med»}=«ratio»\quad\Rightarrow\quad \sigma^2=2\ln«ratio»=2\times«ln125»=«sig2»,\qquad \sigma=\sqrt{«sig2»}=«sig»$$
+          $\mu=\ln«med»$ なので
+          $$P(X>«thr»)=P\left(Z>\frac{\ln«thr»-\ln«med»}{\sigma}\right)=P\left(Z>\frac{\ln2.5}{«sig»}\right)=P\left(Z>\frac{«ln25»}{«sig»}\right)=P(Z>«z»)$$
+          ここで $«ln25»/«sig»=«zraw»\cdots\approx«z»$。
+          $$P(X>«thr»)=1-\Phi(«z»)=1-«phi_z»=«pr»$$
+
+          **答え** $«pr3»$
+
+          **間違えやすい点** 分散 $«sig2»$ で割ると $z=«z_var»$ で $«w_var»$、$\sigma^2=\ln«ratio»$ と 2 倍し忘れると $\sigma=«sig_half»$、$z=«z_half»$ で $«w_half»$ になる。
+          対数正規分布は右に裾が長いので、平均（«mean»）は中央値（«med»）より大きい。$\ln X$ の平均 $\mu$ に対応するのは中央値 $e^\mu$ であり、平均 «mean» を中心にして $\ln(«thr»/«mean»)$ で標準化すると $z=«z_mean»$ で $«w_mean»$ になる。
+
+  - id: s26p03
+    title: パケットの往復時間
+    context: |
+      あるサーバまでのパケットの往復時間 $X$（ミリ秒）は、回線の物理的な距離で決まる最小遅延 $\theta$ と、混雑による待ち遅延 $Y$ の和 $X=\theta+Y$ で表せるとする。
+      $Y$ は平均 $\beta$ の指数分布（密度 $\frac{1}{\beta}e^{-y/\beta}$、$y\ge0$）に従い、測定ごとに独立とする。
+    items:
+      - id: s26p03a
+        chapter: 8
+        terms: [maximum-likelihood-estimator, unbiased-estimator, mean-squared-error, order-statistics]
+        topic: 最小遅延を位置母数とする指数分布で標本最小値の最尤推定量の偏りを補正し平均二乗誤差を比べる
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          長期の観測から $\beta=«beta»$ が既知とする。«n» 回の測定の最小値は $x_{(1)}=«xmin»$ だった。
+          $\theta$ の最尤推定量 $\hat\theta$ の偏りを補正した不偏推定量 $\tilde\theta$ の値と、平均二乗誤差の比 $\mathrm{MSE}(\hat\theta)/\mathrm{MSE}(\tilde\theta)$ の組として正しいものはどれか。
+        choices:
+          - '$\tilde\theta=«unb»$、比は 1'
+          - '$\tilde\theta=«w_unb_beta»$、比は 2'
+          - '$\tilde\theta=«unb»$、比は 2'
+          - '$\tilde\theta=«w_unb_plus»$、比は 2'
+          - '$\tilde\theta=«unb»$、比は 0.5'
+        answer: 2
+        distractors:
+          - 偏りを無視し、分散が同じなので平均二乗誤差も等しいとした
+          - 偏りを β/n ではなく β として引いた
+          - 正解
+          - 偏りの向きを逆にして β/n を足した
+          - 平均二乗誤差の比を逆にした
+        explanation: |
+          **方針** 尤度は $\theta\le x_{(1)}$ の範囲で $\theta$ の増加関数になるので、最尤推定量は標本最小値 $\hat\theta=X_{(1)}$。指数分布の最小値の分布から偏りと分散を求める。
+
+          **途中式**
+          尤度は
+          $$L(\theta)=\prod_{i=1}^{n}\frac{1}{\beta}e^{-(x_i-\theta)/\beta}=\beta^{-n}\exp\left(-\frac{\sum x_i-n\theta}{\beta}\right)\quad(\theta\le x_{(1)})$$
+          で、$\theta$ が大きいほど大きいので $\hat\theta=x_{(1)}$。
+          $Y_{(1)}=X_{(1)}-\theta$ は独立な指数分布 $n$ 個の最小値なので、平均 $\beta/n$ の指数分布に従う。よって
+          $$E[\hat\theta]=\theta+\frac{\beta}{n}=\theta+«bias»,\qquad V[\hat\theta]=\left(\frac{\beta}{n}\right)^2=«var1»$$
+          不偏推定量は $\tilde\theta=X_{(1)}-\beta/n=«xmin»-«bias»=«unb»$。
+          $$\mathrm{MSE}(\hat\theta)=V+(\text{偏り})^2=«var1»+«bias2»=«mse_mle»,\qquad \mathrm{MSE}(\tilde\theta)=V[\tilde\theta]=«mse_unb»$$
+          比は $«mse_mle»/«mse_unb»=2$。
+
+          **答え** $\tilde\theta=«unb»$、比は 2
+
+          **間違えやすい点** 最小値の平均は $\theta+\beta$ ではなく $\theta+\beta/n$（最小値の分布はレートが $n$ 倍の指数分布）。$\beta$ を引くと $«w_unb_beta»$ になる。
+          $\hat\theta$ と $\tilde\theta$ は定数だけずれているので分散は同じだが、$\hat\theta$ には偏りがあるので平均二乗誤差は偏りの 2 乗の分だけ大きい。最小値は必ず $\theta$ 以上なので、偏りの補正は引く向きである。
+
+      - id: s26p03b
+        chapter: 10
+        terms: [uniformly-most-powerful-test, power-function, monotone-likelihood-ratio, chi-squared-distribution]
+        topic: 待ち遅延の指数分布の平均に対する一様最強力検定で検出力が0.9以上になる平均の範囲をカイ二乗分布の点から求める
+        level: 応用
+        definition: false
+        type: choice
+        question: |
+          最小遅延 $\theta$ は既知となり、待ち遅延 $Y_i=X_i-\theta$ を直接得られるようになった。平常時は $\beta=«b0»$ である。
+          混雑の検知のため、«m» 回の待ち遅延 $Y_1,\ldots,Y_{«m»}$ から $H_0:\beta=«b0»$ 対 $H_1:\beta>«b0»$ を有意水準 5% で検定する。
+          $T=\sum Y_i$ について $2T/\beta$ は自由度 «df» のカイ二乗分布に従い、この検定の一様最強力検定は「$T\ge c$ なら棄却」の形になる。
+          検出力が 0.90 以上になるのは $\beta$ がおよそいくつ以上のときか。最も近い値を選べ。
+          自由度 «df» のカイ二乗分布の上側確率 $\alpha$ の点 $\chi^2_{«df»}(\alpha)$ は次のとおりである。
+
+          | $\alpha$ | 0.95 | 0.90 | 0.10 | 0.05 | 0.025 |
+          |---|---|---|---|---|---|
+          | $\chi^2_{«df»}(\alpha)$ | «c95» | «c90» | «c10» | «c05» | «c025» |
+        choices:
+          - "$«winv»$"
+          - "$«w10»$"
+          - "$«beta1»$"
+          - "$«w025»$"
+          - "$«w95»$"
+        answer: 2
+        distractors:
+          - 棄却限界と検出力の条件で使う点を逆にした（12.44/31.41 倍）
+          - 棄却限界に上側 10% 点 28.41 を使った（有意水準と検出力の取り違え）
+          - 正解
+          - 片側検定なのに上側 2.5% 点 34.17 で棄却限界を作った
+          - 検出力の条件に上側 95% 点 10.85 を使った（検出力 0.95 の条件）
+        explanation: |
+          **方針** 指数分布の尤度比 $L(\beta_1)/L(\beta_0)$（$\beta_1>\beta_0$）は $T$ の増加関数（単調尤度比）なので、$T$ が大きいとき棄却する検定が一様最強力になる。
+          $H_0$ のもとの分布で棄却限界 $c$ を決め、そのあと $\beta$ の値ごとの棄却確率（検出力関数）を求める。
+
+          **途中式**
+          有意水準 5%：$P(T\ge c\mid \beta=«b0»)=P\left(\chi^2_{«df»}\ge \frac{2c}{«b0»}\right)=0.05$ より
+          $$\frac{2c}{«b0»}=«c05»\quad\Rightarrow\quad c=«crit»$$
+          検出力関数は
+          $$\gamma(\beta)=P(T\ge c\mid\beta)=P\left(\chi^2_{«df»}\ge \frac{2c}{\beta}\right)$$
+          で、$\beta$ の増加関数。$\gamma(\beta)\ge0.90$ となるのは $2c/\beta\le\chi^2_{«df»}(0.90)=«c90»$ のとき、つまり
+          $$\beta\ge\frac{2c}{«c90»}=\frac{«b0»\times«c05»}{«c90»}=«beta1_4»\cdots$$
+
+          **答え** $«beta1»$（平常時の約 2.5 倍の平均待ち遅延なら 90% 以上の確率で検知できる）
+
+          **間違えやすい点** 検出力 0.90 の条件に使うのは「上側確率 0.90 の点」«c90» であり、上側 10% 点ではない。棄却限界は有意水準 5% の片側なので上側 5% 点 «c05» を使い、両側の 2.5% 点 «c025» を使うと $«w025»$ になる。
+          $2T/\beta\sim\chi^2_{2n}$ の自由度は $2n=«df»$（$n$ ではない）。
+
+  - id: s26p04
+    title: サーバ間の時刻同期の誤差
+    context: |
+      データセンターのサーバは時刻同期プロトコルで基準時計に合わせているが、わずかな誤差（ミリ秒）が残る。
+      2 種類の同期装置について、誤差の分布を次のようにモデル化した。
+      - 装置 A：誤差 $X$ は区間 $(-1,\,2)$ の一様分布に従う。
+      - 装置 B：1 回の同期ごとの誤差 $W$ は位置 0、尺度 $\gamma=«gam»$ のコーシー分布（密度 $f(w)=\dfrac{\gamma}{\pi(w^2+\gamma^2)}$、分布関数 $F(w)=\dfrac12+\dfrac1\pi\arctan\dfrac{w}{\gamma}$）に従い、同期ごとに独立とする。このコーシー分布の特性関数は $\varphi_W(t)=E[e^{itW}]=e^{-\gamma|t|}$ である。
+    items:
+      - id: s26p04a
+        chapter: 4
+        terms: [change-of-variables, uniform-distribution, probability-mass-and-density-function]
+        topic: 一様分布に従う時刻ずれの2乗の密度関数を単調でない変換として2つの枝の寄与を足して求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          装置 A の誤差の 2 乗 $V=X^2$（2 乗誤差）の密度関数 $g(v)$ として正しいものはどれか（示した範囲以外では 0）。
+        choices:
+          - '$g(v)=\dfrac{1}{6\sqrt v}\ (0<v<4)$'
+          - '$g(v)=\dfrac{1}{3\sqrt v}\ (0<v<1),\quad g(v)=\dfrac{1}{6\sqrt v}\ (1\le v<4)$'
+          - '$g(v)=\dfrac{1}{6\sqrt v}\ (0<v<1),\quad g(v)=\dfrac{1}{3\sqrt v}\ (1\le v<4)$'
+          - '$g(v)=\dfrac{2}{3}\ (0<v<1),\quad g(v)=\dfrac{1}{3}\ (1\le v<4)$'
+          - '$g(v)=\dfrac{1}{3\sqrt v}\ (0<v<4)$'
+        answer: 1
+        distractors:
+          - 正の枝 x=√v だけを考え、負の枝の寄与を落とした
+          - 正解
+          - 2 つの枝が重なる範囲と正の枝だけの範囲を取り違えた
+          - ヤコビアン |dx/dv| を掛け忘れた（全体で積分しても 1 にならない）
+          - 0<v<4 の全体で 2 つの枝があるとみなした
+        explanation: |
+          **方針** $v=x^2$ は単調でないので、$v$ に対応する $x=\pm\sqrt v$ の 2 つの枝それぞれで「密度 × ヤコビアン」を求めて足す。$X$ の範囲が $(-1,2)$ と左右非対称なので、負の枝 $x=-\sqrt v$ は $\sqrt v<1$、つまり $v<1$ のときだけ存在する。
+
+          **途中式** $X$ の密度は $f(x)=1/3$（$-1<x<2$）。各枝で $|dx/dv|=\dfrac{1}{2\sqrt v}$。
+          - $0<v<1$：$x=\sqrt v$ と $x=-\sqrt v$ の両方が範囲内なので
+          $$g(v)=\frac13\cdot\frac{1}{2\sqrt v}+\frac13\cdot\frac{1}{2\sqrt v}=\frac{1}{3\sqrt v}$$
+          - $1\le v<4$：$x=\sqrt v\in[1,2)$ だけが範囲内なので
+          $$g(v)=\frac13\cdot\frac{1}{2\sqrt v}=\frac{1}{6\sqrt v}$$
+          確認：$\displaystyle\int_0^1\frac{dv}{3\sqrt v}+\int_1^4\frac{dv}{6\sqrt v}=\frac23+\frac13(2-1)=1$。
+
+          **答え** $g(v)=\dfrac{1}{3\sqrt v}\ (0<v<1)$、$g(v)=\dfrac{1}{6\sqrt v}\ (1\le v<4)$
+
+          **間違えやすい点** 正の枝だけで $1/(6\sqrt v)$ とすると全体の積分は $2/3$ にしかならない。逆に全範囲で 2 つの枝を足すと積分は $4/3$ になる。
+          ヤコビアンを掛け忘れた $2/3,\ 1/3$ は積分すると $2/3+1=5/3$ で密度になっていない。密度の候補は、積分して 1 になるかで確かめられる。
+
+      - id: s26p04b
+        chapter: 2
+        terms: [characteristic-function, cauchy-distribution, central-limit-theorem]
+        topic: 特性関数から独立なコーシー分布の標本平均が元と同じ分布になることを示し平均した時刻誤差が閾値を超える確率を求める
+        level: 応用
+        definition: false
+        type: choice
+        question: |
+          装置 B で «n» 回同期した誤差の平均 $\bar W=\frac{1}{«n»}\sum_{j=1}^{«n»}W_j$ を使って時刻を補正する。
+          $|\bar W|>«thr»$ ミリ秒となる確率に最も近い値はどれか。必要なら $\pi=«pi»$ と次の値を使え。
+
+          | $u$ | 0.5 | 2 | 8 | 32 |
+          |---|---|---|---|---|
+          | $\arctan u$ | «at05» | «at2» | «at8» | «at32» |
+        choices:
+          - "$«w_clt»$"
+          - "$«w_n»$"
+          - "$«w_one»$"
+          - "$«ok»$"
+          - "$«w_inv»$"
+        answer: 3
+        distractors:
+          - 中心極限定理のように尺度が γ/√n=0.125 に縮むとした
+          - 分散のように尺度が γ/n に縮むとした
+          - 片側 P(W̄>1) だけを答えた
+          - 正解
+          - arctan(x/γ) を arctan(γ/x) と取り違えた
+        explanation: |
+          **方針** 独立な確率変数の和の特性関数は各特性関数の積、$aW$ の特性関数は $\varphi_W(at)$。これで $\bar W$ の特性関数を求め、特性関数が分布を一意に決めることから $\bar W$ の分布を特定する。
+
+          **途中式**
+          $$\varphi_{\bar W}(t)=E\left[e^{it\sum W_j/n}\right]=\prod_{j=1}^{n}\varphi_W\left(\frac tn\right)=\left(e^{-\gamma|t|/n}\right)^n=e^{-\gamma|t|}$$
+          これは $W$ と同じ特性関数なので、$\bar W$ も尺度 $\gamma=«gam»$ のコーシー分布に従う（平均しても広がりは縮まない）。
+          $$P(|\bar W|>«thr»)=2\{1-F(«thr»)\}=1-\frac2\pi\arctan\frac{«thr»}{«gam»}=1-\frac{2\times«at2»}{«pi»}=1-«two_over_pi»=«ok4»$$
+
+          **答え** $«ok»$
+
+          **間違えやすい点** コーシー分布には平均も分散もないので、大数の法則も中心極限定理も成り立たない。尺度が $\gamma/\sqrt n=«sc_clt»$ に縮むと考えると $«w_clt»$、$\gamma/n$ に縮むと考えると $«w_n»$ と、誤差を大きく過小評価する。
+          「$|\bar W|>«thr»$」は両側なので、片側の確率 $«w_one»$ を 2 倍する。
+
+  - id: s26p05
+    title: DDoS 攻撃のトラフィック
+    context: |
+      ある事業者のネットワークには、DDoS 攻撃のバースト（短時間に集中する大量の通信）が 1 分あたり平均 «lam» 回のポアソン過程に従って到着する。
+      各バーストのデータ量 $S$（GB）は互いに独立で、到着とも独立に、次の分布関数のパレート分布に従う。
+      $$F(s)=1-\left(\frac{«xm»}{s}\right)^{«alpha»}\quad(s\ge«xm»)$$
+    items:
+      - id: s26p05a
+        chapter: 32
+        terms: [inverse-transform-sampling, uniform-random-number]
+        topic: パレート分布に従うバーストのデータ量を逆関数法で一様乱数から発生させる
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          攻撃のシミュレーションで、区間 $(0,1)$ の一様乱数 $u$ から逆関数法 $s=F^{-1}(u)$ でバーストのデータ量を作る。$u=«u»$ のときの $s$ はどれか。
+        choices:
+          - "$«x_u»$"
+          - "$«x_root»$"
+          - "$«x»$"
+          - "$«x_noxm»$"
+          - "$«x_pow»$"
+        answer: 2
+        distractors:
+          - 1−u の代わりに u を代入した
+          - 指数の符号を取り違えて (1−u)^{1/3} を掛けた
+          - 正解
+          - 下限 0.4 を掛け忘れた
+          - 指数 −1/3 を −3 とした
+        explanation: |
+          **方針** $u=F(s)$ を $s$ について解いた $F^{-1}(u)$ に一様乱数を代入すると、分布関数 $F$ に従う乱数が得られる。
+
+          **途中式**
+          $$u=1-\left(\frac{«xm»}{s}\right)^{«alpha»}\ \Rightarrow\ \left(\frac{«xm»}{s}\right)^{«alpha»}=1-u\ \Rightarrow\ s=F^{-1}(u)=«xm»\,(1-u)^{-1/«alpha»}$$
+          $u=«u»$ のとき $1-u=«omu»=(1/«cube»)^{3}$ なので $(1-u)^{-1/3}=«cube»$。
+          $$s=«xm»\times«cube»=«x»$$
+
+          **答え** $«x»$（GB）
+
+          **間違えやすい点** $1-u$ と $u$ を取り違えると $«x_u»$ になる（$1-U$ も一様分布なので $«xm»\,u^{-1/3}$ も正しい乱数の作り方だが、ここで指定した $F^{-1}(u)$ の値ではない）。
+          $s$ は下限 «xm» 以上の値をとるので、«x_root» のように下限を下回る値は誤りとすぐわかる。
+
+      - id: s26p05b
+        chapter: 15
+        terms: [compound-poisson-process, poisson-process, moments]
+        topic: ポアソン過程で到着するバーストのデータ量がパレート分布のとき一定時間の総データ量の標準偏差を複合ポアソン過程で求める
+        level: 応用
+        definition: false
+        type: numeric
+        question: |
+          «t» 分間に到着するバーストの総データ量 $Z=\sum_{k=1}^{N(«t»)}S_k$（$N(«t»)$ はその間のバースト数）の**標準偏差**（GB）を求めよ。
+        answer: «sd»
+        tolerance: 0.01
+        answer_format: 小数第2位まで（小数第3位を四捨五入）で答えよ。±0.01 の差まで正解とする。
+        explanation: |
+          **方針** $Z$ は複合ポアソン過程。件数 $N\sim\mathrm{Po}(\lambda t)$ で条件づけた全分散の公式から $V[Z]=\lambda t\,E[S^2]$（$V[S]$ ではなく 2 次モーメント）となる。$E[S^2]$ はパレート分布の密度を積分して求める。
+
+          **途中式**
+          密度は $f(s)=«alpha»\cdot«xm»^{«alpha»}s^{-«alpha»-1}$（$s\ge«xm»$）。
+          $$E[S]=\int_{«xm»}^{\infty}s f(s)\,ds=\frac{«alpha»\times«xm»}{«alpha»-1}=«es»,\qquad E[S^2]=\int_{«xm»}^{\infty}s^2 f(s)\,ds=\frac{«alpha»\times«xm»^2}{«alpha»-2}=«alpha»\times«xm2»=«es2»$$
+          $\lambda t=«lam»\times«t»=«lt»$ なので
+          $$V[Z]=E[N]V[S]+V[N]\{E[S]\}^2=\lambda t\,(V[S]+\{E[S]\}^2)=\lambda t\,E[S^2]=«lt»\times«es2»=«var»$$
+          $$\sqrt{«var»}=«sd4»\cdots$$
+
+          **答え** $«sd»$（GB。平均は $\lambda t\,E[S]=«mean»$ GB）
+
+          **間違えやすい点** $V[S]=«es2»-«es_sq»=«vs»$ だけを使って $\lambda t\,V[S]=«w_vsvar»$ とすると、件数のばらつきの寄与 $V[N]\{E[S]\}^2$ を落として $«w_vs»$ になる。ポアソン分布では $V[N]=E[N]$ なので、2 つの項がまとまって $E[S^2]$ になる。
+          パレート分布の 2 次モーメントは $\alpha>2$ のときだけ有限で、$\alpha\le2$ なら総データ量の分散は存在しない。
+
+      - id: s26p05c
+        chapter: 7
+        terms: [convergence-in-probability, convergence-in-mean-square, convergence-in-distribution]
+        topic: 確率1/nで規模nの値をとる系列が0に確率収束するが平均二乗収束しないことを期待値の計算で見分ける
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          観測期間を延ばしていくときの「まれだが巨大なバースト」を単純化して、確率変数の列 $Z_n$（$n=1,2,\ldots$）を
+          $$P(Z_n=n)=\frac1n,\qquad P(Z_n=0)=1-\frac1n$$
+          で定める。$n\to\infty$ のときの $Z_n$ のふるまいについて、正しいものはどれか。
+        choices:
+          - '$E[Z_n]\to0$ となるので、$Z_n$ は 0 に確率収束する'
+          - '$Z_n$ は 0 に確率収束するが、0 に平均二乗収束しない'
+          - '$Z_n$ は 0 に平均二乗収束し、したがって 0 に確率収束する'
+          - '$E[Z_n]=1$ が $n$ によらず一定なので、$Z_n$ は 0 に確率収束しない'
+          - '$Z_n$ は 0 に確率収束するが、0 に分布収束しない'
+        answer: 1
+        distractors:
+          - E[Z_n]=n×(1/n)=1 であり 0 に近づかない
+          - 正解
+          - E[Z_n^2]=n→∞ なので平均二乗収束しない
+          - 期待値が一定でも、0 と異なる値をとる確率 1/n→0 なので確率収束する
+          - 確率収束すれば分布収束もする
+        explanation: |
+          **方針** 確率収束は「任意の $\varepsilon>0$ で $P(|Z_n-0|>\varepsilon)\to0$」、平均二乗収束は「$E[(Z_n-0)^2]\to0$」。それぞれを直接計算する。
+
+          **途中式**
+          任意の $\varepsilon>0$ について、$n>\varepsilon$ なら
+          $$P(|Z_n|>\varepsilon)=P(Z_n=n)=\frac1n\to0$$
+          なので 0 に確率収束する。一方
+          $$E[Z_n]=n\cdot\frac1n=1,\qquad E[Z_n^2]=n^2\cdot\frac1n=n\to\infty$$
+          なので平均二乗収束しない（期待値さえ 0 に近づかない）。確率収束は分布収束を導くので、$Z_n$ は 0 に分布収束もする。
+
+          **答え** $Z_n$ は 0 に確率収束するが、0 に平均二乗収束しない。
+
+          **間違えやすい点** 「平均二乗収束 ⇒ 確率収束 ⇒ 分布収束」は成り立つが、逆は成り立たない。
+          この例のように、まれに起きる巨大な値は確率収束には影響しないが、期待値や 2 次モーメントを支配する。$E[Z_n]$ が 0 に近づかないからといって確率収束しないとはいえない。
+
+  - id: s26p06
+    title: バックアップデータの転送速度
+    context: |
+      夜間のバックアップで、3 つのデータを順に別の拠点へ転送した。それぞれのデータ量と、転送中の速度（一定とみなす）は次のとおりである。
+
+      | データ | 1 | 2 | 3 |
+      |---|---|---|---|
+      | データ量（GB） | «a1» | «a2» | «a3» |
+      | 速度（GB/分） | «v1» | «v2» | «v3» |
+    items:
+      - id: s26p06a
+        chapter: 3
+        terms: [weighted-geometric-harmonic-mean]
+        topic: 量の異なるデータを速度の異なる回線で転送したときの全体の平均転送速度を加重調和平均で求める
+        level: 基本
+        definition: false
+        type: numeric
+        question: |
+          3 つのデータ全体の平均転送速度（総データ量 ÷ 総転送時間、GB/分）を求めよ。
+        answer: «hm»
+        tolerance: 0.01
+        answer_format: 小数第2位まで（小数第3位を四捨五入）で答えよ。±0.01 の差まで正解とする。
+        explanation: |
+          **方針** 速度はデータ量あたりの「時間の逆数」なので、データ量を重みとした**加重調和平均**が全体の平均速度になる。総データ量を総時間で割っても同じ。
+
+          **途中式** 各データの転送時間は
+          $$\frac{«a1»}{«v1»}=«t1»,\qquad \frac{«a2»}{«v2»}=«t2»,\qquad \frac{«a3»}{«v3»}=«t3»\quad(\text{分})$$
+          $$\text{平均速度}=\frac{«a1»+«a2»+«a3»}{«t1»+«t2»+«t3»}=\frac{«tot»}{«ttot»}=«hm4»\cdots$$
+          これは加重調和平均 $\dfrac{\sum w_i}{\sum w_i/v_i}$（$w_i$ はデータ量）そのものである。
+
+          **答え** $«hm»$（GB/分）
+
+          **間違えやすい点** 速度の単純な算術平均 $«am»$ や、データ量で重み付けた算術平均 $«wam»$ は、遅い区間ほど時間が長くかかることを無視している。
+          重みを付けない調和平均 $«uhm»$ は、3 つのデータ量が等しいときの平均速度であり、ここでは使えない。
+
+  - id: s26p07
+    title: 暗号ライブラリの処理時間
+    context: |
+      TLS のハンドシェイクにかかる時間（ミリ秒）を、2 つの暗号ライブラリ L と M で 6 回ずつ測定した。測定値を小さい順に並べると次のとおりである。
+      - L：$«L»$
+      - M：$«M»$
+    items:
+      - id: s26p07a
+        chapter: 13
+        terms: [kolmogorov-smirnov-two-sample, nonparametric-methods-overview]
+        topic: 2つの暗号ライブラリの処理時間の経験分布関数の差の最大値から2標本コルモゴロフ・スミルノフ統計量を求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          2 つの分布が等しいかを、2 標本コルモゴロフ・スミルノフ検定で調べる。統計量 $D=\max_x|\hat F_L(x)-\hat F_M(x)|$（$\hat F$ は経験分布関数）の値と、
+          両側有意水準 5% での結論の組として正しいものはどれか。各群 6 個のとき、正確な分布から求めた棄却域は $D\ge«dcrit»$ である。
+        choices:
+          - '$D=«D_neg»$ で、棄却されない'
+          - '$D=«D_M»$ で、棄却されない'
+          - '$D=«med_diff»$ で、棄却されない'
+          - '$D=«D»$ で、棄却されない'
+          - '$D=«D_cnt»$ で、棄却される'
+        answer: 3
+        distractors:
+          - 絶対値をとらずに F_M−F_L の最大値を求めた
+          - M の観測値の位置だけで差を比べ、L の観測値の位置を見落とした
+          - 2 群の中央値の差（ミリ秒）を統計量と取り違えた
+          - 正解
+          - 経験分布関数を割合でなく個数のまま比べた
+        explanation: |
+          **方針** 経験分布関数は各観測値の位置で $1/6$ ずつ上がる階段関数。2 群をまとめて小さい順に並べ、各観測値の位置で $\hat F_L$ と $\hat F_M$ の差を調べて、その絶対値の最大を求める。
+
+          **途中式** 合わせた順に、(値, $\hat F_L$, $\hat F_M$, 差) を並べると
+          | 値 | «tab_v» |
+          |---|---|---|---|---|---|---|---|---|---|---|---|---|
+          | $6\hat F_L$ | «tab_L» |
+          | $6\hat F_M$ | «tab_M» |
+          | $6\lvert\hat F_L-\hat F_M\rvert$ | «tab_d» |
+
+          差の最大は $«D_cnt»/6$ なので $D=«D»$。$«D»<«dcrit»\approx«dcrit_d»$ なので棄却されない（正確な $p$ 値は約 «pval»）。
+
+          **答え** $D=«D»$ で、棄却されない
+
+          **間違えやすい点** 経験分布関数は L と M の**両方**の観測値の位置で変わるので、片方の群の観測値の位置だけを見ると最大値を見落とす（M の位置だけなら «D_M»）。
+          $D$ は割合（0 から 1）の差であり、個数のまま 3 とすると棄却域と比べられない。各群 6 個と小さいので、近似ではなく正確な分布による棄却域を使う。
+
+      - id: s26p07b
+        chapter: 9
+        terms: [ci-two-sample-mean-difference, pooled-variance, t-distribution]
+        topic: 2つの暗号ライブラリの平均処理時間の差の95%信頼区間をプールした分散とt分布で求める
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          2 つのライブラリの処理時間はそれぞれ正規分布に従い、母分散は等しいとする。
+          L の標本平均は «mL»、不偏分散は «vL»、M の標本平均は «mM»、不偏分散は «vM» である。
+          母平均の差 $\mu_M-\mu_L$ の 95% 信頼区間として正しいものはどれか。必要なら $t$ 分布の上側 2.5% 点 $t_{10}(0.025)=«t10»$、$t_{5}(0.025)=«t5»$、標準正規分布の上側 2.5% 点 «z» を使え。
+        choices:
+          - '$«ci_z»$'
+          - '$«ci»$'
+          - '$«ci_t5»$'
+          - '$«ci_nof»$'
+          - '$«ci_n»$'
+        answer: 1
+        distractors:
+          - 分散を推定しているのに標準正規分布の点 1.96 を使った
+          - 正解
+          - 自由度を n1+n2−2=10 ではなく 1 群の n−1=5 とした
+          - 標準誤差に √(1/n1+1/n2) を掛け忘れた
+          - プールした分散を n1+n2−2 ではなく n1+n2 で割った
+        explanation: |
+          **方針** 等分散を仮定するので、2 群の偏差平方和を合わせたプールした分散 $s_p^2$ を使い、自由度 $n_1+n_2-2$ の $t$ 分布で区間を作る。
+
+          **途中式** 偏差平方和は $5\times«vL»=«ssL»$、$5\times«vM»=«ssM»$。
+          $$s_p^2=\frac{«ssL»+«ssM»}{6+6-2}=«sp2»,\qquad \mathrm{SE}=\sqrt{s_p^2\left(\frac16+\frac16\right)}=\sqrt{«sp2»\times«inv»}=\sqrt{«se2»}=«se»$$
+          $$«mM»-«mL»\pm«t10»\times«se»=«diff»\pm«hw»$$
+
+          **答え** $«ci»$（0 を含まないので、M のほうが平均的に遅いといえる）
+
+          **間違えやすい点** 自由度は 2 群合わせて $6+6-2=10$ で、$t_5$ を使うと $«ci_t5»$ と広すぎる。1.96 を使うと $«ci_z»$ と狭すぎる。
+          プールした分散の分母は $n_1+n_2-2$ で、$n_1+n_2$ にすると $«ci_n»$ になる。
+
+  - id: s26p08
+    title: 負荷試験による応答時間の分析
+    context: |
+      Web サービスの負荷試験で、応答時間 $y$（ミリ秒）を記録し、さまざまな回帰モデルを当てはめた。
+    items:
+      - id: s26p08a
+        chapter: 16
+        terms: [variance-inflation-factor, multicollinearity, coefficient-of-determination]
+        topic: CPU使用率・メモリ使用率・同時接続数の補助回帰の決定係数からVIFを求め標準誤差の膨らみを評価する
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          «n» 回の試験で、$y$ を CPU 使用率 $x_1$、メモリ使用率 $x_2$、同時接続数 $x_3$ に重回帰した。各説明変数を残り 2 つの説明変数に回帰したときの決定係数は
+          $R_1^2=«r1»$、$R_2^2=«r2»$、$R_3^2=«r3»$ だった。
+          $x_1$ の分散拡大要因 $\mathrm{VIF}_1$ と、$x_1$ が他の説明変数と無相関だった場合（誤差分散と $x_1$ の偏差平方和は同じとする）と比べて
+          $x_1$ の係数の標準誤差が何倍になっているかの組として正しいものはどれか。
+        choices:
+          - '$\mathrm{VIF}_1=«w_inv»$、約 «w_invse» 倍'
+          - '$\mathrm{VIF}_1=«vif1»$、約 «vif1» 倍'
+          - '$\mathrm{VIF}_1=«w_1mr»$、約 «w_1mrse» 倍'
+          - '$\mathrm{VIF}_1=«w_r»$、約 «w_rse» 倍'
+          - '$\mathrm{VIF}_1=«vif1»$、約 «sevif» 倍'
+        answer: 4
+        distractors:
+          - VIF を 1/R² とした
+          - VIF は分散の倍率なのに、標準誤差の倍率もそのまま VIF とした
+          - VIF を 1−R²（許容度）と取り違えた
+          - 決定係数を相関係数とみなして 1/(1−0.92²) とした
+          - 正解
+        explanation: |
+          **方針** 重回帰の係数の分散は $V[\hat\beta_j]=\dfrac{\sigma^2}{S_{jj}(1-R_j^2)}$（$S_{jj}$ は $x_j$ の偏差平方和）。無相関なら $R_j^2=0$ なので、分散は $\mathrm{VIF}_j=1/(1-R_j^2)$ 倍、標準誤差はその平方根倍になる。
+
+          **途中式**
+          $$\mathrm{VIF}_1=\frac{1}{1-«r1»}=\frac{1}{«omr»}=«vif1»,\qquad \sqrt{«vif1»}=«sevif»$$
+          参考に $\mathrm{VIF}_2=«vif2»$、$\mathrm{VIF}_3=«vif3»$。$x_1$ は目安の 10 を超え、多重共線性が強い。
+
+          **答え** $\mathrm{VIF}_1=«vif1»$、標準誤差は約 «sevif» 倍
+
+          **間違えやすい点** VIF は**分散**の倍率なので、標準誤差の倍率はその平方根である。$1-R_j^2=«omr»$ は許容度（トレランス）で、VIF はその逆数。
+          補助回帰の決定係数 $R_1^2$ はすでに 2 乗された量なので、もう一度 2 乗しない。
+
+      - id: s26p08b
+        chapter: 19
+        terms: [spline-regression, nonlinear-regression]
+        topic: 結び目をもつ区分線形スプライン回帰で負荷が結び目を超えた後の傾きから応答時間が目標値に達するCPU使用率を求める
+        level: 基本
+        definition: false
+        type: numeric
+        question: |
+          CPU 使用率 $x$（%）が高くなると応答時間が急に伸びるので、結び目を $x=«k»$ に置いた区分線形スプライン回帰
+          $$\hat y=«b0»+«b1»\,x+«b2»\,(x-«k»)_+ ,\qquad (x-«k»)_+=\begin{cases}x-«k» & (x>«k»)\\ 0 & (x\le«k»)\end{cases}$$
+          を当てはめた。予測される応答時間が «sla» ミリ秒になる CPU 使用率を求めよ。
+        answer: «xs»
+        tolerance: 0.1
+        answer_format: 小数第1位まで（小数第2位を四捨五入）で答えよ。±0.1 の差まで正解とする。
+        explanation: |
+          **方針** $(x-«k»)_+$ の項は結び目を超えた部分だけ傾きを «b2» 増やす。まず結び目での予測値を求め、«sla» に届くのが結び目の右側かを確かめてから、右側の傾き $«b1»+«b2»$ で解く。
+
+          **途中式** 結び目での予測値は $«b0»+«b1»\times«k»=«yk»$（< «sla»）なので、«sla» に達するのは $x>«k»$ の側。そこでの傾きは $«b1»+«b2»=«slope»$。
+          $$«yk»+«slope»\,(x-«k»)=«sla»\quad\Rightarrow\quad x=«k»+\frac{«gap»}{«slope»}=«xs4»\cdots$$
+
+          **答え** $«xs»$（%）
+
+          **間違えやすい点** 結び目の右側の傾きは «b2» ではなく $«b1»+«b2»=«slope»$（«b2» は傾きの**増分**）。«b2» だけを使うと $«xs_b2»$ になる。
+          スプラインの項を無視して $«b0»+«b1»x=«sla»$ を解くと $x=«xs_lin»$ と、ありえない値になる。
+
+      - id: s26p08c
+        chapter: 17
+        terms: [residual, leverage, leave-one-out-cv]
+        topic: 単回帰の残差とてこ比から各点を除いて予測したときの予測残差の平方和（PRESS）を求める
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          6 回の試験で、応答時間 $y$ を同時接続数 $x$（百）に単回帰したところ、残差 $e_i$ とてこ比 $h_{ii}$ は次のとおりだった。
+
+          | $x_i$ | «x0» | «x1» | «x2» | «x3» | «x4» | «x5» |
+          |---|---|---|---|---|---|---|
+          | $e_i$ | «e0» | «e1» | «e2» | «e3» | «e4» | «e5» |
+          | $h_{ii}$ | «h0» | «h1» | «h2» | «h3» | «h4» | «h5» |
+
+          各観測を 1 つずつ除いて当てはめ直し、除いた観測を予測したときの予測残差の平方和（PRESS）を、表の値を使って求めよ。
+        answer: «press»
+        tolerance: 0.1
+        answer_format: 小数第1位まで（小数第2位を四捨五入）で答えよ。±0.1 の差まで正解とする。
+        explanation: |
+          **方針** 最小二乗法では、$i$ 番目を除いて当てはめ直したときの予測残差は、当てはめ直さなくても $e_{(i)}=\dfrac{e_i}{1-h_{ii}}$ で求められる。これを 2 乗して足す。
+
+          **途中式**
+          | $i$ | 1 | 2 | 3 | 4 | 5 | 6 |
+          |---|---|---|---|---|---|---|
+          | $1-h_{ii}$ | «omh0» | «omh1» | «omh2» | «omh3» | «omh4» | «omh5» |
+          | $e_i/(1-h_{ii})$ | «pr0» | «pr1» | «pr2» | «pr3» | «pr4» | «pr5» |
+          | 2 乗 | «pq0» | «pq1» | «pq2» | «pq3» | «pq4» | «pq5» |
+
+          $$\mathrm{PRESS}=«pq0»+«pq1»+«pq2»+«pq3»+«pq4»+«pq5»=«press_s»$$
+
+          **答え** $«press1»$
+
+          **間違えやすい点** 残差の平方和 $\sum e_i^2=«sse»$ は PRESS ではない。てこ比の大きい両端の点（$h_{ii}=«h0»$）は、除くと予測が大きく外れるので、予測残差が残差の約 2 倍になる。
+          $1-h_{ii}$ で割るところを掛けると $«w_h»$ になる。PRESS は残差平方和より必ず大きく、モデルの予測力（1 点除外交差検証）を表す。
+
+  - id: s26p09
+    title: サーバ機種ごとの障害件数
+    context: |
+      4 機種のサーバについて 1 年間の障害件数 $y_i$ を集計し、稼働台数の対数をオフセットとし、切片と導入からの年数の 2 つの母数をもつポアソン回帰（対数リンク）を当てはめた。
+      観測値と当てはめ値 $\hat\mu_i$、および $\ln(y_i/\hat\mu_i)$ の値は次のとおりである。
+
+      | 機種 | 1 | 2 | 3 | 4 |
+      |---|---|---|---|---|
+      | $y_i$ | «y0» | «y1» | «y2» | «y3» |
+      | $\hat\mu_i$ | «mu0» | «mu1» | «mu2» | «mu3» |
+      | $\ln(y_i/\hat\mu_i)$ | «l0» | «l1» | «l2» | «l3» |
+    items:
+      - id: s26p09a
+        chapter: 18
+        terms: [deviance, poisson-regression, offset-term, generalized-linear-model]
+        topic: 4機種のサーバの障害件数のポアソン回帰の当てはめ値から逸脱度を求め自由度を数えて適合度を判定する
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          このモデルの逸脱度（飽和モデルとの対数尤度の差の 2 倍）$D$ の値と、適合度の判定の組として正しいものはどれか。
+          自由度 2 と 3 のカイ二乗分布の上側 5% 点は «c2» と «c3» である。
+        choices:
+          - '$D=«half»$、自由度 2 の上側 5% 点より小さく、当てはまりが悪いとはいえない'
+          - '$D=«D»$、自由度 3 の上側 5% 点より小さく、当てはまりが悪いとはいえない'
+          - '$D=«X2»$、自由度 2 の上側 5% 点より小さく、当てはまりが悪いとはいえない'
+          - '$D=«D»$、自由度 2 の上側 5% 点より小さく、当てはまりが悪いとはいえない'
+          - '$D=«negD»$、自由度 2 の上側 5% 点より小さく、当てはまりが悪いとはいえない'
+        answer: 3
+        distractors:
+          - 対数尤度の差を 2 倍し忘れた
+          - 自由度を「観測数 4 − 年数の係数 1」とし、切片を数え忘れた
+          - 逸脱度ではなくピアソンのカイ二乗統計量 Σ(y−μ)²/μ を計算した
+          - 正解
+          - ln(μ/y) と分子分母を逆にして符号を誤った
+        explanation: |
+          **方針** ポアソン分布の逸脱度は
+          $$D=2\sum_i\left\{y_i\ln\frac{y_i}{\hat\mu_i}-(y_i-\hat\mu_i)\right\}$$
+          切片を含む対数リンクのポアソン回帰では $\sum y_i=\sum\hat\mu_i$ が成り立つので、第 2 項の和は 0 になる。自由度は「観測数 − 推定した母数の数」。
+
+          **途中式** $\sum y_i=«sumy»$、$\sum\hat\mu_i=«summu»$ で一致する。
+          $$\sum y_i\ln\frac{y_i}{\hat\mu_i}=«y0»\times«l0»+«y1»\times(«l1»)+«y2»\times«l2»+«y3»\times(«l3»)$$
+          $$=«tm0»«tm1»+«tm2»«tm3»=«tsum»$$
+          $$D=2\times«tsum»=«D4»$$
+          自由度は $4-2=2$ で、$«D»<«c2»$。
+
+          **答え** $D=«D»$、自由度 2 の上側 5% 点より小さく、当てはまりが悪いとはいえない
+
+          **間違えやすい点** 逸脱度は対数尤度の差の **2 倍**（2 倍しないと «half»）。母数は切片と年数の係数の 2 つなので自由度は 2（オフセットは推定しないので数えない）。
+          ピアソン統計量 $\sum(y_i-\hat\mu_i)^2/\hat\mu_i=«X2»$ は逸脱度と近い値になるが、別の統計量である。逸脱度は 0 以上の量なので、負になったら符号の誤り。
+
+  - id: s26p10
+    title: ストレージ装置の故障までの時間
+    context: |
+      データセンターで同時に運用を始めた 8 台のストレージ装置について、故障までの時間（月）を追跡した。途中で別の機種に置き換えたため観測を打ち切った装置には「+」を付けている。
+      $$5,\quad 8^{+},\quad 12,\quad 12,\quad 15^{+},\quad 20,\quad 24^{+},\quad 30^{+}$$
+    items:
+      - id: s26p10a
+        chapter: 29
+        terms: [greenwood-formula, kaplan-meier-estimator, censored-data]
+        topic: 打ち切りを含むストレージ装置の故障時間からカプラン・マイヤー推定値の標準誤差をグリーンウッドの公式で求める
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          カプラン・マイヤー法による 20 か月時点の生存率の推定値 $\hat S(20)$ の標準誤差を、グリーンウッドの公式
+          $$\widehat V[\hat S(t)]=\hat S(t)^2\sum_{t_j\le t}\frac{d_j}{n_j(n_j-d_j)}$$
+          （$n_j$ は時刻 $t_j$ の直前に観測中の台数、$d_j$ はその時刻の故障数）で求めよ。
+        answer: «se»
+        tolerance: 0.001
+        answer_format: 小数第3位まで（小数第4位を四捨五入）で答えよ。±0.001 の差まで正解とする。
+        explanation: |
+          **方針** 故障が起きた時刻 5、12、20 ごとに、その直前に観測中の台数（リスク集合）と故障数を数える。打ち切られた装置は、打ち切り時刻より後のリスク集合から外れる。
+
+          **途中式**
+          | 時刻 $t_j$ | $n_j$ | $d_j$ | $(n_j-d_j)/n_j$ | $d_j/\{n_j(n_j-d_j)\}$ |
+          |---|---|---|---|---|
+          | 5 | 8 | 1 | 7/8 | $1/56=«g1»$ |
+          | 12 | 6 | 2 | 4/6 | $2/24=«g2»$ |
+          | 20 | 3 | 1 | 2/3 | $1/6=«g3»$ |
+
+          （時刻 12 の直前は、5 で故障した 1 台と 8 で打ち切られた 1 台を除いた 6 台。時刻 20 の直前は、12 で故障した 2 台と 15 で打ち切られた 1 台を除いた 3 台。）
+          $$\hat S(20)=\frac78\times\frac46\times\frac23=«S»,\qquad \sum\frac{d_j}{n_j(n_j-d_j)}=«g»$$
+          $$\widehat V=«S»^2\times«g»=«S2»\times«g»=«var»,\qquad \mathrm{SE}=\sqrt{«var»}=«se4»\cdots$$
+
+          **答え** $«se»$
+
+          **間違えやすい点** 打ち切られた装置をリスク集合から外し忘れると $n_j$ を誤る。分散 $«w_var»$ をそのまま答えない。
+          打ち切りを無視して 8 台の二項分布とみた $\sqrt{\hat S(1-\hat S)/8}=«w_binom»$ は、後の時点ほど観測台数が減って不確かさが増すことを反映しない。
+
+  - id: s26p11
+    title: サーバ室の冷却方式の実験
+    context: |
+      3 種類の冷却方式（因子 A）と 2 段階のファン設定（因子 B）が、サーバの吸気温度（℃）に与える効果を調べた。
+      4 つのサーバ室（ブロック R）それぞれで、3 列のラック列に冷却方式を無作為に割り付け（冷却方式は列ごとにしか変えられない）、
+      さらに各ラック列を 2 つに分けてファン設定を無作為に割り付けた（分割区法）。全部で 24 個の測定値について、平方和は次のとおりである。
+
+      | 要因 | 平方和 | 自由度 |
+      |---|---|---|
+      | ブロック R | «ssR» | «dfR» |
+      | 冷却方式 A | «ssA» | «dfA» |
+      | 1 次誤差（R×A） | «ssE1» | «dfE1» |
+      | ファン設定 B | «ssB» | «dfB» |
+      | 交互作用 A×B | «ssAB» | «dfAB» |
+      | 2 次誤差 | «ssE2» | «dfE2» |
+      | 合計 | «ssT» | «dfT» |
+    items:
+      - id: s26p11a
+        chapter: 20
+        terms: [split-plot-design, randomized-block-design, fixed-and-random-effects]
+        topic: 分割区法でラック列単位に割り付けた冷却方式の効果を1次誤差（ブロック×主区因子）で割ってF検定する
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          冷却方式 A の効果を調べる $F$ 統計量の値と、比べる $F$ 分布の自由度の組として正しいものはどれか。
+        choices:
+          - '$F=«F2»$、自由度 $(«dfA»,\,«dfE2»)$'
+          - '$F=«F»$、自由度 $(«dfA»,\,«dfE1»)$'
+          - '$F=«Fp»$、自由度 $(«dfA»,\,«dfEp»)$'
+          - '$F=«F»$、自由度 $(«dfA»,\,«dfE2»)$'
+          - '$F=«Fraw»$、自由度 $(«dfA»,\,«dfE1»)$'
+        answer: 1
+        distractors:
+          - 主区因子 A を 2 次誤差で割った
+          - 正解
+          - 1 次誤差と 2 次誤差を合わせて 1 つの誤差とした
+          - 平均平方は正しいが自由度に 2 次誤差の自由度を使った
+          - 平均平方ではなく平方和の比をとった
+        explanation: |
+          **方針** 分割区法では、冷却方式（主区因子）はラック列という大きな単位に割り付けられているので、その効果は「ラック列どうしのばらつき」＝ 1 次誤差（R×A）と比べる。ファン設定 B と交互作用 A×B は、列の中で割り付けたので 2 次誤差と比べる。
+
+          **途中式**
+          $$MS_A=\frac{«ssA»}{«dfA»}=«msA»,\qquad MS_{E1}=\frac{«ssE1»}{«dfE1»}=«msE1»$$
+          $$F=\frac{«msA»}{«msE1»}=«F»\quad(\text{自由度 }(«dfA»,«dfE1»))$$
+          $F_{0.05}(«dfA»,«dfE1»)=«f26»$ より大きいので、冷却方式の効果は有意である。
+
+          **答え** $F=«F»$、自由度 $(«dfA»,«dfE1»)$
+
+          **間違えやすい点** 2 次誤差で割ると $F=«F2»$ となり、主区因子の効果を過大に評価する。2 次誤差は同じラック列の中のばらつきで、ラック列どうしのばらつき（1 次誤差）より小さいのがふつうだからである。
+          誤差をまとめて $MS=«msEp»$ とすると $F=«Fp»$ になる。分割区法では誤差が 2 種類あることがこの計画の特徴である。
+
+  - id: s26p12
+    title: セキュリティ監査の抽出設計
+    context: |
+      全社のサーバ 2000 台から一部を選び、設定の不備の点数（台ごとの重大度スコア）の平均を推定したい。サーバを設置場所で 3 層に分け、層ごとに単純無作為抽出を行う。
+      各層の台数 $N_h$、スコアの標準偏差の見込み $S_h$、1 台を監査する費用 $c_h$（千円）は次のとおりである。
+
+      | 層 | オンプレミス | クラウド | エッジ拠点 |
+      |---|---|---|---|
+      | $N_h$ | «N1» | «N2» | «N3» |
+      | $S_h$ | «S1» | «S2» | «S3» |
+      | $c_h$ | «c1» | «c2» | «c3» |
+    items:
+      - id: s26p12a
+        chapter: 21
+        terms: [stratified-sampling, neyman-allocation]
+        topic: 監査費用が層で異なるとき予算を使い切る最適配分で各層の標本数を求める
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          監査費用の総額を «C» 千円とし、層別平均の推定量の分散を最小にする最適配分（$n_h\propto N_hS_h/\sqrt{c_h}$）で各層の台数を決める。
+          クラウド層で監査する台数を求めよ。
+        answer: «n2»
+        tolerance: 0.5
+        answer_format: 整数で答えよ。±0.5 未満の差まで正解とする。
+        explanation: |
+          **方針** 費用の制約 $\sum c_hn_h=C$ のもとで分散を最小にすると $n_h=k\,N_hS_h/\sqrt{c_h}$ になる。比例定数 $k$ は予算を使い切る条件 $\sum c_hn_h=k\sum N_hS_h\sqrt{c_h}=C$ から決まる。
+
+          **途中式**
+          | 層 | $N_hS_h/\sqrt{c_h}$ | $N_hS_h\sqrt{c_h}$ |
+          |---|---|---|
+          | オンプレミス | $«N1»\times«S1»/«rc1»=«a1»$ | $«N1»\times«S1»\times«rc1»=«b1»$ |
+          | クラウド | $«N2»\times«S2»/«rc2»=«a2»$ | $«N2»\times«S2»\times«rc2»=«b2»$ |
+          | エッジ拠点 | $«N3»\times«S3»/«rc3»=«a3»$ | $«N3»\times«S3»\times«rc3»=«b3»$ |
+
+          $\sum N_hS_h\sqrt{c_h}=«sumb»$ なので
+          $$n_{\text{クラウド}}=C\times\frac{N_2S_2/\sqrt{c_2}}{\sum N_hS_h\sqrt{c_h}}=«C»\times\frac{«a2»}{«sumb»}=«n2s»$$
+          （ほかの層はオンプレミス «n1»、エッジ拠点 «n3» で、費用の合計はちょうど «C» 千円になる。）
+
+          **答え** $«n2»$（台）
+
+          **間違えやすい点** 費用を無視したネイマン配分 $n_h\propto N_hS_h$ の比で予算を使い切ると、クラウド層は «w_ney» 台にしかならない。台数に比例する比例配分なら «w_prop» 台。
+          最適配分では、費用が安い層ほど $1/\sqrt{c_h}$ の分だけ多く調べる。分母が $\sum N_hS_h/\sqrt{c_h}$ ではなく $\sum N_hS_h\sqrt{c_h}$ になるのは、制約が台数ではなく費用だからである。
+
+  - id: s26p13
+    title: データセンターの監視指標
+    context: |
+      データセンターでは、ラックの吸気温度や消費電力などの監視指標を 1 分ごとに記録し、異常を自動で検知している。
+    items:
+      - id: s26p13a
+        chapter: 27
+        terms: [spectrum, ar-model, weak-stationarity]
+        topic: AR(1)モデルのスペクトル密度の周波数0とπでの比を求め低周波の変動が卓越することを読み取る
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          吸気温度から日周変動を除いた偏差 $X_t$ は、定常な AR(1) モデル $X_t=«phi»X_{t-1}+\varepsilon_t$（$\varepsilon_t$ は分散 $\sigma^2$ の白色雑音）に従うとする。
+          このモデルのスペクトル密度は
+          $$f(\omega)=\frac{\sigma^2}{2\pi}\cdot\frac{1}{1-2\phi\cos\omega+\phi^2}\qquad(0\le\omega\le\pi)$$
+          である。周波数 0 と $\pi$ でのスペクトル密度の比 $f(0)/f(\pi)$ と、その解釈の組として正しいものはどれか。
+        choices:
+          - '$f(0)/f(\pi)=«rt»$ で、ゆっくりした（低周波の）変動が卓越する'
+          - '$f(0)/f(\pi)=«w_inv»$ で、細かく上下する（高周波の）変動が卓越する'
+          - '$f(0)/f(\pi)=«ratio»$ で、ゆっくりした（低周波の）変動が卓越する'
+          - '$f(0)/f(\pi)=«ratio»$ で、細かく上下する（高周波の）変動が卓越する'
+          - '$f(0)/f(\pi)=«w_1mp»$ で、ゆっくりした（低周波の）変動が卓越する'
+        answer: 2
+        distractors:
+          - 分母を (1−φ)² と (1+φ)² ではなく 1−φ と 1+φ にして 2 乗し忘れた
+          - 比を逆にした（f(π)/f(0)）
+          - 正解
+          - 比の大小と周波数の対応を取り違えた（ω=0 が低周波）
+          - f(π) の分母 (1+φ)² を 1 とした
+        explanation: |
+          **方針** $\cos0=1$、$\cos\pi=-1$ を代入すると、分母はそれぞれ $(1-\phi)^2$、$(1+\phi)^2$ になる。比をとると $\sigma^2/(2\pi)$ は消える。
+
+          **途中式**
+          $$f(0)=\frac{\sigma^2}{2\pi}\cdot\frac{1}{(1-«phi»)^2},\qquad f(\pi)=\frac{\sigma^2}{2\pi}\cdot\frac{1}{(1+«phi»)^2}$$
+          $$\frac{f(0)}{f(\pi)}=\left(\frac{1+«phi»}{1-«phi»}\right)^2=\left(\frac{«opp»}{«omp»}\right)^2=«rt»^2=«ratio»$$
+          $\omega=0$ 付近は周期の長い（ゆっくりした）変動、$\omega=\pi$ は 1 分ごとに符号が入れ替わるような細かい変動に対応する。
+
+          **答え** $f(0)/f(\pi)=«ratio»$ で、ゆっくりした（低周波の）変動が卓越する
+
+          **間違えやすい点** $\phi>0$ の AR(1) は正の自己相関をもち、前の値を引きずるので低周波の成分が強い（$\phi<0$ なら逆に高周波が強くなる）。
+          分母の $(1\mp\phi)$ は 2 乗されているので、比は $«rt»$ ではなく $«ratio»$。
+
+      - id: s26p13b
+        chapter: 22
+        terms: [principal-component-analysis, principal-component-score, eigenvalue-and-eigenvector, pca-on-correlation-matrix]
+        topic: 2つの監視指標の相関行列の主成分得点を固有値で割った2乗和の異常度と第1主成分で説明できない残差の2乗を求める
+        level: 応用
+        definition: false
+        type: choice
+        question: |
+          正常時のデータで標準化した吸気温度 $z_1$ と消費電力 $z_2$ の相関係数は «rho» で、相関行列の固有値は $\lambda_1=«l1»$、$\lambda_2=«l2»$、
+          対応する固有ベクトルは $\boldsymbol v_1=\frac{1}{\sqrt2}(1,1)^\top$、$\boldsymbol v_2=\frac{1}{\sqrt2}(1,-1)^\top$ である。
+          ある時刻の標準化した値は $(z_1,z_2)=(«z1»,\,«z2»)$ だった。主成分得点を $t_k=\boldsymbol v_k^\top\boldsymbol z$ とし、
+          異常度 $T^2=t_1^2/\lambda_1+t_2^2/\lambda_2$ と、第 1 主成分だけで近似したときの残差の 2 乗 $Q=\|\boldsymbol z-t_1\boldsymbol v_1\|^2$ の組として正しいものはどれか。
+        choices:
+          - '$T^2=«w_nodiv»$、$Q=«Q»$'
+          - '$T^2=«T2»$、$Q=«w_Q»$'
+          - '$T^2=«w_mul»$、$Q=«Q»$'
+          - '$T^2=«T2»$、$Q=«Q»$'
+          - '$T^2=«w_first»$、$Q=«Q»$'
+        answer: 3
+        distractors:
+          - 固有値で割らずに得点の 2 乗を足した
+          - 残差を第 1 主成分の得点の 2 乗とした
+          - 固有値で割るところを掛けた
+          - 正解
+          - 第 1 主成分の項だけで T² を計算した
+        explanation: |
+          **方針** 主成分得点は固有ベクトルとの内積。$T^2$ は各得点の 2 乗をその分散（固有値）で割って足したもので、マハラノビス距離の 2 乗に等しい。
+          $\boldsymbol v_1,\boldsymbol v_2$ は正規直交なので、$\boldsymbol z=t_1\boldsymbol v_1+t_2\boldsymbol v_2$ と分解でき、残差は $t_2\boldsymbol v_2$、$Q=t_2^2$。
+
+          **途中式**
+          $$t_1=\frac{«z1»+(«z2»)}{\sqrt2}=\frac{«zs»}{\sqrt2},\quad t_1^2=«t1sq»;\qquad t_2=\frac{«z1»-(«z2»)}{\sqrt2}=\frac{«zd»}{\sqrt2},\quad t_2^2=«t2sq»$$
+          $$T^2=\frac{«t1sq»}{«l1»}+\frac{«t2sq»}{«l2»}=«T2a»+«T2b»=«T2»,\qquad Q=t_2^2=«Q»$$
+
+          **答え** $T^2=«T2»$、$Q=«Q»$
+
+          **間違えやすい点** 2 つの指標は正の相関（«rho»）をもつので、正常なら $z_1$ と $z_2$ は同じ向きに動く。この時刻は温度が高いのに電力が低く、相関の構造から外れている。
+          この「外れ」は分散の小さい第 2 主成分（$\lambda_2=«l2»$）に現れるので、固有値で割ると大きく効く。割らずに足すと $«w_nodiv»$ にしかならず異常を見逃す。
+
+      - id: s26p13c
+        chapter: 23
+        terms: [quadratic-discriminant-analysis, bayes-discriminant-rule, normal-distribution]
+        topic: 平均が同じで分散が異なる2群の2次判別で攻撃と判定する範囲が両側になる境界を求める
+        level: 応用
+        definition: false
+        type: choice
+        question: |
+          通信量の異常スコア $s$ は、正常時には $N(0,1)$、攻撃を受けているときには $N(0,4)$（分散 4）に従うとする。
+          正常と攻撃の事前確率は等しく、誤判別の損失も等しいとして、事後確率の大きいほうに判別する（ベイズ判別）。攻撃と判別される $s$ の範囲として正しいものはどれか。
+          必要なら $\ln2=«ln2»$、$\ln4=«ln4»$ を使え。
+        choices:
+          - '$s>«c»$'
+          - '$|s|>«c_ln4»$'
+          - '$|s|<«c»$'
+          - '$|s|>«c_sd4»$'
+          - '$|s|>«c»$'
+        answer: 4
+        distractors:
+          - 境界が両側にあることを見落とし、正の側だけにした
+          - 正規化定数の比 ln(σ₁/σ₀)=ln2 の代わりに ln4（分散の比の対数）を使った
+          - 分散の大きい群が外側をとることを取り違え、判別の向きを逆にした
+          - 分散 4 を標準偏差 4 と取り違えた
+          - 正解
+        explanation: |
+          **方針** 2 つの群の分散が異なるので、対数尤度比が $s$ の 2 次式になる（2 次判別）。事前確率が等しいので、$\ln f_{\text{攻撃}}(s)-\ln f_{\text{正常}}(s)>0$ なら攻撃と判別する。
+
+          **途中式**
+          $$\ln f_{\text{攻撃}}(s)=-\ln2-\frac{s^2}{8}+\text{定数},\qquad \ln f_{\text{正常}}(s)=-\frac{s^2}{2}+\text{定数}$$
+          （定数は両方に共通の $-\frac12\ln2\pi$。攻撃の標準偏差は 2 なので $-\ln2$ が付く。）
+          $$\left(\frac12-\frac18\right)s^2-\ln2>0\quad\Rightarrow\quad s^2>\frac{8\times«ln2»}{3}=«c2»\quad\Rightarrow\quad |s|>«c4»\cdots$$
+
+          **答え** $|s|>«c»$（$s<-«c»$ または $s>«c»$）
+
+          **間違えやすい点** 平均が同じでも分散が違えば判別できる。分散の大きい攻撃の群は 0 から離れた値をとりやすいので、境界は 0 の両側に 2 つでき、外側が攻撃になる。
+          正規化定数は標準偏差の比の対数 $\ln2$ であり、分散の比の対数 $\ln4$ を使うと $«c_ln4»$ になる。分散 4 を標準偏差 4 と読むと $«c_sd4»$ になる。
+
+  - id: s26p14
+    title: 不正ログインの分析
+    context: |
+      ある企業のセキュリティ部門は、社外からのログインの記録を分析している。
+    items:
+      - id: s26p14a
+        chapter: 24
+        terms: [number-of-clusters, k-means-method, distance-measures]
+        topic: ログイン元のクラスタリング結果である点のシルエット係数を自クラスターと最も近い他クラスターまでの平均距離から求める
+        level: 基本
+        definition: false
+        type: numeric
+        question: |
+          ログイン元の IP アドレスを、アクセスの時間帯や頻度などの特徴量で 3 つのクラスター A、B、C に分けた。A に属するある IP アドレス $i$ から、ほかの IP アドレスまでの距離は次のとおりである。
+          - A のほかのメンバー（3 個）：«dA1»、«dA2»、«dA3»
+          - B のメンバー（4 個）：«dB1»、«dB2»、«dB3»、«dB4»
+          - C のメンバー（2 個）：«dC1»、«dC2»
+
+          $a(i)$ を自クラスターのほかのメンバーまでの平均距離、$b(i)$ を他のクラスターごとの平均距離のうち最小のものとして、
+          シルエット係数 $s(i)=\dfrac{b(i)-a(i)}{\max\{a(i),\,b(i)\}}$ を求めよ。
+        answer: «sil»
+        tolerance: 0.01
+        answer_format: 小数第2位まで（小数第3位を四捨五入）で答えよ。±0.01 の差まで正解とする。
+        explanation: |
+          **方針** $a(i)$ は自クラスター内のまとまり、$b(i)$ は「次に近いクラスター」までの離れ具合。他のクラスターはクラスターごとに平均をとり、その最小値を $b(i)$ とする。
+
+          **途中式**
+          $$a(i)=\frac{«dA1»+«dA2»+«dA3»}{3}=«a»$$
+          $$\text{B までの平均}=\frac{«dB1»+«dB2»+«dB3»+«dB4»}{4}=«bB»,\qquad \text{C までの平均}=\frac{«dC1»+«dC2»}{2}=«bC»$$
+          $b(i)=\min(«bB»,«bC»)=«b»$。
+          $$s(i)=\frac{«b»-«a»}{\max(«a»,«b»)}=\frac{«b»-«a»}{«b»}=«sil4»\cdots$$
+
+          **答え** $«sil»$
+
+          **間違えやすい点** $b(i)$ は最も**近い**他クラスターまでの平均距離。B までの平均 «bB» を使うと $«w_far»$ と、まとまりを過大に評価する。
+          分母は $a(i)$ と $b(i)$ の大きいほうで、$a(i)$ で割ると $«w_div»$ になり $-1\le s(i)\le1$ の範囲を外れることもある。
+
+      - id: s26p14b
+        chapter: 33
+        terms: [d-separation, backdoor-criterion, causal-effect]
+        topic: パッチ適用と侵入と検知アラートの因果グラフで有向分離により条件付き独立が成り立つ組を選ぶ
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          インシデントの要因を、次の有向非巡回グラフで表した。
+          - 監視体制の強さ $M$ → パッチ適用の遅れ $P$、$M$ → 検知アラート $A$
+          - $P$ → 脆弱性の残存 $V$ → 侵入 $I$ → 検知アラート $A$
+
+          このグラフの有向分離（d 分離）から、つねに成り立つといえる条件付き独立として正しいものはどれか。
+        choices:
+          - '$P$ と $A$ は、$V$ を与えたもとで独立である'
+          - '$V$ と $A$ は、$I$ を与えたもとで独立である'
+          - '$M$ と $I$ は、$A$ を与えたもとで独立である'
+          - '$P$ と $I$ は、何も与えなくても独立である'
+          - '$V$ と $A$ は、$I$ と $M$ を与えたもとで独立である'
+        answer: 4
+        distractors:
+          - P←M→A の裏口の道が開いたまま残る
+          - V←P←M→A の道が M で閉じていない
+          - 合流点 A を条件づけると M→A←I の道が開く
+          - P→V→I の道が開いている
+          - 正解
+        explanation: |
+          **方針** 2 つの変数を結ぶすべての道（矢印の向きを無視した経路）について、条件づけた変数で閉じるかを調べる。
+          連鎖 $X\to Z\to Y$ と分岐 $X\leftarrow Z\to Y$ は $Z$ を条件づけると閉じ、合流点 $X\to Z\leftarrow Y$ は $Z$（とその子孫）を条件づけない限り閉じている。すべての道が閉じていれば d 分離され、条件付き独立が成り立つ。
+
+          **途中式** $V$ と $A$ を結ぶ道は 2 本ある。
+          - $V\to I\to A$：連鎖で、$I$ を条件づけているので閉じる。
+          - $V\leftarrow P\leftarrow M\to A$：$M$ は分岐で、$M$ を条件づけているので閉じる。
+
+          どちらも閉じるので、$V$ と $A$ は $\{I,M\}$ のもとで d 分離される。
+          ほかの選択肢では、$P$ と $A$ は $V$ のもとでも $P\leftarrow M\to A$ が開いている。$V$ と $A$ は $I$ だけでは $V\leftarrow P\leftarrow M\to A$ が開いている。
+          $M$ と $I$ は合流点 $A$ を条件づけると $M\to A\leftarrow I$ が開く。$P$ と $I$ は $P\to V\to I$ で直接つながっている。
+
+          **答え** 「$V$ と $A$ は、$I$ と $M$ を与えたもとで独立である」
+
+          **間違えやすい点** 中間の変数 $I$ で条件づけても、別の裏口の道（ここでは監視体制 $M$ を通る道）が残っていれば独立にならない。
+          また、合流点（ここでは検知アラート $A$）で条件づけると、それまで閉じていた $M\to A\leftarrow I$ の道が開き、原因どうし（監視体制と侵入）の間に新たな関連が生じる。

@@ -174,7 +174,7 @@ def p04():
     pv = p0 * (1 - p0) / pn
     pz = (phat - p0) / sqrt(pv)
     assert 1.645 < pz < 2.326
-    pdict = {"pn": pn, "px": px, "p0": s(p0, 2), "q0": s(1 - p0, 2), "p0pct": 15, "phat": s(phat, 2), "pv": s(pv, 6),
+    pdict = {"pn": pn, "px": px, "p0": s(p0, 2), "q0": s(1 - p0, 2), "p0pct": 15, "phat": s(phat, 2), "pv": s(pv, 7),
              "pse": s(sqrt(pv), 5), "pz": r(pz, 2), "pz4": s(pz, 4), "np0": s(pn * p0, 0),
              "pz_wald": s((phat - p0) / sqrt(phat * (1 - phat) / pn), 2),
              "pz_cc": s((px - 0.5 - pn * p0) / sqrt(pn * p0 * (1 - p0)), 2)}

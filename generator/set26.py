@@ -195,6 +195,10 @@ def p07():
         "t10": t10, "t5": t5, "z": s(z, 3), "diff": s(diff, 2), "hw": s(t10 * se, 4),
         "ci": ci(t10 * se), "ci_z": ci(z * se), "ci_t5": ci(t5 * se), "ci_nof": ci(t10 * sqrt(sp2)),
         "ci_n": ci(t10 * sqrt(sp2n * (1 / n1 + 1 / n2))), "sp2n": s(sp2n, 4),
+        "tab_v": " | ".join(s(v, 1) for v in allv),
+        "tab_L": " | ".join(str(round(FL(v) * 6)) for v in allv),
+        "tab_M": " | ".join(str(round(FM(v) * 6)) for v in allv),
+        "tab_d": " | ".join(str(round(abs(FL(v) - FM(v)) * 6)) for v in allv),
     }
 
 
@@ -235,7 +239,7 @@ def p08():
         "vif2": s(1 / (1 - r2[2]), 1), "vif3": s(1 / (1 - r2[3]), 2),
         "b0": b0, "b1": s(b1, 1), "b2": s(b2, 1), "k": k, "sla": sla, "yk": s(yk, 0), "slope": s(b1 + b2, 1),
         "gap": s(sla - yk, 0), "xs": r(xs, 1), "xs4": s(xs, 3), "xs_b2": s(xs_b2, 1), "xs_lin": s(xs_lin, 0),
-        "press": r(press, 2), "press_s": s(press, 2), "sse": s(sse, 2), "w_h": s(w_h, 2), "w_nosq": s(w_nosq, 2),
+        "press": r(press, 1), "press1": s(press, 1), "press_s": s(press, 2), "sse": s(sse, 2), "w_h": s(w_h, 2), "w_nosq": s(w_nosq, 2),
         "a_hat": s(aa, 2), "b_hat": s(bb, 2),
     }
     for i in range(n):

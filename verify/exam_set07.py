@@ -38,15 +38,20 @@ E.num("s07p01a", rnd(pr[(1, 1)] / atl, 3), "4通りの総当たりで P(両方|�
 sim = rng.random((1_000_000, 2)) < np.array(p)
 sel = sim.any(1)
 E.check("s07p01a", abs(sim[sel].all(1).mean() - 0.0714) < 0.002, f"シミュレーション {sim[sel].all(1).mean():.4f}")
-# (b) sympy で積率母関数を微分／混合分布のモーメントを scipy で
+# (b) 混合分布の上側確率：sympy で M_S と混合（0 と Gamma(2,尺度4)）の積率母関数が一致することを確かめ、scipy の gamma.sf で
 t = sp.symbols("t")
 M = sp.Rational(4, 5) + sp.Rational(1, 5) * (1 - 4 * t) ** -2
+u = sp.symbols("u", positive=True)
+mgf_g = sp.simplify(sp.integrate(sp.exp(t * u) * u * sp.exp(-u / 4) / 16, (u, 0, sp.oo), conds="none"))
+E.check("s07p01b", sp.simplify(sp.Rational(4, 5) + sp.Rational(1, 5) * mgf_g - M) == 0, f"Gamma(2,尺度4) の積率母関数 {mgf_g}")
+g = stats.gamma(2, scale=4)
+E.choice("s07p01b", f"${f(0.2 * g.sf(8), 4)}$", f"scipy gamma.sf で 0.2×P(G>8)（正確な値 {0.2 * g.sf(8):.5f}）")
+Ssim = np.where(rng.random(1_000_000) < 0.2, rng.gamma(2, 4, 1_000_000), 0.0)
+E.check("s07p01b", abs((Ssim > 8).mean() - 0.0812) < 0.001, f"シミュレーション P(S>8)={(Ssim > 8).mean():.4f}")
+table("s07p01b", 0.1353, np.exp(-2), 0.00005, "e^-2")
 m1 = sp.diff(M, t).subs(t, 0)
 m2 = sp.diff(M, t, 2).subs(t, 0)
-E.choice("s07p01b", f"${f(float(m2 - m1 ** 2), 2)}$", "sympy で M''(0)-M'(0)^2")
-g = stats.gamma(2, scale=4)
-mix_var = 0.2 * g.moment(2) - (0.2 * g.mean()) ** 2
-E.check("s07p01b", abs(mix_var - float(m2 - m1 ** 2)) < 1e-9, "混合（0 と Gamma(2, 尺度4)）のモーメントと一致")
+E.check("s07p01c", (float(m1), float(m2 - m1 ** 2)) == (1.6, 16.64), "sympy で M'(0)=1.6、M''(0)-M'(0)^2=16.64（問題文の値）")
 # (c) 正確なパーセント点で保険料／支払総額のシミュレーションで超過確率 ≈ 1%
 mu, sd = 1.6, np.sqrt(16.64)
 P = mu + stats.norm.isf(0.01) * sd / np.sqrt(2500)
@@ -58,19 +63,19 @@ E.check("s07p01c", 0.007 < exceed < 0.013, f"シミュレーションで P(総�
 table("s07p01c", 2.326, stats.norm.isf(0.01), 0.0005, "z_0.01")
 
 # ---- 大問2 パレート
-x, y, al, th = sp.symbols("x y alpha theta", positive=True)
-fx = al * th ** al / x ** (al + 1)
-G = 1 - sp.integrate(fx, (x, th * sp.exp(y), sp.oo))   # P(Y<=y)
-gy = sp.simplify(sp.diff(G, y))
-E.check("s07p02a", sp.simplify(gy - al * sp.exp(-al * y)) == 0, f"P(Y≤y) を微分した密度 {gy}")
-E.choice("s07p02a", "\\alphae^{-\\alphay}", "正解の式を含む選択肢")
-ys = np.log(stats.pareto(b=2.5).rvs(size=200_000, random_state=1))
-E.check("s07p02a", abs(ys.mean() - 1 / 2.5) < 0.005, "シミュレーションで log X の平均 ≈ 1/α（指数分布）")
+# (a) 2件の幾何平均が 2 を超える確率：数値積分（2重）とシミュレーション
 par = stats.pareto(b=3, scale=1)
-v = par.ppf(0.99)
-es = integrate.quad(lambda z: z * par.pdf(z), v, np.inf)[0] / par.sf(v)
-E.num("s07p02b", rnd(es, 2), f"scipy の分位点 {v:.4f} と数値積分で E[X|X>v]")
-table("s07p02b", 4.642, 100 ** (1 / 3), 0.0005, "100^(1/3)")
+pg = integrate.quad(lambda x1: par.pdf(x1) * min(1.0, par.sf(4 / x1)), 1, np.inf)[0]
+E.choice("s07p02a", f"${f(pg, 4)}$", f"P(X2>4/X1) を X1 について数値積分（{pg:.5f}）")
+xs2 = par.rvs(size=(1_000_000, 2), random_state=7)
+E.check("s07p02a", abs((np.sqrt(xs2.prod(1)) > 2).mean() - pg) < 0.001, f"シミュレーション {(np.sqrt(xs2.prod(1)) > 2).mean():.4f}")
+table("s07p02a", 0.6931, np.log(2), 0.00005, "log 2")
+# (b) モーメント：scipy の pareto と数値積分
+mn, vr = par.mean(), par.var()
+E.choice("s07p02b", f"$V[X]={f(vr, 2)}$で、変動係数は${f(np.sqrt(vr) / mn, 3)}$である。$E[X^3]$は発散", f"scipy pareto の平均 {mn} と分散 {vr}")
+x3 = sp.symbols("x", positive=True)
+E.check("s07p02b", sp.integrate(x3 ** 3 * 3 / x3 ** 4, (x3, 1, sp.oo)) == sp.oo, "sympy で E[X^3]=∞")
+par = stats.pareto(b=3, scale=1)
 
 # (c) 過分散：負の二項（分散が平均の 1.5 倍）からデータを発生させ、ピアソン統計量/自由度で φ を推定
 mu_ = np.exp(rng.normal(1.5, 0.4, size=(300, 120)))
@@ -82,6 +87,7 @@ sec = 0.080 * np.sqrt(175.5 / 117)
 zc = 0.24 / sec
 E.check("s07p02c", stats.norm.isf(0.025) < zc < stats.norm.isf(0.005), f"補正後の z={zc:.3f} は 5% で有意・1% で非有意")
 E.choice("s07p02c", f"\\sqrt{{1.50}}={f(sec, 3)}$、$z\\approx{f(zc, 2)}$", "√φ 倍の標準誤差と z を含む選択肢")
+E.check("s07p02c", all("n-p" not in d_ for d_ in E.item("s07p02c")["distractors"]), "φ の割る数（n か n-p か）だけで誤りになる選択肢がない")
 
 # ---- 大問3 運用成績
 b0 = stats.binom(12, 0.5)
@@ -112,16 +118,11 @@ E.check("s07p04a", kst == 2, f"scipy で最頻値 k*={kst}")
 E.num("s07p04a", rnd(pm[kst], 3), "scipy binom.pmf の最大値")
 for e_, v_ in [(37, 0.10133), (38, 0.09525), (39, 0.08953)]:
     table("s07p04a", v_, 0.94 ** e_, 0.000006, f"0.94^{e_}")
-# (b) G²：scipy の対数尤度比（lambda_="log-likelihood"）
-g2 = stats.chi2_contingency([[20, 180], [40, 160]], correction=False, lambda_="log-likelihood")
-E.choice("s07p04b", f"G^2\\approx{f(g2.statistic, 2)}$で、自由度1の上側1%点6.635を超える", "scipy chi2_contingency(lambda_='log-likelihood')")
-E.check("s07p04b", g2.dof == 1 and g2.pvalue < 0.01, f"自由度 {g2.dof}、p 値 {g2.pvalue:.4f}")
-x2 = stats.chi2_contingency([[20, 180], [40, 160]], correction=False)
-E.check("s07p04b", f(x2.statistic, 2) == "7.84", f"ピアソンの χ² = {x2.statistic:.4f}（G² と異なる）")
-for given, val in [(-0.40547, np.log(2 / 3)), (0.05716, np.log(18 / 17)), (0.28768, np.log(4 / 3)), (-0.06062, np.log(16 / 17))]:
-    table("s07p04b", given, val, 0.000006, "対数")
-for q_, df_, val in [(0.95, 1, 3.841), (0.99, 1, 6.635), (0.95, 3, 7.815), (0.99, 3, 11.345)]:
-    table("s07p04b", val, stats.chi2.ppf(q_, df_), 0.0005, f"χ²({df_}) {q_}点")
+# (b) 母比率の検定：statsmodels を使わず、正確な二項分布の正規近似の標準化として求める
+bn_ = stats.binom(200, 0.15)
+zz = (40 - bn_.mean()) / bn_.std()
+E.num("s07p04b", rnd(zz, 2), "scipy binom の平均・標準偏差で標準化")
+E.check("s07p04b", stats.norm.isf(0.05) < zz < stats.norm.isf(0.01), f"z={zz:.4f} は片側 5% で有意・1% で非有意（正確な片側 p 値 {bn_.sf(39):.4f}）")
 # (c) 反復比例当てはめ（IPF）で [AB][AC] モデルを当てはめる
 obs = np.array([[[12, 48], [3, 37]], [[10, 70], [2, 18]]], dtype=float)  # [業種][規模][延滞]
 m = np.ones_like(obs)
@@ -179,11 +180,12 @@ E.choice("s07p06b", f"全額投資${f(el[0], 2)}$、ヘッジつき半額投資$
 E.check("s07p06b", int(np.argmin(Lm @ prior)) == 0, "事前確率では全額投資が最小（誤答の選択肢が誤りであること）")
 
 # ---- 大問7 中古マンション
-E.choice("s07p07a", f"約{f((np.exp(0.18) - 1) * 100, 1)}%高い", "numpy で e^0.18 - 1")
-it = E.item("s07p07a")
-E.check("s07p07a", "でない物件の価格は約16.5%高い" in re.sub(r"\s+", "", it["choices"][3]), "選択肢4は「5分以内でない物件が高い」で向きが誤り")
-for given, true, w in [(1.1972, np.exp(0.18), "e^0.18"), (0.8353, np.exp(-0.18), "e^-0.18"), (1.5136, 10 ** 0.18, "10^0.18")]:
-    table("s07p07a", given, true, 0.00006, w)
+tq_ = stats.t.isf(0.025, 56)
+lo7, hi7 = np.exp(0.18 - tq_ * 0.05) - 1, np.exp(0.18 + tq_ * 0.05) - 1
+E.choice("s07p07a", f"約{f(lo7 * 100, 1)}%高い〜約{f(hi7 * 100, 1)}%高い", f"scipy の t 点 {tq_:.4f} と numpy の exp で区間を変換")
+table("s07p07a", 2.003, tq_, 0.0005, "t_0.025(56)")
+for x_, v_ in [(0.08, 1.0833), (0.13, 1.1388), (0.18, 1.1972), (0.23, 1.2586), (0.28, 1.3231)]:
+    table("s07p07a", v_, np.exp(x_), 0.00005, f"e^{x_}")
 Fq = (312 / 18) / (120 / 18)
 E.choice("s07p07b", f"$F={f(Fq, 2)}$で、自由度$(18,18)$の上側5%点2.217を超える", "残差平均平方の比")
 E.check("s07p07b", stats.f.sf(Fq, 18, 18) < 0.05 and stats.f.sf(Fq, 18, 18) > 0.01, f"scipy の上側確率 {stats.f.sf(Fq, 18, 18):.4f}")
@@ -206,6 +208,7 @@ ssb, ssw = 180.0, 720.0
 mse_ = ssw / (k_ * n_ - k_)
 om = (ssb - (k_ - 1) * mse_) / (ssb + ssw + mse_)
 E.num("s07p08a", rnd(om, 3), "平方和から直接 ω²")
+E.check("s07p08a", "**答え** $0.130$" in E.item("s07p08a")["explanation"], "解説の答えの表示が小数第3位まで（0.130）")
 true_eff = np.array([-1.0, 0.0, 0.0, 1.0]) * 1.5
 pop = np.var(true_eff) / (np.var(true_eff) + 4.0)
 oms, etas = [], []
@@ -218,20 +221,17 @@ for _ in range(4000):
     etas.append(sb / (sb + sw))
 E.check("s07p08a", abs(np.mean(oms) - pop) < abs(np.mean(etas) - pop), f"母集団の割合 {pop:.3f} に対し ω² の平均 {np.mean(oms):.3f}、η² の平均 {np.mean(etas):.3f}")
 
-# ---- 大問9 事後層化：区分ごとの合計を母集団の口座数に合わせて引き伸ばす（重み = 母集団の口座数 / 標本の口座数）
-Npop = 10000
-w_ind, w_cor = 0.8 * Npop / 45, 0.2 * Npop / 5
-est = (w_ind * 45 * 126.4 + w_cor * 5 * 912.5) / Npop
-E.num("s07p09a", rnd(est, 2), "標本の重み（母集団数/標本数）で引き伸ばした総額 ÷ 口座数")
-# シミュレーション：構成比 0.8/0.2 の母集団から n=50 を抽出したとき、事後層化推定量はほぼ不偏
-vals = []
-for _ in range(20000):
-    k = rng.binomial(50, 0.2)
-    if k in (0, 50):
-        continue
-    vals.append(0.8 * rng.normal(126.4, 30, 50 - k).mean() + 0.2 * rng.normal(912.5, 200, k).mean())
-E.check("s07p09a", abs(np.mean(vals) - 283.62) < 2, f"シミュレーションの平均 {np.mean(vals):.2f}（真の平均 283.62）")
-
+# ---- 大問9 層化の効果：大きな母集団を作り、比例配分の層化抽出と単純無作為抽出の分散をシミュレーションで比べる
+Nh = (40000, 10000)
+popA = rng.normal(0, 1, Nh[0]); popA = 130 + 80 * (popA - popA.mean()) / popA.std()
+popB = rng.normal(0, 1, Nh[1]); popB = 900 + 600 * (popB - popB.mean()) / popB.std()
+allp = np.concatenate([popA, popB])
+ratio_exact = (0.8 * popA.var() + 0.2 * popB.var()) / allp.var()
+E.num("s07p09a", rnd(ratio_exact, 3), "作った母集団の分散（割る数 N）から直接")
+R_ = 20000
+srs = np.array([rng.choice(allp, 50, replace=False).mean() for _ in range(R_)])
+stv = np.array([0.8 * rng.choice(popA, 40, replace=False).mean() + 0.2 * rng.choice(popB, 10, replace=False).mean() for _ in range(R_)])
+E.check("s07p09a", abs(stv.var() / srs.var() - 0.448) < 0.03, f"シミュレーションの分散比 {stv.var() / srs.var():.3f}（許容 ±0.03）")
 # ---- 大問10 主成分：元の共分散行列から固有分解
 Sg = np.array([[16, 14, 10], [14, 20, 15], [10, 15, 18.0]])
 w, V = np.linalg.eigh(Sg)
