@@ -22,18 +22,6 @@ def s(x, d):
     return str(Decimal(repr(float(x))).quantize(q, rounding=ROUND_HALF_UP))
 
 
-# ---------------------------------------------------------------- 大問1 クロークの傘
-def p01():
-    n = 4
-    p0 = sum((-1) ** k / math.factorial(k) for k in range(n + 1))   # 誰も自分の傘を受け取らない
-    stop3 = 1 - 1 + 1 / 2 - 1 / 6                                    # 包除を途中で止めた
-    return {
-        "n": n, "p0": s(p0, 3), "num": round(p0 * 24), "tot": 24, "e1": s(math.exp(-1), 3), "ind": s((1 - 1 / n) ** n, 3),
-        "comp": s(1 - p0, 3), "stop3": s(stop3, 3), "union": s(1 - p0, 4),
-    }
-
-
-# ---------------------------------------------------------------- 大問2 居酒屋の滞在時間と1組の人数
 def p02():
     # (a) ワイブル分布の四分位範囲（表の対数の値を使う）
     sc = 90
@@ -82,7 +70,6 @@ def p02():
     return out
 
 
-# ---------------------------------------------------------------- 大問3 オーバーブッキングと無断キャンセル
 def p03():
     rooms, book, q = 100, 103, 0.05
     pw = 0.005625                    # 0.95^101（問題文に示す）
@@ -125,7 +112,6 @@ def p03():
     }
 
 
-# ---------------------------------------------------------------- 大問4 客単価
 def p04():
     sig = 0.6
     phi = {0.18: 0.5714, 0.30: 0.6179, 0.35: 0.6368, 0.60: 0.7257, 1.75: 0.9599}
@@ -152,7 +138,6 @@ def p04():
     }
 
 
-# ---------------------------------------------------------------- 大問5 アップグレード提案の受諾率
 def p05():
     a0, b0 = 1, 2
     m, y = 20, 7
@@ -166,46 +151,6 @@ def p05():
     }
 
 
-# ---------------------------------------------------------------- 大問6 ランチの店選び
-def p06():
-    P = [[Fr(6, 10), Fr(3, 10), Fr(1, 10)], [Fr(2, 10), Fr(5, 10), Fr(3, 10)], [Fr(3, 10), Fr(2, 10), Fr(5, 10)]]
-    a11, a22 = 1 - P[0][0], 1 - P[1][1]
-    w = (a11 - P[1][0] * P[0][1] / a22) / (P[1][0] * P[2][1] / a22 + P[2][0])
-    x = (P[0][1] + P[2][1] * w) / a22
-    tot = 1 + x + w
-    piA = 1 / tot
-    out = {f"p{i}{j}": float(P[i][j]) for i in range(3) for j in range(3)}
-    fr = lambda f: f"{f.numerator}/{f.denominator}"
-    out.update({
-        "x": fr(x), "w": fr(w), "tot": fr(tot), "piA": s(float(piA), 2),
-        "ret": r(float(tot), 2), "ret_s": s(float(tot), 2), "ret4": s(float(tot), 4),
-        "naive": s(1 / (1 - float(P[0][0])), 2), "inv_p": s(1 / float(P[0][0]), 2),
-        "a11": s(float(a11), 1), "a22": s(float(a22), 1),
-    })
-    return out
-
-
-# ---------------------------------------------------------------- 大問7 宿泊客アンケート
-def p07():
-    # (a) 平均値代入
-    n, nobs, s2 = 50, 40, 4.0
-    v_imp = (nobs - 1) * s2 / (n - 1)
-    # (b) 単純無作為抽出の総計の標準誤差
-    N, m, yb, sd = 2000, 100, 38.0, 12.0
-    fpc = 1 - m / N
-    se_mean = sqrt(fpc * sd ** 2 / m)
-    se_tot = N * se_mean
-    return {
-        "n": n, "nobs": nobs, "nmis": n - nobs, "s2": s(s2, 1), "v_imp": r(v_imp, 2), "v_imp_s": s(v_imp, 2), "v_imp4": s(v_imp, 4),
-        "ss": s((nobs - 1) * s2, 1), "nobs1": nobs - 1, "n1": n - 1, "ratio": s((nobs - 1) / (n - 1), 4),
-        "v_nobs": s(nobs * s2 / n, 2),
-        "N": N, "m": m, "yb": s(yb, 1), "sd": s(sd, 1), "sd2": s(sd ** 2, 1), "tot": s(N * yb, 0), "fpc": s(fpc, 2), "v_in": s(fpc * sd ** 2 / m, 3),
-        "se_mean": s(se_mean, 4), "se_tot": s(se_tot, 0), "se_nofpc": s(N * sd / sqrt(m), 0), "se_m2": s(se_mean, 2),
-        "se_fpcsd": s(N * sd / sqrt(m) * fpc, 0), "w_ns": s(N * sd / m, 0),
-    }
-
-
-# ---------------------------------------------------------------- 大問8 客室需要の両対数回帰
 def p08():
     n, k = 52, 2
     b, se, t49 = -1.35, 0.14, 2.010
@@ -216,7 +161,6 @@ def p08():
     }
 
 
-# ---------------------------------------------------------------- 大問9 客室稼働率の分析
 def p09():
     y = [40, 60, 80, 50, 44, 64, 84, 54]
     num = y[0] / 2 + y[1] + y[2] + y[3] + y[4] / 2
@@ -245,58 +189,6 @@ def p09():
     }
 
 
-# ---------------------------------------------------------------- 大問10 1組あたりの宿泊数
-def p10():
-    xbar = 2.0
-    cand = {1.00: 0.3679, 1.20: 0.3012, 1.59: 0.2039, 1.80: 0.1653, 2.00: 0.1353}
-    g = {lam: lam / (1 - e) for lam, e in cand.items()}
-    best = min(g, key=lambda lam: abs(g[lam] - xbar))
-    assert best == 1.59
-    out = {"xbar": s(xbar, 1), "n": 50, "tot": 100}
-    for i, (lam, e) in enumerate(cand.items(), 1):
-        out[f"l{i}"] = s(lam, 2)
-        out[f"e{i}"] = s(e, 4)
-        out[f"g{i}"] = s(g[lam], 3)
-    return out
-
-
-# ---------------------------------------------------------------- 大問11 ルームサービスの所要時間
-def p11():
-    mu0, sig, n, mu1 = 30.0, 6.0, 16, 30.9
-    se = sig / sqrt(n)
-    dl = (mu1 - mu0) / se
-    phi = {0.60: 0.7257, 1.36: 0.9131, 2.56: 0.9948}
-    up = 1 - phi[round(1.96 - dl, 2)]
-    lo = 1 - phi[round(1.96 + dl, 2)]
-    pw = up + lo
-    return {
-        "mu0": s(mu0, 1), "sig": s(sig, 1), "n": n, "mu1": s(mu1, 1), "se": s(se, 1), "dl": s(dl, 2),
-        "za": s(1.96 - dl, 2), "zb": s(1.96 + dl, 2), "phiA": s(phi[0.60], 4), "phiB": s(phi[1.36], 4), "phiC": s(phi[2.56], 4),
-        "up": s(up, 4), "lo": s(lo, 4), "pw": s(pw, 3), "pw4": s(pw, 4), "w_one": s(up, 3), "w_dl": s(1 - phi[0.60], 3),
-        "w_beta": s(1 - pw, 3), "w_alpha": s(0.05, 3),
-    }
-
-
-# ---------------------------------------------------------------- 大問12 焼き菓子の L8 直交表実験
-def p12():
-    ss = {1: 40.0, 2: 12.0, 3: 2.0, 4: 30.0, 5: 20.0, 6: 1.5, 7: 0.5}
-    col_AC = 1 ^ 4
-    col_AB = 1 ^ 2
-    col_BC = 2 ^ 4
-    assert (col_AC, col_AB, col_BC) == (5, 3, 6)
-    sse = ss[6] + ss[7]
-    mse = sse / 2
-    F = ss[col_AC] / mse
-    f12, f13, f16 = 18.51, 10.13, 5.99
-    assert F > f12
-    return {
-        **{f"ss{k}": s(v, 1) for k, v in ss.items()}, "sse": s(sse, 1), "mse": s(mse, 1), "F": s(F, 1),
-        "F_nodf": s(ss[col_AC] / sse, 1), "F_AB": s(ss[col_AB] / mse, 1), "F_BC": s(ss[col_BC] / mse, 1),
-        "f12": s(f12, 2), "f13": s(f13, 2), "f16": s(f16, 2),
-    }
-
-
-# ---------------------------------------------------------------- 大問13 ホテルの口コミ評価の多変量解析
 def p13():
     A = [(0.58, 0.56), (0.56, 0.42), (-0.28, 0.54)]
     B = [(0.80, 0.10), (0.70, 0.00), (0.10, 0.60)]
@@ -342,11 +234,133 @@ def p13():
     return out
 
 
+
+# ---- 2026-10-24 夕方：公開済みのセットと同じ型だった 14 問を作り直した分
+def p01():
+    return {}
+
+
+def q02c():
+    O = [[30, 45, 25], [20, 15, 15]]
+    rs = [sum(r_) for r_ in O]; cs = [O[0][j] + O[1][j] for j in range(3)]; n = sum(rs)
+    E = [[rs[i] * cs[j] / n for j in range(3)] for i in range(2)]
+    X = sum((O[i][j] - E[i][j]) ** 2 / E[i][j] for i in range(2) for j in range(3))
+    Xo = sum((O[i][j] - E[i][j]) ** 2 / O[i][j] for i in range(2) for j in range(3))
+    assert X < 5.991
+    out = {"r1": rs[0], "r2": rs[1], "c1": cs[0], "c2": cs[1], "c3": cs[2], "X": s(X, 2), "X4": s(X, 4),
+           "V": s(sqrt(X / n), 3), "V4": s(sqrt(X / n), 4), "w_V2": s(sqrt(X / (2 * n)), 3), "w_noE": s(sum((O[i][j] - E[i][j]) ** 2 for i in range(2) for j in range(3)), 2)}
+    for i in range(2):
+        for j in range(3):
+            out[f"o{i + 1}{j + 1}"] = O[i][j]; out[f"e{i + 1}{j + 1}"] = s(E[i][j], 2)
+    return out
+
+
+def q03b():
+    lam, e = 5.15, 0.005799
+    br = 1 + lam + lam ** 2 / 2
+    ans = e * br
+    assert abs(math.exp(-lam) - e) < 5e-7
+    return {"e": e, "br": s(br, 4), "ans": r(ans, 3), "ans_s": s(ans, 3), "ans4": s(ans, 4), "bv": s(103 * 0.05 * 0.95, 4)}
+
+
+def r03c():
+    s1, s2, s3 = 0.5, 0.3, 0.2
+    return {"s1": s(s1, 2), "s2": s(s2, 2), "s3": s(s3, 2), "ok1": s(s1 / (s1 + s2), 3), "ok2": s(s2 / (s1 + s2), 3),
+            "w_eq1": s(s1 + s3 / 2, 3), "w_eq2": s(s2 + s3 / 2, 3), "w_all1": s(s1 + s3, 3), "w_all2": s(s2, 3),
+            "w_rev1": s(s1 + s3 * s2 / (s1 + s2), 3), "w_rev2": s(s2 + s3 * s1 / (s1 + s2), 3)}
+
+
+def q04c():
+    xa, xb, t = 42, 18, 6
+    d = xa / t - xb / t
+    v = xa / t ** 2 + xb / t ** 2
+    se = sqrt(v)
+    lo, hi = d - 1.96 * se, d + 1.96 * se
+    return {"xa": xa, "xb": xb, "la": s(xa / t, 1), "lb": s(xb / t, 1), "d": s(d, 1), "v": s(v, 4), "se": s(se, 4),
+            "lo": r(lo, 2), "lo_s": s(lo, 2), "lo4": s(lo, 4), "hi_s": s(hi, 2)}
+
+
+def p06():
+    P = [[0.6, 0.3, 0.1], [0.2, 0.5, 0.3], [0.3, 0.2, 0.5]]
+    pi = [0.38, 0.34, 0.28]
+    for j in range(3):
+        assert abs(sum(pi[i] * P[i][j] for i in range(3)) - pi[j]) < 1e-12
+    c1 = P[0][1] * P[1][2] * P[2][0]; c2 = P[0][2] * P[2][1] * P[1][0]
+    out = {f"p{i}{j}": s(P[i][j], 1) for i in range(3) for j in range(3)}
+    out.update({f"pi{i}": s(pi[i], 2) for i in range(3)})
+    out.update({"fab": s(pi[0] * P[0][1], 3), "fba": s(pi[1] * P[1][0], 3), "cyc1": s(c1, 3), "cyc2": s(c2, 3)})
+    assert c1 > c2
+    return out
+
+
+def p07():
+    rows = [(200, 20, 10), (170, 15, 20), (135, 9, 26)]
+    out = {}; S_ = 1.0; Sf = 1.0
+    for k, (n_, d_, w_) in enumerate(rows, 1):
+        q = d_ / (n_ - w_ / 2)
+        S_ *= 1 - q; Sf *= 1 - d_ / n_
+        out.update({f"n{k}": n_, f"d{k}": d_, f"w{k}": w_, f"q{k}": s(q, 4)})
+    assert rows[1][0] == rows[0][0] - rows[0][1] - rows[0][2] and rows[2][0] == rows[1][0] - rows[1][1] - rows[1][2]
+    out.update({"S": r(S_, 3), "S_s": s(S_, 3), "S4": s(S_, 4), "w_full": s(Sf, 3)})
+    N = 2000
+    n0 = 1.96 ** 2 * 0.25 / 0.05 ** 2
+    n2 = n0 / (1 + (n0 - 1) / N)
+    out.update({"N": N, "ss_n0": s(n0, 2), "ss_n2": s(n2, 2), "ss_n": math.ceil(n2)})
+    return out
+
+
+def q08b():
+    h1, h0 = 1 / 4, 1 / 48
+    return {"h1": s(h1, 3), "h0": s(h0, 3), "thr": s(4 / 52, 3), "w_n": s(1 / 52, 3)}
+
+
+def q09b():
+    vp, cpq, ols = 0.040, -0.052, -0.85
+    b2 = cpq / vp
+    return {"vp": s(vp, 3), "cpq": s(cpq, 3), "ols": s(ols, 2), "b2": s(b2, 2), "w_inv": s(vp / cpq, 2)}
+
+
+def p10():
+    x = [-3, -1, 0, 2, 4, 7, 15]
+    srt = sorted(x); m = srt[3]
+    sab = sum(abs(v - m) for v in x)
+    xb = sum(x) / 7
+    sd = sqrt(sum((v - xb) ** 2 for v in x) / 7)
+    return {"xs": ",\\ ".join(map(str, x)), "m": s(m, 1), "sab": sab, "b": s(sab / 7, 2), "b4": s(sab / 7, 4), "xbar": s(xb, 2),
+            "w_bmean": s(sum(abs(v - xb) for v in x) / 7, 2), "w_sd": s(sd, 2), "w_half": s(sab / 14, 2)}
+
+
+def p11():
+    up = (comb(12, 10) + comb(12, 11) + 1) / 4096
+    return {"p1": s(up, 3), "p1_4": s(up, 4), "p2": s(2 * up, 3), "p2_4": s(2 * up, 4), "p10": s(comb(12, 10) / 4096, 3),
+            "w_le": s(1 - (comb(12, 11) + 1) / 4096, 3)}
+
+
+def p12():
+    msa, msb, mse = 36.0, 10.0, 4.0
+    F = msa / msb
+    assert F < 4.256 and msa / mse > 3.191
+    return {"msa": s(msa, 1), "msb": s(msb, 1), "mse": s(mse, 1), "F": s(F, 2), "w_F": s(msa / mse, 2), "f29": "4.256", "f248": "3.191",
+            "vb": s((msb - mse) / 5, 2), "w_vb1": s(msb - mse, 2), "w_vb2": s(msb / 5, 2)}
+
+
+def q13b():
+    r12, r13, r23 = 0.80, 0.70, 0.50
+    l1 = r12 * r13 / r23
+    return {"r12": s(r12, 2), "r13": s(r13, 2), "r23": s(r23, 2), "l1sq": s(l1, 2), "u1": s(1 - l1, 2), "w_abs": s(abs(1 - l1), 2),
+            "l2sq": s(r12 * r23 / r13, 4), "l3sq": s(r13 * r23 / r12, 4), "w_l1": s(r12 * r23 / r13, 3), "w_u1": s(1 - r12 * r23 / r13, 3)}
+
+
 def values():
-    fs = [p01, p02, p03, p04, p05, p06, p07, p08, p09, p10, p11, p12, p13]
-    return {f"s17p{i:02d}": fn() for i, fn in enumerate(fs, 1)}
+    pre = lambda p_, d: {p_ + k: x for k, x in d.items()}
+    v = {"s17p01": p01(), "s17p02": p02(), "s17p03": p03(), "s17p04": p04(), "s17p05": p05(), "s17p06": p06(), "s17p07": p07(),
+         "s17p08": p08(), "s17p09": p09(), "s17p10": p10(), "s17p11": p11(), "s17p12": p12(), "s17p13": p13()}
+    v["s17p02"].update(pre("q2_", q02c())); v["s17p03"].update(pre("q3_", q03b())); v["s17p03"].update(pre("r3_", r03c()))
+    v["s17p04"].update(pre("q4_", q04c())); v["s17p08"].update(pre("q8_", q08b())); v["s17p09"].update(pre("q9_", q09b()))
+    v["s17p13"].update(pre("q13_", q13b()))
+    return v
 
 
 if __name__ == "__main__":
-    for k, v in values().items():
-        print(k, v)
+    import pprint
+    pprint.pprint(values())
