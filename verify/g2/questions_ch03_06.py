@@ -46,6 +46,15 @@ q.check("q04-simple-regression-3", abs(b - 0.85) < 1e-9 and abs(a - 2.9) < 1e-9 
 q.check("q04-simple-regression-3", abs(np.corrcoef(x, y)[0, 1] - 0.92) < 0.005 and abs(3.5 + 0.75 * 6 - 8) < 1e-12 and abs(2.48 + 0.92 * 6 - 8) < 1e-12, "誤答は平均の点を通るが傾きが違う（0.92 は相関係数）")
 yh = a + b * x
 q.check("q04-simple-regression-4", abs(a + b * x.mean() - y.mean()) < 1e-12 and abs((y - yh).sum()) < 1e-9, "平均の点を通り残差の和 0（answer=true）")
+q.check("q04-least-squares-method-g1", chosen(q, "q04-least-squares-method-g1").startswith("各点の $y$ の値と直線の予測値の差（残差）の 2 乗の合計"), "最小にするのは残差平方和")
+xs = np.array([1, 2, 3, 4, 5.]); ys = np.array([2, 4, 5, 4, 6.]); bs, as_ = np.polyfit(xs, ys, 1)
+q.check("q04-least-squares-method-g1", abs((ys - as_ - bs * xs).sum()) < 1e-9 and all(((ys - as_ - bs * xs) ** 2).sum() <= ((ys - a2 - b2 * xs) ** 2).sum() + 1e-12 for a2 in np.linspace(0, 4, 41) for b2 in np.linspace(0, 2, 41)), "例のデータで残差平方和が最小・残差の和は 0")
+n_, sx, sy, sxy, sxx = 5, 20, 50, 215, 90
+b_ls = (sxy - n_ * (sx / n_) * (sy / n_)) / (sxx - n_ * (sx / n_) ** 2)
+q.num("q04-least-squares-method-g2", sy / n_ - b_ls * sx / n_)
+q.check("q04-least-squares-method-g2", abs(b_ls - 1.5) < 1e-12 and abs(sxy / sxx - 2.39) < 0.005, "傾き 1.5・誤り 215/90≈2.39")
+y12 = ys.copy(); y12[4] = 12
+q.check("q04-least-squares-method-g3", abs(bs - 0.8) < 1e-9 and abs(np.polyfit(xs, y12, 1)[0] - 2.0) < 1e-9, "傾き 0.8 → 2.0（answer=false）")
 run(q)
 
 # ---------- 第5章 ----------

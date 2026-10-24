@@ -1,4 +1,16 @@
 {
+ "q04-least-squares-method-g1": {
+  "hash": "70c1ca544bb2666a",
+  "ok": true
+ },
+ "q04-least-squares-method-g2": {
+  "hash": "d54198e1b74900c8",
+  "ok": true
+ },
+ "q04-least-squares-method-g3": {
+  "hash": "0a73c13089bb2b24",
+  "ok": true
+ },
  "q04-simple-regression-1": {
   "hash": "f8dafe78553fe5a4",
   "ok": true

@@ -59,3 +59,49 @@ questions:
     explanation: |
       $a=\bar y-b\bar x$ より $\bar y=a+b\bar x$ なので、回帰直線は点 $(\bar x,\bar y)$ を通ります。
       このため残差の合計は 0 になります。
+
+  # ---------- 最小二乗法（2級向けに書き直した用語） ----------
+  - id: q04-least-squares-method-g1
+    term: least-squares-method
+    level: 基本
+    type: choice
+    question: |
+      $y$ を $x$ で説明する回帰直線を最小二乗法で求めるとき、最小にしているものはどれか。
+    choices:
+      - 各点の $y$ の値と直線の予測値の差（残差）の 2 乗の合計
+      - 各点の $y$ の値と直線の予測値の差（残差）の合計
+      - 各点から直線に垂直に下ろした線の長さの合計
+      - 各点の $y$ の値と $y$ の平均の差の 2 乗の合計
+    answer: 0
+    hint: |
+      残差をそのまま足すと、正と負が打ち消し合う。
+    explanation: |
+      最小二乗法は、縦のずれ（残差）$y_i-\hat y_i$ の 2 乗の合計を最小にします。
+      残差の合計は、最小二乗法の直線では自動的に 0 になるので、これを最小にしても直線は 1 本に決まりません。垂直に下ろした長さ（点と直線の距離）ではなく縦のずれを使うのは、$y$ の予測の誤差を小さくしたいからです。$y$ と平均の差の 2 乗の合計は全体の平方和で、直線によらず一定です。
+
+  - id: q04-least-squares-method-g2
+    term: least-squares-method
+    level: 標準
+    type: numeric
+    question: |
+      5 組のデータについて、$\sum x=20$、$\sum y=50$、$\sum xy=215$、$\sum x^2=90$ だった。最小二乗法による回帰直線 $\hat y=a+bx$ の切片 $a$ を求めよ。
+    answer: 4
+    tolerance: 0.001
+    hint: |
+      $S_{xy}=\sum xy-n\bar x\bar y$、$S_{xx}=\sum x^2-n\bar x^{\,2}$、$b=S_{xy}/S_{xx}$、$a=\bar y-b\bar x$。
+    explanation: |
+      $\bar x=4$、$\bar y=10$、$S_{xy}=215-5\times 4\times 10=15$、$S_{xx}=90-5\times 16=10$ なので $b=1.5$、$a=10-1.5\times 4=4$ です。
+      $\sum xy/\sum x^2\approx 2.39$ を傾きにするのは、平均を引いていない誤りです。
+
+  - id: q04-least-squares-method-g3
+    term: least-squares-method
+    level: 標準
+    type: truefalse
+    question: |
+      最小二乗法は残差を 2 乗して足すので、ほかの点から大きく外れた点が 1 つあっても、回帰直線はほとんど変わらない。
+    answer: false
+    hint: |
+      ずれが 2 倍になると、2 乗した値は 4 倍になる。
+    explanation: |
+      誤りです。2 乗すると大きなずれほど強く数えられるので、外れた点に直線が大きく引き寄せられます。
+      例えば $(1,2),(2,4),(3,5),(4,4),(5,6)$ の傾きは 0.8 ですが、最後の点を $(5,\ 12)$ にすると傾きは 2.0 になります。散布図で外れた点を確かめてから当てはめます。

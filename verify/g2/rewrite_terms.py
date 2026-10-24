@@ -64,6 +64,14 @@ sick = rng.random(2_000_000) < 0.01; t1 = rng.random(2_000_000) < np.where(sick,
 check(T, "例2 2 回とも陽性なら約 0.48（0.088 を使った計算・正確な値・シミュレーション）", close(0.088 * .95 / (0.088 * .95 + 0.912 * .10), 0.48, 0.005) and close((95 / 1085) * .95 / ((95 / 1085) * .95 + (990 / 1085) * .10), 0.477, 5e-4) and close(sick[t1 & t2].mean(), 0.477, 0.01), sick[t1 & t2].mean())
 check(T, "1 回目の陽性のシミュレーション ≈0.088", close(sick[t1].mean(), 0.0876, 0.004), sick[t1].mean())
 
+T = "least-squares-method"
+xs = np.array([1, 2, 3, 4, 5.]); ys = np.array([2, 4, 5, 4, 6.]); b1, a1 = np.polyfit(xs, ys, 1); e = ys - (a1 + b1 * xs)
+check(T, "合計 15・21・71・55、Sxy=8・Sxx=10、b=0.8・a=1.8", (xs.sum(), ys.sum(), (xs * ys).sum(), (xs ** 2).sum()) == (15, 21, 71, 55) and close(71 - 5 * 3 * 4.2, 8, 1e-9) and close(55 - 45, 10, 1e-9) and close(b1, .8, 1e-9) and close(a1, 1.8, 1e-9), (b1, a1))
+check(T, "予測値 2.6〜5.8・残差 −0.6, 0.6, 0.8, −1.0, 0.2・合計 0・残差平方和 2.4", np.allclose(a1 + b1 * xs, [2.6, 3.4, 4.2, 5.0, 5.8]) and np.allclose(e, [-.6, .6, .8, -1, .2]) and close(e.sum(), 0, 1e-9) and close((e ** 2).sum(), 2.4, 1e-9) and close((e * xs).sum(), 0, 1e-9), (e ** 2).sum())
+check(T, "傾き 1 の直線 1.2+x は 2.8・図の値（平均の点を通る直線）", close(((ys - 1.2 - xs) ** 2).sum(), 2.8, 1e-9) and np.allclose([((ys - (4.2 - bb * 3) - bb * xs) ** 2).sum() for bb in np.arange(0, 1.61, .2)], [8.8, 6.0, 4.0, 2.8, 2.4, 2.8, 4.0, 6.0, 8.8]), None)
+y12 = ys.copy(); y12[4] = 12
+check(T, "外れ値 (5,12) で傾き 2.0", close(np.polyfit(xs, y12, 1)[0], 2.0, 1e-9), np.polyfit(xs, y12, 1)[0])
+
 ng = results.count(False)
 print(f"書き直した共通の用語の検算: OK {len(results) - ng} / NG {ng}")
 sys.exit(1 if ng else 0)

@@ -128,7 +128,6 @@ chapters:
     title: 最小二乗法
     importance: A
     status: verified
-    from: pre1
   - id: coefficient-of-determination
     title: 決定係数
     importance: A
