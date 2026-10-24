@@ -169,7 +169,7 @@ def p04():
         "lncnt_s": s(lnt["cnt"][1], 2), "lno1_s": s(lnt["odds1"][1], 2), "OR_s": s(OR, 2), "RR": s((a1 / n1) / (a0 / n0), 2),
         "p1": s(a1 / n1, 2), "p0": s(a0 / n0, 2), "b0hat": s(math.log(a0 / (n0 - a0)), 3), "se1": s(sqrt(1 / a1 + 1 / (n1 - a1) + 1 / a0 + 1 / (n0 - a0)), 3),
         "lam": s(lam, 1), "k": k, "q": s(qq, 2), "q1": s(1 - qq, 2), "lq": s(lam * (1 - qq), 2),
-        "c_ans": r(ans, 2), "c_ans4": s(ans, 4), "c_scale": s(k / qq, 2), "c_add": s(k + lam, 2), "c_q": s(k + lam * qq, 2),
+        "c_ans": r(ans, 2), "c_ans4": s(ans, 4), "c_ans2": s(ans, 2), "c_scale": s(k / qq, 2), "c_add": s(k + lam, 2), "c_q": s(k + lam * qq, 2),
     }
 
 

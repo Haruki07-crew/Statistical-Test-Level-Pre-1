@@ -55,12 +55,10 @@ E.check("s16p01b", ((x - mN) ** 2).sum() < ((x - mF) ** 2).sum(), "ユークリ�
 
 # ---- 大問2
 ls, lm = 0.0012, 0.0008
-Ts = rng.exponential(1 / ls, (2_000_000, 2))
-Tm = rng.exponential(1 / lm, (2_000_000, 2))
-life = np.minimum(Ts, Tm).min(1)
-E.choice("s16p02a", f"${f(stats.expon(scale=1 / (2 * (ls + lm))).sf(250), 3)}$", "scipy expon（率 2(λs+λm)）の生存関数")
-E.check("s16p02a", abs((life > 250).mean() - np.exp(-1)) < 0.001, f"4 つの指数時間の最小値のシミュレーション {(life > 250).mean():.4f}")
-E.check("s16p02a", table_ok([(np.exp(-1), 0.3679), (np.exp(-0.5), 0.6065), (np.exp(-0.25), 0.7788)], 5e-5), "e^x の値")
+E.choice("s16p02a", f"${f(stats.gamma.sf(1000, 3, scale=1 / (ls + lm)), 3)}$", "scipy gamma(3, scale=500).sf(1000)")
+T3 = rng.exponential(1 / (ls + lm), size=(1_000_000, 3)).sum(1)
+E.check("s16p02a", abs((T3 > 1000).mean() - 0.6767) < 0.002, f"シミュレーション {(T3 > 1000).mean():.4f}")
+E.check("s16p02a", abs(np.exp(-2) - 0.1353) < 5e-5, "e^{-2} の値")
 # (b) 同時密度 f(t, J=s) を数値積分
 num = integrate.quad(lambda t: ls * np.exp(-ls * t) * np.exp(-lm * t), 300, 500)[0]
 den = stats.expon(scale=1 / (ls + lm)).sf(300)
@@ -123,23 +121,24 @@ E.check("s16p03b", (n1, n2, R) == (14, 6, 5) and (Rs <= R).mean() < 0.025, f"正
 # ---- 大問4
 xs = np.array([0, 3, 1, 6, 2, 0, 4, 1, 7, 6])
 Tt = xs.sum()
-E.choice("s16p04a", f"${f(2 * (np.sqrt(Tt) - np.sqrt(20)), 2)}$", "2(√T-√20)")
-Tsim = rng.poisson(20, 1_000_000)
-E.check("s16p04a", abs(np.sqrt(Tsim).var() - 0.25) < 0.01, f"Po(20) の √T の分散 {np.sqrt(Tsim).var():.4f} ≈ 1/4")
-E.check("s16p04a", stats.poisson(20).sf(Tt - 1) < 0.05, f"正確な片側 p 値 {stats.poisson(20).sf(Tt - 1):.4f} も 5% 未満")
-a90 = np.exp((stats.norm.ppf(0.9) + 1.6) / 2.5)
-E.choice("s16p04b", f"${f(a90, 2)}$ mm", "scipy の正確な Φ^{-1}(0.9) で逆算")
-E.check("s16p04b", abs(stats.norm.cdf(-1.6 + 2.5 * np.log(3.167)) - 0.9) < 5e-4, "求めた長さで検出確率が 0.9")
-E.check("s16p04b", table_ok([(np.exp(1.1528), 3.1670), (np.exp(1.5188), 4.5667), (np.exp(1.298), 3.6620), (np.exp(-0.1272), 0.8806),
-                             (stats.norm.ppf(0.9), 1.282), (stats.norm.ppf(0.95), 1.645), (np.log(9), 2.197)], 5e-4) and abs(10 ** 1.1528 - 14.22) < 0.005, "表の値")
-qd = 0.969
-E.check("s16p04c", abs(stats.norm.cdf(-1.6 + 2.5 * 1.386) - qd) < 5e-4, "4 mm の検出確率 Φ(1.865)≈0.969")
+E.num("s16p04a", rnd((Tt - stats.poisson(20).mean()) / stats.poisson(20).std(), 2), "scipy poisson(20) の平均と標準偏差で標準化")
+E.check("s16p04a", stats.poisson(20).sf(Tt - 1) < 0.05 and stats.norm.sf(2.236) < 0.05, f"正確な片側 p 値 {stats.poisson(20).sf(Tt - 1):.4f} も 5% 未満")
+# (b) 個票を作りロジスティック回帰を数値最大化
+xb = np.r_[np.ones(40), np.zeros(60)]
+yb = np.r_[np.ones(18), np.zeros(22), np.ones(12), np.zeros(48)]
+def nll_lr(b):
+    eta = b[0] + b[1] * xb
+    return -(yb * eta - np.log1p(np.exp(eta))).sum()
+bhat = optimize.minimize(nll_lr, [0.0, 0.0], method="BFGS", options={"gtol": 1e-10}).x
+E.choice("s16p04b", f"${f(bhat[1], 2)}$", f"個票の対数尤度を数値最大化 β=({bhat[0]:.4f}, {bhat[1]:.4f})")
+E.check("s16p04b", table_ok([(np.log(3.273), 1.186), (np.log(2.25), 0.811), (np.log(1.5), 0.405), (np.log(0.818), -0.201)], 5e-4), "表の対数の値")
+qd = 0.95
 ns_ = np.arange(2, 120)
 wts = stats.poisson.pmf(ns_, 4.0) * stats.binom.pmf(2, ns_, qd)
 E.num("s16p04c", rnd((ns_ * wts).sum() / wts.sum(), 2), "ベイズの定理で N の条件付き分布を作って期待値")
 Nsim = rng.poisson(4.0, 3_000_000)
 Ksim = rng.binomial(Nsim, qd)
-E.check("s16p04c", abs(Nsim[Ksim == 2].mean() - 2.124) < 0.005, f"シミュレーション {Nsim[Ksim == 2].mean():.4f}")
+E.check("s16p04c", abs(Nsim[Ksim == 2].mean() - 2.20) < 0.005, f"シミュレーション {Nsim[Ksim == 2].mean():.4f}")
 
 # ---- 大問5
 t = np.array([0.3, 0.8, 1.0, 1.2, 1.5, 1.6, 1.9, 2.1])
@@ -148,28 +147,39 @@ th_hat = optimize.minimize_scalar(nll, bounds=(0.1, 10), method="bounded", optio
 E.choice("s16p05a", f"${f(th_hat, 2)}$", "scipy の weibull_min（尺度 √θ）の対数尤度を数値最大化")
 E.check("s16p05a", abs(stats.weibull_min(2, scale=np.sqrt(2.0)).pdf(1.3) - 2 * 1.3 / 2.0 * np.exp(-1.3 ** 2 / 2.0)) < 1e-12,
         "問題文の密度は scipy の形状2・尺度√θ のワイブル分布と一致")
-# (b) ρ/σ³ を数値積分（Y=T² の分布は T の密度から）、n を総当たり
+# (b) 文の正誤をシミュレーションで確かめる：一致性（n を増やすと R̂ が R に集中）、有限 n での偏り、漸近分散の違い
 th = 2.0
-Ey = integrate.quad(lambda u: u ** 2 * stats.weibull_min(2, scale=np.sqrt(th)).pdf(u), 0, np.inf)[0]
-Vy = integrate.quad(lambda u: (u ** 2 - Ey) ** 2 * stats.weibull_min(2, scale=np.sqrt(th)).pdf(u), 0, np.inf)[0]
-g3 = lambda u: abs(u ** 2 - Ey) ** 3 * stats.weibull_min(2, scale=np.sqrt(th)).pdf(u)
-rho = integrate.quad(g3, 0, np.sqrt(Ey))[0] + integrate.quad(g3, np.sqrt(Ey), np.inf)[0]
-ratio = rho / Vy ** 1.5
-E.check("s16p05b", abs(ratio - 2.415) < 5e-4 and abs(ratio - (12 / np.e - 2)) < 1e-6, f"数値積分で ρ/σ³={ratio:.6f}")
-nb = next(n for n in range(1, 10_000) if 0.4748 * 2.415 / np.sqrt(n) <= 0.05)
-E.num("s16p05b", nb, "n=1,2,… と総当たり")
+R = np.exp(-1 / th)
+for n_ in (8, 2000):
+    Y = rng.exponential(th, size=(20_000, n_))
+    Rh = np.exp(-1 / Y.mean(1))
+    if n_ == 8:
+        bias8 = Rh.mean() - R
+    else:
+        conc = (np.abs(Rh - R) < 0.03).mean()
+        avar = n_ * Rh.var()
+E.check("s16p05b", conc > 0.95, f"n=2000 で |R̂-R|<0.03 の割合 {conc:.4f}（一致性）")
+E.check("s16p05b", abs(bias8) > 0.005, f"n=8 での R̂ の偏り {bias8:.4f}（不偏でない：選択肢 1 は誤り）")
+E.check("s16p05b", abs(avar - (R / th ** 2) ** 2 * th ** 2) < 0.01 and abs(avar - th ** 2) > 1, f"√n(R̂-R) の分散 {avar:.4f} はデルタ法の値で θ²=4 と異なる（選択肢 4 は誤り）")
+E.check("s16p05b", stats.normaltest(rng.exponential(th, size=(20_000, 8)).mean(1)).pvalue < 1e-6, "n=8 の標本平均は正規分布でない（選択肢 2 は誤り）")
+E.choice("s16p05b", "連続写像定理により$\\hat R_n$も$R$に確率収束する", "正しい記述")
 
 # ---- 大問6
 tval = (41.0 - 40.0) / (1.6 / np.sqrt(10))
 E.choice("s16p06a", f"$t={f(tval, 2)}$で、自由度9の上側5%点1.833を超える", "t 統計量")
 E.check("s16p06a", stats.t.sf(tval, 9) < 0.05 < 2 * stats.t.sf(tval, 9), "片側 p<0.05、両側 p>0.05")
 E.check("s16p06a", table_ok([(stats.t.isf(0.05, 9), 1.833), (stats.t.isf(0.025, 9), 2.262), (stats.t.isf(0.05, 10), 1.812)], 5e-4), "t 分布の点")
-U = 41.0 + stats.t.isf(0.05, 9) * 1.6 * np.sqrt(1.1)
-E.choice("s16p06b", f"${f(U, 2)}$ m", "scipy の正確な t 点で予測上限")
-Xs = rng.normal(0, 1, size=(300_000, 11))
-xb, sd = Xs[:, :10].mean(1), Xs[:, :10].std(1, ddof=1)
-cover = Xs[:, 10] <= xb + 1.833 * sd * np.sqrt(1.1)
-E.check("s16p06b", abs(cover.mean() - 0.95) < 0.002, f"シミュレーションで次の 1 回が上限以下の割合 {cover.mean():.4f}")
+v1, v2 = 1.6 ** 2 / 10, 3.2 ** 2 / 8
+nu = (v1 + v2) ** 2 / (v1 ** 2 / 9 + v2 ** 2 / 7)
+hwW = stats.t.isf(0.025, np.floor(nu)) * np.sqrt(v1 + v2)
+E.choice("s16p06b", f"$({f(2.5 - hwW, 2)},\\ {f(2.5 + hwW, 2)})$", f"scipy の t 点、自由度 {nu:.3f} を切り捨て")
+E.check("s16p06b", table_ok([(stats.t.isf(0.025, 9), 2.262), (stats.t.isf(0.025, 10), 2.228), (stats.t.isf(0.025, 16), 2.120)], 5e-4), "t 分布の点")
+A_ = rng.normal(0, 1.6, (200_000, 10))
+B_ = rng.normal(0, 3.2, (200_000, 8))
+se_ = np.sqrt(A_.var(1, ddof=1) / 10 + B_.var(1, ddof=1) / 8)
+df_ = se_ ** 4 / ((A_.var(1, ddof=1) / 10) ** 2 / 9 + (B_.var(1, ddof=1) / 8) ** 2 / 7)
+cover = np.abs(B_.mean(1) - A_.mean(1)) <= stats.t.isf(0.025, np.floor(df_)) * se_
+E.check("s16p06b", abs(cover.mean() - 0.95) < 0.006, f"ウェルチ区間の被覆率 {cover.mean():.4f}")
 
 # ---- 大問7：複合ポアソンを実際に発生させて平均と分散、予算
 Nn = rng.poisson(300, 200_000)
@@ -197,11 +207,20 @@ res = Y - B @ Xd.T
 s2 = (res ** 2).sum(1) / 35
 cov = np.abs(B @ x0 - x0 @ beta) <= stats.t.isf(0.025, 35) * np.sqrt(s2 * h0)
 E.check("s16p08a", abs(cov.mean() - 0.95) < 0.003, f"平均の区間の被覆率 {cov.mean():.4f}")
-# (b) QQ プロットの理論分位点と、右に歪んだ分布（指数分布）でのパターンをシミュレーションで確認
-E.check("s16p08b", abs(stats.norm.ppf(39.5 / 40) - 2.24) < 0.005, f"Φ^(-1)(0.9875)={stats.norm.ppf(39.5 / 40):.4f}")
-zs = np.sort((rng.exponential(1, (20_000, 40)) - 1), axis=1)
-E.check("s16p08b", np.median(zs[:, -1]) > 2.24 and np.median(zs[:, 0]) > -2.24, "右に歪んだ分布では両端の点が直線より上")
-E.choice("s16p08b", "右に裾が長い（右に歪んでいる）", "解釈の選択肢")
+# (b) 標準偏差が当てはめ値に比例する誤差でデータを作り、重み 1/ŷ² の WLS が最も効率がよいことを確かめる
+fit = np.array([20, 40, 60])
+rsd = np.array([2.1, 4.0, 6.1])
+E.check("s16p08b", np.ptp(rsd / fit) < 0.01 and np.ptp(rsd ** 2 / fit) > 0.3, f"SD/ŷ={rsd / fit}、分散/ŷ={rsd ** 2 / fit}")
+xw = np.linspace(1, 10, 60)
+Xw = np.c_[np.ones(60), xw]
+mu_w = Xw @ np.array([2.0, 6.0])
+Yw = mu_w + rng.normal(size=(20_000, 60)) * 0.1 * mu_w
+def wls(w):
+    W = Xw * w[:, None]
+    return np.linalg.solve(Xw.T @ W, W.T @ Yw.T)[1]
+v_ols, v_1, v_2 = wls(np.ones(60)).var(), wls(1 / mu_w).var(), wls(1 / mu_w ** 2).var()
+E.check("s16p08b", v_2 < v_1 < v_ols and abs(wls(np.ones(60)).mean() - 6) < 0.01, f"傾きの分散 OLS {v_ols:.5f}・重み1/ŷ {v_1:.5f}・重み1/ŷ² {v_2:.5f}、OLS は不偏")
+E.choice("s16p08b", "重み$1/\\hat y_i^2$の重み付き最小二乗法を使う（または目的変数を対数変換する）", "正しい記述")
 
 # ---- 大問9
 # (a) 構造モデルからデータを発生させ、潜在結果で ATT を直接求める
@@ -272,59 +291,56 @@ E.check("s16p09b", abs(bh + 0.20) < 0.003 and abs(rres.var() - 1.25) < 0.01 and 
 E.check("s16p09b", abs(bh * rres.var() / (rres.var() - 0.25) + 0.25) < 0.005, "補正すると真の β=-0.25 に戻る")
 E.choice("s16p09b", f"${f(-0.20 / ((1.25 - 0.25) / 1.25), 2)}$", "信頼性比で割る")
 
-# ---- 大問10：混合模型からデータを発生させ、A の効果がないとき V_A/V_AB と V_A/V_E の第 1 種の誤り率を比べる
-a, b, rr = 4, 3, 2
-nsim = 40_000
-G = rng.normal(0, 1.5, (nsim, 1, b, 1))           # 装置の変量効果
-AB = rng.normal(0, 1.5, (nsim, a, b, 1))          # 交互作用（変量）
-Yd = G + AB + rng.normal(0, 1.0, (nsim, a, b, rr))
-m_ij = Yd.mean(3)
-m_i = Yd.mean((2, 3))
-m_j = Yd.mean((1, 3))
-m = Yd.mean((1, 2, 3))
-VA = b * rr * ((m_i - m[:, None]) ** 2).sum(1) / (a - 1)
-VAB = rr * ((m_ij - m_i[:, :, None] - m_j[:, None, :] + m[:, None, None]) ** 2).sum((1, 2)) / ((a - 1) * (b - 1))
-VE = ((Yd - m_ij[..., None]) ** 2).sum((1, 2, 3)) / (a * b * (rr - 1))
-rej_ok = (VA / VAB > stats.f.isf(0.05, 3, 6)).mean()
-rej_bad = (VA / VE > stats.f.isf(0.05, 3, 12)).mean()
-E.check("s16p10a", abs(rej_ok - 0.05) < 0.005 and rej_bad > 0.2, f"第1種の誤り率：V_A/V_AB {rej_ok:.4f}、V_A/V_E {rej_bad:.3f}")
-E.check("s16p10a", table_ok([(stats.f.isf(0.05, 3, 6), 4.76), (stats.f.isf(0.05, 3, 12), 3.49), (stats.f.isf(0.05, 3, 2), 19.16), (stats.f.isf(0.05, 6, 12), 3.00)], 0.005), "F の点")
-E.choice("s16p10a", f"$F={f(48 / 12, 2)}$で$F_{{0.05}}(3,6)=4.76$を超えない", "V_A/V_AB")
+# ---- 大問10
+qc = stats.studentized_range.isf(0.05, 4, 20)
+E.check("s16p10a", abs(qc - 3.96) < 0.005 and abs(stats.t.isf(0.025, 20) - 2.086) < 5e-4, f"q(4,20)={qc:.4f}、t(20)")
+mm = {"A": 12.0, "B": 14.6, "C": 15.2, "D": 18.2}
+hsd = 3.96 * np.sqrt(4.20 / 6)
+sig = [(i, j) for i, j in combinations("ABCD", 2) if abs(mm[i] - mm[j]) > hsd]
+E.choice("s16p10a", f"HSD$={f(hsd, 2)}$、有意な対は{len(sig)}組", f"有意な対 {sig}")
+Ysim = rng.normal(0, np.sqrt(4.2), size=(100_000, 4, 6))
+mse_ = Ysim.var(axis=2, ddof=1).mean(1)
+rngm = np.ptp(Ysim.mean(2), axis=1)
+E.check("s16p10a", abs((rngm > 3.96 * np.sqrt(mse_ / 6)).mean() - 0.05) < 0.003, f"族全体の誤り率 {(rngm > 3.96 * np.sqrt(mse_ / 6)).mean():.4f}")
 
 # ---- 大問11
-y = np.array([1.0, 1.3, 1.5, 1.8, 2.0, 2.3, 2.6, 2.8, 3.1, 3.3, 3.6, 3.9])
-ests = [y[st::3].mean() for st in range(3)]
-E.num("s16p11a", rnd(np.var(ests) if abs(np.mean(ests) - y.mean()) < 1e-12 else -1, 4), "3 通りの標本を numpy で作り分散（母平均と一致を確認）")
-srs = np.array([y[list(cmb)].mean() for cmb in combinations(range(12), 4)])
-E.check("s16p11a", abs(srs.var() - 0.1468) < 5e-4 and np.var(ests) < srs.var(), f"単純無作為抽出の全 495 通りの分散 {srs.var():.4f} より小さい")
-ORs = 30 * 110 / (70 * 90)
-E.choice("s16p11b", f"オッズ比は約{f(ORs, 2)}である。相対危険はこの表から直接は推定できない", "交差比")
-# コホートの母集団を作り、症例と対照を抽出したときのオッズ比が母集団のオッズ比に一致することを確かめる
-expo = rng.random(4_000_000) < 0.3
-dis = rng.random(4_000_000) < np.where(expo, 0.01, 0.02)
-case = np.flatnonzero(dis)
-ctrl = rng.choice(np.flatnonzero(~dis), 2 * len(case), replace=False)
-a_, b_ = expo[case].sum(), (~expo[case]).sum()
-c_, d_ = expo[ctrl].sum(), (~expo[ctrl]).sum()
-or_pop = (0.01 / 0.99) / (0.02 / 0.98)
-E.check("s16p11b", abs(a_ * d_ / (b_ * c_) - or_pop) < 0.03 and abs((a_ / (a_ + c_)) / (b_ / (b_ + d_)) - 0.5) > 0.05,
-        f"抽出したオッズ比 {a_ * d_ / (b_ * c_):.3f} ≈ 母集団 {or_pop:.3f}、列の割合の比は相対危険 0.5 にならない")
+# (a) 母集団を作り、比推定量と標本平均の分散をシミュレーションで比べる（近似式の確認）
+Np = 800
+xp = rng.gamma(6.25, 1.6, Np)
+yp = 1.5 * xp + rng.normal(0, 1.0, Np) * np.sqrt(xp) * 0.9
+Sy2, Sx2, Sxy = yp.var(ddof=1), xp.var(ddof=1), np.cov(xp, yp)[0, 1]
+Rp = yp.mean() / xp.mean()
+approx = (Sy2 - 2 * Rp * Sxy + Rp ** 2 * Sx2) / Sy2
+idx = np.argsort(rng.random((40_000, Np)), axis=1)[:, :50]
+ys, xs_ = yp[idx], xp[idx]
+yr = ys.mean(1) / xs_.mean(1) * xp.mean()
+E.check("s16p11a", abs(yr.var() / ys.mean(1).var() - approx) < 0.03, f"シミュレーションの分散比 {yr.var() / ys.mean(1).var():.4f} と近似式 {approx:.4f}")
+E.num("s16p11a", rnd(np.array([1, -1.5]) @ np.array([[25.0, 18.0], [18.0, 16.0]]) @ np.array([1, -1.5]) / 25.0, 2), "V[y-R x] を分散共分散行列の二次形式で")
+# (b)
+pt = stats.contingency.relative_risk(32, 400, 56, 400)
+E.check("s16p11b", abs(pt.relative_risk - 0.5714) < 1e-3, f"scipy relative_risk {pt.relative_risk:.4f}")
+E.choice("s16p11b", f"{int(np.ceil(1 / (56 / 400 - 32 / 400)))}台", "1/(リスク差) を切り上げ")
+sim0 = rng.binomial(1, 0.14, (2000, 17)).sum(1)
+sim1 = rng.binomial(1, 0.08, (2000, 17)).sum(1)
+E.check("s16p11b", abs((sim0 - sim1).mean() - 1.02) < 0.05, f"17 台あたり減る早期摩耗の平均 {(sim0 - sim1).mean():.3f} ≈ 1")
 
 # ---- 大問12
-ev = np.array([3.10, 1.40, 0.70, 0.40, 0.25, 0.15])
-Q = np.linalg.qr(rng.normal(size=(6, 6)))[0]
-evc = np.sort(np.linalg.eigvalsh(Q @ np.diag(ev) @ Q.T))[::-1]
-cum = np.cumsum(evc) / evc.sum()
-k1, k2 = int((evc > 1).sum()), int(np.argmax(cum >= 0.8) + 1)
-E.choice("s16p12a", f"(ア) {k1}　(イ) {k2}　(ウ) ${f(100 * (1 - cum[k2 - 1]), 1)}\\%$", "固有値分解から基準を計算")
-pi1, pi2 = 0.7, 0.3
-g = pi2 * stats.norm.pdf(3.8, 5, 1) / (pi1 * stats.norm.pdf(3.8, 2, 1) + pi2 * stats.norm.pdf(3.8, 5, 1))
-E.choice("s16p12b", f"${f(g, 3)}$", "scipy の正規密度で負担率")
-E.check("s16p12b", table_ok([(np.exp(-1.62), 0.1979), (np.exp(-0.72), 0.4868), (np.exp(-1.8), 0.1653), (np.exp(-1.2), 0.3012)], 5e-5), "e^x の値")
-comp = rng.random(4_000_000) < pi2
-xx = np.where(comp, rng.normal(5, 1, 4_000_000), rng.normal(2, 1, 4_000_000))
-near_ = np.abs(xx - 3.8) < 0.01
-E.check("s16p12b", abs(comp[near_].mean() - g) < 0.01, f"混合分布のシミュレーション {comp[near_].mean():.4f}")
+# (a) 負荷量と整合する相関行列を作り、すべての主成分の和で厳密な相関を、上位 2 つで近似を確認
+Lm = np.array([[0.90, 0.30], [0.80, -0.40], [0.20, 0.95]])
+E.choice("s16p12a", f"${f((Lm[0] * Lm[1]).sum(), 2)}$", "負荷量ベクトルの内積")
+Rm = Lm @ Lm.T
+np.fill_diagonal(Rm, 1.0)
+ev_, V_ = np.linalg.eigh(Rm)
+E.check("s16p12a", ev_.min() > 0, f"負荷量と矛盾しない相関行列が作れる（固有値 {np.round(ev_, 3)}）")
+Lfull = V_ * np.sqrt(ev_)
+E.check("s16p12a", abs((Lfull[0] * Lfull[1]).sum() - Rm[0, 1]) < 1e-12, "全主成分の負荷量の内積は相関係数に一致")
+# (b) 実際の点を作り、併合後の重心から C の重心までの距離の 2 乗を直接計算
+A_ = rng.normal(size=(2, 2)); A_ += np.array([0, 0]) - A_.mean(0)
+B_ = rng.normal(size=(3, 2)); B_ += np.array([2, 0]) - B_.mean(0)
+C_ = np.array([[3.0, 3.0]])
+d2 = lambda u_, v_: float(((u_.mean(0) - v_.mean(0)) ** 2).sum())
+E.check("s16p12b", [round(d2(A_, B_), 9), round(d2(A_, C_), 9), round(d2(B_, C_), 9)] == [4, 18, 10], "作った点の重心間距離が表と一致")
+E.choice("s16p12b", f"${f(d2(np.vstack([A_, B_]), C_), 2)}$", "併合後の重心から直接計算")
 
 # ---- 大問13
 nsim = 2_000_000

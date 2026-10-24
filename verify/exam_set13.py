@@ -112,14 +112,19 @@ E.check("s13p03b", abs((mx <= 4000).mean() - exact_max) < 0.03, f"最大値の�
 distinct("s13p03b", 3)
 
 # ---- 大問4 世論調査
-obs = np.array([336, 396, 468])
-res = stats.chisquare(obs, 1200 * np.array([0.30, 0.34, 0.36]))
-ok = tab("chi2_0.05(1)", 3.841, stats.chi2.ppf(0.95, 1), 5e-4) and tab("chi2_0.05(2)", 5.991, stats.chi2.ppf(0.95, 2), 5e-4) \
-    and tab("chi2_0.05(3)", 7.815, stats.chi2.ppf(0.95, 3), 5e-4)
-E.check("s13p04a", ok, "カイ二乗分布の 5% 点")
-E.check("s13p04a", "棄却しない" in E.item("s13p04a")["choices"][E.item("s13p04a")["answer"]] and f(res.statistic, 2) in E.item("s13p04a")["choices"][2],
-        f"scipy chisquare: 統計量 {res.statistic:.4f}、p 値 {res.pvalue:.4f} > 0.05")
-E.check("s13p04a", res.pvalue > 0.05, "p 値 > 0.05 で棄却しない")
+# (a) 多項分布の差の分散を sympy で、z を条件付き二項分布で求め直し、帰無仮説のもとのシミュレーションで分散を確認
+pa_, pb_ = sp.symbols("p_A p_B", positive=True)
+nn = sp.Symbol("n", positive=True)
+var_diff = (pa_ * (1 - pa_) + pb_ * (1 - pb_) - 2 * (-pa_ * pb_)) / nn
+E.check("s13p04a", sp.simplify(var_diff.subs(pb_, pa_) - 2 * pa_ / nn) == 0, "H0 のもとで V[p̂A−p̂B]=(pA+pB)/n（sympy）")
+zc = (516 - 972 * 0.5) / np.sqrt(stats.binom(972, 0.5).var())
+E.choice("s13p04a", f"$z={f(zc, 2)}$ で、1.96 を超えないので帰無仮説を棄却しない", f"A か B の回答者に条件付けた二項分布の z={zc:.4f}")
+pb2 = stats.binomtest(516, 972, 0.5).pvalue
+E.check("s13p04a", 0.05 < pb2 < 0.07, f"正確な二項検定の両側 p 値 {pb2:.4f} > 0.05（結論が同じ）")
+cnt = rng.multinomial(1200, [0.405, 0.405, 0.19], size=400_000)
+dsim = (cnt[:, 0] - cnt[:, 1]) / 1200
+E.check("s13p04a", abs(dsim.var() / (0.81 / 1200) - 1) < 0.01, f"多項分布のシミュレーションで分散比 {dsim.var() / (0.81 / 1200):.4f} ≈ 1")
+E.check("s13p04a", tab("z_0.025", 1.96, stats.norm.ppf(0.975), 5e-3) and tab("z_0.05", 1.645, stats.norm.ppf(0.95), 5e-4), "正規分布の点")
 # (b) scipy の負の二項分布（失敗回数）＋ n で発信回数の標準偏差、シミュレーション
 nb = stats.nbinom(1200, 0.15)
 E.num("s13p04b", float(f(nb.std(), 1)), "scipy nbinom(1200, 0.15) の標準偏差（失敗回数 + 定数）")
@@ -154,6 +159,8 @@ E.check("s13p05a", (p_pool[pF >= 0.05] < 0.05).mean() > 0.06, f"予備検定を�
 b1_ = rng.normal(0, 5, (R, n1_)); b2_ = rng.normal(0, 5, (R, n2_))
 E.check("s13p05a", abs((stats.ttest_ind(b1_, b2_, axis=1, equal_var=False).pvalue < 0.05).mean() - 0.05) < 0.006, "等分散でもウェルチ検定の水準は約 5%（選択肢 2 は誤り）")
 E.check("s13p05a", E.item("s13p05a")["answer"] == 1, "正解は選択肢 1")
+Fp = 6.8 ** 2 / 3.9 ** 2
+E.check("s13p05a", abs(2 * stats.f.sf(Fp, 7, 11) - 0.10) < 0.005, f"問題文の F 検定の両側 p 値 {2 * stats.f.sf(Fp, 7, 11):.4f} ≈ 0.10")
 
 # ---- 大問6 ケース・コントロール：母集団を仮定して抽出をシミュレーションし、オッズ比は保たれ投票率は保たれないことを確認
 a, b, c, d = 160, 240, 100, 300
@@ -199,11 +206,13 @@ E.check("s13p08a", abs(XtXi[1, 3] + XtXi[1, 1]) < 1e-12, "完全交互作用モ�
 V = np.array([[0.00016, -0.00016], [-0.00016, 0.00036]])
 se_ = np.sqrt(np.array([1, 1]) @ V @ np.array([1, 1]))
 E.choice("s13p08a", f"推定値 ${f(0.05 - 0.03, 3)}$、標準誤差 ${f(se_, 4)}$", "行列計算 c'Vc")
-# (b) ハット行列のトレース
+# (b) 内部スチューデント化残差：V[e_k]=σ²(1−h_kk) をシミュレーションで確かめ、e/√(RSS(1−h)/(n−p)) で計算
 Xh = np.column_stack([np.ones(40), rng.standard_normal((40, 4))])
 Hh = Xh @ np.linalg.inv(Xh.T @ Xh) @ Xh.T
-E.check("s13p08b", abs(np.trace(Hh) - 5) < 1e-9, "数値で tr(H)=5")
-E.num("s13p08b", round(float(np.trace(Hh)) - 4.62, 2), "tr(H) の数値から 4.62 を引く")
+Eps = rng.standard_normal((100_000, 40))
+Res = Eps - Eps @ Hh.T
+E.check("s13p08b", np.allclose(Res.var(0), 1 - np.diag(Hh), atol=0.02), "シミュレーションで V[e_k]=σ²(1−h_kk)（σ²=1）")
+E.num("s13p08b", float(f(0.48 / np.sqrt(1.80 * (1 - 0.38) / (40 - 5)), 2)), "e_k/√(RSS(1−h)/(n−p))")
 # (c) 楽観度：シミュレーションで E[新しい観測の平均二乗誤差] − E[RSS/n] = 2pσ²/n を確認し、推定値を計算
 Xd5 = np.column_stack([np.ones(40), rng.standard_normal((40, 4))])
 Hm = Xd5 @ np.linalg.pinv(Xd5)
@@ -281,17 +290,16 @@ E.check("s13p11a", abs(np.mean(ests) - intent.mean()) < 0.003 and abs(np.mean(na
 distinct("s13p11a", 3)
 
 # ---- 大問12
-from scipy.cluster.hierarchy import linkage  # noqa: E402
-from scipy.spatial.distance import squareform  # noqa: E402
 Dm = np.array([[0, 2, 6, 10, 9], [2, 0, 5, 9, 8], [6, 5, 0, 4, 7], [10, 9, 4, 0, 3], [9, 8, 7, 3, 0]], float)
-Ls = linkage(squareform(Dm), "single")
-E.check("s13p12a", abs(Ls[-1, 2] - 5.0) < 1e-12 and np.allclose(Ls[:, 2], [2, 3, 4, 5]), f"scipy linkage(single) の高さ {Ls[:, 2]}")
-from scipy.cluster.hierarchy import fcluster  # noqa: E402
-lab = fcluster(Ls, 4.5, "distance")
-E.check("s13p12a", lab[0] == lab[1] and lab[2] == lab[3] == lab[4] and lab[0] != lab[2], f"高さ 4.5 で切ると {lab}")
-E.check("s13p12a", abs(linkage(squareform(Dm), "complete")[-1, 2] - 10) < 1e-12 and abs(linkage(squareform(Dm), "average")[-1, 2] - 47 / 6) < 1e-12,
-        "最長距離法 10・群平均法 7.83（誤答の値）")
-E.check("s13p12a", E.item("s13p12a")["answer"] == 1, "正解は選択肢 1")
+lab = np.array([0, 0, 1, 1, 1])
+silv = []
+for i_ in range(5):
+    own = (lab == lab[i_]) & (np.arange(5) != i_)
+    a_ = Dm[i_, own].mean()
+    b_ = Dm[i_, lab != lab[i_]].mean()
+    silv.append((b_ - a_) / max(a_, b_))
+E.choice("s13p12a", f"$s(C)={f(silv[2], 3)}$、$s(D)={f(silv[3], 3)}$", f"マスクを使った行列計算のシルエット係数 {np.round(silv, 4)}")
+E.check("s13p12a", len(set(E.item("s13p12a")["choices"])) == 5, "選択肢の組が互いに異なる")
 # (b) 斜交因子：因子・独自因子を発生させて共通部分の分散
 Phi = np.array([[1, 0.4], [0.4, 1]])
 Fz = rng.multivariate_normal([0, 0], Phi, 1_000_000)

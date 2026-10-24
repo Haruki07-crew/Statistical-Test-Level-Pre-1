@@ -9,11 +9,11 @@
  },
  "s16p02a": {
   "ok": true,
-  "hash": "a9247b2935608252"
+  "hash": "34697f0df3d2012c"
  },
  "s16p02b": {
   "ok": true,
-  "hash": "ff88f854be09c9a4"
+  "hash": "c7ea9be3da9577ef"
  },
  "s16p03a": {
   "ok": true,
@@ -25,15 +25,15 @@
  },
  "s16p04a": {
   "ok": true,
-  "hash": "f3b62823070644e5"
+  "hash": "e406a6d62aae654c"
  },
  "s16p04b": {
   "ok": true,
-  "hash": "53671f1909311e68"
+  "hash": "9cc5c82994b9b413"
  },
  "s16p04c": {
   "ok": true,
-  "hash": "9c721b88f2054662"
+  "hash": "ae1329abc46610a3"
  },
  "s16p05a": {
   "ok": true,
@@ -41,7 +41,7 @@
  },
  "s16p05b": {
   "ok": true,
-  "hash": "f448d0aeeaf81829"
+  "hash": "2edead02dbd45265"
  },
  "s16p06a": {
   "ok": true,
@@ -49,7 +49,7 @@
  },
  "s16p06b": {
   "ok": true,
-  "hash": "e61ce5c2e4974203"
+  "hash": "0d4f5f9968e94aec"
  },
  "s16p07a": {
   "ok": true,
@@ -61,7 +61,7 @@
  },
  "s16p08b": {
   "ok": true,
-  "hash": "546d75d978beb584"
+  "hash": "d4bab2cfee91e34a"
  },
  "s16p09a": {
   "ok": true,
@@ -73,23 +73,23 @@
  },
  "s16p10a": {
   "ok": true,
-  "hash": "e0841e330b2ebd11"
+  "hash": "f41bb536a6b851b6"
  },
  "s16p11a": {
   "ok": true,
-  "hash": "b06259a01c184c56"
+  "hash": "49ac3169ba1c8476"
  },
  "s16p11b": {
   "ok": true,
-  "hash": "67bfaf7b8442084e"
+  "hash": "26b687d888398e77"
  },
  "s16p12a": {
   "ok": true,
-  "hash": "92e43e170624ad90"
+  "hash": "3b3dc3726fcdfc20"
  },
  "s16p12b": {
   "ok": true,
-  "hash": "687fa502a37476af"
+  "hash": "83e2107b91035066"
  },
  "s16p13a": {
   "ok": true,

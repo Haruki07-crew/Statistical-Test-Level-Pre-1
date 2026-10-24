@@ -122,7 +122,7 @@ def p03():
         "one_e": s(1 - e24, 4), "frac": s((1 - e24) / lc, 4), "ans": s(ans, 3), "ans4": s(ans, 4),
         "w_comp": s(1 - ans, 3), "w_mean": s(w_mean, 3), "w_end": s(w_end, 3), "w_exp": s(w_exp, 3),
         "s2": s2, "sd": s(sqrt(s2), 1), "e016": s(e016, 4), "cv2": s(e016 - 1, 4), "cv": s(cv, 3), "cv4": s(cv, 4),
-        "w_sqrt": s(sqrt(e016), 3), "cvpct": s(cv * 100, 1),
+        "w_sqrt": s(sqrt(e016), 3), "c_s2": s(s2, 3), "c_sd": s(sqrt(s2), 3), "cvpct": s(cv * 100, 1),
     }
 
 

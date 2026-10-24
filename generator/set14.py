@@ -209,25 +209,28 @@ def p07():
 
 # ---------------------------------------------------------------- 大問8 サッカーの試合
 def p08():
-    lh, la = 1.5, 1.0
-    tot, k = 3, 2
-    pr = lh / (lh + la)
-    ans = comb(tot, k) * pr ** k * (1 - pr) ** (tot - k)
-    # (b) 過分散
-    nobs, kk = 152, 4
-    df = nobs - kk
-    pear = 333.0
-    phi = pear / df
-    b, se = 0.24, 0.08
-    sphi = sqrt(phi)
-    se_q = se * sphi
-    return {"lh": lh, "la": la, "lsum": s(lh + la, 1), "tot": tot, "k": k, "pr": s(pr, 1), "qr": s(1 - pr, 1),
-            "comb": comb(tot, k), "ans": r(ans, 3), "ans_s": s(ans, 3), "pp": s(pr ** 2, 2),
-            "w_k3": s(pr ** 2 * (1 - pr), 3), "w_rev": s(comb(tot, k) * (1 - pr) ** 2 * pr, 3),
-            "nobs": nobs, "kk": kk, "df": df, "pear": s(pear, 1), "phi": s(phi, 2), "sphi": s(sphi, 1),
-            "b": b, "se": se, "z0": s(b / se, 2), "seq": s(se_q, 2), "zq": s(b / se_q, 2),
-            "sephi": s(se * phi, 2), "zphi": s(b / (se * phi), 2), "c": 1.96, "rr": 1.271, "bshr": s(b / sphi, 2)}
-
+    # (a) 0 を除いたポアソン分布の期待値
+    lh = 1.5
+    e0 = 0.2231                  # e^{-1.5}（問題文に示す値）
+    p1 = 1 - e0
+    ans = lh / p1
+    # (b) 負の二項回帰で無得点の確率
+    b0, bh, bx, x, th = 0.10, 0.24, 0.30, 0.5, 2.0
+    E = {0.25: 1.284, 0.34: 1.405, 0.49: 1.632}      # 問題文に示す e^x の値
+    ep = 0.1955                  # e^{-1.632}（問題文に示す値）
+    eta = r(b0 + bh + bx * x, 2)
+    eta_away = r(b0 + bx * x, 2)
+    eta_nox = r(b0 + bh, 2)
+    nb0 = lambda mu: (th / (th + mu)) ** th
+    mu = E[eta]
+    base = th / (th + mu)
+    return {"lh": lh, "e0": e0, "p1": s(p1, 4), "ans": r(ans, 3), "ans5": s(ans, 5),
+            "w_plus": s(1 + lh, 1), "w_mul": s(lh * p1, 3),
+            "phi": 2.25, "b0": s(b0, 2), "bh": s(bh, 2), "bx": s(bx, 2), "x": x, "th": s(th, 1),
+            "e1x": s(eta_away, 2), "e1": s(E[eta_away], 3), "e2x": s(eta_nox, 2), "e2": s(E[eta_nox], 3),
+            "e3x": s(eta, 2), "e3": s(mu, 3), "ep": ep, "eta": s(eta, 2), "mu": s(mu, 3), "base": s(base, 4),
+            "ok5": s(nb0(mu), 5), "c_ok": s(nb0(mu), 3), "w_pois": s(ep, 3), "w_nox": s(nb0(E[eta_nox]), 3),
+            "w_away": s(nb0(E[eta_away]), 3), "w_nopow": s(base, 3)}
 
 # ---------------------------------------------------------------- 大問9 eスポーツ
 def p09():
@@ -238,37 +241,31 @@ def p09():
     ratio = r(a1 / (a2 - rr_ ** 2), 4)
     sq = r(sqrt(ratio), 4)
     t = r(rr_ * sq, 4)
-    hr = r(h / (1 - h), 4)
-    sh = r(sqrt(hr), 4)
-    dff_ = t * sh
-    th = 2 * sqrt((p + 1) / n)
+    tb, tb30, t025 = 3.54, 3.52, 2.045       # t_{0.05/72}(29), t_{0.05/72}(30), t_{0.025}(29)
+    assert abs(t) < tb and abs(t) > t025
+    dff_ = t * sqrt(h / (1 - h))
     return {"n": n, "p": p, "r": rr_, "h": h, "r2": s(rr_ ** 2, 2), "a1": a1, "a2": a2, "a2r": s(a2 - rr_ ** 2, 2),
-            "ratio": s(ratio, 4), "sq": s(sq, 4), "t": s(t, 4), "hr": s(hr, 4), "sh": s(sh, 4),
-            "dffits": r(dff_, 2), "dffits4": s(dff_, 4), "th": s(th, 3), "pp": p + 1,
-            "w_int": s(rr_ * sh, 2), "w_h": s(t * h, 2)}
-
+            "ratio": s(ratio, 4), "sq": s(sq, 4), "t": s(t, 4), "t2": s(t, 2), "nn2": 2 * n,
+            "tb": s(tb, 2), "tb30": s(tb30, 2), "t025": s(t025, 3),
+            "w_inv": s(rr_ * sqrt((a2 - rr_ ** 2) / a1), 2), "h2": s(2 * (p + 1) / n, 3),
+            "dffits": s(dff_, 2), "th": s(2 * sqrt((p + 1) / n), 3)}
 
 # ---------------------------------------------------------------- 大問10 動画配信サービス
-EP = [10, 12, 15, 11, 13, 16, 12, 14, 18, 13, 15, 19]   # 配信回ごとの視聴数（万回）
-
-
 def p10():
-    N, k = len(EP), 3
-    nn = N // k
-    means = [sum(EP[j::k]) / nn for j in range(k)]
-    mu = sum(EP) / N
-    var = sum((m - mu) ** 2 for m in means) / k
-    S2 = sum((y - mu) ** 2 for y in EP) / (N - 1)
-    srs = S2 / nn * (N - nn) / N
-    out = {"N": N, "kk": k, "nn": nn, "mu": s(mu, 1), "sum": sum(EP), "var": s(var, 2), "var4": s(var, 4),
-           "w_srs": s(srs, 2), "w_n1": s(var * k / (k - 1), 2), "w_sum": s(var * k, 2), "w_sd": s(sqrt(var), 2),
-           "S2": s(S2, 4), "dev2": s(sum((y - mu) ** 2 for y in EP), 0), "nfpc": s((N - nn) / N, 4)}
-    for i, y in enumerate(EP, 1):
-        out[f"e{i}"] = y
-    for j, m in enumerate(means, 1):
-        out[f"m{j}"] = s(m, 1)
-        out[f"dm{j}"] = s(m - mu, 1)
-        out[f"dq{j}"] = s((m - mu) ** 2, 2)
+    # (a) 比例配分の層別抽出の標準誤差（有限母集団修正なし）
+    N1, N2, n = 8000, 2000, 200
+    N = N1 + N2
+    W1, W2 = N1 / N, N2 / N
+    n1, n2 = round(n * W1), round(n * W2)
+    S1, S2 = 5, 15
+    t1 = W1 ** 2 * S1 ** 2 / n1
+    t2 = W2 ** 2 * S2 ** 2 / n2
+    var = t1 + t2
+    out = {"N": N, "N1": N1, "N2": N2, "n": n, "n1": n1, "n2": n2, "S1": S1, "S2": S2, "W1": s(W1, 1), "W2": s(W2, 1),
+           "t1": s(t1, 3), "t2": s(t2, 3), "var": s(var, 3), "se4": s(sqrt(var), 4), "c_ok": s(sqrt(var), 3),
+           "w_var": s(var, 3), "w_sd": s(sqrt(W1 ** 2 * S1 / n1 + W2 ** 2 * S2 / n2), 3),
+           "w_w": s(sqrt(W1 * S1 ** 2 / n1 + W2 * S2 ** 2 / n2), 3),
+           "w_eq": s(sqrt(0.25 * S1 ** 2 / n1 + 0.25 * S2 ** 2 / n2), 3)}
     # (b) 正準相関（1 変数と 2 変数）
     ry1, ry2, r12 = 0.6, 0.4, 0.3
     num = ry1 ** 2 + ry2 ** 2 - 2 * ry1 * ry2 * r12
@@ -301,18 +298,29 @@ def p11():
            "cum": s((l1 + l2) / 3, 4), "c_ok": pct((l1 + l2) / 3), "c_1": pct(l1 / 3), "c_eq": pct((l1 + ssum / 2) / 3),
            "c_2": pct(l2 / 3), "c_all": pct((l1 + ssum) / 3), "rr": s(2 * r12 * r13 * r23, 2),
            "q12": s(r12 ** 2, 2), "q13": s(r13 ** 2, 2), "q23": s(r23 ** 2, 2), "fourp": s(4 * prod, 6)}
-    # (b) 単純ベイズ
-    pc = 0.05
-    f1c, f1n, f2c, f2n = 0.8, 0.1, 0.6, 0.2
-    num = pc * f1c * (1 - f2c)
-    oth = (1 - pc) * f1n * (1 - f2n)
-    post = num / (num + oth)
-    out.update({"pc": pc, "qc": s(1 - pc, 2), "f1c": f1c, "f1n": f1n, "f2c": f2c, "f2n": f2n,
-                "g2c": s(1 - f2c, 1), "g2n": s(1 - f2n, 1), "num": s(num, 3), "oth": s(oth, 3), "den": s(num + oth, 3),
-                "post": r(post, 3), "post5": s(post, 5), "posts": s(post, 3),
-                "w_f2": s(pc * f1c * f2c / (pc * f1c * f2c + (1 - pc) * f1n * f2n), 3),
-                "w_f1": s(pc * f1c / (pc * f1c + (1 - pc) * f1n), 3),
-                "w_noprior": s(f1c * (1 - f2c) / (f1c * (1 - f2c) + f1n * (1 - f2n)), 3)})
+    # (b) 線形判別関数
+    from fractions import Fraction as F_
+    m1, m2 = (F_(7), F_(5)), (F_(4), F_(4))
+    s11, s12, s22 = F_(2), F_(1), F_(2)
+    x = (F_(57, 10), F_(6))
+    detS = s11 * s22 - s12 ** 2
+    d = (m1[0] - m2[0], m1[1] - m2[1])
+    wn = (s22 * d[0] - s12 * d[1], -s12 * d[0] + s11 * d[1])      # det × Σ^{-1}(μ1-μ2)
+    c = ((m1[0] + m2[0]) / 2, (m1[1] + m2[1]) / 2)
+    dx = (x[0] - c[0], x[1] - c[1])
+    L = (wn[0] * dx[0] + wn[1] * dx[1]) / detS
+    L_diag = d[0] / s11 * dx[0] + d[1] / s22 * dx[1]
+    L_mu2 = (wn[0] * (x[0] - m2[0]) + wn[1] * (x[1] - m2[1])) / detS
+    L_noinv = (s11 * d[0] + s12 * d[1]) * dx[0] + (s12 * d[0] + s22 * d[1]) * dx[1]
+    assert L < 0 and L_diag > 0 and L_mu2 > 0 and L_noinv > 0
+    fx = lambda v: s(float(v), 1) if v.denominator != 1 else str(v.numerator)
+    out.update({"m11": fx(m1[0]), "m12": fx(m1[1]), "m21": fx(m2[0]), "m22": fx(m2[1]),
+                "s11": fx(s11), "s12": fx(s12), "s22": fx(s22), "x1": fx(x[0]), "x2": fx(x[1]),
+                "d1": fx(d[0]), "d2": fx(d[1]), "detS": fx(detS), "wn1": fx(wn[0]), "wn2": fx(wn[1]),
+                "c1": fx(c[0]), "c2": fx(c[1]), "dx1": fx(dx[0]), "dx2": fx(dx[1]),
+                "lnum": s(float(wn[0] * dx[0] + wn[1] * dx[1]), 1), "c_val": s(float(L), 2), "c_val4": s(float(L), 4),
+                "w_diag": s(float(L_diag), 2), "w_sign": s(float(-L), 2), "w_mu2": s(float(L_mu2), 2),
+                "w_noinv": s(float(L_noinv), 2)})
     return out
 
 

@@ -47,15 +47,23 @@ def close(a, b, tol):
 
 
 # ---- 大問1 正規の比とコーシー
+# (a) 極座標変換のヤコビアンを sympy で、偏角が一様になることと P(|R|>3) をシミュレーションと scipy で確かめる
+d_, th_ = sp.symbols("d theta", positive=True)
+Jac = sp.Matrix([d_ * sp.cos(th_), d_ * sp.sin(th_)]).jacobian([d_, th_]).det()
+E.check("s12p01a", sp.simplify(Jac - d_) == 0, f"極座標のヤコビアン {sp.simplify(Jac)}")
 r_, w_, sg = sp.symbols("r w sigma", positive=True)
 dens = 2 * sp.integrate(w_ / (2 * sp.pi * sg ** 2) * sp.exp(-(1 + r_ ** 2) * w_ ** 2 / (2 * sg ** 2)), (w_, 0, sp.oo))
-E.check("s12p01a", sp.simplify(dens - 1 / (sp.pi * (1 + r_ ** 2))) == 0, f"sympy で周辺密度 {sp.simplify(dens)}")
+E.check("s12p01a", sp.simplify(dens - 1 / (sp.pi * (1 + r_ ** 2))) == 0, f"別ルート（比の変数変換）で R は標準コーシー {sp.simplify(dens)}")
 X = rng.normal(0, 3.0, 1_000_000)
 Y = rng.normal(0, 3.0, 1_000_000)
 R = X / Y
-E.check("s12p01a", close((np.abs(R) <= 1).mean(), 0.5, 0.003) and close((R <= 2).mean(), stats.cauchy.cdf(2), 0.003),
-        "σ=3 のシミュレーションでも標準コーシーの確率と一致")
-E.choice("s12p01a", r"\dfrac{1}{\pi(1+r^2)}", "正解の式")
+ang = np.mod(np.arctan2(Y, X), 2 * np.pi)
+E.check("s12p01a", abs(np.histogram(ang, bins=8, range=(0, 2 * np.pi))[0] / 1e6 - 1 / 8).max() < 0.003, "σ=3 のシミュレーションで偏角が一様")
+E.check("s12p01a", close((np.abs(R) > 3).mean(), 2 * stats.cauchy.sf(3), 0.002) and close((np.abs(R) <= 1).mean(), 0.5, 0.003),
+        f"シミュレーション P(|R|>3)={(np.abs(R) > 3).mean():.4f}")
+E.check("s12p01a", close(math.atan(1 / 3), 0.3218, 5e-5), "arctan(1/3)=0.3218")
+E.choice("s12p01a", f"${f(2 * stats.cauchy.sf(3), 3)}$", "scipy cauchy.sf(3) の 2 倍")
+distinct("s12p01a", 3)
 for v, s_ in ((math.pi, 3.1416), (math.atan(math.sqrt(10)), 1.2645), (math.atan(10), 1.4711),
               (stats.norm.cdf(1), 0.8413), (stats.norm.cdf(3.16), 0.9992)):
     E.check("s12p01b", close(v, s_, 5e-5), f"関数値 {s_}")
@@ -72,10 +80,12 @@ distinct("s12p02a", 3)
 sv = np.arange(0, 49)
 pmf = stats.binom.pmf(sv, 48, 0.05)
 mse = float((pmf * ((sv + 1) / 50 - 0.05) ** 2).sum())
-E.choice("s12p02b", f"${f(mse * 1e4, 2)}\\times10^{{-4}}$", "二項分布を全列挙した平均二乗誤差")
+E.choice("s12p02b", f"${f(mse / 0.05 ** 2, 3)}$", "二項分布を全列挙した平均二乗誤差 ÷ ε²")
+ex = float((pmf * (np.abs((sv + 1) / 50 - 0.05) >= 0.05 - 1e-12)).sum())
+E.check("s12p02b", ex <= mse / 0.05 ** 2, f"実際の確率 {ex:.4f} は上界以下")
 mses = [float((stats.binom.pmf(np.arange(m_ + 1), m_, 0.05) * ((np.arange(m_ + 1) + 1) / (m_ + 2) - 0.05) ** 2).sum()) for m_ in (48, 480, 4800)]
 E.check("s12p02b", mses[0] > mses[1] > mses[2] and mses[2] < 1e-5, f"m を増やすと MSE→0（平均二乗収束） {mses}")
-distinct("s12p02b", 2)
+distinct("s12p02b", 3)
 
 # ---- 大問3
 g = stats.gamma(2, scale=0.5)
@@ -169,10 +179,20 @@ tg = np.linspace(0, 20, 10)
 Xd = np.column_stack([np.ones(10), tg, np.maximum(tg - 10, 0)])
 Hm = Xd @ np.linalg.inv(Xd.T @ Xd) @ Xd.T
 E.check("s12p09b", close(np.trace(Hm), 3, 1e-10), "実際のスプライン計画でハット行列の対角和が 3")
-E.num("s12p09b", rnd(float(Fr(3) - Fr("2.30")), 2), "分数で 3-2.30")
-for q, s_ in ((9 / 11, 0.908), (0.85, 1.036), (0.90, 1.282), (0.95, 1.645)):
+# 残差の分散 σ²(1-h) を実際の計画（等間隔）でのシミュレーションで確かめ、答えは分数で
+ysim = rng.normal(size=(200_000, 10)) * 1.0
+Esim = ysim - ysim @ Hm.T
+E.check("s12p09b", np.allclose(Esim.var(axis=0), 1 - np.diag(Hm), atol=0.01), "残差の分散が σ²(1-h_ii) になる（シミュレーション）")
+h10 = Fr(3) - Fr("2.30")
+s2_ = Fr("6.30") / (10 - 3)
+E.num("s12p09b", rnd(math.sqrt(float(s2_ * (1 - h10))), 2), "分数で h=3-2.30、s²=6.30/7")
+for q, s_ in ((10 / 11, 1.335), (0.909, 1.335), (0.95, 1.645)):
     E.check("s12p09c", close(stats.norm.ppf(q), s_, 6e-4), f"分位点 {s_}")
-E.choice("s12p09c", f"${f(stats.norm.ppf((9 - 0.5) / 10), 3)}$", "scipy norm.ppf(0.85)")
+qmax = stats.norm.ppf((10 - 0.5) / 10)
+qmin = stats.norm.ppf((1 - 0.5) / 10)
+right = "右" if 2.95 > qmax else "左"
+E.check("s12p09c", 2.95 > qmax and -1.20 > qmin, "最大の点は直線の外側（上）、最小の点は内側（上）→ 右の裾だけ重い")
+E.choice("s12p09c", f"{f(qmax, 3)}、{right}の裾が正規分布より重い", "scipy norm.ppf(0.95) と両端の位置")
 
 # ---- 大問10 ポアソン回帰を数値最適化で当てはめ直し、対数尤度から逸脱度を求める
 from scipy.optimize import minimize  # noqa: E402
@@ -292,6 +312,11 @@ for x_ in (0, 1):
     py_ = np.where(Msim, np.where(Usim, yu[(1, 1)], yu[(1, 0)]), np.where(Usim, yu[(0, 1)], yu[(0, 0)]))
     res_do.append((rng.random(Nn) < py_).mean())
 exact = [sum((pm[x_] if m_ else 1 - pm[x_]) * ((1 - q) * yu[(m_, 0)] + q * yu[(m_, 1)]) for m_ in (0, 1)) for x_ in (0, 1)]
+cnt = {(1, 1): (200, 60), (0, 1): (1800, 108), (1, 0): (1500, 300), (0, 0): (1500, 60)}  # (M,X): (ロット数, 腐敗)
+E.check("s12p14b", close(2000 / 5000, px[1], 1e-12) and close(200 / 2000, pm[1], 1e-12) and close(1500 / 3000, pm[0], 1e-12)
+        and all(close(k_ / n_, target[mx], 1e-12) for mx, (n_, k_) in cnt.items()), "問題文の集計表が P(X)・P(M|X)・P(Y|M,X) を与える")
+it14 = E.item("s12p14b")["question"]
+E.check("s12p14b", all(str(v) in it14 for v in (5000, 200, 60, 1800, 108, 1500, 300)), "集計表の数値が問題文にある")
 E.num("s12p14b", rnd(exact[1], 3), "構造モデルで U について平均した P(Y=1|do(X=1))")
 E.check("s12p14b", close(res_do[1], exact[1], 0.001), f"介入のシミュレーション {res_do[1]:.4f}")
 

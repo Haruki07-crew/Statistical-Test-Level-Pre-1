@@ -90,6 +90,8 @@ def p02():
         "a50": lines[0.50][0], "b50": lines[0.50][1], "a75": lines[0.75][0], "b75": lines[0.75][1],
         "a80": lines[0.80][0], "b80": lines[0.80][1],
         "q80": q(0.80, 1), "q20": q(0.20, 1), "q25": q(0.25, 1), "q50": q(0.50, 1), "q75": q(0.75, 1),
+        "lc": 20, "dv": s(0.25, 3), "dv_nosq": s(1 / (2 * sqrt(20)), 3), "dv_nolam": s(1 / (4 * 20), 4),
+        "dv_sd": s(sqrt(20), 2), "dv_raw": s(20, 1), "gp": s(1 / (2 * sqrt(20)), 4), "gp2": s(1 / (4 * 20), 4),
         "q80x0": q(0.80, 0), "tau_rev": s(co / (cu + co), 1), "tau_ratio": s(co / cu, 2), "tau_1m": s(1 - co / cu, 2),
     }
 
@@ -170,6 +172,10 @@ def p05():
     rho = aa / cc
     tail = terms[-1] / (1 - rho)
     pwait = tail / (sum(terms[:-1]) + tail)
+    # (c) フィッシャーの方法による p 値の統合
+    pv = [0.08, 0.12, 0.06]
+    lnp = [-2.5257, -2.1203, -2.8134]
+    Xf = -2 * sum(lnp)
     # (c) デルタ法
     lc = lam
     return {
@@ -181,6 +187,9 @@ def p05():
         "e0": s(terms[0], 0), "e1": s(terms[1], 0), "e2": s(terms[2], 0), "e3": s(terms[3], 4), "esum": s(sum(terms), 4),
         "B": s(B, 4), "acc": r(acc, 2), "acc_s": s(acc, 2), "acc4": s(acc, 4), "omB": s(1 - B, 4),
         "acc_wait": s(lam * (1 - pwait), 2), "lost": s(lam * B, 2),
+        "pv1": s(pv[0], 2), "pv2": s(pv[1], 2), "pv3": s(pv[2], 2), "lp1": s(lnp[0], 4), "lp2": s(lnp[1], 4),
+        "lp3": s(lnp[2], 4), "lsum": s(sum(lnp), 4), "Xf": s(Xf, 2), "Xh": s(Xf / 2, 2), "bon": s(min(pv) * 3, 2),
+        "pmin": s(min(pv), 2), "c6": "12.59", "c3f": "7.81",
         "lc": lc, "dv": s(0.25, 3), "dv_nosq": s(1 / (2 * sqrt(lc)), 3),
         "dv_nolam": s(1 / (4 * lc), 4), "dv_sd": s(sqrt(lc), 2), "dv_raw": s(lc, 1),
         "gp": s(1 / (2 * sqrt(lc)), 4), "gp2": s(1 / (4 * lc), 4),
@@ -196,6 +205,26 @@ def p06():
     FB = lambda x: sum(1 for v in B if v <= x) / len(B)
     D = max(abs(FA(x) - FB(x)) for x in pts)
     DB = max(abs(FA(x) - FB(x)) for x in B)
+    # (a') 同順位のある順位和検定
+    TA = [1, 2, 2, 3]
+    TB = [2, 3, 4, 4, 5]
+    allv = sorted(TA + TB)
+    NN = len(allv)
+    rank = {}
+    for v in set(allv):
+        idx = [i + 1 for i, x in enumerate(allv) if x == v]
+        rank[v] = sum(idx) / len(idx)
+    n1, n2 = len(TA), len(TB)
+    W = sum(rank[v] for v in TA)
+    EW = n1 * (NN + 1) / 2
+    ties = [allv.count(v) for v in set(allv)]
+    corr = sum(tt ** 3 - tt for tt in ties) / (NN * (NN - 1))
+    VW = n1 * n2 / 12 * ((NN + 1) - corr)
+    VW0 = n1 * n2 * (NN + 1) / 12
+    zt = (W - EW) / sqrt(VW)
+    # 中間順位を使わず、同じ値に小さい順位から A を先に割り当てた場合
+    order = sorted([(v, 0) for v in TA] + [(v, 1) for v in TB])
+    W_naive = sum(i + 1 for i, (v, g) in enumerate(order) if g == 0)
     # (b) 1 標本 t 検定の検出力（正規近似）
     nt, sig, dl = 16, 8.0, 5.0
     tc, tc2, zc = 1.753, 2.131, 1.645
@@ -211,6 +240,11 @@ def p06():
         "A1": A[0], "A2": A[1], "A3": A[2], "A4": A[3], "A5": A[4],
         "B1": B[0], "B2": B[1], "B3": B[2], "B4": B[3], "B5": B[4],
         "D": s(D, 1), "DB": s(DB, 1),
+        "TA": ", ".join(str(v) for v in TA), "TB": ", ".join(str(v) for v in TB), "n1": n1, "n2": n2, "NN": NN,
+        "W": s(W, 1), "EW": s(EW, 0), "VW": s(VW, 4), "VW0": s(VW0, 4), "corr": s(corr, 1), "tsum3": sum(tt ** 3 - tt for tt in ties),
+        "NN1": NN * (NN - 1), "zt": s(zt, 2), "zt0": s((W - EW) / sqrt(VW0), 2), "zN": s((W - EW) / sqrt(n1 * n2 * NN / 12), 2),
+        "zv": s((W - EW) / VW, 2), "znaive": s((W_naive - EW) / sqrt(VW0), 2), "Wnaive": W_naive, "sdW": s(sqrt(VW), 4),
+        "dW": s(W - EW, 1), "n12": n1 * n2, "zt3": s(zt, 3),
         "nt": nt, "sig": s(sig, 0), "dl": s(dl, 0), "sqn": s(sqrt(nt), 0), "lamb": s(lamb, 1), "tc": s(tc, 3),
         "tc2": s(tc2, 3), "zc": s(zc, 3), "zok_raw": s(lamb - tc, 3), "zok": s(z_ok, 2), "pw": s(pw, 3), "pw_z": s(pw_z, 3),
         "pw_2": s(pw_2, 3), "pw_ns": s(pw_ns, 3), "pw_c": s(1 - pw, 3), "dfn": nt - 1, "dls": s(dl / sig, 3),
@@ -250,6 +284,18 @@ def p08():
     terms = [yi * l for yi, l in zip(y, lr)]
     D = 2 * (sum(terms) - sum(yi - mi for yi, mi in zip(y, m)))
     X2 = sum((yi - mi) ** 2 / mi for yi, mi in zip(y, m))
+    # (b') グッドマン・クラスカルの γ
+    T = [[30, 5, 1], [20, 8, 3], [10, 6, 5]]
+    Cc = Dd = 0
+    for i in range(3):
+        for j in range(3):
+            for k in range(i + 1, 3):
+                for l in range(3):
+                    if l > j:
+                        Cc += T[i][j] * T[k][l]
+                    elif l < j:
+                        Dd += T[i][j] * T[k][l]
+    gam = (Cc - Dd) / (Cc + Dd)
     # (b) ファイ係数
     a, b, c, dd = 10, 190, 30, 170
     n = a + b + c + dd
@@ -259,6 +305,9 @@ def p08():
         "l1": s(lr[0], 4), "l2": s(lr[1], 4), "l3": s(lr[2], 4), "l4": s(lr[3], 4),
         "tt1": s(terms[0], 4), "tt2": s(terms[1], 4), "tt3": s(terms[2], 4), "tt4": s(terms[3], 4),
         "tsum": s(sum(terms), 4), "D": s(D, 2), "Dh": s(D / 2, 2), "X2": s(X2, 2),
+        "T11": T[0][0], "T12": T[0][1], "T13": T[0][2], "T21": T[1][0], "T22": T[1][1], "T23": T[1][2],
+        "T31": T[2][0], "T32": T[2][1], "T33": T[2][2], "C": Cc, "Dd": Dd, "CmD": Cc - Dd, "CpD": Cc + Dd,
+        "gam": r(gam, 3), "gam_s": s(gam, 3), "gam4": s(gam, 4), "gam_neg": s(-gam, 3),
         "a": a, "b": b, "c": c, "dd": dd, "n": n, "r1": a + b, "r2": c + dd, "c1": a + c, "c2": b + dd,
         "ad": a * dd, "bc": b * c, "adbc": a * dd - b * c, "prod": (a + b) * (c + dd) * (a + c) * (b + dd),
         "sq": s(sqrt((a + b) * (c + dd) * (a + c) * (b + dd)), 0),
@@ -371,18 +420,52 @@ def p12():
 
 
 def p13():
-    runs = ["(1)", "a", "b", "ab", "c", "ac", "bc", "abc"]
-    sign = lambda run, f: 1 if (f in run) else -1
-    blk = {run: sign(run, "a") * sign(run, "b") * sign(run, "c") for run in runs}
-    plus = [r_ for r_ in runs if blk[r_] > 0]
-    minus = [r_ for r_ in runs if blk[r_] < 0]
-    return {"plus": ", ".join(plus), "minus": ", ".join(minus), "nplus": len(plus)}
+    lv = [20, 30, 40]
+    m = [20.0, 24.0, 30.0]
+    n, mse, dfe = 5, 8.0, 12
+    c1, c2 = (-1, 0, 1), (1, -2, 1)
+    L1 = sum(c * x for c, x in zip(c1, m))
+    L2 = sum(c * x for c, x in zip(c2, m))
+    ss1 = n * L1 ** 2 / sum(c * c for c in c1)
+    ss2 = n * L2 ** 2 / sum(c * c for c in c2)
+    g = sum(m) / 3
+    ssa = n * sum((x - g) ** 2 for x in m)
+    return {"l1": lv[0], "l2": lv[1], "l3": lv[2], "m1": s(m[0], 1), "m2": s(m[1], 1), "m3": s(m[2], 1), "n": n,
+            "mse": s(mse, 1), "dfe": dfe, "N": 3 * n, "L1": s(L1, 1), "L2": s(L2, 1), "ss1": s(ss1, 1), "ss2": s(ss2, 2),
+            "ssa": s(ssa, 2), "F1": s(ss1 / mse, 2), "F2": s(ss2 / mse, 2), "ss_noc": s(n * L1 ** 2, 1), "F_noc": s(n * L1 ** 2 / mse, 2),
+            "ss_non": s(L1 ** 2 / 2, 1), "F_non": s(L1 ** 2 / 2 / mse, 2), "Fa": s(ssa / 2 / mse, 2), "L1sq": s(L1 ** 2, 0),
+            "f112": "4.75"}
+
+
+def p14():
+    mu = (100, 80, 60)
+    S = ((100, 40, 30), (40, 64, 24), (30, 24, 36))
+    x3, c = 72, 210
+    ms = mu[0] + mu[1]
+    vs = S[0][0] + S[1][1] + 2 * S[0][1]
+    cs = S[0][2] + S[1][2]
+    cm = ms + cs / S[2][2] * (x3 - mu[2])
+    cv = vs - cs ** 2 / S[2][2]
+    phi = {0.77: 0.7794, 0.94: 0.8264, 1.32: 0.9066, 1.92: 0.9726}
+    z = r((c - cm) / sqrt(cv), 2)
+    pa = 1 - phi[z]
+    z_unc = r((c - ms) / sqrt(vs), 2)
+    z_nov = r((c - cm) / sqrt(vs), 2)
+    vs0 = S[0][0] + S[1][1]
+    z_nocov = r((c - cm) / sqrt(vs0 - cs ** 2 / S[2][2]), 2)
+    return {"m1": mu[0], "m2": mu[1], "m3": mu[2], "s11": S[0][0], "s22": S[1][1], "s33": S[2][2], "s12": S[0][1],
+            "s13": S[0][2], "s23": S[1][2], "x3": x3, "c": c, "ms": ms, "vs": vs, "cs": cs, "slope": s(cs / S[2][2], 1),
+            "cm": s(cm, 0), "cs2": s(cs ** 2 / S[2][2], 0), "cv": s(cv, 0), "sd": s(sqrt(cv), 2), "z": s(z, 2),
+            "zraw": s((c - cm) / sqrt(cv), 3), "pa": s(pa, 3), "p_unc": s(1 - phi[z_unc], 3), "p_nov": s(1 - phi[z_nov], 3),
+            "p_nocov": s(1 - phi[z_nocov], 3), "p_comp": s(phi[z], 3), "dx3": x3 - mu[2],
+            "f077": "0.7794", "f094": "0.8264", "f132": "0.9066", "f192": "0.9726", "zunc": s(z_unc, 2), "znov": s(z_nov, 2),
+            "znocov": s(z_nocov, 2), "vs0": vs0}
 
 
 def values():
     return {"s22p01": p01(), "s22p02": p02(), "s22p03": p03(), "s22p04": p04(), "s22p05": p05(),
             "s22p06": p06(), "s22p07": p07(), "s22p08": p08(), "s22p09": p09(), "s22p10": p10(),
-            "s22p11": p11(), "s22p12": p12(), "s22p13": p13()}
+            "s22p11": p11(), "s22p12": p12(), "s22p13": p13(), "s22p14": p14()}
 
 
 if __name__ == "__main__":

@@ -1,11 +1,11 @@
 {
  "s12p01a": {
   "ok": true,
-  "hash": "229eed439e5e166d"
+  "hash": "f35170b0e893d785"
  },
  "s12p01b": {
   "ok": true,
-  "hash": "695774450fdd458b"
+  "hash": "da42b69e19f9dafa"
  },
  "s12p02a": {
   "ok": true,
@@ -13,7 +13,7 @@
  },
  "s12p02b": {
   "ok": true,
-  "hash": "95b1ed2208738b5d"
+  "hash": "7ccadb0a6671442e"
  },
  "s12p03a": {
   "ok": true,
@@ -57,15 +57,15 @@
  },
  "s12p09b": {
   "ok": true,
-  "hash": "6f589e8c1a69a254"
+  "hash": "02ba96d37a7be453"
  },
  "s12p09c": {
   "ok": true,
-  "hash": "9ff8428abf7463ce"
+  "hash": "66aac28d7f257bae"
  },
  "s12p10a": {
   "ok": true,
-  "hash": "f5c89a1fcc1c9449"
+  "hash": "ea6961475525ae9c"
  },
  "s12p11a": {
   "ok": true,
@@ -97,6 +97,6 @@
  },
  "s12p14b": {
   "ok": true,
-  "hash": "6b1af54e8421e17f"
+  "hash": "874fd1b897496faf"
  }
 }

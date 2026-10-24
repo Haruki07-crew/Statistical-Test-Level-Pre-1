@@ -152,7 +152,7 @@ def p04c():
 
 def p05():
     """2 局の処理日数の比較と予備検定"""
-    return {"n1": 8, "n2": 12, "m1": "21.5", "m2": "18.0", "s1": "6.8", "s2": "3.9", "pF": "0.09"}
+    return {"n1": 8, "n2": 12, "m1": "21.5", "m2": "18.0", "s1": "6.8", "s2": "3.9", "pF": "0.10"}   # F=6.8²/3.9²=3.04, 自由度(7,11) の両側 p 値 0.097
 
 
 def p06():
@@ -162,9 +162,14 @@ def p06():
     OR = a * d / (b * c)
     naive_rate = a / (a + c)
     naive_rate0 = b / (b + d)
+    # 外部の投票率 0.55 で補正した真の投票率（解説用）
+    pcv, pca, turn = a / (a + b), c / (c + d), 0.55
+    tv1 = turn * pcv / (turn * pcv + (1 - turn) * pca)
+    tv0 = turn * (1 - pcv) / (turn * (1 - pcv) + (1 - turn) * (1 - pca))
     return {
         "a": a, "b": b, "c": c, "d": d, "n1": a + b, "n0": c + d, "OR": s(OR, 1),
         "nr1": s(naive_rate, 3), "nr0": s(naive_rate0, 3), "nrr": s(naive_rate / naive_rate0, 2),
+        "pcv": s(pcv, 2), "pca": s(pca, 2), "tv1": s(tv1, 3), "tv0": s(tv0, 3), "trr": s(tv1 / tv0, 2),
         "o1": s(a / b, 4), "o0": s(c / d, 4), "o1b": s(a / c, 1), "o0b": s(b / d, 1), "ac": a + c, "bd": b + d,
     }
 
@@ -190,13 +195,19 @@ def p08():
     var = v1 + v3 + 2 * c13
     se = sqrt(var)
     n = 40
-    q = 0.9875
+    # (b) 内部スチューデント化残差（s² は表示桁 0.051429 から計算）
+    ek, hk = 0.48, 0.38
+    s2k = r(1.80 / (n - 5), 6)
+    vk = r(s2k * (1 - hk), 6)
+    sdk = r(sqrt(vk), 6)
     return {
         "b1": s(b1, 3), "b3": s(b3, 3), "v1": s(v1, 5), "v3": s(v3, 5), "c13": s(c13, 5), "c13x2": s(2 * c13, 5),
         "slope": s(slope, 3), "var": s(var, 5), "se": s(se, 4), "se6": s(se, 6), "tval": s(slope / se, 2),
         "w_nocov": s(sqrt(v1 + v3), 4), "w_plus": s(sqrt(v1 + v3 - 2 * c13), 4), "w_b3": s(sqrt(v3), 4),
         "se1": s(sqrt(v1), 4),
-        "n": n, "hsum": "4.62", "hk": r(5 - 4.62, 2), "hk_s": s(5 - 4.62, 2), "hbar": s(5 / n, 3), "hcut": s(2 * 5 / n, 2),
+        "n": n, "hk_s": s(hk, 2), "hbar": s(5 / n, 3), "hcut": s(2 * 5 / n, 2),
+        "ek": s(ek, 2), "omh": s(1 - hk, 2), "vk": s(vk, 6), "sdk": s(sdk, 6), "rk": r(ek / sdk, 2), "rk4": s(ek / sdk, 4),
+        "w_noh": s(ek / sqrt(s2k), 2), "w_rssn": s(ek / sqrt(1.80 / n * (1 - hk)), 2), "w_nosq": s(ek / (sqrt(s2k) * (1 - hk)), 2),
         **p08c(),
     }
 
@@ -209,7 +220,7 @@ def p08c():
     opt = 2 * p * s2 / n
     return {"rss": s(rss, 2), "pk": p, "tr": s(tr, 3), "s2": s(s2, 6), "dfe": n - p, "opt": s(opt, 6),
             "pe": r(tr + opt, 4), "pe6": s(tr + opt, 6), "w_noopt": s(tr, 4), "w_half": s(tr + opt / 2, 4),
-            "w_s2": s(s2, 4), "w_p4": s(tr + 2 * 4 * s2 / n, 4), "w_ntr": s(tr * (n + p) / (n - p), 4)}
+            "w_s2": s(s2, 4), "w_p4": s(tr + 2 * 4 * (rss / (n - 4)) / n, 4), "w_ntr": s(tr * (n + p) / (n - p), 4)}
 
 
 def p09():
@@ -267,7 +278,7 @@ def p10():
         "L": s(L, 1), "mAB": s((m["A"] + m["B"]) / 2, 1), "c2": s(c2, 1), "inner": s(mse * c2 / n, 3), "se": s(se, 4),
         "t": s(t, 2), "t4": s(t, 4), "w3": s(L / se3, 2), "w1": s(L / se1, 2), "wabs": s(L / seabs, 2),
         "xw": s(xw, 1), "yw": s(yw, 2), "sxy": s(sxy, 2), "sxx": s(sxx, 1), "bw": r(bw, 3), "bw5": s(bw, 5),
-        "bo": s(bo, 3), "bwrong": s(bwrong, 3), "W": W,
+        "bo": s(bo, 3), "bwrong": s(bwrong, 3), "ybu": s(yb, 2), "W": W,
     }
     for i in range(4):
         d[f"x{i+1}"] = xs[i]
@@ -301,8 +312,23 @@ def p12():
     D = {("A", "B"): 2.0, ("A", "C"): 6.0, ("A", "D"): 10.0, ("A", "E"): 9.0, ("B", "C"): 5.0,
          ("B", "D"): 9.0, ("B", "E"): 8.0, ("C", "D"): 4.0, ("C", "E"): 7.0, ("D", "E"): 3.0}
     d = {f"d{a}{b}": s(v, 1) for (a, b), v in D.items()}
-    avg = sum(D[(a, b)] for a in "AB" for b in "CDE") / 6
-    d.update({"h_single": s(5.0, 1), "h_comp": s(10.0, 1), "h_avg": s(avg, 2)})
+    def dd(x, y):
+        return D[(x, y)] if (x, y) in D else D[(y, x)]
+
+    def sil(i, own, other, a_fn, b_fn, form):
+        a_ = a_fn([dd(i, j) for j in own if j != i])
+        b_ = b_fn([dd(i, j) for j in other])
+        return (b_ - a_) / max(a_, b_) if form == "s" else a_ / b_
+    mean = lambda v: sum(v) / len(v)
+    mean_self = lambda v: sum(v) / (len(v) + 1)       # 自分自身の距離 0 を含めた平均
+    own_of = {"C": "CDE", "D": "CDE"}
+    for k_, (af, bf, form) in {"s": (mean, mean, "s"), "r": (mean, mean, "r"), "n": (min, min, "s"),
+                               "i": (mean_self, mean, "s"), "m": (mean, min, "s")}.items():
+        for i in "CD":
+            d[f"{k_}_{i}"] = s(sil(i, own_of[i], "AB", af, bf, form), 3)
+    for i in "CD":
+        a_ = mean([dd(i, j) for j in "CDE" if j != i]); b_ = mean([dd(i, j) for j in "AB"])
+        d[f"a{i}"] = s(a_, 1); d[f"b{i}"] = s(b_, 1); d[f"mx{i}"] = s(max(a_, b_), 1)
     # (b) 斜交因子の共通性
     l1, l2, phi = 0.60, 0.30, 0.40
     h2 = l1 ** 2 + l2 ** 2 + 2 * l1 * l2 * phi

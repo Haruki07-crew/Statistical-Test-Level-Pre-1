@@ -851,10 +851,10 @@ problems:
         explanation: |
           **方針** 重みベクトル $\boldsymbol w=\Sigma^{-1}(\boldsymbol\mu_1-\boldsymbol\mu_2)$ を求め、$\boldsymbol x$ と 2 群の平均の中点との差との内積をとる。2 次の正方行列の逆行列は $\begin{pmatrix}a&b\\b&d\end{pmatrix}^{-1}=\frac{1}{ad-b^2}\begin{pmatrix}d&-b\\-b&a\end{pmatrix}$。
 
-          **途中式** $\boldsymbol\mu_1-\boldsymbol\mu_2=(«d1»,\ «d2»)^\top$、$\det\Sigma=«det»$ なので
-          $$\boldsymbol w=\frac{1}{«det»}\begin{pmatrix} «s22» & -«s12» \\ -«s12» & «s11» \end{pmatrix}\begin{pmatrix} «d1» \\ «d2» \end{pmatrix}=\frac{1}{«det»}\begin{pmatrix} «wn1» \\ «wn2» \end{pmatrix}$$
+          **途中式** $\boldsymbol\mu_1-\boldsymbol\mu_2=(«d1»,\ «d2»)^\top$、$\det\Sigma=«detS»$ なので
+          $$\boldsymbol w=\frac{1}{«detS»}\begin{pmatrix} «s22» & -«s12» \\ -«s12» & «s11» \end{pmatrix}\begin{pmatrix} «d1» \\ «d2» \end{pmatrix}=\frac{1}{«detS»}\begin{pmatrix} «wn1» \\ «wn2» \end{pmatrix}$$
           中点は $(«c1»,\ «c2»)^\top$ で、$\boldsymbol x-$中点 $=(«dx1»,\ «dx2»)^\top$。
-          $$L(\boldsymbol x)=\frac{1}{«det»}\left(«wn1»\times«dx1»+(«wn2»)\times«dx2»\right)=\frac{«lnum»}{«det»}=«c_val4»$$
+          $$L(\boldsymbol x)=\frac{1}{«detS»}\left(«wn1»\times«dx1»+(«wn2»)\times«dx2»\right)=\frac{«lnum»}{«detS»}=«c_val4»$$
           負なので一般プレイヤー（群 2）と判定する。
 
           **答え** $L=«c_val»$ で一般プレイヤーと判定する、という記述

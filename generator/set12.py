@@ -28,7 +28,11 @@ def p01():
     at_s = 1.2645         # arctan √10
     at_n = 1.4711         # arctan 10
     phi1, phi316 = 0.8413, 0.9992
+    at3 = 0.3218          # arctan(1/3)
+    pa = 2 * at3 / pi     # (a) P(|R|>3)：偏角が一様なので 4a/(2π)
     return {
+        "at3": s(at3, 4), "ans_a": s(pa, 3), "ans_a4": s(pa, 4), "c_half": s(at3 / pi, 3), "c_cheb": s(1 / 9, 3),
+        "c_norm3": s(0.0027, 3), "c_comp": s(1 - pa, 3),
         "n": n, "pi": s(pi, 4), "at_s": s(at_s, 4), "at_n": s(at_n, 4), "phi1": s(phi1, 4), "phi316": s(phi316, 4),
         "ans": s(2 * at1 / pi, 3), "c_sqrt": s(2 * at_s / pi, 3), "c_n": s(2 * at_n / pi, 3),
         "c_norm": s(2 * phi1 - 1, 3), "c_clt": s(2 * phi316 - 1, 3),
@@ -50,6 +54,7 @@ def p02():
     mse = vr + bias ** 2
     mse_u = p * (1 - p) / m
     bias_w = 1 / (m + 2)
+    eps = 0.05
     return {
         "n": n, "c": c, "p": s(p, 2), "q19": s(q19, 4), "q20": s(q20, 4), "p0": s(p0, 4), "p1": s(p1, 4),
         "acc": s(acc, 4), "risk": s(1 - acc, 3), "risk4": s(1 - acc, 4), "o_p0": s(p0, 3), "o_p1": s(p1, 3),
@@ -58,6 +63,9 @@ def p02():
         "bias": s(bias, 3), "mpq": s(m * p * (1 - p), 2), "m22": (m + 2) ** 2,
         "vr": s(vr * 1e4, 2), "b2": s(bias ** 2 * 1e4, 2), "mse": s(mse * 1e4, 2), "mse_u": s(mse_u * 1e4, 2),
         "mse_w": s((vr + bias_w ** 2) * 1e4, 2), "pq": s(p * (1 - p), 4),
+        "eps": s(eps, 2), "eps2": s(eps ** 2, 4), "bd": s(mse / eps ** 2, 3), "bd4": s(mse / eps ** 2, 4),
+        "bd_v": s(vr / eps ** 2, 3), "bd_b": s(bias ** 2 / eps ** 2, 3), "bd_u": s(mse_u / eps ** 2, 3),
+        "bd_e": s(mse / eps, 3),
     }
 
 
@@ -190,6 +198,8 @@ def p09():
     n, p = 10, 3
     hsum9 = 2.30
     h10 = p - hsum9
+    rss = 6.30
+    s2 = rss / (n - p)
     return {
         "b0": s(b0, 1), "b1": s(b1, 1), "b2": s(b2, 1), "knot": knot, "t": t, "x": 1100 + 10 * t,
         "xk": 1100 + 10 * knot, "tk": t - knot, "pred": s(pred, 1), "p_noplus": s(b0 + b1 * t, 1),
@@ -197,7 +207,10 @@ def p09():
         "p_sign": s(b0 + b1 * t - b2 * (t - knot), 1), "slope2": s(b1 + b2, 1), "b1t": s(b1 * t, 1),
         "b2t": s(b2 * (t - knot), 1),
         "n": n, "p": p, "hsum9": s(hsum9, 2), "h10": r(h10, 2), "h10_s": s(h10, 2), "thr": s(2 * p / n, 1),
-        "q85": "1.036", "q818": "0.908", "q90": "1.282", "q95": "1.645",
+        "q909": "1.335", "q95": "1.645", "rmin": "-1.20", "rmax": "2.95",
+        "rss": s(rss, 2), "s2": s(s2, 2), "omh": s(1 - h10, 2), "v_e": s(s2 * (1 - h10), 2), "dfr": n - p,
+        "sde": r(math.sqrt(s2 * (1 - h10)), 2), "sde4": s(math.sqrt(s2 * (1 - h10)), 4),
+        "sde_n1": s(math.sqrt(rss / (n - 1) * (1 - h10)), 2), "sde_h": s(math.sqrt(s2 * h10), 2),
     }
 
 
@@ -214,7 +227,7 @@ def p10():
     out.update({f"l{i + 1}": f"{lg[i]:.5f}" for i in range(4)})
     out.update({f"tt{i + 1}": f"{terms[i]:.5f}" for i in range(4)})
     out.update({"sumt": s(sum(terms), 5), "D": s(D, 2), "D4": s(D, 4), "half": s(sum(terms), 2), "pear": s(pear, 2),
-                "swap": s(swap, 2), "neg": s(-D, 2), "chi2": "5.991", "musum": s(sum(mu), 2)})
+                "swap": s(swap, 2), "noy": s(2 * sum(lg), 2), "neg": s(-D, 2), "chi2": "5.991", "musum": s(sum(mu), 2)})
     return out
 
 
@@ -290,8 +303,17 @@ def p14():
     inner = {m: py[(m, 1)] * px1 + py[(m, 0)] * (1 - px1) for m in (0, 1)}
     do = {x: pm[x] * inner[1] + (1 - pm[x]) * inner[0] for x in (0, 1)}
     ace = do[1] - do[0]
+    # 問題文には集計表（ロット数）で示す。表から作った条件付き確率が上の値と一致することを確かめる
+    N = 5000
+    nx = {1: round(N * px1), 0: round(N * (1 - px1))}
+    cnt = {(m, x): round(nx[x] * (pm[x] if m == 1 else 1 - pm[x])) for m in (0, 1) for x in (0, 1)}
+    kk = {(m, x): round(cnt[(m, x)] * py[(m, x)]) for m in (0, 1) for x in (0, 1)}
+    assert all(abs(kk[k] - cnt[k] * py[k]) < 1e-9 for k in kk)
     obs = {x: pm[x] * py[(1, x)] + (1 - pm[x]) * py[(0, x)] for x in (0, 1)}
     out.update({
+        "Ntot": N, "nx1": nx[1], "nx0": nx[0],
+        "n11": cnt[(1, 1)], "n01": cnt[(0, 1)], "n10": cnt[(1, 0)], "n00": cnt[(0, 0)],
+        "k11": kk[(1, 1)], "k01": kk[(0, 1)], "k10": kk[(1, 0)], "k00": kk[(0, 0)],
         "px1": s(px1, 1), "px0": s(1 - px1, 1), "pm1": s(pm[1], 2), "pm0": s(pm[0], 2),
         "pm1c": s(1 - pm[1], 2), "pm0c": s(1 - pm[0], 2),
         "y11": s(py[(1, 1)], 2), "y10": s(py[(1, 0)], 2), "y01": s(py[(0, 1)], 2), "y00": s(py[(0, 0)], 2),

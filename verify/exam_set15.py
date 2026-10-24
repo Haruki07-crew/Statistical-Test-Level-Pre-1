@@ -176,28 +176,12 @@ E.num("s15p08a", rnd(pi[3], 3), f"固有ベクトル π={np.round(pi, 4)}")
 E.check("s15p08a", np.allclose(np.linalg.matrix_power(P, 200)[0], pi), "P^200 の行が定常分布")
 
 # ---- 大問9
-# (a) 各割り付けで、日のダミーと直交しない（交絡する）効果を調べる
-import itertools  # noqa: E402
-runs = list(itertools.product([-1, 1], repeat=3))
-name = lambda r_: "".join(c for c, v in zip("abc", r_) if v == 1) or "(1)"
-effects = {"".join(e): e for k in (1, 2, 3) for e in itertools.combinations("ABC", k)}
-
-
-def confounded(day1):
-    blk = np.array([1 if name(r_) in day1 else -1 for r_ in runs])
-    out = []
-    for lab, e in effects.items():
-        col = np.array([np.prod([r_["ABC".index(ch)] for ch in e]) for r_ in runs])
-        if abs(col @ blk) == 8:
-            out.append(lab)
-    return out
-
-
-ans = E.item("s15p09a")["answer"]
+# (a) 定義にもとづく対応づけ（文章問題）：正解の選択肢がただ1つで、誤答はそれぞれ定義に反する対応を含む
+truth = {"(ア)": "局所管理", "(イ)": "無作為化", "(ウ)": "反復"}
 for k, ch in enumerate(E.item("s15p09a")["choices"]):
-    day1 = re.search(r"1 日目 \$\\\{(.*?)\\\}", ch).group(1).split(",")
-    cf = confounded(day1)
-    E.check("s15p09a", (cf == ["ABC"]) == (k == ans), f"選択肢 {k} が交絡させる効果 {cf}")
+    pairs = dict(re.findall(r"(\([アイウ]\)) (\S+?)(?:、|$)", ch))
+    E.check("s15p09a", (pairs == truth) == (k == E.item("s15p09a")["answer"]), f"選択肢 {k}: {pairs}")
+import itertools  # noqa: E402
 # (b) 全 64 通りの符号で正確な p 値、scipy とも比べる
 d = np.array([12, 3, -6, 15, 8, 10])
 rk = stats.rankdata(abs(d))

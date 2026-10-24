@@ -47,21 +47,20 @@ def close(a, b, tol):
     return abs(a - b) <= tol
 
 
-# ---- 大問1：4 通りの結果を列挙して独立性を確かめる
-out = list(itertools.product([0, 1], repeat=2))  # (赤, 青) 1=表
-P = lambda ev: sum(1 for w in out if ev(w)) / 4
-A = lambda w: w[0] == 1
-B = lambda w: w[1] == 1
-C = lambda w: w[0] == w[1]
-pair_ind = all(abs(P(lambda w: x(w) and y(w)) - P(x) * P(y)) < 1e-12 for x, y in [(A, B), (A, C), (B, C)])
-triple = P(lambda w: A(w) and B(w) and C(w))
-st = [triple == P(A) * P(B) * P(C),                                        # 0 相互独立
-      not abs(P(lambda w: A(w) and C(w)) - P(A) * P(C)) < 1e-12,              # 1 A と C は独立でない
-      pair_ind and triple != P(A) * P(B) * P(C),                              # 2
-      abs(P(lambda w: A(w) and B(w) and C(w)) - P(A) * P(lambda w: B(w) and C(w))) < 1e-12,  # 3
-      abs(P(lambda w: A(w) or B(w) or C(w)) - 7 / 8) < 1e-12]                 # 4
-E.check("s14p01a", st == [False, False, True, False, False], f"列挙で各記述の真偽 {st}")
-E.choice("s14p01a", "\\frac{1}{4}", "P(A∩B∩C)=1/4 の記述")
+# ---- 大問1：吸収マルコフ連鎖（状態＝次に投げる人）を解き、シミュレーションでも確かめる
+p_hit = 0.25
+# 状態 P の手番・Q の手番。x_P = p + (1-p) x_Q、x_Q = (1-p) x_P を連立
+Am = np.array([[1, -(1 - p_hit)], [-(1 - p_hit), 1]])
+xP, xQ = np.linalg.solve(Am, [p_hit, 0])
+nearest("s14p01a", xP, "連立方程式で先手が勝つ確率")
+wins = 0
+for _ in range(200_000):
+    turn = 0
+    while not (rng.random() < 0.5 and rng.random() < 0.5):
+        turn ^= 1
+    wins += turn == 0
+E.check("s14p01a", close(wins / 200_000, 4 / 7, 0.004), f"シミュレーション {wins / 200_000:.4f}（許容 ±0.004）")
+distinct("s14p01a", 3)
 
 # ---- 大問2
 # (a) 示した Φ と ln2 の確認、正確な値とモンテカルロ
@@ -83,24 +82,27 @@ E.check("s14p02b", close((XA - XB > 5).mean(), 0.2426, 0.002), f"シミュレー
 distinct("s14p02b", 3)
 
 # ---- 大問3
-# (a) 共分散行列から直接
-S = np.array([[36, 0.25 * 48], [0.25 * 48, 64]])
-w = np.array([1, 1])
-corr = (S @ w)[0] / np.sqrt(S[0, 0] * w @ S @ w)
-E.num("s14p03a", float(f(corr, 2)), "行列計算 Cov(X1,T)/√(V1 V_T)")
+# (a) 多項分布の共分散行列（scipy）とシミュレーション
+mn = stats.multinomial(20, [0.30, 0.15, 0.55])
+Cm = mn.cov()
+E.num("s14p03a", float(f(Cm[0, 1] / np.sqrt(Cm[0, 0] * Cm[1, 1]), 3)), "scipy multinomial の共分散行列")
+smp = rng.multinomial(20, [0.30, 0.15, 0.55], 400_000)
+rs = np.corrcoef(smp[:, 0], smp[:, 1])[0, 1]
+E.check("s14p03a", close(rs, -0.275, 0.005), f"シミュレーションの相関 {rs:.4f}（許容 ±0.005）")
 # (b) sympy で連立方程式を解く
 a, b = sp.symbols("a b", positive=True)
 sol = sp.solve([a / (a + b) - sp.Rational(76, 100), a * b / ((a + b) ** 2 * (a + b + 1)) - sp.Rational(64, 10000)], [a, b], dict=True)
 E.num("s14p03b", float(f(float(sol[0][a]), 1)), "sympy で平均・分散の式を連立")
 E.check("s14p03b", close(stats.beta(float(sol[0][a]), float(sol[0][b])).var(), 0.0064, 1e-9), "scipy のベータ分布の分散が 0.0064")
-# (c) scipy の χ² 点で区間、表の値の確認
-for k, q, v in [(9, 0.025, 2.70), (9, 0.975, 19.02), (10, 0.025, 3.25), (10, 0.975, 20.48)]:
-    E.check("s14p03c", close(stats.chi2.ppf(q, k), v, 0.006), f"χ² 点 ({k}, 下側{q}) = {v}")
-up = np.sqrt(9 * 25 / stats.chi2.ppf(0.025, 9))
-E.choice("s14p03c", f"${f(up, 2)}$", "scipy の点で上限")
-sims = rng.normal(0, 5, (200_000, 10)).std(axis=1, ddof=1)
-cover = np.mean((np.sqrt(9 * sims ** 2 / 19.02) <= 5) & (5 <= np.sqrt(9 * sims ** 2 / 2.70)))
-E.check("s14p03c", close(cover, 0.95, 0.005), f"区間の被覆率シミュレーション {cover:.4f}")
+# (c) クロッパー＝ピアソン：ベータ分布の分位点と、二項分布の裾確率を数値で解く
+lo_beta = stats.beta.ppf(0.025, 12, 1)
+from scipy.optimize import brentq  # noqa: E402
+lo_root = brentq(lambda th: stats.binom.sf(11, 12, th) - 0.025, 0.01, 0.999)
+E.check("s14p03c", close(lo_beta, lo_root, 1e-8), f"ベータ分位点 {lo_beta:.5f} と二項の裾確率の解 {lo_root:.5f} が一致")
+E.choice("s14p03c", f"${f(lo_beta, 3)}$", "Beta(12,1) の 2.5% 点")
+for v, val in [(0.025 ** (1 / 12), 0.7354), (0.05 ** (1 / 12), 0.7791), (0.025 ** (1 / 11), 0.7151)]:
+    E.check("s14p03c", close(v, val, 5e-5), f"示した値 {val}")
+distinct("s14p03c", 3)
 
 # ---- 大問4
 # (a) 最大値の検出力をシミュレーションと解析式（c を数値で求める）
@@ -190,43 +192,47 @@ beta = gam * v1
 E.choice("s14p07b", f"({f(beta[0], 3)},\\ {f(beta[1], 3)})", "固有分解による主成分回帰")
 
 # ---- 大問8
-# (a) 同時確率の総当たり
-num = stats.poisson(1.5).pmf(2) * stats.poisson(1.0).pmf(1)
-den = sum(stats.poisson(1.5).pmf(x) * stats.poisson(1.0).pmf(3 - x) for x in range(4))
-E.num("s14p08a", float(f(num / den, 3)), "同時確率の比")
-# (b) Pearson φ と z の再計算、e^0.24
-phi = 333.0 / (152 - 4)
-z = 0.24 / (0.08 * np.sqrt(phi))
-E.check("s14p08b", close(np.exp(0.24), 1.271, 5e-4), "e^0.24 = 1.271")
-E.check("s14p08b", abs(z) > 1.96 and E.item("s14p08b")["answer"] == 0, f"準ポアソンの z={z:.3f} > 1.96 で有意（選択肢0）")
-E.choice("s14p08b", f"倍の${f(0.08 * np.sqrt(phi), 2)}$にする。$z={f(z, 2)}$となり、有意である", "SE×√φ の記述")
+# (a) 切断分布を直接足し合わせる
+xs = np.arange(1, 200)
+pm = stats.poisson(1.5).pmf(xs)
+E.num("s14p08a", float(f((xs * pm).sum() / pm.sum(), 3)), "x≥1 の確率関数で直接和をとる")
+E.check("s14p08a", close(np.exp(-1.5), 0.2231, 5e-5), "e^{-1.5} の値")
+# (b) scipy の負の二項分布（n=θ, p=θ/(θ+μ)）、示した e^x の値
+for xv, val in [(0.25, 1.284), (0.34, 1.405), (0.49, 1.632), (-1.632, 0.1955)]:
+    E.check("s14p08b", close(np.exp(xv), val, 5e-4), f"e^{xv} = {val}")
+mu_ = np.exp(0.10 + 0.24 + 0.30 * 0.5)
+p0 = stats.nbinom(2.0, 2.0 / (2.0 + mu_)).pmf(0)
+nearest("s14p08b", p0, "scipy nbinom の P(Y=0)")
+nbv = stats.nbinom(2.0, 2.0 / (2.0 + mu_))
+E.check("s14p08b", close(nbv.var(), mu_ + mu_ ** 2 / 2.0, 1e-9), "scipy の分散が μ+μ²/θ（パラメータの対応の確認）")
+distinct("s14p08b", 3)
 
-# ---- 大問9：DFFITS をデータを作って当てはめ直しで確かめる（外部化の公式を使わない）
+# ---- 大問9：外部スチューデント化残差の公式を削除計算で確かめ、ボンフェローニの点を scipy で
 n_, p_ = 36, 5
-# 公式の値を、h と r を満たす人工データでの削除計算と照合する
 from numpy.linalg import lstsq  # noqa: E402
-found = False
-for seed in range(200):
-    g = np.random.default_rng(seed)
-    X = np.column_stack([np.ones(n_), g.normal(size=(n_, p_))])
-    H = X @ np.linalg.inv(X.T @ X) @ X.T
-    i = int(np.argmin(abs(np.diag(H) - 0.35)))
-    if abs(H[i, i] - 0.35) < 0.02:
-        found = True
-        break
+g = np.random.default_rng(7)
+X = np.column_stack([np.ones(n_), g.normal(size=(n_, p_))])
 y = g.normal(size=n_)
+H = X @ np.linalg.inv(X.T @ X) @ X.T
 e = y - H @ y
 s2 = e @ e / (n_ - p_ - 1)
+i = 0
 ri = e[i] / np.sqrt(s2 * (1 - H[i, i]))
 mask = np.arange(n_) != i
 bi = lstsq(X[mask], y[mask], rcond=None)[0]
 s2i = ((y[mask] - X[mask] @ bi) ** 2).sum() / (n_ - p_ - 2)
-dff_direct = (H[i] @ y - X[i] @ bi) / np.sqrt(s2i * H[i, i])
-ti = ri * np.sqrt((n_ - p_ - 2) / (n_ - p_ - 1 - ri ** 2))
-E.check("s14p09a", found and close(dff_direct, ti * np.sqrt(H[i, i] / (1 - H[i, i])), 1e-8),
-        "人工データで削除計算した DFFITS が t_i√(h/(1-h)) と一致（公式の確認）")
+t_direct = e[i] / np.sqrt(s2i * (1 - H[i, i]))
+E.check("s14p09a", close(t_direct, ri * np.sqrt((n_ - p_ - 2) / (n_ - p_ - 1 - ri ** 2)), 1e-8),
+        "人工データで削除計算した外部スチューデント化残差が公式と一致")
 t_ = 2.6 * np.sqrt(29 / (30 - 2.6 ** 2))
-E.num("s14p09a", float(f(t_ * np.sqrt(0.35 / 0.65), 2)), "丸めない計算")
+for k, q, v in [(29, 0.975, 2.045), (29, 1 - 0.05 / 72, 3.54), (30, 1 - 0.05 / 72, 3.52)]:
+    E.check("s14p09a", close(stats.t.ppf(q, k), v, 0.006), f"t 点 ({k}, {q:.6f}) = {v}")
+padj = min(1, 72 * stats.t.sf(t_, 29))
+E.check("s14p09a", padj > 0.05 and 2 * stats.t.sf(t_, 29) < 0.05 and E.item("s14p09a")["answer"] == 1,
+        f"ボンフェローニ調整 p 値 {padj:.3f} > 0.05（未調整は < 0.05）→ 選択肢1")
+E.choice("s14p09a", f"t_i={f(t_, 2)}$で、$t_{{0.05/72}}(29)=3.54$を超えないので", "t_i の値と補正した点")
+dff = t_ * np.sqrt(0.35 / 0.65)
+E.check("s14p09a", dff > 2 * np.sqrt(6 / 36) and 0.35 > 2 * 6 / 36, f"DFFITS {dff:.3f} が目安を超える（選択肢3は誤り）")
 # (b) d 分離：線形ガウス SEM で偏相関を計算
 coef = {"X": {"Z": 0.7}, "Y": {"Z": 0.5, "X": 0.6}, "S": {"X": 0.4, "Y": 0.8}}
 order = ["Z", "X", "Y", "S"]
@@ -249,11 +255,20 @@ tests = [abs(pcorr("Z", "Y", ["X"])) < 1e-10, abs(pcorr("Z", "S", ["X"])) < 1e-1
 E.check("s14p09b", tests == [False, False, False, True, False], f"線形SEMの偏相関が0になるもの {tests}")
 
 # ---- 大問10
-# (a) 全標本の列挙
-ep = np.array([10, 12, 15, 11, 13, 16, 12, 14, 18, 13, 15, 19])
-ms = [ep[j::3].mean() for j in range(3)]
-E.choice("s14p10a", f"${f(np.mean((np.array(ms) - ep.mean()) ** 2), 2)}$", "3 標本の列挙")
-distinct("s14p10a", 2)
+# (a) 層別抽出をシミュレーション（層内は正規の母集団を作り、比例配分で繰り返し抽出）
+popA = rng.normal(20, 5, 8000)
+popB = rng.normal(40, 15, 2000)
+popA = (popA - popA.mean()) / popA.std(ddof=1) * 5 + 20
+popB = (popB - popB.mean()) / popB.std(ddof=1) * 15 + 40
+ests = []
+for _ in range(20_000):
+    ya = rng.choice(popA, 160, replace=True)
+    yb = rng.choice(popB, 40, replace=True)
+    ests.append(0.8 * ya.mean() + 0.2 * yb.mean())
+sd_sim = np.std(ests)
+nearest("s14p10a", sd_sim, "復元抽出（有限母集団修正なしに対応）のシミュレーションの標準偏差")
+E.check("s14p10a", close(sd_sim, 0.5701, 0.01), f"シミュレーション {sd_sim:.4f}（許容 ±0.01）")
+distinct("s14p10a", 3)
 # (b) 正準相関を一般の公式（固有値）で
 Ryy = np.array([[1.0]])
 Rxx = np.array([[1, 0.3], [0.3, 1]])
@@ -283,13 +298,14 @@ evs = np.sort(np.linalg.eigvalsh(Rm))[::-1]
 E.check("s14p11a", close(evs[0], 2.004, 0.0005), f"最大固有値 {evs[0]:.5f} ≈ 2.004")
 E.choice("s14p11a", f"{f(100 * evs[:2].sum() / 3, 1)}\\%", "numpy eigvalsh で累積寄与率")
 distinct("s14p11a", 1)
-# (b) 同時分布を直接作って条件付き確率
-pj = {}
-for cl, pr, a1, a2 in [(1, 0.05, 0.8, 0.6), (0, 0.95, 0.1, 0.2)]:
-    for x1 in (0, 1):
-        for x2 in (0, 1):
-            pj[(cl, x1, x2)] = pr * (a1 if x1 else 1 - a1) * (a2 if x2 else 1 - a2)
-E.num("s14p11b", float(f(pj[(1, 1, 0)] / (pj[(1, 1, 0)] + pj[(0, 1, 0)]), 3)), "同時分布表から条件付き確率")
+# (b) 正規分布の対数尤度比（2 次判別の式で共分散共通）から直接、判別関数値を求める
+mu1, mu2 = np.array([7, 5.0]), np.array([4, 4.0])
+Sg2 = np.array([[2, 1], [1, 2.0]])
+xv = np.array([5.7, 6.0])
+llr = stats.multivariate_normal(mu1, Sg2).logpdf(xv) - stats.multivariate_normal(mu2, Sg2).logpdf(xv)
+E.choice("s14p11b", f"L={f(llr, 2)}$で、一般プレイヤー", "2 群の対数尤度比（= 線形判別関数）")
+dM = [float((xv - m) @ np.linalg.solve(Sg2, xv - m)) for m in (mu1, mu2)]
+E.check("s14p11b", dM[1] < dM[0], f"マハラノビス距離の 2 乗 {dM[0]:.3f}（群1）> {dM[1]:.3f}（群2）で群2 に近い")
 
 # ---- 大問12
 # (a) 個人データを再現して lifelines 風に手計算（打ち切りを個別に処理）

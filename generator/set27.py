@@ -339,7 +339,7 @@ def p12():
         vw = r1 * r2 * c1 * c2 / n ** 3
         out.update({f"a{i}": a, f"b{i}": b, f"c{i}": c, f"d{i}": d, f"n{i}": n, f"r1{i}": r1, f"r2{i}": r2,
                     f"k1{i}": c1, f"k2{i}": c2, f"e{i}": s(e, 4), f"v{i}": s(v, 4), f"vw{i}": s(vw, 4),
-                    f"vnum{i}": r1 * r2 * c1 * c2, f"vden{i}": n ** 2 * (n - 1)})
+                    f"vnum{i}": r1 * r2 * c1 * c2, f"vden{i}": n ** 2 * (n - 1), f"n{i}m1": n - 1})
         sa += a
         se += e
         sv += v
