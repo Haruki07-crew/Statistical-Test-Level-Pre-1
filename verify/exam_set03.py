@@ -22,7 +22,7 @@ def r3(x):
     return f"{x:.3f}"
 
 
-# ---------- s03p01：混合正規・ベイズの定理・相関 ----------
+# ---------- s03p01：混合正規・条件付き独立・相関 ----------
 sfA = stats.norm.sf(55, 60, 5)
 sfB = stats.norm.sf(55, 45, 8)
 p1 = 0.3 * sfA + 0.7 * sfB
@@ -34,10 +34,11 @@ sd = np.where(zA, 5.0, 8.0)
 Y1 = rng.normal(mu, sd)
 Y2 = rng.normal(mu, sd)
 E.check("s03p01a", abs((Y1 >= 55).mean() - p1) < 0.002, f"シミュレーション P(Y1≥55)={(Y1 >= 55).mean():.4f}")
-post = 0.3 * sfA / p1
-E.choice("s03p01b", r3(post), "ベイズの定理を scipy の確率で直接計算")
-sim_post = zA[Y1 >= 55].mean()
-E.check("s03p01b", abs(sim_post - post) < 0.003, f"シミュレーション P(A | Y1≥55)={sim_post:.4f}")
+cond = (0.3 * sfA ** 2 + 0.7 * sfB ** 2) / p1
+E.choice("s03p01b", r3(cond), "P(Y2≥55 | Y1≥55) を scipy で直接計算")
+sim_c = ((Y1 >= 55) & (Y2 >= 55)).sum() / (Y1 >= 55).sum()
+E.check("s03p01b", abs(sim_c - cond) < 0.004, f"シミュレーション {sim_c:.4f}")
+E.check("s03p01b", abs(cond - p1) > 0.1, "無条件の独立とは明らかに違う（条件付き独立≠独立）")
 w = sp.Rational(3, 10)
 EY = w * 60 + (1 - w) * 45
 EY2 = w * (60 ** 2 + 25) + (1 - w) * (45 ** 2 + 64)
@@ -62,19 +63,21 @@ for t in np.unique(tt[dd == 1]):
     S *= 1 - ((tt == t) & (dd == 1)).sum() / (tt >= t).sum()     # リスク集合を「t 以上」で数える
 E.choice("s03p02b", r3(S), "リスク集合 {T ≥ t} を数え直したカプラン＝マイヤー")
 
-# ---------- s03p03：ポアソン・適合度・ポアソン回帰 ----------
+# ---------- s03p03：ポアソン・2標本の比較・ポアソン回帰 ----------
 x = np.repeat([0, 1, 2, 3, 4], [38, 40, 26, 12, 4])
 lam_hat = x.mean()
 E.num("s03p03a", round(len(x) * 0.3012 * lam_hat ** 2 / 2, 1), "与えた e^{-1.2} での期待度数（1桁に丸め）")
 E.check("s03p03a", abs(len(x) * stats.poisson.pmf(2, lam_hat) - 26.0) < 0.05, f"scipy の pmf での期待度数 {len(x) * stats.poisson.pmf(2, lam_hat):.4f}")
 # scipy.stats.chisquare（ddof=1 で推定パラメータ分の自由度を引く）
-pr = np.array([0.3012 * lam_hat ** k / math.factorial(k) for k in range(3)])
-expd = len(x) * np.append(pr, 1 - pr.sum())
-obs = np.array([38, 40, 26, 16])
-cs = stats.chisquare(obs, expd, ddof=1)
-E.choice("s03p03b", f"統計量 {cs.statistic:.3f}、自由度 2", "scipy.stats.chisquare（ddof=1）")
-E.check("s03p03b", cs.pvalue > 0.05 and abs(stats.chi2.sf(cs.statistic, 2) - cs.pvalue) < 1e-12, f"自由度 2 の p 値 {cs.pvalue:.3f} > 0.05")
-E.check("s03p03b", len(x) * stats.poisson.sf(3, lam_hat) < 5, "4 件以上のセルの期待度数は 5 未満（併合が必要）")
+# 条件付き二項：scipy の binom の平均・標準偏差から z、正確な二項検定でも結論を確認
+cb = stats.binom(243, 120 / 210)
+zc = (144 - cb.mean()) / cb.std()
+E.choice("s03p03b", f"$z={zc:.2f}$、棄却しない", "scipy.stats.binom の平均・標準偏差で標準化")
+E.check("s03p03b", stats.binomtest(144, 243, 120 / 210).pvalue > 0.05, f"正確な二項検定の両側 p={stats.binomtest(144, 243, 120 / 210).pvalue:.3f}")
+simA = rng.poisson(1.15 * 120, 200000)
+simB = rng.poisson(1.15 * 90, 200000)
+zs = (simA - (simA + simB) * 4 / 7) / np.sqrt((simA + simB) * 12 / 49)
+E.check("s03p03b", abs((np.abs(zs) > 1.96).mean() - 0.05) < 0.005, f"H0 の下での棄却率 {(np.abs(zs) > 1.96).mean():.4f}")
 b0, b1 = sp.Rational(-190, 100), sp.Rational(-45, 100)
 muP = float(sp.exp(sp.log(8) + b0 + b1))
 E.choice("s03p03c", r3(muP), "sympy で exp(log T + β0 + β1) を計算")
@@ -94,27 +97,33 @@ sums = rng.exponential(7.5, size=(100000, 40)).sum(axis=1)
 cov = ((2 * sums / stats.chi2.ppf(0.975, 80) <= 7.5) & (7.5 <= 2 * sums / stats.chi2.ppf(0.025, 80))).mean()
 E.check("s03p04c", abs(cov - 0.95) < 0.005, f"被覆率シミュレーション {cov:.4f}")
 
-# ---------- s03p05：符号付き順位検定・サンプルサイズ ----------
+# ---------- s03p05：符号付き順位検定・ネイマン・ピアソン ----------
 d = np.array([7, -3, 12, 5, -1, 9, 4, -6, 11, 2])
 r = stats.wilcoxon(d, alternative="greater", method="approx", correction=False)
 z = stats.norm.isf(r.pvalue)
 E.choice("s03p05a", f"$W^+={int(r.statistic)}$、$z={z:.2f}$、棄却する", "scipy.stats.wilcoxon（正規近似・連続修正なし）")
 E.check("s03p05a", r.pvalue < 0.05, f"片側 p={r.pvalue:.4f} < 0.05")
-# 与えた z 値で検出力を直接計算し、0.9 以上になる最小の n を総当たりで探す
-power = lambda m: 1 - stats.norm.cdf(1.645 - math.sqrt(m) * 5 / 10)
-nmin = next(m for m in range(1, 500) if (1.645 + 1.282 - math.sqrt(m) * 0.5) <= 0)
-E.num("s03p05b", nmin, "与えた分位点で条件を満たす最小の n を総当たり")
-E.check("s03p05b", power(nmin) >= 0.9 > power(nmin - 1), f"scipy で検出力 n={nmin}: {power(nmin):.4f}、n={nmin - 1}: {power(nmin - 1):.4f}")
+# 尤度比の大きい x から順に棄却域に入れ、サイズ 5% 以下で最大の（非ランダム化）棄却域を総当たりで探す
+xs_ = np.arange(16)
+lr = stats.binom.pmf(xs_, 15, 0.7) / stats.binom.pmf(xs_, 15, 0.5)
+order = xs_[np.argsort(-lr)]
+best = None
+for k in range(1, 16):
+    R = order[:k]
+    if stats.binom.pmf(R, 15, 0.5).sum() <= 0.05:
+        best = R
+E.check("s03p05b", sorted(best) == list(range(12, 16)), f"尤度比の大きい順に集めた棄却域 {sorted(best)}")
+E.choice("s03p05b", "$X\\ge" + f"{min(best)}$、検出力 {stats.binom.pmf(best, 15, 0.7).sum():.3f}", "棄却域と検出力（scipy の二項分布）")
 
-# ---------- s03p06：定常分布 ----------
+# ---------- s03p06：2ステップの経路 ----------
 P = np.array([[0.6, 0.3, 0.1], [0.3, 0.4, 0.3], [0.2, 0.4, 0.4]])
-vals, vecs = np.linalg.eig(P.T)
-pi = np.real(vecs[:, np.argmin(abs(vals - 1))])
-pi /= pi.sum()
-E.choice("s03p06a", r3(pi[2]), "P^T の固有値 1 の固有ベクトル")
-E.check("s03p06a", np.allclose(np.linalg.matrix_power(P, 200)[0], pi), "P^200 の行が定常分布に収束")
+P2 = P @ P
+E.choice("s03p06a", r3(P[0, 1] * P[1, 2] / P2[0, 2]), "行列の積 P² を使って条件付き確率")
+s1 = np.array([rng.choice(3, p=P[0]) for _ in range(100000)])
+s2 = np.array([rng.choice(3, p=P[k]) for k in s1])
+E.check("s03p06a", abs((s1[s2 == 2] == 1).mean() - 0.09 / 0.19) < 0.01, f"シミュレーション {(s1[s2 == 2] == 1).mean():.4f}")
 
-# ---------- s03p07：調整済み R²・クックの距離・除外変数バイアス ----------
+# ---------- s03p07：調整済み R²・てこ比・除外変数バイアス ----------
 # 実際にデータを作って確認する：調整済み R² は残差の不偏分散 / y の不偏分散
 Xd = np.column_stack([np.ones(30), rng.normal(size=(30, 2))])
 yd = Xd @ np.array([1.0, 0.8, 0.5]) + rng.normal(size=30)
@@ -124,15 +133,17 @@ R2d = 1 - (ed ** 2).sum() / ((yd - yd.mean()) ** 2).sum()
 adj_def = 1 - ((ed ** 2).sum() / 27) / (((yd - yd.mean()) ** 2).sum() / 29)
 E.check("s03p07a", abs(adj_def - (1 - (1 - R2d) * 29 / 27)) < 1e-12, "定義（不偏分散の比）と公式の一致を実データで確認")
 E.choice("s03p07a", r3(1 - (1 - 0.62) * 29 / 27), "公式に R²=0.62 を代入")
-# クックの距離：定義（1点を除いたときの係数の変化）と公式の一致を実データで確認
-H = Xd @ np.linalg.solve(Xd.T @ Xd, Xd.T)
-s2 = (ed ** 2).sum() / 27
-i = 7
-bi = np.linalg.lstsq(np.delete(Xd, i, 0), np.delete(yd, i), rcond=None)[0]
-Ddef = (bh - bi) @ (Xd.T @ Xd) @ (bh - bi) / (3 * s2)
-ri = ed[i] / math.sqrt(s2 * (1 - H[i, i]))
-E.check("s03p07b", abs(Ddef - ri ** 2 / 3 * H[i, i] / (1 - H[i, i])) < 1e-10, "クックの距離の定義と公式の一致を実データで確認")
-E.num("s03p07b", round(float(Fr(24, 10) ** 2 / 3 * Fr(28, 72)), 2), "分数で公式を計算（2桁に丸め）")
+# てこ比：平均 10・偏差平方和 250・x17=22 となる 30 個の x を実際に作り、ハット行列の対角成分を計算
+xr = rng.normal(size=29)
+xr = xr - xr.mean()
+others_mean = 10 - 12.0 / 29
+ss_needed = 250 - 12.0 ** 2 - 29 * (others_mean - 10) ** 2
+xr = others_mean + xr * math.sqrt(ss_needed / (xr ** 2).sum())
+xv = np.append(xr, 22.0)
+E.check("s03p07b", abs(xv.mean() - 10) < 1e-12 and abs(((xv - 10) ** 2).sum() - 250) < 1e-9, "作った x の平均 10・偏差平方和 250")
+Xh = np.column_stack([np.ones(30), xv])
+Hh = Xh @ np.linalg.inv(Xh.T @ Xh) @ Xh.T
+E.num("s03p07b", round(Hh[-1, -1], 3), "ハット行列 X(X'X)^{-1}X' の対角成分（3桁に丸め）")
 # 除外変数バイアス：重回帰係数と補助回帰から単回帰の傾きが正確に再現されることを実データで確認
 x1 = rng.normal(5, 1, 30)
 x2 = 150 - 4 * x1 + rng.normal(0, 3, 30)
@@ -180,16 +191,13 @@ E.num("s03p09b", round(Fv, 2), "ダミー変数の回帰で縮小モデルとの
 yr = Fr(54) / Fr(15, 2) * Fr(3200, 400)
 E.num("s03p10a", round(float(yr), 1), "分数で比推定量")
 
-# ---------- s03p11：マハラノビス距離と誤判別確率 ----------
-m1, m2 = np.array([85.0, 6.0]), np.array([70.0, 2.0])
-Sig = np.array([[100.0, 12.0], [12.0, 4.0]])
-D2 = float((m1 - m2) @ np.linalg.solve(Sig, m1 - m2))
-# 誤判別確率を判別関数の分布から直接（scipy の多変量正規でシミュレーション）
-Xs = stats.multivariate_normal(m1, Sig).rvs(size=400000, random_state=7)
-wv = np.linalg.solve(Sig, m1 - m2)
-mis = ((Xs - (m1 + m2) / 2) @ wv < 0).mean()
-E.check("s03p11a", abs(mis - stats.norm.sf(math.sqrt(D2) / 2)) < 0.003, f"シミュレーションの誤判別率 {mis:.4f}")
-E.choice("s03p11a", f"$\\Delta^2={D2:.2f}$、誤判別確率 {stats.norm.sf(round(math.sqrt(D2) / 2, 2)):.3f}", "np.linalg.solve と scipy の正規分布")
+# ---------- s03p11：混同行列と F 値 ----------
+# 日ごとのラベルを作り直して、集合の数え上げで F = 2TP/(2TP+FP+FN)
+truth = np.array([1] * 18 + [0] * 12 + [1] * 6 + [0] * 329)
+pred = np.array([1] * 30 + [0] * 335)
+tp = ((truth == 1) & (pred == 1)).sum()
+F1 = 2 * tp / (2 * tp + ((truth == 0) & (pred == 1)).sum() + ((truth == 1) & (pred == 0)).sum())
+E.choice("s03p11a", r3(F1), "F = 2TP/(2TP+FP+FN) で計算")
 
 # ---------- s03p12：最長距離法 ----------
 Dm = np.array([[0, 2, 6, 10, 9], [2, 0, 5, 8, 7.5], [6, 5, 0, 4, 3], [10, 8, 4, 0, 3.5], [9, 7.5, 3, 3.5, 0]])
@@ -211,12 +219,16 @@ E.check("s03p13a", abs(cc[0, 1]) < 1e-12, "f を固定した偏相関は 0（選
 E.check("s03p13a", abs(L[0] ** 2 - 0.80) > 0.1 and abs(np.sum(L ** 2) / 4 - 0.65) > 0.1 and abs(1 - L[1] ** 2 - 0.30) > 0.1,
         "他の記述（共通性 0.80・寄与率 0.65・独自性 0.30）は誤り")
 
-# ---------- s03p14：マクネマー検定 ----------
-# 条件付きで c ~ Bin(b+c, 1/2) の正確検定と、χ² 版の統計量
-b, c = 6, 19
-chi = (c - b) ** 2 / (b + c)
-E.choice("s03p14a", f"統計量 {chi:.2f}、棄却する", "不一致ペアから直接")
-E.check("s03p14a", stats.binomtest(c, b + c, 0.5).pvalue < 0.05 and stats.chi2.sf(chi, 1) < 0.05,
-        f"正確な二項検定 p={stats.binomtest(c, b + c, 0.5).pvalue:.4f}、χ² 近似 p={stats.chi2.sf(chi, 1):.4f}")
+# ---------- s03p14：シンプソンのパラドックス ----------
+tab = {"X": (18, 20, 56, 70), "Y": (42, 80, 9, 20)}
+within = all(a / na > b / nb for a, na, b, nb in tab.values())
+tot_a = sum(v[0] for v in tab.values()) / sum(v[1] for v in tab.values())
+tot_b = sum(v[2] for v in tab.values()) / sum(v[3] for v in tab.values())
+E.check("s03p14a", within and tot_a < tot_b, f"各校では受講者が高いが合計では逆転（{tot_a:.3f} < {tot_b:.3f}）")
+E.check("s03p14a", tab["Y"][1] / 100 > 0.5 and tab["Y"][0] / tab["Y"][1] < tab["X"][0] / tab["X"][1], "受講者は合格率の低い Y 校に偏る（正解の記述の根拠）")
+E.check("s03p14a", abs(tot_a - (18 / 20 + 42 / 80) / 2) > 0.05, "合計は単純平均ではない（選択肢 3 は誤り）")
+E.check("s03p14a", 9 / 20 < 42 / 80, "Y 校の中では受講者のほうが高い（選択肢 5 は誤り）")
+it14 = E.item("s03p14a")
+E.check("s03p14a", it14["answer"] == 1 and "学校で層別" in it14["choices"][1], "正解は層別比較を勧める記述")
 
 E.done()
