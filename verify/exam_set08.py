@@ -136,17 +136,10 @@ c2 = ((Xs[:, 1] <= 1) & (1 <= Xs[:, 8])).mean()
 E.check("s08p04c", abs(c2 - cov[2]) < 0.003, f"歪んだ分布でのシミュレーションの被覆率 {c2:.4f}")
 
 # ---- 大問5
-# (a) scipy.stats.bartlett と同じ式を不偏分散から計算（正確な対数）
-ni, s2 = 11, np.array([4.0, 9.0, 16.0])
-Nn, kk = 33, 3
-sp2 = ((ni - 1) * s2).sum() / (Nn - kk)
-B = ((Nn - kk) * np.log(sp2) - (ni - 1) * np.log(s2).sum()) / (1 + (3 / (ni - 1) - 1 / (Nn - kk)) / (3 * (kk - 1)))
-E.choice("s08p05a", f"${f(B, 2)}$", f"正確な対数で B = {B:.4f}")
-g = [rng.normal(size=ni) for _ in range(3)]
-g = [(x - x.mean()) / x.std(ddof=1) * np.sqrt(v) for x, v in zip(g, s2)]
-E.check("s08p05a", abs(stats.bartlett(*g).statistic - B) < 1e-9, "分散を合わせたデータで scipy.stats.bartlett と一致")
-E.check("s08p05a", stats.chi2.sf(B, 2) > 0.05 and abs(stats.chi2.ppf(0.95, 2) - 5.99) < 0.005, "5% で有意でない・χ²(2) の 5% 点")
-table_ok("s08p05a", [(np.log(4), 1.3863), (np.log(9), 2.1972), (np.log(16), 2.7726), (np.log(29 / 3), 2.2687)], 5e-5, "対数の値")
+# (a) scipy.stats.levene（平均を中心にした版）
+lev = stats.levene([10, 12, 11, 13], [9, 15, 12, 12], [8, 16, 10, 14], center="mean")
+E.choice("s08p05a", f"${f(lev.statistic, 2)}$", f"scipy levene(center='mean') = {lev.statistic:.4f}")
+E.check("s08p05a", lev.pvalue > 0.05 and abs(stats.f.ppf(0.95, 2, 9) - 4.26) < 0.005, "5% で有意でない・F(2,9) の 5% 点")
 # (b) scipy の permutation_test
 old, new = np.array([12.4, 11.8, 13.1]), np.array([10.9, 11.5, 12.0])
 pt = stats.permutation_test((old, new), lambda a, b: a.mean() - b.mean(), permutation_type="independent",
@@ -174,15 +167,24 @@ bB, seB, R2B = ols(np.column_stack([np.ones(n), 1000 * X1, X2]), yy)
 okA = (np.isclose(bB[1], bA[1] / 1000) and np.isclose(seB[1], seA[1] / 1000) and np.isclose(bB[1] / seB[1], bA[1] / seA[1])
        and np.isclose(R2A, R2B) and np.isclose(bA[0], bB[0]) and np.isclose(bA[2], bB[2]))
 E.check("s08p06a", okA and E.item("s08p06a")["answer"] == 1, "乱数データで単位を変えて当てはめ直すと選択肢 1 の通り")
-# (b) 残差が問題文どおりになる y を作り、実際に 1 点除いて当てはめ直す
-xx = np.arange(1, 7, dtype=float)
-ee = np.array([0.1, 0.2, -0.1, -0.2, -0.6, 0.6])
-yv = 2.0 + 0.5 * xx + ee
-Xd = np.column_stack([np.ones(6), xx])
-bfull = np.linalg.lstsq(Xd, yv, rcond=None)[0]
-E.check("s08p06b", np.allclose(bfull, [2.0, 0.5]) and np.allclose(yv - Xd @ bfull, ee), "作った y で傾き 0.5・残差が問題文どおり")
-bdel = np.linalg.lstsq(Xd[:5], yv[:5], rcond=None)[0]
-E.num("s08p06b", rnd(bdel[1], 2), f"ページ 6 を除いて再当てはめ（傾き {bdel[1]:.5f}）")
+# (b) 中心モーメントが問題文どおりになる 3 点分布を数値的に作り、そのモーメントから JB を計算
+sol = optimize.root(lambda v: [v[3] + v[4] + v[5] - 1,
+                               v[3] * v[0] + v[4] * v[1] + v[5] * v[2],
+                               v[3] * v[0] ** 2 + v[4] * v[1] ** 2 + v[5] * v[2] ** 2 - 0.25,
+                               v[3] * v[0] ** 3 + v[4] * v[1] ** 3 + v[5] * v[2] ** 3 - 0.075,
+                               v[3] * v[0] ** 4 + v[4] * v[1] ** 4 + v[5] * v[2] ** 4 - 0.275,
+                               v[1]], [-0.6, 0.0, 1.0, 0.3, 0.5, 0.2])
+x3, p3 = sol.x[:3], sol.x[3:]
+E.check("s08p06b", sol.success and np.all(p3 > 0), f"モーメントが (0.25, 0.075, 0.275) の分布が存在（値 {np.round(x3, 4)}, 確率 {np.round(p3, 4)}）")
+m2_, m3_, m4_ = [(p3 * x3 ** k).sum() for k in (2, 3, 4)]
+Sk, Ku = m3_ / m2_ ** 1.5, m4_ / m2_ ** 2
+E.num("s08p06b", rnd(60 / 6 * (Sk ** 2 + (Ku - 3) ** 2 / 4), 2), "その分布のモーメントから JB")
+dat = rng.normal(size=60)
+jb_sc = stats.jarque_bera(dat).statistic
+mm = [((dat - dat.mean()) ** k).mean() for k in (2, 3, 4)]
+E.check("s08p06b", abs(jb_sc - 10 * ((mm[1] / mm[0] ** 1.5) ** 2 + (mm[2] / mm[0] ** 2 - 3) ** 2 / 4)) < 1e-9,
+        "乱数データで scipy.stats.jarque_bera と公式（n で割るモーメント）が一致")
+E.check("s08p06b", abs(stats.chi2.ppf(0.95, 2) - 5.99) < 0.005, "χ²(2) の 5% 点")
 # (c) X'X の固有値が 9,4,1 になる X を作り、ハット行列のトレースを直接計算
 Qm, _ = np.linalg.qr(rng.normal(size=(30, 3)))
 Xr = Qm @ np.diag([3.0, 2.0, 1.0])
@@ -190,12 +192,17 @@ H = Xr @ np.linalg.inv(Xr.T @ Xr + 2 * np.eye(3)) @ Xr.T
 E.choice("s08p06c", f"${f(np.trace(H), 2)}$", f"tr H(λ) = {np.trace(H):.5f}")
 
 # ---- 大問7
-# (a) 起点 4 通りの標本平均を列挙
-pop = np.array([10, 20, 30, 40] * 3, float)
-means = np.array([pop[s::4].mean() for s in range(4)])
-E.choice("s08p07a", f"${f(means.var(), 1)}$", "起点 4 通りの標本平均の分散")
-srs = np.array([np.mean(c) for c in combinations(pop, 3)])
-E.check("s08p07a", f(srs.var(), 1) in E.item("s08p07a")["choices"][0], f"単純無作為抽出の分散（全組合せ {srs.var():.3f}）は選択肢 0")
+# (a) 母集団を作り、枠内から抽出するシミュレーションで RMSE
+cov_ = rng.normal(30, 10, 80_000)
+exc_ = rng.normal(20, 10, 20_000)
+cov_ = (cov_ - cov_.mean()) / cov_.std() * 10 + 30
+exc_ = exc_ - exc_.mean() + 20
+target = np.r_[cov_, exc_].mean()
+ests = rng.choice(cov_, size=(20_000, 400), replace=True).mean(1)
+rmse = np.sqrt(((ests - target) ** 2).mean())
+E.check("s08p07a", abs(target - 28) < 1e-9, "全利用者の平均 28")
+nearest("s08p07a", rmse)
+E.choice("s08p07a", f"${f(np.sqrt(2 ** 2 + 100 / 400), 2)}$", "√(偏り² + 分散)")
 # (b) ポアソン件数の「1 件以上」をシミュレーション
 cnt = rng.poisson(np.exp(-1.5), 1_000_000)
 E.check("s08p07b", abs((cnt > 0).mean() - 0.2) < 0.002, f"件数 Po(e^-1.5) で 1 件以上の割合 {(cnt > 0).mean():.4f}")
@@ -257,20 +264,21 @@ opt = optimize.minimize(negll, [2, 2, 2, -0.5, -0.5], method="Nelder-Mead", opti
 a, b, c, d, e = opt.x
 Sfit = np.linalg.inv(np.array([[a, d, 0], [d, b, e], [0, e, c]]))
 E.choice("s08p10a", f"${f(Sfit[0, 2] / np.sqrt(Sfit[0, 0] * Sfit[2, 2]), 2)}$", f"尤度の数値最大化で当てはめ相関 {Sfit[0, 2]:.5f}")
-# (b) 状態空間（MA の誤差を順に再帰）で 1 期先予測
-xs = [104, 110, 107]
-fc = 100.0
-for x in xs:
-    eps = x - fc
-    fc = x - 0.6 * eps
-E.num("s08p10b", rnd(fc, 2), "X̂_{t+1} = X_t + θ ε_t の再帰")
-# 長い系列のシミュレーションで予測式の最適性（誤差がホワイトノイズの分散）を確認
-epsv = rng.normal(size=200_001)
-Xsim = np.cumsum(epsv[1:] - 0.6 * epsv[:-1])
-fcs = np.zeros_like(Xsim)
-for i in range(1, len(Xsim)):
-    fcs[i] = 0.4 * Xsim[i - 1] + 0.6 * fcs[i - 1]
-E.check("s08p10b", abs(np.var(Xsim[1000:] - fcs[1000:]) - 1) < 0.02, "指数平滑の予測誤差の分散 ≈ 1（ε の分散）")
+# (b) 季節差分 AR(1) を長い系列でシミュレーションし、回帰で予測式を確かめてから値を計算
+nT = 200_000
+eps = rng.normal(size=nT)
+Yd = np.zeros(nT)
+for i in range(1, nT):
+    Yd[i] = 0.4 * Yd[i - 1] + eps[i]
+Xl = np.zeros(nT)
+Xl[:7] = [120, 135, 128, 126, 140, 95, 90.0]
+for i in range(7, nT):
+    Xl[i] = Xl[i - 7] + Yd[i]
+yy_ = Xl[8:] - Xl[1:-7]
+xx_ = Xl[7:-1] - Xl[:-8]
+E.check("s08p10b", abs(np.polyfit(xx_, yy_, 1)[0] - 0.4) < 0.01, "シミュレーションで X_{t+1}−X_{t−6} の X_t−X_{t−7} への回帰の傾き ≈ 0.4")
+w = [120, 135, 128, 126, 140, 95, 90, 133]
+E.num("s08p10b", rnd(w[1] + 0.4 * (w[7] - w[0]), 1), "X̂_{T+1} = X_{T−6} + φ(X_T − X_{T−7})")
 
 # ---- 大問11
 pv_ = stats.poisson(2).sf(5)

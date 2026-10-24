@@ -3,12 +3,9 @@ title: 模擬試験 第14回
 minutes: 90
 problems:
   - id: s14p01
-    title: ボードゲームのコインとスピナー
+    title: ボードゲームのコイン
     context: |
-      あるボードゲームでは、手番ごとに次の 2 つの道具を使う。
-
-      - 表と裏が等確率で出る公平なコインを 2 枚（赤と青）同時に投げる。2 枚の結果は互いに独立である。
-      - 0 点・1 点・2 点のいずれかが出るスピナーを回す。1 回で得る点数を $Y$ とすると、$P(Y=0)=«a»$、$P(Y=1)=«b»$、$P(Y=2)=«c»$ である。スピナーの結果は回ごとに独立である。
+      あるボードゲームでは、手番ごとに表と裏が等確率で出る公平なコインを 2 枚（赤と青）同時に投げ、その結果でコマの動きを決める。2 枚の結果は互いに独立である。
     items:
       - id: s14p01a
         chapter: 1
@@ -52,120 +49,95 @@ problems:
           **間違えやすい点** 「2 つずつ独立（対ごとの独立）」から「3 つが互いに独立」は導けない。$C$ は赤と青の両方の結果で決まるので、赤と青の両方がわかると $C$ は確定してしまう。
           3 つを独立とみなして $1-(1-«half»)^3=«union_ind»$ とすると $P(A\cup B\cup C)$ を誤る（正しくは $«union»$）。
 
-      - id: s14p01b
-        chapter: 2
-        terms: [probability-generating-function, sum-of-random-variables, probability-mass-and-density-function]
-        topic: 0点1点2点のスピナーを3回回した合計点の確率を確率母関数の係数から求める
-        level: 基本
-        definition: false
-        type: numeric
-        question: |
-          スピナーを 3 回回したときの合計点 $S=Y_1+Y_2+Y_3$ について、$Y$ の確率母関数 $g(s)=E[s^Y]=«a»+«b»s+«c»s^2$ を用いて、$P(S=4)$ を求めよ。
-        answer: «p4»
-        tolerance: 0.001
-        answer_format: 小数第3位まで（小数第4位を四捨五入）で答えよ。±0.001 の差まで正解とする。
-        explanation: |
-          **方針** 独立な確率変数の和の確率母関数は、それぞれの確率母関数の積になる。$S$ の確率母関数 $G(s)=\{g(s)\}^3$ を展開したときの $s^4$ の係数が $P(S=4)$ である。
-
-          **途中式** $G(s)=(«a»+«b»s+«c»s^2)^3$。3 つの因子から $1,\ s,\ s^2$ の項をそれぞれ $n_0,\ n_1,\ n_2$ 個選ぶと（$n_0+n_1+n_2=3$）、$s$ の次数は $n_1+2n_2$。次数が 4 になる組は
-          - $(n_0,n_1,n_2)=(0,2,1)$：並べ方 $\dfrac{3!}{0!\,2!\,1!}=3$ 通り、係数 $3\times«b»^2\times«c»=3\times«b2c»=«t1»$
-          - $(n_0,n_1,n_2)=(1,0,2)$：並べ方 $\dfrac{3!}{1!\,0!\,2!}=3$ 通り、係数 $3\times«a»\times«c»^2=3\times«ac2»=«t2»$
-
-          $$P(S=4)=«t1»+«t2»=«p4s»$$
-
-          **答え** $«p4s»$
-
-          **間違えやすい点** (1 点, 1 点, 2 点) の組だけを数えて (0 点, 2 点, 2 点) を忘れると $«w_one»$ になる。どちらの組も、どの回にどの点が出るかの並べ方（多項係数 3）を掛け忘れると $«w_nocoef»$ になる。
-
-          **別解** $G'(1)=3g'(1)=3\times(«b»+2\times«c»)=«mean»$ が $E[S]$ になることも確かめられる（母関数の正しさのチェック）。
 
   - id: s14p02
-    title: スピードランのタイム
+    title: スピードラン大会のスコアとタイム
     context: |
-      あるアクションゲームのタイムアタック（スピードラン）を分析する。各区間の所要時間は互いに独立に指数分布に従うとし、
-      「平均 $m$ 分の指数分布」とは密度 $\frac{1}{m}e^{-x/m}$（$x>0$）、すなわちレート $1/m$ の指数分布を指す。
+      あるアクションゲームのスピードラン大会のデータを分析する。
     items:
       - id: s14p02a
         chapter: 6
-        terms: [gamma-distribution, exponential-distribution, poisson-process]
-        topic: 平均が等しい指数分布3区間の合計タイムが基準を超える確率をガンマ分布とポアソン分布の関係で求める
+        terms: [lognormal-distribution, sum-of-random-variables, normal-distribution]
+        topic: 2ステージのスコア倍率が独立な対数正規分布のとき積の倍率が2を超える確率を対数の和の正規分布で求める
         level: 標準
         definition: false
         type: choice
         question: |
-          ボス戦は 3 ラウンドからなり、各ラウンドの所要時間はそれぞれ平均 «th» 分の指数分布に従う。3 ラウンドの合計時間 $T$ が «t» 分を超える確率 $P(T>«t»)$ に最も近いものはどれか。
-          必要なら $e^{-«x»}=«e»$ を用いよ。
-        choices:
-          - '$«wone»$'
-          - '$«w2»$'
-          - '$«ok»$'
-          - '$«wfac»$'
-          - '$«wcomp»$'
-        answer: 2
-        distractors:
-          - 1 ラウンドだけの P(X>15)=e^{-3.75} を答えた
-          - ポアソン確率の和を k=0,1 の 2 項で打ち切った（形状 3 なのに k≦1 とした）
-          - 正解
-          - 第 3 項を 2! で割り忘れた
-          - P(T≦15) の側（余事象）を答えた
-        explanation: |
-          **方針** 独立な指数分布（平均 $\theta=«th»$）の 3 個の和は、形状 3・尺度 $\theta$ のガンマ分布（アーラン分布）に従う。$T>t$ は「レート $1/\theta$ のポアソン過程で、時刻 $t$ までに起きた事象が 2 回以下」と同じなので、ポアソン確率の和で書ける。
+          この大会では、2 つのステージでそれぞれスコア倍率 $M_1,\ M_2$ がつき、最終倍率は積 $M_1M_2$ である。$M_1,\ M_2$ は独立で、どちらも $\log M_i\sim N(«mu»,\ «sg»^2)$（$\log$ は自然対数）の対数正規分布に従う。
+          最終倍率が 2 を超える確率 $P(M_1M_2>2)$ に最も近いものはどれか。必要なら $\log 2=«ln2»$ と次の標準正規分布の分布関数 $\Phi(z)$ の値を用いよ。
 
-          **途中式** 時刻 «t» までの事象数 $N$ は平均 $t/\theta=«t»/«th»=«x»$ のポアソン分布に従う。
-          $$P(T>«t»)=P(N\le 2)=e^{-«x»}\left(1+«x»+\frac{«x»^2}{2!}\right)=«e»\times(1+«x»+«x2h»)=«e»\times«poly»=«ok6»$$
+          | $z$ | «zt1» | «zt2» | «zt3» | «zt4» | «zt5» |
+          |---|---|---|---|---|---|
+          | $\Phi(z)$ | «pt1» | «pt2» | «pt3» | «pt4» | «pt5» |
+        choices:
+          - '$«w_single»$'
+          - '$«w_one»$'
+          - '$«w_mu»$'
+          - '$«ok»$'
+          - '$«w_add»$'
+        answer: 3
+        distractors:
+          - 1 ステージの倍率 M1 が 2 を超える確率を答えた
+          - 対数の和の分散を 2 倍し忘れ、標準偏差 0.3 のままにした
+          - 対数の和の平均を 2 倍し忘れ、0.1 のままにした
+          - 正解
+          - 標準偏差を足して 0.3+0.3=0.6 とした（分散を足すべき）
+        explanation: |
+          **方針** 対数をとると積は和になる。$\log(M_1M_2)=\log M_1+\log M_2$ は独立な正規分布の和なので正規分布に従い、平均と分散はそれぞれの和になる（対数正規分布は積について再生性をもつ）。
+
+          **途中式** $\log(M_1M_2)\sim N(2\times«mu»,\ 2\times«sg»^2)=N(«m2»,\ «v2»)$、標準偏差は $\sqrt{«v2»}=«sd2»$。
+          $$P(M_1M_2>2)=P\left(\log(M_1M_2)>\log2\right)=P\left(Z>\frac{«ln2»-«m2»}{«sd2»}\right)=P\left(Z>\frac{«num»}{«sd2»}\right)$$
+          $«num»/«sd2»=«zraw»\approx«z»$ なので
+          $$P(M_1M_2>2)\approx1-\Phi(«z»)=1-«pt2»=«ok4»$$
 
           **答え** $«ok»$
 
-          **間違えやすい点** 和の項数は形状より 1 少ない「$k=0,1,2$」の 3 項。2 項で止めると $«w2»$、$2!$ で割り忘れると $«wfac»$ になる。
-          なお $T$ の平均は $3\times«th»=«mean»$ 分なので、«t» 分を超える確率が 3 割弱というのは妥当な大きさである。
-
-          **別解** ガンマ分布（形状 3、尺度 4）の密度 $\frac{x^2e^{-x/4}}{2\cdot 4^3}$ を $x>«t»$ で部分積分しても同じ式になる。
+          **間違えやすい点** 独立な和の分散は分散どうしを足す（標準偏差を足して «sg2» とすると $z=«zadd»$ で $«w_add»$）。分散を 2 倍し忘れると $z=«zone»$ で $«w_one»$、平均を 2 倍し忘れると $z=«zmu»$ で $«w_mu»$ になる。
 
       - id: s14p02b
         chapter: 4
-        terms: [change-of-variables, exponential-distribution, beta-distribution]
-        topic: 平均の異なる2つの指数分布の区間タイムで前半の占める割合の密度をヤコビアンで求める
+        terms: [change-of-variables, exponential-distribution, sum-of-random-variables]
+        topic: レートの異なる2つの指数分布のクリア時間の差の密度を求め一方が5分以上遅れる確率を出す
         level: 応用
         definition: false
         type: choice
         question: |
-          別のコースでは、前半区間の所要時間 $X$ が平均 «mx» 分、後半区間の所要時間 $Y$ が平均 «my» 分の指数分布に従い、$X$ と $Y$ は独立である。
-          合計時間に占める前半の割合 $U=\dfrac{X}{X+Y}$ の確率密度関数 $f_U(u)$（$0<u<1$）として正しいものはどれか。
+          別の部門では、走者 A と B が同時にスタートする。クリア時間（分）$X_A,\ X_B$ は独立で、それぞれ平均 «ma» 分、«mb» 分の指数分布に従う（「平均 $m$ 分の指数分布」は密度 $\frac1m e^{-x/m}$、$x>0$、すなわちレート $1/m$）。
+          差 $D=X_A-X_B$ の確率密度関数を求め、A のクリアが B より «d» 分以上遅れる確率 $P(D>«d»)$ を計算せよ。最も近いものはどれか。
+          必要なら $e^{-0.5}=«e05»$、$e^{-1/3}=«e13»$ を用いよ。
         choices:
-          - '$1$'
-          - '$«f_swap»$'
-          - '$«f_noj»$'
-          - '$«f_cdf»$'
-          - '$«f_ok»$'
-        answer: 4
+          - '$«okb»$'
+          - '$«w_rate»$'
+          - '$«w_swap»$'
+          - '$«w_pb»$'
+          - '$«w_e»$'
+        answer: 0
         distractors:
-          - 2 つの指数分布の平均が違うのに、同じ平均のときの結果（一様分布）を当てはめた
-          - X と Y のレートを取り違えた（平均の逆数を逆に入れた）
-          - 変数変換のヤコビアン t を掛け忘れた（積分しても 1 にならない）
-          - 密度ではなく分布関数 P(U≦u) を答えた
           - 正解
+          - d>0 側の密度の指数部に B のレートを使った
+          - 係数の λ_B/(λ_A+λ_B) と λ_A/(λ_A+λ_B) を取り違えた
+          - B より遅れる確率 P(D>0) だけを答え、5 分の条件を落とした
+          - A のクリア時間が 5 分を超える確率 e^{-0.5} を答えた（B の時間を無視）
         explanation: |
-          **方針** $(X,Y)$ から $(U,W)=\left(\frac{X}{X+Y},\ X+Y\right)$ へ変数変換し、同時密度を $W$ について積分して $U$ の周辺密度を出す。レートは $\lambda=«lam»$（前半）、$\mu=«mu»$（後半）。
+          **方針** $(X_A,X_B)$ から $(D,X_B)=(X_A-X_B,\ X_B)$ へ変数変換し（ヤコビアンは 1）、$X_B$ について積分して $D$ の周辺密度を出す。レートは $\lambda_A=«la»$、$\lambda_B=«lb»$。
 
-          **途中式** 逆変換は $x=uw,\ y=(1-u)w$ で、ヤコビアンは
-          $$\left|\frac{\partial(x,y)}{\partial(u,w)}\right|=\left|\det\begin{pmatrix} w & u\\ -w & 1-u\end{pmatrix}\right|=w(1-u)+wu=w$$
-          よって $(U,W)$ の同時密度は
-          $$f_{U,W}(u,w)=\lambda e^{-\lambda uw}\cdot\mu e^{-\mu(1-u)w}\cdot w=\lambda\mu\,w\,e^{-\{\lambda u+\mu(1-u)\}w}$$
-          $\int_0^\infty w e^{-cw}\,dw=1/c^2$ を使って $w$ を積分すると
-          $$f_U(u)=\frac{\lambda\mu}{\{\lambda u+\mu(1-u)\}^2}=\frac{«lm»}{\left(\frac{u}{4}+\frac{1-u}{8}\right)^2}=\frac{«lm»}{\left(\frac{1+u}{8}\right)^2}=\frac{64}{32(1+u)^2}=«f_ok»$$
-          確認：$\int_0^1 «f_ok»\,du=\left[-\frac{2}{1+u}\right]_0^1=-1+2=1$。
+          **途中式** $x_A=d+y$、$x_B=y$ と書けるので、$d>0$ のとき（$y>0$ の範囲で積分）
+          $$f_D(d)=\int_0^\infty\lambda_Ae^{-\lambda_A(d+y)}\lambda_Be^{-\lambda_By}\,dy=\frac{\lambda_A\lambda_B}{\lambda_A+\lambda_B}e^{-\lambda_Ad}$$
+          （$d<0$ では同様に $\frac{\lambda_A\lambda_B}{\lambda_A+\lambda_B}e^{\lambda_Bd}$。左右で減衰の速さが違うラプラス型の分布）。
+          $\lambda_A+\lambda_B=«lab»$ より係数は $\frac{\lambda_A\lambda_B}{\lambda_A+\lambda_B}=«c0»$。
+          $$P(D>«d»)=\int_{«d»}^\infty «c0»\,e^{-x/«ma»}\,dx=«c0»\times«ma»\times e^{-«lad»}=\frac{\lambda_B}{\lambda_A+\lambda_B}e^{-«d»\lambda_A}=«pbd»\times«e05»=«okb5»$$
 
-          **答え** $f_U(u)=«f_ok»$
+          **答え** $«okb»$
 
-          **間違えやすい点** ヤコビアン $w$ を掛け忘れると $\int_0^\infty e^{-cw}dw=1/c$ になり、$«f_noj»$ という積分が 1 にならない式が出る。2 つの平均が等しければ $U$ は一様分布になるが、ここでは平均が違う。
-          レートを平均と取り違えて $\lambda$ と $\mu$ を入れ替えると $«f_swap»$ になる（後半のほうが長いので $U$ は小さい値をとりやすく、密度は $u$ について減少するはず）。
+          **間違えやすい点** 結果は $P(D>0)=\lambda_B/(\lambda_A+\lambda_B)=«w_pb»$（平均の長い A のほうが遅れやすい）に $e^{-«d»\lambda_A}$ を掛けた形。指数部は A のレートで、B のレートを使うと $«w_rate»$ になる。
+          係数を $\lambda_A/(\lambda_A+\lambda_B)=«pa»$ と取り違えると $«w_swap»$ になる。
 
-          **別解** 分布関数から求めてもよい。$P(U\le u)=P\!\left(X\le\frac{u}{1-u}Y\right)=1-E\!\left[e^{-\lambda\frac{u}{1-u}Y}\right]=1-\frac{\mu}{\mu+\lambda\frac{u}{1-u}}=«f_cdf»$ を $u$ で微分すると $«f_ok»$。
+          **別解** 無記憶性を使う：B がクリアした時点で A がまだ走っている確率は $P(X_A>X_B)=«pbd»$、その時点から A がさらに «d» 分以上かかる確率は $e^{-«d»\lambda_A}=«e05»$ なので、積は $«okb»$。
 
   - id: s14p03
-    title: バスケットボールの前半と後半の得点
+    title: バスケットボールの得点とフリースロー
     context: |
-      あるバスケットボールチームのシーズン中の試合で、前半の得点 $X_1$ と後半の得点 $X_2$ を調べた。
+      あるバスケットボールリーグのデータを分析する。あるチームのシーズン中の試合で、前半の得点 $X_1$ と後半の得点 $X_2$ を調べた。
       $X_1$ の標準偏差は «s1» 点、$X_2$ の標準偏差は «s2» 点、$X_1$ と $X_2$ の相関係数は «rho» だった。
     items:
       - id: s14p03a
@@ -192,75 +164,139 @@ problems:
 
           **間違えやすい点** 部分と全体の相関は、相関 $\rho=«rho»$ が小さくても大きくなる（$T$ が $X_1$ を含むため）。$\mathrm{Cov}(X_1,X_2)$ を忘れて $\frac{«v1»}{«s1»\sqrt{«v1»+«v2»}}$ とすると $«w_nocov»$、分母に標準偏差の積ではなく $V[T]$ を使うと $«w_var»$ になる。
 
-  - id: s14p04
-    title: 難関ステージのクリアまでの挑戦回数
-    context: |
-      あるスマホゲームの難関ステージについて、プレイヤーが初めてクリアするまでの挑戦回数 $X$（1 回目でクリアすれば $X=1$）を記録した。
-      $X$ は各回のクリア確率を $p$ とする幾何分布 $P(X=k)=(1-p)^{k-1}p$（$k=1,2,\ldots$）に従い、プレイヤーどうしは独立とする。
-      «n» 人の記録では、挑戦回数の合計が $\sum_{i=1}^{«n»}x_i=«tot»$ 回だった。
-    items:
-      - id: s14p04a
+
+      - id: s14p03b
         chapter: 8
-        terms: [maximum-likelihood-estimator, fisher-information, standard-error, asymptotic-normality-of-mle]
-        topic: 初クリアまでの挑戦回数（幾何分布）からクリア確率の最尤推定量の標準誤差をフィッシャー情報量で求める
-        level: 標準
-        definition: false
-        type: choice
-        question: |
-          $p$ の最尤推定量 $\hat p$ の標準誤差を、フィッシャー情報量にもとづく漸近分散に $\hat p$ を代入して推定する。その値に最も近いものはどれか。
-        choices:
-          - '$«w0»$'
-          - '$«se»$'
-          - '$«wI»$'
-          - '$«wbin»$'
-          - '$«wnon»$'
-        answer: 1
-        distractors:
-          - 回数を「失敗回数（0 から始まる）」と読み、p̂ = n/(n+Σx) = 0.20 で計算した
-          - 正解
-          - 1 回あたりのフィッシャー情報量を 1/{p(1-p)^2} と取り違えた
-          - 二項分布（成功率の標本比率）の標準誤差 √{p(1-p)/n} を使った
-          - 標本サイズ n で割り忘れた
-        explanation: |
-          **方針** 対数尤度を微分して $\hat p$ を求め、1 人あたりのフィッシャー情報量 $I(p)=-E\left[\frac{\partial^2}{\partial p^2}\log f(X;p)\right]$ から漸近分散 $1/\{nI(p)\}$ を作る。
-
-          **途中式** 対数尤度は $\ell(p)=n\log p+\left(\sum x_i-n\right)\log(1-p)$。
-          $$\ell'(p)=\frac{n}{p}-\frac{\sum x_i-n}{1-p}=0\ \Rightarrow\ \hat p=\frac{n}{\sum x_i}=\frac{«n»}{«tot»}=«p»$$
-          1 人分の 2 階微分は $-\frac{1}{p^2}-\frac{X-1}{(1-p)^2}$。$E[X]=1/p$ より $E[X-1]=(1-p)/p$ なので
-          $$I(p)=\frac{1}{p^2}+\frac{(1-p)/p}{(1-p)^2}=\frac{1}{p^2}+\frac{1}{p(1-p)}=\frac{1}{p^2(1-p)}$$
-          $$\widehat{V}[\hat p]=\frac{\hat p^2(1-\hat p)}{n}=\frac{«p2»\times«q»}{«n»}=«var»,\qquad \mathrm{SE}=\sqrt{«var»}=«se6»\cdots$$
-
-          **答え** $«se»$
-
-          **間違えやすい点** 幾何分布の台（1 から始まるか 0 から始まるか）で推定量が変わる。0 から始まる「失敗回数」と読むと $\hat p=«p0»$ になり、標準誤差も $«w0»$ とずれる。
-          成功・失敗の比率と同じだと考えて $\sqrt{\hat p(1-\hat p)/n}=«wbin»$ とするのも誤り（標本は «n» 人で、1 人から何回も観測しているわけではない）。
-
-          **別解** $\hat p^2(1-\hat p)/n=\hat p(1-\hat p)/(n/\hat p)=\hat p(1-\hat p)/\sum x_i$ なので、「全挑戦 «tot» 回を独立なベルヌーイ試行とみた比率」の標準誤差 $\sqrt{«pq»/«tot»}$ と同じ値になる。
-
-      - id: s14p04b
-        chapter: 9
-        terms: [one-sided-confidence-limit, wald-confidence-interval, invariance-of-mle]
-        topic: クリア確率の片側下側信頼限界を変換して平均挑戦回数の片側95%上側信頼限界を作る
+        terms: [method-of-moments, beta-distribution]
+        topic: リーグ各選手のフリースロー成功率をベータ分布とみてモーメント法で母数を推定する
         level: 標準
         definition: false
         type: numeric
         question: |
-          (a) の標準誤差（小数第4位までに丸めた $«se»$）と正規近似を使い、まず $p$ の**片側** 95% 下側信頼限界（ワルド型）を作る。
-          これを変換して、平均挑戦回数 $1/p$ の片側 95% **上側**信頼限界を求めよ。標準正規分布の上側 5% 点は «z»、上側 2.5% 点は «z2» である。
-        answer: «up»
-        tolerance: 0.01
-        answer_format: 小数第2位まで（小数第3位を四捨五入）で答えよ。±0.01 の差まで正解とする。
+          リーグの選手ごとのフリースロー成功率 $\theta$ のばらつきを、ベータ分布 $\mathrm{Beta}(\alpha,\beta)$（密度 $\propto\theta^{\alpha-1}(1-\theta)^{\beta-1}$、平均 $\frac{\alpha}{\alpha+\beta}$、分散 $\frac{\alpha\beta}{(\alpha+\beta)^2(\alpha+\beta+1)}$）で表す。
+          多数の選手の成功率から、平均 «m»、分散 «vv» が得られた。モーメント法で $\alpha$ を推定せよ。
+        answer: «a»
+        tolerance: 0.1
+        answer_format: 小数第1位まで（小数第2位を四捨五入）で答えよ。±0.1 の差まで正解とする。
         explanation: |
-          **方針** 片側の信頼限界なので、上側 5% 点 «z» を使う。$g(p)=1/p$ は単調減少なので、「$p\ge p_L$」と「$1/p\le 1/p_L$」は同じ事象であり、信頼係数を保ったまま $p$ の下側限界を $1/p$ の上側限界に写せる。
+          **方針** 平均を $m=\frac{\alpha}{\alpha+\beta}$ とおくと、分散は $\frac{m(1-m)}{\alpha+\beta+1}$ と書ける。これを標本の平均・分散と等しいとおいて $\alpha+\beta$ を先に求め、次に $\alpha=m(\alpha+\beta)$ とする。
 
-          **途中式**
-          $$p_L=\hat p-«z»\times\mathrm{SE}=«p»-«z»\times«se»=«p»-«hw»=«pl»$$
-          $$P(p\ge p_L)\approx0.95\ \Longleftrightarrow\ P\!\left(\frac1p\le\frac{1}{p_L}\right)\approx0.95$$
-          $$\frac{1}{p_L}=\frac{1}{«pl»}=«up4»\cdots$$
+          **途中式** $\frac{\alpha\beta}{(\alpha+\beta)^2}=m(1-m)$ なので、分散の式は
+          $$v=\frac{m(1-m)}{\alpha+\beta+1}\ \Longrightarrow\ \alpha+\beta=\frac{m(1-m)}{v}-1=\frac{«m»\times(1-«m»)}{«vv»}-1=\frac{«mq»}{«vv»}-1=«ratio»-1=«tot»$$
+          $$\hat\alpha=m(\alpha+\beta)=«m»\times«tot»=«a3»,\qquad \hat\beta=(1-«m»)\times«tot»=«b»$$
 
-          **答え** $«ups»$ 回（点推定値は $1/\hat p=«mean»$ 回）
+          **答え** $«as»$
 
-          **間違えやすい点** 両側 95% 区間の端の値 «z2» を使うと $«up196»$ になる。単調減少の変換なので、$p$ の**上側**限界 $\hat p+«z»\,\mathrm{SE}$ を使うと $1/p$ の**下側**限界 $«up_low»$ になってしまう。向きに注意。
+          **間違えやすい点** 分散の式の分母は $\alpha+\beta+1$。$-1$ を忘れて $\alpha+\beta=«ratio»$ とすると $\hat\alpha=«w_nom1»$ になる。分散と標準偏差を取り違えないこと。
+
+      - id: s14p03c
+        chapter: 9
+        terms: [ci-variance, chi-squared-distribution, pivotal-quantity]
+        topic: エースの1試合の得点の母標準偏差の95%信頼区間の上限をカイ二乗分布で求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          このチームのエースの «n» 試合の得点の不偏分散の平方根（標本標準偏差）は $s=«sdv»$ 点だった。得点は正規分布に従うとして、母標準偏差 $\sigma$ の 95% 信頼区間の**上限**に最も近いものはどれか。
+          $\chi^2_{\alpha}(k)$ を自由度 $k$ のカイ二乗分布の上側 $100\alpha\%$ 点とし、$\chi^2_{0.975}(9)=«clo»$、$\chi^2_{0.025}(9)=«chi»$、$\chi^2_{0.975}(10)=«clo10»$、$\chi^2_{0.025}(10)=«chi10»$ である。
+        choices:
+          - '$«low»$'
+          - '$«w_df»$'
+          - '$«up»$'
+          - '$«w_n»$'
+          - '$«w_var2»$'
+        answer: 2
+        distractors:
+          - 上側 2.5% 点で割った値（区間の下限）を答えた
+          - 自由度を n=10 とした
+          - 正解
+          - 平方和を n s^2 と n で作った
+          - 分散の区間の上限を答え、平方根をとり忘れた
+        explanation: |
+          **方針** $(n-1)s^2/\sigma^2$ は自由度 $n-1$ のカイ二乗分布に従う（ピボット量）。
+          $P\left(\chi^2_{0.975}\le\frac{(n-1)s^2}{\sigma^2}\le\chi^2_{0.025}\right)=0.95$ を $\sigma^2$ について解き、平方根をとる。
+
+          **途中式** $(n-1)s^2=«df»\times«s2v»=«ss»$。
+          $$\frac{«ss»}{«chi»}\le\sigma^2\le\frac{«ss»}{«clo»}\ \Longleftrightarrow\ «vlo»\le\sigma^2\le«vup»$$
+          よって $\sigma$ の区間は $(\sqrt{«vlo»},\ \sqrt{«vup»})=(«low»,\ «up»)$。上限は $\sqrt{«vup»}=«up4»\cdots$。
+
+          **答え** $«up»$
+
+          **間違えやすい点** 不等号の向きが逆転するので、上限は**小さい**ほうの点 $\chi^2_{0.975}(9)=«clo»$ で割ったもの。自由度は $n-1=«df»$（$n$ にすると $«w_df»$）。区間は $s=«sdv»$ に対して左右非対称になる。
+
+  - id: s14p04
+    title: ソーシャルゲームの乱数と報酬
+    context: |
+      あるソーシャルゲームの運営チームが、ゲーム内の乱数と報酬の仕組みを点検した。
+    items:
+      - id: s14p04a
+        chapter: 10
+        terms: [power-function, rejection-region, uniform-distribution, type-i-and-ii-errors]
+        topic: 一様分布の上端が仕様より大きいかを最大値で検定するときの検出力関数の値を求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          ダメージ倍率の乱数は、仕様では区間 $(0,1)$ の一様分布だが、不具合で一様分布 $U(0,\theta)$（$\theta>1$）になっている疑いがある。
+          独立な «n» 個の乱数 $X_1,\ldots,X_{«n»}$ の最大値 $M$ を使い、$H_0:\theta=1$、$H_1:\theta>1$ を有意水準 «a» で検定する。棄却域は $M\ge c$ とし、$c$ は $P(M\ge c\mid\theta=1)=«a»$ となるように定める。
+          実際には $\theta=«th»$ であったとき、この検定の検出力に最も近いものはどれか。必要なら $«th»^{«n»}=«th5»$ を用いよ。
+        choices:
+          - '$«w_mul»$'
+          - '$«w_nop»$'
+          - '$«w_beta»$'
+          - '$«w_c1»$'
+          - '$«pw»$'
+        answer: 4
+        distractors:
+          - 有意水準に θ^5 を掛けた（検出力を有意水準の定数倍と誤解した）
+          - 最大値ではなく 1 個の乱数で考え、5 乗し忘れた
+          - 第 2 種の誤りの確率（検出力の余事象）を答えた
+          - 棄却の境界 c を 1 として計算した
+          - 正解
+        explanation: |
+          **方針** $U(0,\theta)$ の $n$ 個の最大値の分布関数は $P(M\le x)=(x/\theta)^n$（$0\le x\le\theta$）。まず $H_0$ のもとで有意水準から $c^n$ を決め、次に $\theta=«th»$ のもとで $P(M\ge c)$ を計算する（検出力関数 $\beta(\theta)=1-c^n/\theta^n$）。
+
+          **途中式** $H_0$（$\theta=1$）のもとで $P(M\ge c)=1-c^{«n»}=«a»$ より $c^{«n»}=«c5»$。
+          $$\beta(«th»)=P(M\ge c\mid\theta=«th»)=1-\left(\frac{c}{«th»}\right)^{«n»}=1-\frac{«c5»}{«th5»}=1-«q»=«pw5»$$
+
+          **答え** $«pw»$
+
+          **間違えやすい点** $c$ そのものを求める必要はなく、$c^{«n»}=«c5»$ だけで計算できる。$c=1$ とすると $1-1/«th5»=«w_c1»$ で有意水準を無視したことになる。$1-«q»$ の $«q»$ は第 2 種の誤りの確率で、検出力ではない。
+
+      - id: s14p04b
+        chapter: 7
+        terms: [convergence-in-probability, convergence-in-mean-square, markov-inequality]
+        topic: まれに大きな報酬が出るイベント報酬の列が0に確率収束するが平均二乗収束しないことを見分ける
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          第 $n$ 回の記念イベント（$n=1,2,\ldots$）の追加報酬 $X_n$ は、確率 $1/n$ で $n$ 個、確率 $1-1/n$ で 0 個とする。$n\to\infty$ のときの $X_n$ のふるまいについて、正しい記述はどれか。
+        choices:
+          - '$E[X_n]=1$ がすべての $n$ で成り立つので、$X_n$ は 1 に確率収束する。'
+          - '$X_n$ は 0 に平均二乗収束する。'
+          - '$X_n$ は 0 に確率収束するが、$E[(X_n-0)^2]=n$ が発散するので、0 に平均二乗収束しない。'
+          - '$P(X_n\ne0)=1/n\to0$ だが、$X_n$ は 0 に確率収束しない。'
+          - '$X_n$ は確率収束しないので、分布収束もしない。'
+        answer: 2
+        distractors:
+          - 期待値が一定なら確率変数もその値に近づくと誤解した
+          - 確率収束と平均二乗収束を同じものと考えた
+          - 正解
+          - 確率収束の定義 P(|X_n - 0| > ε) → 0 を確かめなかった
+          - 確率収束は分布収束より強いことを逆に覚えた
+        explanation: |
+          **方針** 確率収束は「任意の $\varepsilon>0$ で $P(|X_n-0|>\varepsilon)\to0$」、平均二乗収束は「$E[(X_n-0)^2]\to0$」。定義どおりに計算する。
+
+          **途中式** 任意の $\varepsilon>0$ について（$n>\varepsilon$ なら）
+          $$P(|X_n|>\varepsilon)=P(X_n=n)=\frac1n\to0$$
+          なので 0 に確率収束する（たとえば $n=«k»$ なら $P(X_n\ne0)=«pk»$）。一方
+          $$E[X_n]=n\times\frac1n=1,\qquad E[X_n^2]=n^2\times\frac1n=n\to\infty$$
+          なので平均二乗収束しない。
+
+          **答え** 「0 に確率収束するが、平均二乗収束しない」という記述
+
+          **間違えやすい点** 平均二乗収束ならマルコフ（チェビシェフ）の不等式 $P(|X_n|>\varepsilon)\le E[X_n^2]/\varepsilon^2$ から確率収束が従うが、逆は成り立たない。まれに起きる大きな値が期待値を支えている例である。確率収束すれば分布収束もする（極限は 0 の 1 点分布）。
 
   - id: s14p05
     title: カジノのミニゲーム
@@ -292,41 +328,6 @@ problems:
           **間違えやすい点** 公平なゲームなら $P_i=i/N=«w_half»$ だが、1 回ごとの不利さ（«p» 対 «q»）が積み重なって 0.5 を大きく下回る。$r$ を $p/q$ と逆にすると 0.5 を超える値になってしまう。
           $r^6=«r6»$ を使って $\frac{1-«r3»}{1-«r6»}$ と計算しても同じ値になる。
 
-      - id: s14p05b
-        chapter: 7
-        terms: [chebyshev-inequality, weak-law-of-large-numbers, central-limit-theorem]
-        topic: 未知の勝率を一定の精度で推定するために必要なプレイ回数をチェビシェフの不等式で保証する
-        level: 基本
-        definition: false
-        type: choice
-        question: |
-          勝率が未知の別のミニゲームで、$n$ 回プレイしたときの勝った割合 $\hat p$ で勝率 $p$ を推定する。
-          チェビシェフの不等式を使って、$p$ の値に**かかわらず** $P(|\hat p-p|\ge «eps»)\le «dlt»$ が保証される最小の $n$ はどれか。
-        choices:
-          - '$«n_eps»$'
-          - '$«n_nodelta»$'
-          - '$«n_clt»$'
-          - '$«n_p»$'
-          - '$«n_ok»$'
-        answer: 4
-        distractors:
-          - 分母の ε を 2 乗し忘れた
-          - 確率の上限 0.10 で割り忘れた
-          - チェビシェフではなく中心極限定理（正規近似）で必要数を出した
-          - p=0.45 のときの分散で計算し、p によらない保証にしなかった
-          - 正解
-        explanation: |
-          **方針** $E[\hat p]=p$、$V[\hat p]=p(1-p)/n$。チェビシェフの不等式 $P(|\hat p-p|\ge\varepsilon)\le V[\hat p]/\varepsilon^2$ の右辺を、$p$ について最大（$p(1-p)\le 1/4$）にした上で «dlt» 以下にする。
-
-          **途中式**
-          $$P(|\hat p-p|\ge«eps»)\le\frac{p(1-p)}{n\times«eps»^2}\le\frac{1}{4n\times«eps2»}$$
-          これが «dlt» 以下になる条件は
-          $$\frac{1}{4n\times«eps2»}\le«dlt»\ \Longleftrightarrow\ n\ge\frac{1}{4\times«eps2»\times«dlt»}=«n_ok»$$
-
-          **答え** $«n_ok»$ 回
-
-          **間違えやすい点** 中心極限定理を使う近似なら $n\ge(1.645/«eps»)^2\times\frac14=«n_cltraw»$ から $«n_clt»$ 回で足りるが、これは近似であって「保証」ではない。チェビシェフの不等式は分布の形を問わない代わりに必要数が大きくなる。
-          $p=«p»$ を代入すると $«n_p»$ 回になるが、問題は「$p$ にかかわらず」なので最悪の $p=1/2$ で評価する。
 
   - id: s14p06
     title: 体操競技の採点
@@ -335,164 +336,217 @@ problems:
     items:
       - id: s14p06a
         chapter: 13
-        terms: [friedman-test, rank-and-ties, chi-squared-distribution]
-        topic: 5人の審判が4人の選手につけた順位からフリードマン検定で選手間の差を判定する
-        level: 標準
+        terms: [spearman-rank-correlation, rank-and-ties]
+        topic: 2人の審判が8人の選手につけた順位の一致度をスピアマンの順位相関係数で求める
+        level: 基本
         definition: false
-        type: choice
+        type: numeric
         question: |
-          5 人の審判が、決勝に残った 4 人の選手 A〜D の演技に順位（1 が最上位、同順位なし）をつけた。
+          2 人の審判が 8 人の選手 A〜H の演技に順位（1 が最上位、同順位なし）をつけた。
 
-          | 審判 | A | B | C | D |
-          |---|---|---|---|---|
-          | 1 | «r1A» | «r1B» | «r1C» | «r1D» |
-          | 2 | «r2A» | «r2B» | «r2C» | «r2D» |
-          | 3 | «r3A» | «r3B» | «r3C» | «r3D» |
-          | 4 | «r4A» | «r4B» | «r4C» | «r4D» |
-          | 5 | «r5A» | «r5B» | «r5C» | «r5D» |
+          | 選手 | A | B | C | D | E | F | G | H |
+          |---|---|---|---|---|---|---|---|---|
+          | 審判 1 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+          | 審判 2 | «j1» | «j2» | «j3» | «j4» | «j5» | «j6» | «j7» | «j8» |
 
-          審判をブロックとするフリードマン検定で「4 人の選手の評価に差がない」という帰無仮説を有意水準 5% で検定する（統計量はカイ二乗分布で近似する）。
-          必要なら、カイ二乗分布の上側確率の点 $\chi^2_{0.05}(3)=«c3»$、$\chi^2_{0.025}(3)=«c3h»$、$\chi^2_{0.05}(4)=«c4»$ を用いよ。正しい記述はどれか。
-        choices:
-          - '統計量は $«Qnob»$ で、$«c3»$ を超えないので帰無仮説を棄却しない。'
-          - '統計量は $«Q»$ で、自由度 4 の点 $«c4»$ を超えないので帰無仮説を棄却しない。'
-          - '統計量は $«Qbig»$ で、$«c3»$ を超えるので帰無仮説を棄却する。'
-          - '統計量は $«Q»$ で、自由度 3 の点 $«c3»$ を超えるので帰無仮説を棄却する。'
-          - '統計量は $«Q»$ で、上側 2.5% 点 $«c3h»$ を超えないので帰無仮説を棄却しない。'
-        answer: 3
-        distractors:
-          - 平均順位で計算し、審判の人数 b を掛け忘れた
-          - 自由度を選手の数 k=4 とした（正しくは k-1）
-          - 公式の分母の審判の人数 b を落とした
-          - 正解
-          - 上側にだけ棄却域をとる検定なのに、両側検定のつもりで 2.5% 点と比べた
+          2 人の順位のスピアマンの順位相関係数を求めよ。
+        answer: «rs»
+        tolerance: 0.001
+        answer_format: 小数第3位まで（小数第4位を四捨五入）で答えよ。±0.001 の差まで正解とする。
         explanation: |
-          **方針** ブロック数 $b=«b»$（審判）、処理数 $k=«k»$（選手）。選手ごとの順位和 $R_j$ を求め、
-          $$Q=\frac{12}{bk(k+1)}\sum_{j=1}^{k}R_j^2-3b(k+1)$$
-          を自由度 $k-1$ のカイ二乗分布の上側 5% 点と比べる（$Q$ が大きいほど選手間の差が大きい、上側だけの検定）。
+          **方針** 同順位がないとき、順位の差 $d_i$ を使って $r_s=1-\dfrac{6\sum d_i^2}{n(n^2-1)}$（順位どうしのピアソンの相関係数と同じ値）。
 
-          **途中式** 順位和は $R_A=«R1»$、$R_B=«R2»$、$R_C=«R3»$、$R_D=«R4»$（合計 $b\,k(k+1)/2=«Rsum»$ になることを確認）。
-          $$\sum R_j^2=«R1»^2+«R2»^2+«R3»^2+«R4»^2=«sR2»$$
-          $$Q=\frac{12}{«b»\times«k»\times«k1»}\times«sR2»-3\times«b»\times«k1»=«coef»\times«sR2»-«sub»=«first»-«sub»=«Q»$$
-          自由度 $«k»-1=«dfQ»$ の上側 5% 点 $«c3»$ より大きいので、帰無仮説を棄却する。
+          **途中式** 差 $d_i$（審判 1 − 審判 2）は «d1»、«d2»、«d3»、«d4»、«d5»、«d6»、«d7»、«d8» で、$\sum d_i^2=«sd2»$。
+          $$r_s=1-\frac{6\times«sd2»}{«nj»\times(«nj»^2-1)}=1-\frac{«six»}{«nj»\times«nn1»}=1-\frac{«six»}{«den»}=«rs5»\cdots$$
 
-          **答え** 統計量 $«Q»$ で、自由度 3 の点 $«c3»$ を超えるので棄却する、という記述
+          **答え** $«rs_s»$
 
-          **間違えやすい点** 自由度は選手数 $k$ ではなく $k-1=«dfQ»$。差がないとき $R_j$ の期待値は $b(k+1)/2=«rbar»$ で、$\sum(R_j-«rbar»)^2=«ss»$ から $Q=\frac{12}{bk(k+1)}\times«ss»$ と計算しても同じ $«Q»$ になる。この式の分母の $b$ を落とすと $«Qbig»$ になる。
-          棄却域は上側だけなので、5% の検定では上側 5% 点と比べる（2.5% 点は使わない）。
+          **間違えやすい点** 分子の 6 を忘れると $«w_nosix»$、分母を $n(n^2+1)$ とすると $«w_n2»$ になる。差は符号つきで出しても 2 乗するので向きは関係ない。
 
       - id: s14p06b
         chapter: 20
-        terms: [fixed-and-random-effects, expected-mean-square, one-way-anova]
-        topic: 無作為に選んだ選手の繰り返し演技の変量効果モデルで分散成分から級内相関を推定する
-        level: 標準
-        definition: false
-        type: numeric
-        question: |
-          多数の登録選手の中から無作為に «g» 人を選び、1 人につき «rep» 回、同じ種目の演技の得点を記録した。
-          モデル $Y_{ij}=\mu+a_i+\varepsilon_{ij}$（$a_i\sim N(0,\sigma_A^2)$ は選手の変量効果、$\varepsilon_{ij}\sim N(0,\sigma^2)$、すべて独立）を当てはめ、一元配置の分散分析を行ったところ、
-          選手間の平均平方が $MS_A=«msa»$（自由度 «dfa»）、選手内（誤差）の平均平方が $MS_E=«mse»$（自由度 «dfe»）だった。
-          平均平方の期待値にもとづいて分散成分を推定し、級内相関 $\rho=\dfrac{\sigma_A^2}{\sigma_A^2+\sigma^2}$ の推定値を求めよ。
-        answer: «icc»
-        tolerance: 0.01
-        answer_format: 小数第2位まで（小数第3位を四捨五入）で答えよ。±0.01 の差まで正解とする。
-        explanation: |
-          **方針** 1 人あたりの繰り返し数を $r=«rep»$ とすると、平均平方の期待値は $E[MS_E]=\sigma^2$、$E[MS_A]=«emsa»$。これを観測値と等しいとおいて $\sigma^2$ と $\sigma_A^2$ を推定する。
-
-          **途中式**
-          $$\hat\sigma^2=MS_E=«mse»,\qquad \hat\sigma_A^2=\frac{MS_A-MS_E}{r}=\frac{«msa»-«mse»}{«rep»}=\frac{«dms»}{«rep»}=«sa2»$$
-          $$\hat\rho=\frac{\hat\sigma_A^2}{\hat\sigma_A^2+\hat\sigma^2}=\frac{«sa2»}{«sa2»+«mse»}=\frac{«sa2»}{«tot»}=«icc4»\cdots$$
-
-          **答え** $«icc»$（得点のばらつきのうち約 56% が選手の違いによる）
-
-          **間違えやすい点** $MS_A$ には選手内のばらつき $\sigma^2$ も含まれ、さらに選手効果は $r$ 倍されている。$r$ で割り忘れて $\frac{MS_A-MS_E}{MS_A}$ とすると $«w_norep»$、平均平方をそのまま $\frac{MS_A}{MS_A+MS_E}$ とすると $«w_ms»$ になる。
-
-  - id: s14p07
-    title: プロ野球のチーム勝利数の回帰
-    context: |
-      プロ野球 12 球団の 3 シーズン分、計 «n» チーム・シーズンについて、勝利数を目的変数とする線形回帰（切片あり、最小二乗法）を当てはめた。
-
-      - モデル R：説明変数は「得点」と「失点」の «pr» 個。残差平方和 «sser»。
-      - モデル F：モデル R に「盗塁数」「本塁打数」「守備率」を加えた «pf» 個。残差平方和 «ssef»。
-
-      ここで「説明変数の個数」は切片を含まない。
-    items:
-      - id: s14p07a
-        chapter: 16
-        terms: [partial-f-test, multiple-regression-model, f-distribution]
-        topic: 得点と失点のモデルに3変数を追加したときの残差平方和の減少を部分F検定で判定する
+        terms: [fixed-and-random-effects, expected-mean-square, two-way-anova-with-replication]
+        topic: 固定の踏切板と変量の選手の混合二元配置で踏切板の主効果を交互作用の平均平方で検定する
         level: 標準
         definition: false
         type: choice
         question: |
-          追加した 3 変数の係数がすべて 0 という帰無仮説を、有意水準 5% の $F$ 検定で調べる。正しい記述はどれか。
-          必要なら $F$ 分布の上側 5% 点 $F_{0.05}(3,30)=«c330»$、$F_{0.05}(5,30)=«c530»$、$F_{0.05}(1,30)=«c130»$ を用いよ。
-        choices:
-          - '$F=«F5»$ で、$F_{0.05}(5,30)=«c530»$ より小さいので有意でない。'
-          - '$F=«Fnoq»$ で、$F_{0.05}(3,30)=«c330»$ より大きいので有意である。'
-          - '$F=«Fred»$ で、$F_{0.05}(3,30)=«c330»$ より小さいので有意でない。'
-          - '$F=«F31»$ で、$F_{0.05}(3,30)=«c330»$ より小さいので有意でない。'
-          - '$F=«F»$ で、$F_{0.05}(3,30)=«c330»$ より小さいので有意でない。'
-        answer: 4
-        distractors:
-          - 分子の自由度をモデル F の説明変数の個数 5 にした
-          - 残差平方和の減少を追加した変数の個数 3 で割り忘れた
-          - 分母にモデル R（小さいモデル）の残差平均平方を使った
-          - 分母の自由度を n-p（切片を数え忘れ）にした
-          - 正解
-        explanation: |
-          **方針** 入れ子のモデルの比較は部分 $F$ 検定：
-          $$F=\frac{(S_R-S_F)/q}{S_F/(n-p_F-1)}$$
-          ここで $q$ は追加した変数の個数、$p_F$ は大きいモデルの説明変数の個数。帰無仮説のもとで自由度 $(q,\ n-p_F-1)$ の $F$ 分布に従う。
+          跳馬の踏切板 «ta» 種類（比べたい特定の製品なので固定効果）の違いを調べるため、多数の選手から無作為に «tb» 人を選び（変量効果）、各選手が各踏切板で «rep» 回ずつ跳んで得点を記録した。
+          交互作用ありの二元配置の分散分析で、平均平方は次のとおりだった。
 
-          **途中式** $q=«pf»-«pr»=«q»$、$n-p_F-1=«n»-«pf»-1=«dff»$。
-          $$F=\frac{(«sser»-«ssef»)/«q»}{«ssef»/«dff»}=\frac{«dsse»/«q»}{«ssef»/«dff»}=\frac{«num»}{«mse»}=«F»$$
-          $F_{0.05}(3,30)=«c330»$ より小さいので、帰無仮説は棄却されない。
+          | 要因 | 自由度 | 平均平方 |
+          |---|---|---|
+          | 踏切板 $A$（固定） | «dfa» | «msa» |
+          | 選手 $B$（変量） | «dfb» | «msb» |
+          | 交互作用 $A\times B$ | «dfab» | «msab» |
+          | 誤差 | «dfe» | «mse» |
+
+          踏切板の主効果の検定（有意水準 5%）について正しい記述はどれか。必要なら $F$ 分布の上側 5% 点 $F_{0.05}(3,12)=«f312»$、$F_{0.05}(3,20)=«f320»$、$F_{0.05}(3,32)=«f332»$ と上側 10% 点 $F_{0.10}(3,12)=«f312t»$ を用いよ。
+        choices:
+          - '$F=«Fe»$ で、$F_{0.05}(3,20)=«f320»$ を超えるので有意である。'
+          - '$F=«F»$ で、$F_{0.05}(3,12)=«f312»$ を超えないので有意でない。'
+          - '$F=«Fpool»$ で、$F_{0.05}(3,32)=«f332»$ を超えるので有意である。'
+          - '$F=«Fb»$ で、$F_{0.05}(3,12)=«f312»$ を超えないので有意でない。'
+          - '$F=«F»$ で、$F_{0.10}(3,12)=«f312t»$ を超えるので有意水準 5% で有意である。'
+        answer: 1
+        distractors:
+          - 固定効果の検定でも誤差の平均平方を分母にした（両方固定のときの方法）
+          - 正解
+          - 交互作用と誤差の平方和を合併した平均平方を分母にした
+          - 分母に選手の平均平方を使った
+          - 10% 点と比べて有意水準 5% の判定をした
+        explanation: |
+          **方針** 平均平方の期待値を考えると、混合モデル（$A$ 固定、$B$ 変量、各セル $r=«rep»$ 回）では
+          $$E[MS_A]=\sigma^2+r\sigma_{AB}^2+(\text{踏切板の効果}),\quad E[MS_{AB}]=\sigma^2+r\sigma_{AB}^2,\quad E[MS_E]=\sigma^2$$
+          踏切板の効果が 0 のとき $E[MS_A]$ と一致するのは $E[MS_{AB}]$ なので、分母は交互作用の平均平方。
+
+          **途中式**
+          $$F=\frac{MS_A}{MS_{AB}}=\frac{«msa»}{«msab»}=«F»$$
+          自由度 $(«dfa»,\ «dfab»)$ の上側 5% 点 $«f312»$ を超えないので、有意でない。
 
           **答え** $F=«F»$ で有意でない、という記述
 
-          **間違えやすい点** 分母は大きいモデル F の残差平均平方 $«ssef»/«dff»$。モデル R の $«sser»/«dfr»=«msered»$ を使うと $«Fred»$ になる。
-          残差平方和が «dsse» も減ったので効果がありそうに見えるが、3 変数を加えれば残差平方和は必ず減る。自由度で割って比べる必要がある（$q$ で割り忘れると $«Fnoq»$）。
+          **間違えやすい点** 誤差の平均平方で割ると $F=«Fe»$ となり有意に見える。選手と踏切板の相性（交互作用）のばらつきは、選んだ選手が変われば変わるので、踏切板の差を一般化するにはそのばらつきと比べる必要がある。
+          交互作用と誤差を合併（平均平方 $«pool»$）すると $«Fpool»$ になるが、交互作用が無視できるとは限らないので使えない。
+
+      - id: s14p06c
+        chapter: 11
+        terms: [f-test-equal-variances, f-distribution, one-sided-two-sided-test]
+        topic: 2人の選手の得点の安定性の違いを母分散の比のF検定で両側検定する
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          選手 P と選手 Q の同じ種目の得点の安定性を比べる。P の «n1» 回の得点の標本標準偏差（不偏分散の平方根）は «sP»、Q の «n2» 回では «sQ» だった。
+          得点は正規分布に従うとして、「2 人の母分散は等しい」という帰無仮説を有意水準 5% の**両側**検定で調べる。
+          必要なら $F$ 分布の上側の点 $F_{0.025}(10,15)=«f025»$、$F_{0.05}(10,15)=«f05»$ を用いよ。正しい記述はどれか。
+        choices:
+          - '$F=«Fv»$ で、$«f05»$ を超えるので帰無仮説を棄却する。'
+          - '$F=«Fsd»$ で、$«f025»$ を超えないので帰無仮説を棄却しない。'
+          - '$F=«Fv»$ で、$«f025»$ を超えないので帰無仮説を棄却しない。'
+          - '$F=«Fmean»$ で、$«f025»$ を超えるので帰無仮説を棄却する。'
+          - '標本の大きさが異なるので $F$ 検定は使えず、ウェルチの方法で判断する。'
+        answer: 2
+        distractors:
+          - 両側検定なのに上側 5% 点と比べた
+          - 分散ではなく標準偏差の比を統計量にした
+          - 正解
+          - 平均の標準誤差の 2 乗の比（s^2/n どうし）を統計量にした
+          - F 検定は標本の大きさが違っても使える。ウェルチの方法は平均の比較の方法
+        explanation: |
+          **方針** 帰無仮説のもとで $F=s_P^2/s_Q^2$ は自由度 $(«n1»-1,\ «n2»-1)=(«df1»,\ «df2»)$ の $F$ 分布に従う。大きいほうの分散を分子にすれば、両側 5% の検定は上側 2.5% 点と比べればよい。
+
+          **途中式**
+          $$F=\frac{«sP»^2}{«sQ»^2}=\frac{«v1»}{«v2»}=«Fv»$$
+          $«Fv»<F_{0.025}(«df1»,«df2»)=«f025»$ なので、帰無仮説を棄却しない。
+
+          **答え** $F=«Fv»$ で棄却しない、という記述
+
+          **間違えやすい点** 両側検定では片側に 2.5% ずつ割り振るので、上側 5% 点 $«f05»$ ではなく 2.5% 点 $«f025»$ を使う（5% 点と比べると逆の結論になる）。統計量は標準偏差の比 $«Fsd»$ ではなく分散の比。
+
+  - id: s14p07
+    title: サッカー選手の市場価値の回帰
+    context: |
+      プロサッカー選手の市場価値 $y$ を、1 シーズンのシュート数 $x_1$ とチャンス創出数 $x_2$ で説明する線形回帰を考える。3 つの変数はすべて平均 0、分散 1 に標準化してある。
+      標本の相関係数は $r_{x_1x_2}=«rho»$、$r_{yx_1}=«r1»$、$r_{yx_2}=«r2»$ である。
+    items:
+      - id: s14p07a
+        chapter: 16
+        terms: [variance-inflation-factor, multicollinearity, standard-error]
+        topic: 2つの説明変数の相関から分散拡大係数を求め係数の標準誤差が何倍になるかを読む
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          $y$ を $x_1,\ x_2$ に回帰する重回帰で、$x_1$ の係数の分散拡大係数（VIF）と、$x_1$ と $x_2$ が無相関だった場合に比べて $x_1$ の係数の標準誤差が何倍になるか（誤差分散と標本の大きさは同じとする）の組として正しいものはどれか。
+        choices:
+          - '$«v_inv»$'
+          - '$«v_plus»$'
+          - '$«v_ok»$'
+          - '$«v_nosq»$'
+          - '$«v_1r»$'
+        answer: 2
+        distractors:
+          - VIF の逆数（許容度）1-R^2 を VIF と取り違えた
+          - 1/(1-R^2) ではなく 1+R^2 とした
+          - 正解
+          - 標準誤差の倍率に VIF をそのまま使い、平方根をとらなかった
+          - R^2 ではなく相関係数 r で 1/(1-r) とした
+        explanation: |
+          **方針** $x_1$ の VIF は、$x_1$ を他の説明変数に回帰したときの決定係数 $R_1^2$ を使って $\mathrm{VIF}_1=\frac{1}{1-R_1^2}$。係数の分散は VIF 倍になるので、標準誤差は $\sqrt{\mathrm{VIF}}$ 倍になる。
+
+          **途中式** 説明変数が 2 つなので $R_1^2=r_{x_1x_2}^2=«rho»^2=«rho2»$。
+          $$\mathrm{VIF}_1=\frac{1}{1-«rho2»}=\frac{1}{«om»}=«vif»,\qquad \sqrt{«vif»}=«sevif»$$
+
+          **答え** VIF $=«vifs»$、標準誤差は $«sevif»$ 倍
+
+          **間違えやすい点** VIF は**分散**の倍率。標準誤差の倍率はその平方根。$1-R^2=«om»$ は許容度（tolerance）で、VIF の逆数である。
 
       - id: s14p07b
-        chapter: 17
-        terms: [dffits, studentized-residual, leverage, standardized-residual]
-        topic: 内部スチューデント化残差とてこ比から外部スチューデント化残差を経てDFFITSを求める
+        chapter: 19
+        terms: [principal-component-regression, principal-component, least-squares-method]
+        topic: 相関する2つの標準化説明変数を第1主成分だけで回帰する主成分回帰の係数をもとの変数に戻す
         level: 応用
+        definition: false
+        type: choice
+        question: |
+          多重共線性を避けるため、$x_1,\ x_2$ の相関行列の第 1 主成分 $z=(x_1+x_2)/\sqrt2$ だけを説明変数にして $y$ を回帰し（主成分回帰）、得られた式をもとの変数 $x_1,\ x_2$ の係数に書き直す。
+          その係数 $(\hat\beta_1,\ \hat\beta_2)$ として正しいものはどれか。
+        choices:
+          - '$«c_ols»$'
+          - '$«c_ok»$'
+          - '$«c_g»$'
+          - '$«c_nov»$'
+          - '$«c_no2»$'
+        answer: 1
+        distractors:
+          - 主成分回帰ではなく 2 変数の最小二乗法の係数を答えた
+          - 正解
+          - z の係数 γ をそのまま x1, x2 の係数とし、1/√2 を掛け忘れた
+          - z の分散 1+r で割り忘れた
+          - z=(x1+x2)/√2 の √2 を 2 回掛け、係数を 2 倍にした
+        explanation: |
+          **方針** 標準化した 2 変数の相関行列の第 1 主成分は $z=(x_1+x_2)/\sqrt2$。単回帰の係数 $\hat\gamma=\mathrm{Cov}(y,z)/V[z]$ を求め、$\hat\gamma z=\frac{\hat\gamma}{\sqrt2}x_1+\frac{\hat\gamma}{\sqrt2}x_2$ と書き直す。
+
+          **途中式**
+          $$\mathrm{Cov}(y,z)=\frac{r_{yx_1}+r_{yx_2}}{\sqrt2}=\frac{«rs»}{\sqrt2},\qquad V[z]=\frac{1+1+2r_{x_1x_2}}{2}=1+«rho»=«vz»$$
+          $$\hat\gamma=\frac{«rs»/\sqrt2}{«vz»}=«gam»\cdots,\qquad \hat\beta_1=\hat\beta_2=\frac{\hat\gamma}{\sqrt2}=\frac{«rs»}{2\times«vz»}=\frac{«rs»}{«den2»}=«beta»$$
+
+          **答え** $«c_ok»$
+
+          **間違えやすい点** 主成分回帰の係数は、通常の最小二乗推定値 $(«ob1»,\ «ob2»)$ と違い、2 変数の係数が等しく縮められる（第 2 主成分 $(x_1-x_2)/\sqrt2$ の方向の情報を捨てるため）。$z$ の係数 $\hat\gamma$ をそのまま使うと $«c_g»$ になる。
+
+  - id: s14p08
+    title: サッカーの得点
+    context: |
+      あるサッカーリーグの得点データを分析する。
+    items:
+      - id: s14p08a
+        chapter: 2
+        terms: [conditional-probability-function, joint-probability-function, poisson-distribution]
+        topic: ホームとアウェイの得点が独立なポアソン分布のとき総得点を条件としたホーム得点の条件付き確率関数
+        level: 基本
         definition: false
         type: numeric
         question: |
-          モデル F で、ある 1 チーム・シーズン（第 $i$ 観測）の内部スチューデント化残差（標準化残差）は $r_i=«r»$、てこ比は $h_{ii}=«h»$ だった。
-          第 $i$ 観測を除いて推定した誤差の標準偏差を使う外部スチューデント化残差 $t_i$ は、
-          $$t_i=r_i\sqrt{\frac{n-p-2}{n-p-1-r_i^2}}\qquad(p\ \text{は切片を除く説明変数の個数})$$
-          で求められる。この観測の DFFITS（第 $i$ 観測を除いたときの当てはめ値の変化を、標準誤差の推定値で割ったもの）を求めよ。
-        answer: «dffits»
-        tolerance: 0.01
-        answer_format: 小数第2位まで（小数第3位を四捨五入）で答えよ。途中の値は小数第4位まで（小数第5位を四捨五入）に丸めて使ってよい。±0.01 の差まで正解とする。
+          ある対戦カードで、ホームチームの得点 $X$ は平均 «lh» のポアソン分布、アウェイチームの得点 $Y$ は平均 «la» のポアソン分布に従い、$X$ と $Y$ は独立とする。
+          試合の総得点が «tot» 点だったと知らされたとき、ホームチームの得点がちょうど «k» 点である条件付き確率 $P(X=«k»\mid X+Y=«tot»)$ を求めよ。
+        answer: «ans»
+        tolerance: 0.001
+        answer_format: 小数第3位まで（小数第4位を四捨五入）で答えよ。±0.001 の差まで正解とする。
         explanation: |
-          **方針** DFFITS は $\mathrm{DFFITS}_i=\dfrac{\hat y_i-\hat y_{i(i)}}{s_{(i)}\sqrt{h_{ii}}}$。$\hat y_i-\hat y_{i(i)}=\dfrac{h_{ii}e_i}{1-h_{ii}}$ を使って整理すると
-          $$\mathrm{DFFITS}_i=t_i\sqrt{\frac{h_{ii}}{1-h_{ii}}}$$
-          となる。まず $t_i$ を求め、次にてこ比の部分を掛ける。
+          **方針** 条件付き確率関数の定義 $P(X=x\mid X+Y=n)=\dfrac{P(X=x,\ Y=n-x)}{P(X+Y=n)}$ を使う。独立なポアソン分布の和は平均を足したポアソン分布に従う（再生性）。
 
-          **途中式** $n=«n»$、$p=«pf»$ より $n-p-2=«a1»$、$n-p-1=«a2»$、$r_i^2=«r2»$。
-          $$t_i=«r»\times\sqrt{\frac{«a1»}{«a2»-«r2»}}=«r»\times\sqrt{\frac{«a1»}{«a2r»}}=«r»\times\sqrt{«ratio»}=«r»\times«sq»=«t»$$
-          $$\sqrt{\frac{h_{ii}}{1-h_{ii}}}=\sqrt{\frac{«h»}{1-«h»}}=\sqrt{«hr»}=«sh»$$
-          $$\mathrm{DFFITS}_i=«t»\times«sh»=«dffits4»\cdots$$
+          **途中式** $\lambda_1=«lh»$、$\lambda_2=«la»$、$X+Y\sim\mathrm{Po}(«lsum»)$ なので
+          $$P(X=x\mid X+Y=n)=\frac{e^{-\lambda_1}\frac{\lambda_1^x}{x!}\,e^{-\lambda_2}\frac{\lambda_2^{n-x}}{(n-x)!}}{e^{-(\lambda_1+\lambda_2)}\frac{(\lambda_1+\lambda_2)^n}{n!}}=\binom{n}{x}\left(\frac{\lambda_1}{\lambda_1+\lambda_2}\right)^x\left(\frac{\lambda_2}{\lambda_1+\lambda_2}\right)^{n-x}$$
+          つまり条件付き分布は二項分布 $B(n,\ \lambda_1/(\lambda_1+\lambda_2))=B(«tot»,\ «pr»)$。
+          $$P(X=«k»\mid X+Y=«tot»)=«comb»\times«pr»^2\times«qr»=«comb»\times«pp»\times«qr»=«ans_s»$$
 
-          **答え** $«dffits»$（目安 $2\sqrt{(p+1)/n}=«th»$ を大きく超え、影響の大きい観測といえる）
+          **答え** $«ans_s»$
 
-          **間違えやすい点** 外部スチューデント化残差ではなく内部の $r_i=«r»$ をそのまま使うと $«r»\times«sh»=«w_int»$ になる。$p$ は切片を除く個数で、ここでは «pf»。
+          **間違えやすい点** 指数関数の部分は分子と分母で打ち消し合うので、$e$ の値は不要。二項係数 «comb» を掛け忘れると $«w_k3»$、ホームとアウェイの割合を取り違えると $«w_rev»$ になる。
 
-  - id: s14p08
-    title: サッカーの得点のポアソン回帰
-    context: |
-      あるサッカーリーグの 76 試合について、各チームの 1 試合の得点（«nobs» 件）を目的変数とし、
-      「ホームかどうか」のダミー変数と 2 つの戦力指標を説明変数とするポアソン回帰（対数リンク、切片あり、推定するパラメータは «k» 個）を当てはめた。
-      ホームのダミー変数の係数の推定値は $\hat\beta=«b»$（$e^{«b»}=«rr»$）、ポアソン分布を仮定したときの標準誤差は «se» だった。
-      一方、ピアソンのカイ二乗統計量は «pear»（残差の自由度 «df»）で、過分散が疑われる。
-      そこで、分散が平均の $\phi$ 倍であるとする準ポアソンモデルを考え、$\phi$ を「ピアソンのカイ二乗統計量÷残差の自由度」で推定する。
-    items:
-      - id: s14p08a
+      - id: s14p08b
         chapter: 18
         terms: [overdispersion, poisson-regression, wald-test]
         topic: 得点のポアソン回帰で過分散パラメータを推定し準ポアソンの標準誤差でホーム効果のワルド検定をやり直す
@@ -500,6 +554,11 @@ problems:
         definition: false
         type: choice
         question: |
+          リーグの 76 試合について、各チームの 1 試合の得点（«nobs» 件）を目的変数とし、
+          「ホームかどうか」のダミー変数と 2 つの戦力指標を説明変数とするポアソン回帰（対数リンク、切片あり、推定するパラメータは «kk» 個）を当てはめた。
+          ホームのダミー変数の係数の推定値は $\hat\beta=«b»$（$e^{«b»}=«rr»$）、ポアソン分布を仮定したときの標準誤差は «se» だった。
+          一方、ピアソンのカイ二乗統計量は «pear»（残差の自由度 «df»）で、過分散が疑われる。
+          そこで、分散が平均の $\phi$ 倍であるとする準ポアソンモデルを考え、$\phi$ を「ピアソンのカイ二乗統計量÷残差の自由度」で推定する。
           ホームの効果の検定（有意水準 5%、両側、棄却域 $|z|>«c»$）について、正しい記述はどれか。
         choices:
           - '$\hat\phi=«phi»$ なので標準誤差を $\sqrt{\hat\phi}=«sphi»$ 倍の $«seq»$ にする。$z=«zq»$ となり、有意である。'
@@ -527,434 +586,333 @@ problems:
           **間違えやすい点** $\phi$ は**分散**の倍率なので、標準誤差には $\sqrt{\phi}$ を掛ける。$\phi$ を掛けると $z=«zphi»$ になり結論が逆転する。
           $\hat\phi>1$ は過分散で、ポアソン回帰の標準誤差は小さすぎる（有意になりやすい）方向にずれる。
 
+
   - id: s14p09
-    title: 動画配信サービスの分析
+    title: eスポーツチームの練習と成績
     context: |
-      ある動画配信サービスの分析チームが、サムネイル画像・番組の評価・視聴者数の 3 つのデータを分析した。
+      あるeスポーツリーグの «n» チームについて、シーズンの勝ち点を目的変数とし、練習時間など «p» 個の説明変数（切片を除く）を使う線形回帰（切片あり、最小二乗法）を当てはめた。また、選手の練習と成績の因果関係についても検討した。
     items:
       - id: s14p09a
-        chapter: 10
-        terms: [false-discovery-rate, multiple-testing, holm-method, bonferroni-correction]
-        topic: 8種類のサムネイルの比較のp値にベンジャミーニ・ホッホベルグ法を適用して採用数を数える
-        level: 標準
-        definition: false
-        type: choice
-        question: |
-          新しいサムネイル A〜H のそれぞれを現行のサムネイルと比べる検定を行い、次の $p$ 値を得た。
-
-          | サムネイル | A | B | C | D | E | F | G | H |
-          |---|---|---|---|---|---|---|---|---|
-          | $p$ 値 | «pA» | «pB» | «pC» | «pD» | «pE» | «pF» | «pG» | «pH» |
-
-          偽発見率（FDR）を «qq» に抑えるベンジャミーニ・ホッホベルグ法を適用したとき、帰無仮説を棄却する（効果ありとする）サムネイルの数はどれか。
-        choices:
-          - '$«bonf»$ 個'
-          - '$«holm»$ 個'
-          - '$«stop»$ 個'
-          - '$«bh»$ 個'
-          - '$«raw»$ 個'
-        answer: 3
-        distractors:
-          - ボンフェローニ法（すべて 0.05/8 と比べる）を使った
-          - ホルム法（小さい順に 0.05/(m-k+1) と比べる）を使った
-          - 小さい順に k·q/m と比べ、初めて超えたところで止めた（ステップアップの手順を誤った）
-          - 正解
-          - 多重性を調整せずに 0.05 と比べた
-        explanation: |
-          **方針** $p$ 値を小さい順に $p_{(1)}\le\cdots\le p_{(m)}$（$m=«m»$）と並べ、$p_{(k)}\le\frac{k}{m}q$ を満たす**最大の** $k$ を $k^*$ とし、$p_{(1)},\ldots,p_{(k^*)}$ に対応する帰無仮説をすべて棄却する。
-
-          **途中式** $q=«qq»$ のとき、境界は $\frac{k}{«m»}\times«qq»$。
-
-          | $k$ | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
-          |---|---|---|---|---|---|---|---|---|
-          | $p_{(k)}$ | «s1» | «s2» | «s3» | «s4» | «s5» | «s6» | «s7» | «s8» |
-          | $kq/m$ | «th1» | «th2» | «th3» | «th4» | «th5» | «th6» | «th7» | «th8» |
-
-          $k=4$ では $«s4»>«th4»$ だが、$k=5$ では $«s5»\le«th5»$。$k=6,7,8$ はすべて境界を超えるので、条件を満たす最大の $k$ は 5。よって $p_{(1)}$〜$p_{(5)}$（C・H・E・G・A）の «bh» 個を棄却する。
-
-          **答え** $«bh»$ 個
-
-          **間違えやすい点** ベンジャミーニ・ホッホベルグ法は「条件を満たす最大の $k$」で決める（ステップアップ）。$k=4$ で境界を超えたところで止めると «stop» 個になる。
-          ボンフェローニ法（すべて $0.05/8=«th1»$ 以下）では «bonf» 個、ホルム法では «holm» 個、調整しないと «raw» 個。FDR の制御は、ファミリー全体の誤り率（FWER）の制御より緩いので、棄却数が多くなる。
-
-      - id: s14p09b
-        chapter: 11
-        terms: [fisher-z-transformation, test-correlation-coefficient, one-sided-two-sided-test]
-        topic: 番組の視聴完了率と評価の相関が過去の値を上回るかをフィッシャーのz変換で片側検定する
-        level: 標準
-        definition: false
-        type: choice
-        question: |
-          «n» 本の番組について、視聴完了率とユーザー評価の標本相関係数は $r=«r»$ だった。2 変量正規分布を仮定し、
-          過去の調査で得られている母相関係数 $\rho=«rho0»$ よりも相関が強くなったか（$H_0:\rho=«rho0»$、$H_1:\rho>«rho0»$）を、フィッシャーの $z$ 変換を用いて有意水準 5% で検定する。
-          $\tanh^{-1}(«r»)=«zr»$、$\tanh^{-1}(«rho0»)=«z0»$、標準正規分布の上側 5% 点は «c1»、上側 2.5% 点は «c2» である。正しい記述はどれか。
-        choices:
-          - '検定統計量は $«Z»$ で、帰無仮説を棄却しない。'
-          - '検定統計量は $«Zr»$ で、帰無仮説を棄却しない。'
-          - '検定統計量は $«Zn»$ で、帰無仮説を棄却する。'
-          - '検定統計量は $«t0»$ で、帰無仮説を棄却する。'
-          - '検定統計量は $«Z»$ で、帰無仮説を棄却する。'
-        answer: 0
-        distractors:
-          - 正解
-          - z 変換をせず、相関係数の差 r-ρ0 にそのまま √(n-3) を掛けた
-          - z 変換した値の標準誤差を 1/√(n-3) ではなく 1/√n とした
-          - ρ=0 の検定の t 統計量 r√(n-2)/√(1-r^2) を使った
-          - 統計量は正しいが、片側検定の上側 5% 点 1.645 との比較を誤った
-        explanation: |
-          **方針** $Z_r=\tanh^{-1}r$ は近似的に平均 $\tanh^{-1}\rho$、分散 $1/(n-3)$ の正規分布に従う。よって $H_0$ のもとで $\sqrt{n-3}\,(\tanh^{-1}r-\tanh^{-1}\rho_0)$ は近似的に標準正規分布に従う。片側検定なので上側 5% 点 «c1» と比べる。
-
-          **途中式** $\sqrt{n-3}=\sqrt{«n3»}=«sq»$。
-          $$Z=«sq»\times(«zr»-«z0»)=«sq»\times«dz»=«Zraw»$$
-          $«Zraw»<«c1»$ なので、帰無仮説は棄却されない。
-
-          **答え** 統計量 $«Z»$ で棄却しない、という記述
-
-          **間違えやすい点** 相関係数そのものは分布がゆがんでいて分散が $\rho$ に依存するので、$z$ 変換してから標準化する（変換せずに $«sq»\times(«r»-«rho0»)$ とすると $«Zr»$）。標準誤差は $1/\sqrt{n}$ ではなく $1/\sqrt{n-3}$（$\sqrt{«n»}=«sqn»$ を使うと $«Zn»$ で結論が逆転する）。
-          $r\sqrt{n-2}/\sqrt{1-r^2}$ は「$\rho=0$」の検定の統計量で、$\rho_0=«rho0»$ の検定には使えない。
-
-      - id: s14p09c
-        chapter: 27
-        terms: [yule-walker-equations, ar-model, partial-autocorrelation]
-        topic: 週間視聴者数の1次と2次の標本自己相関からユール・ウォーカー方程式でAR2の係数を推定する
-        level: 標準
-        definition: false
-        type: choice
-        question: |
-          ある番組の週間視聴者数から傾向と季節性を除いた系列 $X_t$ に、定常な AR(2) モデル $X_t=\phi_1X_{t-1}+\phi_2X_{t-2}+\varepsilon_t$（$\varepsilon_t$ はホワイトノイズ）を当てはめる。
-          標本自己相関は 1 次が $\hat\rho_1=«r1»$、2 次が $\hat\rho_2=«r2»$ だった。ユール・ウォーカー方程式による $(\phi_1,\phi_2)$ の推定値はどれか（小数第4位を四捨五入）。
-        choices:
-          - '$«c_acf»$'
-          - '$«c_ok»$'
-          - '$«c_nodiv»$'
-          - '$«c_swap»$'
-          - '$«c_mix»$'
-        answer: 1
-        distractors:
-          - 自己相関係数をそのまま AR 係数とみなした
-          - 正解
-          - 連立方程式を解くときに分母 1-ρ1^2 で割り忘れた
-          - φ1 と φ2 を取り違えた
-          - φ1=ρ1 とし、φ2 だけ分母なしで ρ2-ρ1^2 とした
-        explanation: |
-          **方針** AR(2) の自己相関は $\rho_k=\phi_1\rho_{k-1}+\phi_2\rho_{k-2}$ を満たす。$k=1,2$ を書くと（$\rho_0=1$、$\rho_{-1}=\rho_1$）
-          $$\rho_1=\phi_1+\phi_2\rho_1,\qquad \rho_2=\phi_1\rho_1+\phi_2$$
-          これに標本自己相関を代入して解く。
-
-          **途中式** 連立方程式を解くと
-          $$\hat\phi_1=\frac{\rho_1(1-\rho_2)}{1-\rho_1^2}=\frac{«r1»\times(1-«r2»)}{1-«r1s»}=\frac{«n1»}{«d»}=«f1»$$
-          $$\hat\phi_2=\frac{\rho_2-\rho_1^2}{1-\rho_1^2}=\frac{«r2»-«r1s»}{1-«r1s»}=\frac{«n2»}{«d»}=«f2»$$
-          確認：$\hat\phi_1+\hat\phi_2\hat\rho_1=«f1»+«f2»\times«r1»=«r1»$。定常条件 $\phi_1+\phi_2=«sum»<1$、$\phi_2-\phi_1<1$、$|\phi_2|<1$ も満たす。
-
-          **答え** $«c_ok»$
-
-          **間違えやすい点** AR(2) では自己相関と係数は一致しない（AR(1) なら $\phi=\rho_1$ だが）。$\hat\phi_2$ は 2 次の偏自己相関係数そのもので、$\rho_2-\rho_1^2$ を $1-\rho_1^2$ で割る必要がある（割り忘れると $«n2»$）。
-
-  - id: s14p10
-    title: 配信チャンネルの広告収入調査
-    context: |
-      ある動画プラットフォームに登録された «N» 個のゲーム実況チャンネルについて、月間広告収入の合計を推定したい。
-      全チャンネルの登録者数の合計は $X=«X»$（万人）とわかっている。そこで、登録者数 $x_i$ に比例する確率で «nn» チャンネルを非復元で抽出した。
-      各チャンネルの包含確率（標本に入る確率）は $\pi_i=«nn»\,x_i/X$ である。抽出された 4 チャンネルの結果は次のとおり。
-
-      | チャンネル | 1 | 2 | 3 | 4 |
-      |---|---|---|---|---|
-      | 登録者数 $x_i$（万人） | «x1» | «x2» | «x3» | «x4» |
-      | 月間広告収入 $y_i$（万円） | «y1» | «y2» | «y3» | «y4» |
-    items:
-      - id: s14p10a
-        chapter: 21
-        terms: [horvitz-thompson-estimator, inclusion-probability, probability-proportional-to-size-sampling]
-        topic: 登録者数に比例する確率で抽出したチャンネルの広告収入からホルビッツ・トンプソン推定量で総額を推定する
-        level: 基本
-        definition: false
-        type: choice
-        question: |
-          ホルビッツ・トンプソン推定量による «N» チャンネルの月間広告収入の合計（万円）の推定値はどれか。
-        choices:
-          - '$«mean»$'
-          - '$«ht_div»$'
-          - '$«ht»$'
-          - '$«ht_n»$'
-          - '$«Nybar»$'
-        answer: 2
-        distractors:
-          - 合計ではなく 1 チャンネルあたりの平均（合計の推定値÷N）を答えた
-          - y_i/π_i の和をさらに標本サイズ n で割った
-          - 正解
-          - 包含確率を x_i/X として n を掛け忘れた（4 倍の過大推定）
-          - 抽出確率が等しいとみなし N×(標本平均) とした
-        explanation: |
-          **方針** ホルビッツ・トンプソン推定量は $\hat Y_{HT}=\sum_{i\in s}\dfrac{y_i}{\pi_i}$。各標本を「包含確率の逆数」だけの母集団単位の代表とみなして重みづけする。
-
-          **途中式** 包含確率は $\pi_i=«nn»x_i/«X»$ なので
-          $\pi_1=«pi1»$、$\pi_2=«pi2»$、$\pi_3=«pi3»$、$\pi_4=«pi4»$。
-          $$\hat Y_{HT}=\frac{«y1»}{«pi1»}+\frac{«y2»}{«pi2»}+\frac{«y3»}{«pi3»}+\frac{«y4»}{«pi4»}=«t1»+«t2»+«t3»+«t4»=«ht»$$
-
-          **答え** $«ht»$ 万円
-
-          **間違えやすい点** 登録者の多いチャンネルほど選ばれやすいので、単純に $N\bar y=«N»\times«ybar»=«Nybar»$ とすると大きいチャンネルの影響を過大に数えてしまう。
-          包含確率は 1 回抽出するときの確率 $x_i/X$ ではなく、$n$ 回分の $n x_i/X$（ここでは «nn» 倍）である。$x_i/X$ を使うと $«ht_n»$ になる。
-
-  - id: s14p11
-    title: 映画の宣伝効果の分析
-    context: |
-      ある映画配給会社が、新作映画の宣伝の効果を 3 つの方法で分析した。
-    items:
-      - id: s14p11a
-        chapter: 26
-        terms: [path-analysis, structural-equation-modeling, standardized-partial-regression-coefficient]
-        topic: 広告接触から認知度を経て鑑賞意向に至るパス解析で相関行列から間接効果を求める
-        level: 応用
-        definition: false
-        type: choice
-        question: |
-          アンケートで、広告接触量 $X$、作品の認知度 $M$、鑑賞意向 $Y$ を測り、すべて標準化した。3 変数の相関行列は次のとおり。
-
-          | | $X$ | $M$ | $Y$ |
-          |---|---|---|---|
-          | $X$ | 1 | «rxm» | «rxy» |
-          | $M$ | «rxm» | 1 | «rmy» |
-          | $Y$ | «rxy» | «rmy» | 1 |
-
-          パス図 $X\to M$、$M\to Y$、$X\to Y$（誤差どうしは無相関）を考え、パス係数を最小二乗法による標準化偏回帰係数で推定する。$X$ から $M$ を経由して $Y$ に至る**間接効果**の推定値はどれか。
-        choices:
-          - '$«w_dir»$'
-          - '$«ind»$'
-          - '$«w_prod»$'
-          - '$«w_tot»$'
-          - '$«w_b»$'
-        answer: 1
-        distractors:
-          - 直接効果（X→Y のパス係数）を答えた
-          - 正解
-          - 単純相関の積 r_XM × r_MY を間接効果とした（X を調整していない）
-          - 総合効果（= r_XY）を答えた
-          - M→Y のパス係数だけを答え、X→M のパス係数を掛け忘れた
-        explanation: |
-          **方針** $M$ の式 $M=aX+e_1$ では $a=r_{XM}$。$Y$ の式 $Y=c'X+bM+e_2$ の係数は、説明変数 2 つの標準化偏回帰係数。間接効果は $a\times b$。
-
-          **途中式** $a=r_{XM}=«rxm»$。
-          $$b=\frac{r_{MY}-r_{XM}r_{XY}}{1-r_{XM}^2}=\frac{«rmy»-«rxm»\times«rxy»}{1-«rxm»^2}=\frac{«bnum»}{«d»}=«bm»$$
-          $$c'=\frac{r_{XY}-r_{XM}r_{MY}}{1-r_{XM}^2}=\frac{«rxy»-«rxm»\times«rmy»}{«d»}=\frac{«cnum»}{«d»}=«cx»$$
-          $$\text{間接効果}=a\times b=«rxm»\times«bm»=«ind4»\cdots$$
-          確認：直接効果 + 間接効果 $=«w_dir»+«ind»=«tot»=r_{XY}$（総合効果）。
-
-          **答え** $«ind»$
-
-          **間違えやすい点** $M\to Y$ のパス係数は $X$ を調整した偏回帰係数で、単純相関 $r_{MY}$ ではない。$r_{XM}r_{MY}=«w_prod»$ は $X$ の直接の影響が混ざっている。直接効果 $«w_dir»$、総合効果 $«w_tot»$ と区別すること。
-
-      - id: s14p11b
-        chapter: 19
-        terms: [instrumental-variable-method, endogeneity, two-stage-least-squares]
-        topic: 上映スクリーン数の内生性を系列館数を操作変数として除き興行収入への効果を推定する
-        level: 標準
-        definition: false
-        type: choice
-        question: |
-          過去の多数の作品について、興行収入 $Y$（億円）を上映スクリーン数 $X$（百スクリーン）に回帰したい。ただし、人気が見込まれる作品ほどスクリーン数が多く割り当てられるので、$X$ は誤差項と相関している（内生性）と考えられる。
-          そこで、配給会社の系列映画館の数 $Z$ を操作変数とする（$Z$ は $X$ と相関し、誤差項とは無相関と仮定する）。標本の分散・共分散は次のとおり。
-
-          | $V[Z]$ | $\mathrm{Cov}(Z,X)$ | $\mathrm{Cov}(Z,Y)$ | $V[X]$ | $\mathrm{Cov}(X,Y)$ |
-          |---|---|---|---|---|
-          | «vz» | «czx» | «czy» | «vx» | «cxy» |
-
-          単回帰 $Y=\alpha+\beta X+u$ の $\beta$ の操作変数推定値はどれか。
-        choices:
-          - '$«inv»$'
-          - '$«fs»$'
-          - '$«rf»$'
-          - '$«iv»$'
-          - '$«ols»$'
-        answer: 3
-        distractors:
-          - 分子と分母を逆にした Cov(Z,X)/Cov(Z,Y)
-          - 第 1 段階（X を Z に回帰）の係数を答えた
-          - 誘導形（Y を Z に回帰）の係数を答えた
-          - 正解
-          - 内生性を無視した最小二乗推定値 Cov(X,Y)/V[X] を答えた
-        explanation: |
-          **方針** 操作変数推定量は $\hat\beta_{IV}=\dfrac{\mathrm{Cov}(Z,Y)}{\mathrm{Cov}(Z,X)}$。これは 2 段階最小二乗法（第 1 段階で $X$ を $Z$ に回帰し、その予測値で $Y$ を回帰）と一致する。
-
-          **途中式**
-          $$\hat\beta_{IV}=\frac{\mathrm{Cov}(Z,Y)}{\mathrm{Cov}(Z,X)}=\frac{«czy»}{«czx»}=«iv»$$
-          2 段階の見方では、誘導形の係数 $«czy»/«vz»=«rf»$ を第 1 段階の係数 $«czx»/«vz»=«fs»$ で割ったもの：$«rf»/«fs»=«iv»$。
-
-          **答え** $«iv»$（スクリーン数が 100 増えると興行収入が約 «iv» 億円増える）
-
-          **間違えやすい点** 最小二乗推定値 $«cxy»/«vx»=«ols»$ は、人気作ほどスクリーンが多いという内生性のため上に偏っている。誘導形の係数 $«rf»$ は「$Z$ が 1 増えたときの $Y$ の変化」で、$X$ の効果ではない。
-
-      - id: s14p11c
-        chapter: 33
-        terms: [frontdoor-criterion, causal-effect, backdoor-criterion]
-        topic: 観測されない映画ファン度がある中で予告編視聴の効果を公式サイト訪問を媒介にしたフロントドア調整で求める
+        chapter: 17
+        terms: [dffits, studentized-residual, leverage, standardized-residual]
+        topic: 内部スチューデント化残差とてこ比から外部スチューデント化残差を経てDFFITSを求める
         level: 応用
         definition: false
         type: numeric
         question: |
-          Web 調査で、予告編を見たか $X$（1/0）、公式サイトを訪問したか $M$（1/0）、前売券を買ったか $Y$（1/0）を調べた。
-          観測されない「映画ファン度」$U$ が $X$ と $Y$ の両方に影響するが、因果構造は $U\to X$、$U\to Y$、$X\to M\to Y$ だけで、$U$ は $M$ に直接影響せず、$X$ は $M$ を通してのみ $Y$ に影響すると仮定する。
-          調査の結果、次の確率が得られた。
-
-          - $P(X=1)=«px»$
-          - $P(M=1\mid X=1)=«pm1»$、$P(M=1\mid X=0)=«pm0»$
-          - $P(Y=1\mid X=1,M=1)=«y11»$、$P(Y=1\mid X=1,M=0)=«y10»$、$P(Y=1\mid X=0,M=1)=«y01»$、$P(Y=1\mid X=0,M=0)=«y00»$
-
-          予告編を見ることの前売券購入への平均因果効果 $P(Y=1\mid do(X=1))-P(Y=1\mid do(X=0))$ を求めよ。
-        answer: «ace»
-        tolerance: 0.001
-        answer_format: 小数第3位まで（小数第4位を四捨五入）で答えよ。±0.001 の差まで正解とする。
+          このモデルで、ある 1 チーム（第 $i$ 観測）の内部スチューデント化残差（標準化残差）は $r_i=«r»$、てこ比は $h_{ii}=«h»$ だった。
+          第 $i$ 観測を除いて推定した誤差の標準偏差を使う外部スチューデント化残差 $t_i$ は、
+          $$t_i=r_i\sqrt{\frac{n-p-2}{n-p-1-r_i^2}}\qquad(p\ \text{は切片を除く説明変数の個数})$$
+          で求められる。この観測の DFFITS（第 $i$ 観測を除いたときの当てはめ値の変化を、標準誤差の推定値で割ったもの）を求めよ。
+        answer: «dffits»
+        tolerance: 0.01
+        answer_format: 小数第2位まで（小数第3位を四捨五入）で答えよ。途中の値は小数第4位まで（小数第5位を四捨五入）に丸めて使ってよい。±0.01 の差まで正解とする。
         explanation: |
-          **方針** $U$ が観測されないのでバックドア調整はできない。$M$ はフロントドア基準を満たす（$X\to Y$ の経路をすべて遮断し、$X\to M$ にバックドア経路がなく、$M\to Y$ のバックドア経路は $X$ で遮断される）ので
-          $$P(Y=1\mid do(X=x))=\sum_{m}P(M=m\mid X=x)\sum_{x'}P(Y=1\mid X=x',M=m)P(X=x')$$
+          **方針** DFFITS は $\mathrm{DFFITS}_i=\dfrac{\hat y_i-\hat y_{i(i)}}{s_{(i)}\sqrt{h_{ii}}}$。$\hat y_i-\hat y_{i(i)}=\dfrac{h_{ii}e_i}{1-h_{ii}}$ を使って整理すると
+          $$\mathrm{DFFITS}_i=t_i\sqrt{\frac{h_{ii}}{1-h_{ii}}}$$
+          となる。まず $t_i$ を求め、次にてこ比の部分を掛ける。
 
-          **途中式** まず内側の和（$m$ ごとに $X$ で調整した購入確率）を求める。
-          $$m=1:\ «y11»\times«px»+«y01»\times«qx»=«ia1»+«ia2»=«in1»$$
-          $$m=0:\ «y10»\times«px»+«y00»\times«qx»=«ib1»+«ib2»=«in0»$$
-          これを $P(M=m\mid X=x)$ で平均する。
-          $$P(Y=1\mid do(X=1))=«pm1»\times«in1»+«qm1»\times«in0»=«a1»+«a2»=«do1»$$
-          $$P(Y=1\mid do(X=0))=«pm0»\times«in1»+«qm0»\times«in0»=«b1»+«b2»=«do0»$$
-          $$\text{平均因果効果}=«do1»-«do0»=«aces»$$
+          **途中式** $n=«n»$、$p=«p»$ より $n-p-2=«a1»$、$n-p-1=«a2»$、$r_i^2=«r2»$。
+          $$t_i=«r»\times\sqrt{\frac{«a1»}{«a2»-«r2»}}=«r»\times\sqrt{\frac{«a1»}{«a2r»}}=«r»\times\sqrt{«ratio»}=«r»\times«sq»=«t»$$
+          $$\sqrt{\frac{h_{ii}}{1-h_{ii}}}=\sqrt{\frac{«h»}{1-«h»}}=\sqrt{«hr»}=«sh»$$
+          $$\mathrm{DFFITS}_i=«t»\times«sh»=«dffits4»\cdots$$
 
-          **答え** $«aces»$
+          **答え** $«dffits»$（目安 $2\sqrt{(p+1)/n}=«th»$ を大きく超え、影響の大きい観測といえる）
 
-          **間違えやすい点** 単純な比較 $P(Y=1\mid X=1)-P(Y=1\mid X=0)=«nv1»-«nv0»=«naive»$ は、映画ファンほど予告編を見て前売券も買うという交絡を含み、効果を過大に見積もる。
-          内側の和で $x'$ について平均せず、$P(Y=1\mid X=x,M=m)$ をそのまま使うと単純な比較と同じになってしまう。
+          **間違えやすい点** 外部スチューデント化残差ではなく内部の $r_i=«r»$ をそのまま使うと $«r»\times«sh»=«w_int»$ になる。$p$ は切片を除く個数で、ここでは «p»。
 
-  - id: s14p12
+
+      - id: s14p09b
+        chapter: 33
+        terms: [d-separation, causal-effect, backdoor-criterion]
+        topic: 練習時間と成績とスポンサー契約の因果グラフからd分離で成り立つ条件付き独立を読み取る
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          リーグの分析担当は、選手について次の因果グラフ（有向非巡回グラフ）を想定した。矢印はこれ以外にないものとする。
+
+          - 入団時の評価 $Z$ → 練習時間 $X$、$Z$ → 大会成績 $Y$
+          - $X\to Y$
+          - $X$ → スポンサー契約 $S$、$Y\to S$
+
+          このグラフの d 分離から導かれる条件付き独立として、正しいものはどれか。
+        choices:
+          - '$Z$ と $Y$ は、$X$ を与えると条件付き独立である。'
+          - '$Z$ と $S$ は、$X$ を与えると条件付き独立である。'
+          - '$Z$ と $S$ は、何も条件づけなくても独立である。'
+          - '$Z$ と $S$ は、$X$ と $Y$ を与えると条件付き独立である。'
+          - '$X$ と $S$ は、$Y$ を与えると条件付き独立である。'
+        answer: 3
+        distractors:
+          - Z→Y の直接の矢印を見落とした（隣接する変数はどう条件づけても d 分離されない）
+          - Z→Y→S の経路が X を与えても開いたままであることを見落とした
+          - Z→X→S などの経路が開いているのに独立とした
+          - 正解
+          - X→S の直接の矢印を見落とした
+        explanation: |
+          **方針** 2 つの変数の間のすべての経路が、条件づけた集合によって遮断されているかを調べる。経路は「合流点でない点を条件づける」か「合流点（およびその子孫）を条件づけない」ときに遮断される。直接の矢印でつながる 2 変数は d 分離されない。
+
+          **途中式** $Z$ と $S$ の間の経路は
+          - $Z\to X\to S$：$X$ は合流点でないので、$X$ を条件づければ遮断。
+          - $Z\to Y\to S$：$Y$ は合流点でないので、$Y$ を条件づければ遮断。
+          - $Z\to X\to Y\to S$：$X$（または $Y$）を条件づければ遮断。
+          - $Z\to Y\leftarrow X\to S$：$Y$ は合流点なので $Y$ を条件づけると開くが、途中の $X$（合流点でない）を条件づけているので遮断。
+
+          $\{X,Y\}$ を条件づけるとすべて遮断されるので、$Z$ と $S$ は $\{X,Y\}$ のもとで d 分離される。
+
+          **答え** 「$Z$ と $S$ は、$X$ と $Y$ を与えると条件付き独立」という記述
+
+          **間違えやすい点** $X$ だけを条件づけても $Z\to Y\to S$ が開いている。$Z$ と $Y$、$X$ と $S$ は矢印で直接つながっているので、どんな集合で条件づけても d 分離されない。
+          なお、$X$ から $Y$ への因果効果を推定するには $\{Z\}$ で調整すればよく（バックドア基準）、$X$ と $Y$ の子孫である $S$ で調整してはいけない。
+
+  - id: s14p10
+    title: 動画配信サービスの分析
+    context: |
+      ある動画配信サービスの分析チームが、番組の視聴数と視聴者アンケートを分析した。
+    items:
+      - id: s14p10a
+        chapter: 21
+        terms: [systematic-sampling, simple-random-sampling]
+        topic: 3回周期の傾向がある12回分の配信の視聴数から系統抽出の全標本を列挙して推定量の分散を求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          ある番組の 12 回分の配信の視聴数（万回）は次のとおりで、3 回ごとに山がある（3 回目ごとに特別企画がある）。
+
+          | 回 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
+          |---|---|---|---|---|---|---|---|---|---|---|---|---|
+          | 視聴数 | «e1» | «e2» | «e3» | «e4» | «e5» | «e6» | «e7» | «e8» | «e9» | «e10» | «e11» | «e12» |
+
+          この 12 回から、1〜3 回目のうち 1 つを無作為に選んで出発点とし、そこから 3 回おきに 4 回分を抜き出す系統抽出を行い、標本平均で全体の平均視聴数を推定する。
+          この推定量の分散（とりうる標本すべてにわたる、推定量と母平均の差の 2 乗の平均）に最も近いものはどれか。
+        choices:
+          - '$«w_srs»$'
+          - '$«w_sd»$'
+          - '$«var»$'
+          - '$«w_n1»$'
+          - '$«w_sum»$'
+        answer: 2
+        distractors:
+          - 単純無作為抽出（有限母集団修正つき）の分散の公式を当てはめた
+          - 分散ではなく標準偏差を答えた
+          - 正解
+          - 3 つの標本平均の不偏分散（3-1 で割る）を計算した
+          - 3 つの偏差の 2 乗の和を 3 で割り忘れた
+        explanation: |
+          **方針** 系統抽出でとりうる標本は出発点の数だけ（3 通り）で、それぞれ確率 1/3。各標本の平均を計算し、母平均との差の 2 乗を平均すれば、推定量の分散が正確に求まる。
+
+          **途中式** 母平均は $«sum»/12=«mu»$。
+          - 出発点 1（1, 4, 7, 10 回）：平均 $«m1»$、差 $«dm1»$
+          - 出発点 2（2, 5, 8, 11 回）：平均 $«m2»$、差 $«dm2»$
+          - 出発点 3（3, 6, 9, 12 回）：平均 $«m3»$、差 $«dm3»$
+
+          3 つの平均の平均は $«mu»$ で母平均と一致する（不偏）。
+          $$V=\frac{(«dm1»)^2+(«dm2»)^2+«dm3»^2}{3}=\frac{«dq1»+«dq2»+«dq3»}{3}=«var4»\cdots$$
+
+          **答え** $«var»$
+
+          **間違えやすい点** 抽出間隔 3 が周期 3 と一致したため、どの標本も「特別企画の回だけ」「それ以外だけ」に偏り、分散が大きくなる。単純無作為抽出なら $\frac{S^2}{n}\cdot\frac{N-n}{N}=\frac{«S2»}{«nn»}\times«nfpc»=«w_srs»$ で、系統抽出のほうがずっと悪い。系統抽出の分散は単純無作為抽出の公式では評価できない。
+
+      - id: s14p10b
+        chapter: 26
+        terms: [canonical-correlation-analysis, canonical-variate, coefficient-of-determination]
+        topic: 継続意向1変数と満足度2項目の組の第1正準相関を相関行列から重相関係数として求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          視聴者アンケートで、継続意向 $y$ と、作品満足度 $x_1$・価格満足度 $x_2$ の 2 項目を測った。相関係数は $r_{yx_1}=«ry1»$、$r_{yx_2}=«ry2»$、$r_{x_1x_2}=«r12»$ だった。
+          変数の組 $\{y\}$ と $\{x_1,x_2\}$ の正準相関分析を行うとき、第 1 正準相関係数に最も近いものはどれか。
+        choices:
+          - '$«w_R2»$'
+          - '$«w_max»$'
+          - '$«w_nod»$'
+          - '$«R»$'
+          - '$«w_sumr»$'
+        answer: 3
+        distractors:
+          - 重相関係数の 2 乗（決定係数）を答えた
+          - 単相関のうち大きいほうを答えた（2 項目を組み合わせると相関は上がりうる）
+          - 公式の分母 1-r12^2 で割り忘れた
+          - 正解
+          - x1 と x2 の相関を無視して r^2 を足しただけにした
+        explanation: |
+          **方針** 一方の組が 1 変数のとき、第 1 正準相関は「$y$ と $x_1,x_2$ の線形結合の相関の最大値」で、$y$ を $x_1,x_2$ に回帰したときの重相関係数 $R$ に等しい。2 変数の場合
+          $$R^2=\frac{r_{yx_1}^2+r_{yx_2}^2-2r_{yx_1}r_{yx_2}r_{x_1x_2}}{1-r_{x_1x_2}^2}$$
+
+          **途中式**
+          $$R^2=\frac{«q1»+«q2»-«q3»}{1-«r12»^2}=\frac{«cnum»}{«cden»}=«R2»\cdots,\qquad R=\sqrt{«R2»}=«R4»\cdots$$
+
+          **答え** $«R»$
+
+          **間違えやすい点** 正準相関は相関係数なので、決定係数 $R^2=«w_R2»$ ではなく平方根をとる。$x_1$ と $x_2$ が相関しているので、$\sqrt{r_{yx_1}^2+r_{yx_2}^2}=«w_sumr»$ は過大になる。
+
+      - id: s14p10c
+        chapter: 27
+        terms: [unit-root, ar-model, random-walk]
+        topic: 対数視聴者数の系列にディッキー・フラー検定を行い通常のt分布の点と比べてはいけないことを読む
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          ある番組の週間視聴者数の対数 $y_t$ が単位根をもつ（ランダムウォーク型）かを調べるため、
+          $$\Delta y_t=\alpha+\gamma\,y_{t-1}+\varepsilon_t\qquad(\Delta y_t=y_t-y_{t-1})$$
+          を最小二乗法で当てはめたところ、$\hat\gamma=«g»$、その標準誤差は «gse» だった。$H_0:\gamma=0$（単位根あり）、$H_1:\gamma<0$（定常）を有意水準 5% で検定する。
+          定数項ありのディッキー・フラー検定の 5% 臨界値は $«df5»$、標準正規分布の下側 5% 点は $«z5»$ である。正しい記述はどれか。
+        choices:
+          - '統計量は $«tau»$ で、$«z5»$ を下回るので単位根の帰無仮説を棄却し、系列は定常といえる。'
+          - '統計量は $«tau»$ で、ディッキー・フラー検定の臨界値 $«df5»$ を下回らないので、単位根の帰無仮説を棄却できない。'
+          - '$\hat\gamma=«g»$ から AR 係数は $1+\hat\gamma=«rho»<1$ なので、検定するまでもなく定常である。'
+          - '単位根の検定では $\hat\gamma$ の $t$ 値を両側検定で $\pm1.96$ と比べる。'
+          - '$\Delta y_t$ は差分なので、$y_t$ が定常かどうかにかかわらず $\gamma=0$ である。'
+        answer: 1
+        distractors:
+          - 単位根のもとでの t 値は t 分布（正規分布）に従わないのに、通常の点と比べた
+          - 正解
+          - 推定値が 1 より小さいことだけで定常と判断した（標本誤差を無視）
+          - 対立仮説が γ<0 の片側であることと、DF 分布を使うことを無視した
+          - 差分をとった式の γ の意味を誤解した
+        explanation: |
+          **方針** $\gamma=\phi-1$（$\phi$ は AR(1) 係数）なので、$\gamma=0$ は単位根を表す。帰無仮説のもとでは $\hat\gamma$ の $t$ 値は $t$ 分布ではなく、左に偏ったディッキー・フラー分布に従うので、その臨界値と比べる。
+
+          **途中式**
+          $$\tau=\frac{\hat\gamma}{\mathrm{SE}(\hat\gamma)}=\frac{«g»}{«gse»}=«tau»$$
+          $«tau»>«df5»$（臨界値より左にない）ので、有意水準 5% で単位根の帰無仮説を棄却できない。
+
+          **答え** 統計量 $«tau»$ で、臨界値 $«df5»$ を下回らないので棄却できない、という記述
+
+          **間違えやすい点** 通常の片側の点 $«z5»$ と比べると「定常」と誤って結論してしまう。単位根のもとでは推定量が下に偏りやすく、通常の点を使うと帰無仮説を棄却しすぎる。
+          推定値 $1+\hat\gamma=«rho»$ が 1 より小さくても、それだけでは単位根を否定できない。
+
+  - id: s14p11
     title: オンライン対戦ゲームのプレイヤー分析
     context: |
       あるオンライン対戦ゲームの運営チームが、プレイヤーの戦績データを分析した。
     items:
-      - id: s14p12a
+      - id: s14p11a
         chapter: 22
-        terms: [principal-component-analysis, contribution-ratio, eigenvalue-and-eigenvector, pca-on-correlation-matrix]
-        topic: キル数とアシスト数の分散共分散行列（標準化しない）の主成分分析で第1主成分の寄与率を固有方程式から求める
-        level: 標準
-        definition: false
-        type: choice
-        question: |
-          1 試合あたりのキル数 $K$ とアシスト数 $A$ の分散共分散行列は
-          $$\Sigma=\begin{pmatrix} «vk» & «c» \\ «c» & «va» \end{pmatrix}$$
-          だった。変数を標準化せず、この分散共分散行列にもとづいて主成分分析を行うとき、第 1 主成分の寄与率に最も近いものはどれか。
-        choices:
-          - '$«c_l2»$'
-          - '$«c_var»$'
-          - '$«c_cor»$'
-          - '$«c_ok»$'
-          - '$«c_bad»$'
-        answer: 3
-        distractors:
-          - 第 2 主成分の寄与率を答えた
-          - 分散の大きいキル数の分散の割合 16/25 を答えた
-          - 相関行列にもとづく主成分分析（寄与率 (1+r)/2）を使った
-          - 正解
-          - 固有方程式の判別式で 4×行列式 の 4 を落とした
-        explanation: |
-          **方針** 第 1 主成分の分散は $\Sigma$ の最大固有値 $\lambda_1$、寄与率は $\lambda_1/(\lambda_1+\lambda_2)=\lambda_1/\mathrm{tr}\,\Sigma$。2 次の行列の固有値は固有方程式 $\lambda^2-(\mathrm{tr}\,\Sigma)\lambda+\det\Sigma=0$ から求める。
-
-          **途中式** $\mathrm{tr}\,\Sigma=«vk»+«va»=«tr»$、$\det\Sigma=«vk»\times«va»-«c»^2=«det»$。
-          $$\lambda=\frac{«tr»\pm\sqrt{«tr»^2-4\times«det»}}{2}=\frac{«tr»\pm\sqrt{«disc»}}{2}=\frac{«tr»\pm«sq»}{2}$$
-          $\lambda_1=«l1»$、$\lambda_2=«l2»$。
-          $$\text{寄与率}=\frac{«l1»}{«tr»}=«ok4»\cdots$$
-
-          **答え** $«c_ok»$
-
-          **間違えやすい点** 相関係数は $«c»/\sqrt{«vk»\times«va»}=«rho»$ で、相関行列で分析すると寄与率は $(1+«rho»)/2=«c_cor»$ になる。標準化するかどうかで結果が変わる。分散の大きい変数の割合 $«vk»/«tr»=«c_var»$ を答えるのも誤り（共分散の分だけ第 1 主成分に集まる）。
-
-      - id: s14p12b
-        chapter: 23
-        terms: [roc-curve-and-auc, mann-whitney-u-test, confusion-matrix]
-        topic: チート検出スコアのAUCを不正者と一般プレイヤーの全ペアの大小比較（同点は1/2）から求める
-        level: 基本
-        definition: false
-        type: numeric
-        question: |
-          不正ツールの使用が確認された «nc» 人と、一般プレイヤー «nn» 人に、検出モデルのスコア（大きいほど不正の疑いが強い）をつけた。
-
-          | 区分 | スコア |
-          |---|---|
-          | 不正あり | «ch1»、«ch2»、«ch3»、«ch4» |
-          | 不正なし | «no1»、«no2»、«no3»、«no4»、«no5»、«no6» |
-
-          このスコアの ROC 曲線の下の面積（AUC）を求めよ。同じスコアの組は 1/2 と数える（ROC 曲線では同点をまとめて斜めの線分で結ぶことに相当する）。
-        answer: «auc»
-        tolerance: 0.01
-        answer_format: 小数第2位まで（小数第3位を四捨五入）で答えよ。±0.01 の差まで正解とする。
-        explanation: |
-          **方針** AUC は「不正ありから 1 人、不正なしから 1 人を無作為に選んだとき、不正ありのスコアのほうが大きい確率（同点は 1/2）」に等しい（マン・ホイットニーの $U$ を組の数で割ったもの）。全 $«nc»\times«nn»=«pairs»$ 組を数える。
-
-          **途中式** 不正ありの各スコアについて、それより小さい不正なしのスコアの数（同点は 0.5）：
-          - «ch1»：6 人すべてより大きい → «k1»
-          - «ch2»：«no1» 以外の 5 人より大きい → «k2»
-          - «ch3»：«no1» 以外の 5 人より大きい → «k3»
-          - «ch4»：«no4»、«no5»、«no6» の 3 人より大きく、«no3» と同点 → $3+0.5=«k4»$
-
-          $$\mathrm{AUC}=\frac{«k1»+«k2»+«k3»+«k4»}{«pairs»}=\frac{«tot»}{«pairs»}=«auc4»$$
-
-          **答え** $«auc»$
-
-          **間違えやすい点** 同点の組を 0 と数えると $«auc0»$、1 と数えると $«auc1»$ になる。AUC は閾値を 1 つ決めたときの正解率ではなく、すべての閾値にわたる順位づけのよさを表す。
-
-  - id: s14p13
-    title: ゲームアプリの継続率
-    context: |
-      あるゲームアプリで、新規登録者を無作為に 2 つのチュートリアル（A と B）に 10 人ずつ割り付け、登録からアプリをやめる（30 日以上ログインしない状態になる）までの日数を観察した。
-      観察期間中にやめなかった人は、その時点で打ち切りとする。やめた人が出た日ごとに、直前の在籍人数（リスク集合の大きさ）とやめた人数を集計した。
-
-      | 日 | A の在籍 | A のやめた人数 | B の在籍 | B のやめた人数 |
-      |---|---|---|---|---|
-      | «day1» | «na1» | «da1» | «nb1» | «db1» |
-      | «day2» | «na2» | «da2» | «nb2» | «db2» |
-      | «day3» | «na3» | «da3» | «nb3» | «db3» |
-      | «day4» | «na4» | «da4» | «nb4» | «db4» |
-    items:
-      - id: s14p13a
-        chapter: 29
-        terms: [log-rank-test, censored-data, kaplan-meier-estimator]
-        topic: 2つのチュートリアルのアプリ継続日数を打ち切りを含むログランク検定で比べる
+        terms: [principal-component-analysis, eigenvalue-and-eigenvector, cumulative-contribution-ratio, pca-on-correlation-matrix]
+        topic: 3変数の相関行列の最大固有値だけが与えられたとき残りの固有値をトレースと行列式から求め累積寄与率を出す
         level: 応用
         definition: false
         type: choice
         question: |
-          ログランク検定で、A と B の離脱までの時間の分布が等しいという帰無仮説を有意水準 5% で検定する。
-          統計量は $\chi^2=(O_A-E_A)^2/V_A$ とし、各日の $V_A$ の寄与には超幾何分布の分散 $d\,\dfrac{n_An_B(n-d)}{n^2(n-1)}$（$n=n_A+n_B$、$d$ はその日のやめた人数の合計）を使う。
-          $\chi^2_{0.05}(1)=«c1»$、$\chi^2_{0.05}(2)=«c2»$ である。正しい記述はどれか。
+          1 試合あたりのキル数・アシスト数・獲得ゴールドの相関行列は
+          $$R=\begin{pmatrix} 1 & «r12» & «r13» \\ «r12» & 1 & «r23» \\ «r13» & «r23» & 1 \end{pmatrix}$$
+          だった。この相関行列にもとづく主成分分析で、最大固有値は $\lambda_1=«l1»$（小数第3位まで）と計算されている。
+          第 2 主成分までの累積寄与率に最も近いものはどれか。
         choices:
-          - '$\chi^2=«chi»$ で、$«c1»$ を超えるので離脱までの時間の分布に差があるといえる。'
-          - '$\chi^2=«chi_e»$ で、$«c1»$ を超えるので差があるといえる。'
-          - '$\chi^2=«chi_b»$ で、$«c1»$ を超えるので差があるといえる。'
-          - '統計量は $«z»$ で、$«c1»$ を超えないので差があるとはいえない。'
-          - '$\chi^2=«chi»$ だが、自由度 2 の点 $«c2»$ を超えないので差があるとはいえない。'
-        answer: 0
+          - '$«c_2»$'
+          - '$«c_1»$'
+          - '$«c_eq»$'
+          - '$«c_ok»$'
+          - '$«c_all»$'
+        answer: 3
         distractors:
+          - 第 2 主成分だけの寄与率を答えた
+          - 第 1 主成分だけの寄与率を答えた
+          - 残りの固有値の和を 2 等分して λ2 とした（行列式の情報を使っていない）
           - 正解
-          - 分散を使わず Σ(O-E)^2/E の近似式で計算した
-          - 分散の (n-d)/(n-1) の補正を落とした（二項分布の分散を使った）
-          - (O-E)/√V を 2 乗せずに χ² の点と比べた
-          - 自由度を群の数 2 とした（正しくは 群の数-1=1）
+          - 3-λ1 をそのまま λ2 とした（λ3 を忘れた）
         explanation: |
-          **方針** やめた人が出た日ごとに、帰無仮説のもとでの A のやめる人数の期待値 $E=d\,n_A/n$ と分散を求めて足し合わせ、観測数 $O_A$ と比べる。
+          **方針** 固有値の和はトレース、積は行列式に等しい：$\lambda_1+\lambda_2+\lambda_3=\mathrm{tr}\,R=3$、$\lambda_1\lambda_2\lambda_3=\det R$。$\lambda_1$ がわかれば $\lambda_2+\lambda_3$ と $\lambda_2\lambda_3$ が決まり、2 次方程式で $\lambda_2,\lambda_3$ が求まる。
 
-          **途中式** 各日の値（小数第4位まで）：
+          **途中式** 行列式は
+          $$\det R=1+2\times«r12»\times«r13»\times«r23»-«r12»^2-«r13»^2-«r23»^2=1+«rr»-«q12»-«q13»-«q23»=«det»$$
+          $$\lambda_2+\lambda_3=3-«l1»=«ssum»,\qquad \lambda_2\lambda_3=\frac{«det»}{«l1»}=«prod»$$
+          $\lambda_2,\lambda_3$ は $t^2-«ssum»t+«prod»=0$ の解なので
+          $$t=\frac{«ssum»\pm\sqrt{«ssum2»-«fourp»}}{2}=\frac{«ssum»\pm\sqrt{«disc»}}{2}=\frac{«ssum»\pm«sq»}{2}$$
+          $\lambda_2=«l2»$、$\lambda_3=«l3»$。累積寄与率は
+          $$\frac{\lambda_1+\lambda_2}{3}=\frac{«l1»+«l2»}{3}=«cum»\cdots$$
 
-          | 日 | $n$ | $d$ | $E=d\,n_A/n$ | 分散 |
-          |---|---|---|---|---|
-          | «day1» | «n1» | «d1» | «e1» | «v1» |
-          | «day2» | «n2» | «d2» | «e2» | «v2» |
-          | «day3» | «n3» | «d3» | «e3» | «v3» |
-          | «day4» | «n4» | «d4» | «e4» | «v4» |
+          **答え** $«c_ok»$
 
-          たとえば «day1» 日目の分散は $«d1»\times\frac{«na1»\times«nb1»\times(«n1»-«d1»)}{«n1»^2\times(«n1»-1)}=«v1»$。合計すると $E_A=«EA»$、$V_A=«V»$、$O_A=«OA»$。
-          $$\chi^2=\frac{(«OA»-«EA»)^2}{«V»}=\frac{«diff2»}{«V»}=«chi4»\cdots$$
-          自由度 1 の上側 5% 点 «c1» を超えるので、帰無仮説を棄却する（A のほうがやめる人が少ない）。
+          **間違えやすい点** 相関行列の固有値の和は変数の数（3）。残り $«ssum»$ を 2 等分すると $«c_eq»$ になるが、行列式の条件を満たさない。第 1 主成分だけなら $«c_1»$。
 
-          **答え** $\chi^2=«chi»$ で差があるといえる、という記述
+      - id: s14p11b
+        chapter: 23
+        terms: [naive-bayes-classifier, bayes-theorem, conditional-independence]
+        topic: 2つの行動特徴を条件付き独立とみなす単純ベイズ分類器で不正利用の事後確率を求める
+        level: 基本
+        definition: false
+        type: numeric
+        question: |
+          不正ツールの利用者を見つけるため、2 つの特徴「$F_1$：照準の動きが異常に速い」「$F_2$：深夜の連続プレイが多い」を使う単純ベイズ分類器を作った。学習データから次の値を得た。
 
-          **間違えやすい点** $\sum(O-E)^2/E=\frac{(«OA»-«EA»)^2}{«EA»}+\frac{(«OB»-«EB»)^2}{«EB»}=«chi_e»$ は保守的な近似で、問題の定義とは違う。分散の補正 $(n-d)/(n-1)$ を落とすと $V=«VB»$ で $«chi_b»$ になる。
-          $(O-E)/\sqrt V=«z»$ は標準正規分布と比べる量で、$\chi^2$ の点と比べるなら 2 乗する。自由度は「群の数 − 1」で 1。
+          | | 事前確率 | $P(F_1\text{ あり}\mid\cdot)$ | $P(F_2\text{ あり}\mid\cdot)$ |
+          |---|---|---|---|
+          | 不正あり | «pc» | «f1c» | «f2c» |
+          | 不正なし | «qc» | «f1n» | «f2n» |
 
-      - id: s14p13b
+          特徴どうしはクラスを与えたもとで条件付き独立と仮定する。$F_1$ あり・$F_2$ なしのプレイヤーが不正ありである事後確率を求めよ。
+        answer: «post»
+        tolerance: 0.001
+        answer_format: 小数第3位まで（小数第4位を四捨五入）で答えよ。±0.001 の差まで正解とする。
+        explanation: |
+          **方針** ベイズの定理で、事前確率×（各特徴の条件付き確率の積）をクラスごとに計算し、合計で割る。「$F_2$ なし」の確率は $1-P(F_2\text{ あり}\mid\cdot)$。
+
+          **途中式**
+          $$\text{不正あり}:\ «pc»\times«f1c»\times(1-«f2c»)=«pc»\times«f1c»\times«g2c»=«num»$$
+          $$\text{不正なし}:\ «qc»\times«f1n»\times(1-«f2n»)=«qc»\times«f1n»\times«g2n»=«oth»$$
+          $$P(\text{不正あり}\mid F_1\text{ あり},F_2\text{ なし})=\frac{«num»}{«num»+«oth»}=\frac{«num»}{«den»}=«post5»\cdots$$
+
+          **答え** $«posts»$
+
+          **間違えやすい点** 「$F_2$ なし」に $P(F_2\text{ あり})$ をそのまま使うと $«w_f2»$ になる。$F_2$ の情報を無視すると $«w_f1»$、事前確率を無視すると $«w_noprior»$。不正者はまれ（事前確率 «pc»）なので、特徴 $F_1$ があっても事後確率は 2 割に届かない。
+
+  - id: s14p12
+    title: ゲームアプリの継続率
+    context: |
+      あるゲームアプリで、新しいチュートリアル A を受けた新規登録者 10 人について、登録からアプリをやめる（30 日以上ログインしない状態になる）までの日数を観察した。
+      観察期間の終了や機種変更などで追跡できなくなった人は、その時点で打ち切りとする。やめた人か打ち切りが出た日ごとに、直前の在籍人数と人数を集計した。
+
+      | 日 | 在籍人数 | やめた人数 | 打ち切り |
+      |---|---|---|---|
+      | «day1» | «n1» | «d1» | «c1» |
+      | «day2» | «n2» | «d2» | «c2» |
+      | «day3» | «n3» | «d3» | «c3» |
+      | «day4» | «n4» | «d4» | «c4» |
+      | «day5» | «n5» | «d5» | «c5» |
+    items:
+      - id: s14p12a
+        chapter: 29
+        terms: [greenwood-formula, kaplan-meier-estimator, censored-data]
+        topic: 打ち切りを含む10人の継続日数からカプラン・マイヤー推定値とグリーンウッドの公式による標準誤差を求める
+        level: 応用
+        definition: false
+        type: choice
+        question: |
+          «day5» 日目の直後までアプリを続けている確率（生存関数）$S(«day5»)$ のカプラン・マイヤー推定値の標準誤差を、グリーンウッドの公式で求める。最も近いものはどれか。
+        choices:
+          - '$«w_var»$'
+          - '$«w_n2»$'
+          - '$«se»$'
+          - '$«w_noS»$'
+          - '$«w_S»$'
+        answer: 2
+        distractors:
+          - 分散を答え、平方根をとり忘れた
+          - 和の各項を d/(n(n-d)) ではなく d/n^2 とした
+          - 正解
+          - 推定値の 2 乗 S^2 を掛け忘れた
+          - 標準誤差ではなく生存率の推定値そのものを答えた
+        explanation: |
+          **方針** カプラン・マイヤー推定値は、やめた人が出た日ごとの「続ける割合」$(n_j-d_j)/n_j$ の積。グリーンウッドの公式は
+          $$\widehat{V}[\hat S(t)]=\hat S(t)^2\sum_{t_j\le t}\frac{d_j}{n_j(n_j-d_j)}$$
+          打ち切りだけの日（やめた人 0）は積にも和にも寄与しないが、その後の在籍人数を減らす。
+
+          **途中式** やめた人が出たのは «day1»・«day3»・«day5» 日目。
+          $$\hat S(«day5»)=\frac{«n1»-1}{«n1»}\times\frac{«n3»-1}{«n3»}\times\frac{«n5»-1}{«n5»}=«S»$$
+          $$\sum\frac{d_j}{n_j(n_j-d_j)}=\frac{1}{«n1»\times9}+\frac{1}{«n3»\times7}+\frac{1}{«n5»\times5}=«g1»+«g3»+«g4»=«gw»$$
+          $$\widehat{V}=«S»^2\times«gw»=«S2»\times«gw»=«var»,\qquad \mathrm{SE}=\sqrt{«var»}=«se5»\cdots$$
+
+          **答え** $«se»$
+
+          **間違えやすい点** $\hat S^2$ を掛け忘れると $«w_noS»$、分散のままだと $«w_var»$。各項の分母は $n_j(n_j-d_j)$ で、$n_j^2$ にすると $«w_n2»$ になる。打ち切りの人を「やめた人」に数えないこと。
+
+      - id: s14p12b
         chapter: 32
         terms: [bootstrap, uniform-random-number]
         topic: 10人のデータから作るブートストラップ標本に含まれる異なる人数の期待値を求める

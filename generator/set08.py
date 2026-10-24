@@ -346,9 +346,79 @@ def p12():
     return {"m": m, "p73": per[0], "p54": per[1], "p35": per[2], "p53": per[3], "p96": per[4]}
 
 
+def x05():
+    # (a) ルビーン検定（平均からの絶対偏差の一元配置分散分析）
+    g = [[10, 12, 11, 13], [9, 15, 12, 12], [8, 16, 10, 14]]
+    k, n = len(g), sum(len(v) for v in g)
+
+    def anova(groups):
+        allv = [x for v in groups for x in v]
+        gm = sum(allv) / len(allv)
+        ssb = sum(len(v) * (sum(v) / len(v) - gm) ** 2 for v in groups)
+        ssw = sum((x - sum(v) / len(v)) ** 2 for v in groups for x in v)
+        return ssb, ssw
+    z = [[abs(x - sum(v) / len(v)) for x in v] for v in g]
+    ssb, ssw = anova(z)
+    F = (ssb / (k - 1)) / (ssw / (n - k))
+    F11 = (ssb / (k - 1)) / (ssw / (n - 1))
+    rb, rw = anova(g)
+    Fraw = (rb / (k - 1)) / (rw / (n - k))
+    z2 = [[(x - sum(v) / len(v)) ** 2 for x in v] for v in g]
+    qb, qw = anova(z2)
+    Fsq = (qb / (k - 1)) / (qw / (n - k))
+    var = [sum((x - sum(v) / len(v)) ** 2 for x in v) / (len(v) - 1) for v in g]
+    fmax = max(var) / min(var)
+    opts = [s(Fraw, 2), s(F, 2), s(F11, 2), s(Fsq, 2), s(fmax, 2)]
+    distinct(*opts)
+    zm = [sum(v) / len(v) for v in z]
+    return {"gA": "、".join(str(x) for x in g[0]), "gB": "、".join(str(x) for x in g[1]), "gC": "、".join(str(x) for x in g[2]),
+            "mA": s(sum(g[0]) / 4, 1), "mB": s(sum(g[1]) / 4, 1), "mC": s(sum(g[2]) / 4, 1),
+            "zA": "、".join(s(x, 1) for x in z[0]), "zB": "、".join(s(x, 1) for x in z[1]), "zC": "、".join(s(x, 1) for x in z[2]),
+            "zmA": s(zm[0], 1), "zmB": s(zm[1], 1), "zmC": s(zm[2], 1), "zg": s(sum(zm) / 3, 4),
+            "ssb": s(ssb, 4), "ssw": s(ssw, 1), "msb": s(ssb / (k - 1), 4), "msw": s(ssw / (n - k), 4), "Fl": s(F, 4),
+            "dfb": k - 1, "dfw": n - k, "Fc": 4.26,
+            "l_raw": opts[0], "l_ok": opts[1], "l_df": opts[2], "l_sq": opts[3], "l_max": opts[4]}
+
+
+def x06():
+    # (b) 残差の歪度・尖度からジャック・ベラ統計量
+    n, m2, m3, m4 = 60, 0.25, 0.075, 0.275
+    S = m3 / m2 ** 1.5
+    K = m4 / m2 ** 2
+    jb = n / 6 * (S ** 2 + (K - 3) ** 2 / 4)
+    return {"jn": n, "m2": m2, "m3": m3, "m4": m4, "m215": s(m2 ** 1.5, 3), "m22": s(m2 ** 2, 4), "S": s(S, 1), "K": s(K, 1),
+            "S2": s(S ** 2, 2), "K3": s(K - 3, 1), "K32": s((K - 3) ** 2 / 4, 2), "jb": r(jb, 2), "jb_s": s(jb, 2),
+            "jb_k": s(n / 6 * (S ** 2 + K ** 2 / 4), 2), "jb_nod": s(n / 6 * (S ** 2 + (K - 3) ** 2), 2), "chi2": 5.99}
+
+
+def x07():
+    # (a) カバレッジ誤差を含む平均二乗誤差
+    wc, mc, me, n, Sd = 0.8, 30.0, 20.0, 400, 10.0
+    Y = wc * mc + (1 - wc) * me
+    bias = mc - Y
+    var = Sd ** 2 / n
+    rmse = sqrt(bias ** 2 + var)
+    opts = [s(sqrt(var), 2), s(bias, 2), s(rmse, 2), s(bias + sqrt(var), 2), s(bias ** 2 + var, 2)]
+    distinct(*opts)
+    return {"wc": wc, "we": s(1 - wc, 1), "mc": s(mc, 0), "me": s(me, 0), "cn": n, "Sd": s(Sd, 0), "Yt": s(Y, 0),
+            "bias": s(bias, 0), "var": s(var, 2), "se": s(sqrt(var), 2), "mse": s(bias ** 2 + var, 2), "rmse4": s(rmse, 4),
+            "v_se": opts[0], "v_bias": opts[1], "v_ok": opts[2], "v_sum": opts[3], "v_mse": opts[4]}
+
+
+def x10():
+    # (b) 季節差分のあとの AR(1)
+    phi = 0.4
+    xs = [120, 135, 128, 126, 140, 95, 90, 133]   # 先週の月〜日、今週の月
+    d = xs[7] - xs[0]
+    fc = xs[1] + phi * d
+    return {"sphi": phi, "w0": xs[0], "w1": xs[1], "w2": xs[2], "w3": xs[3], "w4": xs[4], "w5": xs[5], "w6": xs[6], "w7": xs[7],
+            "sd": d, "sadj": s(phi * d, 1), "sfc": r(fc, 1), "sfc_s": s(fc, 1),
+            "s_naive": s(xs[1], 1), "s_ar": s(xs[7] + phi * (xs[7] - xs[6]), 1), "s_rw": s(xs[7], 1), "s_full": s(xs[1] + d, 1)}
+
+
 def values():
-    return {"s08p01": p01(), "s08p02": p02(), "s08p03": p03(), "s08p04": p04(), "s08p05": p05(),
-            "s08p06": p06(), "s08p07": p07(), "s08p08": p08(), "s08p09": p09(), "s08p10": p10(),
+    return {"s08p01": p01(), "s08p02": p02(), "s08p03": p03(), "s08p04": p04(), "s08p05": {**p05(), **x05()},
+            "s08p06": {**p06(), **x06()}, "s08p07": {**p07(), **x07()}, "s08p08": p08(), "s08p09": p09(), "s08p10": {**p10(), **x10()},
             "s08p11": p11(), "s08p12": p12()}
 
 

@@ -104,15 +104,14 @@ Xb = rng.normal(0.5, 4, size=(200_000, 36)).mean(1)
 E.check("s07p03c", abs(np.mean((0.36 * Xb - 0.5) ** 2) - 0.16) < 0.003, "シミュレーションで MSE(0.36) ≈ 0.16")
 
 # ---- 大問4 融資
-# (a) 幾何分布：条件付き確率を定義どおり和で計算／シミュレーション
-pg = 0.02
-pk = lambda k: (1 - pg) ** (k - 1) * pg
-cond = sum(pk(k) for k in range(13, 19)) / (1 - sum(pk(k) for k in range(1, 13)))
-E.num("s07p04a", rnd(cond, 3), "確率関数の和で P(X≤18 | X>12)")
-X = rng.geometric(pg, size=2_000_000)
-E.check("s07p04a", abs(np.mean(X[X > 12] <= 18) - cond) < 0.002, f"シミュレーション {np.mean(X[X > 12] <= 18):.4f}")
-for e_, v_ in [(6, 0.88584), (12, 0.78472), (18, 0.69514)]:
-    table("s07p04a", v_, 0.98 ** e_, 0.000006, f"0.98^{e_}")
+# (a) 二項分布の最頻値：scipy の確率関数を全部計算して最大を探す
+bd = stats.binom(40, 0.06)
+pm = bd.pmf(np.arange(41))
+kst = int(np.argmax(pm))
+E.check("s07p04a", kst == 2, f"scipy で最頻値 k*={kst}")
+E.num("s07p04a", rnd(pm[kst], 3), "scipy binom.pmf の最大値")
+for e_, v_ in [(37, 0.10133), (38, 0.09525), (39, 0.08953)]:
+    table("s07p04a", v_, 0.94 ** e_, 0.000006, f"0.94^{e_}")
 # (b) G²：scipy の対数尤度比（lambda_="log-likelihood"）
 g2 = stats.chi2_contingency([[20, 180], [40, 160]], correction=False, lambda_="log-likelihood")
 E.choice("s07p04b", f"G^2\\approx{f(g2.statistic, 2)}$で、自由度1の上側1%点6.635を超える", "scipy chi2_contingency(lambda_='log-likelihood')")
@@ -219,12 +218,19 @@ for _ in range(4000):
     etas.append(sb / (sb + sw))
 E.check("s07p08a", abs(np.mean(oms) - pop) < abs(np.mean(etas) - pop), f"母集団の割合 {pop:.3f} に対し ω² の平均 {np.mean(oms):.3f}、η² の平均 {np.mean(etas):.3f}")
 
-# ---- 大問9 系統抽出：単純無作為抽出の分散を全 220 通りの列挙で求める
-from itertools import combinations
-yv9 = np.array([50, 62, 58, 46, 52, 64, 60, 48, 54, 66, 62, 50.0])
-srs = np.array([yv9[list(c)].mean() for c in combinations(range(12), 3)])
-sysm = np.array([yv9[r::4].mean() for r in range(4)])
-E.num("s07p09a", rnd(sysm.var() / srs.var(), 2), "系統 4 通り・単純無作為 220 通りを列挙して分散の比")
+# ---- 大問9 事後層化：区分ごとの合計を母集団の口座数に合わせて引き伸ばす（重み = 母集団の口座数 / 標本の口座数）
+Npop = 10000
+w_ind, w_cor = 0.8 * Npop / 45, 0.2 * Npop / 5
+est = (w_ind * 45 * 126.4 + w_cor * 5 * 912.5) / Npop
+E.num("s07p09a", rnd(est, 2), "標本の重み（母集団数/標本数）で引き伸ばした総額 ÷ 口座数")
+# シミュレーション：構成比 0.8/0.2 の母集団から n=50 を抽出したとき、事後層化推定量はほぼ不偏
+vals = []
+for _ in range(20000):
+    k = rng.binomial(50, 0.2)
+    if k in (0, 50):
+        continue
+    vals.append(0.8 * rng.normal(126.4, 30, 50 - k).mean() + 0.2 * rng.normal(912.5, 200, k).mean())
+E.check("s07p09a", abs(np.mean(vals) - 283.62) < 2, f"シミュレーションの平均 {np.mean(vals):.2f}（真の平均 283.62）")
 
 # ---- 大問10 主成分：元の共分散行列から固有分解
 Sg = np.array([[16, 14, 10], [14, 20, 15], [10, 15, 18.0]])

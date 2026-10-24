@@ -1,102 +1,102 @@
 {
  "s12p01a": {
   "ok": true,
-  "hash": "c0b9f24168c8d502"
+  "hash": "229eed439e5e166d"
  },
  "s12p01b": {
   "ok": true,
-  "hash": "21b4a282ecfcc9c5"
+  "hash": "695774450fdd458b"
  },
  "s12p02a": {
   "ok": true,
-  "hash": "da3e240015aad9e0"
+  "hash": "85f6b116d2b90a65"
  },
  "s12p02b": {
   "ok": true,
-  "hash": "29b416a4d86f6b65"
+  "hash": "a6f9d501246f2731"
  },
  "s12p03a": {
   "ok": true,
-  "hash": "6700efc717af3215"
+  "hash": "e46bc80b4fcdd91a"
  },
  "s12p03b": {
   "ok": true,
-  "hash": "272d493fbfbf6618"
+  "hash": "c79e2445dc1571eb"
  },
  "s12p04a": {
   "ok": true,
-  "hash": "08b6da40e45b4d87"
- },
- "s12p04b": {
-  "ok": true,
-  "hash": "27ae9cf6a078cc13"
+  "hash": "afc182462940b604"
  },
  "s12p05a": {
   "ok": true,
-  "hash": "5d3baa0703684559"
- },
- "s12p05b": {
-  "ok": true,
-  "hash": "c0f53ddefbd9b4a2"
+  "hash": "b7e211188d600e24"
  },
  "s12p06a": {
   "ok": true,
-  "hash": "4401ed9382b2ff35"
+  "hash": "27c1860f9bcc7bcd"
  },
  "s12p06b": {
   "ok": true,
-  "hash": "94eda24c893e3aa8"
+  "hash": "f2a6fa5b1fcb0395"
  },
  "s12p07a": {
   "ok": true,
-  "hash": "f7d61f59559df7f9"
+  "hash": "02304f8cd7bb0284"
+ },
+ "s12p07b": {
+  "ok": true,
+  "hash": "e00ffe75d8d9a4c5"
  },
  "s12p08a": {
   "ok": true,
-  "hash": "a6ae0d2a7f3da564"
- },
- "s12p08b": {
-  "ok": true,
-  "hash": "32da4ff277de90e2"
- },
- "s12p08c": {
-  "ok": true,
-  "hash": "99f5e701e58993bd"
+  "hash": "aa484240fe9c9c15"
  },
  "s12p09a": {
   "ok": true,
-  "hash": "7370568146bfb8f2"
+  "hash": "1d007f3c0add0657"
+ },
+ "s12p09b": {
+  "ok": true,
+  "hash": "6f589e8c1a69a254"
+ },
+ "s12p09c": {
+  "ok": true,
+  "hash": "9ff8428abf7463ce"
  },
  "s12p10a": {
   "ok": true,
-  "hash": "ae8e3ef4ea6b3d28"
+  "hash": "653ff410edebe787"
  },
  "s12p11a": {
   "ok": true,
-  "hash": "d9ec831a96f69ba3"
- },
- "s12p11b": {
-  "ok": true,
-  "hash": "11ac296bcbef96ae"
+  "hash": "da0e8bb9f1eddd0b"
  },
  "s12p12a": {
   "ok": true,
-  "hash": "a5847d8a29dc9e54"
+  "hash": "20fd10730c10eea8"
  },
  "s12p12b": {
   "ok": true,
-  "hash": "420375feb6fb2c5d"
- },
- "s12p12c": {
-  "ok": true,
-  "hash": "802b3268230eecd7"
+  "hash": "19c8f88b718c716d"
  },
  "s12p13a": {
   "ok": true,
-  "hash": "c0301ca24f91a346"
+  "hash": "fd417282baff6209"
  },
  "s12p13b": {
   "ok": true,
-  "hash": "0f51b6be9536a0e8"
+  "hash": "e711fc3c6dbf657d"
+ },
+ "s12p13c": {
+  "ok": true,
+  "hash": "0120f6f490d6fb2c"
+ },
+ "s12p14a": {
+  "ok": true,
+  "hash": "46623a2fc62261fb"
+ },
+ "s12p14b": {
+  "ok": true,
+  "hash": "f10571ca1d6d09fa"
  }
 }

@@ -206,6 +206,8 @@ def p07():
         "t_ext": s(t_ext, 2), "t_ext4": s(t_ext, 4), "r_int": s(rint, 2),
         "w_noh": s(e / sqrt(s2), 2), "w_noei": s(e / sqrt(s2i_noh * (1 - h)), 2), "w_nolev": s(e / sqrt(s2i), 2),
         "ratio": s((df2 - 1) / (df2 - rint ** 2), 4), "rint4": s(rint, 4),
+        "R2aux": 0.21, "bp": s(n * 0.21, 2), "bp_n1": s((n - 1) * 0.21, 2), "c2": 5.991, "c6": 12.592,
+        "Faux": s((0.21 / 2) / ((1 - 0.21) / (n - 3)), 2),
     }
 
 def p08():
@@ -224,22 +226,13 @@ def p08():
     }
 
 def p09():
-    # (a) 客室数に比例する確率の復元 PPS 抽出とハンセン・ハーウィッツ推定量
-    X, Nh = 12800, 400
-    rooms = [40, 25, 80, 16]
-    guests = [900, 600, 1700, 400]
-    n = len(rooms)
-    ratio = [g / x for g, x in zip(guests, rooms)]
-    hh = X * sum(ratio) / n
-    out = {"X": X, "Nh": Nh, "nn": n, "hh": r(hh, 0), "hh_s": s(hh, 0), "mratio": s(sum(ratio) / n, 4),
-           "sratio": s(sum(ratio), 2), "w_mean": s(Nh * sum(guests) / n, 0),
-           "w_rat": s(X * sum(guests) / sum(rooms), 0), "w_non": s(X * sum(ratio), 0),
-           "sumg": sum(guests), "sumx": sum(rooms), "xbar_pop": s(X / Nh, 0)}
-    for i in range(n):
-        out[f"x{i + 1}"] = rooms[i]
-        out[f"g{i + 1}"] = guests[i]
-        out[f"q{i + 1}"] = s(ratio[i], 2)
-        out[f"pi{i + 1}"] = s(rooms[i] / X, 6)
+    # (a) 回帰推定量
+    N, n = 400, 25
+    Xbar, xbar, ybar, b = 32, 28, 610, 18.5
+    yreg = ybar + b * (Xbar - xbar)
+    out = {"Nh": N, "n": n, "Xbar": Xbar, "xbar": xbar, "ybar": ybar, "b": b, "dx": Xbar - xbar,
+           "adj": s(b * (Xbar - xbar), 0), "yreg": r(yreg, 0), "yrat": s(ybar * Xbar / xbar, 1),
+           "w_sign": s(ybar - b * (Xbar - xbar), 0)}
     # (b) フロントドア調整
     pT = 0.4
     pM = {1: 0.7, 0: 0.2}
@@ -296,25 +289,19 @@ def p11():
     }
 
 def p12():
-    # (a) 尺度をそろえてからのユークリッド距離
-    pts = {"P": (100, 2.0), "Q": (130, 5.0), "R": (190, 5.2), "S": (60, 3.5)}
-    sv, ss_ = 50, 1.0
-    out = {"sv": sv, "ss": s(ss_, 1)}
-    for k, (v, h) in pts.items():
-        out[f"v{k}"] = v
-        out[f"h{k}"] = s(h, 1)
-        out[f"z{k}"] = s(v / sv, 1)
-        out[f"y{k}"] = s(h / ss_, 1)
-    keys = list(pts)
-    for i in range(4):
-        for j in range(i + 1, 4):
-            a, b = keys[i], keys[j]
-            dv = (pts[a][0] - pts[b][0]) / sv
-            dh = (pts[a][1] - pts[b][1]) / ss_
-            out[f"d{a}{b}2"] = s(dv ** 2 + dh ** 2, 2)
-            out[f"d{a}{b}"] = s(sqrt(dv ** 2 + dh ** 2), 2)
-            out[f"raw{a}{b}"] = s(sqrt((pts[a][0] - pts[b][0]) ** 2 + (pts[a][1] - pts[b][1]) ** 2), 2)
-            out[f"man{a}{b}"] = s(abs(dv) + abs(dh), 2)
+    # (a) 群平均法
+    D = {("A", "B"): 2, ("A", "C"): 6, ("A", "D"): 10, ("A", "E"): 9, ("B", "C"): 5, ("B", "D"): 9, ("B", "E"): 8,
+         ("C", "D"): 4, ("C", "E"): 5, ("D", "E"): 3}
+    out = {f"d{a}{b}": v for (a, b), v in D.items()}
+    dd = lambda a, b: D.get((a, b), D.get((b, a)))
+    ab_c = (dd("A", "C") + dd("B", "C")) / 2
+    ab_de = sum(dd(a, b) for a in "AB" for b in "DE") / 4
+    c_de = (dd("C", "D") + dd("C", "E")) / 2
+    final = sum(dd(a, b) for a in "AB" for b in "CDE") / 6
+    out.update({"ab_c": s(ab_c, 1), "ab_de": s(ab_de, 1), "c_de": s(c_de, 1), "final": s(final, 2),
+                "w_wpgma": s((ab_c + ab_de) / 2, 2), "w_single": s(min(dd(a, b) for a in "AB" for b in "CDE"), 2),
+                "w_complete": s(max(dd(a, b) for a in "AB" for b in "CDE"), 2), "w_abde": s(ab_de, 2),
+                "sum6": sum(dd(a, b) for a in "AB" for b in "CDE")})
     # (b) 直交回転
     L = [(0.58, 0.56), (0.44, 0.58), (-0.37, 0.66)]
     c, sn = 0.8, 0.6

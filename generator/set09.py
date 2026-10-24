@@ -273,43 +273,57 @@ def p08():
 
 
 def p09():
-    # (a) DFBETA：6 回目を除いたときの傾きの変化
+    # 共通データ：単回帰の流量と残差（残差は和 0・x との積和 0 を満たす）
     x = [2, 3, 4, 5, 6, 10]
     e = [0.4, -0.6, 0.5, -0.1, -0.375, 0.175]
     n = len(x)
     xb = sum(x) / n
     sxx = sum((xi - xb) ** 2 for xi in x)
-    h6 = 1 / n + (x[-1] - xb) ** 2 / sxx
-    dbeta = (x[-1] - xb) * e[-1] / (sxx * (1 - h6))
+    h = [r(1 / n + (xi - xb) ** 2 / sxx, 4) for xi in x]      # 表示する 4 桁のてこ比
     d = {f"x{i+1}": xi for i, xi in enumerate(x)}
     d.update({f"e{i+1}": (s(ei, 1) if abs(ei * 10 - round(ei * 10)) < 1e-9 else s(ei, 3)) for i, ei in enumerate(e)})
+    # (a) DFFITS：問題文に示す s^2 と s_(6)^2（4 桁）を使う
+    sse = sum(ei ** 2 for ei in e)
+    s2 = r(sse / (n - 2), 4)
+    s62 = r((sse - e[-1] ** 2 / (1 - h[-1])) / (n - 3), 4)
+    h6, e6 = h[-1], e[-1]
+    dff = e6 * sqrt(h6) / (sqrt(s62) * (1 - h6))
+    thr = 2 * sqrt(2 / n)
+    t6 = e6 / (sqrt(s62) * sqrt(1 - h6))
     d.update({
-        "n": n, "xb": s(xb, 0), "sxx": s(sxx, 0), "dev6": s(x[-1] - xb, 0), "dev62": s((x[-1] - xb) ** 2, 0),
-        "h6": s(h6, 4), "om6": s(1 - h6, 4), "num6": s((x[-1] - xb) * e[-1], 3), "den6": s(sxx * (1 - h6), 4),
-        "chg": r(-dbeta, 3), "chg4": s(-dbeta, 5), "w_noh": s(-(x[-1] - xb) * e[-1] / sxx, 3),
-        "w_pos": s(dbeta, 3), "w_plus": s(-(x[-1] - xb) * e[-1] / (sxx * (1 + h6)), 3),
+        "n": n, "xb": s(xb, 0), "sxx": s(sxx, 0), "dev62": s((x[-1] - xb) ** 2, 0),
+        "h6": s(h6, 4), "om6": s(1 - h6, 4), "sqh6": s(sqrt(h6), 4), "s2": s(s2, 4), "s62": s(s62, 4),
+        "s6": s(sqrt(s62), 4), "dff": s(dff, 2), "dff4": s(dff, 4), "thr": s(thr, 2),
+        "fac6": s(sqrt(h6 / (1 - h6)), 3),
+        "w_noh": s(e6 * sqrt(h6) / sqrt(s62), 2), "w_t6": s(t6, 2), "w_nosq": s(t6 * h6 / (1 - h6), 2),
+        "w_s": s(e6 * sqrt(h6) / (sqrt(s2) * (1 - h6)), 2),
     })
-    # (b) AIC と AICc
-    N = 12
-    mods = [("M1", 3, -20.0), ("M2", 4, -18.2), ("M3", 5, -16.5)]
-    for name, k, ll in mods:
-        aic = -2 * ll + 2 * k
-        corr = 2 * k * (k + 1) / (N - k - 1)
-        d[f"aic{name[1]}"] = s(aic, 1)
-        d[f"cor{name[1]}"] = s(corr, 2)
-        d[f"aicc{name[1]}"] = s(aic + corr, 2)
-        d[f"ll{name[1]}"] = s(ll, 1)
-        d[f"k{name[1]}"] = k
-    d["N"] = N
+    assert dff > thr and e6 * sqrt(h6) / sqrt(s62) < thr and t6 < thr
+    # (b) 一個抜き交差検証：表示した 4 桁の値を順に使う
+    pr = [r(ei / (1 - hi), 4) for ei, hi in zip(e, h)]
+    pq = [r(v ** 2, 4) for v in pr]
+    press = sum(pq)
+    cv = press / n
+    train = sse / n
+    for i in range(n):
+        d[f"h{i+1}"] = s(h[i], 4)
+        d[f"pr{i+1}"] = s(pr[i], 4)
+        d[f"pq{i+1}"] = s(pq[i], 4)
+    d.update({
+        "press": s(press, 4), "cv": r(cv, 3), "cv3": s(cv, 3), "cv4": s(cv, 4),
+        "w_train": s(train, 4), "ratio": s(cv / train, 1),
+        "w_nosq2": s(sum(ei ** 2 / (1 - hi) for ei, hi in zip(e, h)) / n, 4),
+    })
     return d
 
 def p10():
-    # (a) 二段抽出による総量の推定
-    N, n, m = 30, 3, 5
+    # (a) 確率比例抽出（復元）＋副次抽出のハンセン・ハーヴィッツ推定量
+    N, n, m, M0 = 30, 3, 5, 3600
     M = (120, 80, 150)
     yb = (0.62, 0.55, 0.70)
-    est = N / n * sum(Mi * yi for Mi, yi in zip(M, yb))
-    naive = N * (sum(M) / n) * (sum(yb) / n)
+    est = sum(Mi * yi / (Mi / M0) for Mi, yi in zip(M, yb)) / n
+    eq = N / n * sum(Mi * yi for Mi, yi in zip(M, yb))
+    ratio = M0 * sum(Mi * yi for Mi, yi in zip(M, yb)) / sum(M)
     # (b) ラテン方格
     k = 5
     ssr, ssc, sst_, sstot = 36.0, 20.0, 64.0, 156.0
@@ -321,11 +335,10 @@ def p10():
     F1 = (sst_ / dft) / ((sstot - sst_) / (k * k - k))
     F20 = (sst_ / dft) / (sse / (k * k - 1 - dft))
     return {
-        "Np": N, "np": n, "mp": m, "M1": M[0], "M2": M[1], "M3": M[2],
-        "yb1": s(yb[0], 2), "yb2": s(yb[1], 2), "yb3": s(yb[2], 2),
-        "t1": s(M[0] * yb[0], 1), "t2": s(M[1] * yb[1], 1), "t3": s(M[2] * yb[2], 1),
-        "tsum": s(sum(Mi * yi for Mi, yi in zip(M, yb)), 1), "fac": s(N / n, 0), "est": r(est, 0), "est1": s(est, 1),
-        "w_naive": s(naive, 1), "w_n": s(sum(Mi * yi for Mi, yi in zip(M, yb)), 1),
+        "Np": N, "np": n, "mp": m, "M0": M0, "M1": M[0], "M2": M[1], "M3": M[2],
+        "yb1": s(yb[0], 2), "yb2": s(yb[1], 2), "yb3": s(yb[2], 2), "ysum": s(sum(yb), 2),
+        "fac": s(M0 / n, 0), "est": r(est, 0), "est1": s(est, 1),
+        "w_eq": s(eq, 1), "w_ratio": s(ratio, 1),
         "k": k, "ssr": s(ssr, 1), "ssc": s(ssc, 1), "sst": s(sst_, 1), "sstot": s(sstot, 1), "sse": s(sse, 1),
         "dft": dft, "dfe": dfe, "dftot": k * k - 1, "mst": s(sst_ / dft, 2), "mse": s(sse / dfe, 2),
         "F": s(F, 2), "w_rb": s(Frb, 2), "w_one": s(F1, 2), "w_20": s(F20, 2),
@@ -373,7 +386,7 @@ def p11():
     on = lim(r(z1 * r(se, 4), 4))
     keys = sorted(pts)
     d = {
-        "n1": n1, "x1": x1, "n0": n0, "x0": x0, "m1": n1 - x1, "m0": n0 - x0,
+        "n1": n1, "x1": x1, "n0": n0, "x0": x0, "ntot": n1 + n0, "m1": n1 - x1, "m0": n0 - x0,
         "p1": s(x1 / n1, 2), "p0": s(x0 / n0, 2), "rr": s(rr, 2), "lnrr": s(lnrr, 4),
         "v": s(se ** 2, 4), "se": s(se, 4), "hw": s(z * r(se, 4), 4), "z": z,
         "lo": s(ok[0], 4), "hi": s(ok[1], 4), "elo": s(pts[ok[0]], 3), "ehi": s(pts[ok[1]], 3),
@@ -410,6 +423,7 @@ def p12():
         "pr0": s(1 / tau ** 2, 4), "pr1": s(n / sig ** 2, 4), "prec": s(prec, 4), "w": s(w, 4),
         "pm": s(pm, 2), "pv": s(pv, 2), "predv": s(predv, 2), "predsd": s(sqrt(predv), 3), "postsd": s(sqrt(pv), 3),
         "z": s(z_ok, 2), "zraw": s((c - pm) / sqrt(predv), 3),
+        "pexact": s(0.5 * (1 + math.erf((c - pm) / sqrt(predv) / sqrt(2))), 3),
         "phi025": s(phi[0.25], 4), "phi051": s(phi[0.51], 4), "phi056": s(phi[0.56], 4),
         "phi100": s(phi[1.00], 4), "phi134": s(phi[1.34], 4),
         "ans": s(P(z_ok), 3), "w_post": s(P(z_post), 3), "w_plug": s(P(z_plug), 3),

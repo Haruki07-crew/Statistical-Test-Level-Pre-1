@@ -232,27 +232,37 @@ e = np.array([0.4, -0.6, 0.5, -0.1, -0.375, 0.175])
 y = 1 + 0.5 * xv + e
 b_all = np.polyfit(xv, y, 1)
 E.check("s09p09a", np.allclose(y - np.polyval(b_all, xv), e), "与えた残差が最小二乗の残差になっている")
+Xd = np.column_stack([np.ones(6), xv])
+H = Xd @ np.linalg.solve(Xd.T @ Xd, Xd.T)
+E.check("s09p09a", np.isclose(np.trace(H), 2) and abs(H[5, 5] - 0.7917) < 5e-5, f"ハット行列の対角 h66={H[5, 5]:.5f}")
 b_6 = np.polyfit(xv[:5], y[:5], 1)
-E.num("s09p09a", rnd(b_6[0] - b_all[0], 3), "6回目を除いて当てはめ直した傾きの差")
-k = np.array([3, 4, 5])
-ll = np.array([-20.0, -18.2, -16.5])
-aic = -2 * ll + 2 * k
-aicc = aic + 2 * k * (k + 1) / (12 - k - 1)
-E.check("s09p09b", np.argmin(aic) == 2 and np.argmin(aicc) == 0, f"AIC {aic}, AICc {aicc.round(2)}")
-E.choice("s09p09b", "AICはM3、AIC$_\\mathrm{c}$はM1を選ぶ", "argmin")
+s6sq = np.sum((y[:5] - np.polyval(b_6, xv[:5])) ** 2) / 3
+E.check("s09p09a", abs(rnd(s6sq, 4) - 0.2681) < 1e-12 and abs(rnd(np.sum(e ** 2) / 4, 4) - 0.2378) < 1e-12,
+        f"当てはめ直した s_(6)^2={s6sq:.5f}、s^2={np.sum(e ** 2) / 4:.5f} が問題文の値")
+dff = (np.polyval(b_all, 10) - np.polyval(b_6, 10)) / np.sqrt(s6sq * H[5, 5])
+E.check("s09p09a", dff > 2 * np.sqrt(2 / 6), f"当てはめ直しによる DFFITS {dff:.4f} > {2 * np.sqrt(2 / 6):.4f}")
+E.choice("s09p09a", f"$\\mathrm{{DFFITS}}_6={f(dff, 2)}$で、目安${f(2 * np.sqrt(2 / 6), 2)}$を超えるので、6回目は影響の大きい観測である",
+         "6 回目を除いて当てはめ直した予測値の差から")
+cv = 0.0
+for i in range(6):
+    m = np.arange(6) != i
+    bi = np.polyfit(xv[m], y[m], 1)
+    cv += (y[i] - np.polyval(bi, xv[i])) ** 2 / 6
+E.num("s09p09b", rnd(cv, 3), f"6 回当てはめ直した LOOCV {cv:.5f}")
 
 # ---- 大問10 林業
 M_ = np.array([120, 80, 150])
 yb_ = np.array([0.62, 0.55, 0.70])
-E.num("s09p10a", rnd(30 / 3 * np.sum(M_ * yb_), 0), "N/n Σ M_i ȳ_i")
-# 二段抽出の不偏性をシミュレーションで確認（人工の森林）
+E.num("s09p10a", rnd(np.mean(M_ * yb_ / (M_ / 3600)), 0), "Σ(τ_i/p_i)/n")
+# 確率比例抽出（復元）＋副次抽出の推定量の不偏性をシミュレーションで確認（人工の森林）
 Mi = rng.integers(60, 160, 30)
 trees = [rng.gamma(4, 0.15, m) for m in Mi]
 tot = sum(t.sum() for t in trees)
+pi_ = Mi / Mi.sum()
 ests = []
 for _ in range(20_000):
-    sel = rng.choice(30, 3, replace=False)
-    ests.append(30 / 3 * sum(Mi[i] * rng.choice(trees[i], 5, replace=False).mean() for i in sel))
+    sel = rng.choice(30, 3, replace=True, p=pi_)
+    ests.append(np.mean([Mi[i] * rng.choice(trees[i], 5, replace=False).mean() / pi_[i] for i in sel]))
 E.check("s09p10a", abs(np.mean(ests) / tot - 1) < 0.01, f"推定量の平均/真の総量 {np.mean(ests) / tot:.4f}")
 # (b) ラテン方格：平方和が与えた値になる 5×5 データを作り、statsmodels を使わず最小二乗で分解
 sst, ssr, ssc, ssa = 156.0, 36.0, 20.0, 64.0

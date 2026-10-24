@@ -169,17 +169,18 @@ R2r = 1 - er @ er / sst
 E.check("s10p07a", abs((R2f - R2r) - tval ** 2 * (1 - R2f) / 41) < 1e-10, "乱数データで t² と決定係数の関係を確認")
 Rr = optimize.brentq(lambda q: (0.82 - q) / ((1 - 0.82) / 41) - 2.5 ** 2, 0, 0.82)
 E.choice("s10p07a", f"${f(Rr, 3)}$", "部分 F=t² の式を数値的に解く")
-# (b) 削除残差の公式を乱数データで当てはめ直して確認し、値を計算
-H = X @ np.linalg.inv(X.T @ X) @ X.T
-i = 3
-Xi, yi = np.delete(X, i, 0), np.delete(y, i)
-bi, *_ = np.linalg.lstsq(Xi, yi, rcond=None)
-s2i = ((yi - Xi @ bi) ** 2).sum() / 40
-E.check("s10p07b", abs(s2i - (e @ e - e[i] ** 2 / (1 - H[i, i])) / 40) < 1e-10, "当てはめ直しで削除後の誤差分散の公式を確認")
-s2i_v = (900 - 11.2 ** 2 / 0.75) / 40
-E.choice("s10p07b", f"${f(11.2 / np.sqrt(s2i_v * 0.75), 2)}$", "外的スチューデント化残差")
-rint = 11.2 / np.sqrt(900 / 41 * 0.75)
-E.check("s10p07b", abs(rint * np.sqrt(40 / (41 - rint ** 2)) - 11.2 / np.sqrt(s2i_v * 0.75)) < 1e-12, "内的から外的への変換式とも一致")
+# (b) ブルーシュ・ペーガン：分散が気温に比例して増えるデータで nR² が χ²(2) に従う（帰無仮説のもと）ことをシミュレーションで確認
+lm_null = []
+for _ in range(4000):
+    Xb = np.column_stack([np.ones(48), rng.normal(size=(48, 2))])
+    eb = rng.normal(size=48)
+    e2 = eb ** 2
+    bb, *_ = np.linalg.lstsq(Xb, e2, rcond=None)
+    lm_null.append(48 * (1 - ((e2 - Xb @ bb) ** 2).sum() / ((e2 - e2.mean()) ** 2).sum()))
+E.check("s10p07b", abs(np.mean(np.array(lm_null) > stats.chi2.isf(0.05, 2)) - 0.05) < 0.015, "帰無仮説のもとで nR² の棄却率がおよそ 5%（自由度 2）")
+E.check("s10p07b", 48 * 0.21 > stats.chi2.isf(0.05, 2) and 48 * 0.21 < stats.chi2.isf(0.05, 6), "自由度 2 なら棄却、6 なら棄却しない（選択肢 0 と 1 で結論が分かれる）")
+E.check("s10p07b", abs(stats.chi2.isf(0.05, 2) - 5.991) < 5e-4 and abs(stats.chi2.isf(0.05, 6) - 12.592) < 5e-4, "χ² 点")
+E.choice("s10p07b", f"${f(48 * 0.21, 2)}$で5.991を超えるので、誤差の分散が一定という仮説を棄却する", "正解の文")
 
 # ---- 大問8
 # (a) r=-0.48 となるデータを作り、scipy の回帰の傾きの t 値と比べる
@@ -208,15 +209,15 @@ E.check("s10p08b", abs(b2sls + 3.0) < 0.02, f"2 段階最小二乗法の推定�
 E.choice("s10p08b", f"${f(-2.40 / 0.80, 2)}$", "Cov(Z,Y)/Cov(Z,X)")
 
 # ---- 大問9
-# (a) 復元 PPS を多数回くり返す人工母集団で不偏性を確かめ、与えたデータで値を計算
-xs_pop = rng.integers(10, 60, 400)
-ys_pop = xs_pop * rng.uniform(18, 27, 400)
-pp = xs_pop / xs_pop.sum()
-idx = rng.choice(400, size=(200_000, 4), p=pp)
-est = (ys_pop[idx] / pp[idx]).mean(1)
-E.check("s10p09a", abs(est.mean() / ys_pop.sum() - 1) < 0.002, "人工母集団でハンセン・ハーウィッツ推定量が不偏")
-rooms = np.array([40, 25, 80, 16]); gs = np.array([900, 600, 1700, 400])
-E.num("s10p09a", rnd((gs / (rooms / 12800)).mean(), 0), "y/p の平均")
+# (a) 回帰推定量：x と y の標本を作り、b と平均が与えた値になるデータで最小二乗の予測値として計算
+xs_ = rng.normal(size=25); xs_ = (xs_ - xs_.mean()) / xs_.std() * 6 + 28
+ys_ = 18.5 * (xs_ - 28) + rng.normal(size=25) * 30
+ys_ = ys_ - ys_.mean() + 610 - (np.polyfit(xs_, ys_, 1)[0] - 18.5) * 0  # 平均を 610 に
+bfit = np.polyfit(xs_, ys_, 1)
+ys_ = ys_ + (18.5 - bfit[0]) * (xs_ - xs_.mean())
+bfit = np.polyfit(xs_, ys_, 1)
+E.check("s10p09a", abs(bfit[0] - 18.5) < 1e-9 and abs(ys_.mean() - 610) < 1e-9 and abs(xs_.mean() - 28) < 1e-9, "条件どおりの標本を作れた")
+E.num("s10p09a", rnd(np.polyval(bfit, 32), 0), "標本の回帰直線の x̄=32 での値（回帰推定量と同じ）")
 # (b) 隠れた U を含む構造モデルを総当たりで作り、フロントドア式が真の介入効果に一致することを確かめてから値を計算
 def frontdoor(pt, pm, py):
     inner = {m: sum(py[(m, t)] * (pt if t else 1 - pt) for t in (0, 1)) for m in (0, 1)}
@@ -239,30 +240,28 @@ d = stats.norm.cdf(-0.3) - stats.norm.cdf(-0.6)
 E.num("s10p10a", rnd(d, 3), "scipy norm.cdf の差")
 E.check("s10p10a", all(abs(stats.norm.cdf(z) - v) < 5e-5 for z, v in [(0.3, 0.6179), (0.6, 0.7257), (0.9, 0.8159)]), "Φ の値")
 
-# ---- 大問11：平均と誤差平方和が問題どおりになるデータを作り、平方和を直接計算
-groups = []
-for m in (52.0, 45.5, 43.0):
-    z = rng.normal(size=8); z = z - z.mean(); z = z / np.sqrt((z ** 2).sum()) * np.sqrt(756 / 3)
-    groups.append(m + z)
-ally = np.concatenate(groups)
-SST = ((ally - ally.mean()) ** 2).sum()
-SSE = sum(((g_ - g_.mean()) ** 2).sum() for g_ in groups)
-SSA = SST - SSE
-E.check("s10p11a", abs(SSE - 756) < 1e-9, "誤差平方和 756")
-om = (SSA - 2 * SSE / 21) / (SST + SSE / 21)
-E.choice("s10p11a", f"${f(om, 3)}$", f"データから直接 ω²（η²={SSA / SST:.3f}）")
-Fv = stats.f_oneway(*groups)
-E.check("s10p11a", Fv.pvalue < 0.05 and abs(Fv.statistic - 4.80) < 0.01, f"scipy f_oneway F={Fv.statistic:.3f}")
+# ---- 大問11：変量効果モデルからデータを発生させ、分散分析法の推定量が不偏であることを確かめてから値を計算
+sa_true, s_true = 16.0, 15.0
+ests = []
+for _ in range(20000):
+    yv = rng.normal(0, np.sqrt(sa_true), (6, 1)) + rng.normal(0, np.sqrt(s_true), (6, 5))
+    msa_ = 5 * ((yv.mean(1) - yv.mean()) ** 2).sum() / 5
+    mse_ = ((yv - yv.mean(1, keepdims=True)) ** 2).sum() / 24
+    ests.append(((msa_ - mse_) / 5, mse_))
+ests = np.array(ests)
+E.check("s10p11a", abs(ests[:, 0].mean() - 16) < 0.4 and abs(ests[:, 1].mean() - 15) < 0.2,
+        f"シミュレーションで E[(MS_A−MS_E)/r]≈{ests[:, 0].mean():.2f}, E[MS_E]≈{ests[:, 1].mean():.2f}")
+sa_hat = optimize.brentq(lambda q: 15 + 5 * q - 95, 0, 100)  # E[MS_A]=σ²+rσ_A² を解く
+E.choice("s10p11a", f"${f(sa_hat / (sa_hat + 15), 3)}$", "期待平均平方の方程式を解いた級内相関")
 
 # ---- 大問12
 from scipy.cluster.hierarchy import linkage  # noqa: E402
-pts = np.array([[100, 2.0], [130, 5.0], [190, 5.2], [60, 3.5]]) / np.array([50, 1.0])
-Lk = linkage(pts, "single")
-pair = sorted(int(v) for v in Lk[0, :2])
-E.check("s10p12a", pair == [1, 2], f"scipy linkage の最初の併合 {pair}（Q と R）")
-E.choice("s10p12a", f"QとR（距離{f(Lk[0, 2], 2)}）", "最初の併合距離")
-raw = linkage(pts * np.array([50, 1.0]), "single")
-E.check("s10p12a", sorted(int(v) for v in raw[0, :2]) == [0, 1], "尺度をそろえないと P と Q が最初")
+from scipy.spatial.distance import squareform  # noqa: E402
+Dm = np.array([[0, 2, 6, 10, 9], [2, 0, 5, 9, 8], [6, 5, 0, 4, 5], [10, 9, 4, 0, 3], [9, 8, 5, 3, 0]], dtype=float)
+Lk = linkage(squareform(Dm), "average")
+E.choice("s10p12a", f"${f(Lk[-1, 2], 2)}$", "scipy linkage(average) の最後の併合距離")
+E.check("s10p12a", abs(linkage(squareform(Dm), "weighted")[-1, 2] - 7.25) < 1e-9 and linkage(squareform(Dm), "single")[-1, 2] == 5
+        and linkage(squareform(Dm), "complete")[-1, 2] == 10, "WPGMA・最短・最長距離法の値が誤答の選択肢と一致")
 L0 = np.array([[0.58, 0.56], [0.44, 0.58], [-0.37, 0.66]])
 T = np.array([[0.8, -0.6], [0.6, 0.8]])
 Lr = L0 @ T
@@ -281,18 +280,12 @@ pred = bd @ np.array([1, 1, 1, 0])
 E.check("s10p12c", abs(yd.mean() - 6.0) < 1e-12, "スコアの基準化で全体平均が定数項 6.0 になる")
 E.choice("s10p12c", f"予測値{f(pred, 1)}千円、宿泊の有無", "ダミー変数回帰の予測とレンジ")
 
-# ---- 大問13：長い系列を発生させ、1 期先予測 X_t − θ ε_t の誤差分散が最小であることと値を確かめる
-th = 0.6
-eps = rng.normal(size=200_000)
-dx = eps[1:] - th * eps[:-1]
-Xser = np.concatenate([[0.0], np.cumsum(dx)])
-pred_ok = Xser[:-1] - th * eps[:-1]   # X_t − θ ε_t（ε_t は既知）
-err_ok = ((Xser[1:] - pred_ok) ** 2).mean()
-err_rw = ((Xser[1:] - Xser[:-1]) ** 2).mean()
-E.check("s10p13a", err_ok < err_rw and abs(err_ok - 1) < 0.01, f"予測誤差分散 {err_ok:.3f}（ランダムウォーク予測 {err_rw:.3f}）")
-fhat = 120
-fhat = fhat + (1 - th) * (130 - fhat)  # 指数平滑の更新
-E.choice("s10p13a", f"${f(fhat, 0)}$", "指数平滑法の更新式")
+# ---- 大問13：定義どおりの和でリュング・ボックス統計量を計算し、白色雑音のシミュレーションで自由度の扱いを確かめる
+rk = np.array([0.25, -0.18, 0.12]); kk = np.arange(1, 4)
+Q = 60 * 62 * (rk ** 2 / (60 - kk)).sum()
+E.choice("s10p13a", f"Q\\approx{f(Q, 2)}$で自由度2の5.991を超えるので、残差に自己相関", "Q の値と判定")
+E.check("s10p13a", abs(stats.chi2.isf(0.05, 2) - 5.991) < 5e-4 and abs(stats.chi2.isf(0.05, 3) - 7.815) < 5e-4, "χ² 点")
+E.check("s10p13a", stats.chi2.sf(Q, 2) < 0.05 < stats.chi2.sf(Q, 3), "自由度 2 なら棄却、3 なら棄却しない（選択肢 0 と区別）")
 
 # ---- 大問14
 ratio = (stats.gamma.pdf(0.6, 5, scale=1 / 5) / stats.gamma.pdf(1.0, 5, scale=1 / 5)) * (stats.expon.pdf(1.0) / stats.expon.pdf(0.6))

@@ -131,10 +131,12 @@ def p02_od():
 
 
 def p04():
-    # (a) 幾何分布の無記憶性
-    p, m, k = 0.02, 12, 6
-    pw = {6: 0.88584, 12: 0.78472, 18: 0.69514}   # 0.98^6, 0.98^12, 0.98^18（問題文の値）
-    cond = 1 - pw[6]
+    # (a) 二項分布の最頻値とその確率
+    bn, bp = 40, 0.06
+    q = {37: 0.10133, 38: 0.09525, 39: 0.08953}   # 0.94^37, 0.94^38, 0.94^39（問題文の値）
+    kmode = int((bn + 1) * bp)
+    assert kmode == 2
+    pmode = comb(bn, 2) * bp ** 2 * q[38]
     # (b) 2×2 表の尤度比統計量 G²
     O = [[20, 180], [40, 160]]
     lnv = {"a": -0.40547, "b": 0.05716, "c": 0.28768, "d": -0.06062}   # ln(2/3), ln(18/17), ln(4/3), ln(16/17)
@@ -155,9 +157,9 @@ def p04():
     e_ok = nAB * nAC / nA
     c = [s(nA * nB * nC / tt ** 2, 2), s(nAB * nC / tt, 2), s(e_ok, 2), s(nAC * nB / tt, 2), s(t[("M", "S", "D")], 2)]
     distinct(*c)
-    d = {"p": p, "m": m, "k": k, "pw6": s(pw[6], 5), "pw12": s(pw[12], 5), "pw18": s(pw[18], 5),
-         "cond": r(cond, 3), "cond5": s(cond, 5), "w_unc": s(1 - pw[18], 3), "w_band": s(pw[12] - pw[18], 3),
-         "w_lin": s(k * p, 3), "mean": s(1 / p, 0),
+    d = {"bn": bn, "bp": bp, "q37": s(q[37], 5), "q38": s(q[38], 5), "q39": s(q[39], 5), "np1": s((bn + 1) * bp, 2),
+         "kmode": kmode, "c402": comb(bn, 2), "p2": s(bp ** 2, 4), "pmode": r(pmode, 3), "pmode4": s(pmode, 4),
+         "np": s(bn * bp, 1), "w37": s(comb(bn, 2) * bp ** 2 * q[37], 3), "w39": s(comb(bn, 2) * bp ** 2 * q[39], 3),
          "la": s(lnv["a"], 5), "lb": s(lnv["b"], 5), "lc": s(lnv["c"], 5), "ld": s(lnv["d"], 5),
          "g1": s(terms[0], 4), "g2": s(terms[1], 4), "g3": s(terms[2], 4), "g4": s(terms[3], 4),
          "Ghalf": s(half, 2), "Ghalf4": s(half, 4), "G": s(G, 2), "X2": s(X2, 2),
@@ -290,25 +292,14 @@ def p08():
 
 
 def p09():
-    # 系統抽出と単純無作為抽出の分散の比
-    y = [50, 62, 58, 46, 52, 64, 60, 48, 54, 66, 62, 50]
-    N, kk = len(y), 4
-    n = N // kk
-    means = [sum(y[r::kk]) / n for r in range(kk)]
-    mu = sum(y) / N
-    vsys = sum((m - mu) ** 2 for m in means) / kk
-    S2 = sum((v - mu) ** 2 for v in y) / (N - 1)
-    vsrs = (1 - n / N) * S2 / n
-    ratio = vsys / vsrs
-    d = {"N": N, "kk": kk, "n": n, "mu": s(mu, 0), "vsys": s(vsys, 2), "S2": s(S2, 4), "ssq": s(S2 * (N - 1), 0),
-         "fpc": s(1 - n / N, 2), "vsrs": s(vsrs, 4), "ratio": r(ratio, 2), "ratio4": s(ratio, 4),
-         "w_nofpc": s(vsys / (S2 / n), 2), "w_N": s(vsys / ((1 - n / N) * (S2 * (N - 1) / N) / n), 2)}
-    for i, v in enumerate(y):
-        d[f"y{i}"] = v
-    for i, m in enumerate(means):
-        d[f"m{i}"] = s(m, 0)
-        d[f"dv{i}"] = s((m - mu) ** 2, 0)
-    return d
+    # 事後層化推定量
+    wp, wc = 0.8, 0.2
+    n, np_, nc = 50, 45, 5
+    yp, yc = 126.4, 912.5
+    ps = wp * yp + wc * yc
+    sm = (np_ * yp + nc * yc) / n
+    return {"wp": s(wp, 1), "wc": s(wc, 1), "n": n, "np_": np_, "nc": nc, "yp": s(yp, 1), "yc": s(yc, 1),
+            "tp": s(wp * yp, 2), "tc": s(wc * yc, 2), "ps": r(ps, 2), "ps_s": s(ps, 2), "sm": s(sm, 2), "fc": s(nc / n, 1)}
 
 
 def p10():

@@ -1,7 +1,7 @@
 {
  "s09p01a": {
   "ok": true,
-  "hash": "483b0fe5a4ee34a8"
+  "hash": "db69d3c2f808ca22"
  },
  "s09p01b": {
   "ok": true,
@@ -37,11 +37,11 @@
  },
  "s09p05b": {
   "ok": true,
-  "hash": "47c050a052193508"
+  "hash": "176f64eb40d30097"
  },
  "s09p05c": {
   "ok": true,
-  "hash": "91bea8e22a7fb307"
+  "hash": "3a4cd15e3d900a38"
  },
  "s09p06a": {
   "ok": true,
@@ -77,15 +77,15 @@
  },
  "s09p09a": {
   "ok": true,
-  "hash": "41e9464b2a4b1d31"
+  "hash": "ef9fecd6dbb9072f"
  },
  "s09p09b": {
   "ok": true,
-  "hash": "434fa113d976f31f"
+  "hash": "ade6314771df5db5"
  },
  "s09p10a": {
   "ok": true,
-  "hash": "a8ce5c19e423fd36"
+  "hash": "9ebfc8795b9ae87b"
  },
  "s09p10b": {
   "ok": true,
@@ -93,10 +93,10 @@
  },
  "s09p11a": {
   "ok": true,
-  "hash": "b92d5936cfa53626"
+  "hash": "6f31fe773309dec0"
  },
  "s09p12a": {
   "ok": true,
-  "hash": "f2cdce621c329d07"
+  "hash": "707b4bc05144395d"
  }
 }

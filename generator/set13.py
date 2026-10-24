@@ -151,28 +151,31 @@ def p04c():
 
 
 def p05():
-    """3 地域の窓口処理日数の分散の比較（バートレット検定）"""
-    k, ni = 3, 6
-    s2 = [4.0, 9.0, 16.0]
-    lns = {4.0: 1.3863, 9.0: 2.1972, 16.0: 2.7726}
-    N = k * ni
-    sp2 = sum((ni - 1) * v for v in s2) / (N - k)
-    ln_sp2 = 2.2687                              # ln(9.667)
-    sum_ln = sum(lns[v] for v in s2)
-    M = (N - k) * ln_sp2 - (ni - 1) * sum_ln
-    C = 1 + (1 / (3 * (k - 1))) * (k / (ni - 1) - 1 / (N - k))
-    B = M / C
-    # 誤答
-    Mn = N * ln_sp2 - ni * sum_ln                 # 重みを n_i にした（対数の差は定数倍で消える）
-    Cn = 1 + (1 / (3 * (k - 1))) * (k / ni - 1 / N)
-    return {
-        "k": k, "ni": ni, "s1": s(s2[0], 1), "s2": s(s2[1], 1), "s3": s(s2[2], 1),
-        "l1": s(lns[4.0], 4), "l2": s(lns[9.0], 4), "l3": s(lns[16.0], 4), "lsp": s(ln_sp2, 4),
-        "N": N, "dfe": N - k, "df1": ni - 1, "ssum": s(sum((ni - 1) * v for v in s2), 0), "sp2": s(sp2, 3),
-        "suml": s(sum_ln, 4), "t1": s((N - k) * ln_sp2, 4), "t2": s((ni - 1) * sum_ln, 4), "M": s(M, 4),
-        "cin": s(k / (ni - 1) - 1 / (N - k), 4), "C": s(C, 4), "B": s(B, 2), "B4": s(M / r(C, 4), 4),
-        "w_noC": s(M, 2), "w_mulC": s(M * C, 2), "w_n": s(Mn / Cn, 2), "w_sd": s(M / 2 / C, 2),
-    }
+    """3 地域の処理日数の分散の比較（ルビーン検定）"""
+    G = [[10, 12, 14, 12], [8, 16, 12, 12], [6, 18, 9, 15]]
+    k, n = 3, 4
+    means = [sum(g_) / n for g_ in G]
+    Z = [[abs(v - m_) for v in g_] for g_, m_ in zip(G, means)]
+    zm = [sum(z) / n for z in Z]
+    zb = sum(sum(z) for z in Z) / (k * n)
+    ssb = n * sum((m_ - zb) ** 2 for m_ in zm)
+    ssw = sum(sum((v - m_) ** 2 for v in z) for z, m_ in zip(Z, zm))
+    F = (ssb / (k - 1)) / (ssw / (k * n - k))
+    Z2 = [[(v - m_) ** 2 for v in g_] for g_, m_ in zip(G, means)]
+    z2m = [sum(z) / n for z in Z2]
+    z2b = sum(sum(z) for z in Z2) / (k * n)
+    ssb2 = n * sum((m_ - z2b) ** 2 for m_ in z2m)
+    ssw2 = sum(sum((v - m_) ** 2 for v in z) for z, m_ in zip(Z2, z2m))
+    F2 = (ssb2 / 2) / (ssw2 / 9)
+    d = {"F": s(F, 2), "F4": s(F, 4), "w_nodf": s(ssb / ssw, 2), "w_sq": s(F2, 2), "ssb": s(ssb, 1), "ssw": s(ssw, 1),
+         "msb": s(ssb / 2, 1), "msw": s(ssw / 9, 4), "zb": s(zb, 1), "F209": "4.256", "F211": "3.982"}
+    for i in range(3):
+        d[f"m{i+1}"] = s(means[i], 0)
+        d[f"zm{i+1}"] = s(zm[i], 1)
+        d[f"z{i+1}"] = "、".join(s(v, 0) for v in Z[i])
+        d[f"g{i+1}"] = "、".join(str(v) for v in G[i])
+        d[f"sw{i+1}"] = s(sum((v - zm[i]) ** 2 for v in Z[i]), 0)
+    return d
 
 
 def p06():
@@ -224,7 +227,19 @@ def p08():
         "w_nocov": s(sqrt(v1 + v3), 4), "w_plus": s(sqrt(v1 + v3 - 2 * c13), 4), "w_b3": s(sqrt(v3), 4),
         "se1": s(sqrt(v1), 4),
         "n": n, "pp": s((n - 0.5) / n, 4), "zq": "2.241", "rmax": "3.35", "rmin": "-1.62",
+        **p08c(),
     }
+
+
+def p08c():
+    """訓練誤差と予測誤差（楽観度）"""
+    n, p, rss = 40, 5, 1.80
+    tr = rss / n
+    s2 = rss / (n - p)
+    opt = 2 * p * s2 / n
+    return {"rss": s(rss, 2), "pk": p, "tr": s(tr, 3), "s2": s(s2, 6), "dfe": n - p, "opt": s(opt, 6),
+            "pe": r(tr + opt, 4), "pe6": s(tr + opt, 6), "w_noopt": s(tr, 4), "w_half": s(tr + opt / 2, 4),
+            "w_s2": s(s2, 4), "w_p4": s(tr + 2 * 4 * s2 / n, 4), "w_ntr": s(tr * (n + p) / (n - p), 4)}
 
 
 def p09():
@@ -298,28 +313,17 @@ def p10():
 
 
 def p11():
-    """系統抽出"""
-    y = [2, 0, 1, 3, 2, 1, 1, 3, 3, 0, 2, 4]
-    N, k = 12, 4
-    n = N // k
-    means = [sum(y[i::k]) / n for i in range(k)]
-    Ybar = sum(y) / N
-    vsys = sum((m_ - Ybar) ** 2 for m_ in means) / k
-    S2 = sum((v - Ybar) ** 2 for v in y) / (N - 1)
-    vsrs = (1 - n / N) * S2 / n
-    d = {f"y{i+1}": v for i, v in enumerate(y)}
-    d.update({
-        "N": N, "k": k, "nn": n, "Ysum": sum(y), "Ybar": s(Ybar, 4),
-        "vsys": s(vsys, 2), "vsys4": s(vsys, 4), "vsrs": s(vsrs, 2), "S2": s(S2, 4),
-        "w_k1": s(sum((m_ - Ybar) ** 2 for m_ in means) / (k - 1), 2), "w_nofpc": s(S2 / n, 2),
-        "w_sum": s(sum((m_ - Ybar) ** 2 for m_ in means), 2),
-    })
-    for i, m_ in enumerate(means):
-        d[f"m{i+1}"] = s(m_, 4)
-        d[f"s{i+1}"] = sum(y[i::k])
-        d[f"dv{i+1}"] = s(m_ - Ybar, 4)
-        d[f"dv2_{i+1}"] = s((m_ - Ybar) ** 2, 4)
-    return d
+    """無回答者の追跡調査（ハンセン・ハーヴィッツ法）"""
+    n, nr = 1000, 600
+    nm = n - nr
+    f_ = 100
+    yr, ym = 0.70, 0.40
+    est = nr / n * yr + nm / n * ym
+    pooled = (nr * yr + f_ * ym) / (nr + f_)
+    return {"n": n, "nr": nr, "nm": nm, "f": f_, "yr": s(yr, 2), "ym": s(ym, 2), "wr": s(nr / n, 1), "wm": s(nm / n, 1),
+            "t1": s(nr / n * yr, 2), "t2": s(nm / n * ym, 2), "est": s(est, 3), "w_resp": s(yr, 3), "w_pool": s(pooled, 3),
+            "w_avg": s((yr + ym) / 2, 3), "w_fu": s(ym, 3), "bias": s(yr - est, 2), "k": int(nm / f_),
+            "c1": int(nr * yr), "c2": int(f_ * ym)}
 
 
 def p12():
@@ -339,20 +343,11 @@ def p12():
 
 
 def p13():
-    """失業率の AR(1) の残差のリュング・ボックス検定"""
-    n, rs = 60, [0.15, -0.20, 0.18, 0.10]
-    terms = [r(x ** 2 / (n - k), 8) for k, x in enumerate(rs, start=1)]
-    tot = sum(terms)
-    Q = n * (n + 2) * tot
-    bp = n * sum(x ** 2 for x in rs)
-    d = {"n": n, "nn2": n * (n + 2), "sum8": s(tot, 8), "Q": r(Q, 2), "Q4": s(Q, 4), "bp": s(bp, 2),
-         "c3": "7.815", "c4": "9.488"}
-    for k, (x, tm) in enumerate(zip(rs, terms), start=1):
-        d[f"r{k}"] = s(x, 2)
-        d[f"rr{k}"] = s(x ** 2, 4)
-        d[f"tm{k}"] = s(tm, 8)
-        d[f"nk{k}"] = n - k
-    return d
+    """失業率の前月差の AR(1) のスペクトル"""
+    phi = 0.6
+    num, den = (1 + phi) ** 2, (1 - phi) ** 2
+    return {"phi": s(phi, 1), "d0": s(1 - 2 * phi + phi ** 2, 2), "dpi": s(1 + 2 * phi + phi ** 2, 2),
+            "ratio": s(num / den, 0), "w_nosq": s((1 + phi) / (1 - phi), 0), "inv": "1/16"}
 
 
 def p14():
