@@ -27,12 +27,24 @@
   "hash": "385d19b26f312773",
   "ok": true
  },
+ "q11-ci-two-sample-mean-difference-g2": {
+  "hash": "76746d427a835c08",
+  "ok": true
+ },
  "q11-ci-two-sample-proportion-g1": {
   "hash": "731b05801ca8b96b",
   "ok": true
  },
+ "q11-ci-two-sample-proportion-g2": {
+  "hash": "95083a9c4294dc43",
+  "ok": true
+ },
  "q11-ci-variance-g1": {
   "hash": "779fff05bffb524d",
+  "ok": true
+ },
+ "q11-ci-variance-g2": {
+  "hash": "ede7f96746481bd0",
   "ok": true
  },
  "q11-ci-variance-ratio-g1": {
@@ -41,6 +53,10 @@
  },
  "q11-confidence-coefficient-g1": {
   "hash": "d64c0bb34278df44",
+  "ok": true
+ },
+ "q11-confidence-coefficient-g2": {
+  "hash": "99a4ebe8b52e1d52",
   "ok": true
  },
  "q11-confidence-interval-g1": {
@@ -53,6 +69,10 @@
  },
  "q11-consistent-estimator-g1": {
   "hash": "226fe69608692fee",
+  "ok": true
+ },
+ "q11-consistent-estimator-g2": {
+  "hash": "ac9536ba8b3c42e5",
   "ok": true
  },
  "q11-finite-population-correction-g1": {
@@ -73,6 +93,10 @@
  },
  "q11-required-sample-size-g1": {
   "hash": "9cd7f867eec079b1",
+  "ok": true
+ },
+ "q11-required-sample-size-g2": {
+  "hash": "413a67a5ad9f83ad",
   "ok": true
  },
  "q11-standard-error-g1": {

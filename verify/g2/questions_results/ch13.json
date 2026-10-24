@@ -3,8 +3,16 @@
   "hash": "44ab69dc5057713e",
   "ok": true
  },
+ "q13-expected-frequency-g2": {
+  "hash": "158f00c2e4c3dc5d",
+  "ok": true
+ },
  "q13-f-test-equal-variances-g1": {
   "hash": "32d346f995c15af1",
+  "ok": true
+ },
+ "q13-f-test-equal-variances-g2": {
+  "hash": "f89e802801b87dd6",
   "ok": true
  },
  "q13-goodness-of-fit-test-g1": {
@@ -35,6 +43,10 @@
   "hash": "d46b4bf6c95fb011",
   "ok": true
  },
+ "q13-pearson-chi-square-statistic-g2": {
+  "hash": "41e745a90215d2f3",
+  "ok": true
+ },
  "q13-pooled-variance-g1": {
   "hash": "b6e511d4d0827429",
   "ok": true
@@ -49,6 +61,10 @@
  },
  "q13-two-sample-proportion-test-g1": {
   "hash": "a6f360adbb7b217a",
+  "ok": true
+ },
+ "q13-two-sample-proportion-test-g2": {
+  "hash": "32fdd264d7654a34",
   "ok": true
  },
  "q13-two-sample-t-test-g1": {

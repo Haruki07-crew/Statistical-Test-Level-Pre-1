@@ -3,6 +3,10 @@
   "hash": "abe935edbbea8448",
   "ok": true
  },
+ "q08-cumulative-distribution-function-g2": {
+  "hash": "3bae4c140da3e3bf",
+  "ok": true
+ },
  "q08-expectation-variance-properties-g1": {
   "hash": "0de3c822d75c20de",
   "ok": true
@@ -17,6 +21,10 @@
  },
  "q08-joint-probability-function-g1": {
   "hash": "e03a4be009c7b4d6",
+  "ok": true
+ },
+ "q08-joint-probability-function-g2": {
+  "hash": "e118310dbbc725e8",
   "ok": true
  },
  "q08-marginal-distribution-g1": {

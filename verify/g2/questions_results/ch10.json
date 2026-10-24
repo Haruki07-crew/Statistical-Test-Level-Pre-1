@@ -15,6 +15,10 @@
   "hash": "5265b9508cdb42be",
   "ok": true
  },
+ "q10-chebyshev-inequality-g2": {
+  "hash": "bc262dfb4d635d43",
+  "ok": true
+ },
  "q10-chi-squared-distribution-g1": {
   "hash": "3b661ad8d38a61fe",
   "ok": true
@@ -29,6 +33,10 @@
  },
  "q10-continuity-correction-g1": {
   "hash": "b4f20026b9c8df1d",
+  "ok": true
+ },
+ "q10-continuity-correction-g2": {
+  "hash": "dacea96d74a09943",
   "ok": true
  },
  "q10-f-distribution-g1": {

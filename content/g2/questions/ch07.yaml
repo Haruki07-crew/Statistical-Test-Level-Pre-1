@@ -220,3 +220,16 @@ questions:
       $P(\text{A かつ赤})=0.5\times 0.4=0.2$、$P(\text{B かつ赤})=0.5\times 0.8=0.4$ なので
       $$P(\text{A}\mid\text{赤})=\frac{0.2}{0.2+0.4}=\frac{1}{3}\approx 0.333$$
       赤玉の多い箱 B のほうが、赤玉が出たときの原因として起こりやすくなります。赤玉が出たという情報で、箱 A の確率は 1/2 から 1/3 に下がりました。
+
+  - id: q07-law-of-total-probability-g2
+    term: law-of-total-probability
+    level: 標準
+    type: numeric
+    question: |
+      袋 A には赤玉 3 個と白玉 2 個、袋 B には赤玉 1 個と白玉 4 個が入っている。さいころを振って 1 か 2 の目なら袋 A、それ以外なら袋 B から玉を 1 個取り出す。取り出した玉が赤である確率を、小数第 3 位まで求めよ。
+    answer: 0.333
+    tolerance: 0.0005
+    hint: |
+      袋 A を選ぶ確率は 1/3、袋 B は 2/3。袋ごとの赤の確率に重みを付けて足す。
+    explanation: |
+      $\dfrac13\times\dfrac35+\dfrac23\times\dfrac15=\dfrac{3}{15}+\dfrac{2}{15}=\dfrac13\approx 0.333$ です。2 つの袋の赤の割合の単純な平均 $(0.6+0.2)/2=0.4$ にはなりません。袋を選ぶ確率で重みを付けます。

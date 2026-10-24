@@ -339,3 +339,39 @@ questions:
     explanation: |
       $\binom{2}{1}(0.5)^1(0.5)^1\times 0.5=2\times 0.125=0.25$ です。最後の試行が成功と決まっているので、組合せは最初の 2 回の中から成功の 1 回を選ぶ $\binom{2}{1}$ です。
 
+  - id: q09-geometric-distribution-g2
+    term: geometric-distribution
+    level: 標準
+    type: numeric
+    question: |
+      1 回で当たる確率が 0.2 のくじを、当たるまで引き続ける（くじは毎回もとに戻す）。すでに 3 回続けて外れたとき、あと 2 回以内に当たる確率を求めよ。
+    answer: 0.36
+    tolerance: 0.0001
+    hint: |
+      幾何分布の無記憶性：それまでの外れの回数は、これからの確率に影響しない。
+    explanation: |
+      各回は独立なので、3 回外れたことは関係なく、$1-0.8^2=0.36$ です。「3 回も外れたから次は当たりやすい」と考えるのは誤り（ギャンブラーの誤謬）で、最初から引くときの「2 回以内に当たる確率」と同じです。
+  - id: q09-uniform-distribution-g2
+    term: uniform-distribution
+    level: 基本
+    type: numeric
+    question: |
+      バスは 15 分おきに来る。時刻表を見ずにでたらめな時刻にバス停に着くとき、待ち時間は 0 分から 15 分の一様分布にしたがうとする。待ち時間が 10 分を超える確率を、小数第 3 位まで求めよ。
+    answer: 0.333
+    tolerance: 0.0005
+    hint: |
+      一様分布では、確率は区間の長さに比例する。
+    explanation: |
+      10 分から 15 分の長さ 5 の区間なので、$5/15=1/3\approx 0.333$ です。待ち時間の平均は $15/2=7.5$ 分です。
+  - id: q09-hypergeometric-distribution-g2
+    term: hypergeometric-distribution
+    level: 応用
+    type: numeric
+    question: |
+      20 個のうち 5 個が不良品の箱から、4 個を同時に（戻さずに）取り出す。取り出した不良品の個数の分散を、小数第 2 位まで求めよ。
+    answer: 0.63
+    tolerance: 0.005
+    hint: |
+      二項分布の分散 $np(1-p)$ に、有限母集団修正 $\dfrac{N-n}{N-1}$ を掛ける。
+    explanation: |
+      $p=5/20=0.25$ なので、$4\times 0.25\times 0.75\times\dfrac{20-4}{20-1}=0.75\times\dfrac{16}{19}\approx 0.63$ です。戻して取り出す（二項分布）なら 0.75 で、戻さないほうが分散は小さくなります。平均はどちらも $4\times 0.25=1$ です。

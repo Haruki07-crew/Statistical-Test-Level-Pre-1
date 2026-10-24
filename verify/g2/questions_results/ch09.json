@@ -43,8 +43,16 @@
   "hash": "060ddbe235c3cd14",
   "ok": true
  },
+ "q09-geometric-distribution-g2": {
+  "hash": "bdcc25c1472d2acc",
+  "ok": true
+ },
  "q09-hypergeometric-distribution-g1": {
   "hash": "6c74d9674f71beba",
+  "ok": true
+ },
+ "q09-hypergeometric-distribution-g2": {
+  "hash": "0a6d0667189e464c",
   "ok": true
  },
  "q09-negative-binomial-distribution-g1": {
@@ -89,6 +97,10 @@
  },
  "q09-uniform-distribution-g1": {
   "hash": "42243d01ee8930a1",
+  "ok": true
+ },
+ "q09-uniform-distribution-g2": {
+  "hash": "b982aacd8c42689d",
   "ok": true
  }
 }

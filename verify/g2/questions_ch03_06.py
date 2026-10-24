@@ -45,6 +45,11 @@ q.check("q03-correlation-matrix-g1", chosen(q, "q03-correlation-matrix-g1") == "
 q.num("q03-partial-correlation-coefficient-g1", (0.6 - 0.5 * 0.4) / np.sqrt(0.75 * 0.84))
 q.num("q03-simpsons-paradox-g1", (30 * .8 + 70 * .4) / 100)
 q.check("q03-simpsons-paradox-g1", (80 * .7 + 20 * .3) / 100 == 0.62 and .8 > .7 and .4 > .3, "A さんは 0.62（どちらの種類でも B が高いのに全体では A）")
+q.num("q03-correlation-matrix-g2", 12 / (4 * 5))
+cv3 = np.random.default_rng(31).multivariate_normal([0, 0], [[16, 12], [12, 25]], 400000); q.check("q03-correlation-matrix-g2", abs(np.corrcoef(cv3.T)[0, 1] - 0.6) < 0.005, "シミュレーション")
+pr3 = (0.5 - 0.7 * 0.7) / np.sqrt((1 - 0.49) * (1 - 0.49))
+q.check("q03-partial-correlation-coefficient-g2", abs(pr3 - 0.0196) < 5e-4 and chosen(q, "q03-partial-correlation-coefficient-g2").startswith("偏相関係数はほぼ 0 で"), f"偏相関 {pr3:.4f}")
+q.check("q03-simpsons-paradox-g2", 18 / 20 > 68 / 80 and 40 / 80 > 8 / 20 and 58 / 100 < 76 / 100 and 18 + 40 == 58 and 68 + 8 == 76 and chosen(q, "q03-simpsons-paradox-g2").startswith("X は回復しにくい重症"), "層ごとに X が高く、全体で Y が高い")
 run(q)
 
 # ---------- 第4章 ----------
@@ -75,6 +80,10 @@ q.num("q04-log-transformation-g1", (np.exp(0.2) - 1) * 100)
 q.check("q04-log-transformation-g1", abs(np.exp(0.2) - 1.2214) < 5e-5, "表の値 e^0.2")
 xf = np.linspace(1, 10, 400); yf = 2 + 3 * xf + np.random.default_rng(4).normal(0, 0.3 * xf); bf, af = np.polyfit(xf, yf, 1); ef = yf - af - bf * xf; pf = af + bf * xf
 q.check("q04-residual-plot-g1", np.std(ef[pf > np.median(pf)]) > 1.8 * np.std(ef[pf <= np.median(pf)]) and chosen(q, "q04-residual-plot-g1").startswith("誤差の分散が一定でない"), "誤差の標準偏差が x に比例するデータで残差が扇形")
+xu = np.linspace(0, 10, 41); yu = 2 + 0.5 * xu ** 2; bu, au = np.polyfit(xu, yu, 1); ru = yu - au - bu * xu
+q.check("q04-residual-plot-g2", ru[0] > 0 and ru[-1] > 0 and ru[20] < 0 and abs(ru.sum()) < 1e-9 and chosen(q, "q04-residual-plot-g2").startswith("直線では表せない"), "2 次の関係に直線を当てると残差が U 字形")
+q.num("q04-log-transformation-g2", (1.1 ** 0.8 - 1) * 100)
+q.check("q04-log-transformation-g2", abs(1.1 ** 0.8 - 1.0792) < 5e-5, "表の値")
 run(q)
 
 # ---------- 第5章 ----------
@@ -108,6 +117,9 @@ q.check("q05-autocovariance-autocorrelation-g1", r1_ < -0.5 and np.mean(np.sign(
 tq = np.arange(80); yq = 50 + 8 * np.array([1, 0, -1, 0] * 20) + rr5.normal(0, 1, 80); yq -= yq.mean(); acq = lambda k: (yq[:-k] * yq[k:]).sum() / (yq ** 2).sum()
 q.check("q05-correlogram-g1", acq(4) > 0.7 and acq(8) > 0.7 and acq(2) < -0.3 and acq(6) < -0.3 and chosen(q, "q05-correlogram-g1") == "1 年（4 四半期）周期の季節変動がある", f"4 期周期の系列でラグ 2・4・6・8 の自己相関 {acq(2):.2f}・{acq(4):.2f}・{acq(6):.2f}・{acq(8):.2f}")
 q.num("q05-seasonal-adjustment-g1", 156 / 1.2)
+xa5 = np.array([2, 4, 5, 7, 7.]); da5 = xa5 - xa5.mean(); q.num("q05-autocovariance-autocorrelation-g2", (da5[:-1] * da5[1:]).sum() / (da5 ** 2).sum())
+tr5 = 0.5 * np.arange(120) + np.random.default_rng(55).normal(0, 3, 120); dt5 = tr5 - tr5.mean(); ac5 = [(dt5[:-k] * dt5[k:]).sum() / (dt5 ** 2).sum() for k in range(1, 13)]
+q.check("q05-correlogram-g2", ac5[0] > 0.9 and min(ac5) > 0.6 and all(a > b for a, b in zip(ac5, ac5[1:])) and chosen(q, "q05-correlogram-g2").startswith("長期的に"), f"トレンドのある系列の自己相関 {ac5[0]:.2f} … {ac5[-1]:.2f}")
 run(q)
 
 # ---------- 第6章 ----------
@@ -143,5 +155,14 @@ q.check("q06-two-stage-sampling-g1", abs(hit2 - 0.005) < 0.0006, f"地区 0 の�
 q.num("q06-nonresponse-bias-g1", 0.5 * 0.6 / (0.5 * 0.6 + 0.5 * 0.3))
 popn = np.random.default_rng(66).random(400000) < 0.5; resp = np.random.default_rng(67).random(400000) < np.where(popn, 0.6, 0.3)
 q.check("q06-nonresponse-bias-g1", abs(popn[resp].mean() - 2 / 3) < 0.003, f"シミュレーション {popn[resp].mean():.4f}")
+rg6 = np.random.default_rng(61); popA = np.r_[rg6.normal(20, 2, 3000), rg6.normal(50, 2, 3000), rg6.normal(80, 2, 3000)]
+srs6 = [popA[rg6.choice(9000, 90, replace=False)].mean() for _ in range(3000)]; st6 = [np.mean([popA[k * 3000 + rg6.choice(3000, 30, replace=False)].mean() for k in range(3)]) for _ in range(3000)]
+q.check("q06-stratified-sampling-g2", np.std(st6) * 5 < np.std(srs6) and chosen(q, "q06-stratified-sampling-g2").startswith("層の中では値が似ていて"), f"層の間の差が大きいとき：層化 {np.std(st6):.3f}・単純 {np.std(srs6):.3f}")
+roster = np.tile(np.r_[1, np.zeros(9)], 100); props = [roster[s::10].mean() for s in range(10)]
+q.check("q06-systematic-sampling-g2", props[0] == 1 and max(props[1:]) == 0 and roster.mean() == 0.1 and chosen(q, "q06-systematic-sampling-g2").startswith("最初の番号によっては"), "開始 1 なら班長 100%、それ以外は 0%（本当は 10%）")
+cl_mix = rg6.normal(50, 10, (100, 20)); cl_sim = rg6.normal(0, 10, (100, 1)) + 50 + rg6.normal(0, 2, (100, 20))
+se_mix = np.std([cl_mix[rg6.choice(100, 5, replace=False)].mean() for _ in range(3000)]); se_sim = np.std([cl_sim[rg6.choice(100, 5, replace=False)].mean() for _ in range(3000)])
+q.check("q06-cluster-sampling-g2", se_mix * 2 < se_sim and chosen(q, "q06-cluster-sampling-g2").startswith("各集落の中が母集団全体と"), f"集落の中が多様 {se_mix:.2f}・集落の中が均質 {se_sim:.2f}")
+q.concept("q06-two-stage-sampling-g2", "名簿と費用の利点。精度は単純無作為抽出法よりふつう下がる")
 run(q)
 raise SystemExit(1 if ng else 0)

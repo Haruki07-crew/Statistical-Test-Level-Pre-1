@@ -3,8 +3,16 @@
   "hash": "ae6e0f730f6ac729",
   "ok": true
  },
+ "q12-chi-square-test-variance-g2": {
+  "hash": "5687c1de18a7091a",
+  "ok": true
+ },
  "q12-confidence-interval-test-duality-g1": {
   "hash": "750dfb27178a7897",
+  "ok": true
+ },
+ "q12-confidence-interval-test-duality-g2": {
+  "hash": "63cf169e00544e53",
   "ok": true
  },
  "q12-null-and-alternative-hypothesis-g1": {
@@ -47,6 +55,10 @@
   "hash": "ebc690a5893e3b94",
   "ok": true
  },
+ "q12-power-function-g2": {
+  "hash": "e4449c040a308b4e",
+  "ok": true
+ },
  "q12-proportion-test-g1": {
   "hash": "72a7465ea65848ce",
   "ok": true
@@ -57,6 +69,10 @@
  },
  "q12-rejection-region-g1": {
   "hash": "d2e155f2dbbf59ab",
+  "ok": true
+ },
+ "q12-rejection-region-g2": {
+  "hash": "b67842c3dda3a50c",
   "ok": true
  },
  "q12-significance-level-g1": {

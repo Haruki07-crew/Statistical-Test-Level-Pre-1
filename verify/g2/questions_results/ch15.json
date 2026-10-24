@@ -19,6 +19,10 @@
   "hash": "1b4eebdd01123336",
   "ok": true
  },
+ "q15-main-effect-and-interaction-g2": {
+  "hash": "8d514c7dbe31c845",
+  "ok": true
+ },
  "q15-one-way-anova-g1": {
   "hash": "eb382d7fd594ff5d",
   "ok": true
@@ -29,6 +33,10 @@
  },
  "q15-randomized-block-design-g1": {
   "hash": "a75827e70f9d48be",
+  "ok": true
+ },
+ "q15-randomized-block-design-g2": {
+  "hash": "391ea907a295bc4e",
   "ok": true
  },
  "q15-sum-of-squares-decomposition-g1": {

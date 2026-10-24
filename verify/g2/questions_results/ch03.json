@@ -3,6 +3,10 @@
   "hash": "b928e1d55843c253",
   "ok": true
  },
+ "q03-correlation-matrix-g2": {
+  "hash": "2ef51ee5c80ed125",
+  "ok": true
+ },
  "q03-covariance-and-correlation-g1": {
   "hash": "883efc5d0df0897c",
   "ok": true
@@ -27,6 +31,10 @@
   "hash": "04a148da4b1c3799",
   "ok": true
  },
+ "q03-partial-correlation-coefficient-g2": {
+  "hash": "603eaf1870c3a62b",
+  "ok": true
+ },
  "q03-scatter-plot-1": {
   "hash": "f308e7afa14ef2c9",
   "ok": true
@@ -41,6 +49,10 @@
  },
  "q03-simpsons-paradox-g1": {
   "hash": "7330a261ea97b67b",
+  "ok": true
+ },
+ "q03-simpsons-paradox-g2": {
+  "hash": "5ce80bc8b265e2bd",
   "ok": true
  },
  "q03-spurious-correlation-g1": {

@@ -3,8 +3,16 @@
   "hash": "22cff06df46f25fe",
   "ok": true
  },
+ "q05-autocovariance-autocorrelation-g2": {
+  "hash": "d015a360e359446e",
+  "ok": true
+ },
  "q05-correlogram-g1": {
   "hash": "f9e988a35f01a447",
+  "ok": true
+ },
+ "q05-correlogram-g2": {
+  "hash": "5cca7c46f67c0b83",
   "ok": true
  },
  "q05-growth-rate-1": {

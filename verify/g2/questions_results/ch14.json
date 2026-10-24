@@ -15,8 +15,16 @@
   "hash": "18a76c2060885191",
   "ok": true
  },
+ "q14-dummy-variable-g2": {
+  "hash": "272af7f503522f85",
+  "ok": true
+ },
  "q14-multicollinearity-g1": {
   "hash": "11199d310619f033",
+  "ok": true
+ },
+ "q14-multicollinearity-g2": {
+  "hash": "c97b342d544b2750",
   "ok": true
  },
  "q14-multiple-regression-model-g1": {
@@ -33,6 +41,10 @@
  },
  "q14-overall-f-test-regression-g1": {
   "hash": "20b749f3f18f8aa5",
+  "ok": true
+ },
+ "q14-overall-f-test-regression-g2": {
+  "hash": "d3ec73f141c94177",
   "ok": true
  },
  "q14-regression-coefficient-t-test-g1": {

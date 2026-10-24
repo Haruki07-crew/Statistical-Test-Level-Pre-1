@@ -3,6 +3,10 @@
   "hash": "8b798998f7f32eac",
   "ok": true
  },
+ "q06-cluster-sampling-g2": {
+  "hash": "0d3a72b7fe103d0b",
+  "ok": true
+ },
  "q06-fisher-three-principles-g1": {
   "hash": "05307c382fe8e58f",
   "ok": true
@@ -59,12 +63,24 @@
   "hash": "915deb16f2a7eb10",
   "ok": true
  },
+ "q06-stratified-sampling-g2": {
+  "hash": "3c8f14211098488f",
+  "ok": true
+ },
  "q06-systematic-sampling-g1": {
   "hash": "680aae58afcfe320",
   "ok": true
  },
+ "q06-systematic-sampling-g2": {
+  "hash": "bc58f212afb53a6f",
+  "ok": true
+ },
  "q06-two-stage-sampling-g1": {
   "hash": "3740eb69de76daad",
+  "ok": true
+ },
+ "q06-two-stage-sampling-g2": {
+  "hash": "e59bd96a793adf26",
   "ok": true
  }
 }

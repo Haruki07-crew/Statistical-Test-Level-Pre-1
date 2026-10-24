@@ -351,3 +351,74 @@ questions:
     explanation: |
       $\sqrt{150/199}\approx 0.868$ です。母集団の 4 分の 1 を調べるので、標準誤差は修正しない場合より約 13% 小さくなります。
 
+  - id: q11-confidence-coefficient-g2
+    term: confidence-coefficient
+    level: 標準
+    type: numeric
+    question: |
+      母分散が既知の正規母集団で、標本の大きさを変えずに信頼係数を 95% から 99% に上げる。母平均の信頼区間の幅は何倍になるか。小数第 2 位まで求めよ（係数は 1.96 と 2.576 を使う）。
+    answer: 1.31
+    tolerance: 0.005
+    hint: |
+      幅は係数に比例する。
+    explanation: |
+      $2.576/1.96\approx 1.31$ 倍です。信頼係数を上げると、母平均を含む確率は上がりますが、区間は広くなって情報としては粗くなります。幅を変えずに信頼係数を上げるには、標本を大きくする必要があります（同じ幅なら $1.31^2\approx 1.73$ 倍）。
+  - id: q11-ci-two-sample-mean-difference-g2
+    term: ci-two-sample-mean-difference
+    level: 応用
+    type: numeric
+    question: |
+      2 つの正規母集団の母分散は等しいと仮定する。大きさ 8 の標本の平均は 25、大きさ 10 の標本の平均は 21、プールした分散は 9 だった。母平均の差の 95% 信頼区間の下限を小数第 2 位まで求めよ。ただし $t_{0.025}(16)=2.120$ とする。
+    answer: 0.98
+    tolerance: 0.005
+    hint: |
+      標準誤差は $\sqrt{9\left(\dfrac18+\dfrac1{10}\right)}$、自由度は $8+10-2=16$。
+    explanation: |
+      標準誤差は $3\sqrt{0.225}\approx 1.423$、幅の半分は $2.120\times 1.423\approx 3.02$ なので、下限は $4-3.02=0.98$ です。区間が 0 を含まないので、有意水準 5% の両側検定でも母平均に差があると判断できます。
+  - id: q11-ci-two-sample-proportion-g2
+    term: ci-two-sample-proportion
+    level: 標準
+    type: numeric
+    question: |
+      A 群 300 人のうち 30%、B 群 200 人のうち 20% がある商品を知っていた。母比率の差（A − B）の 95% 信頼区間の下限を、正規近似で小数第 3 位まで求めよ。
+    answer: 0.024
+    tolerance: 0.0005
+    hint: |
+      標準誤差は $\sqrt{\dfrac{0.3\times 0.7}{300}+\dfrac{0.2\times 0.8}{200}}$。
+    explanation: |
+      標準誤差は $\sqrt{0.0007+0.0008}=\sqrt{0.0015}\approx 0.0387$、幅の半分は $1.96\times 0.0387\approx 0.076$ なので、下限は $0.10-0.076=0.024$ です。区間は 0 を含まず、A 群のほうが知っている割合が高いといえます。
+  - id: q11-ci-variance-g2
+    term: ci-variance
+    level: 応用
+    type: numeric
+    question: |
+      正規母集団から大きさ 16 の標本をとったところ、不偏分散は 25 だった。母標準偏差の 95% 信頼区間の上限を小数第 2 位まで求めよ。ただし $\chi^2_{0.025}(15)=27.49$、$\chi^2_{0.975}(15)=6.262$ とする。
+    answer: 7.74
+    tolerance: 0.005
+    hint: |
+      まず母分散の区間を作り、両端の平方根をとる。上限には小さいほうの点 6.262 を使う。
+    explanation: |
+      母分散の上限は $15\times 25/6.262\approx 59.9$ なので、母標準偏差の上限は $\sqrt{59.9}\approx 7.74$ です。下限は $\sqrt{375/27.49}\approx 3.69$ で、区間 $(3.69,\ 7.74)$ は標本の標準偏差 5 について左右対称ではありません。
+  - id: q11-consistent-estimator-g2
+    term: consistent-estimator
+    level: 標準
+    type: truefalse
+    question: |
+      「標本分散 $\dfrac1n\sum(X_i-\bar X)^2$ は母分散の不偏推定量ではないので、一致推定量でもない。」この記述は正しいか。
+    answer: false
+    hint: |
+      期待値は $\dfrac{n-1}{n}\sigma^2$。$n$ を大きくするとどうなるか。
+    explanation: |
+      誤りです。標本分散の期待値は $\dfrac{n-1}{n}\sigma^2$ で少し小さいので不偏ではありませんが、$n$ が大きくなるとこの偏りは 0 に近づき、ばらつきも小さくなるので、母分散に近づきます（一致推定量）。不偏性と一致性は別の性質です。
+  - id: q11-required-sample-size-g2
+    term: required-sample-size
+    level: 標準
+    type: numeric
+    question: |
+      ある政策の支持率を調べる。支持率の見当がまったくつかないとき、95% 信頼区間の幅の半分を 0.03 以下にするのに必要な標本の大きさの最小値を求めよ（係数は 1.96 を使う）。
+    answer: 1068
+    tolerance: 0.4
+    hint: |
+      見当がつかないときは、$p(1-p)$ が最大になる $p=0.5$ を使う。
+    explanation: |
+      $n\ge\left(\dfrac{1.96}{0.03}\right)^2\times 0.25\approx 1067.1$ なので、最小は 1068 人です。切り捨てて 1067 にすると、幅の半分がわずかに 0.03 を超えます。

@@ -44,6 +44,8 @@ q.num("q07-law-of-total-probability-g1", .4 * .1 + .5 * .04 + .1 * .02)
 A_, B_ = {2, 4, 6}, {1, 2, 3, 4}
 q.check("q07-independence-of-events-g1", abs(len(A_ & B_) / 6 - (len(A_) / 6) * (len(B_) / 6)) < 1e-12 and abs(len(A_ & {4, 5, 6}) / 6 - 1 / 4) > 0.05, "P(A∩B)=1/3=P(A)P(B)（answer=true）")
 q.num("q07-independence-of-events-g2", 0.3 + 0.5 - 0.3 * 0.5)
+q.num("q07-law-of-total-probability-g2", 1 / 3 * 3 / 5 + 2 / 3 * 1 / 5)
+bag = np.random.default_rng(71).random(600000); dice = np.random.default_rng(72).random(600000) < 1 / 3; q.check("q07-law-of-total-probability-g2", abs(np.where(dice, bag < 0.6, bag < 0.2).mean() - 1 / 3) < 0.003, "シミュレーション")
 run(q)
 
 q = Q(10)
@@ -100,6 +102,10 @@ bb = stats.binom(40, .3); nn = stats.norm(12, sqrt(40 * .3 * .7))
 q.check("q10-continuity-correction-g1", chosen(q, "q10-continuity-correction-g1") == "11.5 以上" and abs(nn.sf(11.5) - bb.sf(11)) < abs(nn.sf(12.5) - bb.sf(11)) and abs(nn.sf(11.5) - bb.sf(11)) < abs(nn.sf(12) - bb.sf(11)), f"B(40,0.3) の P(X≥12)={bb.sf(11):.4f}：11.5 以上 {nn.sf(11.5):.4f}・12 以上 {nn.sf(12):.4f}・12.5 以上 {nn.sf(12.5):.4f}")
 q.num("q10-chebyshev-inequality-g1", 1 - 1 / 2.5 ** 2)
 q.check("q10-chebyshev-inequality-g1", abs(1 - 2 * stats.norm.sf(2.5) - 0.988) < 5e-4 and np.mean(np.abs(rng.exponential(4, 1_000_000) - 4) < 10) >= 0.84, "正規分布なら 0.988・指数分布（平均 4・SD 4）でも下限 0.84 を満たす")
+q.num("q10-continuity-correction-g2", 0.0287)
+q.check("q10-continuity-correction-g2", abs(stats.norm.sf(1.9) - 0.0287) < 5e-5 and abs(stats.norm.sf(2.0) - 0.0228) < 5e-5 and abs(stats.binom(100, .5).sf(59) - 0.0287) < 0.0005 and (59.5 - 50) / 5 == 1.9, f"正確な値 {stats.binom(100, .5).sf(59):.4f}")
+q.num("q10-chebyshev-inequality-g2", 5 * sqrt(1 / 0.04))
+q.check("q10-chebyshev-inequality-g2", abs(stats.norm.isf(.02) * 5 - 10.3) < 0.05, "正規分布なら ±10.3")
 run(q)
 
 q = Q(14)
@@ -134,6 +140,17 @@ q.check("q14-confidence-and-prediction-interval-regression-g1", hw(5, 1) > hw(5,
 xa = rng.normal(0, 1, 5000); xb = 0.8 * xa + 0.6 * rng.normal(0, 1, 5000); yy = 2 + 1.2 * xa + 2.25 * xb + rng.normal(0, 1, 5000)
 cfm = np.linalg.lstsq(np.c_[np.ones(5000), xa, xb], yy, rcond=None)[0]; cfs = np.polyfit(xa, yy, 1)[0]
 q.check("q14-multiple-regression-model-g3", abs(cfm[1] - 1.2) < 0.05 and abs(cfs - 3.0) < 0.1 and abs(cfs - (cfm[1] + cfm[2] * np.polyfit(xa, xb, 1)[0])) < 1e-9 and chosen(q, "q14-multiple-regression-model-g3").startswith("広告費の多い店ほど面積も広い"), f"相関のある 2 変数のデータで 重回帰 {cfm[1]:.2f}・単回帰 {cfs:.2f}（単回帰 = b1 + b2 × d が成り立つ）")
+q.concept("q14-overall-f-test-regression-g2", "帰無仮説はすべての偏回帰係数が 0")
+def mc14(seed, noise):
+    rg = np.random.default_rng(seed); x1 = rg.normal(0, 1, 40); x2 = x1 + rg.normal(0, noise, 40); y = 2 + x1 + x2 + rg.normal(0, 1, 40)
+    X = np.c_[np.ones(40), x1, x2]; b = np.linalg.lstsq(X, y, rcond=None)[0]; r = y - X @ b; se = np.sqrt(r @ r / 37 * np.diag(np.linalg.inv(X.T @ X)))
+    R2 = 1 - r @ r / ((y - y.mean()) ** 2).sum(); F = (R2 / 2) / ((1 - R2) / 37)
+    return stats.f.sf(F, 2, 37) < 1e-3 and max(abs(b[1:] / se[1:])) < stats.t.isf(.025, 37)
+
+
+mcr = np.mean([mc14(1400 + k, 0.02) for k in range(500)]); mcr0 = np.mean([mc14(1400 + k, 1.0) for k in range(500)])
+q.check("q14-multicollinearity-g2", mcr > 0.7 and mcr0 < 0.05 and chosen(q, "q14-multicollinearity-g2").startswith("説明変数どうしの相関"), f"相関の強い説明変数で「F は有意・t はどちらも有意でない」になる割合 {mcr:.2f}（相関の弱いとき {mcr0:.2f}）")
+q.num("q14-dummy-variable-g2", 5 - (-3))
 run(q)
 
 q = Q(15)
@@ -159,5 +176,8 @@ q.check("q15-randomized-block-design-g1", 23 - 3 - 5 == 15 and 24 - 4 == 20, "�
 q.num("q15-main-effect-and-interaction-g1", (35 - 22) - (25 - 20))
 q.num("q15-two-way-anova-with-replication-g1", 3 * 4 * (2 - 1))
 q.check("q15-two-way-anova-with-replication-g1", 23 - 2 - 3 - 6 == 12, "23 − 2 − 3 − 6")
+q.concept("q15-randomized-block-design-g2", "ブロックの違いを誤差から除く。繰り返しがないので交互作用は誤差と区別できない")
+q.num("q15-main-effect-and-interaction-g2", (14 + 12) / 2 - (10 + 16) / 2)
+q.check("q15-main-effect-and-interaction-g2", 14 - 10 == 4 and 12 - 16 == -4, "A1 で +4、A2 で −4")
 run(q)
 raise SystemExit(1 if ng else 0)
