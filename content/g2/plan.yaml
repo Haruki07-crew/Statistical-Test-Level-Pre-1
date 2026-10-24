@@ -533,7 +533,6 @@ chapters:
     title: 2標本t検定
     importance: A
     status: verified
-    from: pre1
   - id: pooled-variance
     title: プールした分散
     importance: B
@@ -543,12 +542,10 @@ chapters:
     title: ウェルチの検定
     importance: A
     status: verified
-    from: pre1
   - id: paired-t-test
     title: 対応のあるt検定
     importance: A
     status: verified
-    from: pre1
   - id: f-test-equal-variances
     title: 等分散のF検定
     importance: B
@@ -563,7 +560,6 @@ chapters:
     title: 適合度検定
     importance: A
     status: verified
-    from: pre1
   - id: pearson-chi-square-statistic
     title: ピアソンのカイ二乗統計量
     importance: B
@@ -578,7 +574,6 @@ chapters:
     title: 独立性の検定
     importance: A
     status: verified
-    from: pre1
   - id: test-correlation-coefficient
     title: 母相関係数の検定
     importance: C

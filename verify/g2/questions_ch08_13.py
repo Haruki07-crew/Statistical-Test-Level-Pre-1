@@ -132,5 +132,20 @@ q.check("q13-paired-t-test-g1", chosen(q, "q13-paired-t-test-g1").startswith("�
 q.num("q13-independence-test-g1", 60 * 50 / 200)
 q.num("q13-goodness-of-fit-test-g1", stats.chisquare([25, 15, 20, 20, 18, 22]).statistic)
 q.check("q13-welch-test-g1", True, "ウェルチの検定は等分散を仮定しない（answer=false）")
+q.num("q13-two-sample-t-test-g2", 10 + 12 - 2)
+tt20 = stats.ttest_ind(rng.normal(0, 1, (40000, 10)), rng.normal(0, 1, (40000, 12)), axis=1).statistic
+q.check("q13-two-sample-t-test-g2", abs(np.mean(np.abs(tt20) > stats.t.isf(.025, 20)) - 0.05) < 0.004, f"10 個と 12 個のプールした t が t0.025(20) を超える割合 {np.mean(np.abs(tt20) > stats.t.isf(.025, 20)):.4f}")
+rw = stats.ttest_ind_from_stats(85, 12, 10, 78, 6, 15, equal_var=False)
+q.num("q13-welch-test-g2", 7 / sqrt(144 / 10 + 36 / 15))
+q.check("q13-welch-test-g2", abs(rw.statistic - 1.708) < 5e-4 and abs(stats.ttest_ind_from_stats(85, 12, 10, 78, 6, 15).statistic - 1.94) < 0.005, f"scipy {rw.statistic:.4f}・プールすると {stats.ttest_ind_from_stats(85, 12, 10, 78, 6, 15).statistic:.3f}")
+dd = np.array([2, -1, 3, 4, 0, 2, 5, 1.])
+q.num("q13-paired-t-test-g2", stats.ttest_1samp(dd, 0).statistic)
+q.check("q13-paired-t-test-g2", abs(stats.t.isf(.025, 7) - 2.365) < 5e-4 and stats.ttest_1samp(dd, 0).statistic > 2.365, "自由度 7 の 2.5% 点 2.365 を超える")
+lam = 2.0; cnt_ = rng.poisson(lam, (3000, 200)); fitp = []
+for c_ in cnt_:
+    m_ = c_.mean(); o_ = np.array([np.sum(c_ == k) for k in range(5)] + [np.sum(c_ >= 5)]); e_ = 200 * np.r_[stats.poisson(m_).pmf(range(5)), stats.poisson(m_).sf(4)]
+    fitp.append(((o_ - e_) ** 2 / e_).sum() > stats.chi2.isf(.05, 4))
+q.check("q13-goodness-of-fit-test-g2", abs(np.mean(fitp) - 0.05) < 0.015 and chosen(q, "q13-goodness-of-fit-test-g2") == "4", f"平均を推定して自由度 4 で検定すると棄却の割合 {np.mean(fitp):.3f}")
+q.num("q13-independence-test-g2", stats.chi2_contingency([[40, 10], [30, 20]], correction=False).statistic)
 run(q)
 raise SystemExit(1 if ng else 0)

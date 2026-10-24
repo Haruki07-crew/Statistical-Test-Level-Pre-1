@@ -190,6 +190,28 @@ check(T, "例1 180/500=0.36・SE≈0.0215・±0.042 → (0.318, 0.402)", close(1
 check(T, "誤差の目安 1000 人 ±3.1・400 人 ±4.9", close(1.96 * sqrt(.25 / 1000), .031, 5e-4) and close(1.96 * sqrt(.25 / 400), .049, 5e-4), None)
 check(T, "例2 98²×0.25=2401・p=0.36 なら約 2213", close(98 ** 2 * .25, 2401, 1e-9) and int(np.ceil((1.96 / .02) ** 2 * .36 * .64)) == 2213, (1.96 / .02) ** 2 * .36 * .64)
 
+T = "two-sample-t-test"
+r2 = stats.ttest_ind_from_stats(72, 6, 10, 66, 7, 12)
+check(T, "sp²=(324+539)/20=43.15・SE≈2.813・t≈2.13・t0.025(20)=2.086・片側面積≈0.023・両側 p≈0.045", close((9 * 36 + 11 * 49) / 20, 43.15, 1e-9) and close(sqrt(43.15 * (1 / 10 + 1 / 12)), 2.813, 5e-4) and close(r2.statistic, 2.13, 0.005) and close(stats.t.isf(.025, 20), 2.086) and close(stats.t.sf(r2.statistic, 20), .023, 5e-4) and close(r2.pvalue, .045, 6e-4), (r2.statistic, r2.pvalue))
+check(T, "差の 95% 信頼区間 6±5.87 → (0.13, 11.87)", close(2.086 * sqrt(43.15 * (1 / 10 + 1 / 12)), 5.87, 0.005) and close(6 - 5.867, 0.13, 0.005) and close(6 + 5.867, 11.87, 0.005), None)
+T = "welch-test"
+rw = stats.ttest_ind_from_stats(85, 12, 10, 78, 6, 15, equal_var=False)
+nu = 16.8 ** 2 / (14.4 ** 2 / 9 + 2.4 ** 2 / 14)
+check(T, "SE=√16.8≈4.099・t≈1.71・自由度≈12.0・t0.025(12)=2.179・プールすると ≈1.94（自由度 23）", close(sqrt(16.8), 4.099, 5e-4) and close(rw.statistic, 1.71, 0.005) and close(nu, 12.0, 0.05) and close(stats.t.isf(.025, 12), 2.179) and close(stats.ttest_ind_from_stats(85, 12, 10, 78, 6, 15).statistic, 1.94, 0.005), (rw.statistic, nu))
+check("welch-test", "差の 95% 信頼区間 7±8.93 → (−1.93, 15.93)", close(2.179 * sqrt(16.8), 8.93, 0.005) and close(7 - 2.179 * sqrt(16.8), -1.93, 0.005) and close(7 + 2.179 * sqrt(16.8), 15.93, 0.005), None)
+T = "paired-t-test"
+dd = np.array([2, -1, 3, 4, 0, 2, 5, 1.])
+check(T, "差の平均 2・偏差平方和 28・不偏分散 4・t≈2.83・t0.025(7)=2.365・片側面積≈0.013・両側≈0.025", close(dd.mean(), 2, 1e-12) and close(((dd - 2) ** 2).sum(), 28, 1e-12) and close(dd.var(ddof=1), 4, 1e-12) and close(stats.ttest_1samp(dd, 0).statistic, 2.83, 0.005) and close(stats.t.isf(.025, 7), 2.365) and close(stats.t.sf(2.828, 7), .013, 5e-4) and close(stats.ttest_1samp(dd, 0).pvalue, .025, 5e-4), stats.ttest_1samp(dd, 0).pvalue)
+check(T, "前後の SD が 10 なら独立とみなした t は 2/√(100/8+100/8)=0.4", close(2 / sqrt(100 / 8 + 100 / 8), 0.4, 1e-12), None)
+T = "goodness-of-fit-test"
+gf = stats.chisquare([18, 22, 16, 20, 24, 14, 26])
+check(T, "期待度数 20・χ²=112/20=5.6・自由度 6 の 5% 点 12.59", close(gf.statistic, 5.6, 1e-9) and close(stats.chi2.isf(.05, 6), 12.59, 0.005) and sum([18, 22, 16, 20, 24, 14, 26]) == 140, gf.statistic)
+T = "independence-test"
+ri = stats.chi2_contingency([[30, 20], [25, 25], [15, 35]], correction=False)
+check(T, "期待度数 23.33・26.67・χ²=9.375・自由度 2・5.991 と 9.210 を超える・割合 60/50/30%", np.allclose(ri.expected_freq, [[70 / 3, 80 / 3]] * 3) and close(ri.statistic, 9.375, 1e-9) and ri.dof == 2 and close(stats.chi2.isf(.05, 2), 5.991) and close(stats.chi2.isf(.01, 2), 9.210) and ri.statistic > 9.210, ri.statistic)
+z2 = (40 / 50 - 30 / 50) / sqrt(.7 * .3 * (1 / 50 + 1 / 50))
+check(T, "2×2 表の χ² は比率の差の z の 2 乗", close(stats.chi2_contingency([[40, 10], [30, 20]], correction=False).statistic, z2 ** 2, 1e-9), z2 ** 2)
+
 ng = results.count(False)
 print(f"書き直した共通の用語の検算: OK {len(results) - ng} / NG {ng}")
 sys.exit(1 if ng else 0)
