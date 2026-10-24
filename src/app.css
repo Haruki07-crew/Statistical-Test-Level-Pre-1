@@ -77,6 +77,13 @@
   color-scheme: dark;
 }
 
+/* 2級のページ（data-level="g2"）は見出しなどの色だけを青系にして、準1級と見分けやすくする */
+:root[data-level="g2"] { --accent: #2c5a94; --accent-soft: #dde6f2; --imp-b: #2c5a94; }
+@media (prefers-color-scheme: dark) {
+  :root[data-level="g2"]:not([data-theme="light"]) { --accent: #8db4e8; --accent-soft: #1f2a3a; --imp-b: #8db4e8; }
+}
+:root[data-level="g2"][data-theme="dark"] { --accent: #8db4e8; --accent-soft: #1f2a3a; --imp-b: #8db4e8; }
+
 /* ===== 基本 ===== */
 html { font-size: 16px; }
 html[data-font="s"] { font-size: 14.5px; }
@@ -546,6 +553,7 @@ textarea.note:focus { outline: none; border-color: var(--accent); box-shadow: 0 
 .home { max-width: 52rem; }
 .home-hero { padding: 6px 0 4px; }
 .home-kicker { margin: 0; font-size: .8rem; font-weight: 700; letter-spacing: .08em; color: var(--accent); }
+.lvl-link { margin-left: .8em; font-weight: 400; letter-spacing: 0; white-space: nowrap; }
 .home-hero h1 { margin: 2px 0 6px; font-size: 1.7rem; line-height: 1.3; text-wrap: balance; }
 .home-lead { margin: 0; color: var(--muted); font-size: .95rem; }
 .home-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 16px 0 4px; }

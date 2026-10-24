@@ -7,7 +7,9 @@
   var CHAPTERS = DATA.chapters;
   var QS = DATA.questions || [];
   var FORMULAS = DATA.formulas || '';
-  var PARTS = [
+  // 級ごとの設定（build.py が DATA.site に入れる。準1級は省略された項目に下の既定値を使う）
+  var SITE = DATA.site || {}, NAME = SITE.name || '準1級 用語辞典', EXN = (SITE.exam && SITE.exam.n) || 25;
+  var PARTS = SITE.parts || [
     ['確率と分布', 1, 6], ['漸近理論と推測', 7, 13], ['確率過程', 14, 15], ['回帰分析', 16, 19],
     ['実験計画と標本調査', 20, 21], ['多変量解析', 22, 26], ['時系列・分割表・不完全データ', 27, 29],
     ['モデル選択・ベイズ・シミュレーション', 30, 32], ['統計的因果推論', 33, 33]
@@ -21,11 +23,13 @@
   var listEl = $('list'), detailEl = $('detail'), qEl = $('q');
 
   // ---------- 小さな保存（タブ・開閉など。使えなくても動くように） ----------
-  function load(key, def) { try { var v = localStorage.getItem(key); return v == null ? def : JSON.parse(v); } catch (e) { return def; } }
-  function save(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) { /* 保存できなくても続ける */ } }
+  // 記録のキーは級ごとに分ける（準1級 jd-、2級 jd2-）。テーマ（jd-theme）だけは共通
+  function K(key) { return key === 'jd-theme' || !SITE.kp ? key : SITE.kp + key.slice(3); }
+  function load(key, def) { try { var v = localStorage.getItem(K(key)); return v == null ? def : JSON.parse(v); } catch (e) { return def; } }
+  function save(key, val) { try { localStorage.setItem(K(key), JSON.stringify(val)); } catch (e) { /* 保存できなくても続ける */ } }
 
   // ---------- 学習データ（版番号つき。壊れていても落ちない） ----------
-  var DB_KEY = 'jd-data', DB_VERSION = 1;
+  var DB_KEY = K('jd-data'), DB_VERSION = 1;
   function isObj(x) { return x && typeof x === 'object' && !Array.isArray(x); }
   function num(x, def) { return typeof x === 'number' && isFinite(x) ? x : def; }
   function emptyDB() { return { v: DB_VERSION, memo: {}, bm: {}, notes: {}, recent: [], ans: {}, days: {}, searches: [], font: 'm', exam: '', qbm: {}, mock: { hist: [], cur: null } }; }
@@ -535,7 +539,7 @@
 
   // ---------- ホーム ----------
   // 初学者向けの学習の順番（部をまたいで、土台から積み上げる順）
-  var ROADMAP = [
+  var ROADMAP = SITE.steps || [
     { t: '確率と分布の土台', chs: [1, 2, 3, 4, 5, 6],
       why: 'すべての分野の土台です。条件付き確率、期待値と分散の計算、モーメント母関数、主要な分布（二項・ポアソン・正規・カイ二乗・t・F）の性質を、手を動かして確実にします。',
       keys: ['conditional-probability', 'bayes-theorem', 'expectation-variance-properties', 'moment-generating-function', 'change-of-variables', 'binomial-distribution', 'poisson-distribution', 'normal-distribution', 'chi-squared-distribution', 't-distribution', 'f-distribution'] },
@@ -602,8 +606,8 @@
     var fresh = !DB.recent.length && !Object.keys(DB.ans).length && !Object.keys(DB.memo).length;
     var ex = examDays();
     var h = '<div class="article home">' +
-      '<header class="home-hero"><p class="home-kicker">統計検定準1級</p><h1>用語辞典と問題集</h1>' +
-      '<p class="home-lead">『統計学実践ワークブック』（増補版）の全33章に沿って、' + ORDER.length + ' 語の解説と ' + QS.length + ' 問の問題をまとめています。読む・解く・復習するを、毎日少しずつ。</p></header>';
+      '<header class="home-hero"><p class="home-kicker">' + esc(SITE.kicker || '統計検定準1級') + (SITE.other ? ' <a class="lvl-link" href="' + SITE.other.href + '">' + esc(SITE.other.label) + 'の辞典へ →</a>' : '') + '</p><h1>用語辞典と問題集</h1>' +
+      '<p class="home-lead">' + (SITE.lead ? esc(SITE.lead).replace('{terms}', ORDER.length).replace('{qs}', QS.length) : '『統計学実践ワークブック』（増補版）の全33章に沿って、' + ORDER.length + ' 語の解説と ' + QS.length + ' 問の問題をまとめています。読む・解く・復習するを、毎日少しずつ。') + '</p></header>';
     // 今日の状況
     h += '<div class="home-stats">' +
       '<a href="#review" class="hs"><b>' + due + '</b><span>今日の復習</span></a>' +
@@ -625,12 +629,12 @@
     // 模擬試験とロードマップ
     var lastEx = DB.mock.hist[DB.mock.hist.length - 1], rmn = rmNext(1)[0];
     h += '<section class="home-sec"><h2 class="home-h">本番に向けて</h2><div class="ex-modes">' +
-      '<a class="ex-mode" href="#exam"><b>模擬試験（25問・90分）</b><span>' + (DB.mock.cur ? '第' + DB.mock.cur.s + '回の途中です。続きから解けます。' : lastEx ? '前回：第' + lastEx.s + '回 ' + lastEx.sc + '点' + (lastEx.sc >= 60 ? '（合格ライン突破）' : '') : '本番と同じ形式で実力を測ります。公開中 ' + EXAMS.length + ' セット。') + '</span></a>' +
+      '<a class="ex-mode" href="#exam"><b>模擬試験（' + EXN + '問・90分）</b><span>' + (DB.mock.cur ? '第' + DB.mock.cur.s + '回の途中です。続きから解けます。' : lastEx ? '前回：第' + lastEx.s + '回 ' + lastEx.sc + '点' + (lastEx.sc >= 60 ? '（合格ライン突破）' : '') : '本番と同じ形式で実力を測ります。公開中 ' + EXAMS.length + ' セット。') + '</span></a>' +
       '<a class="ex-mode" href="#roadmap"><b>学習ロードマップ</b><span>' + (RMAP ? '出題されやすさで優先度を付けた4段階の学習順。' + (rmn ? '次は「' + esc(PLAN[rmn.id].title) + '」。' : '') : '準備中です。') + '</span></a>' +
       '</div></section>';
     // 学習の順番
     h += '<section class="home-sec"><h2 class="home-h">はじめての人へ：学習の順番</h2>' +
-      '<p class="screen-sub">章の番号順でなくても大丈夫です。土台から積み上げる順に、6つのステップに分けました。各ステップはまず<b>重要度A</b>の用語だけを一通り読み、問題を解いてから、2周目で B・C に進むのがおすすめです。</p><ol class="roadmap">';
+      '<p class="screen-sub">章の番号順でなくても大丈夫です。土台から積み上げる順に、' + ROADMAP.length + 'つのステップに分けました。各ステップはまず<b>重要度A</b>の用語だけを一通り読み、問題を解いてから、2周目で B・C に進むのがおすすめです。</p><ol class="roadmap">';
     ROADMAP.forEach(function (stp, i) {
       var ss = stepStats(stp), pct = ss.aTotal ? Math.round(100 * ss.aMemo / ss.aTotal) : 0;
       h += '<li class="step"><div class="step-head"><span class="step-n">' + (i + 1) + '</span><div><b>' + esc(stp.t) + '</b><small>' + chsLabel(stp.chs) + '・' + ss.total + '語</small></div></div>' +
@@ -743,6 +747,7 @@
       (meta.length ? '<p class="term-meta">' + meta.join('　・　') + '</p>' : '') +
       '<div class="term-actions"><button type="button" class="memo-toggle"></button><button type="button" class="memo-toggle bm-toggle"></button>' +
       (p.status === 'verified' ? '<span class="pending-tag" style="border-style:solid" title="数値をPythonで検算済み">検算済み</span>' : '') + '</div>';
+    if (t.shared) h += '<p class="see-note">この解説は準1級の辞典と共通です。準1級向けの発展的な内容（行列・漸近理論など）も含むので、2級では「一言でいうと」「定義・数式」「具体例」「試験のポイント」を中心に読み、難しい部分は読み飛ばしてかまいません。</p>';
     if (p.see && PLAN[p.see]) h += '<p class="see-note">この内容は「<button type="button" class="f-link" data-go="' + p.see + '">' + esc(PLAN[p.see].title) + '</button>」でまとめて解説しています。このページは補足です。</p>';
     var secs = [];
     t.html.replace(/data-sec="(\w+)"/g, function (_, k) { secs.push(k); return _; });
@@ -1353,7 +1358,7 @@
   // ---------- 模擬試験（本番形式 25問・90分。content/exam_sets → build.py → DATA.exams） ----------
   // 記録は DB.mock = { hist: [受験結果], cur: 解いている途中のセット }。
   // 本番モードの残り時間は「画面を開いている間だけ」減る（閉じても続きから再開できるように、残り時間を保存する）
-  var EXAMS = DATA.exams || [], EXBY = {}, EX_SETS = 30, PASS = 60;
+  var EXAMS = DATA.exams || [], EXBY = {}, EX_SETS = (SITE.exam && SITE.exam.sets) || 30, PASS = 60;
   EXAMS.forEach(function (e) { e.items.forEach(function (it, i) { it.n = i + 1; }); EXBY[e.no] = e; });
   // 途中経過を保存したあとで問題の版（選択肢の並びなど）が変わったら、選んだ番号がずれるので、その途中経過は使わない
   (function () {
@@ -1404,11 +1409,11 @@
   function renderExamList() {
     clearDetail();
     var cur = DB.mock.cur, h = '<div class="article screen"><h1 class="screen-h">模擬試験</h1>' +
-      '<p class="screen-sub">本番と同じ <b>25問・90分</b>（5肢選択と数値入力、各4点、<b>60点以上で合格</b>）。電卓（四則・平方根）とメモ用紙を用意して解きます。' +
+      '<p class="screen-sub">' + (SITE.exam && SITE.exam.desc ? SITE.exam.desc : '本番と同じ <b>25問・90分</b>（5肢選択と数値入力、各4点、<b>60点以上で合格</b>）。電卓（四則・平方根）とメモ用紙を用意して解きます。') +
       '公開しているのは、自動検査・別の方法での検算・見直しの3段階を通った問題だけです。</p>';
     if (cur && EXBY[cur.s]) {
       var nAns = Object.keys(cur.a).length;
-      h += '<div class="ex-resume"><div><b>第' + cur.s + '回（' + (cur.m === 'p' ? '練習' : '本番') + 'モード）の途中です</b><p>' + nAns + ' / 25 問に解答' +
+      h += '<div class="ex-resume"><div><b>第' + cur.s + '回（' + (cur.m === 'p' ? '練習' : '本番') + 'モード）の途中です</b><p>' + nAns + ' / ' + EXBY[cur.s].items.length + ' 問に解答' +
         (cur.m === 'r' ? '・残り ' + fmtMin(cur.left) : '') + '</p></div><a class="q-btn primary" href="#exam/' + cur.s + '/run">続きから解く</a></div>';
     }
     h += '<ol class="ex-sets">';
@@ -1825,12 +1830,12 @@
     if (ignoreNextRoute && h === 'quiz') { ignoreNextRoute = false; return; }
     if (!h || h === 'home') {
       setMode('home'); renderHome();
-      document.title = '準1級 用語辞典';
+      document.title = NAME;
       return;
     }
     if (h === 'cards') {
       setMode('quiz'); renderCards();
-      document.title = '用語カード｜準1級 用語辞典';
+      document.title = '用語カード｜' + NAME;
       return;
     }
     var em = /^exam(?:\/(\d+)(?:\/(run|result)(?:\/(\d+))?)?)?$/.exec(h);
@@ -1841,12 +1846,12 @@
       else if (em[2] === 'run') { if (DB.mock.cur && DB.mock.cur.s === no) renderExamRun(); else renderExamStart(no); }
       else if (em[2] === 'result') renderExamResult(no, em[3] ? Number(em[3]) : 0);
       else renderExamStart(no);
-      document.title = '模擬試験｜準1級 用語辞典';
+      document.title = '模擬試験｜' + NAME;
       return;
     }
     if (h === 'roadmap') {
       setMode('roadmap'); renderRoadmap();
-      document.title = 'ロードマップ｜準1級 用語辞典';
+      document.title = 'ロードマップ｜' + NAME;
       return;
     }
     if (h === 'quiz' || h === 'review' || h === 'stats') {
@@ -1854,7 +1859,7 @@
       if (h === 'stats') renderStats();
       else if (state.session && state.session.kind === h && state.session.i < state.session.list.length && state.session.res.length) renderSession();
       else h === 'quiz' ? renderQuizSetup() : renderReview();
-      document.title = { quiz: '問題演習', review: '今日の復習', stats: '学習記録' }[h] + '｜準1級 用語辞典';
+      document.title = { quiz: '問題演習', review: '今日の復習', stats: '学習記録' }[h] + '｜' + NAME;
       return;
     }
     if (setMode('dict') && !state.current) clearDetail();
@@ -1862,7 +1867,7 @@
     setMode('dict');
     if (h === 'formulas') {
       renderList(); renderFormulas(); showDetailView();
-      document.title = '公式まとめ｜準1級 用語辞典';
+      document.title = '公式まとめ｜' + NAME;
       return;
     }
     if (!h || h === 'all') {
@@ -1899,7 +1904,7 @@
       }
       showDetailView();
       scrollRowIntoView();
-      document.title = PLAN[h].title + '｜準1級 用語辞典';
+      document.title = PLAN[h].title + '｜' + NAME;
       return;
     }
     renderList(); renderWelcome(); showListView();
@@ -1998,7 +2003,7 @@
     window.addEventListener('load', function () {
       // sw.js 自体は HTTP キャッシュを使わずに確かめ、開くたびに新しい版がないか見る
       try {
-        navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then(function (reg) { try { reg.update(); } catch (e) { /* 無視 */ } }).catch(function () { /* 使えなくても続ける */ });
+        navigator.serviceWorker.register(SITE.level === 'g2' ? '../sw.js' : 'sw.js', { updateViaCache: 'none' }).then(function (reg) { try { reg.update(); } catch (e) { /* 無視 */ } }).catch(function () { /* 使えなくても続ける */ });
       } catch (e) { /* 無視 */ }
     });
   }

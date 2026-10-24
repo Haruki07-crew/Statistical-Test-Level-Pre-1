@@ -1,0 +1,695 @@
+# 2級の用語計画（出題範囲表の大項目に沿った15章）。from: pre1 は準1級の解説を共通で使う用語
+chapters:
+- 'no': 1
+  title: データの種類とグラフ
+  terms:
+  - id: data-types
+    title: 質的変数と量的変数
+    importance: A
+    status: planned
+  - id: scales-of-measurement
+    title: 尺度水準（名義・順序・間隔・比例）
+    importance: B
+    status: planned
+  - id: bar-pie-band-chart
+    title: 棒グラフ・円グラフ・帯グラフ
+    importance: B
+    status: planned
+  - id: frequency-distribution-histogram
+    title: 度数分布表とヒストグラム
+    importance: A
+    status: planned
+  - id: cumulative-frequency
+    title: 累積度数と累積相対度数
+    importance: A
+    status: planned
+  - id: stem-and-leaf-plot
+    title: 幹葉図
+    importance: B
+    status: planned
+  - id: distribution-shape
+    title: 分布の形（歪み・峰の数）
+    importance: A
+    status: planned
+  - id: official-statistics
+    title: 公的統計とデータの出所
+    importance: C
+    status: planned
+- 'no': 2
+  title: 1変数データの要約
+  terms:
+  - id: mean-median-mode
+    title: 平均値・中央値・最頻値
+    importance: A
+    status: planned
+  - id: sample-variance-sd
+    title: データの分散と標準偏差
+    importance: A
+    status: planned
+  - id: quartiles-iqr
+    title: 四分位数と四分位範囲
+    importance: A
+    status: planned
+  - id: box-plot
+    title: 箱ひげ図と外れ値
+    importance: A
+    status: planned
+  - id: standard-score
+    title: 標準化と標準得点（z得点・偏差値）
+    importance: A
+    status: planned
+  - id: coefficient-of-variation
+    title: 変動係数
+    importance: B
+    status: verified
+    from: pre1
+  - id: lorenz-curve-gini
+    title: ローレンツ曲線とジニ係数
+    importance: A
+    status: planned
+  - id: skewness-kurtosis
+    title: 歪度と尖度
+    importance: B
+    status: verified
+    from: pre1
+  - id: weighted-geometric-harmonic-mean
+    title: 加重平均・幾何平均・調和平均
+    importance: B
+    status: verified
+    from: pre1
+- 'no': 3
+  title: 2変数データの記述
+  terms:
+  - id: scatter-plot
+    title: 散布図
+    importance: A
+    status: planned
+  - id: covariance-and-correlation
+    title: 共分散と相関係数
+    importance: A
+    status: verified
+    from: pre1
+  - id: correlation-matrix
+    title: 相関係数行列
+    importance: B
+    status: verified
+    from: pre1
+  - id: stratified-scatter
+    title: 層別の散布図
+    importance: B
+    status: planned
+  - id: spurious-correlation
+    title: 擬似相関
+    importance: A
+    status: verified
+    from: pre1
+  - id: partial-correlation-coefficient
+    title: 偏相関係数
+    importance: B
+    status: verified
+    from: pre1
+  - id: cross-tabulation
+    title: 度数表と2元クロス表
+    importance: A
+    status: planned
+  - id: simpsons-paradox
+    title: シンプソンのパラドックス
+    importance: B
+    status: verified
+    from: pre1
+- 'no': 4
+  title: 単回帰と予測
+  terms:
+  - id: simple-regression
+    title: 単回帰と回帰直線
+    importance: A
+    status: planned
+  - id: least-squares-method
+    title: 最小二乗法
+    importance: A
+    status: verified
+    from: pre1
+  - id: coefficient-of-determination
+    title: 決定係数
+    importance: A
+    status: verified
+    from: pre1
+  - id: residual
+    title: 残差
+    importance: A
+    status: verified
+    from: pre1
+  - id: residual-plot
+    title: 残差プロット
+    importance: B
+    status: verified
+    from: pre1
+  - id: log-transformation
+    title: 対数変換
+    importance: B
+    status: verified
+    from: pre1
+- 'no': 5
+  title: 時系列データ
+  terms:
+  - id: time-series-components
+    title: 時系列の変動（トレンド・季節変動・不規則変動）
+    importance: A
+    status: planned
+  - id: growth-rate
+    title: 成長率と平均成長率
+    importance: A
+    status: planned
+  - id: index-number
+    title: 指数化と指数
+    importance: A
+    status: planned
+  - id: price-index
+    title: 物価指数（ラスパイレス・パーシェ）
+    importance: B
+    status: planned
+  - id: moving-average
+    title: 移動平均
+    importance: A
+    status: planned
+  - id: autocovariance-autocorrelation
+    title: 自己共分散・自己相関
+    importance: B
+    status: verified
+    from: pre1
+  - id: correlogram
+    title: コレログラム
+    importance: B
+    status: verified
+    from: pre1
+  - id: seasonal-adjustment
+    title: 季節調整
+    importance: C
+    status: verified
+    from: pre1
+- 'no': 6
+  title: データの集め方
+  terms:
+  - id: observational-vs-experimental
+    title: 観察研究と実験研究
+    importance: A
+    status: planned
+  - id: population-and-sample
+    title: 母集団と標本・全数調査と標本調査
+    importance: A
+    status: planned
+  - id: simple-random-sampling
+    title: 単純無作為抽出
+    importance: A
+    status: verified
+    from: pre1
+  - id: systematic-sampling
+    title: 系統抽出法
+    importance: B
+    status: verified
+    from: pre1
+  - id: stratified-sampling
+    title: 層化抽出法
+    importance: B
+    status: verified
+    from: pre1
+  - id: cluster-sampling
+    title: 集落抽出法
+    importance: B
+    status: verified
+    from: pre1
+  - id: two-stage-sampling
+    title: 二段抽出法
+    importance: B
+    status: verified
+    from: pre1
+  - id: sampling-and-nonsampling-error
+    title: 標本誤差と非標本誤差
+    importance: A
+    status: verified
+    from: pre1
+  - id: nonresponse-bias
+    title: 無回答バイアス
+    importance: C
+    status: verified
+    from: pre1
+  - id: fisher-three-principles
+    title: フィッシャーの3原則
+    importance: A
+    status: verified
+    from: pre1
+- 'no': 7
+  title: 確率
+  terms:
+  - id: counting
+    title: 順列と組合せ
+    importance: B
+    status: planned
+  - id: events-and-probability
+    title: 事象と確率（加法定理）
+    importance: A
+    status: planned
+  - id: conditional-probability
+    title: 条件付き確率と乗法定理
+    importance: A
+    status: verified
+    from: pre1
+  - id: independence-of-events
+    title: 事象の独立
+    importance: A
+    status: verified
+    from: pre1
+  - id: law-of-total-probability
+    title: 全確率の公式
+    importance: B
+    status: verified
+    from: pre1
+  - id: bayes-theorem
+    title: ベイズの定理
+    importance: A
+    status: verified
+    from: pre1
+- 'no': 8
+  title: 確率変数と期待値
+  terms:
+  - id: probability-mass-and-density-function
+    title: 確率関数と確率密度関数
+    importance: A
+    status: verified
+    from: pre1
+  - id: cumulative-distribution-function
+    title: 累積分布関数
+    importance: B
+    status: verified
+    from: pre1
+  - id: expectation-variance-properties
+    title: 期待値と分散の性質
+    importance: A
+    status: verified
+    from: pre1
+  - id: joint-probability-function
+    title: 同時確率関数
+    importance: B
+    status: verified
+    from: pre1
+  - id: marginal-distribution
+    title: 周辺分布
+    importance: C
+    status: verified
+    from: pre1
+  - id: sum-of-random-variables
+    title: 確率変数の和と再生性
+    importance: B
+    status: verified
+    from: pre1
+- 'no': 9
+  title: 確率分布
+  terms:
+  - id: bernoulli-distribution
+    title: ベルヌーイ試行・ベルヌーイ分布
+    importance: A
+    status: verified
+    from: pre1
+  - id: binomial-distribution
+    title: 二項分布
+    importance: A
+    status: verified
+    from: pre1
+  - id: poisson-distribution
+    title: ポアソン分布
+    importance: A
+    status: verified
+    from: pre1
+  - id: geometric-distribution
+    title: 幾何分布と無記憶性
+    importance: B
+    status: verified
+    from: pre1
+  - id: hypergeometric-distribution
+    title: 超幾何分布
+    importance: B
+    status: verified
+    from: pre1
+  - id: negative-binomial-distribution
+    title: 負の二項分布
+    importance: C
+    status: verified
+    from: pre1
+  - id: uniform-distribution
+    title: 一様分布
+    importance: B
+    status: verified
+    from: pre1
+  - id: exponential-distribution
+    title: 指数分布
+    importance: A
+    status: verified
+    from: pre1
+  - id: normal-distribution
+    title: 正規分布
+    importance: A
+    status: verified
+    from: pre1
+  - id: standard-normal-distribution
+    title: 標準正規分布
+    importance: A
+    status: verified
+    from: pre1
+  - id: bivariate-normal-distribution
+    title: 2変量正規分布
+    importance: C
+    status: verified
+    from: pre1
+- 'no': 10
+  title: 標本分布
+  terms:
+  - id: sampling-distribution-of-mean
+    title: 標本平均の分布
+    importance: A
+    status: planned
+  - id: chebyshev-inequality
+    title: チェビシェフの不等式
+    importance: B
+    status: verified
+    from: pre1
+  - id: weak-law-of-large-numbers
+    title: 大数の弱法則
+    importance: A
+    status: verified
+    from: pre1
+  - id: central-limit-theorem
+    title: 中心極限定理
+    importance: A
+    status: verified
+    from: pre1
+  - id: normal-approximation-binomial-poisson
+    title: 二項分布・ポアソン分布の正規近似
+    importance: A
+    status: verified
+    from: pre1
+  - id: continuity-correction
+    title: 連続修正
+    importance: B
+    status: verified
+    from: pre1
+  - id: chi-squared-distribution
+    title: カイ二乗分布
+    importance: A
+    status: verified
+    from: pre1
+  - id: t-distribution
+    title: t分布
+    importance: A
+    status: verified
+    from: pre1
+  - id: f-distribution
+    title: F分布
+    importance: A
+    status: verified
+    from: pre1
+  - id: statistical-tables
+    title: 分布表の読み方（上側確率点）
+    importance: A
+    status: planned
+- 'no': 11
+  title: 推定
+  terms:
+  - id: point-estimation
+    title: 点推定と推定量
+    importance: A
+    status: verified
+    from: pre1
+  - id: unbiased-estimator
+    title: 不偏推定量
+    importance: A
+    status: verified
+    from: pre1
+  - id: consistent-estimator
+    title: 一致推定量
+    importance: B
+    status: verified
+    from: pre1
+  - id: standard-error
+    title: 標準誤差
+    importance: A
+    status: verified
+    from: pre1
+  - id: confidence-interval
+    title: 信頼区間
+    importance: A
+    status: verified
+    from: pre1
+  - id: confidence-coefficient
+    title: 信頼係数
+    importance: B
+    status: verified
+    from: pre1
+  - id: ci-mean-known-variance
+    title: 母平均の区間推定（分散既知）
+    importance: A
+    status: verified
+    from: pre1
+  - id: ci-mean-unknown-variance
+    title: 母平均の区間推定（分散未知）
+    importance: A
+    status: verified
+    from: pre1
+  - id: ci-variance
+    title: 母分散の区間推定
+    importance: B
+    status: verified
+    from: pre1
+  - id: ci-proportion
+    title: 母比率の区間推定
+    importance: A
+    status: verified
+    from: pre1
+  - id: ci-two-sample-mean-difference
+    title: 2標本の母平均の差の区間推定
+    importance: B
+    status: verified
+    from: pre1
+  - id: ci-variance-ratio
+    title: 母分散比の区間推定
+    importance: C
+    status: verified
+    from: pre1
+  - id: ci-two-sample-proportion
+    title: 2標本の母比率の差の区間推定
+    importance: B
+    status: verified
+    from: pre1
+  - id: required-sample-size
+    title: 必要な標本サイズ
+    importance: B
+    status: verified
+    from: pre1
+  - id: fisher-z-transformation
+    title: フィッシャーのz変換
+    importance: C
+    status: verified
+    from: pre1
+  - id: finite-population-correction
+    title: 有限母集団修正
+    importance: C
+    status: verified
+    from: pre1
+- 'no': 12
+  title: 仮説検定の考え方と1標本の検定
+  terms:
+  - id: null-and-alternative-hypothesis
+    title: 帰無仮説と対立仮説
+    importance: A
+    status: verified
+    from: pre1
+  - id: significance-level
+    title: 有意水準
+    importance: A
+    status: verified
+    from: pre1
+  - id: p-value
+    title: p値
+    importance: A
+    status: verified
+    from: pre1
+  - id: rejection-region
+    title: 棄却域
+    importance: B
+    status: verified
+    from: pre1
+  - id: type-i-and-ii-errors
+    title: 第1種の過誤・第2種の過誤
+    importance: A
+    status: verified
+    from: pre1
+  - id: power-function
+    title: 検出力・検出力関数
+    importance: B
+    status: verified
+    from: pre1
+  - id: one-sided-two-sided-test
+    title: 片側検定と両側検定
+    importance: A
+    status: verified
+    from: pre1
+  - id: z-test-known-variance
+    title: 母平均の検定（分散既知）
+    importance: A
+    status: verified
+    from: pre1
+  - id: one-sample-t-test
+    title: 1標本t検定
+    importance: A
+    status: verified
+    from: pre1
+  - id: chi-square-test-variance
+    title: 母分散のカイ二乗検定
+    importance: B
+    status: verified
+    from: pre1
+  - id: proportion-test
+    title: 母比率の検定
+    importance: A
+    status: verified
+    from: pre1
+  - id: confidence-interval-test-duality
+    title: 信頼区間と検定の対応
+    importance: B
+    status: verified
+    from: pre1
+- 'no': 13
+  title: 2標本の検定とカイ二乗検定
+  terms:
+  - id: two-sample-t-test
+    title: 2標本t検定
+    importance: A
+    status: verified
+    from: pre1
+  - id: pooled-variance
+    title: プールした分散
+    importance: B
+    status: verified
+    from: pre1
+  - id: welch-test
+    title: ウェルチの検定
+    importance: A
+    status: verified
+    from: pre1
+  - id: paired-t-test
+    title: 対応のあるt検定
+    importance: A
+    status: verified
+    from: pre1
+  - id: f-test-equal-variances
+    title: 等分散のF検定
+    importance: B
+    status: verified
+    from: pre1
+  - id: two-sample-proportion-test
+    title: 2標本の比率の差の検定
+    importance: B
+    status: verified
+    from: pre1
+  - id: goodness-of-fit-test
+    title: 適合度検定
+    importance: A
+    status: verified
+    from: pre1
+  - id: pearson-chi-square-statistic
+    title: ピアソンのカイ二乗統計量
+    importance: B
+    status: verified
+    from: pre1
+  - id: expected-frequency
+    title: 期待度数
+    importance: B
+    status: verified
+    from: pre1
+  - id: independence-test
+    title: 独立性の検定
+    importance: A
+    status: verified
+    from: pre1
+  - id: test-correlation-coefficient
+    title: 母相関係数の検定
+    importance: C
+    status: verified
+    from: pre1
+- 'no': 14
+  title: 回帰分析
+  terms:
+  - id: regression-output
+    title: 回帰分析の出力の読み方
+    importance: A
+    status: planned
+  - id: multiple-regression-model
+    title: 重回帰モデル
+    importance: A
+    status: verified
+    from: pre1
+  - id: regression-coefficient-t-test
+    title: 回帰係数のt検定
+    importance: A
+    status: verified
+    from: pre1
+  - id: adjusted-r-squared
+    title: 自由度調整済み決定係数
+    importance: A
+    status: verified
+    from: pre1
+  - id: overall-f-test-regression
+    title: 回帰全体のF検定
+    importance: B
+    status: verified
+    from: pre1
+  - id: multicollinearity
+    title: 多重共線性
+    importance: B
+    status: verified
+    from: pre1
+  - id: dummy-variable
+    title: ダミー変数
+    importance: B
+    status: verified
+    from: pre1
+  - id: confidence-and-prediction-interval-regression
+    title: 回帰の信頼区間と予測区間
+    importance: C
+    status: verified
+    from: pre1
+- 'no': 15
+  title: 実験計画と分散分析
+  terms:
+  - id: treatment-and-control
+    title: 処理群と対照群
+    importance: A
+    status: planned
+  - id: anova-table
+    title: 分散分析表の読み方
+    importance: A
+    status: planned
+  - id: one-way-anova
+    title: 一元配置分散分析
+    importance: A
+    status: verified
+    from: pre1
+  - id: sum-of-squares-decomposition
+    title: 平方和の分解
+    importance: A
+    status: verified
+    from: pre1
+  - id: randomized-block-design
+    title: 乱塊法
+    importance: B
+    status: verified
+    from: pre1
+  - id: main-effect-and-interaction
+    title: 主効果と交互作用
+    importance: B
+    status: verified
+    from: pre1
+  - id: two-way-anova-with-replication
+    title: 二元配置分散分析（繰り返しあり）
+    importance: C
+    status: verified
+    from: pre1

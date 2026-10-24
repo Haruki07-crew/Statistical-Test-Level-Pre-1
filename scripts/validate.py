@@ -17,7 +17,8 @@ from pathlib import Path
 import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
-CONTENT = ROOT / "content"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from level import CONTENT, PRE1_CONTENT  # noqa: E402  級ごとの置き場所（JD_LEVEL）
 
 HEADINGS = ["一言でいうと", "定義・数式", "数式の読み解き", "具体例", "現場での使われ方",
             "グラフ・イメージ", "試験のポイント", "よくある間違い"]
@@ -416,6 +417,14 @@ def main():
         existing = {p.stem for p in files}
         for tid, occ in plan_terms.items():
             st = occ[0][1].get("status")
+            if occ[0][1].get("from") == "pre1":  # 準1級の解説を共通で使う用語（2級）。ファイルは準1級の側で検査する
+                if not list(PRE1_CONTENT.glob(f"ch*/{tid}.md")):
+                    print(f"[ERROR] plan.yaml: {tid} は from: pre1 ですが準1級に解説がありません")
+                    total_err += 1
+                if tid in existing:
+                    print(f"[ERROR] plan.yaml: {tid} は from: pre1 ですが、この級にもファイルがあります（どちらかにする）")
+                    total_err += 1
+                continue
             if st in ("written", "verified") and tid not in existing:
                 print(f"[ERROR] plan.yaml: {tid} は {st} ですがファイルがありません")
                 total_err += 1
@@ -441,7 +450,7 @@ def main():
             total_err += 1
             print("[ERROR] check_math.py で数式の問題が見つかりました")
         # ロードマップ（content/roadmap.yaml）の検査：全用語を1回ずつ、前提が先、循環なし
-        if (ROOT / "content" / "roadmap.yaml").exists():
+        if (CONTENT / "roadmap.yaml").exists():
             r = subprocess.run([sys.executable, str(ROOT / "scripts" / "check_roadmap.py")], capture_output=True, text=True)
             if r.returncode:
                 print(r.stdout[-3000:])

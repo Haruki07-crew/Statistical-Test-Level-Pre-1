@@ -11,7 +11,9 @@ from pathlib import Path
 import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
-RESULTS = ROOT / "verify" / "questions_results"
+sys.path.insert(0, str(ROOT / "scripts"))
+from level import CONTENT, VERIFY  # noqa: E402  級ごとの置き場所（JD_LEVEL）
+RESULTS = VERIFY / "questions_results"
 
 
 def qhash(q):
@@ -24,7 +26,7 @@ def qhash(q):
 class Q:
     def __init__(self, chapter):
         self.chapter = chapter
-        path = ROOT / "content" / "questions" / f"ch{chapter:02d}.yaml"
+        path = CONTENT / "questions" / f"ch{chapter:02d}.yaml"
         data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
         self.qs = {q["id"]: q for q in data.get("questions") or []}
         self.res = {}  # id → [ok, ...]
@@ -60,7 +62,7 @@ class Q:
         for qid, q in self.qs.items():
             r = self.res.get(qid)
             out[qid] = {"ok": bool(r) and all(r), "hash": qhash(q)}
-        RESULTS.mkdir(exist_ok=True)
+        RESULTS.mkdir(parents=True, exist_ok=True)
         (RESULTS / f"ch{self.chapter:02d}.json").write_text(json.dumps(out, ensure_ascii=False, indent=1, sort_keys=True), encoding="utf-8")
         passed = sum(1 for v in out.values() if v["ok"])
         for i in unchecked:

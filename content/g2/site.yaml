@@ -1,0 +1,48 @@
+# 2級のページの設定（scripts/build.py が読み、DATA.site として app.js に渡す）
+level: g2
+name: 2級 用語辞典
+full: 統計検定2級 用語辞典
+short: 2級辞典
+desc: 統計検定2級の用語を公式の出題範囲表に沿って解説する辞典と問題集
+theme: "#2c5a94"
+asset: "../"
+kp: jd2-
+kicker: 統計検定2級
+lead: 公式の出題範囲表に沿った15章で、{terms} 語の解説と {qs} 問の問題をまとめています。読む・解く・復習するを、毎日少しずつ。
+other: { label: 準1級, href: "../" }
+parts:
+  - [データの記述, 1, 5]
+  - [データの集め方, 6, 6]
+  - [確率と確率分布, 7, 9]
+  - [標本分布と推定, 10, 11]
+  - [仮説検定, 12, 13]
+  - [回帰と分散分析, 14, 15]
+exam:
+  n: 35
+  sets: 10
+  desc: 本番と同じ <b>35問・90分</b>（すべて5肢選択、1問あたり約2.9点、<b>60点以上で合格</b>）。電卓（四則・%・平方根）とメモ用紙を用意して解きます。本番では統計数値表が配られるので、必要な分布表の値は問題文に示しています。
+steps:
+  - t: データを読む・まとめる
+    chs: [1, 2, 3]
+    why: グラフと度数分布、平均・中央値・分散、箱ひげ図、相関係数とクロス表です。2級の得点源で、計算も短いので最初に固めます。
+    keys: [data-types, frequency-distribution-histogram, mean-median-mode, sample-variance-sd, quartiles-iqr, box-plot, standard-score, scatter-plot, covariance-and-correlation, cross-tabulation]
+  - t: 回帰・時系列・データの集め方
+    chs: [4, 5, 6]
+    why: 回帰直線と決定係数、成長率と指数、移動平均、観察研究と実験研究、標本の取り方です。用語の意味を正確に押さえる問題が多い分野です。
+    keys: [simple-regression, coefficient-of-determination, growth-rate, index-number, moving-average, observational-vs-experimental, population-and-sample, simple-random-sampling, fisher-three-principles]
+  - t: 確率と確率分布
+    chs: [7, 8, 9]
+    why: 条件付き確率とベイズの定理、期待値と分散の計算、二項・ポアソン・正規分布です。推測の土台になります。
+    keys: [events-and-probability, conditional-probability, bayes-theorem, expectation-variance-properties, binomial-distribution, poisson-distribution, normal-distribution, standard-normal-distribution]
+  - t: 標本分布と推定
+    chs: [10, 11]
+    why: 標本平均の分布、中心極限定理、t・カイ二乗・F 分布と分布表の読み方、信頼区間です。ここから先の計算はすべてこの型の上に乗ります。
+    keys: [sampling-distribution-of-mean, central-limit-theorem, statistical-tables, t-distribution, chi-squared-distribution, standard-error, confidence-interval, ci-mean-unknown-variance, ci-proportion]
+  - t: 仮説検定
+    chs: [12, 13]
+    why: 検定の考え方（帰無仮説・p値・2種類の過誤）と、1標本・2標本の検定、カイ二乗検定です。どの場面でどの検定を使うかを整理します。
+    keys: [null-and-alternative-hypothesis, p-value, type-i-and-ii-errors, one-sample-t-test, proportion-test, two-sample-t-test, paired-t-test, goodness-of-fit-test, independence-test]
+  - t: 回帰分析と分散分析
+    chs: [14, 15]
+    why: ソフトウェアの出力（係数表・分散分析表）を読み取る問題が中心です。t値・p値・決定係数・F比の意味を押さえます。
+    keys: [regression-output, regression-coefficient-t-test, adjusted-r-squared, multicollinearity, treatment-and-control, anova-table, one-way-anova]

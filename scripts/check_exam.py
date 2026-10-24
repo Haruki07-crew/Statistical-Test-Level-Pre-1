@@ -13,7 +13,7 @@ import exam_lib as L  # noqa: E402
 
 
 def plan_ids():
-    plan = yaml.safe_load((L.ROOT / "content" / "plan.yaml").read_text(encoding="utf-8"))
+    plan = yaml.safe_load((L.CONTENT / "plan.yaml").read_text(encoding="utf-8"))
     return {t["id"] for ch in plan["chapters"] for t in ch.get("terms") or []}
 
 

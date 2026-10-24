@@ -1,8 +1,10 @@
-"""content/ から docs/index.html を生成する。
+"""content/ から docs/index.html（準1級）と docs/g2/index.html（2級）を生成する。
 
-使い方: .venv/bin/python scripts/build.py
-先に validate.py を実行し、エラーがあれば止める。
+使い方: .venv/bin/python scripts/build.py            # 両方の級
+        JD_LEVEL=g2 .venv/bin/python scripts/build.py # 2級だけ（service worker は更新しない）
+級ごとに先に validate.py を実行し、エラーがあれば止める。
 """
+import os
 import html
 import json
 import re
@@ -13,10 +15,11 @@ from pathlib import Path
 import markdown
 import yaml
 
-ROOT = Path(__file__).resolve().parent.parent
-CONTENT = ROOT / "content"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from level import CONTENT, LEVEL, OUT, PRE1_CONTENT, ROOT, VERIFY, paths  # noqa: E402  級ごとの置き場所（JD_LEVEL）
+
 SRC = ROOT / "src"
-OUT = ROOT / "docs" / "index.html"
+DOCS = ROOT / "docs"
 
 SECTION_KEYS = {
     "一言でいうと": "summary", "定義・数式": "definition", "数式の読み解き": "reading",
@@ -95,7 +98,7 @@ def load_questions(plan_ids):
     out, stat = [], {}
     for p in sorted((CONTENT / "questions").glob("ch*.yaml")):
         data = yaml.safe_load(p.read_text(encoding="utf-8")) or {}
-        res_path = ROOT / "verify" / "questions_results" / f"{p.stem}.json"
+        res_path = VERIFY / "questions_results" / f"{p.stem}.json"
         res = json.loads(res_path.read_text(encoding="utf-8")) if res_path.exists() else {}
         qs = data.get("questions") or []
         pub = 0
@@ -197,16 +200,25 @@ def render_formulas(titles=None):
 
 
 def write_pwa(index_bytes):
-    """ホーム画面に追加するための manifest・アイコン・service worker を docs/ に置く。"""
+    """ホーム画面に追加するための manifest・アイコン・service worker を docs/ に置く。
+    service worker は docs/ に1つで、両方の級のページを保存する（版は両方のページのハッシュ）。"""
     import hashlib
-    docs = OUT.parent
     pwa = SRC / "pwa"
     for f in pwa.iterdir():
         if f.name == "sw.js":
             ver = hashlib.sha256(index_bytes).hexdigest()[:12]
-            (docs / f.name).write_text(f.read_text(encoding="utf-8").replace("{{VERSION}}", ver), encoding="utf-8")
+            (DOCS / f.name).write_text(f.read_text(encoding="utf-8").replace("{{VERSION}}", ver), encoding="utf-8")
         elif f.is_file():
-            (docs / f.name).write_bytes(f.read_bytes())
+            (DOCS / f.name).write_bytes(f.read_bytes())
+
+
+def write_manifest(site):
+    """2級のページの manifest（アイコンは docs/ のものを使う）。"""
+    m = json.loads((SRC / "pwa" / "manifest.json").read_text(encoding="utf-8"))
+    m.update({"name": site["full"], "short_name": site["short"], "description": site["desc"], "theme_color": site["theme"]})
+    for ic in m["icons"]:
+        ic["src"] = "../" + ic["src"]
+    (OUT.parent / "manifest.json").write_text(json.dumps(m, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
 def plain_text(body):
@@ -219,6 +231,20 @@ def plain_text(body):
     return t.strip()
 
 
+SITE_PRE1 = {
+    "level": "pre1", "name": "準1級 用語辞典", "full": "統計検定準1級 用語辞典", "short": "準1級辞典",
+    "desc": "統計検定準1級の用語を『統計学実践ワークブック』の章立てに沿って解説する辞典", "theme": "#1d6b66",
+    "asset": "", "kp": "jd-", "other": {"label": "2級", "href": "g2/"},
+}
+
+
+def load_site():
+    """級ごとの表示の設定。準1級は既定値（画面の文言は app.js の既定のまま）、2級は content/g2/site.yaml。"""
+    if LEVEL == "pre1":
+        return dict(SITE_PRE1)
+    return yaml.safe_load((CONTENT / "site.yaml").read_text(encoding="utf-8"))
+
+
 def main():
     r = subprocess.run([sys.executable, str(ROOT / "scripts" / "validate.py")], capture_output=True, text=True)
     last = (r.stdout.strip().splitlines() or [""])[-1]
@@ -229,9 +255,22 @@ def main():
     print(f"validate: {last}")
 
     plan = yaml.safe_load((CONTENT / "plan.yaml").read_text(encoding="utf-8"))
+    site = load_site()
+    files = sorted(CONTENT.glob("ch*/*.md"))
+    # 2級：準1級の解説を共通で使う用語（plan の from: pre1）。章は2級の章に置き換え、関連用語は2級にあるものだけ残す
+    shared = {}
+    for ch in plan["chapters"]:
+        for t in ch.get("terms") or []:
+            if t.get("from") == "pre1":
+                shared[t["id"]] = (ch["no"], t["importance"])
+                files += sorted(PRE1_CONTENT.glob(f"ch*/{t['id']}.md"))[:1]
+    plan_all = {t["id"] for ch in plan["chapters"] for t in ch.get("terms") or []}
     terms = {}
-    for p in sorted(CONTENT.glob("ch*/*.md")):
+    for p in files:
         fm, body = split_front(p.read_text(encoding="utf-8"))
+        if fm["id"] in shared:
+            fm["chapter"], fm["importance"] = shared[fm["id"]]
+            fm["related"] = [r for r in fm.get("related") or [] if r in plan_all]
         terms[fm["id"]] = {
             "id": fm["id"], "title": fm["title"], "reading": fm.get("reading", ""), "en": fm.get("en", "") or "",
             "aliases": [str(a) for a in fm.get("aliases") or []], "chapter": fm["chapter"],
@@ -239,6 +278,8 @@ def main():
             "related": fm.get("related") or [], "charts": fm.get("charts") or [],
             "html": render_body(body),  # 検索用の本文テキストはファイルサイズ節約のため app.js で html から作る
         }
+        if fm["id"] in shared:
+            terms[fm["id"]]["shared"] = 1
     chapters = []
     for ch in plan["chapters"]:
         chapters.append({
@@ -251,18 +292,24 @@ def main():
     questions, qstat = load_questions(plan_ids)
     exams, estat = load_exams(plan_ids)
     data = {"chapters": chapters, "terms": terms, "questions": questions, "exams": exams, "roadmap": load_roadmap(plan_ids),
-            "formulas": render_formulas({t["title"]: t["id"] for ch in chapters for t in ch["terms"] if t["id"] in terms})}
+            "formulas": render_formulas({t["title"]: t["id"] for ch in chapters for t in ch["terms"] if t["id"] in terms}),
+            "site": {k: site[k] for k in ("level", "name", "kicker", "lead", "kp", "other", "parts", "steps", "exam") if site.get(k) is not None}}
     data_json = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
 
     tpl = (SRC / "template.html").read_text(encoding="utf-8")
     css = (SRC / "app.css").read_text(encoding="utf-8")
     js = "\n".join((SRC / f).read_text(encoding="utf-8") for f in ("dist.js", "charts.js", "charts_custom.js", "app.js"))
+    for k in ("name", "full", "short", "desc", "theme", "asset", "kp", "level"):
+        tpl = tpl.replace("{{" + k.upper() + "}}", html.escape(str(site[k])))
     out = tpl.replace("{{CSS}}", css).replace("{{DATA}}", data_json).replace("{{JS}}", js.replace("</script", "<\\/script"))
     OUT.parent.mkdir(exist_ok=True)
     OUT.write_text(out, encoding="utf-8")
-    (OUT.parent / ".nojekyll").touch()
-    write_pwa(out.encode("utf-8"))
+    if LEVEL == "pre1":
+        (OUT.parent / ".nojekyll").touch()
+    else:
+        write_manifest(site)
 
+    print(f"【{site['name']}】{OUT.relative_to(ROOT)}")
     print("章 | 予定 | 作成 | 検算済 | 章名")
     tot = [0, 0, 0]
     for ch in chapters:
@@ -281,5 +328,20 @@ def main():
     print(f"出力: {OUT.relative_to(ROOT)}  {size / 1024 / 1024:.2f} MB" + ("  （5MB超）" if size > 5 * 1024 * 1024 else ""))
 
 
-if __name__ == "__main__":
+def build_all():
+    """準1級を作り、2級は別のプロセスで作ってから、両方のページを保存する service worker を書く。"""
     main()
+    if not paths("g2")["content"].joinpath("plan.yaml").exists():
+        write_pwa(OUT.read_bytes())
+        return
+    r = subprocess.run([sys.executable, __file__], env=dict(os.environ, JD_LEVEL="g2"), text=True)
+    if r.returncode:
+        sys.exit(r.returncode)
+    write_pwa(OUT.read_bytes() + paths("g2")["out"].read_bytes())
+
+
+if __name__ == "__main__":
+    if os.environ.get("JD_LEVEL"):
+        main()
+    else:
+        build_all()

@@ -14,21 +14,37 @@ from pathlib import Path
 
 import yaml
 
-ROOT = Path(__file__).resolve().parent.parent
-SETS = ROOT / "content" / "exam_sets"
-GEN = ROOT / "generator"
-RESULTS = ROOT / "verify" / "exam_results"
-REVIEW = ROOT / "verify" / "exam_review"
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from level import CONTENT, GEN, LEVEL, ROOT, VERIFY  # noqa: E402  級ごとの置き場所（JD_LEVEL）
 
-N_ITEMS = 25
+SETS = CONTENT / "exam_sets"
+RESULTS = VERIFY / "exam_results"
+REVIEW = VERIFY / "exam_review"
+
 MINUTES = 90
-LEVELS = {"基本": 7, "標準": 13, "応用": 5}
-# 章のまとまりと、1セットあたりの問題数（spec/research/exam-blueprint.md）
-GROUPS = [
-    ("確率と分布", range(1, 7), 5), ("漸近理論と推定", range(7, 10), 3), ("検定", range(10, 14), 3),
-    ("確率過程", range(14, 16), 1), ("回帰分析", range(16, 20), 4), ("実験計画と標本調査", range(20, 22), 2),
-    ("多変量解析", range(22, 27), 3), ("時系列・分割表・欠測", range(27, 30), 2), ("モデル選択・ベイズ・シミュレーション・因果", range(30, 34), 2),
-]
+if LEVEL == "g2":
+    # 2級：35問・90分・選択式だけ（spec/research/g2/format.md、配分は spec/research/g2/exam-blueprint.md）
+    N_ITEMS = 35
+    LEVELS = {"基本": 14, "標準": 16, "応用": 5}
+    TYPES = ("choice",)
+    GROUPS = [
+        ("データの記述と時系列", range(1, 6), 9), ("データの集め方", range(6, 7), 2), ("確率と確率分布", range(7, 10), 6),
+        ("標本分布", range(10, 11), 3), ("推定", range(11, 12), 4), ("検定", range(12, 14), 6),
+        ("回帰分析", range(14, 15), 3), ("実験計画と分散分析", range(15, 16), 2),
+    ]
+    MAX_DEF = 3
+else:
+    N_ITEMS = 25
+    LEVELS = {"基本": 7, "標準": 13, "応用": 5}
+    TYPES = ("choice", "numeric")
+    # 章のまとまりと、1セットあたりの問題数（spec/research/exam-blueprint.md）
+    GROUPS = [
+        ("確率と分布", range(1, 7), 5), ("漸近理論と推定", range(7, 10), 3), ("検定", range(10, 14), 3),
+        ("確率過程", range(14, 16), 1), ("回帰分析", range(16, 20), 4), ("実験計画と標本調査", range(20, 22), 2),
+        ("多変量解析", range(22, 27), 3), ("時系列・分割表・欠測", range(27, 30), 2), ("モデル選択・ベイズ・シミュレーション・因果", range(30, 34), 2),
+    ]
+    MAX_DEF = 2
 PH = re.compile(r"«([A-Za-z_][A-Za-z0-9_]*)»")
 ITEM_TEXT = ("question", "explanation", "answer_format")
 EXP_HEADS = ("**方針**", "**途中式**", "**答え**", "**間違えやすい点**")
@@ -176,7 +192,7 @@ def check_set(data, missing, plan_ids):
                 err.append(f"{w}: distractors は選択肢と同じ数で、正解の位置に「正解」、誤答の位置にその誤りの理由を書く")
             elif any(not str(x).strip() for x in d):
                 err.append(f"{w}: distractors に空がある")
-        elif typ == "numeric":
+        elif typ == "numeric" and "numeric" in TYPES:
             if not num_like(it.get("answer")):
                 err.append(f"{w}: 数値入力の answer は数値（generator の値）: {it.get('answer')!r}")
             tol = it.get("tolerance")
@@ -188,14 +204,14 @@ def check_set(data, missing, plan_ids):
             if "±" not in str(it.get("question", "")) + fmt and "許容" not in fmt:
                 err.append(f"{w}: 許容範囲を問題文か answer_format に書く")
         else:
-            err.append(f"{w}: type は choice / numeric")
+            err.append(f"{w}: type は {' / '.join(TYPES)}")
     if lv != LEVELS and len(items) == N_ITEMS:
         err.append(f"{tag}: 難易度の割合が {LEVELS} と違う: {lv}")
     want = [g[2] for g in GROUPS]
     if grp != want and len(items) == N_ITEMS:
         err.append(f"{tag}: 章の配分が出題配分表と違う: " + ", ".join(f"{GROUPS[i][0]} {grp[i]}/{want[i]}" for i in range(len(GROUPS)) if grp[i] != want[i]))
-    if n_def > 2:
-        err.append(f"{tag}: 定義を問うだけの問題は2問まで（いま {n_def} 問）")
+    if n_def > MAX_DEF:
+        err.append(f"{tag}: 定義を問うだけの問題は{MAX_DEF}問まで（いま {n_def} 問）")
     return err, warn
 
 

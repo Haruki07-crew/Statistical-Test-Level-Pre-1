@@ -20,7 +20,8 @@ from pathlib import Path
 import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
-CONTENT = ROOT / "content"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from level import CONTENT  # noqa: E402  級ごとの置き場所（JD_LEVEL）
 sys.path.insert(0, str(ROOT / "scripts"))
 from build import render_body, split_front  # noqa: E402
 
