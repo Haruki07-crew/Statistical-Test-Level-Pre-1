@@ -174,8 +174,14 @@ for kk in range(4):
 w, v = np.linalg.eig(P.T)
 pi = np.real(v[:, np.argmin(abs(w - 1))])
 pi /= pi.sum()
-E.num("s15p08a", rnd(pi[3], 3), f"固有ベクトル π={np.round(pi, 4)}")
-E.check("s15p08a", np.allclose(np.linalg.matrix_power(P, 200)[0], pi), "P^200 の行が定常分布")
+Pa = P.copy(); Pa[3] = [0, 0, 0, 1]
+E.num("s15p08a", rnd(np.linalg.matrix_power(Pa, 3)[2, 3], 3), "満床を吸収状態にした推移行列の 3 乗")
+Xs8 = np.full(100_000, 2); hit = np.zeros(100_000, bool)
+for _ in range(3):
+    u_ = rng.random(100_000)
+    nxt = np.where(u_ < P[Xs8, 3], 3, np.where(u_ < P[Xs8, 3] + P[Xs8, 2], 2, np.where(u_ < P[Xs8, 3] + P[Xs8, 2] + P[Xs8, 1], 1, 0)))
+    nxt = np.where(hit, Xs8, nxt); hit |= nxt == 3; Xs8 = nxt
+E.check("s15p08a", abs(hit.mean() - 0.56) < 0.005, f"シミュレーション {hit.mean():.4f}")
 
 # ---- 大問9
 # (a) 定義にもとづく対応づけ（文章問題）：正解の選択肢がただ1つで、誤答はそれぞれ定義に反する対応を含む

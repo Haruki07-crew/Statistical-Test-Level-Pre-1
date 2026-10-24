@@ -206,7 +206,20 @@ def p08():
     return {"up": s(up, 1), "d1": s(down[1], 1), "d2": s(down[2], 1), "d3": s(down[3], 1),
             "st0": s(1 - up, 1), "st1": s(1 - up - down[1], 1), "st2": s(1 - up - down[2], 1), "st3": s(1 - down[3], 1),
             "w1": s(w[1], 0), "w2": s(w[2], 0), "w3": "4/3", "tot": "19/3", "pi0": "3/19", "pi3f": "4/19",
-            "ans": r(pi[3], 3), "ans4": s(pi[3], 4), "w_eq": s(0.25, 3)}
+            "ans": r(pi[3], 3), "ans4": s(pi[3], 4), "w_eq": s(0.25, 3), **p08a(up, down)}
+
+
+def p08a(up, down):
+    """(a) 状態 2 から 3 日以内に初めて満床になる確率（満床を通らない経路の列挙）"""
+    st2 = 1 - up - down[2]
+    f1, f2 = up, st2 * up
+    f3a, f3b = st2 * st2 * up, down[2] * up * up
+    fp = f1 + f2 + f3a + f3b
+    P = [[0.6, 0.4, 0, 0], [0.2, 0.4, 0.4, 0], [0, 0.4, 0.2, 0.4], [0, 0, 0.6, 0.4]]
+    mm = lambda A, B: [[sum(A[i][k] * B[k][j] for k in range(4)) for j in range(4)] for i in range(4)]
+    p3 = mm(mm(P, P), P)[2][3]
+    return {"f2": s(f2, 2), "f3a": s(f3a, 3), "f3b": s(f3b, 3), "f3": s(f3a + f3b, 2), "fp": r(fp, 3), "fp_s": s(fp, 3),
+            "w_p3": s(p3, 3), "w_ind": s(1 - (1 - up) ** 3, 3)}
 
 
 def p09():
