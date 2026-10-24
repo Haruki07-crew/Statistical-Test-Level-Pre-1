@@ -84,7 +84,6 @@ pearson-chi-square-statistic: （観測度数－期待度数）² ÷ 期待度�
 expected-frequency: 独立性の検定では 行の合計 × 列の合計 ÷ 総数、適合度検定では 総数 × 確率 で求めることを押さえる。
 independence-test: クロス表の期待度数と統計量の計算、自由度（行の数－1）×（列の数－1）を押さえる。
 test-correlation-coefficient: t ＝ r√(n－2) ÷ √(1－r²) を自由度 n－2 の t 分布で検定する手順を押さえる。
-multiple-regression-model: 偏回帰係数を「他の変数を一定にしたときの効果」と読むことが中心。行列による推定は読み飛ばしてよい。
 regression-coefficient-t-test: 出力の t 値（推定値 ÷ 標準誤差）と p 値から有意かどうかを判断できるようにする。
 adjusted-r-squared: 1－（1－R²）（n－1）/（n－p－1）の計算と、説明変数の数の違うモデルの比較に使うことを押さえる。
 overall-f-test-regression: 決定係数から F を求める式と、「すべての係数が 0」の検定であることを押さえる。

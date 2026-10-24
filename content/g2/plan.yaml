@@ -618,7 +618,6 @@ chapters:
     title: 重回帰モデル
     importance: A
     status: verified
-    from: pre1
   - id: regression-coefficient-t-test
     title: 回帰係数のt検定
     importance: A

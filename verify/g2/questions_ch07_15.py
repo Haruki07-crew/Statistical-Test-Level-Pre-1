@@ -84,6 +84,10 @@ q.num("q14-adjusted-r-squared-g1", 1 - 0.30 * 30 / 25)
 hh = rng.normal(165, 8, 3000); ex = rng.uniform(0, 3, 3000); ww = -60 + 0.75 * hh - 1.5 * ex + rng.normal(0, 3, 3000)
 cf = np.linalg.lstsq(np.c_[np.ones(3000), hh, ex], ww, rcond=None)[0]
 q.check("q14-multiple-regression-model-g1", abs(cf[2] + 1.5) < 0.15 and chosen(q, "q14-multiple-regression-model-g1").startswith("身長が同じなら"), f"同じ形のデータで運動時間の係数 {cf[2]:.2f}")
+q.num("q14-multiple-regression-model-g2", sqrt(416 / (30 - 3 - 1)))
+xa = rng.normal(0, 1, 5000); xb = 0.8 * xa + 0.6 * rng.normal(0, 1, 5000); yy = 2 + 1.2 * xa + 2.25 * xb + rng.normal(0, 1, 5000)
+cfm = np.linalg.lstsq(np.c_[np.ones(5000), xa, xb], yy, rcond=None)[0]; cfs = np.polyfit(xa, yy, 1)[0]
+q.check("q14-multiple-regression-model-g3", abs(cfm[1] - 1.2) < 0.05 and abs(cfs - 3.0) < 0.1 and abs(cfs - (cfm[1] + cfm[2] * np.polyfit(xa, xb, 1)[0])) < 1e-9 and chosen(q, "q14-multiple-regression-model-g3").startswith("広告費の多い店ほど面積も広い"), f"相関のある 2 変数のデータで 重回帰 {cfm[1]:.2f}・単回帰 {cfs:.2f}（単回帰 = b1 + b2 × d が成り立つ）")
 run(q)
 
 q = Q(15)

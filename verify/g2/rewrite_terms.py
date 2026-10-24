@@ -72,6 +72,18 @@ check(T, "傾き 1 の直線 1.2+x は 2.8・図の値（平均の点を通る�
 y12 = ys.copy(); y12[4] = 12
 check(T, "外れ値 (5,12) で傾き 2.0", close(np.polyfit(xs, y12, 1)[0], 2.0, 1e-9), np.polyfit(xs, y12, 1)[0])
 
+T = "multiple-regression-model"
+check(T, "予測 30+1.5×20−5×2=50・単回帰の傾き −5+1.5×4=+1・自由度 40−2−1=37", 30 + 1.5 * 20 - 5 * 2 == 50 and -5 + 1.5 * 4 == 1 and 40 - 2 - 1 == 37, None)
+ok = True
+for seed in range(20):
+    r_ = np.random.default_rng(seed); n_ = 40
+    x2 = r_.integers(0, 6, n_).astype(float); x1 = 10 + 4 * x2 + r_.normal(0, 3, n_); y_ = 30 + 1.5 * x1 - 5 * x2 + r_.normal(0, 4, n_)
+    bm = np.linalg.lstsq(np.c_[np.ones(n_), x1, x2], y_, rcond=None)[0]
+    ok &= abs(np.polyfit(x2, y_, 1)[0] - (bm[2] + bm[1] * np.polyfit(x2, x1, 1)[0])) < 1e-9
+check(T, "単回帰の傾き = b2 + b1 × d（最小二乗法で 20 通りのデータとも一致）", ok, None)
+r_ = np.random.default_rng(7); x2 = r_.integers(0, 6, 100000).astype(float); x1 = 10 + 4 * x2 + r_.normal(0, 3, 100000); y_ = 30 + 1.5 * x1 - 5 * x2 + r_.normal(0, 4, 100000)
+check(T, "具体例の形のデータで単回帰の傾き ≈ +1（正）", close(np.polyfit(x2, y_, 1)[0], 1.0, 0.05), np.polyfit(x2, y_, 1)[0])
+
 ng = results.count(False)
 print(f"書き直した共通の用語の検算: OK {len(results) - ng} / NG {ng}")
 sys.exit(1 if ng else 0)
