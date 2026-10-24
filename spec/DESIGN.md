@@ -462,3 +462,17 @@ validate.py は、エラー（ビルドを止める）と警告（報告だけ�
 ## 14. ロードマップ（#roadmap）
 - データ：`content/roadmap.yaml`（`scripts/make_roadmap.py` が生成、`scripts/check_roadmap.py` が検査）。各用語に段階（1〜4）・優先度（0〜100）・前提・目安時間・理由。根拠は spec/research/roadmap.md。
 - 画面：段階ごとの達成率（「覚えた」の割合）、用語ごとの覚えた状況と問題の正答率、「次にやる5語」（未習得で前提を満たすものを段階→優先度の順）。
+
+## 15. 2級のページ（2026-10-24）
+
+利用者の依頼で、統計検定2級の用語辞典・問題演習・模擬試験・ロードマップ・公式まとめを、同じサイトの別ページ `docs/g2/index.html`（URL は `…/g2/`）として追加した（理由は DECISIONS.md の 2026-10-24 19:54〜）。
+
+- **級の切り替え**：スクリプトは環境変数 `JD_LEVEL`（`pre1`＝準1級・既定、`g2`＝2級）で置き場所を切り替える（`scripts/level.py`）。2級は `content/g2/`・`verify/g2/`・`docs/g2/`。`scripts/build.py` は両方の級を作り、`docs/sw.js` は両方のページを保存する（版は両方のページのハッシュ）。
+- **級ごとの設定**：`content/g2/site.yaml`（名前・見出し・説明文・部の分け方・学習の順番・模擬試験の説明・記録のキー）を `DATA.site` として渡す。準1級は省略された項目に app.js の既定値を使うので、表示は今までと同じ。両方のホームに、もう一方の級へのリンクを出す。2級は見出しの色（`--accent`）を青系にして見分けやすくした（`:root[data-level="g2"]`）。
+- **学習記録**：localStorage のキーを級ごとに分ける（準1級 `jd-`、2級 `jd2-`）。テーマ（`jd-theme`）だけは共通。
+- **用語**：出題範囲表の大項目に沿った 15 章・136 語（`content/g2/plan.yaml`）。2級向けに書いた 32 語は `content/g2/chNN/`。ほかの 104 語は準1級の解説を共通で使い（plan の `from: pre1`。build.py が準1級のファイルを読み、章と重要度を2級のものに置き換え、関連用語を2級にあるものだけに絞る）、用語ページに「準1級と共通」の注意書きと、用語ごとの「2級で押さえること」（`content/g2/notes.yaml`）を出す。2級の用語の本文の字数の目安は準1級の 8 割（validate.py）。
+- **問題演習**：2級向けの 32 語の問題（`content/g2/questions/`、検算は `verify/g2/questions_ch*.py`）と、共通の用語について準1級の問題のうち level が「基本」で検算済みのもの。
+- **模擬試験**：35 問・90 分・すべて5肢選択（`content/g2/exam_sets/`）。分野の配分・難易度・定義問題の上限は `scripts/exam_lib.py` の `LEVEL == "g2"` の設定。数値は問題ファイルに直接書き、`verify/g2/exam_setNN.py` で別の方法で検算する。見直しの記録は `verify/g2/exam_review/setNN.md`。正解をいったん①に置いて書き、`scripts/rebalance_choices.py` で①〜⑤に 7 問ずつならす。画面のセットの枠は `site.yaml` の `exam.sets`（10）。
+- **ロードマップ**：`scripts/make_roadmap_g2.py` が `content/g2/roadmap.yaml` を作る（136 語・4 段階）。
+- **公式まとめ**：`content/g2/formulas.md`（検算は `verify/g2/formulas.py`）。
+- **検査**：`JD_LEVEL=g2 .venv/bin/python scripts/validate.py`（build.py が自動で実行）、画面は `verify/g2_smoke.mjs`（2級のホーム・用語・模擬試験の採点・記録のキー・準1級との行き来）。
