@@ -440,6 +440,23 @@ def main():
         if r.returncode:
             total_err += 1
             print("[ERROR] check_math.py で数式の問題が見つかりました")
+        # ロードマップ（content/roadmap.yaml）の検査：全用語を1回ずつ、前提が先、循環なし
+        if (ROOT / "content" / "roadmap.yaml").exists():
+            r = subprocess.run([sys.executable, str(ROOT / "scripts" / "check_roadmap.py")], capture_output=True, text=True)
+            if r.returncode:
+                print(r.stdout[-3000:])
+                print("[ERROR] check_roadmap.py でロードマップの問題が見つかりました")
+                total_err += 1
+            else:
+                print("ロードマップ: " + ((r.stdout.strip().splitlines() or ["OK"])[-1]))
+        # 模擬試験の自動検査。書きかけのセットでビルドが止まらないよう警告として数える（公開は build.py が3段階の確認で決める）
+        r = subprocess.run([sys.executable, str(ROOT / "scripts" / "check_exam.py")], capture_output=True, text=True)
+        for ln in r.stdout.strip().splitlines():
+            if ln.startswith("[ERROR]"):
+                print("[WARN]  模擬試験: " + ln[8:])
+                total_warn += 1
+            elif ln.startswith("模擬試験"):
+                print(ln)
     print(f"検査ファイル {len(targets)} 件 / エラー {total_err} 件 / 警告 {total_warn} 件")
     sys.exit(1 if total_err else 0)
 

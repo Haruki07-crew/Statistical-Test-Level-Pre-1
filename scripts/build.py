@@ -122,6 +122,53 @@ def load_questions(plan_ids):
     return out, stat
 
 
+def load_exams(plan_ids):
+    """模擬試験：自動検査・検算・見直しの3段階すべてに通った（ハッシュが一致する）小問だけでできたセットを返す。
+    戻り値: (公開するセットの一覧, {セット番号: (小問数, 検算OK, 見直しOK, 自動検査エラー数)})"""
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import exam_lib as L
+    out, stat = [], {}
+    for path in L.set_files():
+        try:
+            data, missing = L.load_set(path)
+        except Exception as e:  # 書きかけのセットなどは公開しない
+            print(f"模擬試験 {path.name}: 読み込めないため公開しません（{e}）")
+            continue
+        err, _ = L.check_set(data, missing, plan_ids)
+        st = L.status(data)
+        stat[data["set"]] = (len(st), sum(v for v, _ in st.values()), sum(r for _, r in st.values()), len(err))
+        if err or len(st) != L.N_ITEMS or not all(v and r for v, r in st.values()):
+            continue
+        probs, items = [], []
+        for pi, p in enumerate(data["problems"]):
+            probs.append({"id": p["id"], "t": p.get("title", ""), "ctx": render_body(p.get("context") or "")})
+            for it in p["items"]:
+                x = {"id": it["id"], "p": pi, "ch": it["chapter"], "lv": it["level"], "type": it["type"],
+                     "q": render_body(it["question"]), "e": render_body(it["explanation"]),
+                     "terms": [t for t in it.get("terms") or [] if t in plan_ids]}
+                if it["type"] == "choice":
+                    x["c"] = [render_inline(c) for c in it["choices"]]
+                    x["a"] = it["answer"]
+                else:
+                    x["a"] = float(it["answer"])
+                    x["tol"] = float(it["tolerance"])
+                    x["fmt"] = render_inline(it["answer_format"])
+                items.append(x)
+        out.append({"no": data["set"], "title": data.get("title") or f"模擬試験 第{data['set']}回", "min": data["minutes"],
+                    "pts": 100 / L.N_ITEMS, "probs": probs, "items": items})
+    return out, stat
+
+
+def load_roadmap(plan_ids):
+    p = CONTENT / "roadmap.yaml"
+    if not p.exists():
+        return None
+    d = yaml.safe_load(p.read_text(encoding="utf-8")) or {}
+    terms = [{"id": t["id"], "st": t["stage"], "sc": t["score"], "pre": [x for x in t.get("prereq") or [] if x in plan_ids],
+              "min": t.get("minutes", 0), "why": t.get("reason", "")} for t in d.get("terms") or [] if t.get("id") in plan_ids]
+    return {"stages": d.get("stages") or [], "terms": terms}
+
+
 def render_formulas(titles=None):
     """content/formulas.md（公式まとめ）を節ごとの HTML にする。「→ 用語名」は用語ページへのボタンにする。"""
     p = CONTENT / "formulas.md"
@@ -199,7 +246,9 @@ def main():
         })
     plan_ids = {t["id"] for ch in chapters for t in ch["terms"]}
     questions, qstat = load_questions(plan_ids)
-    data = {"chapters": chapters, "terms": terms, "questions": questions, "formulas": render_formulas({t["title"]: t["id"] for ch in chapters for t in ch["terms"] if t["id"] in terms})}
+    exams, estat = load_exams(plan_ids)
+    data = {"chapters": chapters, "terms": terms, "questions": questions, "exams": exams, "roadmap": load_roadmap(plan_ids),
+            "formulas": render_formulas({t["title"]: t["id"] for ch in chapters for t in ch["terms"] if t["id"] in terms})}
     data_json = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
 
     tpl = (SRC / "template.html").read_text(encoding="utf-8")
@@ -223,6 +272,8 @@ def main():
     qa = sum(v[0] for v in qstat.values())
     print("問題（公開／全問）: " + "  ".join(f"第{k}章 {v[1]}/{v[0]}" for k, v in sorted(qstat.items())))
     print(f"問題 合計: 公開 {len(questions)} / 全問 {qa}（検算に通っていない問題は公開しない）")
+    print("模擬試験（小問 / 検算OK / 見直しOK / 自動検査エラー）: " + ("  ".join(f"set{k:02d} {v[0]}/{v[1]}/{v[2]}/{v[3]}" for k, v in sorted(estat.items())) or "なし"))
+    print(f"模擬試験 公開: {len(exams)} セット（3段階の確認に通ったセットだけ）")
     size = OUT.stat().st_size
     print(f"出力: {OUT.relative_to(ROOT)}  {size / 1024 / 1024:.2f} MB" + ("  （5MB超）" if size > 5 * 1024 * 1024 else ""))
 

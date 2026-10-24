@@ -1,0 +1,3086 @@
+# 学習ロードマップ（scripts/make_roadmap.py が生成。手で編集しない）
+# 根拠と参考URLは spec/research/roadmap.md
+stages:
+  - {'no': 1, title: まず固める基礎, desc: 確率・期待値と分散・主要な分布・推定と検定の基本手順。ほかのすべての章がこの上に乗る。}
+  - {'no': 2, title: 得点源, desc: 回帰・分散分析・時系列・主成分分析・ベイズ・マルコフ連鎖など毎回のように出る分野と、推定・検定の理論。}
+  - {'no': 3, title: 差がつく応用, desc: 多変量解析の発展、標本調査、欠測と生存時間、確率過程の応用など、押さえると周りと差がつく項目。}
+  - {'no': 4, title: 余裕があれば, desc: 出題がまれな発展事項と、ほかの項目に統合済みの用語。直前に眺める程度でよい。}
+terms:
+  - id: conditional-probability
+    stage: 1
+    score: 94
+    prereq: []
+    minutes: 30
+    reason: 確率計算すべての出発点。ベイズの定理や条件付き分布の前提
+  - id: probability-mass-and-density-function
+    stage: 1
+    score: 94
+    prereq: [conditional-probability]
+    minutes: 30
+    reason: 分布を扱うすべての計算の出発点
+  - id: moments
+    stage: 1
+    score: 93
+    prereq: [probability-mass-and-density-function]
+    minutes: 25
+    reason: 期待値・分散・歪度をまとめる考え方。母関数の前提
+  - id: expectation-variance-properties
+    stage: 1
+    score: 96
+    prereq: [moments]
+    minutes: 40
+    reason: 線形性や分散の公式は全分野の計算で使う最重要事項
+  - id: normal-distribution
+    stage: 1
+    score: 99
+    prereq: [expectation-variance-properties]
+    minutes: 40
+    reason: あらゆる推定・検定の前提となる最重要分布
+  - id: standard-normal-distribution
+    stage: 1
+    score: 96
+    prereq: [normal-distribution]
+    minutes: 20
+    reason: 標準化と数表の読み方は毎回の計算で必須
+  - id: bernoulli-distribution
+    stage: 1
+    score: 93
+    prereq: [expectation-variance-properties]
+    minutes: 15
+    reason: 二項分布など離散分布すべての出発点
+  - id: binomial-distribution
+    stage: 1
+    score: 97
+    prereq: [bernoulli-distribution]
+    minutes: 30
+    reason: 最頻出の分布。比率の推定・検定の土台
+  - id: poisson-distribution
+    stage: 1
+    score: 97
+    prereq: [binomial-distribution]
+    minutes: 30
+    reason: まれな事象の分布。確率過程・回帰・ベイズで繰り返し登場
+  - id: point-estimation
+    stage: 1
+    score: 87
+    prereq: [expectation-variance-properties]
+    minutes: 15
+    reason: 推定の用語の出発点。推定量と推定値の区別
+  - id: unbiased-estimator
+    stage: 1
+    score: 97
+    prereq: [point-estimation]
+    minutes: 25
+    reason: 不偏分散など計算問題で頻出。推定量の評価の基本
+  - id: likelihood-function
+    stage: 1
+    score: 97
+    prereq: [point-estimation, probability-mass-and-density-function]
+    minutes: 30
+    reason: 最尤法・検定・ベイズ・モデル選択すべての土台
+  - id: maximum-likelihood-estimator
+    stage: 1
+    score: 98
+    prereq: [likelihood-function]
+    minutes: 45
+    reason: 各分布での導出が頻出。推定の最重要手法
+  - id: standard-error
+    stage: 1
+    score: 86
+    prereq: [unbiased-estimator]
+    minutes: 15
+    reason: 区間推定・検定・回帰出力の読み取りで常に使う
+  - id: confidence-interval
+    stage: 1
+    score: 98
+    prereq: [standard-error, normal-distribution]
+    minutes: 25
+    reason: 区間推定の意味は毎回問われる。解釈の誤りに注意
+  - id: covariance-and-correlation
+    stage: 1
+    score: 95
+    prereq: [expectation-variance-properties]
+    minutes: 30
+    reason: 回帰・多変量解析の土台。和の分散の計算で頻出
+  - id: exponential-distribution
+    stage: 1
+    score: 95
+    prereq: [expectation-variance-properties]
+    minutes: 30
+    reason: 無記憶性・ポアソン過程・生存時間で頻出
+  - id: gamma-distribution
+    stage: 1
+    score: 95
+    prereq: [exponential-distribution]
+    minutes: 30
+    reason: 指数分布の和やベイズの共役事前分布で頻出
+  - id: chi-squared-distribution
+    stage: 1
+    score: 97
+    prereq: [standard-normal-distribution, gamma-distribution]
+    minutes: 30
+    reason: 分散の推定・検定と適合度検定の土台
+  - id: t-distribution
+    stage: 1
+    score: 97
+    prereq: [chi-squared-distribution]
+    minutes: 30
+    reason: 母平均の推定・検定に必須の分布
+  - id: t-statistic
+    stage: 1
+    score: 96
+    prereq: [t-distribution]
+    minutes: 20
+    reason: t検定・回帰係数の検定のすべてで使う統計量
+  - id: f-distribution
+    stage: 1
+    score: 96
+    prereq: [chi-squared-distribution]
+    minutes: 25
+    reason: 分散比の検定と分散分析・回帰のF検定の土台
+  - id: mean-squared-error
+    stage: 1
+    score: 95
+    prereq: [unbiased-estimator]
+    minutes: 25
+    reason: バイアスと分散の分解は推定量の比較の定番
+  - id: pivotal-quantity
+    stage: 1
+    score: 93
+    prereq: [confidence-interval]
+    minutes: 20
+    reason: 信頼区間を作る統一的な方法
+  - id: pooled-variance
+    stage: 1
+    score: 92
+    prereq: [unbiased-estimator]
+    minutes: 15
+    reason: 2標本t検定と分散分析で使う
+  - id: contingency-table
+    stage: 1
+    score: 92
+    prereq: []
+    minutes: 15
+    reason: カテゴリデータを集計する表。独立性の検定の前提
+  - id: bivariate-normal-distribution
+    stage: 1
+    score: 94
+    prereq: [normal-distribution, covariance-and-correlation]
+    minutes: 35
+    reason: 条件付き分布や回帰との関係が頻出
+  - id: multinomial-distribution
+    stage: 1
+    score: 93
+    prereq: [binomial-distribution]
+    minutes: 25
+    reason: 適合度検定と分割表の土台になる分布
+  - id: expected-frequency
+    stage: 1
+    score: 85
+    prereq: [multinomial-distribution]
+    minutes: 15
+    reason: カイ二乗検定で最初に計算する量
+  - id: pearson-chi-square-statistic
+    stage: 1
+    score: 96
+    prereq: [expected-frequency, chi-squared-distribution]
+    minutes: 20
+    reason: 適合度と独立性の検定に共通する統計量
+  - id: goodness-of-fit-test
+    stage: 1
+    score: 95
+    prereq: [pearson-chi-square-statistic]
+    minutes: 25
+    reason: 観測度数と期待度数の比較。頻出の定番
+  - id: independence-test
+    stage: 1
+    score: 96
+    prereq: [goodness-of-fit-test, contingency-table]
+    minutes: 25
+    reason: 分割表の検定の代表。自由度の計算が頻出
+  - id: null-and-alternative-hypothesis
+    stage: 1
+    score: 93
+    prereq: [normal-distribution]
+    minutes: 15
+    reason: 検定の出発点。仮説の立て方は毎回問われる
+  - id: type-i-and-ii-errors
+    stage: 1
+    score: 95
+    prereq: [null-and-alternative-hypothesis]
+    minutes: 20
+    reason: 過誤の確率計算と定義は頻出
+  - id: significance-level
+    stage: 1
+    score: 93
+    prereq: [type-i-and-ii-errors]
+    minutes: 10
+    reason: 第1種の過誤の上限。p値との関係が問われる
+  - id: p-value
+    stage: 1
+    score: 97
+    prereq: [significance-level]
+    minutes: 20
+    reason: 解釈と計算が頻出。誤解しやすい点が狙われる
+  - id: rejection-region
+    stage: 1
+    score: 94
+    prereq: [significance-level]
+    minutes: 15
+    reason: 検定統計量の値で判定する仕組み
+  - id: power-function
+    stage: 1
+    score: 96
+    prereq: [type-i-and-ii-errors, rejection-region]
+    minutes: 25
+    reason: 検出力の計算は頻出。標本サイズ設計の前提
+  - id: z-test-known-variance
+    stage: 1
+    score: 92
+    prereq: [rejection-region, standard-normal-distribution]
+    minutes: 20
+    reason: 検定の手順を学ぶ最初の例
+  - id: one-sample-t-test
+    stage: 1
+    score: 96
+    prereq: [z-test-known-variance, t-statistic]
+    minutes: 25
+    reason: 計算問題で頻出の基本検定
+  - id: two-sample-t-test
+    stage: 1
+    score: 96
+    prereq: [one-sample-t-test, pooled-variance]
+    minutes: 25
+    reason: 2群の平均比較。出力の読み取りも出る
+  - id: moment-generating-function
+    stage: 1
+    score: 93
+    prereq: [moments]
+    minutes: 40
+    reason: 期待値・分散の導出や再生性の証明で頻出
+  - id: hypergeometric-distribution
+    stage: 1
+    score: 93
+    prereq: [binomial-distribution]
+    minutes: 25
+    reason: 非復元抽出の分布。期待値・分散の計算が出る
+  - id: welch-test
+    stage: 1
+    score: 93
+    prereq: [two-sample-t-test]
+    minutes: 20
+    reason: 等分散を仮定しない2群比較。自由度の近似が問われる
+  - id: ci-mean-known-variance
+    stage: 1
+    score: 91
+    prereq: [pivotal-quantity, standard-normal-distribution]
+    minutes: 20
+    reason: 区間推定の最も基本的な計算
+  - id: ci-mean-unknown-variance
+    stage: 1
+    score: 94
+    prereq: [ci-mean-known-variance, t-statistic]
+    minutes: 25
+    reason: t分布を使う区間推定。計算問題で頻出
+  - id: cumulative-distribution-function
+    stage: 1
+    score: 92
+    prereq: [probability-mass-and-density-function]
+    minutes: 20
+    reason: 分位点・順序統計量・変数変換で毎回使う
+  - id: change-of-variables
+    stage: 1
+    score: 92
+    prereq: [probability-mass-and-density-function]
+    minutes: 40
+    reason: 密度の変換とヤコビアンは導出問題の定番
+  - id: geometric-distribution
+    stage: 1
+    score: 92
+    prereq: [bernoulli-distribution]
+    minutes: 25
+    reason: 無記憶性の計算が頻出。台の流儀の違いに注意
+  - id: beta-distribution
+    stage: 1
+    score: 92
+    prereq: [gamma-distribution]
+    minutes: 25
+    reason: 比率のベイズ推定と順序統計量で使う
+  - id: method-of-moments
+    stage: 1
+    score: 92
+    prereq: [moments, point-estimation]
+    minutes: 30
+    reason: 最尤法と並ぶ推定法。計算問題で頻出
+  - id: paired-t-test
+    stage: 1
+    score: 92
+    prereq: [one-sample-t-test]
+    minutes: 20
+    reason: 対応のあるデータは差の1標本検定に帰着する
+  - id: f-test-equal-variances
+    stage: 1
+    score: 92
+    prereq: [f-distribution, rejection-region]
+    minutes: 20
+    reason: 分散比の検定。ウェルチ検定の選択と結び付く
+  - id: two-by-two-table
+    stage: 1
+    score: 92
+    prereq: [contingency-table]
+    minutes: 15
+    reason: オッズ比や正確検定の舞台になる最も基本の表
+  - id: chebyshev-inequality
+    stage: 1
+    score: 87
+    prereq: [expectation-variance-properties]
+    minutes: 20
+    reason: 確率の上限評価と大数の法則の証明で使う
+  - id: convergence-in-probability
+    stage: 1
+    score: 90
+    prereq: [chebyshev-inequality]
+    minutes: 20
+    reason: 一致性と大数の法則を理解するための基本概念
+  - id: convergence-in-distribution
+    stage: 1
+    score: 88
+    prereq: [convergence-in-probability]
+    minutes: 20
+    reason: 中心極限定理と漸近正規性の前提
+  - id: central-limit-theorem
+    stage: 1
+    score: 95
+    prereq: [convergence-in-distribution, normal-distribution]
+    minutes: 35
+    reason: 正規近似の根拠。推定・検定の多くを支える最重要定理
+  - id: normal-approximation-binomial-poisson
+    stage: 1
+    score: 90
+    prereq: [central-limit-theorem, binomial-distribution, poisson-distribution]
+    minutes: 25
+    reason: 比率やポアソンの検定・区間推定の計算の土台
+  - id: ci-proportion
+    stage: 1
+    score: 96
+    prereq: [pivotal-quantity, normal-approximation-binomial-poisson]
+    minutes: 20
+    reason: 世論調査型の計算問題で頻出
+  - id: required-sample-size
+    stage: 1
+    score: 93
+    prereq: [ci-proportion]
+    minutes: 25
+    reason: 区間の幅から標本サイズを逆算する計算が頻出
+  - id: proportion-test
+    stage: 1
+    score: 93
+    prereq: [normal-approximation-binomial-poisson, rejection-region]
+    minutes: 20
+    reason: 比率の検定は計算問題の定番
+  - id: two-sample-proportion-test
+    stage: 1
+    score: 92
+    prereq: [proportion-test]
+    minutes: 20
+    reason: 2群の比率比較。プールした比率を使う
+  - id: law-of-total-probability
+    stage: 1
+    score: 83
+    prereq: [conditional-probability]
+    minutes: 20
+    reason: 場合分けで確率を求める定番の道具。ベイズの定理の分母になる
+  - id: bayes-theorem
+    stage: 1
+    score: 93
+    prereq: [law-of-total-probability]
+    minutes: 30
+    reason: 検査の陽性的中率などの計算が頻出。ベイズ法の土台
+  - id: mean-vector
+    stage: 1
+    score: 79
+    prereq: [expectation-variance-properties]
+    minutes: 10
+    reason: 多変量を扱うための記法。分散共分散行列と組で覚える
+  - id: variance-covariance-matrix
+    stage: 1
+    score: 93
+    prereq: [covariance-and-correlation, mean-vector]
+    minutes: 30
+    reason: 多変量正規・回帰・主成分分析のすべてで使う
+  - id: multivariate-normal-distribution
+    stage: 1
+    score: 94
+    prereq: [bivariate-normal-distribution, variance-covariance-matrix]
+    minutes: 30
+    reason: 回帰・判別分析・グラフィカルモデルの前提
+  - id: ci-variance
+    stage: 1
+    score: 91
+    prereq: [pivotal-quantity, chi-squared-distribution]
+    minutes: 20
+    reason: カイ二乗分布を使う区間推定の定番
+  - id: binomial-test
+    stage: 1
+    score: 91
+    prereq: [binomial-distribution, p-value]
+    minutes: 15
+    reason: 二項分布で直接p値を出す正確な検定
+  - id: degrees-of-freedom-gof
+    stage: 1
+    score: 91
+    prereq: [goodness-of-fit-test]
+    minutes: 15
+    reason: 推定した母数の数だけ自由度が減る点が頻出
+  - id: independence-of-events
+    stage: 1
+    score: 90
+    prereq: [conditional-probability]
+    minutes: 20
+    reason: 独立の定義は全分野で使う。確率計算の頻出論点
+  - id: joint-probability-function
+    stage: 1
+    score: 90
+    prereq: [probability-mass-and-density-function]
+    minutes: 20
+    reason: 2変数の離散分布の基本。周辺・条件付き分布の前提
+  - id: marginal-distribution
+    stage: 1
+    score: 90
+    prereq: [joint-probability-function]
+    minutes: 20
+    reason: 同時分布から一方を取り出す操作。多変量の計算で必須
+  - id: negative-binomial-distribution
+    stage: 1
+    score: 90
+    prereq: [geometric-distribution]
+    minutes: 25
+    reason: 幾何分布の一般化。過分散のモデルにも使う
+  - id: confidence-coefficient
+    stage: 1
+    score: 90
+    prereq: [confidence-interval]
+    minutes: 10
+    reason: 信頼区間の解釈と合わせて押さえる基本用語
+  - id: ci-two-sample-mean-difference
+    stage: 1
+    score: 90
+    prereq: [ci-mean-unknown-variance, pooled-variance]
+    minutes: 25
+    reason: 2群比較の区間推定。プールした分散と組で出る
+  - id: chi-square-test-variance
+    stage: 1
+    score: 90
+    prereq: [chi-squared-distribution, rejection-region]
+    minutes: 20
+    reason: 母分散の検定。カイ二乗分布の使い方の定番
+  - id: joint-probability-density-function
+    stage: 1
+    score: 89
+    prereq: [joint-probability-function]
+    minutes: 25
+    reason: 連続2変数の計算の基本。積分範囲の扱いが問われる
+  - id: marginal-probability-density-function
+    stage: 1
+    score: 79
+    prereq: [joint-probability-density-function, marginal-distribution]
+    minutes: 15
+    reason: 同時密度を積分して得る。2変量正規分布などで使う
+  - id: conditional-probability-density-function
+    stage: 1
+    score: 90
+    prereq: [marginal-probability-density-function]
+    minutes: 25
+    reason: 条件付き期待値や2変量正規の条件付き分布の前提
+  - id: conditional-expectation
+    stage: 1
+    score: 93
+    prereq: [conditional-probability-density-function, expectation-variance-properties]
+    minutes: 35
+    reason: 繰り返し期待値の公式は計算問題の定番
+  - id: conditional-variance
+    stage: 1
+    score: 90
+    prereq: [conditional-expectation]
+    minutes: 30
+    reason: 全分散の公式は混合分布や階層モデルで頻出
+  - id: weak-law-of-large-numbers
+    stage: 1
+    score: 89
+    prereq: [convergence-in-probability]
+    minutes: 20
+    reason: 標本平均が母平均に近づく根拠。一致性の基礎
+  - id: consistent-estimator
+    stage: 1
+    score: 91
+    prereq: [unbiased-estimator, weak-law-of-large-numbers]
+    minutes: 20
+    reason: 大標本での推定量の性質。定義が問われる
+  - id: conditional-probability-function
+    stage: 1
+    score: 88
+    prereq: [marginal-distribution, conditional-probability]
+    minutes: 20
+    reason: 条件付き期待値やベイズ法の計算の前提
+  - id: probability-generating-function
+    stage: 1
+    score: 88
+    prereq: [moments]
+    minutes: 30
+    reason: 離散分布の期待値・分散を素早く出す道具。計算問題で出る
+  - id: sum-of-random-variables
+    stage: 1
+    score: 87
+    prereq: [moment-generating-function]
+    minutes: 30
+    reason: 再生性は正規・ポアソン・ガンマなどの計算で頻出
+  - id: continuity-correction
+    stage: 1
+    score: 87
+    prereq: [normal-approximation-binomial-poisson]
+    minutes: 15
+    reason: 離散分布の正規近似の精度を上げる工夫。計算で出る
+  - id: one-sided-two-sided-test
+    stage: 1
+    score: 85
+    prereq: [rejection-region]
+    minutes: 15
+    reason: 棄却域の置き方とp値の計算に直結
+  - id: uniform-distribution
+    stage: 1
+    score: 84
+    prereq: [expectation-variance-properties]
+    minutes: 15
+    reason: 乱数生成や順序統計量の例題で使う基本分布
+  - id: marginal-probability-function
+    stage: 1
+    score: 78
+    prereq: [marginal-distribution]
+    minutes: 10
+    reason: 周辺分布の離散版。和をとるだけなので短時間で済む
+  - id: multiple-regression-model
+    stage: 2
+    score: 86
+    prereq: [multivariate-normal-distribution]
+    minutes: 30
+    reason: 回帰はほぼ毎回出る。すべての回帰手法の土台
+  - id: least-squares-method
+    stage: 2
+    score: 86
+    prereq: [multiple-regression-model]
+    minutes: 30
+    reason: 推定量の導出と性質が頻出
+  - id: coefficient-of-determination
+    stage: 2
+    score: 85
+    prereq: [least-squares-method]
+    minutes: 20
+    reason: 出力表の読み取りと平方和の分解で頻出
+  - id: eigenvalue-and-eigenvector
+    stage: 2
+    score: 83
+    prereq: [variance-covariance-matrix]
+    minutes: 25
+    reason: 主成分・因子分析・判別分析の計算の土台
+  - id: principal-component-analysis
+    stage: 2
+    score: 86
+    prereq: [variance-covariance-matrix, eigenvalue-and-eigenvector]
+    minutes: 30
+    reason: 頻出の多変量手法。固有値問題として出る
+  - id: prior-distribution
+    stage: 2
+    score: 81
+    prereq: [bayes-theorem]
+    minutes: 15
+    reason: ベイズ法の出発点。頻出分野
+  - id: posterior-distribution
+    stage: 2
+    score: 85
+    prereq: [prior-distribution, likelihood-function]
+    minutes: 20
+    reason: 事後分布の導出は毎回のように出る
+  - id: likelihood-ratio-test
+    stage: 2
+    score: 83
+    prereq: [maximum-likelihood-estimator, rejection-region]
+    minutes: 30
+    reason: 多くの検定を統一的に導く方法。頻出
+  - id: conjugate-prior
+    stage: 2
+    score: 83
+    prereq: [posterior-distribution]
+    minutes: 20
+    reason: 事後分布が同じ形になる組み合わせ。計算の定番
+  - id: sufficient-statistic
+    stage: 2
+    score: 82
+    prereq: [likelihood-function]
+    minutes: 30
+    reason: データの要約の考え方。分解定理と組で頻出
+  - id: one-way-anova
+    stage: 2
+    score: 82
+    prereq: [f-distribution, two-sample-t-test]
+    minutes: 30
+    reason: 分散分析表の計算が頻出
+  - id: score-function
+    stage: 2
+    score: 78
+    prereq: [maximum-likelihood-estimator]
+    minutes: 20
+    reason: フィッシャー情報量とスコア検定の前提
+  - id: fisher-information
+    stage: 2
+    score: 83
+    prereq: [score-function]
+    minutes: 35
+    reason: 計算問題で頻出。漸近分散と検定の基礎
+  - id: time-series
+    stage: 2
+    score: 68
+    prereq: []
+    minutes: 10
+    reason: 時系列解析の用語の出発点
+  - id: weak-stationarity
+    stage: 2
+    score: 82
+    prereq: [time-series, covariance-and-correlation]
+    minutes: 20
+    reason: 時系列モデルの前提。定義が問われる
+  - id: white-noise
+    stage: 2
+    score: 80
+    prereq: [weak-stationarity]
+    minutes: 10
+    reason: 時系列モデルの誤差の基本
+  - id: ar-model
+    stage: 2
+    score: 85
+    prereq: [white-noise]
+    minutes: 30
+    reason: 時系列で最頻出のモデル。自己相関の計算が出る
+  - id: autocovariance-autocorrelation
+    stage: 2
+    score: 83
+    prereq: [weak-stationarity]
+    minutes: 20
+    reason: 時系列の性質を表す基本量。計算が頻出
+  - id: asymptotic-normality-of-mle
+    stage: 2
+    score: 81
+    prereq: [fisher-information, central-limit-theorem]
+    minutes: 30
+    reason: 最尤推定量の分散の近似と信頼区間の根拠
+  - id: normal-equations
+    stage: 2
+    score: 81
+    prereq: [least-squares-method]
+    minutes: 25
+    reason: 最小二乗推定量を行列で導く式
+  - id: regression-coefficient-t-test
+    stage: 2
+    score: 81
+    prereq: [normal-equations, t-statistic]
+    minutes: 25
+    reason: 出力表の読み取り問題で頻出
+  - id: ma-model
+    stage: 2
+    score: 81
+    prereq: [white-noise]
+    minutes: 25
+    reason: ARと並ぶ基本モデル。自己相関の打ち切りが要点
+  - id: odds-and-odds-ratio
+    stage: 2
+    score: 80
+    prereq: [conditional-probability]
+    minutes: 20
+    reason: ロジスティック回帰と分割表に共通する尺度
+  - id: kullback-leibler-divergence
+    stage: 2
+    score: 76
+    prereq: [likelihood-function]
+    minutes: 20
+    reason: 分布の近さの尺度。AICの導出の土台
+  - id: logit-logistic-transformation
+    stage: 2
+    score: 72
+    prereq: [change-of-variables]
+    minutes: 20
+    reason: ロジスティック回帰とオッズの前提になる変換
+  - id: logistic-regression
+    stage: 2
+    score: 82
+    prereq: [logit-logistic-transformation, maximum-likelihood-estimator, odds-and-odds-ratio]
+    minutes: 30
+    reason: 2値の結果を扱う回帰の代表。出力の解釈が頻出
+  - id: correlation-matrix
+    stage: 2
+    score: 66
+    prereq: [variance-covariance-matrix]
+    minutes: 15
+    reason: 標準化した分散共分散行列。主成分分析の入力になる
+  - id: multicollinearity
+    stage: 2
+    score: 82
+    prereq: [multiple-regression-model, correlation-matrix]
+    minutes: 20
+    reason: 係数が不安定になる理由が問われる
+  - id: model-selection
+    stage: 2
+    score: 66
+    prereq: [likelihood-function]
+    minutes: 10
+    reason: 情報量規準や交差検証の出発点
+  - id: aic
+    stage: 2
+    score: 82
+    prereq: [model-selection, kullback-leibler-divergence]
+    minutes: 25
+    reason: モデル比較の最頻出の規準
+  - id: markov-chain
+    stage: 2
+    score: 80
+    prereq: [conditional-probability]
+    minutes: 25
+    reason: 状態の推移を扱う基本モデル。毎回のように出る分野
+  - id: transition-probability-matrix
+    stage: 2
+    score: 80
+    prereq: [markov-chain]
+    minutes: 25
+    reason: 行列計算の問題が頻出
+  - id: stationary-distribution
+    stage: 2
+    score: 81
+    prereq: [transition-probability-matrix]
+    minutes: 30
+    reason: 連立方程式を解いて求める問題が頻出
+  - id: hat-matrix
+    stage: 2
+    score: 80
+    prereq: [normal-equations]
+    minutes: 25
+    reason: てこ比や残差の性質の前提
+  - id: generalized-linear-model
+    stage: 2
+    score: 80
+    prereq: [logistic-regression, multiple-regression-model]
+    minutes: 25
+    reason: 線形回帰・ロジスティック・ポアソン回帰を統一する枠組み
+  - id: arma-model
+    stage: 2
+    score: 80
+    prereq: [ar-model, ma-model]
+    minutes: 20
+    reason: ARとMAの組み合わせ
+  - id: posterior-mean-map
+    stage: 2
+    score: 80
+    prereq: [posterior-distribution]
+    minutes: 15
+    reason: ベイズ推定値の計算が頻出
+  - id: neyman-pearson-lemma
+    stage: 2
+    score: 79
+    prereq: [power-function, likelihood-function]
+    minutes: 30
+    reason: 最強力検定の作り方。導出問題で出る
+  - id: multiple-testing
+    stage: 2
+    score: 79
+    prereq: [significance-level]
+    minutes: 15
+    reason: 多数の検定で第1種の過誤が増える問題
+  - id: adjusted-r-squared
+    stage: 2
+    score: 79
+    prereq: [coefficient-of-determination]
+    minutes: 15
+    reason: 変数の数を考慮した決定係数。計算が出る
+  - id: overall-f-test-regression
+    stage: 2
+    score: 79
+    prereq: [coefficient-of-determination, f-distribution]
+    minutes: 20
+    reason: 決定係数とF値の関係が問われる
+  - id: residual
+    stage: 2
+    score: 79
+    prereq: [least-squares-method]
+    minutes: 15
+    reason: 回帰診断の出発点
+  - id: poisson-regression
+    stage: 2
+    score: 79
+    prereq: [generalized-linear-model, poisson-distribution]
+    minutes: 20
+    reason: 新しい出題範囲表に明記。件数データの回帰
+  - id: distance-measures
+    stage: 2
+    score: 79
+    prereq: []
+    minutes: 15
+    reason: ユークリッド距離など。クラスター分析と判別の前提
+  - id: hierarchical-clustering
+    stage: 2
+    score: 80
+    prereq: [distance-measures]
+    minutes: 20
+    reason: クラスター分析の基本。併合の手順をたどる問題が出る
+  - id: overfitting
+    stage: 2
+    score: 79
+    prereq: [model-selection]
+    minutes: 15
+    reason: 複雑すぎるモデルの問題。正則化の動機
+  - id: cross-validation
+    stage: 2
+    score: 79
+    prereq: [overfitting]
+    minutes: 20
+    reason: 予測の良さを評価する定番の方法
+  - id: mahalanobis-distance
+    stage: 2
+    score: 77
+    prereq: [variance-covariance-matrix]
+    minutes: 20
+    reason: 判別や外れ値の検出で使う距離
+  - id: linear-discriminant-analysis
+    stage: 2
+    score: 80
+    prereq: [multivariate-normal-distribution, mahalanobis-distance]
+    minutes: 25
+    reason: 判別分析の基本。範囲表に明記
+  - id: cramer-rao-inequality
+    stage: 2
+    score: 78
+    prereq: [fisher-information, unbiased-estimator]
+    minutes: 30
+    reason: 不偏推定量の分散の下限。有効性の判定で問われる
+  - id: order-statistics
+    stage: 2
+    score: 78
+    prereq: [cumulative-distribution-function]
+    minutes: 30
+    reason: 最大値・最小値の分布は計算問題でよく出る
+  - id: wilks-theorem
+    stage: 2
+    score: 78
+    prereq: [likelihood-ratio-test, chi-squared-distribution]
+    minutes: 20
+    reason: 尤度比の漸近カイ二乗分布。自由度の数え方が問われる
+  - id: contribution-ratio
+    stage: 2
+    score: 78
+    prereq: [principal-component-analysis]
+    minutes: 15
+    reason: 固有値の比で求める。計算が頻出
+  - id: pca-on-correlation-matrix
+    stage: 2
+    score: 78
+    prereq: [principal-component-analysis, correlation-matrix]
+    minutes: 15
+    reason: 単位の違う変数で使う。共分散行列との違いが問われる
+  - id: k-means-method
+    stage: 2
+    score: 78
+    prereq: [distance-measures]
+    minutes: 20
+    reason: 非階層的手法の代表。反復の手順が出る
+  - id: yule-walker-equations
+    stage: 2
+    score: 78
+    prereq: [ar-model, autocovariance-autocorrelation]
+    minutes: 25
+    reason: AR係数と自己相関の関係。計算問題で頻出
+  - id: stationarity-condition
+    stage: 2
+    score: 78
+    prereq: [ar-model]
+    minutes: 20
+    reason: ARモデルが定常になる条件が問われる
+  - id: beta-binomial-model
+    stage: 2
+    score: 78
+    prereq: [conjugate-prior, beta-distribution]
+    minutes: 25
+    reason: 比率のベイズ推定の代表。計算が頻出
+  - id: conditional-independence
+    stage: 2
+    score: 77
+    prereq: [independence-of-events]
+    minutes: 20
+    reason: グラフィカルモデルや因果推論の前提。独立との違いが問われる
+  - id: partial-correlation-coefficient
+    stage: 2
+    score: 77
+    prereq: [covariance-and-correlation]
+    minutes: 30
+    reason: 第3の変数の影響を除いた相関。公式による計算が出る
+  - id: delta-method
+    stage: 2
+    score: 77
+    prereq: [central-limit-theorem]
+    minutes: 30
+    reason: 推定量の関数の漸近分散を出す定番。計算問題で頻出
+  - id: wald-confidence-interval
+    stage: 2
+    score: 77
+    prereq: [ci-proportion, asymptotic-normality-of-mle]
+    minutes: 20
+    reason: 最尤推定量から作る近似区間。比率の区間の基本形
+  - id: bonferroni-correction
+    stage: 2
+    score: 77
+    prereq: [multiple-testing]
+    minutes: 15
+    reason: 多重検定の最も基本的な補正。計算が簡単で出やすい
+  - id: gauss-markov-theorem
+    stage: 2
+    score: 77
+    prereq: [normal-equations]
+    minutes: 20
+    reason: 最小二乗推定量が最良線形不偏である根拠
+  - id: leverage
+    stage: 2
+    score: 77
+    prereq: [hat-matrix]
+    minutes: 20
+    reason: ハット行列の対角成分。頻出
+  - id: sum-of-squares-decomposition
+    stage: 2
+    score: 77
+    prereq: [one-way-anova]
+    minutes: 20
+    reason: 分散分析と回帰に共通する考え方
+  - id: two-way-anova-without-replication
+    stage: 2
+    score: 77
+    prereq: [one-way-anova]
+    minutes: 25
+    reason: 乱塊法と同じ形の分散分析
+  - id: main-effect-and-interaction
+    stage: 2
+    score: 78
+    prereq: [two-way-anova-without-replication]
+    minutes: 20
+    reason: 交互作用の解釈が頻出
+  - id: principal-component-score
+    stage: 2
+    score: 77
+    prereq: [principal-component-analysis]
+    minutes: 15
+    reason: 各個体の主成分の値。計算が出る
+  - id: partial-autocorrelation
+    stage: 2
+    score: 77
+    prereq: [autocovariance-autocorrelation, partial-correlation-coefficient]
+    minutes: 20
+    reason: ARモデルの次数を見分ける指標
+  - id: relative-risk
+    stage: 2
+    score: 77
+    prereq: [two-by-two-table]
+    minutes: 15
+    reason: オッズ比との違いが問われる
+  - id: gamma-poisson-model
+    stage: 2
+    score: 77
+    prereq: [conjugate-prior, gamma-distribution]
+    minutes: 20
+    reason: 件数データのベイズ推定の代表
+  - id: normal-normal-model
+    stage: 2
+    score: 77
+    prereq: [conjugate-prior]
+    minutes: 25
+    reason: 事後平均が重み付き平均になる計算が出る
+  - id: credible-interval
+    stage: 2
+    score: 77
+    prereq: [posterior-distribution, confidence-interval]
+    minutes: 15
+    reason: 信頼区間との解釈の違いが問われる
+  - id: uniform-random-number
+    stage: 2
+    score: 77
+    prereq: [uniform-distribution]
+    minutes: 10
+    reason: シミュレーションの出発点
+  - id: monte-carlo-integration
+    stage: 2
+    score: 77
+    prereq: [weak-law-of-large-numbers, uniform-random-number]
+    minutes: 15
+    reason: 乱数で積分を近似する。分散の評価が出る
+  - id: bootstrap
+    stage: 2
+    score: 77
+    prereq: [standard-error]
+    minutes: 20
+    reason: 再標本化で標準誤差を求める。頻出
+  - id: uniformly-most-powerful-test
+    stage: 2
+    score: 76
+    prereq: [neyman-pearson-lemma]
+    minutes: 20
+    reason: 片側検定が最強力になる条件が問われる
+  - id: poisson-parameter-test
+    stage: 2
+    score: 76
+    prereq: [poisson-distribution, p-value]
+    minutes: 20
+    reason: 件数データの検定。正規近似と正確法の両方が出る
+  - id: variance-inflation-factor
+    stage: 2
+    score: 76
+    prereq: [multicollinearity, coefficient-of-determination]
+    minutes: 15
+    reason: 多重共線性の数値指標。計算が出る
+  - id: simple-random-sampling
+    stage: 2
+    score: 76
+    prereq: [hypergeometric-distribution]
+    minutes: 20
+    reason: 標本調査の基本。推定量の分散の式が出る
+  - id: cumulative-contribution-ratio
+    stage: 2
+    score: 76
+    prereq: [contribution-ratio]
+    minutes: 10
+    reason: 主成分の数を決める目安
+  - id: bic
+    stage: 2
+    score: 76
+    prereq: [aic]
+    minutes: 15
+    reason: 新しい範囲表に明記。AICとの違いが問われる
+  - id: unit-root
+    stage: 2
+    score: 75
+    prereq: [stationarity-condition]
+    minutes: 15
+    reason: 非定常の代表。差分の必要性につながる
+  - id: arima-model
+    stage: 2
+    score: 77
+    prereq: [arma-model, unit-root]
+    minutes: 20
+    reason: 差分をとって非定常な系列を扱う
+  - id: stochastic-process
+    stage: 2
+    score: 60
+    prereq: [markov-chain]
+    minutes: 10
+    reason: 確率過程の用語の整理。ポアソン過程の前提
+  - id: poisson-process
+    stage: 2
+    score: 77
+    prereq: [poisson-distribution, exponential-distribution, stochastic-process]
+    minutes: 30
+    reason: 範囲表に明記。到着回数と間隔の計算が頻出
+  - id: efficient-estimator
+    stage: 2
+    score: 75
+    prereq: [cramer-rao-inequality]
+    minutes: 20
+    reason: クラメール・ラオの下限との関係で問われる
+  - id: wald-test
+    stage: 2
+    score: 75
+    prereq: [asymptotic-normality-of-mle]
+    minutes: 20
+    reason: 最尤推定量を使う検定。回帰の出力とも結び付く
+  - id: score-test
+    stage: 2
+    score: 75
+    prereq: [score-function, fisher-information]
+    minutes: 20
+    reason: 3つの漸近検定の一つ。比率の検定と同じ形になる
+  - id: g-statistic
+    stage: 2
+    score: 75
+    prereq: [pearson-chi-square-statistic, likelihood-ratio-test]
+    minutes: 20
+    reason: 尤度比による適合度検定。ピアソン統計量と比べる
+  - id: standardized-residual
+    stage: 2
+    score: 75
+    prereq: [residual, hat-matrix]
+    minutes: 15
+    reason: 外れ値の目安として使う
+  - id: cooks-distance
+    stage: 2
+    score: 75
+    prereq: [leverage, standardized-residual]
+    minutes: 20
+    reason: 新しい出題範囲表に明記。影響の大きい点の判定
+  - id: residual-plot
+    stage: 2
+    score: 75
+    prereq: [residual]
+    minutes: 15
+    reason: 図の読み取り問題で出る
+  - id: two-way-anova-with-replication
+    stage: 2
+    score: 75
+    prereq: [main-effect-and-interaction]
+    minutes: 30
+    reason: 交互作用を含む分散分析表の計算が出る
+  - id: fisher-three-principles
+    stage: 2
+    score: 75
+    prereq: []
+    minutes: 15
+    reason: 反復・無作為化・局所管理。概念問題で頻出
+  - id: randomized-block-design
+    stage: 2
+    score: 76
+    prereq: [fisher-three-principles, two-way-anova-without-replication]
+    minutes: 20
+    reason: 局所管理の代表的な計画
+  - id: principal-component-loading
+    stage: 2
+    score: 75
+    prereq: [principal-component-analysis]
+    minutes: 15
+    reason: 主成分と元の変数の相関。解釈で出る
+  - id: dendrogram
+    stage: 2
+    score: 75
+    prereq: [hierarchical-clustering]
+    minutes: 15
+    reason: 図の読み取りが頻出
+  - id: single-linkage
+    stage: 2
+    score: 75
+    prereq: [hierarchical-clustering]
+    minutes: 15
+    reason: 手計算で併合をたどる問題が出る
+  - id: simpsons-paradox
+    stage: 2
+    score: 75
+    prereq: [two-by-two-table]
+    minutes: 15
+    reason: 層別で結論が逆転する現象。概念問題で出る
+  - id: predictive-distribution
+    stage: 2
+    score: 75
+    prereq: [posterior-distribution]
+    minutes: 20
+    reason: 次の観測値の分布。計算問題で出る
+  - id: inverse-transform-sampling
+    stage: 2
+    score: 75
+    prereq: [uniform-random-number, cumulative-distribution-function]
+    minutes: 20
+    reason: 乱数生成の定番。計算問題で頻出
+  - id: rank-and-ties
+    stage: 2
+    score: 74
+    prereq: [order-statistics]
+    minutes: 15
+    reason: 順位を使う検定に共通する準備
+  - id: wilcoxon-rank-sum-test
+    stage: 2
+    score: 76
+    prereq: [rank-and-ties]
+    minutes: 25
+    reason: 2群の順位検定の代表。期待値と分散の計算が出る
+  - id: regularization
+    stage: 2
+    score: 74
+    prereq: [least-squares-method, overfitting]
+    minutes: 20
+    reason: 過学習を抑える罰則の考え方。新しい範囲表に明記
+  - id: ridge-regression
+    stage: 2
+    score: 76
+    prereq: [regularization, multicollinearity]
+    minutes: 25
+    reason: 正則化の代表。推定量の式が出る
+  - id: misclassification-rate
+    stage: 2
+    score: 74
+    prereq: [linear-discriminant-analysis]
+    minutes: 15
+    reason: 判別の性能の基本的な指標
+  - id: confusion-matrix
+    stage: 2
+    score: 76
+    prereq: [misclassification-rate]
+    minutes: 15
+    reason: 感度や適合率を計算する表。頻出
+  - id: sensitivity-and-specificity
+    stage: 2
+    score: 76
+    prereq: [confusion-matrix]
+    minutes: 15
+    reason: 医療検査型の問題で頻出
+  - id: communicating-class
+    stage: 2
+    score: 64
+    prereq: [transition-probability-matrix]
+    minutes: 15
+    reason: 既約性や再帰性を判定する準備
+  - id: recurrence-and-transience
+    stage: 2
+    score: 76
+    prereq: [communicating-class]
+    minutes: 20
+    reason: 状態の分類の基本。判定問題が出る
+  - id: factorization-theorem
+    stage: 2
+    score: 74
+    prereq: [sufficient-statistic]
+    minutes: 25
+    reason: 十分統計量を見つける定番の方法
+  - id: ci-variance-ratio
+    stage: 2
+    score: 74
+    prereq: [ci-variance, f-distribution]
+    minutes: 20
+    reason: 新しい出題範囲表に明記。F分布の使い方が問われる
+  - id: random-walk
+    stage: 2
+    score: 74
+    prereq: [bernoulli-distribution, stochastic-process]
+    minutes: 20
+    reason: 確率過程の基本例。破産問題の前提
+  - id: deviance
+    stage: 2
+    score: 74
+    prereq: [generalized-linear-model, likelihood-ratio-test]
+    minutes: 20
+    reason: モデルの当てはまりと比較の尺度
+  - id: lasso
+    stage: 2
+    score: 74
+    prereq: [regularization]
+    minutes: 20
+    reason: 変数選択を兼ねる正則化。リッジとの違いが頻出
+  - id: stratified-sampling
+    stage: 2
+    score: 74
+    prereq: [simple-random-sampling]
+    minutes: 25
+    reason: 分散が小さくなる理由と計算が出る
+  - id: roc-curve-and-auc
+    stage: 2
+    score: 74
+    prereq: [sensitivity-and-specificity]
+    minutes: 20
+    reason: 判別性能の評価。図の読み取りが出る
+  - id: ward-method
+    stage: 2
+    score: 74
+    prereq: [hierarchical-clustering]
+    minutes: 20
+    reason: 平方和の増加で併合する代表的な方法
+  - id: odds-ratio-interval
+    stage: 2
+    score: 74
+    prereq: [odds-and-odds-ratio, delta-method]
+    minutes: 20
+    reason: 対数オッズ比の標準誤差による区間推定
+  - id: bias-variance-tradeoff
+    stage: 2
+    score: 74
+    prereq: [mean-squared-error, overfitting]
+    minutes: 20
+    reason: 新しい範囲表に明記。予測誤差の分解
+  - id: quantile-function
+    stage: 2
+    score: 64
+    prereq: [cumulative-distribution-function]
+    minutes: 15
+    reason: 分位点の定義。逆関数法や分位点回帰の前提
+  - id: normal-qq-plot
+    stage: 2
+    score: 75
+    prereq: [residual, quantile-function]
+    minutes: 15
+    reason: 正規性の確認。図の読み取りで出る
+  - id: n-step-transition-probability
+    stage: 2
+    score: 73
+    prereq: [transition-probability-matrix]
+    minutes: 20
+    reason: 行列のべき乗で求める計算が出る
+  - id: irreducibility
+    stage: 2
+    score: 73
+    prereq: [communicating-class]
+    minutes: 15
+    reason: 定常分布が一つに決まる条件
+  - id: periodicity
+    stage: 2
+    score: 73
+    prereq: [irreducibility]
+    minutes: 15
+    reason: 極限分布が存在する条件として問われる
+  - id: ergodicity
+    stage: 2
+    score: 75
+    prereq: [periodicity, recurrence-and-transience, stationary-distribution]
+    minutes: 20
+    reason: 定常分布への収束の条件。MCMCの根拠になる
+  - id: absorbing-state
+    stage: 2
+    score: 73
+    prereq: [transition-probability-matrix]
+    minutes: 20
+    reason: 吸収確率の計算問題の前提
+  - id: detailed-balance
+    stage: 2
+    score: 73
+    prereq: [stationary-distribution]
+    minutes: 20
+    reason: 定常分布を簡単に求める条件。MCMCで再登場
+  - id: tukey-multiple-comparison
+    stage: 2
+    score: 73
+    prereq: [one-way-anova, multiple-testing]
+    minutes: 20
+    reason: 分散分析後の対比較の定番
+  - id: fisher-linear-discriminant-function
+    stage: 2
+    score: 73
+    prereq: [linear-discriminant-analysis]
+    minutes: 20
+    reason: 群間と群内の分散の比を最大にする関数
+  - id: survival-function
+    stage: 2
+    score: 65
+    prereq: [cumulative-distribution-function]
+    minutes: 15
+    reason: 生存時間解析とハザード関数の前提
+  - id: hazard-function
+    stage: 2
+    score: 74
+    prereq: [survival-function]
+    minutes: 25
+    reason: 指数分布やワイブル分布と結び付けて問われる。生存時間解析の基礎
+  - id: outlier-and-influential-point
+    stage: 2
+    score: 72
+    prereq: [leverage, residual]
+    minutes: 15
+    reason: 外れ値と影響点の区別が問われる
+  - id: link-function
+    stage: 2
+    score: 72
+    prereq: [generalized-linear-model]
+    minutes: 15
+    reason: 平均と線形予測子をつなぐ関数。正準リンクが問われる
+  - id: latin-square-design
+    stage: 2
+    score: 72
+    prereq: [randomized-block-design]
+    minutes: 20
+    reason: 2つの局外要因を同時に除く計画
+  - id: yates-correction
+    stage: 2
+    score: 72
+    prereq: [independence-test, continuity-correction]
+    minutes: 10
+    reason: 新しい出題範囲表に明記。2×2表の連続修正
+  - id: mallows-cp
+    stage: 2
+    score: 72
+    prereq: [adjusted-r-squared]
+    minutes: 15
+    reason: 新しい範囲表に明記。回帰の変数選択の規準
+  - id: rejection-sampling
+    stage: 2
+    score: 72
+    prereq: [uniform-random-number]
+    minutes: 20
+    reason: 採択確率の計算が出る
+  - id: factorial-design
+    stage: 2
+    score: 64
+    prereq: [main-effect-and-interaction]
+    minutes: 15
+    reason: 複数の要因を組み合わせる計画
+  - id: orthogonal-array
+    stage: 2
+    score: 73
+    prereq: [factorial-design]
+    minutes: 25
+    reason: 直交表への割り付けが出る
+  - id: spearman-rank-correlation
+    stage: 2
+    score: 71
+    prereq: [rank-and-ties, covariance-and-correlation]
+    minutes: 20
+    reason: 順位相関の計算式が頻出
+  - id: variable-selection
+    stage: 2
+    score: 71
+    prereq: [adjusted-r-squared, aic]
+    minutes: 20
+    reason: ステップワイズや情報量規準による説明変数の選び方
+  - id: mcnemar-test
+    stage: 2
+    score: 71
+    prereq: [two-by-two-table]
+    minutes: 20
+    reason: 対応のある2値データの検定
+  - id: box-muller-method
+    stage: 2
+    score: 71
+    prereq: [uniform-random-number, change-of-variables]
+    minutes: 15
+    reason: 正規乱数の作り方。変数変換の応用
+  - id: slutsky-theorem
+    stage: 2
+    score: 69
+    prereq: [central-limit-theorem]
+    minutes: 20
+    reason: 新しい出題範囲表に明記。漸近分布の組み合わせで使う
+  - id: sampling-and-nonsampling-error
+    stage: 2
+    score: 69
+    prereq: [simple-random-sampling]
+    minutes: 10
+    reason: 概念問題で頻出
+  - id: box-cox-transformation
+    stage: 2
+    score: 68
+    prereq: [change-of-variables]
+    minutes: 20
+    reason: 新しい出題範囲表に明記。変換パラメータの意味が問われる
+  - id: almost-sure-convergence
+    stage: 2
+    score: 68
+    prereq: [convergence-in-probability]
+    minutes: 20
+    reason: 新しい出題範囲表に明記。確率収束との強弱関係が問われる
+  - id: confidence-interval-test-duality
+    stage: 2
+    score: 68
+    prereq: [confidence-interval, rejection-region]
+    minutes: 15
+    reason: 区間と検定を互いに読み替える問題が出る
+  - id: dummy-variable
+    stage: 2
+    score: 68
+    prereq: [multiple-regression-model]
+    minutes: 15
+    reason: 質的変数を回帰に入れる方法。係数の解釈が問われる
+  - id: continuous-mapping-theorem
+    stage: 2
+    score: 66
+    prereq: [convergence-in-distribution]
+    minutes: 15
+    reason: 新しい出題範囲表に明記。デルタ法と組で使う
+  - id: homogeneity-test
+    stage: 2
+    score: 66
+    prereq: [independence-test]
+    minutes: 15
+    reason: 独立性の検定と同じ計算で意味が異なる
+  - id: confidence-and-prediction-interval-regression
+    stage: 2
+    score: 65
+    prereq: [regression-coefficient-t-test]
+    minutes: 20
+    reason: 信頼区間と予測区間の違いが問われる
+  - id: skewness-kurtosis
+    stage: 2
+    score: 62
+    prereq: [moments]
+    minutes: 20
+    reason: 分布の形を表す指標。定義と正規分布での値が問われる
+  - id: mcmc
+    stage: 3
+    score: 64
+    prereq: [ergodicity, posterior-distribution]
+    minutes: 20
+    reason: 事後分布からのサンプリングの考え方
+  - id: factor-analysis-model
+    stage: 3
+    score: 62
+    prereq: [principal-component-analysis]
+    minutes: 25
+    reason: 範囲表に明記。主成分分析との違いが問われる
+  - id: heteroscedasticity
+    stage: 3
+    score: 61
+    prereq: [residual-plot]
+    minutes: 20
+    reason: 誤差の分散が一定でない場合の問題と対処
+  - id: serial-correlation
+    stage: 3
+    score: 59
+    prereq: [residual]
+    minutes: 15
+    reason: 誤差の自己相関。ダービン・ワトソン比の前提
+  - id: average-linkage
+    stage: 3
+    score: 58
+    prereq: [single-linkage]
+    minutes: 10
+    reason: 最短・最長距離法の中間の方法
+  - id: censored-data
+    stage: 3
+    score: 58
+    prereq: [survival-function]
+    minutes: 15
+    reason: 生存時間解析の前提。打ち切りの扱い
+  - id: kaplan-meier-estimator
+    stage: 3
+    score: 58
+    prereq: [censored-data]
+    minutes: 25
+    reason: 新しい範囲表に明記。生存関数の推定の計算が出る
+  - id: common-factor-unique-factor
+    stage: 3
+    score: 53
+    prereq: [factor-analysis-model]
+    minutes: 15
+    reason: 因子分析モデルの構成要素
+  - id: factor-loading
+    stage: 3
+    score: 59
+    prereq: [common-factor-unique-factor]
+    minutes: 20
+    reason: 共分散の構造の計算と解釈で出る
+  - id: bayes-discriminant-rule
+    stage: 3
+    score: 57
+    prereq: [bayes-theorem, linear-discriminant-analysis]
+    minutes: 20
+    reason: 事後確率が最大の群に判別する考え方
+  - id: complete-linkage
+    stage: 3
+    score: 57
+    prereq: [single-linkage]
+    minutes: 10
+    reason: 最短距離法との違いが問われる
+  - id: graphical-model
+    stage: 3
+    score: 57
+    prereq: [conditional-independence]
+    minutes: 20
+    reason: 条件付き独立をグラフで表す考え方
+  - id: loglinear-model
+    stage: 3
+    score: 57
+    prereq: [contingency-table, poisson-regression]
+    minutes: 25
+    reason: 分割表の構造をモデルで表す
+  - id: birth-death-process
+    stage: 3
+    score: 56
+    prereq: [poisson-process]
+    minutes: 25
+    reason: 待ち行列の土台。定常分布の計算が出る
+  - id: mm1-queue
+    stage: 3
+    score: 58
+    prereq: [birth-death-process]
+    minutes: 25
+    reason: 待ち行列の代表。平均系内人数の計算が出る
+  - id: support-vector-machine
+    stage: 3
+    score: 56
+    prereq: [linear-discriminant-analysis]
+    minutes: 20
+    reason: 範囲表に明記。マージン最大化の考え方
+  - id: directed-acyclic-graph
+    stage: 3
+    score: 56
+    prereq: [graphical-model]
+    minutes: 20
+    reason: 新しい範囲表で因果推論の土台として明記
+  - id: em-algorithm
+    stage: 3
+    score: 56
+    prereq: [maximum-likelihood-estimator]
+    minutes: 25
+    reason: 欠測や潜在変数がある場合の最尤推定の手順
+  - id: confounding
+    stage: 3
+    score: 48
+    prereq: [factorial-design]
+    minutes: 15
+    reason: 効果が分離できない状態。一部実施計画と因果推論に結び付く
+  - id: causal-effect
+    stage: 3
+    score: 57
+    prereq: [confounding]
+    minutes: 20
+    reason: 新しい範囲表で追加された因果推論の出発点
+  - id: three-way-table
+    stage: 3
+    score: 46
+    prereq: [simpsons-paradox]
+    minutes: 10
+    reason: 層別した分割表の扱い
+  - id: mantel-haenszel-test
+    stage: 3
+    score: 57
+    prereq: [three-way-table]
+    minutes: 20
+    reason: 層別した2×2表をまとめて検定する
+  - id: sign-test
+    stage: 3
+    score: 55
+    prereq: [binomial-test]
+    minutes: 15
+    reason: 二項検定に帰着する最も簡単なノンパラメトリック検定
+  - id: kruskal-wallis-test
+    stage: 3
+    score: 55
+    prereq: [wilcoxon-rank-sum-test]
+    minutes: 20
+    reason: 一元配置分散分析のノンパラメトリック版
+  - id: studentized-residual
+    stage: 3
+    score: 55
+    prereq: [standardized-residual]
+    minutes: 15
+    reason: その点を除いた分散で割る残差
+  - id: durbin-watson-statistic
+    stage: 3
+    score: 55
+    prereq: [serial-correlation]
+    minutes: 15
+    reason: 系列相関の検定統計量。値の範囲と解釈が出る
+  - id: weighted-least-squares
+    stage: 3
+    score: 55
+    prereq: [least-squares-method, heteroscedasticity]
+    minutes: 20
+    reason: 不均一分散への対処法
+  - id: quadratic-discriminant-analysis
+    stage: 3
+    score: 55
+    prereq: [linear-discriminant-analysis]
+    minutes: 15
+    reason: 共分散が群ごとに違う場合の判別。範囲表に明記
+  - id: precision-matrix
+    stage: 3
+    score: 55
+    prereq: [variance-covariance-matrix, partial-correlation-coefficient]
+    minutes: 20
+    reason: 条件付き独立と零成分の対応で出る
+  - id: path-analysis
+    stage: 3
+    score: 55
+    prereq: [multiple-regression-model]
+    minutes: 20
+    reason: 範囲表に明記。直接効果と間接効果の計算が出る
+  - id: sampling-schemes
+    stage: 3
+    score: 55
+    prereq: [two-by-two-table, multinomial-distribution]
+    minutes: 15
+    reason: 分割表の集め方による分布の違い
+  - id: missing-data-mechanism
+    stage: 3
+    score: 55
+    prereq: []
+    minutes: 15
+    reason: 欠測データの扱いの出発点
+  - id: mcar
+    stage: 3
+    score: 54
+    prereq: [missing-data-mechanism]
+    minutes: 10
+    reason: 完全にランダムな欠測の定義
+  - id: mar
+    stage: 3
+    score: 57
+    prereq: [mcar]
+    minutes: 10
+    reason: ほかの観測値で説明できる欠測。代入法の前提
+  - id: cox-proportional-hazards-model
+    stage: 3
+    score: 55
+    prereq: [hazard-function, censored-data]
+    minutes: 25
+    reason: 生存時間の回帰の代表
+  - id: importance-sampling
+    stage: 3
+    score: 55
+    prereq: [monte-carlo-integration]
+    minutes: 20
+    reason: 分布を変えて推定の精度を上げる方法
+  - id: metropolis-hastings
+    stage: 3
+    score: 55
+    prereq: [mcmc, detailed-balance]
+    minutes: 20
+    reason: MCMCの代表的な手法。採択確率の式が出る
+  - id: gibbs-sampling
+    stage: 3
+    score: 55
+    prereq: [mcmc, conditional-probability-density-function]
+    minutes: 20
+    reason: 条件付き分布から順に生成するMCMC
+  - id: jackknife
+    stage: 3
+    score: 55
+    prereq: [bootstrap]
+    minutes: 15
+    reason: 1個ずつ抜く再標本化。バイアス補正の式が出る
+  - id: d-separation
+    stage: 3
+    score: 55
+    prereq: [directed-acyclic-graph, conditional-independence]
+    minutes: 20
+    reason: DAGから条件付き独立を読み取る規則
+  - id: backdoor-criterion
+    stage: 3
+    score: 55
+    prereq: [causal-effect, d-separation]
+    minutes: 20
+    reason: 交絡を調整する変数の選び方
+  - id: permutation-test
+    stage: 3
+    score: 54
+    prereq: [p-value]
+    minutes: 20
+    reason: 並べ替えでp値を出す考え方。シミュレーションと結び付く
+  - id: endogeneity
+    stage: 3
+    score: 54
+    prereq: [least-squares-method]
+    minutes: 20
+    reason: 説明変数と誤差の相関が推定を偏らせる問題
+  - id: inclusion-probability
+    stage: 3
+    score: 54
+    prereq: [simple-random-sampling]
+    minutes: 15
+    reason: ホルビッツ・トンプソン推定量の前提
+  - id: horvitz-thompson-estimator
+    stage: 3
+    score: 54
+    prereq: [inclusion-probability]
+    minutes: 20
+    reason: 不等確率抽出での推定量の基本形
+  - id: cluster-sampling
+    stage: 3
+    score: 54
+    prereq: [simple-random-sampling]
+    minutes: 20
+    reason: 集落単位で抽出する方法。集落内の似かよりが効く
+  - id: communality
+    stage: 3
+    score: 54
+    prereq: [factor-loading]
+    minutes: 15
+    reason: 分散の分解の計算問題で出る
+  - id: factor-rotation
+    stage: 3
+    score: 54
+    prereq: [factor-loading]
+    minutes: 15
+    reason: 解釈しやすくするための回転
+  - id: multidimensional-scaling
+    stage: 3
+    score: 54
+    prereq: [distance-measures, eigenvalue-and-eigenvector]
+    minutes: 20
+    reason: 距離から座標を復元する方法
+  - id: quantification-theory
+    stage: 3
+    score: 54
+    prereq: [dummy-variable]
+    minutes: 15
+    reason: 質的データを数量化する手法群
+  - id: hierarchical-loglinear-model
+    stage: 3
+    score: 54
+    prereq: [loglinear-model]
+    minutes: 15
+    reason: 範囲表に明記。対数線形モデルの選び方
+  - id: chapman-kolmogorov-equation
+    stage: 3
+    score: 53
+    prereq: [n-step-transition-probability]
+    minutes: 15
+    reason: n段階推移の計算の根拠
+  - id: instrumental-variable-method
+    stage: 3
+    score: 53
+    prereq: [endogeneity]
+    minutes: 25
+    reason: 内生性への対処の代表的な方法
+  - id: proportional-allocation
+    stage: 3
+    score: 53
+    prereq: [stratified-sampling]
+    minutes: 15
+    reason: 層の大きさに比例させる配分
+  - id: undirected-graphical-model
+    stage: 3
+    score: 53
+    prereq: [graphical-model, precision-matrix]
+    minutes: 20
+    reason: 精度行列の零成分と辺の対応が要点
+  - id: structural-equation-modeling
+    stage: 3
+    score: 53
+    prereq: [path-analysis, factor-analysis-model]
+    minutes: 20
+    reason: 潜在変数を含む因果モデル
+  - id: single-imputation
+    stage: 3
+    score: 53
+    prereq: [missing-data-mechanism]
+    minutes: 10
+    reason: 新しい範囲表に明記。一つの値で補う方法の問題点
+  - id: multiple-imputation
+    stage: 3
+    score: 54
+    prereq: [single-imputation, mar]
+    minutes: 20
+    reason: 代入の不確かさを反映させる方法
+  - id: singular-value-decomposition
+    stage: 3
+    score: 51
+    prereq: [eigenvalue-and-eigenvector]
+    minutes: 20
+    reason: 主成分分析やコレスポンデンス分析の計算の土台
+  - id: correspondence-analysis
+    stage: 3
+    score: 54
+    prereq: [contingency-table, singular-value-decomposition]
+    minutes: 20
+    reason: 分割表を図にする方法
+  - id: ratio-estimation
+    stage: 3
+    score: 52
+    prereq: [simple-random-sampling]
+    minutes: 20
+    reason: 補助変数を使う推定。分散の近似が出る
+  - id: canonical-correlation-analysis
+    stage: 3
+    score: 52
+    prereq: [correlation-matrix, eigenvalue-and-eigenvector]
+    minutes: 20
+    reason: 2組の変数の相関を最大にする方法
+  - id: wilcoxon-signed-rank-test
+    stage: 3
+    score: 51
+    prereq: [sign-test, rank-and-ties]
+    minutes: 25
+    reason: 対応のあるデータの順位検定。統計量の計算が出る
+  - id: interarrival-time
+    stage: 3
+    score: 51
+    prereq: [poisson-process]
+    minutes: 15
+    reason: 指数分布との対応が問われる
+  - id: brownian-motion
+    stage: 3
+    score: 51
+    prereq: [random-walk, normal-distribution]
+    minutes: 20
+    reason: ランダムウォークの連続版。性質を問う問題が出る
+  - id: traffic-intensity
+    stage: 3
+    score: 51
+    prereq: [mm1-queue]
+    minutes: 10
+    reason: M/M/1が安定する条件。計算の最初に出る
+  - id: generalized-least-squares
+    stage: 3
+    score: 51
+    prereq: [weighted-least-squares, serial-correlation]
+    minutes: 20
+    reason: 誤差の相関を考慮した推定
+  - id: two-stage-sampling
+    stage: 3
+    score: 51
+    prereq: [cluster-sampling]
+    minutes: 20
+    reason: 集落の中からさらに抽出する方法
+  - id: mnar
+    stage: 3
+    score: 51
+    prereq: [mar]
+    minutes: 10
+    reason: 欠測自体が値に依存する場合。偏りの原因
+  - id: complete-case-analysis
+    stage: 3
+    score: 51
+    prereq: [mcar]
+    minutes: 10
+    reason: 新しい範囲表に明記。欠測を除く方法の注意点
+  - id: log-rank-test
+    stage: 3
+    score: 51
+    prereq: [kaplan-meier-estimator]
+    minutes: 20
+    reason: 生存曲線の比較の検定
+  - id: exponential-family
+    stage: 3
+    score: 50
+    prereq: [sufficient-statistic]
+    minutes: 25
+    reason: 十分統計量や一般化線形モデルを統一的に見る枠組み
+  - id: neyman-allocation
+    stage: 3
+    score: 50
+    prereq: [proportional-allocation]
+    minutes: 20
+    reason: 分散を最小にする配分。計算が出る
+  - id: canonical-variate
+    stage: 3
+    score: 50
+    prereq: [canonical-correlation-analysis]
+    minutes: 15
+    reason: 正準相関分析で得る合成変数
+  - id: rubins-rules
+    stage: 3
+    score: 50
+    prereq: [multiple-imputation]
+    minutes: 15
+    reason: 多重代入の結果をまとめる公式
+  - id: marginal-likelihood
+    stage: 3
+    score: 50
+    prereq: [posterior-distribution]
+    minutes: 15
+    reason: ベイズファクターやBICの土台
+  - id: absorption-probability
+    stage: 3
+    score: 45
+    prereq: [absorbing-state]
+    minutes: 25
+    reason: 一歩目で場合分けする計算。破産問題と同じ形
+  - id: gambler-ruin-problem
+    stage: 3
+    score: 51
+    prereq: [random-walk, absorption-probability]
+    minutes: 25
+    reason: 吸収確率の典型問題
+  - id: concordant-discordant-pairs
+    stage: 3
+    score: 38
+    prereq: [rank-and-ties]
+    minutes: 10
+    reason: ケンドールの順位相関の計算の前提
+  - id: kendall-rank-correlation
+    stage: 3
+    score: 51
+    prereq: [concordant-discordant-pairs]
+    minutes: 20
+    reason: 一致対と不一致対の数から求める順位相関
+  - id: fisher-exact-test
+    stage: 3
+    score: 49
+    prereq: [hypergeometric-distribution, two-by-two-table]
+    minutes: 25
+    reason: 小標本の2×2表の検定。超幾何分布の応用として出る
+  - id: friedman-test
+    stage: 3
+    score: 49
+    prereq: [kruskal-wallis-test]
+    minutes: 20
+    reason: 乱塊法に対応するノンパラメトリック検定
+  - id: hierarchical-bayes-model
+    stage: 3
+    score: 49
+    prereq: [conjugate-prior]
+    minutes: 20
+    reason: 母数にさらに分布を置くモデル
+  - id: test-correlation-coefficient
+    stage: 3
+    score: 48
+    prereq: [covariance-and-correlation, t-statistic]
+    minutes: 20
+    reason: 相関の有無をt統計量で検定する
+  - id: noninformative-prior
+    stage: 3
+    score: 48
+    prereq: [prior-distribution]
+    minutes: 10
+    reason: 事前情報がない場合の事前分布
+  - id: noncentral-t-distribution
+    stage: 3
+    score: 47
+    prereq: [t-distribution]
+    minutes: 15
+    reason: t検定の検出力計算の前提
+  - id: power-of-t-test
+    stage: 3
+    score: 47
+    prereq: [power-function, one-sample-t-test, noncentral-t-distribution]
+    minutes: 20
+    reason: 非心t分布を使う検出力の計算
+  - id: interaction-term
+    stage: 3
+    score: 47
+    prereq: [dummy-variable]
+    minutes: 15
+    reason: 効果がほかの変数で変わることを表す項
+  - id: scree-plot
+    stage: 3
+    score: 47
+    prereq: [cumulative-contribution-ratio]
+    minutes: 10
+    reason: 主成分の数を図で決める方法
+  - id: correlogram
+    stage: 3
+    score: 47
+    prereq: [autocovariance-autocorrelation]
+    minutes: 10
+    reason: 自己相関の図。モデルの見分けに使う
+  - id: invertibility
+    stage: 3
+    score: 47
+    prereq: [ma-model]
+    minutes: 15
+    reason: MAモデルの反転可能性の条件
+  - id: forecasting
+    stage: 3
+    score: 47
+    prereq: [arma-model]
+    minutes: 15
+    reason: 時系列モデルによる予測の計算
+  - id: bayes-factor
+    stage: 3
+    score: 47
+    prereq: [marginal-likelihood]
+    minutes: 15
+    reason: ベイズ流のモデル比較
+  - id: normal-mixture-distribution
+    stage: 3
+    score: 46
+    prereq: [normal-distribution, conditional-variance]
+    minutes: 20
+    reason: EMアルゴリズムや混合モデルの土台
+  - id: rao-blackwell-theorem
+    stage: 3
+    score: 46
+    prereq: [sufficient-statistic, mean-squared-error]
+    minutes: 20
+    reason: 十分統計量で推定量を改良する定理
+  - id: fisher-z-transformation
+    stage: 3
+    score: 46
+    prereq: [test-correlation-coefficient]
+    minutes: 20
+    reason: 相関係数の区間推定と2群比較で使う
+  - id: poisson-two-sample-test
+    stage: 3
+    score: 46
+    prereq: [poisson-parameter-test]
+    minutes: 20
+    reason: 2群のポアソン率の比較。条件付き二項検定に帰着する
+  - id: standardized-partial-regression-coefficient
+    stage: 3
+    score: 46
+    prereq: [least-squares-method]
+    minutes: 15
+    reason: 単位の違う説明変数の効果を比べる
+  - id: spectrum
+    stage: 3
+    score: 46
+    prereq: [autocovariance-autocorrelation]
+    minutes: 20
+    reason: 周波数で見た時系列の性質
+  - id: state-space-model
+    stage: 3
+    score: 46
+    prereq: [ar-model]
+    minutes: 20
+    reason: 範囲表に明記。観測と状態を分けるモデル
+  - id: jeffreys-prior
+    stage: 3
+    score: 46
+    prereq: [noninformative-prior, fisher-information]
+    minutes: 15
+    reason: フィッシャー情報量から作る事前分布
+  - id: cauchy-distribution
+    stage: 3
+    score: 45
+    prereq: [t-distribution]
+    minutes: 15
+    reason: 期待値が存在しない分布の代表。反例として問われる
+  - id: lognormal-distribution
+    stage: 3
+    score: 45
+    prereq: [normal-distribution]
+    minutes: 15
+    reason: 対数をとると正規分布になる分布。期待値の式が出る
+  - id: noncentral-chi-squared-distribution
+    stage: 3
+    score: 45
+    prereq: [chi-squared-distribution]
+    minutes: 15
+    reason: 検出力の計算で使う。定義を押さえれば十分
+  - id: ci-paired-difference
+    stage: 3
+    score: 45
+    prereq: [ci-mean-unknown-variance]
+    minutes: 15
+    reason: 差をとって1標本に帰着させる考え方
+  - id: holm-method
+    stage: 3
+    score: 45
+    prereq: [bonferroni-correction]
+    minutes: 15
+    reason: ボンフェローニの改良版。手順を押さえる
+  - id: false-discovery-rate
+    stage: 3
+    score: 45
+    prereq: [multiple-testing]
+    minutes: 20
+    reason: 大規模な多重検定の考え方。BH法の手順が問われる
+  - id: first-passage-time
+    stage: 3
+    score: 45
+    prereq: [recurrence-and-transience]
+    minutes: 20
+    reason: 平均再帰時間と定常分布の関係が問われる
+  - id: fixed-and-random-effects
+    stage: 3
+    score: 45
+    prereq: [one-way-anova]
+    minutes: 20
+    reason: 母数模型と変量模型の違い
+  - id: ci-two-sample-proportion
+    stage: 3
+    score: 44
+    prereq: [ci-proportion]
+    minutes: 15
+    reason: 2群の比率の差の区間推定。検定と組で出る
+  - id: one-sided-confidence-limit
+    stage: 3
+    score: 44
+    prereq: [confidence-interval, one-sided-two-sided-test]
+    minutes: 10
+    reason: 片側の上限・下限。片側検定と対応させて覚える
+  - id: logistic-likelihood-estimation
+    stage: 3
+    score: 44
+    prereq: [logistic-regression]
+    minutes: 20
+    reason: 対数尤度の形と推定の仕組み
+  - id: multinomial-logit-model
+    stage: 3
+    score: 44
+    prereq: [logistic-regression]
+    minutes: 15
+    reason: 3つ以上のカテゴリを扱う回帰
+  - id: generalization-error
+    stage: 3
+    score: 44
+    prereq: [overfitting]
+    minutes: 10
+    reason: 未知のデータに対する誤差の考え方
+  - id: finite-population-correction
+    stage: 3
+    score: 43
+    prereq: [hypergeometric-distribution]
+    minutes: 15
+    reason: 非復元抽出の分散の補正。標本調査の公式に直結
+  - id: limiting-distribution
+    stage: 3
+    score: 43
+    prereq: [ergodicity]
+    minutes: 15
+    reason: 定常分布との違いを押さえる
+  - id: overdispersion
+    stage: 3
+    score: 43
+    prereq: [poisson-regression]
+    minutes: 15
+    reason: ポアソン回帰の仮定が崩れる状況
+  - id: expected-mean-square
+    stage: 3
+    score: 43
+    prereq: [fixed-and-random-effects]
+    minutes: 20
+    reason: F比の分母の選び方の根拠
+  - id: split-plot-design
+    stage: 3
+    score: 43
+    prereq: [randomized-block-design]
+    minutes: 20
+    reason: 誤差が2種類ある計画
+  - id: precision-recall-f-measure
+    stage: 3
+    score: 43
+    prereq: [confusion-matrix]
+    minutes: 15
+    reason: 不均衡なデータで使う評価指標
+  - id: expected-log-likelihood
+    stage: 3
+    score: 43
+    prereq: [kullback-leibler-divergence]
+    minutes: 15
+    reason: AICが推定している量
+  - id: leave-one-out-cv
+    stage: 3
+    score: 43
+    prereq: [cross-validation]
+    minutes: 10
+    reason: 1個ずつ抜く交差検証
+  - id: spurious-correlation
+    stage: 3
+    score: 42
+    prereq: [covariance-and-correlation]
+    minutes: 15
+    reason: 相関と因果の区別を問う概念問題。偏相関と組で押さえる
+  - id: invariance-of-mle
+    stage: 3
+    score: 42
+    prereq: [maximum-likelihood-estimator]
+    minutes: 10
+    reason: 関数の最尤推定量がすぐ求まる便利な性質
+  - id: dffits
+    stage: 3
+    score: 42
+    prereq: [cooks-distance]
+    minutes: 15
+    reason: 影響度を測る別の指標
+  - id: exponential-dispersion-family
+    stage: 3
+    score: 42
+    prereq: [generalized-linear-model, exponential-family]
+    minutes: 15
+    reason: 一般化線形モデルで使う分布の共通の形
+  - id: ordered-logit-model
+    stage: 3
+    score: 42
+    prereq: [multinomial-logit-model]
+    minutes: 15
+    reason: 順序のあるカテゴリを扱う回帰
+  - id: fractional-factorial-design
+    stage: 3
+    score: 42
+    prereq: [orthogonal-array, confounding]
+    minutes: 20
+    reason: 実験回数を減らす計画。交絡との関係が要点
+  - id: number-of-clusters
+    stage: 3
+    score: 42
+    prereq: [dendrogram, k-means-method]
+    minutes: 10
+    reason: クラスター数の決め方の目安
+  - id: residual-analysis-contingency
+    stage: 3
+    score: 42
+    prereq: [independence-test]
+    minutes: 15
+    reason: 範囲表に明記。どのセルが効いているかを調べる
+  - id: phi-coefficient-and-association
+    stage: 3
+    score: 42
+    prereq: [independence-test]
+    minutes: 10
+    reason: 分割表の関連の強さを表す指標
+  - id: cohort-and-case-control-study
+    stage: 3
+    score: 42
+    prereq: [relative-risk, odds-and-odds-ratio]
+    minutes: 15
+    reason: 研究デザインとオッズ比・相対リスクの使い分け
+  - id: bootstrap-confidence-interval
+    stage: 3
+    score: 42
+    prereq: [bootstrap, confidence-interval]
+    minutes: 15
+    reason: ブートストラップで作る信頼区間
+  - id: normal-approximation-rank-tests
+    stage: 3
+    score: 41
+    prereq: [wilcoxon-rank-sum-test, central-limit-theorem]
+    minutes: 15
+    reason: 順位統計量の期待値と分散による正規近似
+  - id: k-nearest-neighbors
+    stage: 3
+    score: 41
+    prereq: [distance-measures]
+    minutes: 10
+    reason: 近い点の多数決で判別する方法
+  - id: mantel-haenszel-estimator
+    stage: 3
+    score: 41
+    prereq: [mantel-haenszel-test]
+    minutes: 15
+    reason: 層に共通するオッズ比の推定
+  - id: iteratively-reweighted-least-squares
+    stage: 3
+    score: 40
+    prereq: [logistic-likelihood-estimation, weighted-least-squares]
+    minutes: 15
+    reason: 一般化線形モデルの数値解法
+  - id: burn-in-convergence
+    stage: 3
+    score: 40
+    prereq: [mcmc]
+    minutes: 10
+    reason: MCMCの初期値の影響と収束の確認
+  - id: probit-transformation
+    stage: 3
+    score: 38
+    prereq: [logit-logistic-transformation, standard-normal-distribution]
+    minutes: 15
+    reason: プロビットモデルの前提。ロジットとの違いを押さえる
+  - id: probit-model
+    stage: 3
+    score: 41
+    prereq: [logistic-regression, probit-transformation]
+    minutes: 15
+    reason: ロジットモデルとの違いを押さえる
+  - id: littles-law
+    stage: 3
+    score: 39
+    prereq: [mm1-queue]
+    minutes: 10
+    reason: 平均人数と平均待ち時間をつなぐ公式
+  - id: omitted-variable-bias
+    stage: 3
+    score: 39
+    prereq: [endogeneity]
+    minutes: 15
+    reason: 必要な変数を落とすと係数が偏る仕組み
+  - id: hazard-ratio
+    stage: 3
+    score: 39
+    prereq: [cox-proportional-hazards-model]
+    minutes: 10
+    reason: 比例ハザードモデルの係数の解釈
+  - id: inclusion-exclusion-principle
+    stage: 3
+    score: 38
+    prereq: [independence-of-events]
+    minutes: 20
+    reason: 和事象の確率計算で使う。出題は限られるが短時間で身につく
+  - id: log-transformation
+    stage: 3
+    score: 38
+    prereq: [change-of-variables]
+    minutes: 15
+    reason: 右に裾の長いデータの処理。対数正規分布と結び付く
+  - id: superposition-thinning-poisson
+    stage: 3
+    score: 38
+    prereq: [poisson-process]
+    minutes: 15
+    reason: 合成や間引きをしてもポアソン過程になる性質
+  - id: polynomial-regression
+    stage: 3
+    score: 38
+    prereq: [multiple-regression-model]
+    minutes: 15
+    reason: 線形回帰の枠内で曲線を当てはめる
+  - id: two-stage-least-squares
+    stage: 3
+    score: 38
+    prereq: [instrumental-variable-method]
+    minutes: 20
+    reason: 操作変数法の具体的な計算手順
+  - id: law-of-small-numbers
+    stage: 3
+    score: 37
+    prereq: [poisson-distribution]
+    minutes: 15
+    reason: 二項分布をポアソン分布で近似する根拠
+  - id: independent-stationary-increments
+    stage: 3
+    score: 37
+    prereq: [poisson-process]
+    minutes: 10
+    reason: ポアソン過程とブラウン運動に共通する性質
+  - id: nonlinear-regression
+    stage: 3
+    score: 37
+    prereq: [least-squares-method]
+    minutes: 15
+    reason: パラメータについて非線形なモデル
+  - id: nonresponse-bias
+    stage: 3
+    score: 37
+    prereq: [sampling-and-nonsampling-error]
+    minutes: 10
+    reason: 非標本誤差の代表。欠測データと結び付く
+  - id: markov-inequality
+    stage: 3
+    score: 36
+    prereq: [expectation-variance-properties]
+    minutes: 15
+    reason: チェビシェフの不等式の元になる不等式
+  - id: extreme-value-distribution
+    stage: 3
+    score: 36
+    prereq: [order-statistics]
+    minutes: 20
+    reason: 最大値の極限分布。順序統計量と組で出る
+  - id: partial-f-test
+    stage: 3
+    score: 36
+    prereq: [overall-f-test-regression]
+    minutes: 15
+    reason: 説明変数の一部を外してよいかの検定
+  - id: quantile-regression
+    stage: 3
+    score: 36
+    prereq: [quantile-function, least-squares-method]
+    minutes: 15
+    reason: 平均ではなく分位点を予測する回帰
+  - id: noncentral-f-distribution
+    stage: 4
+    score: 38
+    prereq: [f-distribution, noncentral-chi-squared-distribution]
+    minutes: 10
+    reason: 分散分析の検出力で使う。出題はまれ
+  - id: wilson-interval
+    stage: 4
+    score: 35
+    prereq: [wald-confidence-interval]
+    minutes: 15
+    reason: ワルド区間の改良版。違いを知っておく
+  - id: chi-square-approximation-condition
+    stage: 4
+    score: 35
+    prereq: [pearson-chi-square-statistic]
+    minutes: 10
+    reason: 期待度数が小さいときの注意点
+  - id: kaiser-criterion
+    stage: 4
+    score: 35
+    prereq: [pca-on-correlation-matrix]
+    minutes: 10
+    reason: 固有値1以上を採る目安
+  - id: lagrange-multiplier-pca
+    stage: 4
+    score: 35
+    prereq: [principal-component-analysis]
+    minutes: 20
+    reason: 主成分を分散の最大化から導く手順
+  - id: monotone-likelihood-ratio
+    stage: 4
+    score: 33
+    prereq: [uniformly-most-powerful-test]
+    minutes: 15
+    reason: 一様最強力検定が存在する条件
+  - id: seasonal-adjustment
+    stage: 4
+    score: 33
+    prereq: [time-series]
+    minutes: 10
+    reason: 季節変動を取り除く考え方
+  - id: lance-williams-formula
+    stage: 4
+    score: 30
+    prereq: [single-linkage, complete-linkage]
+    minutes: 15
+    reason: 各方法の距離の更新を一つの式で表す
+  - id: centroid-method
+    stage: 4
+    score: 29
+    prereq: [average-linkage]
+    minutes: 10
+    reason: 重心間の距離で併合する方法
+  - id: covariance-selection
+    stage: 4
+    score: 29
+    prereq: [undirected-graphical-model]
+    minutes: 15
+    reason: グラフの辺を選ぶ手続き。発展的
+  - id: quantification-type-3
+    stage: 4
+    score: 29
+    prereq: [quantification-theory, correspondence-analysis]
+    minutes: 10
+    reason: コレスポンデンス分析とほぼ同じ手法
+  - id: frontdoor-criterion
+    stage: 4
+    score: 29
+    prereq: [backdoor-criterion]
+    minutes: 15
+    reason: バックドア基準が使えない場合の調整法。発展的
+  - id: characteristic-function
+    stage: 4
+    score: 28
+    prereq: [moment-generating-function]
+    minutes: 20
+    reason: 母関数の理論的な拡張。計算問題での出番は少ない
+  - id: design-effect
+    stage: 4
+    score: 28
+    prereq: [cluster-sampling]
+    minutes: 15
+    reason: 単純無作為抽出との分散の比
+  - id: similarity-measures
+    stage: 4
+    score: 28
+    prereq: [distance-measures]
+    minutes: 10
+    reason: 2値データなどで使う類似度
+  - id: risk-difference
+    stage: 4
+    score: 28
+    prereq: [relative-risk]
+    minutes: 10
+    reason: リスクの差による効果の表し方
+  - id: linear-congruential-generator
+    stage: 4
+    score: 28
+    prereq: [uniform-random-number]
+    minutes: 10
+    reason: 擬似乱数の作り方の基本
+  - id: probability-proportional-to-size-sampling
+    stage: 4
+    score: 26
+    prereq: [horvitz-thompson-estimator]
+    minutes: 15
+    reason: 規模に比例させる抽出。発展的
+  - id: promax-rotation
+    stage: 4
+    score: 26
+    prereq: [factor-rotation]
+    minutes: 10
+    reason: 斜交回転の代表。名前と性質で足りる
+  - id: maximum-likelihood-factor-analysis
+    stage: 4
+    score: 26
+    prereq: [factor-analysis-model, maximum-likelihood-estimator]
+    minutes: 15
+    reason: 因子分析の推定法の一つ。発展的
+  - id: coefficient-of-variation
+    stage: 4
+    score: 25
+    prereq: [expectation-variance-properties]
+    minutes: 10
+    reason: 単位の違うばらつきの比較。定義を知っていれば解ける
+  - id: weighted-geometric-harmonic-mean
+    stage: 4
+    score: 25
+    prereq: [expectation-variance-properties]
+    minutes: 15
+    reason: 平均の種類の使い分け。成長率や速度の平均で出る
+  - id: regression-estimation
+    stage: 4
+    score: 25
+    prereq: [ratio-estimation]
+    minutes: 15
+    reason: 比推定の一般化。発展的
+  - id: number-of-factors
+    stage: 4
+    score: 25
+    prereq: [factor-analysis-model]
+    minutes: 10
+    reason: 因子数の決め方の目安
+  - id: factor-score
+    stage: 4
+    score: 25
+    prereq: [factor-loading]
+    minutes: 10
+    reason: 各個体の因子の値の推定
+  - id: truncated-data
+    stage: 4
+    score: 25
+    prereq: [censored-data]
+    minutes: 10
+    reason: 打ち切りとの違いを知っていれば足りる
+  - id: greenwood-formula
+    stage: 4
+    score: 25
+    prereq: [kaplan-meier-estimator]
+    minutes: 15
+    reason: カプラン・マイヤー推定量の分散の式
+  - id: partial-likelihood
+    stage: 4
+    score: 25
+    prereq: [cox-proportional-hazards-model]
+    minutes: 15
+    reason: 比例ハザードモデルの推定の仕組み
+  - id: sample-size-determination-test
+    stage: 4
+    score: 23
+    prereq: [required-sample-size, power-function]
+    minutes: 5
+    reason: 必要な標本サイズの項目に統合済み
+  - id: bartlett-test
+    stage: 4
+    score: 23
+    prereq: [f-test-equal-variances]
+    minutes: 10
+    reason: 3群以上の等分散の検定。名前と用途で足りる
+  - id: kolmogorov-smirnov-test
+    stage: 4
+    score: 23
+    prereq: [cumulative-distribution-function]
+    minutes: 15
+    reason: 経験分布を使う適合度検定。範囲表にない
+  - id: nonparametric-methods-overview
+    stage: 4
+    score: 23
+    prereq: [rank-and-ties]
+    minutes: 10
+    reason: 分布を仮定しない方法の長所と短所
+  - id: systematic-sampling
+    stage: 4
+    score: 22
+    prereq: [simple-random-sampling]
+    minutes: 10
+    reason: 等間隔の抽出。周期性に注意
+  - id: varimax-rotation
+    stage: 4
+    score: 22
+    prereq: [factor-rotation]
+    minutes: 10
+    reason: 直交回転の代表
+  - id: quantification-type-1
+    stage: 4
+    score: 22
+    prereq: [quantification-theory]
+    minutes: 10
+    reason: ダミー変数による回帰と同じもの
+  - id: strong-law-of-large-numbers
+    stage: 4
+    score: 21
+    prereq: [weak-law-of-large-numbers, almost-sure-convergence]
+    minutes: 10
+    reason: 弱法則との違いを知っていれば足りる
+  - id: clopper-pearson-interval
+    stage: 4
+    score: 21
+    prereq: [ci-proportion, binomial-distribution]
+    minutes: 10
+    reason: 正確な比率の区間。名前と考え方を知る程度でよい
+  - id: randomized-test
+    stage: 4
+    score: 21
+    prereq: [neyman-pearson-lemma]
+    minutes: 10
+    reason: 離散分布で有意水準を合わせる理論上の工夫
+  - id: test-ci-relationship-mean-difference
+    stage: 4
+    score: 21
+    prereq: [confidence-interval-test-duality]
+    minutes: 5
+    reason: 信頼区間と検定の対応の項目に統合済み
+  - id: preliminary-test-problem
+    stage: 4
+    score: 21
+    prereq: [welch-test, f-test-equal-variances]
+    minutes: 10
+    reason: 等分散の予備検定を挟む問題点。概念だけ押さえる
+  - id: variance-stabilizing-transform
+    stage: 4
+    score: 21
+    prereq: [delta-method]
+    minutes: 15
+    reason: デルタ法の応用。出題はまれ
+  - id: principal-component
+    stage: 4
+    score: 21
+    prereq: [principal-component-analysis]
+    minutes: 5
+    reason: 主成分分析の項目に統合済み
+  - id: biplot
+    stage: 4
+    score: 21
+    prereq: [principal-component-score]
+    minutes: 10
+    reason: 得点と負荷量を重ねた図
+  - id: complete-statistic
+    stage: 4
+    score: 20
+    prereq: [sufficient-statistic]
+    minutes: 15
+    reason: 一様最小分散不偏推定の理論。準1級では深入り不要
+  - id: observed-fisher-information
+    stage: 4
+    score: 20
+    prereq: [fisher-information]
+    minutes: 5
+    reason: フィッシャー情報量の項目に統合済み
+  - id: likelihood-based-confidence-interval
+    stage: 4
+    score: 20
+    prereq: [wilks-theorem]
+    minutes: 15
+    reason: 尤度比から作る区間。出題はまれ
+  - id: normality-test
+    stage: 4
+    score: 20
+    prereq: [normal-qq-plot]
+    minutes: 10
+    reason: 正規性の確認方法。範囲表になく優先度は低い
+  - id: hotelling-t2
+    stage: 4
+    score: 20
+    prereq: [multivariate-normal-distribution, two-sample-t-test]
+    minutes: 15
+    reason: 多変量の平均の検定。準1級では主題にならない
+  - id: one-way-test-variance-equality-levene
+    stage: 4
+    score: 20
+    prereq: [bartlett-test]
+    minutes: 5
+    reason: バートレット検定の項目に統合済み
+  - id: dispersion-test
+    stage: 4
+    score: 20
+    prereq: [poisson-distribution]
+    minutes: 10
+    reason: ポアソン分布の過分散の確認。出題はまれ
+  - id: low-rank-approximation
+    stage: 4
+    score: 20
+    prereq: [singular-value-decomposition]
+    minutes: 10
+    reason: 特異値分解による行列の近似。発展的
+  - id: strict-stationarity
+    stage: 4
+    score: 20
+    prereq: [weak-stationarity]
+    minutes: 10
+    reason: 弱定常との違いを知っていれば足りる
+  - id: empirical-bayes
+    stage: 4
+    score: 20
+    prereq: [hierarchical-bayes-model, marginal-likelihood]
+    minutes: 15
+    reason: データから事前分布を推定する方法。発展的
+  - id: bayes-decision-theory
+    stage: 4
+    score: 20
+    prereq: [posterior-mean-map]
+    minutes: 15
+    reason: 損失関数とベイズ推定の関係。発展的
+  - id: markov-property
+    stage: 4
+    score: 15
+    prereq: [markov-chain]
+    minutes: 5
+    reason: マルコフ連鎖の項目に統合済み
+  - id: continuous-time-markov-chain
+    stage: 4
+    score: 15
+    prereq: [markov-chain, exponential-distribution]
+    minutes: 15
+    reason: 出生死滅過程の一般形。深入りは不要
+  - id: robust-standard-error
+    stage: 4
+    score: 15
+    prereq: [heteroscedasticity]
+    minutes: 15
+    reason: 不均一分散でも使える標準誤差。発展的
+  - id: non-hierarchical-clustering
+    stage: 4
+    score: 15
+    prereq: [k-means-method]
+    minutes: 5
+    reason: k-means法の項目に統合済み
+  - id: mixture-model-clustering
+    stage: 4
+    score: 15
+    prereq: [normal-mixture-distribution, em-algorithm]
+    minutes: 15
+    reason: 確率モデルに基づくクラスタリング。発展的
+  - id: standardization-before-clustering
+    stage: 4
+    score: 15
+    prereq: [distance-measures]
+    minutes: 5
+    reason: 距離の項目に統合済み
+  - id: information-criteria-comparison
+    stage: 4
+    score: 15
+    prereq: [model-selection]
+    minutes: 5
+    reason: モデル選択の項目に統合済み
+  - id: positive-recurrence
+    stage: 4
+    score: 14
+    prereq: [recurrence-and-transience]
+    minutes: 5
+    reason: 再帰と過渡の項目に統合済み
+  - id: dfbetas
+    stage: 4
+    score: 14
+    prereq: [dffits]
+    minutes: 5
+    reason: DFFITSの項目に統合済み
+  - id: breusch-pagan-test
+    stage: 4
+    score: 14
+    prereq: [heteroscedasticity]
+    minutes: 10
+    reason: 不均一分散の検定。範囲表にない
+  - id: tobit-model
+    stage: 4
+    score: 14
+    prereq: [censored-data]
+    minutes: 15
+    reason: 打ち切りのある目的変数の回帰。発展的
+  - id: offset-term
+    stage: 4
+    score: 14
+    prereq: [poisson-regression]
+    minutes: 10
+    reason: 観測期間や人数の違いを調整する項
+  - id: studentized-range-distribution
+    stage: 4
+    score: 14
+    prereq: [tukey-multiple-comparison]
+    minutes: 5
+    reason: テューキーの多重比較の項目に統合済み
+  - id: effect-size-eta-squared
+    stage: 4
+    score: 14
+    prereq: [sum-of-squares-decomposition]
+    minutes: 10
+    reason: 分散分析の寄与率。決定係数と同じ考え方
+  - id: incomplete-block-design
+    stage: 4
+    score: 14
+    prereq: [randomized-block-design]
+    minutes: 15
+    reason: ブロックに全処理が入らない計画。発展的
+  - id: kernel-method
+    stage: 4
+    score: 14
+    prereq: [support-vector-machine]
+    minutes: 15
+    reason: 非線形への拡張。発展的
+  - id: decision-tree
+    stage: 4
+    score: 14
+    prereq: [misclassification-rate]
+    minutes: 10
+    reason: 範囲表にない。概念だけでよい
+  - id: naive-bayes-classifier
+    stage: 4
+    score: 14
+    prereq: [bayes-discriminant-rule, conditional-independence]
+    minutes: 10
+    reason: 条件付き独立を仮定した判別。発展的
+  - id: ordinal-contingency-table
+    stage: 4
+    score: 14
+    prereq: [contingency-table]
+    minutes: 10
+    reason: 順序のあるカテゴリの分割表。発展的
+  - id: training-test-split
+    stage: 4
+    score: 14
+    prereq: [cross-validation]
+    minutes: 5
+    reason: 交差検証法の項目に統合済み
+  - id: aicc
+    stage: 4
+    score: 14
+    prereq: [aic]
+    minutes: 10
+    reason: 小標本向けのAIC。発展的
+  - id: tic-ebic
+    stage: 4
+    score: 14
+    prereq: [aic]
+    minutes: 5
+    reason: AICの項目に統合済み
+  - id: variance-reduction
+    stage: 4
+    score: 14
+    prereq: [monte-carlo-integration]
+    minutes: 15
+    reason: 対照変量法などの工夫。発展的
+  - id: permutation-simulation
+    stage: 4
+    score: 14
+    prereq: [permutation-test]
+    minutes: 5
+    reason: 並べ替え検定の項目に統合済み
+  - id: mann-whitney-u-test
+    stage: 4
+    score: 10
+    prereq: [wilcoxon-rank-sum-test]
+    minutes: 5
+    reason: 順位和検定の項目に統合済み
+  - id: power-transformation
+    stage: 4
+    score: 9
+    prereq: [change-of-variables]
+    minutes: 10
+    reason: Box-Cox変換の特別な場合として押さえれば足りる
+  - id: martingale
+    stage: 4
+    score: 9
+    prereq: [conditional-expectation]
+    minutes: 15
+    reason: 範囲表になく優先度は低い
+  - id: queueing-theory
+    stage: 4
+    score: 9
+    prereq: [mm1-queue]
+    minutes: 5
+    reason: M/M/1待ち行列の項目に統合済み
+  - id: compound-poisson-process
+    stage: 4
+    score: 9
+    prereq: [poisson-process, conditional-variance]
+    minutes: 15
+    reason: 保険数理型の応用。出題はまれ
+  - id: bias-in-penalized-estimation
+    stage: 4
+    score: 9
+    prereq: [ridge-regression]
+    minutes: 5
+    reason: リッジ回帰の項目に統合済み
+  - id: principal-component-regression
+    stage: 4
+    score: 9
+    prereq: [principal-component-analysis, multicollinearity]
+    minutes: 10
+    reason: 主成分を説明変数にする回帰。発展的
+  - id: sampling-weight
+    stage: 4
+    score: 9
+    prereq: [horvitz-thompson-estimator]
+    minutes: 5
+    reason: ホルビッツ・トンプソン推定量の項目に統合済み
+  - id: classical-mds
+    stage: 4
+    score: 9
+    prereq: [multidimensional-scaling]
+    minutes: 5
+    reason: 多次元尺度構成法の項目に統合済み
+  - id: ignorability
+    stage: 4
+    score: 9
+    prereq: [mar]
+    minutes: 10
+    reason: 欠測の無視可能性の理論。発展的
+  - id: convergence-in-mean-square
+    stage: 4
+    score: 8
+    prereq: [convergence-in-probability]
+    minutes: 10
+    reason: 収束の強弱関係の一つとして知っていれば十分
+  - id: lindeberg-levy-clt
+    stage: 4
+    score: 8
+    prereq: [central-limit-theorem]
+    minutes: 5
+    reason: 中心極限定理の項目に統合済み。そちらで確認すれば十分
+  - id: berry-esseen-theorem
+    stage: 4
+    score: 8
+    prereq: [central-limit-theorem]
+    minutes: 10
+    reason: 正規近似の誤差の評価。範囲表になく優先度は低い
+  - id: asymptotic-relative-efficiency
+    stage: 4
+    score: 8
+    prereq: [wilcoxon-rank-sum-test]
+    minutes: 10
+    reason: 検定の効率の比較。代表的な数値を知る程度で足りる
+  - id: median-test
+    stage: 4
+    score: 8
+    prereq: [sign-test]
+    minutes: 10
+    reason: 中央値の比較の検定。範囲表になく優先度は低い
+  - id: kolmogorov-smirnov-two-sample
+    stage: 4
+    score: 8
+    prereq: [kolmogorov-smirnov-test]
+    minutes: 5
+    reason: コルモゴロフ・スミルノフ検定の項目に統合済み
+  - id: runs-test
+    stage: 4
+    score: 8
+    prereq: [rank-and-ties]
+    minutes: 10
+    reason: 並びの無作為性の検定。出題はまれ
+  - id: jonckheere-terpstra-test
+    stage: 4
+    score: 8
+    prereq: [kruskal-wallis-test]
+    minutes: 10
+    reason: 順序のある対立仮説の検定。出題はまれ
+  - id: counting-process
+    stage: 4
+    score: 8
+    prereq: [poisson-process]
+    minutes: 5
+    reason: ポアソン過程の項目に統合済み
+  - id: pure-birth-process
+    stage: 4
+    score: 8
+    prereq: [birth-death-process]
+    minutes: 5
+    reason: 出生死滅過程の項目に統合済み
+  - id: mmc-queue
+    stage: 4
+    score: 8
+    prereq: [mm1-queue]
+    minutes: 15
+    reason: 窓口が複数ある待ち行列。発展的
+  - id: reflection-principle
+    stage: 4
+    score: 8
+    prereq: [random-walk]
+    minutes: 15
+    reason: ランダムウォークの経路の数え方。発展的
+  - id: elastic-net
+    stage: 4
+    score: 8
+    prereq: [lasso, ridge-regression]
+    minutes: 10
+    reason: リッジとLassoの組み合わせ。名前と性質で足りる
+  - id: spline-regression
+    stage: 4
+    score: 8
+    prereq: [polynomial-regression]
+    minutes: 10
+    reason: 区分的な多項式の回帰。範囲表にない
+  - id: neural-network-model
+    stage: 4
+    score: 8
+    prereq: [logistic-regression]
+    minutes: 15
+    reason: 範囲表にあるが準1級では概念程度でよい
+  - id: graphical-lasso
+    stage: 4
+    score: 8
+    prereq: [covariance-selection, lasso]
+    minutes: 10
+    reason: 罰則で疎な精度行列を推定する。発展的
+  - id: nonmetric-mds
+    stage: 4
+    score: 8
+    prereq: [multidimensional-scaling]
+    minutes: 10
+    reason: 順位だけを使う尺度構成法。発展的
+  - id: multiple-correspondence-analysis
+    stage: 4
+    score: 8
+    prereq: [quantification-type-3]
+    minutes: 5
+    reason: 数量化III類の項目に統合済み
+  - id: independent-component-analysis
+    stage: 4
+    score: 8
+    prereq: [principal-component-analysis]
+    minutes: 10
+    reason: 範囲表になく優先度は低い
+  - id: goodness-of-fit-indices
+    stage: 4
+    score: 8
+    prereq: [structural-equation-modeling]
+    minutes: 5
+    reason: 構造方程式モデリングの項目に統合済み
+  - id: nelson-aalen-estimator
+    stage: 4
+    score: 8
+    prereq: [kaplan-meier-estimator]
+    minutes: 10
+    reason: 累積ハザードの推定。発展的

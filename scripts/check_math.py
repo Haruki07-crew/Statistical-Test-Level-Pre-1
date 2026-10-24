@@ -51,8 +51,12 @@ def texts():
         if t.startswith("---\n"):
             t = split_front(t)[1]
         yield "content/formulas.md", t
-    for p in sorted((CONTENT / "exam_sets").glob("set*.yaml")) if (CONTENT / "exam_sets").exists() else []:
-        data = yaml.safe_load(p.read_text(encoding="utf-8")) or {}
+    import exam_lib
+    for p in exam_lib.set_files():
+        try:
+            data, _ = exam_lib.load_set(p)   # generator の値を差し込んだあとの文で調べる
+        except Exception:
+            data = yaml.safe_load(p.read_text(encoding="utf-8")) or {}
         for blk in data.get("problems") or []:
             for k in ("context", "title"):
                 if isinstance(blk.get(k), str):
