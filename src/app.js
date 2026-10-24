@@ -1066,7 +1066,7 @@
     h += '</fieldset><fieldset class="seg"><legend>問題数</legend><div class="seg-row">' + [5, 10, 20].map(function (n) {
       return '<button type="button" class="chip" data-count="' + n + '" aria-pressed="' + (Number(quizCfg.count) === n) + '">' + n + '問</button>';
     }).join('') + '</div></fieldset>' +
-      '<fieldset class="seg"><legend>模擬試験モード</legend><div class="seg-row"><button type="button" class="chip" data-timed aria-pressed="' + quizCfg.timed + '">時間を計る（1問' + SEC_PER_Q / 60 + '分）</button></div></fieldset>' +
+      '<fieldset class="seg"><legend>時間制限（本番形式の模擬試験は「模試」から）</legend><div class="seg-row"><button type="button" class="chip" data-timed aria-pressed="' + quizCfg.timed + '">時間を計る（1問' + SEC_PER_Q / 60 + '分）</button></div></fieldset>' +
       '<p class="screen-sub">この範囲の問題：<b>' + pool.length + '</b> 問' + (pool.length ? '' : '（' + emptyReason(quizCfg.scope) + '）') + '</p>' +
       '<button type="button" class="big-btn" data-start' + (pool.length ? '' : ' disabled') + '>始める</button>' +
       '<button type="button" class="big-btn ghost" data-cards>この範囲の用語カードで覚える（' + cardPool().length + '語）</button>';

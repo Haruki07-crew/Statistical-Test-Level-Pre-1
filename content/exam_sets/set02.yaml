@@ -1,0 +1,880 @@
+set: 2
+title: 模擬試験 第2回
+minutes: 90
+problems:
+  - id: s02p01
+    title: カード取引の不正検知
+    context: |
+      あるカード会社では、取引の 0.2% が不正取引である。不正検知システムは、不正取引の 95% でアラートを出し（感度 95%）、正常な取引の 99% ではアラートを出さない（特異度 99%）。
+    items:
+      - id: s02p01a
+        chapter: 1
+        terms: [bayes-theorem, law-of-total-probability, conditional-probability]
+        topic: 不正検知アラートの陽性的中率を50%以上にするのに必要な特異度をベイズの定理から逆算する
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          現状では、アラートが出た取引のうち本当に不正である割合（陽性的中率）が低く、確認作業の負担が大きい。
+          感度 95% はそのままで、陽性的中率を 50% 以上にするには、特異度を何% 以上にする必要があるか。条件を満たす特異度の最小値を答えよ。
+        answer: «ans»
+        tolerance: 0.01
+        answer_format: パーセント単位で小数第2位まで（四捨五入）で答えよ。±0.01 の差まで正解とする。
+        explanation: |
+          **方針** 不正を $F$、アラートを $A$ とし、ベイズの定理で $P(F\mid A)$ を特異度 $q$ の式で表す。$P(F\mid A)\ge0.5$ は「真陽性の確率 ≥ 偽陽性の確率」と同じ。
+
+          **途中式** 現状は $P(F\cap A)=0.002\times0.95=«tp»$、$P(F^c\cap A)=0.998\times0.01=«fp»$ なので、陽性的中率は
+          $$P(F\mid A)=\frac{«tp»}{«tp»+«fp»}\approx«ppv»\%$$
+          特異度を $q$ とすると
+          $$P(F\mid A)=\frac{«tp»}{«tp»+0.998(1-q)}\ge0.5\iff 0.998(1-q)\le«tp»\iff 1-q\le\frac{«tp»}{0.998}\approx«fpr_max»$$
+          よって $q\ge1-«fpr_max»=0.998096$、つまり約 «ans_s»% 以上。
+
+          **答え** «ans_s»
+
+          **間違えやすい点** 感度や特異度が高くても、不正の割合（事前確率）が 0.2% と小さいと、アラートの大半は正常な取引になる（現状の陽性的中率は約 «ppv»%）。陽性的中率を上げるには、偽陽性率 $1-q$ を不正の割合と同じ桁まで下げる必要がある。正常取引の割合 0.998 を 1 と近似すると $1-q\le«tp»$ となり、この問題では同じ «ans_s»% になる（近似であることは意識しておく）。
+  - id: s02p02
+    title: 投資信託の収益とリスク
+    context: |
+      2つの投資信託 A、B を比較する。
+    items:
+      - id: s02p02a
+        chapter: 3
+        terms: [weighted-geometric-harmonic-mean, moments]
+        topic: 増減のある4年間の年間収益率から複利の年平均収益率を幾何平均で求める
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          A の過去4年間の年間収益率は、順に $+20\%$、$-10\%$、$+15\%$、$-5\%$ だった。
+          毎年同じ率で運用したとして4年後に同じ資産額になる「年平均収益率（複利）」に最も近いものを選べ。
+        choices:
+          - '«G_harm»%'
+          - '«G_ok»%'
+          - '«G_lin»%'
+          - '«G_ar»%'
+          - '«G_tot»%'
+        answer: 1
+        distractors:
+          - 成長倍率の調和平均を使った
+          - 正解
+          - 4年間の通算収益率を4で割った（単利の考え方）
+          - 収益率の算術平均を使った
+          - 4年間の通算収益率を答えた
+        explanation: |
+          **方針** 資産は毎年 $(1+\text{収益率})$ 倍になるので、4年間の倍率の積の4乗根（幾何平均）から 1 を引く。4乗根は平方根を2回とれば一般電卓でも求まる。
+
+          **途中式**
+          $$1.20\times0.90\times1.15\times0.95=«prod»$$
+          $$\sqrt{«prod»}\approx«sq1»,\qquad \sqrt{«sq1»}\approx«g»$$
+          よって年平均収益率は約 «G_ok»%。
+
+          **答え** «G_ok»%
+
+          **間違えやすい点** 算術平均 $(20-10+15-5)/4=«G_ar»$% は、上下に変動するほど実際の成長率より大きくなる（相加平均 ≥ 相乗平均）。通算 «G_tot»% を 4 で割る «G_lin»% は複利を無視している。
+      - id: s02p02b
+        chapter: 6
+        terms: [bivariate-normal-distribution, normal-distribution, multivariate-normal-distribution]
+        topic: 負の相関をもつ2資産ポートフォリオの収益率が一定の損失を下回る確率（2変量正規の線形結合）
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          A、B の月次収益率（%）を $X_A$、$X_B$ とする。$(X_A,X_B)$ は2変量正規分布に従い、
+          $E[X_A]=1.2$、$\sqrt{V[X_A]}=5$、$E[X_B]=0.6$、$\sqrt{V[X_B]}=3$、相関係数は $-0.3$ とする。
+          資金の 60% を A に、40% を B に投資したポートフォリオの月次収益率 $X_P=0.6X_A+0.4X_B$ が $-4$% を下回る確率 $P(X_P<-4)$ に最も近いものを選べ。
+          標準化した値は小数第2位に四捨五入し、次の標準正規分布の分布関数 $\Phi(z)$ の値を使うこと。
+
+          | $z$ | «tab_z» |
+          |---|«tab_sep»|
+          | $\Phi(z)$ | «tab_p» |
+        choices:
+          - '«P_lin»'
+          - '«P_sign»'
+          - '«P_nocov»'
+          - '«P_half»'
+          - '«P_ok»'
+        answer: 4
+        distractors:
+          - 標準偏差を加重平均した（相関1のときの式を使った）
+          - 共分散の符号を逆にした
+          - 共分散の項を無視した
+          - 共分散の項の係数 2 を掛け忘れた
+          - 正解
+        explanation: |
+          **方針** 2変量正規分布に従う変数の線形結合は正規分布に従う。平均と分散を求めて標準化する。
+
+          **途中式** 平均は $E[X_P]=0.6\times1.2+0.4\times0.6=«m»$。共分散は $\mathrm{Cov}(X_A,X_B)=-0.3\times5\times3=«cov»$ なので
+          $$V[X_P]=0.6^2\times25+0.4^2\times9+2\times0.6\times0.4\times(«cov»)=«vA»+«vB»+(«vC»)=«var_ok»$$
+          標準偏差は $\sqrt{«var_ok»}\approx«sd_ok»$。
+          $$P(X_P<-4)=\Phi\!\left(\frac{-4-«m»}{«sd_ok»}\right)=1-\Phi(«z_ok»)=1-«Phi_ok»=«P_ok»$$
+
+          **答え** «P_ok»
+
+          **間違えやすい点** 共分散を無視すると分散 «var_nocov»（確率 «P_nocov»）、符号を逆にすると «var_sign»（«P_sign»）、係数 2 を忘れると «var_half»（«P_half»）。標準偏差の加重平均 $0.6\times5+0.4\times3$ は相関が 1 のときだけ正しい（«P_lin»）。負の相関は分散を小さくする（分散投資の効果）。
+      - id: s02p02c
+        chapter: 11
+        terms: [chi-square-test-variance, one-sided-two-sided-test, rejection-region]
+        topic: 投資信託の月次収益率の標準偏差が運用規程の上限を超えるかの片側カイ二乗検定
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          (b) の標準偏差 5 は過去のデータから見積もったものである。A の過去 25 か月の月次収益率（互いに独立に正規分布 $N(\mu,\sigma^2)$ に従うとする）から不偏分散 $s^2=25.0$ を得た。
+          運用規程では標準偏差 4% を上限としているため、$H_0:\sigma=4$、$H_1:\sigma>4$ を有意水準 5% で検定する。
+          必要なら次の値を使え（$\chi^2_k(\alpha)$ は自由度 $k$ のカイ二乗分布の上側 $100\alpha$% 点）：
+          $\chi^2_{24}(0.05)=«c24_05»$、$\chi^2_{24}(0.025)=«c24_025»$、$\chi^2_{25}(0.05)=«c25_05»$。
+          正しいものを選べ。
+        choices:
+          - '検定統計量は $«chi_ok»$ で、$\chi^2_{24}(0.05)=«c24_05»$ を超えるので $H_0$ を棄却する'
+          - '検定統計量は $«chi_ok»$ で、$\chi^2_{24}(0.025)=«c24_025»$ を超えないので $H_0$ を棄却しない'
+          - '検定統計量は $«chi_n»$ で、$\chi^2_{25}(0.05)=«c25_05»$ を超えるので $H_0$ を棄却する'
+          - '検定統計量は $«chi_sd»$ で、$\chi^2_{24}(0.05)=«c24_05»$ を超えないので $H_0$ を棄却しない'
+          - '検定統計量は $«chi_ok»$ で、$\chi^2_{25}(0.05)=«c25_05»$ を超えないので $H_0$ を棄却しない'
+        answer: 0
+        distractors:
+          - 正解
+          - 片側検定なのに両側検定の棄却限界を使った
+          - 不偏分散に n を掛け（標本分散の式と取り違え）、自由度も n にした
+          - 分散でなく標準偏差の比を使った
+          - 自由度を n-1 でなく n にした
+        explanation: |
+          **方針** 正規母集団の分散の検定では $\chi^2=(n-1)s^2/\sigma_0^2$ が $H_0$ のもとで自由度 $n-1$ のカイ二乗分布に従う。対立仮説が $\sigma>4$ なので上側の片側検定。
+
+          **途中式**
+          $$\chi^2=\frac{(25-1)\times25.0}{4^2}=\frac{600}{16}=«chi_ok»$$
+          自由度 24、有意水準 5% の片側検定の棄却域は $\chi^2>\chi^2_{24}(0.05)=«c24_05»$。$«chi_ok»>«c24_05»$ なので $H_0$ を棄却し、標準偏差は 4% を超えると判断する。
+
+          **答え** 「検定統計量は $«chi_ok»$ で、$\chi^2_{24}(0.05)$ を超えるので棄却する」
+
+          **間違えやすい点** 対立仮説が片側なのに上側 2.5% 点 «c24_025» を使うと棄却されない。自由度を 25 にすると棄却限界が «c25_05» に変わり、結論が逆になる。$s^2$ は不偏分散なので掛けるのは $n-1$ である（標本分散 $\hat\sigma^2$ なら $n\hat\sigma^2/\sigma_0^2$）。標準偏差の比 $24\times5/4=«chi_sd»$ は誤り。
+  - id: s02p03
+    title: 株価と日次損失の分布
+    context: |
+      ある証券会社のリスク管理部門が、保有株式の価格と日々の損失の分布を調べている。
+      必要なら $e^{0.05}=«e05»$、$e^{0.07}=«e07»$、$e^{0.09}=«e09»$ を使え。
+    items:
+      - id: s02p03a
+        chapter: 4
+        terms: [log-transformation, change-of-variables, lognormal-distribution]
+        topic: 対数収益率が正規分布に従う株価の中央値と平均を変数変換から求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          現在 100 円の株式の1年後の株価を $S=100e^{X}$ とする。対数収益率 $X$ は正規分布 $N(0.05,\,0.2^2)$ に従う。
+          $S$ の中央値と平均の組として正しいものを選べ。
+        choices:
+          - '中央値 «med» 円、平均 «med» 円'
+          - '中央値 «med» 円、平均 «mean» 円'
+          - '中央値 «mean» 円、平均 «med» 円'
+          - '中央値 «med» 円、平均 «mean_full» 円'
+          - '中央値 «mean» 円、平均 «mean» 円'
+        answer: 1
+        distractors:
+          - 平均も e^{μ} とした（凸関数で期待値が変わることを無視した）
+          - 正解
+          - 中央値と平均を取り違えた
+          - 積率母関数で σ^2 を2で割り忘れた
+          - 対数正規分布を左右対称と考え、中央値も平均と同じとした
+        explanation: |
+          **方針** $s=100e^{x}$ は単調増加なので、$X$ の中央値 0.05 は $S$ の中央値に移る。平均は正規分布の積率母関数 $E[e^{tX}]=e^{\mu t+\sigma^2t^2/2}$ を $t=1$ で使う。
+
+          **途中式** 中央値は $100e^{0.05}=100\times«e05»=«med»$ 円。平均は
+          $$E[S]=100\,E[e^{X}]=100\,e^{0.05+0.2^2/2}=100e^{«mh»}=100\times«e07»=«mean»\ \text{円}$$
+
+          **答え** 中央値 «med» 円、平均 «mean» 円
+
+          **間違えやすい点** $E[e^X]\ne e^{E[X]}$（指数関数は下に凸なので、イェンセンの不等式から $E[e^X]>e^{E[X]}$）。$\sigma^2/2=«half»$ の補正を忘れると平均も «med» 円、2 で割り忘れると «mean_full» 円になる。対数正規分布は右に裾が長く、平均 > 中央値。
+      - id: s02p03b
+        chapter: 2
+        terms: [cumulative-distribution-function, survival-function, probability-mass-and-density-function]
+        topic: 原点に確率の塊をもつ日次損失の分布関数から点確率と期待値を求める（生存関数の積分）
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          ある取引部門の1日の損失 $L$（百万円。利益が出た日は $L=0$ とする）の分布関数が
+          $$F(x)=\begin{cases}0 & (x<0)\\ 1-0.4e^{-x/5} & (x\ge0)\end{cases}$$
+          であるとする。$P(L=0)$ と $E[L]$ の組として正しいものを選べ。
+        choices:
+          - '$P(L=0)=0$、$E[L]=5.0$'
+          - '$P(L=0)=«p0»$、$E[L]=«EL»$'
+          - '$P(L=0)=«q»$、$E[L]=«EL»$'
+          - '$P(L=0)=«p0»$、$E[L]=«th»$'
+          - '$P(L=0)=«p0»$、$E[L]=«EL_w»$'
+        answer: 1
+        distractors:
+          - 連続分布（平均 5 の指数分布）とみなし、0 での跳びを見落とした
+          - 正解
+          - 跳びの大きさを 0.4 と読んだ
+          - 損失が出た日の条件付き期待値を答えた
+          - 期待値の重みに損失がない日の確率 0.6 を使った
+        explanation: |
+          **方針** 分布関数の跳びの大きさが点確率。非負の確率変数の期待値は生存関数の積分 $E[L]=\int_0^\infty\{1-F(x)\}\,dx$ で求まり、離散と連続が混ざった分布でもそのまま使える。
+
+          **途中式** $x<0$ で $F=0$、$x=0$ で $F(0)=1-0.4=«p0»$ なので、0 での跳びは $P(L=0)=«p0»$。
+          $$E[L]=\int_0^\infty0.4e^{-x/5}\,dx=0.4\times5=«EL»$$
+
+          **答え** $P(L=0)=«p0»$、$E[L]=«EL»$
+
+          **間違えやすい点** $L$ は「確率 0.6 で 0、確率 0.4 で平均 5 の指数分布」の混合なので、損失が出た日だけの平均は 5 だが、全体の期待値は $0.4\times5=«EL»$。密度 $F'(x)$ を積分しても 1 にならない（0.4 しかない）ことが、点確率があるサイン。
+  - id: s02p04
+    title: 購入ボタンとランディングページのWebテスト
+    context: |
+      ECサイトで購入ボタンのデザインを比較するため、訪問者を無作為に2群に分けた。
+      現行デザイン A は «n» 人中 «xa» 人、新デザイン B は «n» 人中 «xb» 人が購入した。各訪問者の購入は独立とする。
+    items:
+      - id: s02p04a
+        chapter: 9
+        terms: [ci-two-sample-proportion, wald-confidence-interval, standard-error]
+        topic: A/Bテストで2群の購入率の差のワルド型95%信頼区間の下限
+        level: 基本
+        definition: false
+        type: numeric
+        question: |
+          購入率の差 $p_B-p_A$ の 95% 信頼区間を、正規近似（各群の標本比率で標準誤差を推定するワルド型）で求める。その下限を「パーセントポイント」で答えよ（例: 0.012 なら 1.20）。$z_{0.025}=1.96$ を使え。
+        answer: «lo_pt»
+        tolerance: 0.01
+        answer_format: パーセントポイント単位で小数第2位まで（四捨五入）で答えよ。±0.01 の差まで正解とする。
+        explanation: |
+          **方針** 独立な2群の比率の差の標準誤差は $\sqrt{\hat p_A(1-\hat p_A)/n_A+\hat p_B(1-\hat p_B)/n_B}$。差 ± 1.96 × 標準誤差。
+
+          **途中式** $\hat p_A=«xa»/«n»=«pa»$、$\hat p_B=«xb»/«n»=«pb»$、差は «d»。
+          $$\mathrm{SE}=\sqrt{\frac{«pa»\times0.92+«pb»\times0.90}{«n»}}=\sqrt{\frac{«vsum»}{«n»}}\approx«se»$$
+          $$\text{下限}=«d»-1.96\times«se»\approx«d»-«me»=«lo»$$
+          パーセントポイントでは «lo_pt»（上限は «hi_pt»）。
+
+          **答え** «lo_pt»
+
+          **間違えやすい点** 2群の分散を足さずに片方だけ使ったり、$\sqrt{\ }$ の中の $n$ を2群合計 4800 にしたりしやすい。比率とパーセントポイントの単位も取り違えやすい。区間が 0 を含まないので、有意水準 5% の両側検定でも差は有意になる。
+      - id: s02p04b
+        chapter: 10
+        terms: [power-function, type-i-and-ii-errors, one-sided-two-sided-test]
+        topic: 実施済みA/Bテストの規模で想定した購入率の差を検出できる検出力を正規近似で求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          このテストを計画した時点で、真の購入率が $p_A=0.08$、$p_B=0.10$ だったとすると、各群 «n» 人・有意水準 5% の両側検定で差を検出できる確率（検出力）はいくらだったか。
+          差の推定量 $\hat p_B-\hat p_A$ は平均 $p_B-p_A$、標準偏差 $\sqrt{p_A(1-p_A)/n+p_B(1-p_B)/n}$ の正規分布で近似し、棄却域の反対側（$\hat p_B-\hat p_A$ が負に大きくなる側）の確率は無視する。
+          $z_{0.025}=1.96$、$z_{0.05}=1.645$ とし、標準化した値は小数第2位に四捨五入して次の表を使え。最も近いものを選べ。
+
+          | $z$ | «tab_z» |
+          |---|«tab_sep»|
+          | $\Phi(z)$ | «tab_p» |
+        choices:
+          - '«pw_beta»'
+          - '«pw_ok»'
+          - '«pw_one»'
+          - '«pw_onegrp»'
+          - '«pw_noz»'
+        answer: 1
+        distractors:
+          - 第2種の過誤の確率 β を答えた
+          - 正解
+          - 片側検定の棄却限界 1.645 を使った
+          - 標準偏差に片方の群の分散しか入れなかった
+          - 棄却限界を引き忘れ、差が 0 を超える確率を求めた
+        explanation: |
+          **方針** $H_0$ が棄却されるのは $(\hat p_B-\hat p_A)/\mathrm{SE}>1.96$ のとき。真の差 0.02 のもとでこの確率を求めると、検出力 $\approx\Phi(0.02/\mathrm{SE}-1.96)$。
+
+          **途中式** 小問 (a) と同じく $\mathrm{SE}=\sqrt{0.1636/«n»}\approx«se»$。
+          $$\frac{0.02}{«se»}\approx«ratio»,\qquad \text{検出力}\approx\Phi(«ratio»-1.96)=\Phi(«zp_ok»)=«pw_ok»$$
+
+          **答え** «pw_ok»
+
+          **間違えやすい点** 両側検定なので棄却限界は 1.96（片側の 1.645 だと «pw_one»）。$1-\Phi=«pw_beta»$ は差を見逃す確率（第2種の過誤）。検出力が 7 割弱しかないので、このテストで差が有意になったのは「運がよかった」面もあり、80% の検出力を確保するにはもっと多くの訪問者が必要だった。
+      - id: s02p04c
+        chapter: 13
+        terms: [kendall-rank-correlation, concordant-discordant-pairs, normal-approximation-rank-tests]
+        topic: 6つのランディングページのクリック率順位と購入率順位のケンドールの順位相関を正規近似で検定する
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          6つのランディングページについて、クリック率の順位と購入率の順位を調べた（同順位なし）。
+
+          | クリック率の順位 | 1 | 2 | 3 | 4 | 5 | 6 |
+          |---|---|---|---|---|---|---|
+          | 購入率の順位 | «cvr» |
+
+          一致する対の数を $C$、不一致の対の数を $D$、$S=C-D$ とする。2つの順位が無関係という帰無仮説のもとで $E[S]=0$、$V[S]=n(n-1)(2n+5)/18$ である。
+          標準化した値 $Z=S/\sqrt{V[S]}$ を求めよ（連続修正はしない）。
+        answer: «Z»
+        tolerance: 0.01
+        answer_format: 小数第2位まで（四捨五入）で答えよ。±0.01 の差まで正解とする。
+        explanation: |
+          **方針** 全 $\binom{6}{2}=15$ 対について、クリック率の順位の大小と購入率の順位の大小が同じ向きなら一致、逆なら不一致と数える。
+
+          **途中式** クリック率の順に購入率の順位を並べると 2, 1, 3, 6, 4, 5。後ろに自分より小さい値があれば不一致の対になる：
+          2 の後ろの 1（1対）、6 の後ろの 4 と 5（2対）で $D=«D»$、$C=15-«D»=«C»$、$S=«S»$（ケンドールの $\tau=S/15=«tau»$）。
+          $$V[S]=\frac{6\times5\times17}{18}\approx«varS»,\qquad Z=\frac{«S»}{\sqrt{«varS»}}=\frac{«S»}{«sdS»}\approx«Z_s»$$
+
+          **答え** «Z_s»
+
+          **間違えやすい点** $S$ ではなく $\tau$ を $\sqrt{V[S]}$ で割ると値が 15 分の 1 になる（$\tau$ の分散は $V[S]/15^2$）。対の数は $n(n-1)/2=15$ で、$n^2$ や $n(n-1)=30$ ではない。$|Z|<1.96$ なので有意水準 5% の両側検定では無相関を棄却できない（$n=6$ では正規近似は粗い点にも注意）。
+  - id: s02p05
+    title: キャンペーン中の注文の到着
+    context: |
+      あるネットショップでは、キャンペーン期間中の注文が 1 時間あたり 24 件のポアソン過程に従って到着する。
+      各注文は、ほかの注文とは独立に確率 0.25 でクーポンを使う。
+    items:
+      - id: s02p05a
+        chapter: 15
+        terms: [superposition-thinning-poisson, poisson-process, interarrival-time]
+        topic: ポアソン過程の間引きで、クーポン利用の注文が一定時間来ない確率を求める
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          ある時点から 15 分間、クーポンを使った注文が1件も来ない確率に最も近いものを選べ。
+          必要なら $e^{-1.5}=«e15»$、$e^{-4.5}=«e45»$、$e^{-6}=«e60»$ を使え。
+        choices:
+          - '«Pa_all»'
+          - '«Pa_non»'
+          - '«Pa_bin»'
+          - '«Pa_ok»'
+          - '«Pa_comp»'
+        answer: 3
+        distractors:
+          - 注文そのものが1件も来ない確率を求めた
+          - クーポンを使わない注文の率で計算した
+          - 15分の期待注文数 6 件がすべてクーポンなしと考え 0.75^6 とした
+          - 正解
+          - 少なくとも1件来る確率（余事象）を答えた
+        explanation: |
+          **方針** ポアソン過程の各点を独立に確率 $p$ で振り分ける（間引く）と、それぞれが率 $\lambda p$ のポアソン過程になる。
+
+          **途中式** クーポン注文は 1 時間あたり $24\times0.25=«lc»$ 件のポアソン過程。15 分（0.25 時間）での件数は平均 $«lc»\times0.25=«m15»$ のポアソン分布なので
+          $$P(0\text{ 件})=e^{-«m15»}=«Pa_ok»$$
+
+          **答え** «Pa_ok»
+
+          **間違えやすい点** 注文全体の率 24 で計算すると $e^{-6}=«Pa_all»$。注文の件数そのものが確率的に変わるので、件数を期待値の 6 件に固定した $0.75^6$ は誤り。
+      - id: s02p05b
+        chapter: 7
+        terms: [law-of-small-numbers, poisson-distribution, binomial-distribution]
+        topic: 多数の注文でまれに起きる決済エラーの件数を少数の法則でポアソン近似する
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          キャンペーン最終日には注文が 2000 件あり、各注文はほかと独立に確率 0.001 で決済エラーになるとする。
+          決済エラーが 3 件以上になる確率を、ポアソン分布で近似して求めよ。最も近いものを選べ。必要なら $e^{-2}=«e2»$ を使え。
+        choices:
+          - '«Pb_gt3»'
+          - '«Pb_eq3»'
+          - '«Pb_ok»'
+          - '«Pb_ge2»'
+          - '«Pb_le2»'
+        answer: 2
+        distractors:
+          - 「3件以上」を「3件を超える（4件以上）」と取り違えた
+          - ちょうど3件の確率を答えた
+          - 正解
+          - 余事象を 0 件と 1 件だけにした（2件以上の確率）
+          - 余事象（2件以下の確率）を答えた
+        explanation: |
+          **方針** 試行回数 $n$ が大きく成功確率 $p$ が小さい二項分布 $\mathrm{Bin}(n,p)$ は、平均 $\lambda=np$ のポアソン分布で近似できる（少数の法則）。「3件以上」は余事象「2件以下」から求める。
+
+          **途中式** $\lambda=2000\times0.001=«m»$。
+          $$P(N\le2)\approx e^{-2}\left(1+2+\frac{2^2}{2}\right)=«e2»\times«sum3»=«Pb_le2»$$
+          $$P(N\ge3)\approx1-«Pb_le2»=«Pb_ok»$$
+
+          **答え** «Pb_ok»
+
+          **間違えやすい点** 余事象に 2 件の項 $e^{-2}\cdot2^2/2!$ を入れ忘れると «Pb_ge2»。「以上」と「を超える」を区別する。二項分布の正確な値（約 0.3233）とも小数第3位まで近い。
+  - id: s02p06
+    title: 会員満足度調査の設計と無回答
+    context: |
+      あるスーパーチェーンが会員満足度調査（10点満点）を計画している。会員は一般 60%、シルバー 30%、ゴールド 10% の3つの層に分かれる。
+    items:
+      - id: s02p06a
+        chapter: 21
+        terms: [design-effect, cluster-sampling, simple-random-sampling]
+        topic: 店舗を集落とした集落抽出で級内相関から設計効果と有効標本サイズを求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          調査費用を抑えるため、多数の店舗から 40 店舗を無作為に選び、各店舗で会員を 20 人ずつ無作為に選んで合計 800 人に調査する（2段抽出）。
+          同じ店舗の会員どうしの満足度の級内相関係数は 0.05 と見積もられている。平均満足度の推定精度が同じになる単純無作為抽出の標本サイズ（有効標本サイズ）に最も近いものを選べ。
+        choices:
+          - '«neff_m»'
+          - '«neff»'
+          - '«neff_1»'
+          - '«n»'
+          - '«neff_mul»'
+        answer: 1
+        distractors:
+          - 設計効果の式で m-1 でなく m を使った
+          - 正解
+          - 設計効果を 1+ρ とした（集落の大きさを掛け忘れた）
+          - 集落抽出による精度の低下を無視した
+          - 設計効果で割るところを掛けた
+        explanation: |
+          **方針** 集落の大きさが $m$、級内相関が $\rho$ のとき、平均の分散は単純無作為抽出の $\mathrm{deff}=1+(m-1)\rho$ 倍になる（設計効果）。有効標本サイズは $n/\mathrm{deff}$。
+
+          **途中式**
+          $$\mathrm{deff}=1+(20-1)\times0.05=«deff»,\qquad n_{\text{eff}}=\frac{800}{«deff»}\approx«neff_raw»\ \to\ «neff»$$
+
+          **答え** «neff»
+
+          **間違えやすい点** 同じ店舗の会員は似た意見をもちやすいので、800 人に聞いても独立な 800 人分の情報はない。級内相関が 0.05 と小さくても、$m-1=19$ 倍されるので精度は約半分になる。
+      - id: s02p06b
+        chapter: 29
+        terms: [mar, complete-case-analysis, missing-data-mechanism]
+        topic: 層によって回答率が違うMARの無回答で、回答者だけの平均（完全ケース分析）の偏りを求める
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          実際に調査を行うと、回答率は一般 50%、シルバー 70%、ゴールド 90% で、回答者の平均満足度は一般 6.8、シルバー 7.4、ゴールド 8.1 だった。
+          欠測は MAR（層を与えれば、回答するかどうかは満足度によらない）と仮定し、調査対象は会員全体から（層の割合どおりに）無作為に選ばれていたとする。
+          回答者全員の単純平均（完全ケース分析）から、層の割合で重みづけた平均を引いた差（完全ケース分析の偏り）を求めよ。
+        answer: «bias»
+        tolerance: 0.001
+        answer_format: 小数第3位まで（四捨五入）で答えよ。±0.001 の差まで正解とする。
+        explanation: |
+          **方針** 回答者の中での層の割合は「層の割合 × 回答率」に比例するので、回答者の単純平均はゴールド層を重く数えてしまう。MAR なら、層ごとの回答者平均を本来の層の割合で重みづければ偏りを除ける。
+
+          **途中式** 層の割合 × 回答率は «wr»、合計 «den»。
+          $$\text{完全ケースの平均}=\frac{0.30\times6.8+0.21\times7.4+0.09\times8.1}{«den»}=\frac{«num»}{«den»}=«cc»$$
+          $$\text{重みづけた平均}=0.6\times6.8+0.3\times7.4+0.1\times8.1=«adj»$$
+          差は $«cc»-«adj»=«bias_s»$。
+
+          **答え** «bias_s»
+
+          **間違えやすい点** 満足度の高い層ほど回答しやすいので、回答者だけの平均は上に偏る。MAR は「欠測が観測された変数（ここでは層）で説明できる」という仮定で、満足度そのものによって回答が決まる MNAR ならこの補正でも偏りは残る。
+  - id: s02p07
+    title: 有料会員の継続期間
+    context: |
+      ある動画配信サービスで、新規の有料会員 10 人を追跡した。解約までの月数は次のとおりで、「+」は観測終了時点でまだ継続中（右側打ち切り）であることを表す。
+
+      $$2,\ 3^+,\ 4,\ 5,\ 6^+,\ 7,\ 8^+,\ 9,\ 10^+,\ 12^+$$
+
+      打ち切りは解約とは無関係に起こるとする。
+    items:
+      - id: s02p07a
+        chapter: 8
+        terms: [maximum-likelihood-estimator, observed-fisher-information, standard-error, censored-data]
+        topic: 右側打ち切りを含む継続期間の指数モデルで解約率の最尤推定値と観測情報量による標準誤差（解約数で決まる情報量）
+        level: 応用
+        definition: false
+        type: choice
+        question: |
+          解約までの期間が率 $\lambda$（平均 $1/\lambda$）の指数分布に従うと仮定する。打ち切りを考慮した尤度で $\lambda$ の最尤推定値 $\hat\lambda$ を求め、
+          観測フィッシャー情報量にもとづく標準誤差を求める。組として正しいものを選べ。
+        choices:
+          - '$\hat\lambda=«lam»$、標準誤差 $«se_n»$'
+          - '$\hat\lambda=«lam_ev»$、標準誤差 $«se_ev»$'
+          - '$\hat\lambda=«lam»$、標準誤差 $«se_ok»$'
+          - '$\hat\lambda=«lam_all»$、標準誤差 $«se_all»$'
+          - '$\hat\lambda=«lam»$、標準誤差 $«var_ok»$'
+        answer: 2
+        distractors:
+          - 情報量の解約数 d=5 を観測人数 n=10 にした
+          - 打ち切りの人の観測時間を捨て、解約者の期間だけで推定した
+          - 正解
+          - 打ち切りを解約として扱った
+          - 分散（情報量の逆数）を標準誤差と取り違えた
+        explanation: |
+          **方針** 解約した人は密度 $\lambda e^{-\lambda t}$、打ち切りの人は「その時点まで解約しない確率」$e^{-\lambda t}$ を尤度に入れる。解約数を $d$、全員の観測時間の合計を $T$ とすると $L(\lambda)=\lambda^de^{-\lambda T}$。
+
+          **途中式** $d=«d»$、$T=2+3+4+5+6+7+8+9+10+12=«T»$。
+          $$\ell(\lambda)=d\log\lambda-\lambda T,\quad \ell'(\lambda)=\frac{d}{\lambda}-T=0\ \Rightarrow\ \hat\lambda=\frac{d}{T}=\frac{«d»}{«T»}\approx«lam»$$
+          観測フィッシャー情報量は $-\ell''(\hat\lambda)=d/\hat\lambda^2$ なので
+          $$\mathrm{SE}=\sqrt{\frac{\hat\lambda^2}{d}}=\frac{\hat\lambda}{\sqrt d}=\frac{«lam_s»}{\sqrt{«d»}}\approx«se_ok»$$
+
+          **答え** $\hat\lambda=«lam»$、標準誤差 «se_ok»
+
+          **間違えやすい点** 打ち切りの人が尤度に加える情報は「その時点まで解約しなかった」ことだけなので、情報量の大きさを決めるのは解約数 $d$ であって人数 $n$ ではない（$n$ を使うと «se_n» と小さすぎる）。打ち切りの観測時間を捨てると $\hat\lambda$ が過大になり（«lam_ev»）、打ち切りを解約とみなすと解約率を過大に見積もる（«lam_all»）。$\hat\lambda^2/d=«var_ok»$ は分散。
+  - id: s02p08
+    title: 月次売上の回帰分析
+    context: |
+      ある小売チェーンの 40 か月分の月次データで、売上 $y$（百万円）を広告費 $x_1$（十万円）と平均気温 $x_2$（℃）に回帰した（切片あり、最小二乗法）。
+      $$\hat y=2.10+«b1»x_1+«b2»x_2,\qquad S_E=«SE1»$$
+      $y$、$x_1$、$x_2$ の標準偏差はそれぞれ «sy»、«s1»、«s2» だった（すべて同じ割る数で計算）。
+    items:
+      - id: s02p08a
+        chapter: 16
+        terms: [standardized-partial-regression-coefficient, multiple-regression-model]
+        topic: 単位の異なる説明変数の影響を標準化偏回帰係数で比べる
+        level: 基本
+        definition: false
+        type: numeric
+        question: |
+          広告費 $x_1$ の標準化偏回帰係数（すべての変数を平均 0・標準偏差 1 に標準化して回帰したときの係数）を求めよ。
+        answer: «std1»
+        tolerance: 0.01
+        answer_format: 小数第2位まで（四捨五入）で答えよ。±0.01 の差まで正解とする。
+        explanation: |
+          **方針** 変数を標準化すると、係数は「$x_j$ が 1 標準偏差増えたとき、$y$ が何標準偏差変わるか」になる。$b_j^*=b_j\,s_{x_j}/s_y$。
+
+          **途中式**
+          $$b_1^*=«b1»\times\frac{«s1»}{«sy»}=«std1_s»$$
+          （参考：気温は $b_2^*=«b2»\times«s2»/«sy»=«std2»$）
+
+          **答え** «std1_s»
+
+          **間違えやすい点** 比を逆にした $b_1s_y/s_{x_1}=«std1_inv»$ や、分散の比を掛けた «std1_var» は誤り。もとの係数 «b1» と «b2» は単位（十万円と ℃）が違うので大きさを直接比べられないが、標準化すると広告費のほうが影響が大きいとわかる。
+      - id: s02p08b
+        chapter: 17
+        terms: [durbin-watson-statistic, serial-correlation, residual]
+        topic: 月次回帰の残差のダービン・ワトソン比から正の系列相関を判定する
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          残差 $e_1,\dots,e_{40}$（時間順）について $\sum_{t=2}^{40}(e_t-e_{t-1})^2=«sdiff»$ だった（$\sum_{t=1}^{40}e_t^2=S_E=«SE1»$）。
+          この場合（$n=40$、説明変数 2 個、有意水準 5%）のダービン・ワトソン検定の下限・上限は $d_L=«dL»$、$d_U=«dU»$ である。正しいものを選べ。
+        choices:
+          - '$d=«dw»$ で 2 より小さいので、残差には負の系列相関がある'
+          - '$d=«dw»<d_L$ なので正の系列相関があると判断し、1次の自己相関はおよそ $«rho»$ と見積もられる'
+          - '$d=«dw_inv»<d_L$ なので正の系列相関があると判断し、1次の自己相関はおよそ $«rho_inv»$ と見積もられる'
+          - '$4-d=«dw4»>d_U$ なので、系列相関はないと判断する'
+          - '$d=«dw»<d_L$ なので正の系列相関があると判断し、1次の自己相関はおよそ $«rho_half»$ と見積もられる'
+        answer: 1
+        distractors:
+          - d が 2 より小さいときの向き（正と負）を取り違えた
+          - 正解
+          - 分子と分母を逆にして d を計算した
+          - 負の系列相関を調べる 4-d だけを見て、正の系列相関の判定をしなかった
+          - 自己相関の近似 1-d/2 を d/2 とした
+        explanation: |
+          **方針** ダービン・ワトソン比 $d=\sum(e_t-e_{t-1})^2/\sum e_t^2$ は、残差の1次の自己相関 $r_1$ を使って $d\approx2(1-r_1)$ と近似できる。$d<d_L$ なら正の系列相関あり、$d>d_U$ なら正の系列相関なし、その間は判定保留。
+
+          **途中式**
+          $$d=\frac{«sdiff»}{«SE1»}=«dw»,\qquad r_1\approx1-\frac{d}{2}=«rho»$$
+          $«dw»<d_L=«dL»$ なので正の系列相関がある。
+
+          **答え** 「$d=«dw»<d_L$ で正の系列相関、自己相関はおよそ «rho»」
+
+          **間違えやすい点** $d$ が 0 に近いほど正の自己相関、4 に近いほど負の自己相関。正の系列相関があると最小二乗法の標準誤差は小さく出がちで、t 検定が有意になりすぎる。
+      - id: s02p08c
+        chapter: 19
+        terms: [generalized-least-squares, serial-correlation, multiple-regression-model]
+        topic: AR(1)誤差の回帰をコクラン・オーカット変換で当てはめた結果からもとのモデルの切片と傾きに戻す
+        level: 応用
+        definition: false
+        type: choice
+        question: |
+          (b) の結果から誤差が AR(1) 過程 $u_t=\rho u_{t-1}+\varepsilon_t$ に従うと考え、$\hat\rho=«rho»$ を使って
+          $$y_t^*=y_t-«rho»\,y_{t-1},\qquad x_{jt}^*=x_{jt}-«rho»\,x_{j,t-1}\quad(j=1,2)$$
+          と変換したデータに最小二乗法を当てはめたところ、$\hat y^*=«astar»+«bstar»x_1^*+0.10x_2^*$ となった（一般化最小二乗法の近似、コクラン・オーカット法）。
+          もとのモデル $y_t=\beta_0+\beta_1x_{1t}+\beta_2x_{2t}+u_t$ の $\beta_0$、$\beta_1$ の推定値の組として正しいものを選べ。
+        choices:
+          - '$\hat\beta_0=«b0_raw»$、$\hat\beta_1=«bstar»$'
+          - '$\hat\beta_0=«b0_mul»$、$\hat\beta_1=«bstar»$'
+          - '$\hat\beta_0=«b0_ok»$、$\hat\beta_1=«bstar»$'
+          - '$\hat\beta_0=«b0_ok»$、$\hat\beta_1=«b1_div»$'
+          - '$\hat\beta_0=«b0_plus»$、$\hat\beta_1=«bstar»$'
+        answer: 2
+        distractors:
+          - 変換後の切片をそのまま β0 とした
+          - (1-ρ) で割るところを掛けた
+          - 正解
+          - 傾きまで (1-ρ) で割った
+          - (1-ρ) でなく (1+ρ) で割った
+        explanation: |
+          **方針** もとのモデルの $t$ 期の式から、$t-1$ 期の式の $\rho$ 倍を引くと、誤差が $\varepsilon_t$（系列相関なし）になる。そのとき切片と傾きがどう変わるかを見る。
+
+          **途中式**
+          $$y_t-\rho y_{t-1}=\beta_0(1-\rho)+\beta_1(x_{1t}-\rho x_{1,t-1})+\beta_2(x_{2t}-\rho x_{2,t-1})+\varepsilon_t$$
+          変換後の切片は $\beta_0(1-\rho)$、傾きは $\beta_1,\beta_2$ のまま。よって
+          $$\hat\beta_0=\frac{«astar»}{1-«rho»}=\frac{«astar»}{«omr»}=«b0_ok»,\qquad \hat\beta_1=«bstar»$$
+
+          **答え** $\hat\beta_0=«b0_ok»$、$\hat\beta_1=«bstar»$
+
+          **間違えやすい点** 変換で変わるのは切片の部分（定数 1 が $1-\rho$ になる）だけで、傾きはそのまま推定される。系列相関を無視した最小二乗推定値（«b1»）と比べると、広告費の効果がやや小さく推定されている。
+  - id: s02p09
+    title: クーポン配布と購入
+    context: |
+      ある小売チェーンが会員にクーポンを配布し、翌月の購入の有無 $Y$（1: 購入）を調べた。説明変数はクーポン配布 $C$（1: 配布）とロイヤル会員 $L$（1: ロイヤル会員）で、ロジスティック回帰の結果は
+      $$\log\frac{P(Y=1)}{1-P(Y=1)}=-2.2+0.6C+0.8L$$
+      だった。必要なら $e^{0.6}=«e06»$、$e^{0.8}=«e08»$、$e^{1.4}=«e14»$、$e^{1.6}=«e16»$、$e^{2.2}=«e22»$ を使え。
+    items:
+      - id: s02p09a
+        chapter: 18
+        terms: [logistic-regression, odds-and-odds-ratio, link-function]
+        topic: 交互作用のないロジスティック回帰でオッズ比は層によらず一定でも購入確率の差は層で異なることを読み取る
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          このモデルにもとづくクーポンの効果について、正しいものを選べ。
+        choices:
+          - 'クーポンのオッズ比は $L$ によらず約 1.82 で、購入確率の増加幅も $L$ によらず同じである'
+          - 'クーポンのオッズ比はロイヤル会員（$L=1$）のほうが一般会員（$L=0$）より大きい'
+          - 'クーポンを配ると、$L$ によらず購入確率が約 1.82 倍になる'
+          - 'クーポンのオッズ比は $L$ によらず約 1.82 で、購入確率の増加幅は一般会員（$L=0$）のほうが大きい'
+          - 'クーポンのオッズ比は $L$ によらず約 1.82 で、購入確率の増加幅はロイヤル会員（$L=1$）のほうが大きい'
+        answer: 4
+        distractors:
+          - オッズ比が一定なら確率の差も一定だと思い込んだ
+          - 交互作用項がないのにオッズ比が層で変わると考えた
+          - オッズ比を確率の比（リスク比）と取り違えた
+          - 確率の差の大小を逆にした
+          - 正解
+        explanation: |
+          **方針** 交互作用項がないので、$C$ を 0 から 1 にするとロジットは $L$ によらず 0.6 増え、オッズ比は $e^{0.6}$ で一定。確率の差は4つの予測確率を計算して比べる。
+
+          **途中式** $P=1/(1+e^{-\eta})$ より
+          $$L=1:\ \frac{1}{1+«e08»}\approx«p11»\ (C=1),\quad \frac{1}{1+«e14»}\approx«p10»\ (C=0),\quad \text{差}\ «d1»$$
+          $$L=0:\ \frac{1}{1+«e16»}\approx«p01»\ (C=1),\quad \frac{1}{1+«e22»}\approx«p00»\ (C=0),\quad \text{差}\ «d0»$$
+          オッズ比はどちらも $e^{0.6}\approx1.82$、確率の差は $L=1$ のほうが大きい。
+
+          **答え** 「オッズ比は $L$ によらず約 1.82 で、増加幅はロイヤル会員のほうが大きい」
+
+          **間違えやすい点** ロジスティック曲線は確率 0.5 付近で傾きが最も大きいので、もとの確率が 0.5 に近い層ほど同じロジットの変化で確率が大きく動く。確率の比は $L=1$ で «rr1»、$L=0$ で «rr0» で、どちらも 1.82 ではない（オッズ比 ≠ リスク比）。
+      - id: s02p09b
+        chapter: 33
+        terms: [backdoor-criterion, causal-effect, conditional-probability]
+        topic: ロイヤル会員を交絡因子としたバックドア調整でクーポンの平均因果効果を求める
+        level: 応用
+        definition: false
+        type: numeric
+        question: |
+          クーポンはロイヤル会員の 80%、一般会員の 20% に配られており、ロイヤル会員に偏っていた。ロイヤル会員かどうか $L$ がクーポン配布と購入の両方に影響し、$L$ 以外に交絡はないとする。
+          また、上のモデルが真の購入確率を正しく表すとし、会員全体に占めるロイヤル会員の割合は 30% とする。
+          バックドア調整で、クーポン配布の平均因果効果 $P(Y=1\mid do(C=1))-P(Y=1\mid do(C=0))$ を求め、パーセントポイントで答えよ（例: 0.123 なら 12.3）。
+        answer: «ace»
+        tolerance: 0.1
+        answer_format: パーセントポイント単位で小数第1位まで（四捨五入）で答えよ。±0.1 の差まで正解とする。
+        explanation: |
+          **方針** $L$ はバックドア基準を満たすので、$P(Y=1\mid do(C=c))=\sum_{l}P(Y=1\mid C=c,L=l)P(L=l)$。$L$ の層ごとの確率の差を、会員全体での $L$ の分布で重みづけて平均する。
+
+          **途中式** (a) で求めた4つの予測確率を使うと
+          $$0.3\times(«p11»-«p10»)+0.7\times(«p01»-«p00»)=0.3\times«d1»+0.7\times«d0»\approx«t1»+«t0»=«ace_frac»$$
+          パーセントポイントで約 «ace»。
+
+          **答え** «ace»
+
+          **間違えやすい点** 重みには「クーポンを受け取った人の中のロイヤル会員の割合」ではなく、会員全体での $L$ の分布を使う。配布した人としなかった人の購入率を単純に比べると約 «naive» ポイントになり、ロイヤル会員に偏って配った分だけ効果を過大評価する。係数 0.6 はロジット（対数オッズ）の差で、確率の差ではない。
+  - id: s02p10
+    title: 陳列方法と価格表示の売場実験
+    context: |
+      スーパーの売場で、陳列方法 A（3水準）と価格表示 B（2水準）の組み合わせ 6 通りをそれぞれ 4 店舗に無作為に割り付け、1週間の売上（万円）を測った。
+      繰り返しのある二元配置分散分析の結果の一部は次のとおりである。
+
+      | 要因 | 平方和 | 自由度 |
+      |---|---|---|
+      | A | 48 | |
+      | B | 30 | |
+      | A×B | 16 | |
+      | 残差 | | |
+      | 合計 | 166 | |
+    items:
+      - id: s02p10a
+        chapter: 20
+        terms: [two-way-anova-with-replication, main-effect-and-interaction, sum-of-squares-decomposition]
+        topic: 繰り返しのある二元配置分散分析表の空欄から交互作用の F 値を求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          交互作用 A×B の F 値として正しいものを選べ。
+        choices:
+          - '«F_ss»'
+          - '«F_df3»'
+          - '«F_ok»'
+          - '«F_dfE»'
+          - '«F_df1»'
+        answer: 2
+        distractors:
+          - 平均平方でなく平方和どうしの比をとった
+          - 交互作用の自由度を (a-1)+(b-1)=3 にした
+          - 正解
+          - 残差の自由度を全体の N-1=23 にした
+          - 交互作用の自由度を 1 にした
+        explanation: |
+          **方針** 残差平方和は合計から差し引いて求める。自由度は A: $a-1$、B: $b-1$、A×B: $(a-1)(b-1)$、残差: $ab(r-1)$。F 値は平均平方の比。
+
+          **途中式** 残差平方和 $=166-48-30-16=«SE»$。自由度は A: 2、B: 1、A×B: «dfAB»、残差: $3\times2\times(4-1)=«dfE»$（合計 23 と一致）。
+          $$MS_{A\times B}=\frac{16}{«dfAB»}=«MSAB»,\quad MS_E=\frac{«SE»}{«dfE»}=«MSE»,\quad F=\frac{«MSAB»}{«MSE»}=«F_ok»$$
+
+          **答え** «F_ok»
+
+          **間違えやすい点** 交互作用の自由度は $(a-1)(b-1)=2$ で、和 $(a-1)+(b-1)$ ではない。参考までに $F_{2,18}(0.05)=«F218»$ なので交互作用は 5% で有意でなく、主効果 A（$F=«FA»$）と B（$F=«FB»$）をそれぞれ解釈できる。
+  - id: s02p11
+    title: ブランドイメージ調査
+    context: |
+      ある飲料メーカーが、自社ブランドについて「高級感」「信頼」「親しみ」「革新性」「価格満足」の 5 項目を 7 段階で評価してもらう調査を行った。
+    items:
+      - id: s02p11a
+        chapter: 22
+        terms: [principal-component-loading, eigenvalue-and-eigenvector, pca-on-correlation-matrix]
+        topic: 相関行列の主成分分析で固有値と固有ベクトルの成分から主成分負荷量を求める
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          5 項目の相関行列で主成分分析をしたところ、第1主成分の固有値は 2.35、長さ 1 に正規化した固有ベクトルの「信頼」の成分は 0.52 だった。
+          第1主成分得点と「信頼」（標準化した値）との相関係数（主成分負荷量）に最も近いものを選べ。
+        choices:
+          - '«L_div»'
+          - '«L_vec»'
+          - '«L_sq»'
+          - '«L_ok»'
+          - '«L_lam»'
+        answer: 3
+        distractors:
+          - 固有ベクトルの成分を √固有値 で割った
+          - 固有ベクトルの成分をそのまま負荷量とした
+          - 負荷量の2乗（第1主成分で説明される「信頼」の分散の割合）を答えた
+          - 正解
+          - √ をとらずに固有値をそのまま掛けた
+        explanation: |
+          **方針** 主成分得点 $z_1=\boldsymbol a^\top\boldsymbol x$ の分散は固有値 $\lambda_1$、$z_1$ と標準化変数 $x_j$ の共分散は $\lambda_1a_j$。相関はこれを $\sqrt{\lambda_1}\times1$ で割る。
+
+          **途中式**
+          $$\mathrm{Corr}(z_1,x_j)=\frac{\lambda_1a_j}{\sqrt{\lambda_1}}=\sqrt{\lambda_1}\,a_j=\sqrt{2.35}\times0.52\approx«sq»\times0.52\approx«L_ok»$$
+
+          **答え** «L_ok»
+
+          **間違えやすい点** 固有ベクトルの成分（0.52）そのものは負荷量ではない。負荷量の2乗 «L_sq» は「信頼」の分散のうち第1主成分で説明される割合で、全主成分について足すと 1 になる。$\lambda_1a_j=«L_lam»$ は共分散で、相関は 1 を超えない。
+      - id: s02p11b
+        chapter: 25
+        terms: [precision-matrix, undirected-graphical-model, partial-correlation-coefficient]
+        topic: 3項目の精度行列（分散共分散行列の逆行列）の成分から偏相関係数を求める
+        level: 基本
+        definition: false
+        type: numeric
+        question: |
+          「高級感」「信頼」「価格満足」の 3 項目（この順）を標準化し、分散共分散行列（相関行列）の逆行列（精度行列）を求めたところ
+          $$\Omega=\begin{pmatrix}1.6&-0.6&0.4\\-0.6&2.0&-0.9\\0.4&-0.9&1.5\end{pmatrix}$$
+          だった。「信頼」を与えたもとでの「高級感」と「価格満足」の偏相関係数を求めよ。
+        answer: «pc»
+        tolerance: 0.001
+        answer_format: 小数第3位まで（四捨五入）で答えよ（負の値なら符号もつける）。±0.001 の差まで正解とする。
+        explanation: |
+          **方針** 精度行列 $\Omega=(\omega_{ij})$ から、残りの変数すべてを与えたもとでの偏相関は $\rho_{ij\cdot\text{rest}}=-\dfrac{\omega_{ij}}{\sqrt{\omega_{ii}\omega_{jj}}}$。3 変数なので「残り」は「信頼」だけ。
+
+          **途中式**
+          $$\rho_{13\cdot2}=-\frac{0.4}{\sqrt{1.6\times1.5}}=-\frac{0.4}{\sqrt{2.4}}\approx-\frac{0.4}{«sq13»}\approx«pc_s»$$
+
+          **答え** «pc_s»
+
+          **間違えやすい点** マイナスの符号を忘れやすい（精度行列の非対角成分が正なら偏相関は負）。精度行列の成分が 0 なら、その2変数は残りを与えたもとで条件付き独立（正規分布のとき）で、無向グラフィカルモデルでは辺を引かない。
+      - id: s02p11c
+        chapter: 26
+        terms: [correspondence-analysis, contingency-table, pearson-chi-square-statistic]
+        topic: 年代と好きなブランドの2×3分割表に対応分析をしたときの総イナーシャと次元数
+        level: 応用
+        definition: false
+        type: choice
+        question: |
+          同じ調査で、回答者の年代と、競合を含む3ブランド P、Q、R のうち最も好きなブランドをたずねた。
+
+          | | P | Q | R | 計 |
+          |---|---|---|---|---|
+          | 若年 | 60 | 30 | 30 | 120 |
+          | 中高年 | 20 | 30 | 30 | 80 |
+          | 計 | 80 | 60 | 60 | 200 |
+
+          この分割表に対応分析を行うとき、総イナーシャと、意味のある（固有値が 0 でない）次元の最大数の組として正しいものを選べ。
+        choices:
+          - '«chi»、1'
+          - '«inert»、2'
+          - '«phi»、1'
+          - '«inert»、1'
+          - '«chi»、2'
+        answer: 3
+        distractors:
+          - 総イナーシャをカイ二乗統計量そのものとした
+          - 次元数を min(行, 列) とし 1 を引き忘れた
+          - 総イナーシャをファイ係数 √(χ²/n) とした
+          - 正解
+          - カイ二乗統計量を答え、次元数も 1 を引き忘れた
+        explanation: |
+          **方針** 対応分析の総イナーシャはピアソンのカイ二乗統計量を総度数で割った $\chi^2/n$。意味のある次元の数は $\min(\text{行数},\text{列数})-1$。
+
+          **途中式** 期待度数は $(\text{行計}\times\text{列計})/200$ で、若年が 48、36、36、中高年が 32、24、24。
+          $$\chi^2=«chi_terms»=«chi»,\qquad \frac{\chi^2}{n}=\frac{«chi»}{«nn»}=«inert»$$
+          次元数は $\min(2,3)-1=1$。
+
+          **答え** 総イナーシャ «inert»、次元数 1
+
+          **間違えやすい点** 行と列の周辺分布による自明な解（固有値 1）を除くので次元は $\min(r,c)-1$。2行の表では1次元で総イナーシャのすべてを説明する。$\sqrt{\chi^2/n}=«phi»$ はファイ係数で、イナーシャ（2乗の量）とは違う。
+  - id: s02p12
+    title: 株式の日次収益率の時系列モデル
+    context: |
+      ある株式の日次収益率 $X_t$ を MA(1) モデル
+      $$X_t=\mu+\varepsilon_t+\theta\varepsilon_{t-1},\qquad \varepsilon_t\sim\text{WN}(0,\sigma^2)$$
+      で表す。長期間のデータから、標本分散（自己共分散 $\gamma_0$ の推定値）は 2.5、1次の標本自己相関は 0.40、2次以上の標本自己相関はほぼ 0 だった。
+    items:
+      - id: s02p12a
+        chapter: 27
+        terms: [ma-model, invertibility, autocovariance-autocorrelation]
+        topic: MA(1)モデルの1次自己相関と分散から反転可能な係数と誤差分散をモーメント法で求める
+        level: 応用
+        definition: false
+        type: choice
+        question: |
+          理論上の自己相関・分散と標本の値を等しいとおき（モーメント法）、反転可能性を満たすように $\theta$ と $\sigma^2$ を求める。組として正しいものを選べ。
+        choices:
+          - '$\theta=«thb»$、$\sigma^2=«s2_big»$'
+          - '$\theta=«th_ar»$、$\sigma^2=«s2_ar»$'
+          - '$\theta=«th»$、$\sigma^2=«s2_raw»$'
+          - '$\theta=«th»$、$\sigma^2=«s2_ok»$'
+          - '$\theta=«th»$、$\sigma^2=«s2_mul»$'
+        answer: 3
+        distractors:
+          - 反転可能でない（|θ|>1 の）解を選んだ
+          - AR(1) と混同して θ=ρ1 とした
+          - 誤差分散を γ0 そのものとした
+          - 正解
+          - γ0 を (1+θ^2) で割るところを掛けた
+        explanation: |
+          **方針** MA(1) では $\gamma_0=(1+\theta^2)\sigma^2$、$\rho_1=\dfrac{\theta}{1+\theta^2}$、$\rho_k=0\ (k\ge2)$。$\rho_1=0.40$ を $\theta$ の2次方程式として解き、$|\theta|<1$ の解を選ぶ。
+
+          **途中式**
+          $$\frac{\theta}{1+\theta^2}=0.4\ \Rightarrow\ 0.4\theta^2-\theta+0.4=0\ \Rightarrow\ \theta=\frac{1\pm\sqrt{1-0.64}}{0.8}=\frac{1\pm0.6}{0.8}$$
+          解は $\theta=«thb»$ と $\theta=«th»$。反転可能性 $|\theta|<1$ より $\theta=«th»$。
+          $$\sigma^2=\frac{\gamma_0}{1+\theta^2}=\frac{2.5}{«one_th2»}=«s2_ok»$$
+
+          **答え** $\theta=«th»$、$\sigma^2=«s2_ok»$
+
+          **間違えやすい点** $\theta$ と $1/\theta$ は同じ自己相関を与えるので、反転可能性で一つに決める（$\theta=«thb»$ は反転可能でない）。AR(1) なら $\rho_2=\rho_1^2=«rho2ar»$ となるはずで、2次の自己相関がほぼ 0 であることが MA(1) を選ぶ根拠になる。
+  - id: s02p13
+    title: 信用リスクのシミュレーション
+    context: |
+      信用ポートフォリオのリスク計算で、ある業種の年間デフォルト率 $X$ をベータ分布 Be(2, 3)、すなわち確率密度関数
+      $$f(x)=12x(1-x)^2\quad(0<x<1)$$
+      の分布からシミュレーションで発生させたい。
+    items:
+      - id: s02p13a
+        chapter: 32
+        terms: [rejection-sampling, uniform-random-number, monte-carlo-integration]
+        topic: 一様分布を提案分布とする受容棄却法でベータ分布を発生させるときの提案回数の期待値
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          提案分布を一様分布 $U(0,1)$（密度 $g(x)=1$）とし、$f(x)\le Mg(x)$ がすべての $x$ で成り立つ最小の定数 $M$ を使う受容棄却法を考える。
+          すなわち、$Y\sim U(0,1)$ と独立な $U\sim U(0,1)$ を発生させ、$U\le f(Y)/\{Mg(Y)\}$ なら $Y$ を採用する。
+          採用されたサンプルを 1000 個得るまでに必要な提案（$Y$ の発生）回数の期待値に最も近いものを選べ。
+        choices:
+          - '«N_inv»'
+          - '«N_half»'
+          - '«N_mean»'
+          - '«N_ok»'
+          - '«N_crude»'
+        answer: 3
+        distractors:
+          - 採択率 1/M と M を取り違えた
+          - 最大値を x=1/2 でとると考えた
+          - 平均 0.4 での密度の値を M とした
+          - 正解
+          - x(1-x)^2 ≤ 1 として M=12 を使った
+        explanation: |
+          **方針** 1回の提案の採択確率は $1/M$ なので、採用 1 個あたりの提案回数の期待値は $M$（幾何分布の期待値）。$M=\max f(x)$ を微分で求める。
+
+          **途中式**
+          $$f'(x)=12\{(1-x)^2-2x(1-x)\}=12(1-x)(1-3x)=0\ \Rightarrow\ x=\frac13$$
+          $$M=f\!\left(\tfrac13\right)=12\times\frac13\times\frac49=\frac{16}{9}\approx«M_s»$$
+          採択率は $9/16=«acc»$。1000 個に必要な提案回数の期待値は $1000\times16/9\approx«N_ok»$。
+
+          **答え** «N_ok»
+
+          **間違えやすい点** $M$ は最頻値 $x=1/3$ での密度で、中央の $x=1/2$ や平均 $0.4$ での値ではない（それらは $f$ を上から抑えられない）。採択率 $1/M$ と必要回数 $M$ を取り違えると «N_inv» になる。$M$ を大きくとっても正しいサンプルは得られるが、効率が落ちる（$M=12$ なら «N_crude» 回）。

@@ -1,0 +1,960 @@
+set: 1
+title: 模擬試験 第1回
+minutes: 90
+problems:
+  - id: s01p01
+    title: 部品の欠陥と出荷検査
+    context: |
+      ある工場で作る部品には、外観の欠陥 $A$、寸法の欠陥 $B$、強度の欠陥 $C$ の 3 種類があり、どれか 1 つでもあれば不良品となる。
+      過去の大量の検査記録から、1 個の部品について次の確率がわかっている。
+
+      | 事象 | $A$ | $B$ | $C$ | $A\cap B$ | $A\cap C$ | $B\cap C$ | $A\cap B\cap C$ |
+      |---|---|---|---|---|---|---|---|
+      | 確率 | «pa» | «pb» | «pc» | «pab» | «pac» | «pbc» | «pabc» |
+    items:
+      - id: s01p01a
+        chapter: 1
+        terms: [inclusion-exclusion-principle, independence-of-events]
+        topic: 3種類の欠陥の同時確率から包除原理で部品の不良率を求める
+        level: 基本
+        definition: false
+        type: numeric
+        question: |
+          無作為に選んだ 1 個の部品が不良品である確率を求めよ。
+        answer: «union»
+        tolerance: 0.001
+        answer_format: 小数第3位まで（小数第4位を四捨五入）で答えよ。±0.001 の差まで正解とする。
+        explanation: |
+          **方針** 「不良品」は $A\cup B\cup C$。3 つの事象の和集合の確率は包除原理で求める。
+
+          **途中式**
+          $$P(A\cup B\cup C)=\{P(A)+P(B)+P(C)\}-\{P(A\cap B)+P(A\cap C)+P(B\cap C)\}+P(A\cap B\cap C)$$
+          $$=«s1»-«s2»+«pabc»=«union_s»$$
+
+          **答え** $«union_s»$
+
+          **間違えやすい点** 3 つの確率を足しただけ（$«u_sum»$）では、2 つ以上の欠陥をもつ部品を重複して数えている。2 つずつの共通部分を引いたところで止める（$«u_no3»$）と、3 つすべてをもつ部品を引きすぎたままになる。
+          また、欠陥どうしを独立とみなして $1-(1-«pa»)(1-«pb»)(1-«pc»)=«u_ind»$ とするのも誤り。実際 $P(A\cap B)=«pab»$ は $P(A)P(B)$ より大きく、欠陥は同時に起こりやすい。
+
+      - id: s01p01b
+        chapter: 5
+        terms: [hypergeometric-distribution, finite-population-correction, binomial-distribution]
+        topic: 不良品を含むロットからの非復元抽出で不良個数の分散を有限母集団修正つきで求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          出荷前の検査で、«N» 個の部品からなるロット（このうちちょうど «D» 個が不良品）から «n» 個を**非復元**で無作為に抜き取る。
+          抜き取った中の不良品の個数を $X$ とするとき、$V[X]$ に最も近い値はどれか。
+        choices:
+          - "$«varB»$"
+          - "$«varW»$"
+          - "$«varH»$"
+          - "$«meanH»$"
+          - "$«sdH»$"
+        answer: 2
+        distractors:
+          - 復元抽出（二項分布）の分散 np(1-p) を使い、有限母集団修正を付け忘れた
+          - 有限母集団修正を (N-n)/N と誤って書いた
+          - 正解
+          - 分散ではなく期待値 np を答えた
+          - 分散の平方根（標準偏差）を答えた
+        explanation: |
+          **方針** 非復元抽出なので $X$ は超幾何分布に従う。超幾何分布の分散は、二項分布の分散に有限母集団修正 $\frac{N-n}{N-1}$ を掛けた形になる。
+
+          **途中式** 不良率 $p=D/N=«D»/«N»=«p»$ とおくと
+          $$V[X]=np(1-p)\cdot\frac{N-n}{N-1}=«n»\times«p»\times«q»\times\frac{«fpcN»}{«fpcD»}=«npq»\times«fpc»=«varH4»\cdots$$
+
+          **答え** $«varH»$
+
+          **間違えやすい点** 修正を付け忘れると二項分布の $«varB»$ になる。修正項の分母は $N$ ではなく $N-1$ で、$(N-n)/N$ とすると $«varW»$ になる。期待値 $np=«meanH»$ や標準偏差 $«sdH»$ と取り違えないこと。
+
+      - id: s01p01c
+        chapter: 7
+        terms: [normal-approximation-binomial-poisson, continuity-correction, central-limit-theorem]
+        topic: 1日の不良個数が一定数以上になる確率を連続修正つき正規近似で求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          この工場のあるラインでは 1 日に «m» 個を作る。各部品が独立に確率 «pr» で不良になるとき、1 日の不良個数 $Y$ が «k» 個以上になる確率 $P(Y\ge «k»)$ を、
+          **連続修正を行った**正規近似で求める。最も近い値はどれか。必要なら次の標準正規分布の分布関数 $\Phi(z)$ の値を使え。
+
+          | $z$ | 0.45 | 1.25 | 1.43 | 1.61 |
+          |---|---|---|---|---|
+          | $\Phi(z)$ | «phiA» | «phiB» | «phiC» | «phiD» |
+        choices:
+          - "$«c_no»$"
+          - "$«c_ok»$"
+          - "$«c_up»$"
+          - "$«c_var»$"
+          - "$«c_low»$"
+        answer: 1
+        distractors:
+          - 連続修正をせず (12-8)/2.8 で標準化した
+          - 正解
+          - 連続修正の向きを逆にして 12.5 を使った
+          - 標準偏差の代わりに分散 7.84 で割った
+          - P(Y≦11) の側（余事象）を答えた
+        explanation: |
+          **方針** $Y\sim B(«m»,«pr»)$ を平均 $np$・分散 $np(1-p)$ の正規分布で近似する。整数値の $Y$ について $Y\ge «k»$ は $Y>«km»$ と同じなので、境界を «km» にして標準化する（連続修正）。
+
+          **途中式** $E[Y]=«m»\times«pr»=«mu»$、$V[Y]=«m»\times«pr»\times(1-«pr»)=«var»$、標準偏差は $\sqrt{«var»}=«sd»$。
+          $$P(Y\ge «k»)\approx P\left(Z\ge\frac{«km»-«mu»}{«sd»}\right)=P(Z\ge «zcc»)=1-\Phi(«zcc»)=1-«phiB»=«c_ok4»$$
+
+          **答え** $«c_ok»$
+
+          **間違えやすい点** 連続修正をしないと $z=«zno_raw»\approx«zno»$ で $«c_no»$、修正の向きを逆（«kp»）にすると $«c_up»$ になる。
+          「以上」は «k» を含むので、境界は «k» より 0.5 小さい側にとる。分散 «var» で割ると $«c_var»$ になってしまう。
+
+  - id: s01p02
+    title: 自動車保険の請求件数と請求額
+    context: |
+      ある自動車保険で、1 契約あたりの 1 年間の事故請求件数 $N$ の確率母関数が
+      $$G(s)=E\left[s^N\right]=\left(\frac{«p»}{1-«q»s}\right)^{«r»}$$
+      で与えられているとする（これは「成功確率 «p» の試行で «r» 回成功するまでの失敗回数」を数える負の二項分布である）。
+    items:
+      - id: s01p02a
+        chapter: 2
+        terms: [probability-generating-function, negative-binomial-distribution]
+        topic: 負の二項分布の確率母関数を2回微分して請求件数の分散を求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          確率母関数 $G(s)$ を用いて $V[N]$ を求めよ。最も近い値はどれか。
+        choices:
+          - "$«v_mean»$"
+          - "$«v_g2m»$"
+          - "$«varN»$"
+          - "$«v_E2»$"
+          - "$«v_plus»$"
+        answer: 2
+        distractors:
+          - 期待値 G'(1) を分散と取り違えた
+          - V[N]=G''(1)-G'(1)^2 として G'(1) を足し忘れた
+          - 正解
+          - E[N^2]=G''(1)+G'(1) を分散と取り違えた
+          - G'(1)^2 を引かずに足した
+        explanation: |
+          **方針** 確率母関数では $G'(1)=E[N]$、$G''(1)=E[N(N-1)]$ である。よって $V[N]=G''(1)+G'(1)-\{G'(1)\}^2$。
+
+          **途中式** $G(s)=«p»^{«r»}(1-«q»s)^{-«r»}$ を微分すると
+          $$G'(s)=«r»\cdot«q»\cdot«p»^{«r»}(1-«q»s)^{-«r»-1},\qquad G''(s)=«r»(«r»+1)\cdot«q»^2\cdot«p»^{«r»}(1-«q»s)^{-«r»-2}$$
+          $s=1$ を代入すると $1-«q»=«p»$ なので
+          $$G'(1)=\frac{«r»\times«q»}{«p»}=«g1»,\qquad G''(1)=\frac{«r»\times(«r»+1)\times«q»^2}{«p»^2}=«g2»$$
+          $$V[N]=G''(1)+G'(1)-\{G'(1)\}^2=«g2»+«g1»-«g1sq»=«varN»$$
+
+          **答え** $«varN»$
+
+          **間違えやすい点** $G''(1)$ は $E[N^2]$ ではなく階乗モーメント $E[N(N-1)]$。$G''(1)-\{G'(1)\}^2$ とすると $«v_g2m»$ になる。
+          公式 $V[N]=r(1-p)/p^2=«r»\times«q»/«p»^2=«varN»$ と一致することも確かめられる。
+
+      - id: s01p02b
+        chapter: 3
+        terms: [conditional-variance, conditional-expectation, expectation-variance-properties]
+        topic: 件数がランダムな請求総額の分散を全分散の公式で求める
+        level: 応用
+        definition: false
+        type: numeric
+        question: |
+          1 件あたりの請求額 $X_1,X_2,\ldots$（単位：万円）は互いに独立で同じ分布に従い、平均 «muX»、標準偏差 «sdX» とする。
+          また $X_i$ は件数 $N$ とも独立とする。1 契約の年間請求総額 $S=\sum_{i=1}^{N}X_i$（$N=0$ のとき $S=0$）の**標準偏差**を求めよ。
+        answer: «sdS»
+        tolerance: 0.01
+        answer_format: 小数第2位まで（小数第3位を四捨五入）で答えよ。±0.01 の差まで正解とする。
+        explanation: |
+          **方針** $N$ で条件づけて全分散の公式 $V[S]=E[V[S\mid N]]+V[E[S\mid N]]$ を使う。$E[N]$ と $V[N]$ は前問の値を使う。
+
+          **途中式** $N=n$ が与えられると $S$ は $n$ 個の独立な和なので
+          $E[S\mid N]=N\mu$、$V[S\mid N]=N\sigma^2$（$\mu=«muX»$、$\sigma^2=«varX»$）。
+          $$V[S]=E[N]\sigma^2+V[N]\mu^2=«g1»\times«varX»+«varN»\times«muX2»=«t1»+«t2»=«varS»$$
+          標準偏差は $\sqrt{«varS»}=«sdS4»\cdots$。
+
+          **答え** $«sdS»$
+
+          **間違えやすい点** 第2項の $V[N]\mu^2$ を忘れて $E[N]\sigma^2$ だけにすると $\sqrt{«t1»}=«sdS_wrong2»$ になる。
+          また $V[N]$ の代わりに $E[N]$ を使う（ポアソン分布と思い込む）と $\sqrt{«g1»\times«varX»+«g1»\times«muX2»}=«sdS_wrong»$ になる。分散と標準偏差の取り違えにも注意。
+
+          **別解** 複合分布の積率母関数 $M_S(t)=G(M_X(t))$ を 2 回微分しても同じ式が得られる。
+
+      - id: s01p02c
+        chapter: 31
+        terms: [gamma-poisson-model, conjugate-prior, posterior-mean-map]
+        topic: 契約者ごとの事故率に対するガンマ事前分布と複数年の請求件数から事後平均を求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          実は上の負の二項分布は、次の階層モデルから生じる。契約者ごとの事故率 $\lambda$ が形状 $\alpha=«alpha»$、**尺度** $\theta=«theta»$ のガンマ分布
+          （密度 $\propto\lambda^{\alpha-1}e^{-\lambda/\theta}$、平均 $\alpha\theta=«pmean»$）に従い、$\lambda$ が与えられたとき各年の件数は独立に平均 $\lambda$ のポアソン分布に従う。
+          ある契約者は «t» 年間で合計 «y» 件の請求をした。この契約者の $\lambda$ の事後平均に最も近い値はどれか。
+        choices:
+          - "$«prior»$"
+          - "$«wrong_noalpha»$"
+          - "$«post»$"
+          - "$«mle»$"
+          - "$«wrong_rate»$"
+        answer: 2
+        distractors:
+          - データを使わず事前平均 αθ を答えた
+          - 事後分布の形状母数に α を足し忘れた
+          - 正解
+          - 事前分布を無視して最尤推定値 y/t を答えた
+          - 尺度 θ をレートと取り違えて θ+t で割った
+        explanation: |
+          **方針** ガンマ分布はポアソン分布の共役事前分布。尤度 $\propto\lambda^{y}e^{-t\lambda}$ と事前密度を掛けて、事後分布の形状と尺度を読み取る。
+
+          **途中式** レート $1/\theta=«rate»$ を使うと事後密度は
+          $$\pi(\lambda\mid y)\propto\lambda^{\alpha-1}e^{-«rate»\lambda}\cdot\lambda^{«y»}e^{-«t»\lambda}=\lambda^{«ay»-1}e^{-«bt»\lambda}$$
+          したがって事後分布は形状 $\alpha+y=«ay»$、レート $1/\theta+t=«bt»$（尺度 $«postscale»$）のガンマ分布で、事後平均は
+          $$\frac{\alpha+y}{1/\theta+t}=\frac{«ay»}{«bt»}=«post»$$
+
+          **答え** $«post»$
+
+          **間違えやすい点** 尺度 $\theta$ とレート $1/\theta$ の取り違え：$(\alpha+y)/(\theta+t)$ とすると $«wrong_rate»$ になる。事後平均は事前平均 $«prior»$ と最尤推定値 $y/t=«mle»$ の間に入ることを確かめるとよい。
+          なお、$\lambda$ を積分消去した $N$ の周辺分布が、問題文の負の二項分布（$r=\alpha=«alpha»$、$p=1/(1+\theta)=«p»$）になっている。
+
+  - id: s01p03
+    title: センサー部品の寿命の変換
+    context: |
+      ある電子部品の寿命 $T$（単位：千時間）はレート $\lambda>0$ の指数分布（密度 $f_T(t)=\lambda e^{-\lambda t}$、$t>0$、平均 $1/\lambda$）に従う。
+      この部品を使うセンサーは、劣化の指標として $Y=\sqrt{T}$ を記録している。
+    items:
+      - id: s01p03a
+        chapter: 4
+        terms: [change-of-variables, exponential-distribution]
+        topic: 指数分布に従う寿命の平方根の密度関数を変数変換で求める
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          $Y=\sqrt{T}$ の確率密度関数 $f_Y(y)$（$y>0$）として正しいものはどれか。
+        choices:
+          - "$\\lambda e^{-\\lambda y^2}$"
+          - "$\\dfrac{\\lambda}{2\\sqrt{y}}e^{-\\lambda\\sqrt{y}}$"
+          - "$2\\lambda y e^{-\\lambda y}$"
+          - "$2\\lambda y e^{-\\lambda y^2}$"
+          - "$1-e^{-\\lambda y^2}$"
+        answer: 3
+        distractors:
+          - ヤコビアン dt/dy=2y を掛け忘れた
+          - 逆変換の向きを誤り、T=√Y として変換した
+          - ヤコビアンは掛けたが、指数部の t に y^2 を代入し忘れた
+          - 正解
+          - 密度ではなく分布関数を答えた
+        explanation: |
+          **方針** $y=\sqrt{t}$ は $t>0$ で単調増加なので、逆変換 $t=y^2$ を代入し、ヤコビアン $|dt/dy|$ を掛ける。
+
+          **途中式** $t=y^2$、$\dfrac{dt}{dy}=2y$ より
+          $$f_Y(y)=f_T(y^2)\left|\frac{dt}{dy}\right|=\lambda e^{-\lambda y^2}\cdot 2y=2\lambda y e^{-\lambda y^2}\quad(y>0)$$
+          確認として、分布関数 $F_Y(y)=P(T\le y^2)=1-e^{-\lambda y^2}$ を $y$ で微分しても同じ式になる。
+
+          **答え** $2\lambda y e^{-\lambda y^2}$（レイリー分布の一種）
+
+          **間違えやすい点** ヤコビアンを掛け忘れると $\lambda e^{-\lambda y^2}$ になり、積分しても 1 にならない。変換の向き（$t$ を $y$ で表す）を逆にしないこと。
+
+      - id: s01p03b
+        chapter: 8
+        terms: [unbiased-estimator, maximum-likelihood-estimator, gamma-distribution]
+        topic: 平方根変換した寿命データでレートの最尤推定量のバイアスを補正し不偏推定量を作る
+        level: 応用
+        definition: false
+        type: numeric
+        question: |
+          «n» 個のセンサーから独立に $Y_1,\ldots,Y_{«n»}$ を観測したところ、$\sum_{i=1}^{«n»}y_i^2=«sy2»$ だった。
+          前問の密度にもとづく $\lambda$ の最尤推定量は $c\big/\sum_{i=1}^{«n»}Y_i^2$ の形をしているが、不偏ではない。
+          同じ形 $c\big/\sum Y_i^2$（$c$ は定数）で $\lambda$ の**不偏推定量**となるものを求め、その推定値を答えよ。
+          なお、形状 $k\,(>1)$、レート $\lambda$ のガンマ分布（密度 $\propto w^{k-1}e^{-\lambda w}$）に従う $W$ について $E[1/W]=\lambda/(k-1)$ である。
+        answer: «unb»
+        tolerance: 0.001
+        answer_format: 小数第3位まで（小数第4位を四捨五入）で答えよ。±0.001 の差まで正解とする。
+        explanation: |
+          **方針** まず最尤推定量を求める。次に $Y_i^2=T_i$ が指数分布に従うことから $\sum Y_i^2$ の分布（ガンマ分布）を特定し、最尤推定量の期待値を計算してずれを直す。
+
+          **途中式** 対数尤度は
+          $$\ell(\lambda)=\sum_{i=1}^{n}\left(\log 2+\log\lambda+\log y_i-\lambda y_i^2\right)=n\log\lambda-\lambda\sum y_i^2+(\text{定数})$$
+          $\ell'(\lambda)=\dfrac{n}{\lambda}-\sum y_i^2=0$ より最尤推定量 $\hat\lambda=\dfrac{n}{\sum Y_i^2}$（推定値 $«n»/«sy2»=«mle»$）。
+          $Y_i^2=T_i$ はレート $\lambda$ の指数分布（形状 1 のガンマ分布）なので、$W=\sum Y_i^2$ は形状 $n=«n»$、レート $\lambda$ のガンマ分布に従う。よって
+          $$E[\hat\lambda]=n\,E\left[\frac1W\right]=\frac{n}{n-1}\lambda\ne\lambda$$
+          不偏にするには $c=n-1=«n1»$ とすればよい：
+          $$\tilde\lambda=\frac{n-1}{\sum Y_i^2}=\frac{«n1»}{«sy2»}=«unb4»\cdots$$
+
+          **答え** $«unb»$
+
+          **間違えやすい点** 最尤推定量 $«mle»$ は平均的に $\frac{«n»}{«n1»}$ 倍だけ過大になる。$E[1/W]$ を $1/E[W]=\lambda/n$ と置き換えると「最尤推定量は不偏」と誤ってしまう（$E[1/W]\ne1/E[W]$）。
+          補正を逆向きに $(n+1)/\sum Y_i^2=«w_p1»$ としないこと。
+
+  - id: s01p04
+    title: 降圧薬の臨床試験
+    context: |
+      新しい降圧薬の効果を調べるため、患者を無作為に新薬群とプラセボ群に分け、8 週間後の収縮期血圧の低下量（mmHg）を測った。
+      標準偏差は不偏分散の平方根である。
+
+      | 群 | 人数 | 平均 | 標準偏差 |
+      |---|---|---|---|
+      | 新薬 | «n1» | «m1» | «s1» |
+      | プラセボ | «n2» | «m2» | «s2» |
+    items:
+      - id: s01p04a
+        chapter: 11
+        terms: [two-sample-t-test, pooled-variance, welch-test]
+        topic: 降圧薬とプラセボの血圧低下量を等分散を仮定した2標本t検定で比べる統計量
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          2 群の母分散が等しいと仮定して、母平均の差の 2 標本 $t$ 検定を行う。検定統計量 $t$ の値に最も近いものはどれか。
+        choices:
+          - "$«t_sum»$"
+          - "$«t»$"
+          - "$«t_w»$"
+          - "$«t_n»$"
+          - "$«t_ns»$"
+        answer: 1
+        distractors:
+          - 標準誤差を s1/√n1 + s2/√n2 と標準偏差の和で作った
+          - 正解
+          - 等分散を仮定しないウェルチの統計量を計算した
+          - プールした分散の分母を n1+n2-2 ではなく n1+n2 にした
+          - (1/n1+1/n2) に平方根をかけ忘れた
+        explanation: |
+          **方針** 2 群の平方和を合わせたプールした分散 $s_p^2$ を作り、$t=\dfrac{\bar x_1-\bar x_2}{\sqrt{s_p^2(1/n_1+1/n_2)}}$ を計算する（自由度 $n_1+n_2-2$）。
+
+          **途中式**
+          $$s_p^2=\frac{(«n1»-1)\times«s1»^2+(«n2»-1)\times«s2»^2}{«n1»+«n2»-2}=\frac{«ss1»+«ss2»}{«df»}=«sp2»$$
+          $$\sqrt{s_p^2\left(\frac{1}{«n1»}+\frac{1}{«n2»}\right)}=\sqrt{«sp2»\times«inv»}=\sqrt{«seq»}=«se»$$
+          $$t=\frac{«m1»-«m2»}{«se»}=\frac{«diff»}{«se»}=«t»$$
+
+          **答え** $«t»$（自由度 «df»）
+
+          **間違えやすい点** 等分散を仮定するのでウェルチの式（$\sqrt{s_1^2/n_1+s_2^2/n_2}$ を使うと $«t_w»$）ではない。
+          プールした分散の分母は $n_1+n_2-2$（$n_1+n_2$ とすると $«t_n»$）。標準偏差を足し合わせて標準誤差を作るのも誤り（$«t_sum»$）。
+
+      - id: s01p04b
+        chapter: 10
+        terms: [sample-size-determination-test, power-function, one-sided-two-sided-test]
+        topic: 次の臨床試験で片側検定の検出力を確保する1群あたりの例数設計
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          次の試験を計画する。低下量の母標準偏差は両群とも $\sigma=«sig»$ で既知とみなし、各群 $n$ 人ずつとする。
+          「新薬群の平均低下量がプラセボ群より大きい」を対立仮説とする**片側**の $z$ 検定を有意水準 5% で行うとき、
+          真の差が $\delta=«delta»$ mmHg なら検出力が 0.90 以上になる最小の $n$ を求めよ。
+          標準正規分布の上側 5% 点は «za»、上側 10% 点は «zb» とせよ。
+        answer: «nreq»
+        tolerance: 0.4
+        answer_format: 条件を満たす最小の整数で答えよ（許容範囲 ±0.4、すなわち整数が一致したときのみ正解）。
+        explanation: |
+          **方針** 差の推定量 $\bar X_1-\bar X_2$ の標準偏差は $\sigma\sqrt{2/n}$。棄却域の境界から真の差 $\delta$ までの距離が、上側 10% 点の分だけあればよい。
+
+          **途中式** 有意水準 5% の棄却域は $\bar X_1-\bar X_2>«za»\,\sigma\sqrt{2/n}$。真の差が $\delta$ のとき検出力が 0.90 になる条件は
+          $$\delta-«za»\,\sigma\sqrt{2/n}\ge «zb»\,\sigma\sqrt{2/n}\iff n\ge\frac{2\sigma^2(«za»+«zb»)^2}{\delta^2}$$
+          $$n\ge\frac{2\times«sig»^2\times«zab»^2}{«delta»^2}=\frac{2\times«sig»^2\times«zab2»}{«delta»^2}=«nraw»$$
+
+          **答え** 切り上げて $n=«nreq»$ 人（各群）。
+
+          **間違えやすい点** 2 群の比較なので分散は $2\sigma^2/n$。1 群の式 $\sigma^2(z_\alpha+z_\beta)^2/\delta^2$ を使うと «n_one» 人になる。
+          片側検定なので 5% 点 «za» を使う（両側の 1.960 を使うと «n_two» 人）。また «nraw» を切り捨てて «nlow» にすると検出力が 0.90 を下回る。
+
+  - id: s01p05
+    title: 充填機の比較と充填量のばらつき
+    context: |
+      飲料工場で 3 台の充填機 A, B, C の充填量（基準量からのずれ、mL）を比べるため、各機械から無作為に «m» 本ずつ、計 «N» 本を測定した。
+      一元配置分散分析の結果、機械間の平方和は «ssa»、総平方和は «sst» だった。
+    items:
+      - id: s01p05a
+        chapter: 20
+        terms: [one-way-anova, sum-of-squares-decomposition, f-distribution]
+        topic: 3台の充填機の一元配置分散分析表を平方和から完成させてF検定する
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          各機械の充填量は等分散の正規分布に従うと仮定する。
+          「3 台の母平均はすべて等しい」という帰無仮説の $F$ 検定について、正しいものはどれか。
+          必要なら $F$ 分布の上側 5% 点 $F_{0.05}(2,15)=«Fc»$、$F_{0.05}(2,17)=«Fc17»$、$F_{0.05}(15,2)=«Fcrev»$ を使え。
+        choices:
+          - "$F=«F17»$ であり、$«Fc17»$ を超えるので帰無仮説を棄却する"
+          - "$F=«Ftot»$ であり、$«Fc»$ を超えないので帰無仮説を棄却しない"
+          - "$F=«Fraw»$ であり、$«Fc»$ を超えないので帰無仮説を棄却しない"
+          - "$F=«F»$ であり、$«Fcrev»$ を超えないので帰無仮説を棄却しない"
+          - "$F=«F»$ であり、$«Fc»$ を超えるので帰無仮説を棄却する"
+        answer: 4
+        distractors:
+          - 誤差の自由度を総自由度 17 にした
+          - 総平方和を誤差平方和として使った
+          - 平方和どうしをそのまま割り、自由度で割らなかった
+          - F 分布の自由度の順番を逆にした
+          - 正解
+        explanation: |
+          **方針** 総平方和 = 機械間平方和 + 誤差平方和 と分解し、それぞれを自由度で割った平均平方の比が $F$ 統計量になる。
+
+          **途中式** 誤差平方和 $=«sst»-«ssa»=«sse»$。自由度は機械間 $3-1=«dfa»$、誤差 $«N»-3=«dfe»$（総自由度 «dft»）。
+
+          | 要因 | 平方和 | 自由度 | 平均平方 |
+          |---|---|---|---|
+          | 機械 | «ssa» | «dfa» | «msa» |
+          | 誤差 | «sse» | «dfe» | «mse» |
+          | 計 | «sst» | «dft» | |
+
+          $F=«msa»/«mse»=«F»$ で、自由度 $(«dfa»,«dfe»)$ の $F$ 分布の上側 5% 点 $«Fc»$ を超えるので帰無仮説を棄却する。
+
+          **答え** $F=«F»$、5% で棄却する（3 台の平均充填量には差があるといえる）。
+
+          **間違えやすい点** 誤差の自由度は $N-k=«dfe»$（総自由度 «dft» ではない）。$F$ 分布の自由度は（分子, 分母）=（要因, 誤差）の順で、逆にすると «Fcrev» と比べてしまう。
+
+      - id: s01p05b
+        chapter: 9
+        terms: [ci-variance-ratio, f-distribution, confidence-interval]
+        topic: 2台の充填機の母分散の比の95%信頼区間の下限をF分布で求める
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          分散分析の前提である等分散性を確かめるため、別の日に充填機 A から «na» 本、B から «nb» 本を無作為に取り出したところ、
+          不偏分散はそれぞれ $s_A^2=«va»$、$s_B^2=«vb»$（mL²）だった。母分散の比 $\sigma_A^2/\sigma_B^2$ の 95% 信頼区間（両側）の**下限**を求めよ。
+          $F$ 分布の上側パーセント点は $F_{0.025}(«dfa1»,«dfb1»)=«fa»$、$F_{0.025}(«dfb1»,«dfa1»)=«fb»$、$F_{0.05}(«dfa1»,«dfb1»)=«f05»$ である（$F(m,n)$ は分子の自由度 $m$、分母の自由度 $n$）。
+        answer: «lo»
+        tolerance: 0.01
+        answer_format: 小数第2位まで（小数第3位を四捨五入）で答えよ。±0.01 の差まで正解とする。
+        explanation: |
+          **方針** $\dfrac{s_A^2/\sigma_A^2}{s_B^2/\sigma_B^2}$ は自由度 $(n_A-1,\ n_B-1)=(«dfa1»,«dfb1»)$ の $F$ 分布に従う（ピボット量）。これを $\sigma_A^2/\sigma_B^2$ について解く。
+
+          **途中式** $P\left(\dfrac{s_A^2/s_B^2}{\sigma_A^2/\sigma_B^2}\le F_{0.025}(«dfa1»,«dfb1»)\right)=0.975$ より、下限は
+          $$\frac{s_A^2/s_B^2}{F_{0.025}(«dfa1»,«dfb1»)}=\frac{«va»/«vb»}{«fa»}=\frac{«ratio»}{«fa»}=«lo4»\cdots$$
+          （上限は $«ratio»\times F_{0.025}(«dfb1»,«dfa1»)=«ratio»\times«fb»=«hi»$。）
+
+          **答え** $«lo»$（区間は 1 を含むので、5% 水準では等分散を否定できない）
+
+          **間違えやすい点** 下限で割るのは自由度が（分子 «dfa1», 分母 «dfb1»）の点 «fa»。自由度を逆にした «fb» で割ると $«lo_w»$ になる。
+          両側 95% なので上側 2.5% 点を使う（5% 点 «f05» だと $«lo_05»$ で、90% 区間の下限になる）。
+
+  - id: s01p06
+    title: 電子基板の欠陥数の分析
+    context: |
+      ある工場で出荷前の電子基板 «n» 枚を検査し、1 枚あたりのはんだ欠陥の数を数えた。
+
+      | 欠陥数 | 0 | 1 | 2 | 3 以上 |
+      |---|---|---|---|---|
+      | 基板の枚数 | «o0» | «o1» | «o2» | «o3» |
+
+      個々の基板の欠陥数から求めた 1 枚あたりの平均欠陥数は «lam» だった。
+    items:
+      - id: s01p06a
+        chapter: 12
+        terms: [goodness-of-fit-test, degrees-of-freedom-gof, pearson-chi-square-statistic, expected-frequency]
+        topic: 平均を推定したポアソン分布への適合度検定で自由度を正しく数えて判定する
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          欠陥数がポアソン分布に従うかを、平均を «lam» と推定したうえで、表の 4 つの区分によるピアソンのカイ二乗適合度検定（有意水準 5%）で調べる。
+          $e^{-«lam»}=«e»$ を用い、期待度数は小数第2位まで計算せよ。正しいものはどれか。
+          カイ二乗分布の上側 5% 点は、自由度 1, 2, 3, 4 でそれぞれ 3.841, 5.991, 7.815, 9.488 である。
+        choices:
+          - "統計量は約 $«chi1»$、自由度は 3 で、$7.815$ を超えないので帰無仮説を棄却しない"
+          - "統計量は約 $«chi1»$、自由度は 4 で、$9.488$ を超えないので帰無仮説を棄却しない"
+          - "統計量は約 $«chi1»$、自由度は 2 で、$5.991$ を超えるので帰無仮説を棄却する"
+          - "統計量は約 $«chi1»$、自由度は 1 で、$3.841$ を超えるので帰無仮説を棄却する"
+          - "統計量は約 $«chi1»$、自由度は 2 で、$5.991$ を超えるので欠陥数がポアソン分布に従わないことが証明された"
+        answer: 2
+        distractors:
+          - 推定した母数の数を自由度から引き忘れた
+          - 区分の数をそのまま自由度にした
+          - 正解
+          - 推定した母数を 2 つと数えて引きすぎた
+          - 棄却は「ポアソン分布ではない」という証拠を得たことであり、「証明された」とは言えない
+        explanation: |
+          **方針** ポアソン分布の確率から各区分の期待度数を作り、$\sum(O-E)^2/E$ を計算する。自由度は「区分の数 − 1 − 推定した母数の数」。
+
+          **途中式** $p_0=«e»$、$p_1=«lam»\,p_0=«p1»$、$p_2=\dfrac{«lam»}{2}p_1=«p2»$、$p_{3+}=1-p_0-p_1-p_2=«p3»$。
+          期待度数は «n» 倍して $«e0»,\ «e1»,\ «e2»,\ «e3»$。各区分の寄与は
+          $$\frac{(«o0»-«e0»)^2}{«e0»}=«c0»,\quad\frac{(«o1»-«e1»)^2}{«e1»}=«c1»,\quad\frac{(«o2»-«e2»)^2}{«e2»}=«c2»,\quad\frac{(«o3»-«e3»)^2}{«e3»}=«c3»$$
+          合計 $\chi^2=«chi»\approx«chi1»$。自由度は $4-1-1=2$（平均 1 つを推定）。$«chi»>5.991$ なので 5% で棄却する。
+
+          **答え** 統計量 約 $«chi1»$、自由度 2、帰無仮説（ポアソン分布に従う）を棄却する。
+
+          **間違えやすい点** 平均をデータから推定したので自由度が 1 減る。引き忘れて自由度 3 とすると $7.815$ と比べて「棄却しない」と結論が逆になる。
+          また、検定で棄却しても「従わないことが証明された」わけではなく、「ポアソン分布と考えるには当てはまりが悪い」という証拠が得られたということである。
+
+      - id: s01p06b
+        chapter: 24
+        terms: [ward-method, hierarchical-clustering]
+        topic: 2つのクラスターをウォード法で併合したときの群内平方和の増加量
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          欠陥のあった基板を、2 つの特性（はんだ量のずれ、部品位置のずれ）を標準化した値でクラスター分析している。
+          途中の段階で、クラスター P は «na» 枚で重心 $(«ax»,«ay»)$、クラスター Q は «nb» 枚で重心 $(«bx»,«by»)$ である。
+          ウォード法で P と Q を併合するとき、群内平方和（各点と所属クラスターの重心とのユークリッド距離の 2 乗の総和）の増加量はいくらか。
+        choices:
+          - "$«ward_nw»$"
+          - "$«ward»$"
+          - "$«ward_prod»$"
+          - "$«ward_d»$"
+          - "$«ward_half»$"
+        answer: 1
+        distractors:
+          - 重み n_P n_Q/(n_P+n_Q) を掛け忘れ、重心間の距離の2乗だけにした
+          - 正解
+          - 重みを n_P n_Q と分母なしにした
+          - 重心間の距離を2乗せずに使った
+          - 重みを (n_P+n_Q)/2 とした
+        explanation: |
+          **方針** 2 つのクラスターを併合したときの群内平方和の増加量は $\Delta=\dfrac{n_Pn_Q}{n_P+n_Q}\,\lVert \bar{\boldsymbol x}_P-\bar{\boldsymbol x}_Q\rVert^2$。ウォード法は、この増加量が最小になる組を順に併合する。
+
+          **途中式** 重心間の距離の 2 乗は $(«bx»-«ax»)^2+(«by»-«ay»)^2=«dx»^2+«dy»^2=«d2»$。重みは $\dfrac{«na»\times«nb»}{«na»+«nb»}=«w»$。
+          $$\Delta=«w»\times«d2»=«ward»$$
+
+          **答え** $«ward»$
+
+          **間違えやすい点** 重みを忘れると $«ward_nw»$。重心間の距離（«dx»,«dy» の直角三角形の斜辺で «dist»）を 2 乗し忘れると $«ward_d»$ になる。
+          重みは「大きいクラスターどうしほど併合の費用が大きい」ことを表す調和平均型の量で、どちらかが 1 点なら $n/(n+1)$ 倍になる。
+
+  - id: s01p07
+    title: 生産設備の状態遷移と保全費用
+    context: |
+      ある生産設備の状態を毎朝「正常」「劣化」「故障」の 3 つに分類する。翌朝の状態は今朝の状態だけで決まり、遷移確率は次の通りとする（行が今朝、列が翌朝）。
+      故障した日は 1 日で修理が終わり、翌朝は必ず正常に戻る。
+
+      | | 正常 | 劣化 | 故障 |
+      |---|---|---|---|
+      | 正常 | «gg» | «gd» | «gf» |
+      | 劣化 | 0 | «dd» | «df» |
+      | 故障 | 1 | 0 | 0 |
+    items:
+      - id: s01p07a
+        chapter: 14
+        terms: [stationary-distribution, markov-chain, transition-probability-matrix]
+        topic: 正常劣化故障の3状態マルコフ連鎖の定常分布から1日あたりの長期平均費用を求める
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          1 日あたりの損失は、劣化の日が «cd» 万円（生産量の低下）、故障の日が «cf» 万円（修理費と停止）、正常の日は 0 円とする。
+          長期的に見た 1 日あたりの平均損失（万円）を、定常分布を用いて求めよ。
+        answer: «cost»
+        tolerance: 0.01
+        answer_format: 小数第2位まで（小数第3位を四捨五入）で答えよ。±0.01 の差まで正解とする。
+        explanation: |
+          **方針** この連鎖は既約・非周期（正常→正常の確率が正）なので、長期の平均は定常分布 $\pi=(\pi_G,\pi_D,\pi_F)$ による期待値になる。$\pi=\pi P$ を $\pi_G$ を基準に解く。
+
+          **途中式** 劣化の列：$\pi_D=«gd»\pi_G+«dd»\pi_D$ より $\pi_D=\dfrac{«gd»}{1-«dd»}\pi_G=«rd»\pi_G$。
+          故障の列：$\pi_F=«gf»\pi_G+«df»\pi_D=(«gf»+«df»\times«rd»)\pi_G=«rf»\pi_G$。
+          合計が 1 なので $\pi_G=\dfrac{1}{1+«rd»+«rf»}=\dfrac{1}{«den»}=«pg»$、$\pi_D=«pd»$、$\pi_F=«pf»$。
+          $$\text{平均損失}=«cd»\pi_D+«cf»\pi_F=\frac{«cd»\times«rd»+«cf»\times«rf»}{«den»}=\frac{«num»}{«den»}=«cost4»$$
+
+          **答え** $«cost»$ 万円
+
+          **間違えやすい点** 定常分布は「行」ではなく「列」ごとの釣り合い $\pi_j=\sum_i\pi_iP_{ij}$ で作る。遷移行列の行（たとえば正常の行）をそのまま長期の割合と思わないこと。
+          劣化は平均 $1/(1-«dd»)=«dur»$ 日続くので、劣化の日の割合は思ったより大きくなる。
+
+  - id: s01p08
+    title: 入院医療費の重回帰分析
+    context: |
+      ある病院で、患者 «n» 人の入院医療費（万円）を目的変数、年齢・入院日数・手術の有無（ダミー変数）の «p» 個を説明変数として、
+      定数項を含む重回帰モデルを最小二乗法で当てはめた。総平方和は «sst»、残差平方和は «sse» だった。誤差は独立に同じ分散の正規分布に従うとする。
+    items:
+      - id: s01p08a
+        chapter: 16
+        terms: [overall-f-test-regression, coefficient-of-determination]
+        topic: 決定係数から重回帰全体の有意性を調べるF統計量を求める
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          「3 つの説明変数の係数がすべて 0」という帰無仮説を検定する $F$ 統計量に最も近い値はどれか。
+        choices:
+          - "$«F_np»$"
+          - "$«F_nodiv»$"
+          - "$«F»$"
+          - "$«F_swap»$"
+          - "$«F_pp»$"
+        answer: 2
+        distractors:
+          - 残差の自由度を n-p とし、定数項の分を引き忘れた
+          - 回帰平方和を自由度 p で割り忘れた
+          - 正解
+          - 回帰と残差を逆にした
+          - 回帰の自由度を定数項も含めた p+1 とした
+        explanation: |
+          **方針** 回帰平方和と残差平方和をそれぞれの自由度（$p$ と $n-p-1$）で割り、その比をとる。決定係数 $R^2$ を使って $F=\dfrac{R^2/p}{(1-R^2)/(n-p-1)}$ とも書ける。
+
+          **途中式** 決定係数 $R^2=1-«sse»/«sst»=«r2»$、回帰平方和 $«sst»-«sse»=«ssr»$。
+          $$F=\frac{«ssr»/«p»}{«sse»/«dfe»}=\frac{«msr»}{«mse»}=«F»$$
+
+          **答え** $«F»$（自由度 $(«p»,«dfe»)$ の $F$ 分布の上側 5% 点 «Fc» を大きく超えるので、モデル全体は有意）
+
+          **間違えやすい点** 分子の自由度は説明変数の数 $p=«p»$（定数項は数えない）、分母の自由度は $n-p-1=«dfe»$（定数項の分も引く）。
+
+      - id: s01p08b
+        chapter: 17
+        terms: [cooks-distance, leverage, standardized-residual]
+        topic: てこ比と標準化残差から医療費データの1人のクックの距離を求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          このモデルで、ある患者のてこ比（ハット行列の対角成分）は $h_{ii}=«h»$、標準化残差 $r_i=\dfrac{e_i}{s\sqrt{1-h_{ii}}}$（$s^2$ は残差平方和を自由度 «dfe» で割った値）は $«rr»$ だった。
+          この患者のクックの距離に最も近い値はどれか。
+        choices:
+          - "$«cook_r»$"
+          - "$«cook»$"
+          - "$«cook_p»$"
+          - "$«cook_sq»$"
+          - "$«cook_np»$"
+        answer: 1
+        distractors:
+          - 標準化残差を2乗し忘れた
+          - 正解
+          - パラメータ数を定数項を除いた p=3 とした
+          - h/(1-h) ではなく h/(1-h)^2 を掛けた（e_i で書いた式と混同）
+          - パラメータ数 p+1 で割り忘れた
+        explanation: |
+          **方針** クックの距離は、パラメータ数を $p+1$（定数項を含む）として $D_i=\dfrac{r_i^2}{p+1}\cdot\dfrac{h_{ii}}{1-h_{ii}}$ と、標準化残差とてこ比で表せる。
+
+          **途中式** パラメータ数は $«p»+1=«pp»$。
+          $$D_i=\frac{«rr»^2}{«pp»}\times\frac{«h»}{1-«h»}=\frac{«rr2»}{«pp»}\times«hr»=«cook»$$
+
+          **答え** $«cook»$
+
+          **間違えやすい点** 生の残差 $e_i$ で書くと $D_i=\dfrac{e_i^2}{(p+1)s^2}\cdot\dfrac{h_{ii}}{(1-h_{ii})^2}$ で、分母が $(1-h)^2$ になる。標準化残差 $r_i$ を使うときは $(1-h)$ が 1 つ消えるので、式を混同すると $«cook_sq»$ になる。
+          なお、てこ比の平均は $(p+1)/n=«hbar»$ で、目安の 2 倍 $«h2»$ を超えるので、この患者は影響の大きい点の候補である。
+
+  - id: s01p09
+    title: 生活習慣病の健診データ
+    context: |
+      ある自治体の健診データを使って、生活習慣病のリスク要因と、2 種類の簡易検査の性能を調べる。
+    items:
+      - id: s01p09a
+        chapter: 18
+        terms: [logistic-regression, odds-and-odds-ratio, wald-confidence-interval]
+        topic: ロジスティック回帰の喫煙の係数と標準誤差から調整オッズ比の95%信頼区間を求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          糖尿病の有無を目的変数とし、喫煙（あり = 1）、年齢、BMI を説明変数とするロジスティック回帰を当てはめたところ、喫煙の係数の推定値は «b»、その標準誤差は «se» だった。
+          他の変数を固定したときの喫煙のオッズ比の 95% 信頼区間（ワルド型）として最も近いものはどれか。
+          標準正規分布の上側 2.5% 点は 1.96、上側 5% 点は 1.645 とし、必要なら次の値を使え。
+
+          | $x$ | 0.262 | 0.357 | 0.550 | 0.850 | 1.150 | 1.344 | 1.438 |
+          |---|---|---|---|---|---|---|---|
+          | $e^x$ | «eA» | «eB» | «eC» | «eD» | «eE» | «eF» | «eG» |
+        choices:
+          - "$«ci_noexp»$"
+          - "$«ci_1se»$"
+          - "$«ci_90»$"
+          - "$«ci_lin»$"
+          - "$«ci_ok»$"
+        answer: 4
+        distractors:
+          - 係数（対数オッズ比）の区間のまま指数変換しなかった
+          - ±1.96SE ではなく ±1SE にした
+          - 上側5%点 1.645 を使った（90% 信頼区間）
+          - オッズ比 e^0.85 に ±1.96SE を直接足し引きした
+          - 正解
+        explanation: |
+          **方針** 係数 $\hat\beta$ は対数オッズ比。まず $\hat\beta$ の区間を作り、両端を指数変換する（$\exp$ は単調なので区間がそのまま移る）。
+
+          **途中式** $\hat\beta\pm1.96\times\mathrm{SE}=«b»\pm1.96\times«se»=«b»\pm«hw»$ より、対数オッズ比の区間は $(«lo»,\ «hi»)$。
+          指数変換して
+          $$\left(e^{«lo»},\ e^{«hi»}\right)=\left(«eA»,\ «eG»\right)$$
+
+          **答え** $«ci_ok»$（点推定値は $e^{«b»}=«or»$）
+
+          **間違えやすい点** オッズ比の区間は点推定値 $«or»$ について左右非対称になる。$«or»\pm«hw»$ のように元の尺度で足し引きするのは誤り。
+          区間が 1 を含まないので、5% 水準で喫煙の効果は有意といえる。
+
+      - id: s01p09b
+        chapter: 28
+        terms: [mcnemar-test, two-by-two-table]
+        topic: 同じ受診者に行った2つの簡易検査の陽性率をマクネマー検定で比べる
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          同じ受診者 «n» 人に簡易検査 A と B の両方を行い、結果を次のようにまとめた。
+
+          | | B 陽性 | B 陰性 |
+          |---|---|---|
+          | A 陽性 | «a» | «bb» |
+          | A 陰性 | «c» | «d» |
+
+          「A と B の陽性率は等しい」という帰無仮説を、**連続修正を行わない**マクネマー検定で調べる。自由度 1 のカイ二乗分布の上側 5% 点は 3.841、上側 1% 点は 6.635 である。正しいものはどれか。
+        choices:
+          - "統計量は $«mc_cc»$ で、有意水準 5% で有意だが 1% では有意でない"
+          - "統計量は $«pear»$ で、有意水準 1% で有意である"
+          - "統計量は $«mc»$ で、有意水準 5% で有意だが 1% では有意でない"
+          - "統計量は $«mc»$ で、有意水準 1% でも有意である"
+          - "統計量は $«z»$ で、有意水準 5% で有意でない"
+        answer: 2
+        distractors:
+          - 指示に反して連続修正 (|b-c|-1)^2/(b+c) を行った
+          - 対応のあるデータに通常の独立性のカイ二乗検定を使った
+          - 正解
+          - 6.43 と 1% 点 6.635 の大小を取り違えた
+          - 標準正規の z 値 (b-c)/√(b+c) をカイ二乗の点と比べた
+        explanation: |
+          **方針** 対応のある 2 値データでは、結果が一致した組（A, B ともに陽性・ともに陰性）は陽性率の差に関係しない。不一致の組 $b$（A のみ陽性）と $c$（B のみ陽性）だけを使い、$\chi^2=(b-c)^2/(b+c)$ を自由度 1 のカイ二乗分布と比べる。
+
+          **途中式** $b=«bb»$、$c=«c»$ より
+          $$\chi^2=\frac{(«bb»-«c»)^2}{«bb»+«c»}=\frac{«bmc2»}{«bc»}=«mc»$$
+          $3.841<«mc»<6.635$ なので、5% で有意、1% では有意でない。
+          （陽性率は A が $«pA»$、B が $«pB»$。）
+
+          **答え** 統計量 $«mc»$、5% で有意だが 1% では有意でない。
+
+          **間違えやすい点** 同じ人の 2 つの検査なので、通常の独立性の検定（$«pear»$）は「A と B の結果が関連しているか」を調べるもので、陽性率の比較にはならない。
+          $z=(b-c)/\sqrt{b+c}=«z»$ は標準正規分布と比べる量で、2 乗するとマクネマー統計量になる。
+
+  - id: s01p10
+    title: 直交計画の品質データとラッソ
+    context: |
+      ある部品の強度を 3 つの製造条件（温度・圧力・時間）で説明する線形モデル $y=X\beta+\varepsilon$ を考える。
+      実験は直交計画で行い、各列を基準化してあるので計画行列は $X^\top X=I$（単位行列）を満たす。目的変数は中心化してあり、定数項はない。
+      最小二乗推定値は $\hat\beta^{\mathrm{OLS}}=(«b1»,\ «b2»,\ «b3»)$ だった。
+    items:
+      - id: s01p10a
+        chapter: 19
+        terms: [lasso, ridge-regression, regularization]
+        topic: 直交計画のもとでラッソ推定値を最小二乗推定値の軟閾値処理として求める
+        level: 応用
+        definition: false
+        type: choice
+        question: |
+          罰則つき最小二乗
+          $$\hat\beta^{\mathrm{lasso}}=\arg\min_{\beta}\left\{\lVert y-X\beta\rVert^2+\lambda\sum_{j=1}^{3}|\beta_j|\right\},\qquad\lambda=«lam»$$
+          の解として正しいものはどれか。
+        choices:
+          - "$«lam_full»$"
+          - "$«ok»$"
+          - "$«ridge»$"
+          - "$«hard»$"
+          - "$«shift»$"
+        answer: 1
+        distractors:
+          - 閾値を λ/2 ではなく λ とした
+          - 正解
+          - リッジ回帰の解 b/(1+λ) を計算した
+          - 閾値以下を0にしただけで、残りを縮小しなかった（硬閾値）
+          - 符号を考えず、すべての係数から λ/2 を引いた
+        explanation: |
+          **方針** $X^\top X=I$ なら $\lVert y-X\beta\rVert^2=\lVert y-X\hat\beta^{\mathrm{OLS}}\rVert^2+\sum_j(\beta_j-b_j)^2$ と分解でき（$b_j$ は最小二乗推定値）、問題が係数ごとに分かれる。
+          各 $j$ で $(\beta_j-b_j)^2+\lambda|\beta_j|$ を最小にすればよい。
+
+          **途中式** $\beta_j>0$ の範囲で微分すると $2(\beta_j-b_j)+\lambda=0$ より $\beta_j=b_j-\lambda/2$（これが正のときに限る）。$\beta_j<0$ も同様で、まとめると軟閾値処理
+          $$\hat\beta_j=\operatorname{sign}(b_j)\,\max\left(|b_j|-\frac{\lambda}{2},\ 0\right),\qquad \frac{\lambda}{2}=«th»$$
+          $b_1=«b1»$ → $«b1»-«th»=«l1»$。$b_2=«b2»$ → $|b_2|=0.6<«th»$ なので 0。$b_3=«b3»$ → $«b3»-«th»=«l3»$。
+
+          **答え** $«ok»$
+
+          **間違えやすい点** 罰則が $\lambda\sum|\beta_j|$（残差平方和に 1/2 が付かない）なので閾値は $\lambda/2$。目的関数を $\frac12\lVert y-X\beta\rVert^2+\lambda\sum|\beta_j|$ と書く流儀では閾値が $\lambda$ になる。
+          ラッソは小さい係数をちょうど 0 にし、残りも $\lambda/2$ だけ 0 に近づける。リッジ（罰則 $\lambda\sum\beta_j^2$）は $b_j/(1+\lambda)$ と比例的に縮めるだけで 0 にはならない。
+
+  - id: s01p11
+    title: 血液検査値の多変量解析
+    context: |
+      ある健診では 3 種類の肝機能の検査値を測っている。また、別の研究では 2 種類の検査値を使って、健常者と患者を判別する方法を検討している。
+    items:
+      - id: s01p11a
+        chapter: 22
+        terms: [pca-on-correlation-matrix, contribution-ratio, eigenvalue-and-eigenvector]
+        topic: 3変数の相関がすべて等しい相関行列の主成分分析で第1主成分の寄与率を求める
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          3 種類の検査値の相関係数は、どの 2 つの組でも $«rho»$ だった。相関行列にもとづく主成分分析で、第 1 主成分の寄与率に最も近いものはどれか。
+        choices:
+          - "$«c_rho»$"
+          - "$«c_two»$"
+          - "$«c_ok»$"
+          - "$«c_eq»$"
+          - "$«c_bad»$"
+        answer: 2
+        distractors:
+          - 相関係数の値をそのまま寄与率とした
+          - 2 変数のときの式 (1+ρ)/2 を使った
+          - 正解
+          - 固有値がすべて等しいとして 1/3 とした
+          - 最大固有値を 1+pρ（p=3）とした
+        explanation: |
+          **方針** 相関行列の固有値の和は変数の数（対角成分の和）に等しい。第 1 主成分の寄与率は「最大固有値 ÷ 固有値の和」。
+
+          **途中式** 相関行列は $R=(1-\rho)I+\rho\,\mathbf{1}\mathbf{1}^\top$。$\mathbf{1}=(1,1,1)^\top$ に対して $R\mathbf{1}=(1+2\rho)\mathbf{1}$ なので固有値 $1+2\rho=«lam1»$。
+          $\mathbf{1}$ に直交するベクトル $v$ では $Rv=(1-\rho)v$ なので、残り 2 つの固有値は $1-\rho=«lam2»$。
+          和は $«lam1»+«lam2»+«lam2»=«tr»$ で、寄与率は
+          $$\frac{«lam1»}{«tr»}=«c_ok»$$
+
+          **答え** $«c_ok»$（第 1 主成分は 3 つの検査値の単純な平均に比例する「総合的な肝機能」の軸）
+
+          **間違えやすい点** 2 変数のときの最大固有値 $1+\rho$ をそのまま使うと $«c_two»$ になる。$p$ 変数の等相関行列の最大固有値は $1+(p-1)\rho$。
+
+      - id: s01p11b
+        chapter: 23
+        terms: [linear-discriminant-analysis, mahalanobis-distance, misclassification-rate]
+        topic: 共通の共分散行列をもつ2群の線形判別で群間マハラノビス距離から誤判別確率を求める
+        level: 応用
+        definition: false
+        type: choice
+        question: |
+          2 種類の検査値 $\boldsymbol x$ は、健常群で平均 $(«m11»,«m12»)^\top$、患者群で平均 $(«m21»,«m22»)^\top$、両群共通の共分散行列
+          $$\Sigma=\begin{pmatrix}«s11» & «s12»\\ «s12» & «s22»\end{pmatrix}$$
+          の 2 変量正規分布に従うとする。事前確率と誤判別の損失が両群で等しいとき、線形判別関数による（最適な）判別で健常者を患者と誤判別する確率に最も近いものはどれか。
+          必要なら次の $\Phi(z)$（標準正規分布の分布関数）の値を使え。
+
+          | $z$ | 1.15 | 1.33 | 1.41 | 2.31 | 2.67 |
+          |---|---|---|---|---|---|
+          | $\Phi(z)$ | «f1» | «f2» | «f3» | «f4» | «f5» |
+        choices:
+          - "$«e_full»$"
+          - "$«e_ok»$"
+          - "$«e_diag»$"
+          - "$«e_q»$"
+          - "$«e_sq»$"
+        answer: 1
+        distractors:
+          - Φ(-Δ/2) ではなく Φ(-Δ) とした
+          - 正解
+          - 共分散 3 を無視して対角成分だけで距離を計算した
+          - 平方根を取らず Δ²/4 を z とした
+          - 平方根を取らず Δ²/2 を z とした
+        explanation: |
+          **方針** 2 群の平均の間のマハラノビス距離を $\Delta$ とすると、等事前確率の線形判別の誤判別確率は $\Phi(-\Delta/2)$。
+          判別関数の値は、各群で標準偏差 $\Delta$ の正規分布に従い、平均どうしが $\Delta^2$ 離れており、境界がちょうど中点にあるため。
+
+          **途中式** 平均の差 $\boldsymbol d=(«d1»,«d2»)^\top$。$\det\Sigma=«s11»\times«s22»-«s12»^2=«det»$、
+          $\Sigma^{-1}=\dfrac{1}{«det»}\begin{pmatrix}«s22» & -«s12»\\ -«s12» & «s11»\end{pmatrix}$。
+          $$\Delta^2=\boldsymbol d^\top\Sigma^{-1}\boldsymbol d=\frac{«s22»\times«d1»^2-2\times«s12»\times«d1»\times«d2»+«s11»\times«d2»^2}{«det»}=\frac{«q1»-«q2»+«q3»}{«det»}=«D2»$$
+          $\Delta=\sqrt{«D2»}=«D»$、$\Delta/2=«Dh»\approx«zok»$。誤判別確率は $\Phi(-«zok»)=1-«f1»=«e_ok»$。
+
+          **答え** $«e_ok»$
+
+          **間違えやすい点** 正の相関（共分散 «s12»）があると、2 つの検査値が同じ方向にずれることはよく起こるので、距離は対角成分だけの計算（$\Delta^2=«D2diag»$、誤判別 $«e_diag»$）より小さくなる。
+          また、境界は 2 つの平均の中点なので $\Delta$ ではなく $\Delta/2$ を使う。
+
+  - id: s01p12
+    title: 日最高気温の偏差の予測
+    context: |
+      ある地点の日最高気温から季節変動を除いた値（℃）を $X_t$ とし、$X_t$ は定常な AR(1) モデル
+      $$X_t=«c»+«phi»X_{t-1}+\varepsilon_t,\qquad \varepsilon_t\sim N(0,«s2»)\ \text{（互いに独立）}$$
+      に従うとする。今日（時点 $T$）の値は $X_T=«xT»$ だった。
+    items:
+      - id: s01p12a
+        chapter: 27
+        terms: [ar-model, forecasting, stationarity-condition]
+        topic: AR1モデルの2期先予測値と予測誤差分散から95%予測区間の上限を求める
+        level: 応用
+        definition: false
+        type: numeric
+        question: |
+          2 日後の値 $X_{T+2}$ の 95% 予測区間の**上限**を求めよ。モデルの母数は既知とし、標準正規分布の上側 2.5% 点は 1.96 とせよ。
+        answer: «up»
+        tolerance: 0.01
+        answer_format: 小数第2位まで（小数第3位を四捨五入）で答えよ。±0.01 の差まで正解とする。
+        explanation: |
+          **方針** $X_{T+2}$ を $X_T$ と未来の誤差 $\varepsilon_{T+1},\varepsilon_{T+2}$ で表す。予測値はその条件付き期待値、予測誤差は未来の誤差の部分。
+
+          **途中式** 平均は $\mu=\dfrac{«c»}{1-«phi»}=«mu»$。$X_t-\mu=«phi»(X_{t-1}-\mu)+\varepsilon_t$ を 2 回使うと
+          $$X_{T+2}-\mu=«phi»^2(X_T-\mu)+«phi»\,\varepsilon_{T+1}+\varepsilon_{T+2}$$
+          予測値：$\hat X_{T+2}=«mu»+«phi2»\times(«xT»-«mu»)=«mu»+«phi2»\times«dev»=«f2»$。
+          予測誤差の分散：$\sigma^2(1+\phi^2)=«s2»\times(1+«phi2»)=«v2»$、標準偏差 $\sqrt{«v2»}=«sd2»$。
+          $$\text{上限}=«f2»+1.96\times«sd2»=«f2»+«hw»=«up4»$$
+
+          **答え** $«up_s»$ ℃
+
+          **間違えやすい点** 2 期先の予測誤差には $\varepsilon_{T+1}$ の影響も $\phi$ 倍で残るので、分散は $\sigma^2$ ではなく $\sigma^2(1+\phi^2)$（$\sigma^2$ だけだと上限 $«up_1»$）。
+          定常分散 $\sigma^2/(1-\phi^2)$ を使うと $«up_stat»$ になるが、これは遠い将来（予測の情報がない）ときの幅。$\phi$ を 2 乗せず $1+\phi$ とする誤り（$«up_phi»$）にも注意。
+
+  - id: s01p13
+    title: 保険契約者の調査と請求件数モデル
+    context: |
+      ある保険会社が、契約者の年間支払保険料についての調査と、請求件数の統計モデルの見直しを行う。
+    items:
+      - id: s01p13a
+        chapter: 21
+        terms: [neyman-allocation, stratified-sampling, proportional-allocation]
+        topic: 保険契約者を3層に分けた層別抽出でネイマン配分による層ごとの標本数
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          契約者を 3 つの層に分け、全体で «nn» 人を層別無作為抽出して年間支払保険料の平均を推定する。各層の契約者数 $N_h$ と、過去の調査から分かっている層内の標準偏差 $S_h$（万円）は次の通り。
+
+          | 層 | 1（個人・小型車） | 2（個人・大型車） | 3（法人） |
+          |---|---|---|---|
+          | $N_h$ | «N1» | «N2» | «N3» |
+          | $S_h$ | «S1» | «S2» | «S3» |
+
+          調査費用が 1 人あたり同じで、平均の推定量の分散を最小にする配分（ネイマン配分）を用いるとき、層 3 に割り当てる人数に最も近いものはどれか。
+        choices:
+          - "«a_prop» 人"
+          - "«a_s» 人"
+          - "«a_s2» 人"
+          - "«a_ok» 人"
+          - "«a_eq» 人"
+        answer: 3
+        distractors:
+          - 層の大きさだけに比例させた（比例配分）
+          - 標準偏差だけに比例させ、層の大きさを掛け忘れた
+          - N_h S_h ではなく N_h S_h^2（分散）に比例させた
+          - 正解
+          - 3 つの層に等しく配分した
+        explanation: |
+          **方針** ネイマン配分では $n_h=n\dfrac{N_hS_h}{\sum_k N_kS_k}$。層が大きいほど、またばらつきが大きいほど多く割り当てる。
+
+          **途中式** $N_hS_h$ は $«N1»\times«S1»=«NS1»$、$«N2»\times«S2»=«NS2»$、$«N3»\times«S3»=«NS3»$ で、合計 «NSsum»。
+          $$n_3=«nn»\times\frac{«NS3»}{«NSsum»}=«ney»$$
+
+          **答え** 約 «a_ok» 人
+
+          **間違えやすい点** 比例配分（$N_h$ だけ）だと «a_prop» 人。層 3 は人数が少なくてもばらつきが大きいので、比例配分より多く割り当てるのがネイマン配分の特徴。比例させるのは標準偏差 $S_h$ で、分散 $S_h^2$ ではない。
+
+      - id: s01p13b
+        chapter: 30
+        terms: [aic, model-selection, overdispersion]
+        topic: ポアソン回帰と負の二項回帰とゼロ過剰モデルを分散母数も数えたAICで比較する
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          «nobs» 件の契約の年間請求件数に、同じ 3 つの係数（定数項を含む）の線形予測子をもつ次の 3 つのモデルを最尤法で当てはめた。
+
+          | モデル | 内容 | 最大対数尤度 |
+          |---|---|---|
+          | A | ポアソン回帰（係数 3 個） | «lA» |
+          | B | 負の二項回帰（係数 3 個と分散の母数 1 個） | «lB» |
+          | C | ゼロ過剰ポアソン回帰（件数部分の係数 3 個とゼロ部分の係数 3 個） | «lC» |
+
+          $\mathrm{AIC}=-2\times(\text{最大対数尤度})+2\times(\text{推定する母数の数})$ で選ぶとき、選ばれるモデルとその AIC の組として正しいものはどれか。
+        choices:
+          - "B（AIC $=«aB3»$）"
+          - "C（最大対数尤度が最も大きい）"
+          - "C（AIC $=«aCk»$）"
+          - "A（AIC $=«aA»$）"
+          - "A（AIC $=«bicA»$）"
+        answer: 3
+        distractors:
+          - 負の二項回帰の分散の母数を数え忘れ、B の母数を 3 個とした
+          - 当てはまり（最大対数尤度）だけで選び、母数の数の罰則を考えなかった
+          - 罰則を 2k ではなく k とした
+          - 正解
+          - AIC ではなく BIC（罰則 k log n）を計算した
+        explanation: |
+          **方針** 各モデルで推定する母数の数 $k$ を正しく数え、$\mathrm{AIC}=-2\ell+2k$ が最小のモデルを選ぶ。
+
+          **途中式**
+          A：$k=«kA»$、$\mathrm{AIC}=«m2A»+2\times«kA»=«aA»$。
+          B：$k=«kB»$（分散の母数を含む）、$\mathrm{AIC}=«m2B»+2\times«kB»=«aB»$。
+          C：$k=«kC»$、$\mathrm{AIC}=«m2C»+2\times«kC»=«aC»$。
+          最小は A。
+
+          **答え** A（AIC $=«aA»$）
+
+          **間違えやすい点** 負の二項回帰の分散（過分散）の母数も推定する母数に数える。数え忘れると B の AIC は $«aB3»$ となり、誤って B を選んでしまう。
+          最大対数尤度は母数が多いモデルほど大きくなりやすいので、それだけで選んではいけない。
+

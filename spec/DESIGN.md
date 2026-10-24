@@ -437,3 +437,27 @@ validate.py は、エラー（ビルドを止める）と警告（報告だけ�
 1. `content/plan.yaml` の該当章に1行追加する。
 2. `content/chNN/<id>.md` を CONTENT_GUIDE に従って書く。
 3. `validate.py` → `build.py` を実行する。
+
+## 12. 数式表示の仕組み（2026-10-24）
+- build.py は数式を `<m>$…$</m>`（インライン）と `<div class="math-display">$$…$$</div>`（別行）にして埋め込む。
+- app.js の `showMath(el)` が唯一の入口。画面に HTML を入れたら、その部分に対して呼ぶ（呼び忘れは MutationObserver が拾う）。
+  - MathJax の準備完了（`mathjax-ready` または `MathJax.startup.promise`）を待ってから組む。待つ間は列に積む。
+  - `typesetPromise` は 1 本の Promise の列で順番に実行する（同時に走らせない）。画面に付く前の要素は付くまで待つ。
+  - 隠れている部分（ヒント・解説・練習モードの答え）も表示時に組む。数式には遅延描画（IntersectionObserver）を使わない。
+  - 読み込み失敗（script の onerror・startup の失敗・25 秒の時間切れ）では、数式を「［数式］」にし、「数式を読み込めませんでした。再読み込みしてください」と出す。あとで読み込めたら元に戻して組む。
+- `\boldsymbol` の拡張は MathJax の設定で最初に読み込む。sw.js は MathJax 本体・boldsymbol・Chart.js をキャッシュし、ページは no-cache で取り直す。キャッシュ名は index.html のハッシュで、新しい版の有効化時に古いキャッシュを消す。
+- 検査：`scripts/check_math.py`（validate.py から。$ の対応・数式外の LaTeX・括弧の対応。MJ_DIR があれば mathjax-full で全数式を変換）、`verify/math_webkit.mjs`（WebKit・820×1180 で主要画面を開き、LaTeX の文字が残っていないか・読み込み失敗時の表示）。
+
+## 13. 模擬試験（#exam）
+- データ：`content/exam_sets/setNN.yaml`（形式は spec/EXAM.md）。数値は «名前» で書き、`generator/setNN.py` の `values()` の値を差し込む。
+- 品質チェック（3 段階）：自動検査 `scripts/check_exam.py` → 検算 `verify/exam_setNN.py`（`verify/examcheck.py`、結果は verify/exam_results/）→ 見直し（math-checker、記録は verify/exam_review/setNN.md と `scripts/exam_review.py`）。検算と見直しは小問の内容のハッシュで記録し、build.py は 3 段階すべてに通った 25 問がそろったセットだけを `DATA.exams` に入れる。
+- 画面：`#exam`（一覧・得点の推移・苦手な章・受験履歴）、`#exam/N`（モード選択）、`#exam/N/run`（解答）、`#exam/N/result/時刻`（結果）。
+  - 本番モード：残り時間・問題番号の一覧から移動・「あとで見直す」・最後にまとめて採点・時間切れで自動採点。
+  - 練習モード：1 問ごとに「答え合わせ」で正誤と解説。
+  - 結果：得点と合格ライン、章ごとの正答率、間違えた問題（状況設定・選択肢・正解・解説・関係する用語）、ロードマップへの案内。
+- 保存：学習データ jd-data の `mock = { hist: [{s 回, sc 得点, c 正解数, n, t 時刻, d 所要, m 'r'|'p', ch {章: [正解, 出題]}, a 解答, tu 時間切れ}], cur: {s, m, i, left 残り, el 経過, a, f 印, k 答え合わせ済み, st} }`。読み込み時に型を確かめ、書き出し・読み込み（統合）にも含める。
+- 確認：`verify/exam_ui_webkit.mjs`（375/768/820/1180/1280px で本番・再開・採点・練習・ロードマップ）。
+
+## 14. ロードマップ（#roadmap）
+- データ：`content/roadmap.yaml`（`scripts/make_roadmap.py` が生成、`scripts/check_roadmap.py` が検査）。各用語に段階（1〜4）・優先度（0〜100）・前提・目安時間・理由。根拠は spec/research/roadmap.md。
+- 画面：段階ごとの達成率（「覚えた」の割合）、用語ごとの覚えた状況と問題の正答率、「次にやる5語」（未習得で前提を満たすものを段階→優先度の順）。
