@@ -72,6 +72,17 @@ es = integrate.quad(lambda z: z * par.pdf(z), v, np.inf)[0] / par.sf(v)
 E.num("s07p02b", rnd(es, 2), f"scipy の分位点 {v:.4f} と数値積分で E[X|X>v]")
 table("s07p02b", 4.642, 100 ** (1 / 3), 0.0005, "100^(1/3)")
 
+# (c) 過分散：負の二項（分散が平均の 1.5 倍）からデータを発生させ、ピアソン統計量/自由度で φ を推定
+mu_ = np.exp(rng.normal(1.5, 0.4, size=(300, 120)))
+r_ = mu_ / 0.5                       # NB(r, p) で分散 = mu(1+mu/r) = 1.5 mu
+cnt = rng.negative_binomial(r_, r_ / (r_ + mu_))
+phi_sim = np.mean(((cnt - mu_) ** 2 / mu_).sum(1) / 117)
+E.check("s07p02c", abs(phi_sim - 1.5 * 120 / 117) < 0.03, f"分散が平均の1.5倍のデータで X²/(n-p) ≈ {phi_sim:.3f}")
+sec = 0.080 * np.sqrt(175.5 / 117)
+zc = 0.24 / sec
+E.check("s07p02c", stats.norm.isf(0.025) < zc < stats.norm.isf(0.005), f"補正後の z={zc:.3f} は 5% で有意・1% で非有意")
+E.choice("s07p02c", f"\\sqrt{{1.50}}={f(sec, 3)}$、$z\\approx{f(zc, 2)}$", "√φ 倍の標準誤差と z を含む選択肢")
+
 # ---- 大問3 運用成績
 b0 = stats.binom(12, 0.5)
 gam = (0.05 - b0.sf(9)) / b0.pmf(9)
@@ -92,136 +103,141 @@ E.choice("s07p03c", f"$c={f(float(cs), 3)}$、そのときの MSE は ${f(float(
 Xb = rng.normal(0.5, 4, size=(200_000, 36)).mean(1)
 E.check("s07p03c", abs(np.mean((0.36 * Xb - 0.5) ** 2) - 0.16) < 0.003, "シミュレーションで MSE(0.36) ≈ 0.16")
 
-# ---- 大問4 ウィルソン区間：スコア検定を受容する p の範囲を数値的に求める
-n, xx = 50, 2
-ph = xx / n
-h = lambda q: abs(ph - q) - 1.96 * np.sqrt(q * (1 - q) / n)
-lo = optimize.brentq(h, 1e-9, ph)
-hi = optimize.brentq(h, ph, 0.999)
-E.choice("s07p04a", f"({f(lo, 3)},\\ {f(hi, 3)})", "スコア検定の受容域の端を brentq で求める")
-cover = np.mean([(lambda k: optimize.brentq(lambda q: abs(k / n - q) - 1.96 * np.sqrt(q * (1 - q) / n), 1e-12, max(k / n, 1e-12)) <= 0.04 if k > 0 else True)(k) for k in rng.binomial(n, 0.04, size=2000)])
-E.check("s07p04a", cover > 0.9, f"p=0.04 のとき下限が真値以下になる割合 {cover:.3f}")
-
-# ---- 大問5 融資
-res = stats.fisher_exact([[4, 2], [1, 7]], alternative="greater")
-E.num("s07p05a", rnd(res.pvalue, 3), "scipy.stats.fisher_exact(alternative='greater')")
-E.check("s07p05a", abs(stats.hypergeom(14, 5, 6).sf(3) - res.pvalue) < 1e-12, "超幾何分布の上側確率と一致")
-# (b) 反復比例当てはめ（IPF）で [AB][AC] モデルを当てはめる
+# ---- 大問4 融資
+# (a) 幾何分布：条件付き確率を定義どおり和で計算／シミュレーション
+pg = 0.02
+pk = lambda k: (1 - pg) ** (k - 1) * pg
+cond = sum(pk(k) for k in range(13, 19)) / (1 - sum(pk(k) for k in range(1, 13)))
+E.num("s07p04a", rnd(cond, 3), "確率関数の和で P(X≤18 | X>12)")
+X = rng.geometric(pg, size=2_000_000)
+E.check("s07p04a", abs(np.mean(X[X > 12] <= 18) - cond) < 0.002, f"シミュレーション {np.mean(X[X > 12] <= 18):.4f}")
+for e_, v_ in [(6, 0.88584), (12, 0.78472), (18, 0.69514)]:
+    table("s07p04a", v_, 0.98 ** e_, 0.000006, f"0.98^{e_}")
+# (b) G²：scipy の対数尤度比（lambda_="log-likelihood"）
+g2 = stats.chi2_contingency([[20, 180], [40, 160]], correction=False, lambda_="log-likelihood")
+E.choice("s07p04b", f"G^2\\approx{f(g2.statistic, 2)}$で、自由度1の上側1%点6.635を超える", "scipy chi2_contingency(lambda_='log-likelihood')")
+E.check("s07p04b", g2.dof == 1 and g2.pvalue < 0.01, f"自由度 {g2.dof}、p 値 {g2.pvalue:.4f}")
+x2 = stats.chi2_contingency([[20, 180], [40, 160]], correction=False)
+E.check("s07p04b", f(x2.statistic, 2) == "7.84", f"ピアソンの χ² = {x2.statistic:.4f}（G² と異なる）")
+for given, val in [(-0.40547, np.log(2 / 3)), (0.05716, np.log(18 / 17)), (0.28768, np.log(4 / 3)), (-0.06062, np.log(16 / 17))]:
+    table("s07p04b", given, val, 0.000006, "対数")
+for q_, df_, val in [(0.95, 1, 3.841), (0.99, 1, 6.635), (0.95, 3, 7.815), (0.99, 3, 11.345)]:
+    table("s07p04b", val, stats.chi2.ppf(q_, df_), 0.0005, f"χ²({df_}) {q_}点")
+# (c) 反復比例当てはめ（IPF）で [AB][AC] モデルを当てはめる
 obs = np.array([[[12, 48], [3, 37]], [[10, 70], [2, 18]]], dtype=float)  # [業種][規模][延滞]
 m = np.ones_like(obs)
 for _ in range(50):
     m *= (obs.sum(2) / m.sum(2))[:, :, None]
     m *= (obs.sum(1) / m.sum(1))[:, None, :]
-E.choice("s07p05b", f"${f(m[0, 0, 0], 2)}$", "IPF で当てはめた期待度数")
-E.check("s07p05b", np.allclose(m.sum(2), obs.sum(2)) and np.allclose(m.sum(1), obs.sum(1)), "IPF の周辺度数が観測と一致")
+E.choice("s07p04c", f"${f(m[0, 0, 0], 2)}$", "IPF で当てはめた期待度数")
+E.check("s07p04c", np.allclose(m.sum(2), obs.sum(2)) and np.allclose(m.sum(1), obs.sum(1)), "IPF の周辺度数が観測と一致")
 
-# ---- 大問6 株価指数
-xs = [-1.2, -0.4, 0.1, 0.5, 1.9]
-ks = stats.kstest(xs, "norm")
-norm_ = lambda s_: re.sub(r"\s+", "", str(s_))
-hits = [i for i, c in enumerate(E.item("s07p06a")["choices"])
-        if norm_(c) == norm_(f"$D\\approx{f(ks.statistic, 3)}$ で、0.563 を超えないので帰無仮説を棄却しない")]
-E.check("s07p06a", hits == [E.item("s07p06a")["answer"]], f"scipy.stats.kstest の D={ks.statistic:.4f} で棄却しないとする選択肢 {hits}")
-E.check("s07p06a", ks.statistic < stats.kstwo(5).ppf(0.95), "正確な限界値でも棄却しない")
-for xv, Fv in zip(xs, [0.1151, 0.3446, 0.5398, 0.6915, 0.9713]):
-    table("s07p06a", Fv, stats.norm.cdf(xv), 0.00006, f"Φ({xv})")
-table("s07p06a", 0.563, stats.kstwo(5).ppf(0.95), 0.0006, "KS の n=5 の 5% 点")
+# ---- 大問5 株価指数
+# (a) σ の信頼区間：scipy の正確なパーセント点／被覆率のシミュレーション
+lo_, hi_ = np.sqrt(15 * 16 / stats.chi2.isf(0.025, 15)), np.sqrt(15 * 16 / stats.chi2.isf(0.975, 15))
+E.choice("s07p05a", f"({f(lo_, 2)},\\ {f(hi_, 2)})", "scipy chi2 のパーセント点で区間")
+for q_, df_, val in [(0.025, 15, 27.488), (0.975, 15, 6.262), (0.05, 15, 24.996), (0.95, 15, 7.261), (0.025, 16, 28.845), (0.975, 16, 6.908)]:
+    table("s07p05a", val, stats.chi2.isf(q_, df_), 0.0005, f"χ²({df_}) 上側{q_}点")
+sims = rng.normal(0, 4, size=(100_000, 16)).std(1, ddof=1)
+cov = np.mean((np.sqrt(15 * sims ** 2 / 27.488) <= 4) & (4 <= np.sqrt(15 * sims ** 2 / 6.262)))
+E.check("s07p05a", abs(cov - 0.95) < 0.005, f"被覆率のシミュレーション {cov:.4f}")
+# (b) 分位点回帰：チェック関数を細かい格子で数値最小化
+yq = np.array([1.9, -2.5, 3.4, 0.3, -4.1, 5.0, 1.2, -0.8, 2.6])
+grid = np.linspace(-6, 6, 120001)
+lossg = np.array([np.sum((yq - q) * (0.2 - (yq < q))) for q in grid[::10]])
+qbest = grid[::10][np.argmin(lossg)]
+E.choice("s07p05b", f"${f(qbest, 1)}$", f"格子探索の最小点 {qbest:.3f}")
+E.check("s07p05b", abs(qbest - np.quantile(yq, 0.2, method="inverted_cdf")) < 1e-6, "numpy の逆分布関数型の 0.2 分位点と一致")
+# (c) ランダムウォーク
 paths = rng.normal(0.05, 1.2, size=(200_000, 25)).sum(1)
 qlo, qhi = np.quantile(paths, [0.025, 0.975])
-E.check("s07p06b", abs(qlo + 10.51) < 0.1 and abs(qhi - 13.01) < 0.1, f"シミュレーションの 2.5%・97.5% 点 {qlo:.2f}, {qhi:.2f}")
+E.check("s07p05c", abs(qlo + 10.51) < 0.1 and abs(qhi - 13.01) < 0.1, f"シミュレーションの 2.5%・97.5% 点 {qlo:.2f}, {qhi:.2f}")
 d = stats.norm(25 * 0.05, 1.2 * 5)
-E.choice("s07p06b", f"({f(d.ppf(0.025), 2)},\\ {f(d.ppf(0.975), 2)})", "scipy norm の分位点")
+E.choice("s07p05c", f"({f(d.ppf(0.025), 2)},\\ {f(d.ppf(0.975), 2)})", "scipy norm の分位点")
 
-# ---- 大問7 社債
+# ---- 大問6 社債
 Pm = np.array([[0.90, 0.08, 0.02], [0.10, 0.80, 0.10], [0, 0, 1]])
-E.choice("s07p07a", f"${f(np.linalg.matrix_power(Pm, 2)[0, 2], 4)}$", "numpy で推移行列の2乗")
-st = np.zeros(200_000, dtype=int)
-for _ in range(2):
-    u = rng.random(st.size)
-    cum = Pm.cumsum(1)[st]
-    st = (u[:, None] > cum).sum(1)
-E.check("s07p07a", abs((st == 2).mean() - 0.046) < 0.002, f"シミュレーション {(st == 2).mean():.4f}")
-L = stats.logistic.cdf
-p2 = L(2.5 - 0.8 * 2.5) - L(0.5 - 0.8 * 2.5)
-E.choice("s07p07b", f"${f(p2, 3)}$", "scipy logistic.cdf で累積確率の差")
-table("s07p07b", 4.4817, np.exp(1.5), 0.00006, "e^1.5")
-table("s07p07b", 0.6065, np.exp(-0.5), 0.00006, "e^-0.5")
+Q = Pm[:2, :2]
+tvec = np.linalg.inv(np.eye(2) - Q) @ np.ones(2)   # 基本行列 (I-Q)^{-1} の行和
+E.choice("s07p06a", f"${f(tvec[0], 2)}$", "基本行列 (I-Q)^{-1}1 で期待年数")
+st = np.zeros(20_000, dtype=int)
+steps = np.zeros(20_000)
+alive = np.ones(20_000, dtype=bool)
+while alive.any():
+    u = rng.random(alive.sum())
+    cum = Pm.cumsum(1)[st[alive]]
+    st[alive] = (u[:, None] > cum).sum(1)
+    steps[alive] += 1
+    alive = st != 2
+E.check("s07p06a", abs(steps.mean() - 23.33) < 0.6, f"シミュレーションの平均年数 {steps.mean():.2f}")
 prior = np.array([0.80, 0.15, 0.05])
 lik = np.array([0.10, 0.40, 0.80])
 post = prior * lik / (prior * lik).sum()
 Lm = np.array([[-4, 3, 20], [-2, 0.5, 3], [0, 0, 0]])
 el = Lm @ post
-E.check("s07p07c", int(np.argmin(el)) == 1, f"事後期待損失 {el.round(4)} の最小はヘッジ")
-E.choice("s07p07c", f"全額投資${f(el[0], 2)}$、ヘッジつき半額投資${f(el[1], 2)}$", "事後期待損失の値を含む選択肢")
-elp = Lm @ prior
-E.check("s07p07c", int(np.argmin(elp)) == 0, "事前確率では全額投資が最小（誤答の選択肢が誤りであること）")
+E.check("s07p06b", int(np.argmin(el)) == 1, f"事後期待損失 {el.round(4)} の最小はヘッジ")
+E.choice("s07p06b", f"全額投資${f(el[0], 2)}$、ヘッジつき半額投資${f(el[1], 2)}$", "事後期待損失の値を含む選択肢")
+E.check("s07p06b", int(np.argmin(Lm @ prior)) == 0, "事前確率では全額投資が最小（誤答の選択肢が誤りであること）")
 
-# ---- 大問8 中古マンション
-E.choice("s07p08a", f"約{f((np.exp(0.18) - 1) * 100, 1)}%高い", "numpy で e^0.18 - 1")
-it = E.item("s07p08a")
-E.check("s07p08a", "16.5" in it["choices"][3] and "でない物件の価格は約16.5%高い" in re.sub(r"\s+", "", it["choices"][3]),
-        "選択肢4は「5分以内でない物件が高い」で向きが誤り")
+# ---- 大問7 中古マンション
+E.choice("s07p07a", f"約{f((np.exp(0.18) - 1) * 100, 1)}%高い", "numpy で e^0.18 - 1")
+it = E.item("s07p07a")
+E.check("s07p07a", "でない物件の価格は約16.5%高い" in re.sub(r"\s+", "", it["choices"][3]), "選択肢4は「5分以内でない物件が高い」で向きが誤り")
 for given, true, w in [(1.1972, np.exp(0.18), "e^0.18"), (0.8353, np.exp(-0.18), "e^-0.18"), (1.5136, 10 ** 0.18, "10^0.18")]:
-    table("s07p08a", given, true, 0.00006, w)
-xv = np.array([40, 50, 60, 70, 90.0])
-yv = np.array([29, 36, 41, 49, 58.0])
-X = np.column_stack([np.ones(5), xv])
-beta = np.linalg.lstsq(X, yv, rcond=None)[0]
-e = yv - X @ beta
-XtXi = np.linalg.inv(X.T @ X)
-V_hc0 = XtXi @ (X.T * e ** 2) @ X @ XtXi
-E.num("s07p08b", rnd(np.sqrt(V_hc0[1, 1]), 4), "サンドイッチ行列 (X'X)^-1 X'diag(e²)X (X'X)^-1（丸めない残差）")
-E.check("s07p08b", np.allclose(np.round(e, 3), [-0.757, 0.405, -0.432, 1.730, -0.946]), "表の残差が最小二乗残差の丸め")
-n8, P8 = 60, 4
-cp = {k: (n8 - P8) * sse / 1140 - n8 + 2 * pk for k, (sse, pk) in {"M1": (1480, 2), "M2": (1160, 3), "M3": (1140, 4)}.items()}
-E.choice("s07p08c", f"M2が${f(cp['M2'], 2)}$", "C_p=(n-P)SSE_p/SSE_full - n + 2p で計算")
-E.check("s07p08c", min(cp, key=cp.get) == "M2", f"C_p {cp} の最小は M2")
+    table("s07p07a", given, true, 0.00006, w)
+Fq = (312 / 18) / (120 / 18)
+E.choice("s07p07b", f"$F={f(Fq, 2)}$で、自由度$(18,18)$の上側5%点2.217を超える", "残差平均平方の比")
+E.check("s07p07b", stats.f.sf(Fq, 18, 18) < 0.05 and stats.f.sf(Fq, 18, 18) > 0.01, f"scipy の上側確率 {stats.f.sf(Fq, 18, 18):.4f}")
+for val, q_, a_, b_ in [(2.217, 0.95, 18, 18), (3.128, 0.99, 18, 18), (2.124, 0.95, 20, 20)]:
+    table("s07p07b", val, stats.f.ppf(q_, a_, b_), 0.0006, f"F_{1 - q_:.2f}({a_},{b_})")
+# 正規線形モデルのシミュレーションで「群の自由度 = 件数 - 2」を確かめる
+xs_ = np.linspace(0, 1, 20)
+Xd = np.column_stack([np.ones(20), xs_])
+H_ = Xd @ np.linalg.inv(Xd.T @ Xd) @ Xd.T
+ssr = np.array([np.sum(((np.eye(20) - H_) @ rng.normal(size=20)) ** 2) for _ in range(20000)])
+E.check("s07p07b", abs(ssr.mean() - 18) < 0.15, f"残差平方和/σ² の平均 {ssr.mean():.2f} ≈ 18")
+aic = {"A": 80 + 6, "B": 73 + 12}
+aicc = {k_: aic[k_] + 2 * kk * (kk + 1) / (15 - kk - 1) for k_, kk in [("A", 3), ("B", 6)]}
+E.check("s07p07c", min(aic, key=aic.get) == "B" and min(aicc, key=aicc.get) == "A", f"AIC {aic}, AICc {aicc}")
+E.choice("s07p07c", f"モデルAが{f(aicc['A'], 2)}、モデルBが{f(aicc['B'], 2)}でモデルAが選ばれる", "AICc の値を含む選択肢")
 
-# ---- 大問9 リッジ：目的関数を数値最小化
-R = np.array([[1, 0.8], [0.8, 1]])
-gy_ = np.array([0.7, 0.6])
-obj = lambda b: b @ R @ b - 2 * b @ gy_ + 0.3 * b @ b   # ||y-Xb||^2 + λ||b||^2（定数を除く）
-bb = optimize.minimize(obj, np.zeros(2), tol=1e-12).x
-E.choice("s07p09a", f"({f(bb[0], 3)},\\ {f(bb[1], 3)})", "scipy.optimize.minimize で罰則つき残差平方和を最小化")
-E.check("s07p09a", np.allclose(bb, np.linalg.solve(R + 0.3 * np.eye(2), gy_), atol=1e-5), "正規方程式の解と一致")
+# ---- 大問8 効果量：群を発生させて平方和を作るのではなく、ω² の定義（母集団の説明割合の推定）をシミュレーションで確かめる
+k_, n_ = 4, 10
+ssb, ssw = 180.0, 720.0
+mse_ = ssw / (k_ * n_ - k_)
+om = (ssb - (k_ - 1) * mse_) / (ssb + ssw + mse_)
+E.num("s07p08a", rnd(om, 3), "平方和から直接 ω²")
+true_eff = np.array([-1.0, 0.0, 0.0, 1.0]) * 1.5
+pop = np.var(true_eff) / (np.var(true_eff) + 4.0)
+oms, etas = [], []
+for _ in range(4000):
+    yv = true_eff[:, None] + rng.normal(0, 2, size=(4, 10))
+    sb = 10 * np.sum((yv.mean(1) - yv.mean()) ** 2)
+    sw = np.sum((yv - yv.mean(1, keepdims=True)) ** 2)
+    me = sw / 36
+    oms.append((sb - 3 * me) / (sb + sw + me))
+    etas.append(sb / (sb + sw))
+E.check("s07p08a", abs(np.mean(oms) - pop) < abs(np.mean(etas) - pop), f"母集団の割合 {pop:.3f} に対し ω² の平均 {np.mean(oms):.3f}、η² の平均 {np.mean(etas):.3f}")
 
-# ---- 大問10 テューキー
-q = stats.studentized_range.ppf(0.95, 3, 21)
-table("s07p10a", 3.565, q, 0.0006, "q(3,21;0.05)")
-table("s07p10a", 2.080, stats.t.isf(0.025, 21), 0.0005, "t_0.025(21)")
-hsd = q * np.sqrt(25 / 8)
-means = {"A": 63.5, "B": 56.5, "C": 58.0}
-sig = {(a, b) for a in means for b in means if a < b and abs(means[a] - means[b]) > hsd}
-E.check("s07p10a", sig == {("A", "B")}, f"正確な q で有意な組 {sig}")
-pv = stats.studentized_range.sf(abs(63.5 - 58.0) / np.sqrt(25 / 8), 3, 21)
-E.check("s07p10a", pv > 0.05, f"A と C の調整済み p 値 {pv:.3f} > 0.05")
-E.check("s07p10a", E.item("s07p10a")["answer"] == 1 and f(hsd, 2) in E.item("s07p10a")["choices"][1],
-        "正解の選択肢が基準値 6.30・A-B のみ")
+# ---- 大問9 系統抽出：単純無作為抽出の分散を全 220 通りの列挙で求める
+from itertools import combinations
+yv9 = np.array([50, 62, 58, 46, 52, 64, 60, 48, 54, 66, 62, 50.0])
+srs = np.array([yv9[list(c)].mean() for c in combinations(range(12), 3)])
+sysm = np.array([yv9[r::4].mean() for r in range(4)])
+E.num("s07p09a", rnd(sysm.var() / srs.var(), 2), "系統 4 通り・単純無作為 220 通りを列挙して分散の比")
 
-# ---- 大問11 回帰推定量：標本の要約値をちょうど満たす 8 戸のデータを作って直線を当てはめる
-Z = rng.normal(size=(8, 2))
-Z -= Z.mean(0)
-S = np.cov(Z.T)
-target = np.array([[40.0, 46.0], [46.0, 60.0]])
-Lz = np.linalg.cholesky(S)
-Lt = np.linalg.cholesky(target)
-D = Z @ np.linalg.inv(Lz).T @ Lt.T + np.array([24.0, 30.5])
-E.check("s07p11a", np.allclose(np.cov(D.T), target) and np.allclose(D.mean(0), [24.0, 30.5]), "作ったデータが要約値と一致")
-coef = np.polyfit(D[:, 0], D[:, 1], 1)
-E.num("s07p11a", rnd(np.polyval(coef, 26.0), 2), "最小二乗直線の X̄=26 での予測値")
-
-# ---- 大問12 主成分：元の共分散行列から固有分解
+# ---- 大問10 主成分：元の共分散行列から固有分解
 Sg = np.array([[16, 14, 10], [14, 20, 15], [10, 15, 18.0]])
 w, V = np.linalg.eigh(Sg)
 v1 = V[:, -1] * np.sign(V[0, -1])
-E.check("s07p12a", np.allclose(np.round(v1, 3), [0.517, 0.644, 0.563]) and np.allclose(np.round(w[::-1], 2), [44.34, 6.96, 2.69]),
-        "表の固有値・第1固有ベクトルが共分散行列の固有分解の丸め")
 v2 = V[:, -2] * np.sign(V[0, -2])
-E.check("s07p12a", np.allclose(np.round(v2, 3), [0.713, 0.040, -0.700], atol=0.0011), "第2固有ベクトルの丸め")
-E.choice("s07p12a", f"${f(v1 @ np.array([6, 8, 4.0]), 2)}$", "丸めない固有ベクトルとの内積")
+E.check("s07p10a", np.allclose(np.round(v1, 3), [0.517, 0.644, 0.563]) and np.allclose(np.round(w[::-1], 2), [44.34, 6.96, 2.69])
+        and np.allclose(np.round(v2, 3), [0.713, 0.040, -0.700], atol=0.0011), "表の固有値・固有ベクトルが共分散行列の固有分解の丸め")
+xv = np.array([6, 8, 4.0])
+rec = (np.outer(v1, v1) @ xv)[2]     # 第1主成分への射影行列 v1 v1' を掛ける
+E.choice("s07p10a", f"${f(rec, 1)}$", "射影行列 v1v1' による近似の10年成分（丸めない固有ベクトル）")
 
-# ---- 大問13
-# (a) 因子モデルの写像 (Λ, Ψ) → vech(ΛΛ'+Ψ) のヤコビ行列の階数から自由度を数える
+# ---- 大問11
 def dof(pp, mm):
     def vech(theta):
         Lam = theta[:pp * mm].reshape(pp, mm)
@@ -232,17 +248,16 @@ def dof(pp, mm):
     eps = 1e-6
     J = np.array([(vech(th0 + eps * np.eye(th0.size)[k]) - vech(th0 - eps * np.eye(th0.size)[k])) / (2 * eps) for k in range(th0.size)]).T
     return pp * (pp + 1) // 2 - np.linalg.matrix_rank(J, tol=1e-6)
-dfs = {mm: dof(6, mm) for mm in (1, 2, 3)}
-E.check("s07p13a", dfs == {1: 9, 2: 4, 3: 0}, f"ヤコビ行列の階数から数えた自由度 {dfs}")
-E.choice("s07p13a", f"自由度{dfs[2]}、最大の因子数{max(mm for mm, v_ in dfs.items() if v_ > 0)}", "正の自由度をもつ最大の m")
-# (b) パスモデルからデータを発生させ、R と E の相関（=総合効果）を求める
+dfs = {mm: int(dof(6, mm)) for mm in (1, 2, 3)}
+E.check("s07p11a", dfs == {1: 9, 2: 4, 3: 0}, f"ヤコビ行列の階数から数えた自由度 {dfs}")
+E.choice("s07p11a", f"自由度{dfs[2]}、最大の因子数{max(mm for mm, v_ in dfs.items() if v_ > 0)}", "正の自由度をもつ最大の m")
 Nn = 400_000
 Rr = rng.normal(size=Nn)
 Hh = -0.5 * Rr + rng.normal(scale=np.sqrt(1 - 0.25), size=Nn)
 var_e = 1 - (0.6 ** 2 + 0.2 ** 2 + 2 * 0.6 * -0.2 * -0.5)
 Ee = 0.6 * Hh - 0.2 * Rr + rng.normal(scale=np.sqrt(var_e), size=Nn)
 cor = np.corrcoef(Rr, Ee)[0, 1]
-E.check("s07p13b", abs(cor + 0.5) < 0.005 and abs(Ee.std() - 1) < 0.005, f"シミュレーションの相関 {cor:.4f}（標準化された E）")
-E.choice("s07p13b", f"${f(round(cor, 1), 2)}$", "シミュレーションの相関を丸めた値")
+E.check("s07p11b", abs(cor + 0.5) < 0.005 and abs(Ee.std() - 1) < 0.005, f"シミュレーションの相関 {cor:.4f}（標準化された E）")
+E.choice("s07p11b", f"${f(round(cor, 1), 2)}$", "シミュレーションの相関を丸めた値")
 
 E.done()

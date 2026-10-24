@@ -148,9 +148,13 @@ for k_, key in enumerate(keys):
 rej = [k for k in keys if adj[k] <= 0.05]
 E.check("s11p06b", ans_text("s11p06b") == "・".join(rej), f"ホルム調整 p 値 {adj} → {rej}")
 
-# ---- 大問7 クラスカル＝ウォリス
-H = stats.kruskal([52, 55, 60, 64], [58, 63, 69, 71], [67, 74, 78, 81]).statistic
-E.num("s11p07a", rnd(H, 2), "scipy kruskal")
+# ---- 大問7 フリードマン検定
+A7 = [62, 58, 67, 55, 60, 69]
+B7 = [66, 70, 64, 61, 72, 66]
+C7 = [71, 65, 73, 63, 68, 75]
+fr = stats.friedmanchisquare(A7, B7, C7)
+E.num("s11p07a", rnd(fr.statistic, 2), "scipy friedmanchisquare")
+E.check("s11p07a", fr.pvalue > 0.05 and abs(stats.chi2.ppf(0.95, 2) - 5.991) < 5e-4, f"p 値 {fr.pvalue:.4f} > 0.05（解説の結論）")
 
 # ---- 大問8 賃金の回帰
 # (a) 実際にデータを作って2つのモデルを当てはめ、部分F検定の式が残差平方和だけで決まることを確かめたうえで、与えた値で計算
@@ -191,12 +195,19 @@ E.check("s11p08c", sum(f(b2sls, 3) in c for c in E.item("s11p08c")["choices"]) =
 E.choice("s11p09a", f"${f(stats.norm.cdf(-1.4 + 0.025 * 60) - stats.norm.cdf(-1.4 + 0.025 * 20), 3)}$", "scipy norm.cdf")
 E.check("s11p09a", all(abs(stats.norm.cdf(z) - v) < 5e-5 for z, v in ((0.1, 0.5398), (0.9, 0.8159), (1.0, 0.8413))), "Φ の値")
 distinct_rounded("s11p09a")
-Q = np.array([[0.70, 0.20], [0.05, 0.70]])
-R = np.array([[0.0, 0.10], [0.15, 0.10]])
-B = np.linalg.solve(np.eye(2) - Q, R)
-E.num("s11p09b", rnd(B[0, 0], 3), "基本行列 (I-Q)^{-1}R")
-P = np.array([[0.70, 0.20, 0, 0.10], [0.05, 0.70, 0.15, 0.10], [0, 0, 1, 0], [0, 0, 0, 1]])
-E.check("s11p09b", abs(np.linalg.matrix_power(P, 400)[0, 2] - B[0, 0]) < 1e-9 and np.allclose(P.sum(1), 1), "P^400 の (一般→管理職)")
+P = np.array([[0, 0.6, 0.4], [1, 0, 0], [1, 0, 0]])
+w, V = np.linalg.eig(P.T)
+pi = np.real(V[:, np.argmin(np.abs(w - 1))])
+pi = pi / pi.sum()
+P2 = P @ P
+P20, P21 = np.linalg.matrix_power(P, 20), np.linalg.matrix_power(P, 21)
+period = np.gcd.reduce([n_ for n_ in range(1, 13) if np.linalg.matrix_power(P, n_)[0, 0] > 0])
+at = ans_text("s11p09b")
+E.check("s11p09b", np.allclose(pi, [0.5, 0.3, 0.2]) and period == 2 and not np.allclose(P20, P21)
+        and "(0.5,0.3,0.2)" in at.replace(" ", "") and "収束しない" in at,
+        f"固有ベクトルで定常分布 {pi.round(4)}、周期 {period}、P^20≠P^21")
+E.check("s11p09b", abs(P2[1, 1] - 0.6) < 1e-12 and abs(np.mean([np.linalg.matrix_power(P, n_)[0, 0] for n_ in range(1, 2001)]) - 0.5) < 1e-3,
+        "2年後に企画に戻る確率は 0.6（選択肢5は誤り）、営業にいる時間平均は 0.5")
 
 # ---- 大問10 採点者の変量効果
 Fr = (104 / 4) / (108 / 15)
@@ -211,8 +222,17 @@ E.check("s11p10a", abs(np.mean(sims) - 4.0) < 0.1, f"(MSA-MSE)/n が σA²=4 の
 distinct_rounded("s11p10a")
 
 # ---- 大問11 学校調査
-hh = np.mean([27 / (900 / 6000), 10 / (400 / 6000)])  # ハンセン＝フルビッツ型 (1/n)Σ y/p と同じになる
-E.choice("s11p11a", f"${f(hh, 0)}$", "1回の抽出確率による (1/n)Σy/p")
+# 包含確率を全標本の列挙で数え、HT 推定量の不偏性も架空の母集団で確かめる
+from itertools import combinations
+small = list(range(17))
+samples = list(combinations(small, 4))
+pi_small = sum(1 for sm in samples if 0 in sm) / len(samples)
+E.check("s11p11a", abs(pi_small - 4 / 17) < 1e-12, f"列挙による小規模校の包含確率 {pi_small:.6f} = 4/17")
+ht_v = (27 + 31 + 22) * 1.0 + sum(v / pi_small for v in [6, 9, 4, 5])
+E.choice("s11p11a", f"${f(ht_v, 0)}$", "列挙した包含確率で Σ y/π")
+ypop = rng.integers(0, 12, 17)
+mean_ht = np.mean([30 + ypop[list(sm)].sum() / pi_small for sm in samples])
+E.check("s11p11a", abs(mean_ht - (30 + ypop.sum())) < 1e-9, "全標本の平均が真の総数に一致（不偏）")
 distinct_rounded("s11p11a")
 q = np.array([8.2, 8.6, 8.0, 8.5, 8.7])
 u = np.array([0.090, 0.094, 0.086, 0.092, 0.088])

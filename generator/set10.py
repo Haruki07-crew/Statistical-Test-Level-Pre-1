@@ -21,34 +21,26 @@ def s(x, d):
 
 
 def p01():
-    # (a) 3 経路の遅延率からベイズの定理
-    share = {"A": 0.5, "B": 0.3, "C": 0.2}
-    dl = {"A": 0.04, "B": 0.10, "C": 0.12}
-    joint = {k: share[k] * dl[k] for k in share}
-    pd = sum(joint.values())
-    post = {k: joint[k] / pd for k in share}
-    # (b) 時間帯 C を与えると雨 A と遅延 B が条件付き独立 [AC][BC] の当てはめ値
-    t1 = (12, 48, 15, 125)   # 午前：雨・遅延, 雨・定刻, 晴・遅延, 晴・定刻
-    t2 = (20, 30, 30, 120)   # 午後
+    # (a) 2 センターの遅延は独立で確率 1/2、C=ちょうど一方だけ遅延：対ごとに独立だが相互独立でない
+    # (b) マンテル・ヘンツェルの共通オッズ比（行：雨・晴れ、列：遅延・定刻）
+    t1 = (12, 48, 15, 125)
+    t2 = (20, 30, 30, 120)
     n1, n2 = sum(t1), sum(t2)
-    rain1, del1 = t1[0] + t1[1], t1[0] + t1[2]
-    fit = rain1 * del1 / n1
-    N = n1 + n2
-    rain, dly, morn = t1[0] + t1[1] + t2[0] + t2[1], t1[0] + t1[2] + t2[0] + t2[2], n1
-    fit_ind = rain * dly * morn / N ** 2           # 完全独立 [A][B][C]
-    fit_ab = (t1[0] + t2[0]) * morn / N             # [AB][C]
+    ad1, bc1 = t1[0] * t1[3] / n1, t1[1] * t1[2] / n1
+    ad2, bc2 = t2[0] * t2[3] / n2, t2[1] * t2[2] / n2
+    mh = (ad1 + ad2) / (bc1 + bc2)
+    or1 = t1[0] * t1[3] / (t1[1] * t1[2])
+    or2 = t2[0] * t2[3] / (t2[1] * t2[2])
+    A, B, C, D = t1[0] + t2[0], t1[1] + t2[1], t1[2] + t2[2], t1[3] + t2[3]
+    crude = A * D / (B * C)
     return {
-        "sA": share["A"], "sB": share["B"], "sC": share["C"],
-        "dA": dl["A"], "dB": dl["B"], "dC": dl["C"],
-        "jA": s(joint["A"], 3), "jB": s(joint["B"], 3), "jC": s(joint["C"], 3), "pd": s(pd, 3),
-        "postB": s(post["B"], 3), "postB4": s(post["B"], 4), "postA": s(post["A"], 3), "postC": s(post["C"], 3),
-        "w_lik": s(dl["B"], 3), "w_joint": s(joint["B"], 3), "w_prior": s(share["B"], 3),
-        "w_norm": s(dl["B"] / sum(dl.values()), 3), "sumd": s(sum(dl.values()), 2),
         "a1": t1[0], "b1": t1[1], "c1": t1[2], "d1": t1[3], "n1": n1,
         "a2": t2[0], "b2": t2[1], "c2": t2[2], "d2": t2[3], "n2": n2,
-        "rain1": rain1, "del1": del1, "fit": r(fit, 2), "fit_s": s(fit, 2),
-        "N": N, "rain": rain, "dly": dly, "fit_ind": s(fit_ind, 2), "fit_ab": s(fit_ab, 2), "a12": t1[0] + t2[0],
-        "fit2": s((t2[0] + t2[1]) * (t2[0] + t2[2]) / n2, 2), "rain2": t2[0] + t2[1], "del2": t2[0] + t2[2],
+        "ad1": s(ad1, 1), "bc1": s(bc1, 1), "ad2": s(ad2, 1), "bc2": s(bc2, 1),
+        "num": s(ad1 + ad2, 1), "den": s(bc1 + bc2, 1),
+        "mh": r(mh, 2), "mh_s": s(mh, 2), "mh4": s(mh, 4),
+        "or1": s(or1, 2), "or2": s(or2, 2), "or_avg": s((or1 + or2) / 2, 2),
+        "A": A, "B": B, "C": C, "D": D, "crude": s(crude, 2),
     }
 
 def p02():
@@ -78,25 +70,7 @@ def p03():
     n, xbar, m2 = 60, 4.5, 6.75
     theta = m2 / xbar
     alpha = xbar / theta
-    m2u = m2 * n / (n - 1)
-    th_u = m2u / xbar
-    sd = sqrt(m2)
-    th_sd = sd / xbar
-    # (b) Gamma(3, 1.5) の P(X > 6)：e^{-4} を問題文の値で
-    x0 = 6
-    z = x0 / theta
-    e4 = 0.01832
-    terms = 1 + z + z ** 2 / 2
-    surv = terms * e4
-    return {
-        "n": n, "xbar": xbar, "m2": m2, "theta": s(theta, 2), "alpha": s(alpha, 2),
-        "rate": s(1 / theta, 2), "m2u": s(m2u, 4), "th_u": s(th_u, 2), "al_u": s(xbar / th_u, 2),
-        "sd": s(sd, 3), "th_sd": s(th_sd, 2), "al_sd": s(xbar / th_sd, 2),
-        "x0": x0, "z": s(z, 0), "z2h": s(z ** 2 / 2, 0), "terms": s(terms, 0), "e4": e4,
-        "surv": r(surv, 3), "surv_s": s(surv, 3), "surv5": s(surv, 5),
-        "w_k2": s((1 + z) * e4, 4), "w_k1": s(e4, 4),
-    }
-
+    return {"n": n, "xbar": xbar, "m2": m2, "theta": s(theta, 2), "alpha": s(alpha, 2)}
 
 def p04():
     # (a) ポアソン過程：1 時間に 6 台到着したとき最初の 20 分にちょうど 2 台
@@ -141,26 +115,34 @@ def p04():
     }
 
 def p05():
-    # (a) T ~ U(20, 30) 分、距離 10 km、V = 600 / T（km/h）
-    # (b) 対応のある差の標準偏差から必要な日数
+    # (a) T ~ U(20, 30) 分、V = 600 / T（km/h）の期待値。ln 1.5 は問題文の値
+    ln15 = 0.4055
+    ev = 60 * ln15
+    # (b) 対応のある差の信頼区間
     A = [38.5, 42.0, 35.2, 40.8, 45.3, 36.9, 39.4, 41.6]
     B = [35.3, 40.5, 36.0, 38.4, 41.2, 36.3, 37.5, 38.9]
     d = [round(a - b, 1) for a, b in zip(A, B)]
     n = len(d)
     dbar = sum(d) / n
     ss = sum((x - dbar) ** 2 for x in d)
-    s2 = r(ss / (n - 1), 4)
-    sd_ = r(sqrt(s2), 4)
-    z, E = 1.96, 0.5
-    root = z * sd_ / E
-    need = root ** 2
-    nn = int(need) + (0 if need == int(need) else 1)
-    sd_n = sqrt(ss / n)
-    up = lambda v: int(v) + (0 if v == int(v) else 1)
-    out = {"n": n, "dsum": s(sum(d), 1), "dbar": s(dbar, 2), "ss": s(ss, 2), "s2": s(s2, 4), "sd": s(sd_, 4),
-           "z": z, "E": E, "zs": s(z * sd_, 4), "root": s(root, 4), "need": s(need, 2), "nn": nn,
-           "w_sdn": up((z * sd_n / E) ** 2), "sdn": s(sd_n, 4), "w_z": up((1.645 * sd_ / E) ** 2),
-           "w_E": up((z * sd_ / (E / 2)) ** 2), "w_nosq": up(root)}
+    s2 = ss / (n - 1)
+    sd_ = r(sqrt(r(s2, 4)), 4)
+    se = r(sd_ / sqrt(n), 4)
+    t7, t14, t05 = 2.365, 2.145, 1.895
+    half = r(t7 * se, 4)
+    lo = dbar - half
+    ma, mb = sum(A) / n, sum(B) / n
+    ssa = sum((x - ma) ** 2 for x in A)
+    ssb = sum((x - mb) ** 2 for x in B)
+    sp2 = (ssa + ssb) / (2 * n - 2)
+    lo_pool = (ma - mb) - t14 * sqrt(sp2 * 2 / n)
+    out = {"ln15": ln15, "ev": s(ev, 2), "ev4": s(ev, 4), "w_inv": s(600 / 25, 2), "w_mid": s(25, 2),
+           "w_jinv": s((30 ** 4 - 20 ** 4) / 24000, 2), "w_no10": s(600 * ln15, 1),
+           "n": n, "t7": t7, "t14": t14, "t05": t05,
+           "dsum": s(sum(d), 1), "dbar": s(dbar, 2), "ss": s(ss, 2), "s2": s(s2, 4), "sd": s(sd_, 4),
+           "sqn": s(sqrt(n), 4), "se": s(se, 4), "half": s(half, 4), "lo": r(lo, 2), "lo4": s(lo, 4),
+           "hi": s(dbar + half, 2), "lo_pool": s(lo_pool, 2), "lo_t05": s(dbar - t05 * se, 2),
+           "lo_n": s(dbar - t7 * sqrt(ss / n) / sqrt(n), 2), "lo_s": s(lo, 2)}
     for i in range(n):
         out[f"a{i + 1}"] = s(A[i], 1)
         out[f"b{i + 1}"] = s(B[i], 1)
@@ -168,11 +150,8 @@ def p05():
     return out
 
 def p06():
-    # (a) 確率化検定：X ~ Po(λ)、H0: λ=4 対 H1: λ<4、e^{-4}=0.0183
-    lam, e4, alpha = 4, 0.0183, 0.05
-    p0 = e4
-    p1 = r(lam * e4, 4)
-    gam = (alpha - p0) / p1
+    # (a) ホルム法。路線 A〜E の p 値
+    p = {"A": 0.019, "B": 0.003, "C": 0.300, "D": 0.011, "E": 0.023}
     # (b) 順位和
     w = [1.2, 3.5, 0.8, 2.1, 4.4, 1.7]
     o = [2.9, 5.1, 3.8, 6.2, 2.4, 4.9, 7.0, 3.1]
@@ -185,16 +164,14 @@ def p06():
     VW = m * n * (N + 1) / 12
     sq = 7.746
     z = (W - EW) / sq
-    out = {
-        "lam": lam, "e4": e4, "p0": s(p0, 4), "p1": s(p1, 4), "cum1": s(p0 + p1, 4), "rest": s(alpha - p0, 4),
-        "gam": s(gam, 3), "gam5": s(gam, 5), "w_nop0": s(alpha / p1, 3), "w_cum": s((alpha - p0) / (p0 + p1), 3),
-        "w_comp": s(1 - gam, 3), "w_rest": s(alpha - p0, 3),
+    out = {f"p{k}": v for k, v in p.items()}
+    out.update({
         "W": W, "m": m, "n": n, "N": N, "N1": N + 1, "EW": s(EW, 0), "VW": s(VW, 0), "sqV": sq,
         "diff": s(W - EW, 0), "z": r(z, 2), "z_s": s(z, 2), "z4": s(z, 4),
         "Wo": sum(rank[v] for v in o), "EWo": s(n * (N + 1) / 2, 0),
         "z_cc": s((W - EW + 0.5) / sq, 2),
         "w_var": s((W - EW) / sqrt(m * n * (N + 1) / 12 * 2), 2),
-    }
+    })
     for i, v in enumerate(w):
         out[f"w{i + 1}"] = s(v, 1)
     for i, v in enumerate(o):
@@ -203,95 +180,129 @@ def p06():
     return out
 
 def p07():
+    n, p2 = 48, 7
+    k = p2 - 1
+    rss2 = 900
+    df2 = n - p2
     # (a) t 値から 1 変数を除いたときの決定係数
-    n, k, R2, t = 48, 6, 0.82, 2.5
-    dfe = n - k - 1
-    dR2 = t ** 2 * (1 - R2) / dfe
+    R2, t = 0.82, 2.5
+    dR2 = t ** 2 * (1 - R2) / df2
     R2r = R2 - dR2
-    # (b) 1 観測を除いたときの傾きの変化（DFBETA）
-    x = [1, 2, 3, 3, 4, 5]
-    e = [1.2, -0.5, 0.2, -0.4, -2.9, 2.4]
-    b0, b1 = 10.0, 2.0
-    y = [round(b0 + b1 * xi + ei, 1) for xi, ei in zip(x, e)]
-    xb = sum(x) / len(x)
-    sxx = sum((xi - xb) ** 2 for xi in x)
-    i = 5
-    di = x[i] - xb
-    h = 1 / len(x) + di ** 2 / sxx
-    dfb = di * e[i] / (sxx * (1 - h))
-    out = {
-        "n": n, "k": k, "R2": R2, "t": t, "dfe": dfe, "t2": s(t ** 2, 2), "omR2": s(1 - R2, 2),
+    # (b) 外的スチューデント化残差
+    e, h = 11.2, 0.25
+    s2 = rss2 / df2
+    rint = e / sqrt(s2 * (1 - h))
+    s2i = (rss2 - e ** 2 / (1 - h)) / (df2 - 1)
+    t_ext = e / sqrt(s2i * (1 - h))
+    s2i_noh = (rss2 - e ** 2) / (df2 - 1)
+    return {
+        "n": n, "p2": p2, "k": k, "rss2": rss2, "df2": df2,
+        "R2": R2, "R2s": s(R2, 3), "t": t, "t2": s(t ** 2, 2), "omR2": s(1 - R2, 2),
         "dR2": s(dR2, 5), "R2r": s(R2r, 3), "R2r5": s(R2r, 5),
-        "w_noR": s(R2 - t ** 2 / dfe, 3), "w_R": s(R2 - t ** 2 * R2 / dfe, 3), "w_t": s(R2 - t * (1 - R2) / dfe, 3),
-        "b0": s(b0, 1), "b1": s(b1, 1), "xb": s(xb, 0), "sxx": s(sxx, 0), "di": s(di, 0), "e6": e[i],
-        "h": s(h, 4), "omh": s(1 - h, 4), "hden": s(sxx * (1 - h), 3), "num6": s(di * e[i], 1),
-        "dfb": s(dfb, 2), "dfb4": s(dfb, 4), "new": s(b1 - dfb, 2),
-        "w_noh": s(di * e[i] / sxx, 2), "w_h1": s(di * e[i] / (sxx * (1 - di ** 2 / sxx)), 2),
-        "w_mul": s(di * e[i] * (1 - h) / sxx, 2), "w_e": s(e[i], 2),
+        "w_noR": s(R2 - t ** 2 / df2, 3), "w_R": s(R2 - t ** 2 * R2 / df2, 3), "w_t": s(R2 - t * (1 - R2) / df2, 3),
+        "e": e, "h": h, "s2": s(s2, 4), "e2": s(e ** 2, 2), "e2h": s(e ** 2 / (1 - h), 4),
+        "rss_i": s(rss2 - e ** 2 / (1 - h), 4), "df3": df2 - 1, "s2i": s(s2i, 4),
+        "s2ih": s(s2i * (1 - h), 4), "sqs2ih": s(sqrt(s2i * (1 - h)), 4),
+        "t_ext": s(t_ext, 2), "t_ext4": s(t_ext, 4), "r_int": s(rint, 2),
+        "w_noh": s(e / sqrt(s2), 2), "w_noei": s(e / sqrt(s2i_noh * (1 - h)), 2), "w_nolev": s(e / sqrt(s2i), 2),
+        "ratio": s((df2 - 1) / (df2 - rint ** 2), 4), "rint4": s(rint, 4),
     }
-    for j in range(6):
-        out[f"x{j + 1}"] = x[j]
-        out[f"y{j + 1}"] = s(y[j], 1)
-        out[f"e{j + 1}"] = s(e[j], 1)
-    return out
 
 def p08():
     rr, n = -0.48, 22
     r2 = rr ** 2
     t = rr * sqrt(n - 2) / sqrt(1 - r2)
-    # (b) リッジ推定量の縮小率 c と MSE
-    beta, v = 0.8, 0.16
-    c = beta ** 2 / (beta ** 2 + v)
-    mse = (1 - c) ** 2 * beta ** 2 + c ** 2 * v
-    cw = v / (beta ** 2 + v)
+    vx, cxy, czx, czy, vz = 1.60, -1.20, 0.80, -2.40, 0.50
     return {
         "r": rr, "n": n, "df": n - 2, "r2": s(r2, 4), "one_r2": s(1 - r2, 4), "sq1r2": s(sqrt(1 - r2), 4),
         "sqdf": s(sqrt(n - 2), 4), "t": s(t, 2), "t4": s(t, 4), "tc": 2.086,
         "w_nosq": s(rr * sqrt(n - 2), 2), "w_n1": s(rr * sqrt(n - 1) / sqrt(1 - r2), 2),
         "w_n3": s(rr * sqrt(n - 3) / sqrt(1 - r2), 2), "w_1r2": s(rr * sqrt(n - 2) / (1 - r2), 2),
-        "beta": beta, "v": v, "b2": s(beta ** 2, 2), "c": s(c, 2), "mse": s(mse, 3),
-        "bias2": s((1 - c) ** 2 * beta ** 2, 4), "var": s(c ** 2 * v, 4), "omc": s(1 - c, 1),
-        "w_ols": s(v, 3), "w_novb": s(c ** 2 * v, 3), "cw": s(cw, 2), "w_cw": s((1 - cw) ** 2 * beta ** 2 + cw ** 2 * v, 3),
-        "w_bias1": s((1 - c) * beta + c ** 2 * v, 3), "lam_ratio": s(1 / c - 1, 2),
+        "vx": s(vx, 2), "cxy": s(cxy, 2), "czx": s(czx, 2), "czy": s(czy, 2), "vz": s(vz, 2),
+        "iv": s(czy / czx, 2), "ols": s(cxy / vx, 2), "w_vx": s(czy / vx, 2), "w_vz": s(czy / vz, 2),
+        "w_inv": s(czx / czy, 2), "fs": s(czx / vz, 2), "rf": s(czy / vz, 2),
     }
 
 def p09():
-    N, z, E, p = 2000, 1.96, 0.05, 0.5
-    n0 = z ** 2 * p * (1 - p) / E ** 2
-    nreq = N * n0 / (N - 1 + n0)
-    up = lambda v: int(v) + (0 if v == int(v) else 1)
-    return {
-        "N": N, "z": z, "E": E, "n0": s(n0, 2), "N1": N - 1, "nden": s(N - 1 + n0, 2), "nnum": s(N * n0, 0),
-        "nreq": s(nreq, 2), "nn": up(nreq), "w_nofpc": up(n0), "w_floor": int(nreq), "z2": s(z ** 2, 4),
-        "alt": s(n0 / (1 + n0 / N), 2),
-    }
+    # (a) 客室数に比例する確率の復元 PPS 抽出とハンセン・ハーウィッツ推定量
+    X, Nh = 12800, 400
+    rooms = [40, 25, 80, 16]
+    guests = [900, 600, 1700, 400]
+    n = len(rooms)
+    ratio = [g / x for g, x in zip(guests, rooms)]
+    hh = X * sum(ratio) / n
+    out = {"X": X, "Nh": Nh, "nn": n, "hh": r(hh, 0), "hh_s": s(hh, 0), "mratio": s(sum(ratio) / n, 4),
+           "sratio": s(sum(ratio), 2), "w_mean": s(Nh * sum(guests) / n, 0),
+           "w_rat": s(X * sum(guests) / sum(rooms), 0), "w_non": s(X * sum(ratio), 0),
+           "sumg": sum(guests), "sumx": sum(rooms), "xbar_pop": s(X / Nh, 0)}
+    for i in range(n):
+        out[f"x{i + 1}"] = rooms[i]
+        out[f"g{i + 1}"] = guests[i]
+        out[f"q{i + 1}"] = s(ratio[i], 2)
+        out[f"pi{i + 1}"] = s(rooms[i] / X, 6)
+    # (b) フロントドア調整
+    pT = 0.4
+    pM = {1: 0.7, 0: 0.2}
+    pY = {(1, 1): 0.7, (1, 0): 0.5, (0, 1): 0.3, (0, 0): 0.2}   # (m, t)
+    inner = {m: pY[(m, 1)] * pT + pY[(m, 0)] * (1 - pT) for m in (0, 1)}
+    do = {t: pM[t] * inner[1] + (1 - pM[t]) * inner[0] for t in (0, 1)}
+    ace = do[1] - do[0]
+    naive = (pM[1] * pY[(1, 1)] + (1 - pM[1]) * pY[(0, 1)]) - (pM[0] * pY[(1, 0)] + (1 - pM[0]) * pY[(0, 0)])
+    inner_eq = {m: 0.5 * pY[(m, 1)] + 0.5 * pY[(m, 0)] for m in (0, 1)}
+    ace_eq = (pM[1] - pM[0]) * (inner_eq[1] - inner_eq[0])
+    inner_sw = {m: pY[(m, 1)] * (1 - pT) + pY[(m, 0)] * pT for m in (0, 1)}
+    ace_sw = (pM[1] - pM[0]) * (inner_sw[1] - inner_sw[0])
+    ace_own = (pM[1] - pM[0]) * (pY[(1, 1)] - pY[(0, 1)]) * 0 + (pM[1] * pY[(1, 1)] + (1 - pM[1]) * pY[(0, 1)]) \
+        - (pM[0] * pY[(1, 1)] + (1 - pM[0]) * pY[(0, 1)])
+    out.update({
+        "pT": pT, "pT0": s(1 - pT, 1), "pM1": pM[1], "pM0": pM[0],
+        "y11": pY[(1, 1)], "y10": pY[(1, 0)], "y01": pY[(0, 1)], "y00": pY[(0, 0)],
+        "in1": s(inner[1], 2), "in0": s(inner[0], 2), "do1": s(do[1], 3), "do0": s(do[0], 3),
+        "ace": s(ace, 3), "naive": s(naive, 3), "ace_eq": s(ace_eq, 3), "ace_sw": s(ace_sw, 3), "ace_own": s(ace_own, 3),
+        "t1": s(pY[(1, 1)] * pT, 2), "t2": s(pY[(1, 0)] * (1 - pT), 2), "t3": s(pY[(0, 1)] * pT, 2), "t4": s(pY[(0, 0)] * (1 - pT), 2),
+        "py1": s(pM[1] * pY[(1, 1)] + (1 - pM[1]) * pY[(0, 1)], 2), "py0": s(pM[0] * pY[(1, 0)] + (1 - pM[0]) * pY[(0, 0)], 2),
+    })
+    return out
 
 def p10():
-    b0, b1, b2 = -1.5, 0.25, -0.5
+    b0, b1, b2 = -0.9, 0.15, -0.4
     x2 = 1.5
-    c0 = b0 + b2 * x2
-    x1 = -c0 / b1
+    x1a, x1b = 6, 8
+    eta_a = b0 + b1 * x1a + b2 * x2
+    eta_b = b0 + b1 * x1b + b2 * x2
+    phi = {0.3: 0.6179, 0.6: 0.7257, 0.9: 0.8159}
+    pa = 1 - phi[r(-eta_a, 1)]
+    pb = 1 - phi[r(-eta_b, 1)]
     return {
-        "b0": b0, "b1": b1, "b2": b2, "x2": x2, "t2": s(b2 * x2, 2), "c0": s(c0, 2), "x1": s(x1, 0),
-        "yen": int(round(x1 * 100)), "w_nox2": int(round(-b0 / b1 * 100)), "w_sign": int(round(-(b0 - b2 * x2) / b1 * 100)),
-        "w_half": int(round((0.5 - c0) / b1 * 100)), "w_ln": int(round((-0.693 - c0) / b1 * 100 / 10) * 10),
-        "or2": s(2 * b1, 2), "e05": 1.649,
+        "b0": b0, "b1": b1, "b2": b2, "x2": x2, "x1a": x1a, "x1b": x1b,
+        "ya": x1a * 100, "yb": x1b * 100,
+        "t1a": s(b1 * x1a, 2), "t1b": s(b1 * x1b, 2), "t2": s(b2 * x2, 2),
+        "eta_a": s(eta_a, 1), "eta_b": s(eta_b, 1),
+        "ph3": s(phi[0.3], 4), "ph6": s(phi[0.6], 4), "ph9": s(phi[0.9], 4),
+        "pa": s(pa, 4), "pb": s(pb, 4), "dp": r(pb - pa, 3), "dp4": s(pb - pa, 4), "dp_s": s(pb - pa, 3),
+        "w_x": s(b1 * 2, 2),
     }
 
 def p11():
-    means = {"A": 52.0, "B": 45.5, "C": 43.0}
-    rr, mse, dfe, q, t = 8, 36, 21, 3.565, 2.080
-    se1 = sqrt(mse / rr)
-    hsd = r(q * r(se1, 3), 2)
-    lsd = r(t * sqrt(2 * mse / rr), 2)
-    hsd_w = r(q * sqrt(2 * mse / rr), 2)
+    means = [52.0, 45.5, 43.0]
+    rr, mse, a = 8, 36, 3
+    N = a * rr
+    dfe = N - a
+    gm = sum(means) / a
+    ssa = rr * sum((m - gm) ** 2 for m in means)
+    sse = mse * dfe
+    sst = ssa + sse
+    eta2 = ssa / sst
+    om2 = (ssa - (a - 1) * mse) / (sst + mse)
     return {
-        "mA": s(means["A"], 1), "mB": s(means["B"], 1), "mC": s(means["C"], 1), "rr": rr, "N": 3 * rr,
-        "mse": mse, "dfe": dfe, "q": q, "t": s(t, 3), "mr": s(mse / rr, 1), "se1": s(se1, 3),
-        "hsd": s(hsd, 2), "lsd": s(lsd, 2), "hsd_w": s(hsd_w, 2), "se2": s(sqrt(2 * mse / rr), 0),
-        "dAB": s(means["A"] - means["B"], 1), "dAC": s(means["A"] - means["C"], 1), "dBC": s(means["B"] - means["C"], 1),
+        "mA": s(means[0], 1), "mB": s(means[1], 1), "mC": s(means[2], 1), "rr": rr, "N": N, "mse": mse, "dfe": dfe,
+        "a1": a - 1, "gm": s(gm, 4), "ssa": s(ssa, 2), "sse": s(sse, 0), "sst": s(sst, 2), "msa": s(ssa / (a - 1), 2),
+        "F": s(ssa / (a - 1) / mse, 2), "num": s(ssa - (a - 1) * mse, 2), "den": s(sst + mse, 2), "amse": (a - 1) * mse,
+        "om2": s(om2, 3), "om2_4": s(om2, 4), "eta2": s(eta2, 3), "w_nomse": s((ssa - (a - 1) * mse) / sst, 3),
+        "w_ratio": s(ssa / sse, 3), "w_noa": s((ssa - mse) / (sst + mse), 3),
+        "dev1": s(means[0] - gm, 4), "dev2": s(means[1] - gm, 4), "dev3": s(means[2] - gm, 4),
+        "sqsum": s(sum((m - gm) ** 2 for m in means), 4),
     }
-
 
 def p12():
     # (a) 尺度をそろえてからのユークリッド距離
@@ -338,7 +349,11 @@ def p12():
     out["prop"] = s(contr / 3, 2)
     for i, (a, b) in enumerate(L, 1):
         out[f"l{i}1sq"] = s(a * a, 4)
-    # (c) RMSEA
+    # (c) 数量化I類（カテゴリースコア）
+    out.update({"cst": 6.0, "sd": -1.4, "ss2": 2.1, "car": 0.6, "rail": -0.2, "bus": -1.2,
+                "pred": s(6.0 + 2.1 - 0.2, 1), "rng1": s(2.1 + 1.4, 1), "rng2": s(0.6 + 1.2, 1),
+                "w_pred_sd": s(6.0 - 1.4 - 0.2, 1), "w_pred_sum": s(2.1 - 0.2, 1), "w_pred_car": s(6.0 + 2.1 + 0.6, 1)})
+    # (c旧) RMSEA
     p, qf, nobs, chi2 = 10, 25, 301, 78.0
     df = p * (p + 1) // 2 - qf
     rm = sqrt((chi2 - df) / (df * (nobs - 1)))
@@ -354,15 +369,13 @@ def p12():
 
 
 def p13():
-    f1, f2 = 0.5, 0.3
-    r1 = f1 / (1 - f2)
-    r2 = f1 * r1 + f2
-    return {
-        "f1": f1, "f2": f2, "r1": s(r1, 4), "r1_3": s(r1, 3), "r2": s(r2, 3), "r2_4": s(r2, 4),
-        "f1r1": s(f1 * r1, 4), "w_pacf": s(f2, 3), "w_ar1": s(r1 ** 2, 3), "w_phi": s(f1 ** 2 + f2, 3),
-        "omf2": s(1 - f2, 1), "sumf": s(f1 + f2, 1), "dif": s(f2 - f1, 1),
-    }
-
+    th = 0.6
+    prev_f, obs = 120, 130
+    err = obs - prev_f
+    f1 = obs - th * err
+    return {"th": th, "al": s(1 - th, 1), "pf": prev_f, "obs": obs, "err": err, "f1": s(f1, 0),
+            "w_al": s(obs - (1 - th) * err, 0), "w_sign": s(obs + th * err, 0), "w_rw": s(obs, 0), "w_old": s(prev_f, 0),
+            "thr": s(th * err, 0), "alr": s((1 - th) * err, 0)}
 
 def p14():
     a, b = 5, 5

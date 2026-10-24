@@ -229,25 +229,29 @@ def p06():
 
 
 def p07():
-    """3つの指導法の得点：クラスカル＝ウォリス検定統計量"""
-    A = [52, 55, 60, 64]
-    B = [58, 63, 69, 71]
-    C = [67, 74, 78, 81]
-    allv = sorted(A + B + C)
-    rk = {v: i + 1 for i, v in enumerate(allv)}
-    RA, RB, RC = (sum(rk[v] for v in g) for g in (A, B, C))
-    N, ni = 12, 4
-    S = (RA ** 2 + RB ** 2 + RC ** 2) / ni
-    H = 12 / (N * (N + 1)) * S - 3 * (N + 1)
-    out = {"N": N, "ni": ni, "RA": RA, "RB": RB, "RC": RC, "RA2": RA ** 2, "RB2": RB ** 2, "RC2": RC ** 2,
-           "sumR2": RA ** 2 + RB ** 2 + RC ** 2, "S": s(S, 1), "Np1": N + 1, "NN1": N * (N + 1), "c3": 3 * (N + 1),
-           "coef": s(12 / (N * (N + 1)), 6), "prod": s(12 * S / (N * (N + 1)), 4),
-           "H": r(H, 2), "H_s": s(H, 2), "H4": s(H, 4),
-           "w_N": s(12 / (N * (N + 1)) * S - 3 * N, 2), "w_noavg": s(12 / (N * (N + 1)) * S * ni - 3 * (N + 1), 2)}
+    """3つの指導法のクラス内比較：フリードマン検定統計量"""
+    A = [62, 58, 67, 55, 60, 69]
+    B = [66, 70, 64, 61, 72, 66]
+    C = [71, 65, 73, 63, 68, 75]
+    b, k = 6, 3
+    ranks = []
+    for row in zip(A, B, C):
+        srt = sorted(row)
+        assert len(set(row)) == 3
+        ranks.append([srt.index(v) + 1 for v in row])
+    RA, RB, RC = (sum(rw[j] for rw in ranks) for j in range(3))
+    sumR2 = RA ** 2 + RB ** 2 + RC ** 2
+    den = b * k * (k + 1)
+    Q = 12 / den * sumR2 - 3 * b * (k + 1)
+    out = {"b": b, "k": k, "k1": k + 1, "RA": RA, "RB": RB, "RC": RC, "Rsum": RA + RB + RC,
+           "RA2": RA ** 2, "RB2": RB ** 2, "RC2": RC ** 2, "sumR2": sumR2, "den": den, "c3": 3 * b * (k + 1),
+           "c3w": 3 * b * k, "prod": s(12 / den * sumR2, 4), "Q": r(Q, 2), "Q_s": s(Q, 2), "Q4": s(Q, 4),
+           "w_bk": s(12 / den * sumR2 - 3 * b * k, 2),
+           "rA": ",".join(str(rw[0]) for rw in ranks), "rB": ",".join(str(rw[1]) for rw in ranks),
+           "rC": ",".join(str(rw[2]) for rw in ranks)}
     for nm, g in (("A", A), ("B", B), ("C", C)):
         for i, v in enumerate(g):
             out[f"{nm}{i + 1}"] = v
-            out[f"r{nm}{i + 1}"] = rk[v]
     return out
 
 
@@ -281,7 +285,7 @@ def p08():
 
 
 def p09():
-    """離職：プロビットモデル、昇進と離職の吸収的マルコフ連鎖"""
+    """離職のプロビットモデルと、人事ローテーションのマルコフ連鎖"""
     b0, b1 = -1.40, 0.025
     h1, h2 = 20, 60
     z1, z2 = b0 + b1 * h1, b0 + b1 * h2
@@ -289,25 +293,18 @@ def p09():
     p1 = 1 - PHI[0.90]
     p2 = PHI[0.10]
     inc = p2 - p1
-    # (b) 吸収確率
-    gg, gc, gl = 0.70, 0.20, 0.10
-    cg, cc, cm, cl = 0.05, 0.70, 0.15, 0.10
-    # hG = gg hG + gc hC ;  hC = cg hG + cc hC + cm
-    k = gc / (1 - gg)
-    assert abs(k - 2 / 3) < 1e-12 and abs(cg * k - 1 / 30) < 1e-12 and abs((1 - cc) - cg * k - 4 / 15) < 1e-12  # 解説の分数
-    hC = cm / ((1 - cc) - cg * k)
-    hG = k * hC
+    # (b) 人事ローテーション（周期 2 の連鎖）
+    q = 0.6
+    piS = 1 / 2
+    piP, piD = q * piS, (1 - q) * piS
     return {
         "b0": s(b0, 2), "b1": s(b1, 3), "h1": h1, "h2": h2, "z1": s(z1, 2), "z2": s(z2, 2),
         "phi0": s(PHI[0.0], 4), "phi10": s(PHI[0.10], 4), "phi90": s(PHI[0.90], 4), "phi100": s(PHI[1.00], 4),
         "p1": s(p1, 4), "p2": s(p2, 4), "inc": s(inc, 3), "inc4": s(inc, 4),
         "w_p1": s(p1, 3), "w_sign": s(PHI[0.90] - PHI[0.10], 3), "w_coef": s(PHI[1.00] - PHI[0.0], 3), "w_p2": s(p2, 3),
         "dz": s(b1 * (h2 - h1), 1),
-        "gg": s(gg, 2), "gc": s(gc, 2), "gl": s(gl, 2), "cg": s(cg, 2), "cc": s(cc, 2), "cm": s(cm, 2), "cl": s(cl, 2),
-        "omg": s(1 - gg, 2), "omc": s(1 - cc, 2), "kf": "2/3", 
-        "hC": s(hC, 4), "hG": r(hG, 3), "hG_s": s(hG, 3), "hG4": s(hG, 4),
-        "w_one": s(gc * cm, 3),
-        "w_noret2": s(gc / (gc + gl) * cm / (cm + cl), 3),
+        "q": s(q, 1), "q2": s(1 - q, 1), "piS": s(piS, 1), "piP": s(piP, 1), "piD": s(piD, 1),
+        "w_eq": "1/3",
     }
 
 
@@ -331,12 +328,14 @@ def p10():
 
 
 def p11():
-    """学校調査：PPS抽出のホーヴィッツ＝トンプソン推定量、多重代入のルービンのルール"""
-    X, n, Nsch = 6000, 2, 20
-    xa, ya, xb, yb = 900, 27, 400, 10
-    pia, pib = n * xa / X, n * xb / X
-    ht = ya / pia + yb / pib
-    ratio = (ya + yb) / (xa + xb) * X
+    """学校調査：大規模校を全数・小規模校を単純無作為抽出したときのホーヴィッツ＝トンプソン推定量、多重代入のルービンのルール"""
+    Nsch, Nl, n = 20, 3, 4
+    Ns = Nsch - Nl
+    yl = [27, 31, 22]
+    ys = [6, 9, 4, 5]
+    sl, ss = sum(yl), sum(ys)
+    ht = sl + Ns / n * ss
+    assert abs(ht - 182) < 1e-12
     # (b) Rubin
     est = [8.2, 8.6, 8.0, 8.5, 8.7]
     u = [0.090, 0.094, 0.086, 0.092, 0.088]
@@ -346,10 +345,11 @@ def p11():
     B = sum((e - qbar) ** 2 for e in est) / (m - 1)
     T = W + (1 + 1 / m) * B
     out = {
-        "X": X, "nsamp": n, "Nsch": Nsch, "xa": xa, "ya": ya, "xb": xb, "yb": yb,
-        "pia": s(pia, 1), "pib": "2/15", "pib_d": s(pib, 4), "ta": s(ya / pia, 0), "tb": s(yb / pib, 0),
-        "ht": s(ht, 0), "w_ratio": s(ratio, 0), "w_non": s(ya / (xa / X) + yb / (xb / X), 0),
-        "w_srs": s(Nsch / n * (ya + yb), 0), "w_half": s(ht / 2, 1),
+        "Nsch": Nsch, "Nl": Nl, "Ns": Ns, "nsamp": n, "nall": Nl + n,
+        "yl1": yl[0], "yl2": yl[1], "yl3": yl[2], "ys1": ys[0], "ys2": ys[1], "ys3": ys[2], "ys4": ys[3],
+        "sl": sl, "ss": ss, "pis": f"{n}/{Ns}", "wexp": s(Ns / n, 2), "tsmall": s(Ns / n * ss, 0),
+        "ht": s(ht, 0), "w_small": s(Ns / n * ss, 0), "w_pi20": s(sl + Nsch / n * ss, 0),
+        "w_srs": s(Nsch / (Nl + n) * (sl + ss), 1), "w_all": s(Ns / n * (sl + ss), 0),
         "m": m, "qbar": s(qbar, 1), "W": s(W, 3), "sumdev": s(sum((e - qbar) ** 2 for e in est), 2),
         "B": s(B, 3), "fB": s((1 + 1 / m) * B, 3), "T": s(T, 3), "se": r(sqrt(T), 3), "se_s": s(sqrt(T), 3),
         "se4": s(sqrt(T), 4), "w_wb": s(sqrt(W + B), 3), "w_w": s(sqrt(W), 3),

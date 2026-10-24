@@ -131,22 +131,15 @@ def p04():
     }
 
 def p05():
-    # バートレット検定
-    k, n = 3, 11
-    v = [4.0, 9.0, 14.0]
-    ln = {4.0: 1.3863, 9.0: 2.1972, 14.0: 2.6391}
-    nu = n - 1
-    N = k * n
-    sp2 = sum(nu * x for x in v) / (N - k)
-    assert sp2 in ln
-    M = (N - k) * ln[sp2] - sum(nu * ln[x] for x in v)
-    C = 1 + (1 / (3 * (k - 1))) * (k / nu - 1 / (N - k))
-    B = M / C
-    return {"k": k, "n": n, "nu": nu, "N": N, "dfp": N - k, "v1": s(v[0], 1), "v2": s(v[1], 1), "v3": s(v[2], 1),
-            "l4": s(ln[4.0], 4), "l9": s(ln[9.0], 4), "l14": s(ln[14.0], 4), "sp2": s(sp2, 1),
-            "Mt1": s((N - k) * ln[sp2], 3), "Mt2": s(sum(nu * ln[x] for x in v), 3), "lsum": s(sum(ln[x] for x in v), 4),
-            "M": s(M, 3), "C": s(C, 5), "Cin": s(k / nu - 1 / (N - k), 5), "B": r(B, 2), "B4": s(B, 4),
-            "crit": 5.991, "M2": s(M, 2)}
+    # 2 群の相関係数の差のフィッシャーの z 変換による検定
+    n1, r1, n2, r2 = 103, 0.5, 83, 0.3
+    z1, z2 = 0.5493, 0.3095  # artanh(0.5), artanh(0.3)
+    se = sqrt(1 / (n1 - 3) + 1 / (n2 - 3))
+    z = (z1 - z2) / se
+    return {"n1": n1, "r1": r1, "n2": n2, "r2": r2, "z1": z1, "z2": z2, "dz": s(z1 - z2, 4),
+            "d1": n1 - 3, "d2": n2 - 3, "v": s(1 / (n1 - 3) + 1 / (n2 - 3), 4), "se": s(se, 2),
+            "z": r(z, 2), "z4": s(z, 4), "z_raw": s((r1 - r2) / se, 2),
+            "z_n": s((z1 - z2) / sqrt(1 / n1 + 1 / n2), 2), "z_n1": s((z1 - z2) / sqrt(1 / (n1 - 1) + 1 / (n2 - 1)), 2)}
 
 def p06():
     # (a) 3 用量群の有効率の一様性を G 統計量で
@@ -308,10 +301,22 @@ def p12():
     Pt = (1 - K) * Pp
     K_noq = P0 / (P0 + h)
     K_inv = h / (Pp + h)
-    return {"m0": s(m0, 0), "P0": s(P0, 0), "q": s(q, 0), "h": s(h, 0), "y": s(y, 0), "Pp": s(Pp, 0),
-            "K": s(K, 3), "res": s(y - m0, 0), "mt": r(mt, 1), "mt_s": s(mt, 1), "Pt": s(Pt, 1),
-            "m_noq": s(m0 + K_noq * (y - m0), 1), "m_inv": s(m0 + K_inv * (y - m0), 1), "K_noq": s(K_noq, 4)}
-
+    out = {"m0": s(m0, 0), "P0": s(P0, 0), "q": s(q, 0), "h": s(h, 0), "y": s(y, 0), "Pp": s(Pp, 0),
+           "K": s(K, 3), "res": s(y - m0, 0), "mt": r(mt, 1), "mt_s": s(mt, 1), "Pt": s(Pt, 1),
+           "m_noq": s(m0 + K_noq * (y - m0), 1), "m_inv": s(m0 + K_inv * (y - m0), 1), "K_noq": s(K_noq, 4)}
+    # (b) ダービン・ワトソン比
+    e = [1, 2, 1, -1, -2, -1, 1, -1]
+    num = sum((e[i] - e[i - 1]) ** 2 for i in range(1, len(e)))
+    den = sum(v * v for v in e)
+    dw = num / den
+    r1 = sum(e[i] * e[i - 1] for i in range(1, len(e))) / den
+    out.update({"dnum": num, "dden": den, "dw": r(dw, 2), "dw4": s(dw, 4), "rho": s(1 - dw / 2, 2), "r1": s(r1, 3),
+                "dw_n1": s(num / (len(e) - 1) / (den / len(e)), 2)})
+    for i, v in enumerate(e):
+        out[f"e{i}"] = v
+    for i in range(1, len(e)):
+        out[f"g{i}"] = e[i] - e[i - 1]
+    return out
 
 def p13():
     # (a) ベイズ因子
@@ -326,19 +331,15 @@ def p13():
     out = {"n": n, "x": x, "p0": p0, "comb": comb, "bint": 2772, "pp": s(pp, 10), "m0": s(m0, 6),
            "m1": s(m1, 6), "bf": s(bf, 2), "bf4": s(bf, 4), "bf_inv": s(1 / bf, 2),
            "bf_lr": s(lr_max, 2), "bf_one": s(1 / m0, 2), "bf_nocomb": s(beta_int / m0, 3)}
-    # (b) AIC と AICc
-    N = 20
-    mods = {"A": (3, -40.0), "B": (6, -36.2)}
-    for kname, (kk, ll) in mods.items():
-        aic = -2 * ll + 2 * kk
-        corr = 2 * kk * (kk + 1) / (N - kk - 1)
-        out.update({f"k{kname}": kk, f"l{kname}": s(ll, 1), f"m2{kname}": s(-2 * ll, 1), f"aic{kname}": s(aic, 1),
-                    f"cor{kname}": s(corr, 4), f"aicc{kname}": s(aic + corr, 2), f"den{kname}": N - kk - 1,
-                    f"nm{kname}": 2 * kk * (kk + 1)})
-    aA, aB = -2 * mods["A"][1] + 6, -2 * mods["B"][1] + 12
-    cA, cB = aA + 24 / 16, aB + 84 / 13
-    assert aB < aA and cA < cB
-    out.update({"N": N, "gap": s(cB - cA, 2)})
+    # (b) 正規分布どうしのカルバック・ライブラー情報量
+    mp, sp_, mq, sq = 130.0, 15.0, 125.0, 12.0
+    lg = -0.2231  # log(12/15) = log 0.8
+    kl = lg + (sp_ ** 2 + (mp - mq) ** 2) / (2 * sq ** 2) - 0.5
+    kl_rev = -lg + (sq ** 2 + (mp - mq) ** 2) / (2 * sp_ ** 2) - 0.5
+    out.update({"mp": s(mp, 0), "spp": s(sp_, 0), "mq": s(mq, 0), "sq": s(sq, 0), "lg": lg,
+                "sp2": s(sp_ ** 2, 0), "dm2": s((mp - mq) ** 2, 0), "sq2x2": s(2 * sq ** 2, 0), "frac": s((sp_ ** 2 + (mp - mq) ** 2) / (2 * sq ** 2), 4),
+                "kl": s(kl, 3), "kl4": s(kl, 4), "kl_rev": s(kl_rev, 3), "kl_nohalf": s(kl + 0.5, 3),
+                "kl_nolog": s(kl - lg, 3), "kl_sign": s(kl - 2 * lg, 3)})
     # (c) BH 法
     names = ["頭痛の強さ", "睡眠の質", "不安得点", "疲労感", "食欲", "めまい", "集中力"]
     ps = [0.035, 0.002, 0.21, 0.019, 0.047, 0.009, 0.031]

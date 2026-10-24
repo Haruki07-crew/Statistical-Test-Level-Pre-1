@@ -167,13 +167,23 @@ Js = np.array(Js)
 Zj = (Jv - Js.mean()) / Js.std()
 E.choice("s06p07a", f"${f(Zj, 2)}$", f"割り当て 1680 通りの総当たりで E[J]={Js.mean():.2f}, V[J]={Js.var():.3f}, J={Jv}")
 E.check("s06p07a", (Js >= Jv).mean() < 0.05, f"正確な片側 p 値 {(Js >= Jv).mean():.4f} も 5% 未満")
-# (b) 2^{4-1}：最小二乗で全効果を推定し、D と ABC の列が一致することを確認
+# (b) 2^{4-1}：全 16 個の効果の列を作り、AB と同じ列になる効果（別名）を総当たりで探す。分解能は定義関係の最短の語の長さ
 A_ = np.tile([-1, 1], 4); B_ = np.tile([-1, -1, 1, 1], 2); C_ = np.repeat([-1, 1], 4); D_ = A_ * B_ * C_
 y7 = np.array([52, 61, 58, 55, 63, 57, 54, 68.0])
-Xf = np.column_stack([np.ones(8), A_, B_, C_, D_, A_ * B_, A_ * C_, B_ * C_])
+cols = {"A": A_, "B": B_, "C": C_, "D": D_}
+words = {}
+for k_ in range(1, 5):
+    for w in _it.combinations("ABCD", k_):
+        words["".join(w)] = np.prod([cols[c] for c in w], axis=0)
+alias_AB = sorted(w for w, v in words.items() if w != "AB" and np.array_equal(v, words["AB"]))
+defining = [w for w, v in words.items() if np.all(v == 1)]
+resolution = min(len(w) for w in defining)
+E.check("s06p07b", alias_AB == ["CD"] and defining == ["ABCD"] and resolution == 4,
+        f"総当たり：AB の別名 {alias_AB}、定義関係 {defining}、分解能 {resolution}")
+# 飽和モデル（A,B,C,D,AB,AC,AD）を最小二乗で当てはめ、AB の係数の 2 倍を効果とする
+Xf = np.column_stack([np.ones(8), A_, B_, C_, D_, A_ * B_, A_ * C_, A_ * D_])
 coef7 = np.linalg.lstsq(Xf, y7, rcond=None)[0]
-E.check("s06p07b", np.array_equal(D_, A_ * B_ * C_) and not np.array_equal(D_, A_ * B_) and np.array_equal(A_ * B_, C_ * D_), "D と ABC は同じ列、AB は CD と別名")
-E.choice("s06p07b", f"主効果は${f(2 * coef7[4], 1)}$で、交互作用$ABC$と別名", "回帰係数の 2 倍として D の効果")
+E.choice("s06p07b", f"推定値は${f(2 * coef7[5], 1)}$。ABは交互作用CDと別名の関係にあり、この計画の分解能はIVである", "最小二乗の AB 係数の 2 倍")
 
 # ---- 大問8 2 本のポアソン過程を別々に発生させて重ね合わせる
 Ns = 2_000_000
@@ -193,16 +203,26 @@ Q1 = np.exp(3 - 1.8 * np.log(90) + 0.6 + eps).mean()
 E.num("s06p09a", rnd(0.9 ** -1.8 * np.exp(0.6), 2), "正確なべき乗と指数")
 E.check("s06p09a", abs(Q1 / Q0 - 2.2026) < 0.01 and abs(0.9 ** -1.8 - 1.2088) < 5e-5 and abs(np.exp(0.6) - 1.8221) < 5e-5,
         f"シミュレーションの期待値の比 {Q1 / Q0:.4f} と問題文の値")
-# (b) 実際のデータを作り、第 6 週を除いて当てはめ直す
+# (b) 実際のデータを作り、第 6 週を除いて当てはめ直した残差標準偏差から外部スチューデント化残差を求める。
+#     別法：第 6 週だけ 1 のダミー変数を加えた回帰でのダミーの t 値（外部スチューデント化残差に一致する）
 d6 = np.array([-5, -3, -1, 1, 3, 5.0])
 x6 = 300 + 10 * d6
 y6b = 50 - 0.3 * x6 + np.array([2.0, -1.6, -0.4, -0.4, -1.6, 2.0])
-Xd = np.column_stack([np.ones(6), d6])
+Xd = np.column_stack([np.ones(6), x6])
 bh = np.linalg.lstsq(Xd, y6b, rcond=None)[0]
 res = y6b - Xd @ bh
-b5 = np.linalg.lstsq(Xd[:5], y6b[:5], rcond=None)[0]
 E.check("s06p09b", np.allclose(res, [2.0, -1.6, -0.4, -0.4, -1.6, 2.0]), "作ったデータの残差が問題文と一致")
-E.num("s06p09b", rnd(b5[1] - bh[1], 2), "第 6 週を除いて実際に当てはめ直した傾きの差（d 単位）")
+b5 = np.linalg.lstsq(Xd[:5], y6b[:5], rcond=None)[0]
+s6_ = np.sqrt(((y6b[:5] - Xd[:5] @ b5) ** 2).sum() / 3)
+H = Xd @ np.linalg.inv(Xd.T @ Xd) @ Xd.T
+t6v = res[5] / (s6_ * np.sqrt(1 - H[5, 5]))
+E.num("s06p09b", rnd(t6v, 2), f"実際に当てはめ直した s_(6)={s6_:.4f} とハット行列の h66={H[5, 5]:.4f}")
+Xdum = np.column_stack([Xd, np.eye(6)[:, 5]])
+bd, rss, *_ = np.linalg.lstsq(Xdum, y6b, rcond=None)
+s2d = ((y6b - Xdum @ bd) ** 2).sum() / 3
+tdum = bd[2] / np.sqrt(s2d * np.linalg.inv(Xdum.T @ Xdum)[2, 2])
+E.check("s06p09b", abs(tdum - t6v) < 1e-9, f"ダミー変数の t 値 {tdum:.4f} と一致")
+E.check("s06p09b", abs(stats.t.ppf(0.975, 3) - 3.182) < 5e-4, "t(3) の上側 2.5% 点")
 
 # ---- 大問10 回答者ごとにウェイトを付けた加重平均として計算（ウェイトは名簿の構成比/回答者の構成比）
 nh = np.array([60, 200, 140])
@@ -252,6 +272,8 @@ E.choice("s06p12c", f"${f(dec, 3)}$", "個票から不純度の減少量")
 tab = np.array([[30, 90], [20, 160]])
 cy = stats.chi2_contingency(tab, correction=True)
 E.choice("s06p13a", f"${f(cy.statistic, 2)}$", "scipy chi2_contingency(correction=True)")
+q13 = E.item("s06p13a")["question"]
+E.check("s06p13a", "| 計 | 50 | 250 | 300 |" in q13, "問題文の表の列合計が 50, 250, 300")
 E.check("s06p13a", cy.statistic > 3.841 and abs(stats.chi2_contingency(tab, correction=False).statistic - 10) < 1e-9, "判定と補正なしの値")
 # (b) 幾何分布の無記憶性：scipy geom の生存関数で条件付き確率、シミュレーションでも
 gq = stats.geom(0.2)

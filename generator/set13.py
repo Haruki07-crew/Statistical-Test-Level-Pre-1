@@ -124,6 +124,29 @@ def p04():
         "p": p, "q": s(1 - p, 2), "p2": s(p ** 2, 4), "ev": s(ev, 0), "var1": s((1 - p) / p ** 2, 4),
         "var": s(var, 2), "sd": r(sqrt(var), 1), "sd4": s(sqrt(var), 4),
         "w_bin": s(sqrt(ev * p * (1 - p)), 1), "w_nop": s(sqrt(r_ * (1 - p) / p), 1), "w_noq": s(sqrt(r_ / p ** 2), 1),
+        **p04c(),
+    }
+
+
+def p04c():
+    """出口調査の当確判定ルールの第1種・第2種の過誤"""
+    m, c, t0, t1 = 400, 0.55, 0.50, 0.58
+    phi = {1.20: 0.8849, 1.22: 0.8888, 2.00: 0.9772}
+    se0 = sqrt(t0 * (1 - t0) / m)
+    z0 = r((c - t0) / se0, 2)
+    alpha = 1 - phi[z0]
+    v1 = t1 * (1 - t1) / m
+    se1 = r(sqrt(v1), 6)
+    z1raw = (c - t1) / se1
+    z1 = r(abs(z1raw), 2)
+    beta = 1 - phi[z1]
+    zw = r(abs(c - t1) / se0, 2)
+    return {
+        "m": m, "cc": s(c, 2), "th0": s(t0, 2), "th1": s(t1, 2), "ph120": s(phi[1.20], 4), "ph122": s(phi[1.22], 4),
+        "ph200": s(phi[2.00], 4), "se0": s(se0, 3), "z0": s(z0, 2), "alpha": s(alpha, 4), "v1": s(v1, 6),
+        "se1": s(se1, 6), "z1raw": s(z1raw, 4), "z1": s(z1, 2), "beta": s(beta, 4), "power": s(phi[z1], 4),
+        "a2": s(2 * alpha, 4), "bw": s(1 - phi[zw], 4), "a_rev": s(phi[z0], 4), "dz": s(c - t1, 2), "dc": s(c - t0, 2),
+        "t1q": s(1 - t1, 2),
     }
 
 
@@ -188,74 +211,45 @@ def p07():
 
 def p08():
     """市町村の合計特殊出生率の回帰"""
-    # (a) 交互作用
     b1, b3 = 0.050, -0.030
     v1, v3, c13 = 0.00016, 0.00036, -0.00016
     slope = b1 + b3
     var = v1 + v3 + 2 * c13
     se = sqrt(var)
-    # (b) DFBETAS（単回帰）
-    n, dx, e, Sxx, s_del = 40, 2.5, 0.18, 50.0, 0.10
-    h = 1 / n + dx ** 2 / Sxx
-    dfb = dx * e / ((1 - h) * Sxx)
-    scale = r(s_del / sqrt(Sxx), 6)
-    dfbs = dfb / scale
-    # (c) AIC と AICc
-    ll = [12.0, 14.4, 16.3]
-    K = [3, 5, 7]
-    aic = [-2 * l + 2 * k for l, k in zip(ll, K)]
-    corr = [2 * k * (k + 1) / (n - k - 1) for k in K]
-    aicc = [a_ + c_ for a_, c_ in zip(aic, corr)]
-    assert min(range(3), key=lambda i: aic[i]) == 1 and min(range(3), key=lambda i: aicc[i]) == 0
-    d = {
+    n = 40
+    q = 0.9875
+    return {
         "b1": s(b1, 3), "b3": s(b3, 3), "v1": s(v1, 5), "v3": s(v3, 5), "c13": s(c13, 5), "c13x2": s(2 * c13, 5),
-        "slope": s(slope, 3), "var": s(var, 5), "se": s(se, 4), "se6": s(se, 6),
+        "slope": s(slope, 3), "var": s(var, 5), "se": s(se, 4), "se6": s(se, 6), "tval": s(slope / se, 2),
         "w_nocov": s(sqrt(v1 + v3), 4), "w_plus": s(sqrt(v1 + v3 - 2 * c13), 4), "w_b3": s(sqrt(v3), 4),
         "se1": s(sqrt(v1), 4),
-        "n": n, "dx": dx, "e": e, "Sxx": s(Sxx, 0), "s_del": s(s_del, 2), "dx2": s(dx ** 2, 2),
-        "h": s(h, 3), "omh": s(1 - h, 3), "num": s(dx * e, 2), "den": s((1 - h) * Sxx, 1),
-        "dfb": s(dfb, 6), "rtS": s(sqrt(Sxx), 4), "scale": s(scale, 6), "dfbs": r(dfbs, 2), "dfbs4": s(dfbs, 4),
-        "cut": s(2 / sqrt(n), 3), "rtn": s(sqrt(n), 4),
-        "w_h": s(dx * e / ((1 - 0.2) * Sxx) / scale, 2),
+        "n": n, "pp": s((n - 0.5) / n, 4), "zq": "2.241", "rmax": "3.35", "rmin": "-1.62",
     }
-    for i in range(3):
-        d[f"l{i+1}"] = s(ll[i], 1)
-        d[f"K{i+1}"] = K[i]
-        d[f"aic{i+1}"] = s(aic[i], 1)
-        d[f"cr{i+1}"] = s(corr[i], 4)
-        d[f"aicc{i+1}"] = s(aicc[i], 4)
-        d[f"nk{i+1}"] = n - K[i] - 1
-        d[f"kk{i+1}"] = 2 * K[i] * (K[i] + 1)
-    return d
 
 
 def p09():
-    """投票参加のロジスティック回帰と k 近傍法"""
+    """投票参加のロジスティック回帰とナイーブベイズ"""
     d1, d2 = 1012.6, 1001.9
     lr = d1 - d2
-    tr = {"P1": (30, 2, "棄権"), "P2": (35, 10, "投票"), "P3": (50, 4, "棄権"),
-          "P4": (62, 20, "投票"), "P5": (45, 15, "投票"), "P6": (28, 8, "棄権")}
-    new = (40, 9)
-    sa, sy = 15, 5
-    dz = {k: ((v[0] - new[0]) / sa) ** 2 + ((v[1] - new[1]) / sy) ** 2 for k, v in tr.items()}
-    draw = {k: (v[0] - new[0]) ** 2 + (v[1] - new[1]) ** 2 for k, v in tr.items()}
-    nz = sorted(dz, key=dz.get)[:3]
-    nr = sorted(draw, key=draw.get)[:3]
-    assert nz == ["P2", "P6", "P3"] and nr == ["P2", "P5", "P3"], (nz, nr)
-    out = {
+    prior = 0.6
+    pj = {"v": (0.6, 0.8, 0.4), "a": (0.2, 0.3, 0.25)}   # P(加入|・), P(前回投票|・), P(60歳以上|・)
+    fv = (1 - pj["v"][0]) * pj["v"][1] * pj["v"][2]
+    fa = (1 - pj["a"][0]) * pj["a"][1] * pj["a"][2]
+    sv, sa = prior * fv, (1 - prior) * fa
+    post = sv / (sv + sa)
+    wy_v = prior * pj["v"][0] * pj["v"][1] * pj["v"][2]
+    wy_a = (1 - prior) * pj["a"][0] * pj["a"][1] * pj["a"][2]
+    return {
         "d1": s(d1, 1), "d2": s(d2, 1), "lr": s(lr, 1), "lr_half": s(lr / 2, 2), "lr_dbl": s(2 * lr, 1),
         "c3_05": "7.815", "c3_01": "11.345", "c2_05": "5.991", "c2_01": "9.210",
-        "sa": sa, "sy": sy, "na": new[0], "ny": new[1],
+        "pr": s(prior, 1), "pr0": s(1 - prior, 1),
+        "v1": s(pj["v"][0], 2), "v2": s(pj["v"][1], 2), "v3": s(pj["v"][2], 2),
+        "a1": s(pj["a"][0], 2), "a2": s(pj["a"][1], 2), "a3": s(pj["a"][2], 2),
+        "nv1": s(1 - pj["v"][0], 2), "na1": s(1 - pj["a"][0], 2),
+        "sv": s(sv, 4), "sa": s(sa, 4), "ssum": s(sv + sa, 4), "post": s(post, 3), "post5": s(post, 5),
+        "w_yes": s(wy_v / (wy_v + wy_a), 3), "w_noprior": s(fv / (fv + fa), 3), "w_score": s(sv, 3),
+        "w_odds": s(sv / sa, 3),
     }
-    for k, v in tr.items():
-        out[f"{k}a"] = v[0]
-        out[f"{k}y"] = v[1]
-        out[f"{k}l"] = v[2]
-        out[f"{k}z"] = s(dz[k], 3)
-        out[f"{k}r"] = int(draw[k])
-        out[f"{k}da"] = s((v[0] - new[0]) / sa, 3)
-        out[f"{k}dy"] = s((v[1] - new[1]) / sy, 1)
-    return out
 
 
 def p10():
@@ -304,22 +298,28 @@ def p10():
 
 
 def p11():
-    """二段抽出"""
-    N, n = 30, 3
-    M = [12000, 5000, 8000]
-    m = 100
-    p = [0.12, 0.20, 0.15]
-    My = [a * b for a, b in zip(M, p)]
-    tot = N / n * sum(My)
-    return {
-        "N": N, "nn": n, "m": m, "M1": "12{,}000", "M2": "5{,}000", "M3": "8{,}000",
-        "p1": s(p[0], 2), "p2": s(p[1], 2), "p3": s(p[2], 2), "k1": int(m * p[0]), "k2": int(m * p[1]), "k3": int(m * p[2]),
-        "My1": s(My[0], 0), "My2": s(My[1], 0), "My3": s(My[2], 0), "sMy": s(sum(My), 0), "Nn": int(N / n),
-        "tot": s(tot, 0), "tot_c": "36{,}400",
-        "w_nofac": "3{,}640", "w_sample": s(N / n * sum(m * x for x in p), 0),
-        "w_mean": "39{,}167", "w_non": "109{,}200",
-        "pm": s(sum(p) / 3, 5), "Mm": s(sum(M) / 3, 1),
-    }
+    """系統抽出"""
+    y = [2, 0, 1, 3, 2, 1, 1, 3, 3, 0, 2, 4]
+    N, k = 12, 4
+    n = N // k
+    means = [sum(y[i::k]) / n for i in range(k)]
+    Ybar = sum(y) / N
+    vsys = sum((m_ - Ybar) ** 2 for m_ in means) / k
+    S2 = sum((v - Ybar) ** 2 for v in y) / (N - 1)
+    vsrs = (1 - n / N) * S2 / n
+    d = {f"y{i+1}": v for i, v in enumerate(y)}
+    d.update({
+        "N": N, "k": k, "nn": n, "Ysum": sum(y), "Ybar": s(Ybar, 4),
+        "vsys": s(vsys, 2), "vsys4": s(vsys, 4), "vsrs": s(vsrs, 2), "S2": s(S2, 4),
+        "w_k1": s(sum((m_ - Ybar) ** 2 for m_ in means) / (k - 1), 2), "w_nofpc": s(S2 / n, 2),
+        "w_sum": s(sum((m_ - Ybar) ** 2 for m_ in means), 2),
+    })
+    for i, m_ in enumerate(means):
+        d[f"m{i+1}"] = s(m_, 4)
+        d[f"s{i+1}"] = sum(y[i::k])
+        d[f"dv{i+1}"] = s(m_ - Ybar, 4)
+        d[f"dv2_{i+1}"] = s((m_ - Ybar) ** 2, 4)
+    return d
 
 
 def p12():
@@ -339,22 +339,24 @@ def p12():
 
 
 def p13():
-    """失業率のドリフト付きランダムウォーク"""
-    mu, sig, uT, h = -0.02, 0.10, 2.60, 3
-    rt3 = 1.7321
-    fc = uT + h * mu
-    half = 1.96 * sig * rt3
-    up = fc + half
-    return {
-        "mu": s(mu, 2), "sig": s(sig, 2), "uT": s(uT, 2), "h": h, "rt3": s(rt3, 4), "fc": s(fc, 2),
-        "sdh": s(sig * rt3, 5), "half": s(half, 5), "up": r(up, 2), "up5": s(up, 5),
-        "w_h": s(fc + 1.96 * sig * h, 2), "w_1": s(fc + 1.96 * sig, 2), "w_var": s(fc + 1.96 * sig ** 2 * h, 2),
-        "var_h": s(h * sig ** 2, 2),
-    }
+    """失業率の AR(1) の残差のリュング・ボックス検定"""
+    n, rs = 60, [0.15, -0.20, 0.18, 0.10]
+    terms = [r(x ** 2 / (n - k), 8) for k, x in enumerate(rs, start=1)]
+    tot = sum(terms)
+    Q = n * (n + 2) * tot
+    bp = n * sum(x ** 2 for x in rs)
+    d = {"n": n, "nn2": n * (n + 2), "sum8": s(tot, 8), "Q": r(Q, 2), "Q4": s(Q, 4), "bp": s(bp, 2),
+         "c3": "7.815", "c4": "9.488"}
+    for k, (x, tm) in enumerate(zip(rs, terms), start=1):
+        d[f"r{k}"] = s(x, 2)
+        d[f"rr{k}"] = s(x ** 2, 4)
+        d[f"tm{k}"] = s(tm, 8)
+        d[f"nk{k}"] = n - k
+    return d
 
 
 def p14():
-    """町長選挙：有限母集団の信頼区間・確率化検定・ベイズ因子"""
+    """町長選挙：有限母集団の信頼区間・経験ベイズ・KL 情報量"""
     N, n, x = 5000, 800, 344
     ph = x / n
     pq = ph * (1 - ph)
@@ -363,23 +365,36 @@ def p14():
     se = r(sqrt(v), 6)
     half = 1.96 * se
     se0 = r(sqrt(pq / n), 6)
-    # (b) 確率化検定
-    tail15, p14_ = 0.0207, 0.0370
-    gam = (0.05 - tail15) / p14_
-    # (c) ベイズ因子
-    m1 = 1 / 21
-    bf01 = p14_ / m1
-    bf10 = 1 / bf01
-    lr_mle = (0.7 ** 14 * 0.3 ** 6) / 0.5 ** 20
+    # (b) 経験ベイズ
+    ys = [0.42, 0.50, 0.38, 0.55, 0.40]
+    s2 = 0.0025
+    yb = sum(ys) / 5
+    ss = sum((y - yb) ** 2 for y in ys)
+    v4 = ss / 4
+    tau2 = v4 - s2
+    B = s2 / (s2 + tau2)
+    est = yb + (1 - B) * (ys[3] - yb)
+    v5 = ss / 5
+    B5 = s2 / v5
+    # (c) KL
+    p = [0.5, 0.3, 0.2]
+    q = [0.4, 0.4, 0.2]
+    ln125, ln075 = 0.22314, -0.28768
+    kl = p[0] * ln125 + p[1] * ln075
+    klr = q[0] * (-ln125 + 0.0) + q[1] * (-ln075)   # Σ q ln(q/p)：ln(0.8)=−ln1.25, ln(4/3)=−ln0.75
     return {
         "N": "5{,}000", "Nn": N, "n": n, "x": x, "ph": s(ph, 2), "pq": s(pq, 4), "fpcN": N - n, "fpcD": N - 1,
         "fpc": s(fpc, 6), "v0": s(pq / n, 9), "v": s(v, 9), "se": s(se, 6), "half": s(half, 4), "half6": s(half, 6),
         "w_nofpc": s(1.96 * se0, 4), "w_fpc2": s(1.96 * se0 * fpc, 4), "w_z": s(1.645 * se, 4), "w_se": s(se, 4),
         "se0": s(se0, 6),
-        "n20": 20, "tail15": s(tail15, 4), "p14": s(p14_, 4), "num": s(0.05 - tail15, 4), "gam": r(gam, 2), "gam4": s(gam, 4),
-        "tail14": s(tail15 + p14_, 4),
-        "m1": s(m1, 6), "bf01": s(bf01, 3), "bf10": s(bf10, 2), "bf10_4": s(bf10, 4), "w_mle": s(lr_mle, 2),
-        "w_post": s(bf10 / (1 + bf10), 2), "w_p": s(tail15 + p14_, 2), "x14": 14, "x6": 6,
+        "y1": s(ys[0], 2), "y2": s(ys[1], 2), "y3": s(ys[2], 2), "y4": s(ys[3], 2), "y5": s(ys[4], 2),
+        "s2": s(s2, 4), "sd": s(sqrt(s2), 2), "yb": s(yb, 2), "ss": s(ss, 4), "v4": s(v4, 4), "tau2": s(tau2, 4),
+        "B": s(B, 5), "omB": s(1 - B, 5), "dev4": s(ys[3] - yb, 2), "est": r(est, 3), "est5": s(est, 5),
+        "w_v5": s(yb + (1 - B5) * (ys[3] - yb), 3), "w_swap": s(yb + B * (ys[3] - yb), 3), "w_noshr": s(ys[3], 3),
+        "B5": s(B5, 5), "v5": s(v5, 5),
+        "p1": s(p[0], 1), "p2": s(p[1], 1), "p3": s(p[2], 1), "q1": s(q[0], 1), "q2": s(q[1], 1), "q3": s(q[2], 1),
+        "ln125": s(ln125, 5), "ln075": s(ln075, 5), "t1": s(p[0] * ln125, 6), "t2": s(p[1] * ln075, 6),
+        "kl": r(kl, 4), "kl6": s(kl, 6), "klr": s(klr, 4), "w_nolog": s(sum(a * (a / b) for a, b in zip(p, q)) - 1, 4),
     }
 
 

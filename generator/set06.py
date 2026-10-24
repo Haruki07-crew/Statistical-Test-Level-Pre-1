@@ -162,10 +162,14 @@ def p07():
     runs = [(a, b, cc) for cc in (-1, 1) for b in (-1, 1) for a in (-1, 1)]
     y = [52, 61, 58, 55, 63, 57, 54, 68]
     D = [a * b * cc for a, b, cc in runs]
-    plus = sum(v for v, d in zip(y, D) if d > 0)
-    minus = sum(v for v, d in zip(y, D) if d < 0)
-    eff = (plus - minus) / 4
-    ce = dict(ok=s(eff, 1), half=s(eff / 2, 1), tot=s(plus - minus, 1))
+    # 交互作用 AB の列（A と B の符号の積）。定義関係 I=ABCD より CD と同じ列になる
+    AB = [a * b for a, b, _ in runs]
+    CD = [cc * d for (_, _, cc), d in zip(runs, D)]
+    assert AB == CD
+    abp = sum(v for v, w in zip(y, AB) if w > 0)
+    abm = sum(v for v, w in zip(y, AB) if w < 0)
+    eff = (abp - abm) / 4
+    ce = dict(ok=s(eff, 1), half=s(eff / 2, 1), tot=s(abp - abm, 1))
     distinct(*ce.values())
     return {
         **{f"{k}{i + 1}": v[i] for k, v in g.items() for i in range(3)}, "uLM": uLM, "uLH": uLH, "uMH": uMH, "J": J,
@@ -175,7 +179,8 @@ def p07():
         **{f"y{i + 1}": y[i] for i in range(8)}, **{f"A{i + 1}": "+" if runs[i][0] > 0 else "−" for i in range(8)},
         **{f"B{i + 1}": "+" if runs[i][1] > 0 else "−" for i in range(8)}, **{f"C{i + 1}": "+" if runs[i][2] > 0 else "−" for i in range(8)},
         **{f"D{i + 1}": "+" if D[i] > 0 else "−" for i in range(8)},
-        "Dp": plus, "Dm": minus, "Ddiff": plus - minus, **{"f_" + k: v for k, v in ce.items()},
+        **{f"AB{i + 1}": "+" if AB[i] > 0 else "−" for i in range(8)},
+        "ABp": abp, "ABm": abm, "ABdiff": abp - abm, **{"f_" + k: v for k, v in ce.items()},
     }
 
 
@@ -197,28 +202,29 @@ def p09():
     b1, b2 = -1.8, 0.6
     pw, e6 = 1.2088, 1.8221   # 0.9^{-1.8}, e^{0.6}
     ratio = pw * e6
-    # (b) HC0 標準誤差
+    # (b) 第6週の外部スチューデント化残差（削除残差の標準化）
     d = [-5, -3, -1, 1, 3, 5]
     e = [2.0, -1.6, -0.4, -0.4, -1.6, 2.0]
     assert abs(sum(e)) < 1e-12 and abs(sum(a * b for a, b in zip(d, e))) < 1e-12
+    n = len(d)
     Sxx = sum(a * a for a in d)
-    de2 = [a * a * b * b for a, b in zip(d, e)]
-    hc0 = sqrt(sum(de2)) / Sxx
-    se2 = sum(b * b for b in e) / (len(d) - 2)
-    us = sqrt(se2 / Sxx)
-    h6 = 1 / len(d) + d[5] ** 2 / Sxx
-    dfb = -d[5] * e[5] / (Sxx * (1 - h6))
-    cd = dict(ok=s(dfb, 2), noh=s(-d[5] * e[5] / Sxx, 2), sign=s(-dfb, 2), h=s(-d[5] * e[5] / (Sxx * h6), 2))
-    distinct(*cd.values())
-    return {"h6": s(h6, 4), "h6n": s(1 - h6, 4), "dfb": r(dfb, 2), "dfb4": s(dfb, 4), **{"db_" + k: v for k, v in cd.items()},
-            "de6": s(d[5] * e[5], 1), "Sh": s(Sxx * (1 - h6), 4),
-            "b1": b1, "b2": b2, "pw": pw, "ex6": e6, "ratio": r(ratio, 2), "ratio4": s(ratio, 4),
+    sse = sum(b * b for b in e)
+    h6 = 1 / n + d[5] ** 2 / Sxx
+    dl = e[5] ** 2 / (1 - h6)
+    sse6 = sse - dl
+    s6sq = sse6 / (n - 3)
+    s2 = sse / (n - 2)
+    t6 = e[5] / (sqrt(s6sq) * sqrt(1 - h6))
+    ct = dict(ok=s(t6, 2), internal=s(e[5] / (sqrt(s2) * sqrt(1 - h6)), 2), noh=s(e[5] / sqrt(s6sq), 2),
+              df=s(e[5] / (sqrt(sse6 / (n - 2)) * sqrt(1 - h6)), 2), dele=s(e[5] / (1 - h6), 2))
+    distinct(*ct.values())
+    return {"b1": b1, "b2": b2, "pw": pw, "ex6": e6, "ratio": r(ratio, 2), "ratio4": s(ratio, 4),
             "add": s(1 + 0.18 + 0.6, 2), "addm": s(pw + e6 - 1, 2), "lin": s(1.18 * 1.6, 2),
             **{f"d{i + 1}": d[i] for i in range(6)}, **{f"e{i + 1}": s(e[i], 1) for i in range(6)},
-            **{f"q{i + 1}": s(de2[i], 2) for i in range(6)}, "Sxx": Sxx, "Sxx2": Sxx ** 2,
-            "sq": s(sum(de2), 2), "vhc": s(sum(de2) / Sxx ** 2, 6), "hc0": r(hc0, 3), "hc04": s(hc0, 4),
-            "se2": s(sum(b * b for b in e), 2), "s2": s(se2, 2), "us": s(us, 3), "us4": s(us, 4),
-            "hc1": s(hc0 * sqrt(len(d) / (len(d) - 2)), 3), "nosq": s(sqrt(sum(de2) / Sxx), 3)}
+            "Sxx": Sxx, "sse": s(sse, 2), "h6": s(h6, 4), "h6n": s(1 - h6, 4), "e6sq": s(e[5] ** 2, 1),
+            "dl": s(dl, 2), "sse6": s(sse6, 2), "s6sq": s(s6sq, 2), "s6": s(sqrt(s6sq), 4), "sqh": s(sqrt(1 - h6), 4),
+            "den": s(sqrt(s6sq) * sqrt(1 - h6), 4), "s2": s(s2, 2), "t6": r(t6, 2), "t6_4": s(t6, 4),
+            "t3": 3.182, **{"t_" + k: v for k, v in ct.items()}}
 
 
 def p10():
@@ -278,7 +284,7 @@ def p12():
     return {
         **{f"sv{i + 1}": sv[i] for i in range(4)}, "tot": tot, "top2": sv[0] ** 2 + sv[1] ** 2, **{"sv_" + k: v for k, v in c.items()},
         "w1": w1, "w2": s(1 - w1, 1), "m1": m1, "m2": m2, "x0": x0, "z1": s((x0 - m1) / sd, 1), "z2": s((m2 - x0) / sd, 1),
-        "ph1": ph1, "ph2": ph2, "num1": s(num1, 5), "num2": s(num2, 4), "den": s(num1 + num2, 5), **{"h_" + k: v for k, v in cc.items()},
+        "ph1": s(ph1, 4), "ph2": s(ph2, 4), "num1": s(num1, 5), "num2": s(num2, 4), "den": s(num1 + num2, 5), **{"h_" + k: v for k, v in cc.items()},
         "N": N, "P": P, "nl": nl, "pl": pl, "nr": nr, "pr": pr_, "gp": s(gp, 2), "gl": s(gl, 2), "gr": s(gr, 4),
         "glw": s(nl / N * gl, 2), "grw": s(nr / N * gr, 4), "after4": s(after, 4), "dec4": s(gp - after, 4),
         "pfr": s(pl / nl, 1), "prr": s(pr_ / nr, 4), "mis_p": s(mis_p, 2), "mis_a": s(mis_a, 2),
@@ -298,10 +304,10 @@ def p13():
     cy = dict(ok=s(chiY, 2), no=s(chi, 2), full=s(n * (adbc - n) ** 2 / den, 2), z=s(sqrt(chiY), 2), phi=s(sqrt(chi / n), 2))
     distinct(*cy.values())
     # (b) 幾何分布の無記憶性：5通連続で購入しなかった会員があと3通以内に購入する確率
-    pp, k0, k1 = 0.2, 5, 3
-    ok = 1 - (1 - pp) ** k1
-    cf = dict(ok=s(ok, 3), unc=s(1 - (1 - pp) ** (k0 + k1), 3), joint=s((1 - pp) ** k0 - (1 - pp) ** (k0 + k1), 3),
-              add=s(pp * k1, 3), no=s((1 - pp) ** k1, 3))
+    pp, k0, g1 = 0.2, 5, 3   # 表の列合計 k1 と名前がぶつからないよう g1 とする
+    ok = 1 - (1 - pp) ** g1
+    cf = dict(ok=s(ok, 3), unc=s(1 - (1 - pp) ** (k0 + g1), 3), joint=s((1 - pp) ** k0 - (1 - pp) ** (k0 + g1), 3),
+              add=s(pp * g1, 3), no=s((1 - pp) ** g1, 3))
     distinct(*cf.values())
     # (c) 合流点で条件づけたときの偏相関：X,Y 独立 N(0,1)、C = X + Y + e、e~N(0,1)
     vx, vy, ve = 1, 1, 1
@@ -314,8 +320,8 @@ def p13():
     return {"a": a, "b": b, "c": c_, "d": d, "n": n, "r1": r1, "r2": r2, "k1": k1, "k2": k2, "ad": a * d, "bc": b * c_,
             "adbc": adbc, "half": n // 2, "adj": s(adbc - n / 2, 0), "den": den, "adj2": s((adbc - n / 2) ** 2, 0),
             **{"y_" + k: v for k, v in cy.items()},
-            "pp": pp, "k0": k0, "k0p": k0 + 1, "k1": k1, "k01": k0 + k1, "q": s(1 - pp, 1), "q3": s((1 - pp) ** k1, 3), "q5": s((1 - pp) ** k0, 5),
-            "q8": s((1 - pp) ** (k0 + k1), 8), **{"f_" + k: v for k, v in cf.items()},
+            "pp": pp, "k0": k0, "k0p": k0 + 1, "g1": g1, "k01": k0 + g1, "q": s(1 - pp, 1), "q3": s((1 - pp) ** g1, 3), "q5": s((1 - pp) ** k0, 5),
+            "q8": s((1 - pp) ** (k0 + g1), 8), **{"f_" + k: v for k, v in cf.items()},
             "vc": vc, "cxyc": s(cxy_c, 4), "vxc": s(vx_c, 4), **{"k_" + k: v for k, v in ck.items()}}
 
 

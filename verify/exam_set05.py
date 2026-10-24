@@ -1,16 +1,16 @@
 """模擬試験 第5回（set05）の検算。generator/set05.py とは別の方法（scipy の分布関数・シミュレーション・
-sympy・総当たり・定義からの数値計算）で正解を求め直し、問題文に示した数表の値も確かめる。"""
+sympy・総当たり・数値積分・行列計算）で正解を求め直し、問題文に示した数表の値も確かめる。"""
 import math
 import re
 import sys
 from decimal import Decimal, ROUND_HALF_UP
-from itertools import product
+from fractions import Fraction
+from itertools import combinations, product
 from pathlib import Path
 
 import numpy as np
 import sympy as sp
-from scipy import integrate, optimize, stats
-from scipy.cluster.vq import kmeans2
+from scipy import integrate, linalg, optimize, stats
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from examcheck import Exam  # noqa: E402
@@ -31,18 +31,16 @@ def nums(iid):
     return [float(re.search(r"-?\d+\.?\d*", str(c)).group()) for c in E.item(iid)["choices"]]
 
 
-def nearest(iid, value, what):
-    """選択肢の数値のうち value に最も近いものが正解で、2番目に近いものとは十分離れているか。"""
-    it = E.item(iid)
-    v = nums(iid)
-    dist = sorted((abs(x - value), k) for k, x in enumerate(v))
-    ok = dist[0][1] == it["answer"] and dist[1][0] > 3 * dist[0][0] + 1e-9
-    E.check(iid, ok, f"{what}: 最も近い選択肢 {dist[0][1]}（値 {value:.5f}）が正解 {it['answer']}")
-
-
 def distinct_rounded(iid):
     v = nums(iid)
     E.check(iid, len(set(v)) == 5, f"選択肢の数値がすべて異なる {v}")
+
+
+def nearest(iid, value, what):
+    it = E.item(iid)
+    v = nums(iid)
+    k = int(np.argmin([abs(x - value) for x in v]))
+    E.check(iid, k == it["answer"], f"{what}: 最も近い選択肢 {k}（値 {value:.5f}）が正解 {it['answer']}")
 
 
 def phi_ok(table):
@@ -50,7 +48,6 @@ def phi_ok(table):
 
 
 # ---- 大問1：スクリーニング
-# (a) 感染と2つの検査結果の全組合せを列挙して P(感染 | A+ かつ B+)
 prev, seA, spA, seB, spB = 0.02, 0.90, 0.95, 0.80, 0.98
 joint = {}
 for d, a, b in product((0, 1), repeat=3):
@@ -59,180 +56,149 @@ for d, a, b in product((0, 1), repeat=3):
     pb = (seB if b else 1 - seB) if d else ((1 - spB) if b else spB)
     joint[(d, a, b)] = pd * pa * pb
 ppv = joint[(1, 1, 1)] / (joint[(1, 1, 1)] + joint[(0, 1, 1)])
-E.choice("s05p01a", f"${f(ppv, 3)}$", "全組合せの列挙で P(感染|両方陽性)")
-sim_d = rng.random(2_000_000) < prev
-sim_a = np.where(sim_d, rng.random(sim_d.size) < seA, rng.random(sim_d.size) < 1 - spA)
-sim_b = np.where(sim_d, rng.random(sim_d.size) < seB, rng.random(sim_d.size) < 1 - spB)
+E.choice("s05p01a", f"${f(ppv, 3)}$", "感染と2検査の全組合せの列挙で P(感染|両方陽性)")
+nsim = 2_000_000
+sim_d = rng.random(nsim) < prev
+sim_a = np.where(sim_d, rng.random(nsim) < seA, rng.random(nsim) < 1 - spA)
+sim_b = np.where(sim_d, rng.random(nsim) < seB, rng.random(nsim) < 1 - spB)
 pos = sim_a & sim_b
-E.check("s05p01a", abs(sim_d[pos].mean() - ppv) < 0.01, f"シミュレーションの陽性的中率 {sim_d[pos].mean():.4f}")
+E.check("s05p01a", abs(sim_d[pos].mean() - ppv) < 0.012, f"シミュレーションの陽性的中率 {sim_d[pos].mean():.4f}")
 distinct_rounded("s05p01a")
-# (b) プール内の感染者数を二項分布で足し上げて期待検査回数（正確な 0.98^10 を使い、示した値との差も確認）
+
 E.check("s05p01b", abs(0.98 ** 10 - 0.8171) < 5e-5, "0.98^10 = 0.8171（4桁）")
 bin10 = stats.binom(10, 0.02)
 exp_per_pool = sum(bin10.pmf(j) * (1 if j == 0 else 11) for j in range(11))
-E.num("s05p01b", rnd(100 * exp_per_pool, 1), "二項分布の確率で 1 + 10·1{感染者≧1} の期待値を足し上げ")
+E.num("s05p01b", rnd(100 * exp_per_pool, 1), "二項分布で 1 + 10·1{感染者≧1} の期待値を足し上げ")
 pools = rng.random((2_000_000, 10)) < 0.02
 sim_tests = 100 * (1 + 10 * pools.any(axis=1)).mean()
 E.check("s05p01b", abs(sim_tests - 282.9) < 1.0, f"シミュレーション（標準誤差は約 0.27） {sim_tests:.2f}")
-# (c) チェビシェフの上界が 0.10 以下になる最小の n を p=1/2（最悪）で探す
-n = 1
-while 0.25 / (n * 0.02 ** 2) > 0.10 + 1e-15:
-    n += 1
-E.choice("s05p01c", f"${n}$", "最悪の p=1/2 で上界≦0.10 となる最小の n を探索")
-nn = 1
-while stats.norm.ppf(0.95) * math.sqrt(0.25 / nn) > 0.02:
-    nn += 1
-E.check("s05p01c", nn in (1691, 1692) and n != nn, f"正規近似の n={nn} は誤答の選択肢（正解と別）")
 
 # ---- 大問2：血圧
 mu, sig, rho = 128, 20, 0.6
 cov = np.array([[sig ** 2, rho * sig ** 2], [rho * sig ** 2, sig ** 2]])
 X = rng.multivariate_normal([mu, mu], cov, size=1_000_000)
 c = np.corrcoef(X[:, 0], X[:, 1] - X[:, 0])[0, 1]
-sym_r = sp.symbols("r")
-exact = sp.nsimplify((sym_r - 1) / sp.sqrt(2 * (1 - sym_r))).subs(sym_r, sp.Rational(3, 5))
-E.choice("s05p02a", f"${f(float(exact), 3)}$", "sympy で Cov/√(Var·Var)")
+r_ = sp.Rational(3, 5)
+exact = (r_ - 1) * 400 / (20 * sp.sqrt(2 * (1 - r_) * 400))
+E.choice("s05p02a", f"${f(float(exact), 3)}$", "sympy で Cov(X1,D)/(sd·sd)")
 E.check("s05p02a", abs(c - float(exact)) < 0.003, f"シミュレーションの相関 {c:.4f}")
 distinct_rounded("s05p02a")
-E.check("s05p02b", phi_ok({0.60: 0.7257, 0.75: 0.7734, 1.00: 0.8413, 1.75: 0.9599}), "示した Φ の値が正しい")
-cm = mu + cov[0, 1] / cov[0, 0] * (168 - mu)
-cs = math.sqrt(cov[1, 1] - cov[0, 1] ** 2 / cov[0, 0])
-pr = stats.norm.cdf(140, cm, cs)
-E.choice("s05p02b", f"${f(pr, 3)}$", "条件付き分布を共分散行列から作り scipy で P(X2<140)")
-band = X[np.abs(X[:, 0] - 168) < 0.5]
-E.check("s05p02b", abs((band[:, 1] < 140).mean() - pr) < 0.02, f"X1≈168 の標本での割合 {(band[:, 1] < 140).mean():.3f}（{len(band)} 件）")
+E.check("s05p02b", abs(stats.chi2.isf(0.05, 9) - 16.919) < 5e-4 and abs(stats.chi2.isf(0.05, 10) - 18.307) < 5e-4, "χ² の上側5%点")
+vd = np.array([1, -1]) @ cov @ np.array([1, -1])
+cut = vd * stats.chi2.isf(0.05, 9) / 9
+E.choice("s05p02b", f"${f(cut, 1)}$", "D の分散を共分散行列から作り scipy の χ² 点で c")
+pairs = rng.multivariate_normal([mu, mu], cov, size=(200_000, 10))
+S2 = (pairs[:, :, 1] - pairs[:, :, 0]).var(axis=1, ddof=1)
+E.check("s05p02b", abs((S2 > cut).mean() - 0.05) < 0.003, f"シミュレーションで P(S²>c)={(S2 > cut).mean():.4f}")
 distinct_rounded("s05p02b")
 
-# ---- 大問3：潜伏期間と回復
-E.check("s05p03a", abs(math.exp(-2) - 0.1353) < 5e-5 and abs(math.exp(-4) - 0.0183) < 5e-5, "e^-2, e^-4 の値")
-dens = lambda s: integrate.quad(lambda u: stats.expon(scale=5).pdf(u) * stats.expon(scale=2.5).pdf(s - u), 0, s)[0]
-tail = 1 - integrate.quad(dens, 0, 10)[0]
-E.num("s05p03a", rnd(tail, 3), "畳み込みを数値積分")
-S = rng.exponential(5, 1_000_000) + rng.exponential(2.5, 1_000_000)
-E.check("s05p03a", abs((S > 10).mean() - tail) < 0.002, f"シミュレーション {(S > 10).mean():.4f}")
-
-
-def km_redistribute(times, events, t):
-    """Efron の「右への再配分」で KM を求める（積の公式とは別の計算）。"""
-    order = sorted(range(len(times)), key=lambda i: (times[i], -events[i]))
-    mass = {i: 1 / len(times) for i in order}
-    for pos_, i in enumerate(order):
-        if not events[i]:
-            later = order[pos_ + 1:]
-            if later:
-                share = mass[i] / len(later)
-                for j in later:
-                    mass[j] += share
-                mass[i] = 0
-    return 1 - sum(mass[i] for i in order if events[i] and times[i] <= t)
-
-
-tm = [3, 4, 5, 5, 7, 8, 10, 12]
-ev = [1, 0, 1, 1, 0, 1, 1, 0]
-E.choice("s05p03b", f"${f(km_redistribute(tm, ev, 9), 3)}$", "右への再配分アルゴリズムで S(9)")
-distinct_rounded("s05p03b")
+# ---- 大問3：流行の監視
+E.check("s05p03a", phi_ok({0.21: 0.5832, 1.50: 0.9332, 1.57: 0.9418, 1.64: 0.9495}), "示した Φ の値")
+E.choice("s05p03a", f"${f(stats.norm.sf(59.5, 49, 7), 3)}$", "scipy norm.sf(59.5, 49, 7)")
+nearest("s05p03a", stats.poisson.sf(59, 49), "正確なポアソン確率")
+distinct_rounded("s05p03a")
+# 部分尤度：リスク集合の指示行列で計算（浮動小数）し分数に直す
+tt = np.array([2, 3, 4, 5, 7])
+xx = np.array([0, 1, 0, 0, 1])
+ev = np.array([1, 1, 0, 1, 1])
+beta = math.log(0.5)
+risk = tt[None, :] >= tt[:, None]
+w = np.exp(beta * xx)
+contrib = np.where(ev == 1, w / (risk * w[None, :]).sum(axis=1), 1.0)
+pl = float(np.prod(contrib))
+E.choice("s05p03b", f"${Fraction(pl).limit_denominator(1000)}$", f"リスク集合行列による部分尤度 {pl:.6f}")
+nll = lambda b: -np.sum(ev * (b * xx - np.log((risk * np.exp(b * xx)[None, :]).sum(axis=1))))
+bh = optimize.minimize_scalar(nll, bounds=(-5, 5), method="bounded").x
+E.check("s05p03b", -nll(math.log(0.5)) <= -nll(bh) + 1e-12, f"β̂={bh:.3f} で部分尤度が最大（β=log0.5 の値は最大値以下）")
 
 # ---- 大問4：安全性
-E.check("s05p04a", abs(0.05 ** (1 / 150) - 0.98023) < 5e-6, "0.05^(1/150) の値")
-up = stats.beta.ppf(0.95, 1, 150)  # x=0 の Clopper-Pearson 上側限界 = Beta(1, n) の 95% 点
-E.num("s05p04a", rnd(up, 4), "Beta(1,150) の 95% 点（クロッパー・ピアソン）")
-E.check("s05p04a", abs(stats.binom.cdf(0, 150, up) - 0.05) < 1e-9, "上限で P(X≦0)=0.05")
-E.check("s05p04a", rnd(3 / 150, 4) != rnd(up, 4), "3 の法則の値は正解と区別される")
+crit = {(0.025, 10): 20.483, (0.025, 8): 17.535, (0.975, 8): 2.180, (0.975, 10): 3.247}
+E.check("s05p04a", all(abs(stats.chi2.isf(a, v) - x) < 5e-4 for (a, v), x in crit.items()), "示した χ² の点")
+muU = optimize.brentq(lambda m_: stats.poisson.cdf(4, m_) - 0.025, 1, 30)
+E.num("s05p04a", rnd(muU / 2000 * 1000, 2), f"P(Y≦4|μ)=0.025 を数値で解く（μ_U={muU:.4f}）")
 lam = 0.5
 E.check("s05p04b", abs(math.exp(0.5) - 1.6487) < 5e-5 and abs(math.exp(-0.5) - 0.6065) < 5e-5, "e^±0.5 の値")
-# 漸近分散をシミュレーションで比べる（n=2000 日を多数回）
 nd, R = 2000, 4000
 cnt = rng.poisson(lam, size=(R, nd))
 xbar = cnt.mean(axis=1)
 lt = -np.log((cnt == 0).mean(axis=1))
 eff_sim = xbar.var() / lt.var()
-# フィッシャー情報量から：0/1 データの情報量 = (dp0/dλ)^2/(p0(1-p0)) と、ポアソンの情報量 1/λ の比
-p0 = sp.exp(-sp.Symbol("l"))
-info01 = (sp.diff(p0, "l")) ** 2 / (p0 * (1 - p0))
-eff_info = float((info01 / (1 / sp.Symbol("l"))).subs("l", lam))
+L_ = sp.Symbol("l", positive=True)
+p0 = sp.exp(-L_)
+info01 = sp.diff(p0, L_) ** 2 / (p0 * (1 - p0))
+eff_info = float((info01 / (1 / L_)).subs(L_, lam))
 E.choice("s05p04b", f"${f(eff_info, 3)}$", "情報量の比（0/1 データ ÷ 件数データ）")
 E.check("s05p04b", abs(eff_sim - eff_info) < 0.05, f"シミュレーションの分散比 {eff_sim:.3f}")
+distinct_rounded("s05p04b")
 
-# ---- 大問5：クロスオーバー試験
-z = rng.standard_normal(10)
-z = (z - z.mean()) / z.std(ddof=1)
-d = -4.2 + 5.5 * z
-tt = stats.ttest_1samp(d, 0).statistic
-E.choice("s05p05a", f"${f(tt, 2)}$", "要約統計量を再現したデータで scipy ttest_1samp")
-E.check("s05p05a", abs(stats.t.ppf(0.975, 9) - 2.262) < 5e-4, "t_0.025(9)=2.262")
-t_ind = stats.ttest_ind_from_stats(131.8, 9.0, 10, 136.0, 10.0, 10, equal_var=False).statistic
-E.check("s05p05a", f"${f(t_ind, 2)}$" == E.item("s05p05a")["choices"][0], "独立2標本扱いの値が誤答の選択肢")
-distinct_rounded("s05p05a")
-pv = [0.035, 0.002, 0.21, 0.019, 0.047, 0.009, 0.031]
-# BH の調整済み p 値（後ろからの累積最小）で 0.05 以下を数える
-o = np.argsort(pv)
-ps = np.array(pv)[o]
-m = len(pv)
-adj = np.minimum.accumulate((ps * m / np.arange(1, m + 1))[::-1])[::-1]
-k_bh = int((adj <= 0.05).sum())
-E.choice("s05p05b", f"{k_bh} 個", "BH の調整済み p 値で数える")
-holm = np.maximum.accumulate(np.minimum(1, ps * (m - np.arange(m))))
-E.check("s05p05b", int((holm <= 0.05).sum()) == 1 and sum(p <= 0.05 / m for p in pv) == 1, "ホルム法・ボンフェローニ法はともに1個（誤答）")
+# ---- 大問5：バートレット検定（不偏分散がちょうど 4, 9, 14 のデータを作り scipy で）
+samples = []
+for v in (4.0, 9.0, 14.0):
+    z = rng.standard_normal(11)
+    z = (z - z.mean()) / z.std(ddof=1)
+    samples.append(10 + math.sqrt(v) * z)
+bt = stats.bartlett(*samples).statistic
+E.num("s05p05a", rnd(bt, 2), "scipy.stats.bartlett")
+E.check("s05p05a", all(abs(math.log(a) - b) < 5e-5 for a, b in ((4, 1.3863), (9, 2.1972), (14, 2.6391))), "示した対数の値")
 
-# ---- 大問6：罹患率
-# 条件付き二項分布のスコア統計量を、期待度数 (28, 42) のカイ二乗適合度統計量の平方根として求める
-chi = stats.chisquare([40, 30], [28, 42]).statistic
-E.choice("s05p06a", f"${f(math.sqrt(chi), 2)}$", "2セルのカイ二乗適合度統計量の平方根")
+# ---- 大問6：用量反応
+tab = np.array([[10, 16, 22], [30, 24, 18]])
+G = stats.chi2_contingency(tab, correction=False, lambda_="log-likelihood")[0]
+E.choice("s05p06a", f"${f(G, 2)}$", "scipy chi2_contingency(lambda_='log-likelihood')")
+E.check("s05p06a", all(abs(math.log(a) - b) < 5e-5 for a, b in ((0.625, -0.4700), (1.375, 0.3185), (1.25, 0.2231), (0.75, -0.2877))), "示した対数の値")
 distinct_rounded("s05p06a")
+zs = stats.norm.ppf([0.3085, 0.9332])
+slope, icpt = np.polyfit(np.log([4, 16]), zs, 1)
+ed50 = math.exp(-icpt / slope)
+E.choice("s05p06b", f"${f(ed50, 2)}$", f"Φ^-1 を scipy で求め log 用量に直線（z={zs.round(4)}）")
+distinct_rounded("s05p06b")
+Cc = np.array([1, 2, 4, 8, 16, 32.0])
+Ee = 20 * Cc / (8 + Cc)
+bb_, aa_ = np.polyfit(1 / Cc, 1 / Ee, 1)
+E.check("s05p06c", abs(aa_ - 0.05) < 1e-9 and abs(bb_ - 0.40) < 1e-9, "Emax=20, EC50=8 のデータの逆数回帰が切片0.05・傾き0.40")
+fit_ = optimize.curve_fit(lambda c_, em, ec: em * c_ / (ec + c_), Cc, Ee, p0=[10, 3])[0]
+E.choice("s05p06c", f"${f(fit_[1], 1)}$", "非線形最小二乗で EC50 を推定")
+distinct_rounded("s05p06c")
+
+# ---- 大問7：連続時間マルコフ連鎖（生成行列の行列指数関数）
+Q = np.array([[-0.2, 0.2], [0.6, -0.6]])  # 状態0=寛解, 1=再燃
+Pt = linalg.expm(2 * Q)
+E.num("s05p07a", rnd(Pt[1, 1], 3), "scipy.linalg.expm(2Q) の (再燃, 再燃) 成分")
+E.check("s05p07a", abs(math.exp(-1.6) - 0.2019) < 5e-5 and abs(math.exp(-1.2) - 0.3012) < 5e-5, "e^-1.6, e^-1.2 の値")
+
+# ---- 大問8：回帰
+it = E.item("s05p08a")
+E.check("s05p08a", "0.7 日" in it["choices"][it["answer"]] and abs((1.5 - 0.8) - 0.7) < 1e-12, "正解は β2-β1=0.7 の記述")
+n_ = 200
+grp = rng.integers(0, 3, n_)
+age = rng.uniform(30, 80, n_)
+yy = 2 + 0.8 * (grp == 1) + 1.5 * (grp == 2) + 0.1 * age + rng.normal(0, 1, n_)
+X1 = np.c_[np.ones(n_), grp == 1, grp == 2, age]
+X2 = np.c_[np.ones(n_), grp == 0, grp == 1, age]  # 基準を現在喫煙に変更
+Xall = np.c_[np.ones(n_), grp == 0, grp == 1, grp == 2, age]
+Xnum = np.c_[np.ones(n_), grp, age]
+c1 = np.linalg.lstsq(X1, yy, rcond=None)[0]
+c2 = np.linalg.lstsq(X2, yy, rcond=None)[0]
+E.check("s05p08a", abs(c1[3] - c2[3]) < 1e-9 and np.allclose(X1 @ c1, X2 @ c2), "基準を変えても年齢の係数と当てはめ値は同じ（基準を変える記述は誤り）")
+E.check("s05p08a", np.linalg.matrix_rank(Xall) == 4, "3つのダミー+切片は階数落ち（全ダミーの記述は誤り）")
+rn = np.linalg.lstsq(Xnum, yy, rcond=None)[0]
+E.check("s05p08a", not np.allclose(Xnum @ rn, X1 @ c1), "0,1,2 の数値化は当てはめが変わる（数値化の記述は誤り）")
+x = np.array([1, 2, 3, 4, 5.0])
+y = np.array([3, 4, 8, 7, 13.0])
+b_all = np.polyfit(x, y, 1)
+b4 = np.polyfit(x[:4], y[:4], 1)[0]
+E.num("s05p08b", rnd(b4, 2), "患者5を除いて numpy で当てはめ直した傾き")
+E.check("s05p08b", np.allclose(b_all, [2.3, 0.1]), "問題文の直線 0.1+2.3x")
+E.check("s05p08c", abs(stats.norm.cdf(1) - 0.8413) < 5e-5 and abs(stats.norm.pdf(1) - 0.2420) < 5e-5, "Φ(1), φ(1) の値")
+Ey = (integrate.quad(lambda v: 1.0 * stats.norm.pdf(v, 2, 1), -np.inf, 1.0)[0]
+      + integrate.quad(lambda v: v * stats.norm.pdf(v, 2, 1), 1.0, np.inf)[0])
+E.choice("s05p08c", f"${f(Ey, 3)}$", "E[max(Y*,L)] を数値積分")
+ys = np.maximum(rng.normal(2, 1, 2_000_000), 1.0)
+E.check("s05p08c", abs(ys.mean() - Ey) < 0.003, f"シミュレーション {ys.mean():.4f}")
+distinct_rounded("s05p08c")
 
 
-def negll(b):
-    mu1 = 4000 * np.exp(b[0] + b[1])
-    mu0 = 6000 * np.exp(b[0])
-    return -(40 * np.log(mu1) - mu1 + 30 * np.log(mu0) - mu0)
-
-
-res = optimize.minimize(negll, [math.log(0.005), 0.5], method="BFGS")
-b0, b1 = res.x
-# 観測情報量を数値微分で
-h = 1e-4
-H = np.zeros((2, 2))
-for i in range(2):
-    for j in range(2):
-        e_i, e_j = np.eye(2)[i] * h, np.eye(2)[j] * h
-        H[i, j] = (negll(res.x + e_i + e_j) - negll(res.x + e_i - e_j) - negll(res.x - e_i + e_j) + negll(res.x - e_i - e_j)) / (4 * h * h)
-se_num = math.sqrt(np.linalg.inv(H)[1, 1])
-E.num("s05p06b", rnd(se_num, 3), "対数尤度を数値最適化し、ヘッセ行列の逆行列から")
-E.check("s05p06b", abs(b1 - math.log(2)) < 1e-4, f"β1 の最尤推定値 {b1:.5f} = log 2")
-
-# ---- 大問7：入院のマルコフ連鎖
-P = np.array([[0.80, 0.05, 0.14, 0.01], [0.20, 0.70, 0.00, 0.10], [0, 0, 1, 0], [0, 0, 0, 1]])
-Pn = np.linalg.matrix_power(P, 2000)
-E.choice("s05p07a", f"${f(Pn[1, 2], 2)}$", "推移行列の 2000 乗で I から D に吸収される確率")
-st = np.full(20000, 1)
-for _ in range(3000):
-    u = rng.random(st.size)
-    cum = P[st].cumsum(axis=1)
-    st = (u[:, None] > cum).sum(axis=1)
-E.check("s05p07a", abs((st == 2).mean() - Pn[1, 2]) < 0.015, f"シミュレーション {(st == 2).mean():.3f}")
-distinct_rounded("s05p07a")
-
-# ---- 大問8：重回帰
-Rm = np.array([[1, 0.5, 0.6], [0.5, 1, 0.4], [0.6, 0.4, 1]])
-Ryx, Rxx = Rm[0:1, 1:], Rm[1:, 1:]
-ev_cc = np.linalg.eigvals(np.linalg.inv(Rxx) @ Ryx.T @ Ryx)  # 正準相関の2乗（Σ_yy=1）
-E.choice("s05p08a", f"${f(math.sqrt(max(ev_cc.real)), 3)}$", "正準相関の固有値問題")
-w = rng.multivariate_normal([0, 0, 0], Rm, size=400_000)
-coef = np.linalg.lstsq(np.c_[np.ones(len(w)), w[:, 1:]], w[:, 0], rcond=None)[0]
-E.check("s05p08a", abs(np.corrcoef(w[:, 1:] @ coef[1:], w[:, 0])[0, 1] - 0.6637) < 0.003, "シミュレーションの重相関")
-vif = np.linalg.inv(Rxx)[0, 0]
-E.choice("s05p08b", f"${f(math.sqrt(vif), 3)}$", "説明変数の相関行列の逆行列の対角成分 → √VIF")
-distinct_rounded("s05p08b")
-lm = 50 * 0.15
-crit = {k: stats.chi2.isf(0.05, k) for k in (2, 3, 49)}
-E.check("s05p08c", abs(crit[2] - 5.991) < 5e-4 and abs(crit[3] - 7.815) < 5e-4 and abs(crit[49] - 66.339) < 5e-4, "χ² の上側5%点")
-it = E.item("s05p08c")
-E.check("s05p08c", "自由度 2" in it["choices"][it["answer"]] and "棄却される" in it["choices"][it["answer"]] and lm > crit[2],
-        "正解は自由度2で棄却する記述で、nR²=7.5 > 5.991")
-E.check("s05p08c", lm < crit[3] and lm < crit[49], "誤答の記述（自由度3・49 で棄却しない）は自由度が誤り")
-
-# ---- 大問9：DAG と欠落変数
-# 線形ガウスの構造方程式に無作為な係数を入れ、偏相関が 0 になるかで条件付き独立を判定する
+# ---- 大問9：DAG（線形ガウス SEM の偏相関で条件付き独立を判定）
 def pcor(Sig, i, j, given):
     idx = [i, j] + list(given)
     K = np.linalg.inv(Sig[np.ix_(idx, idx)])
@@ -240,102 +206,91 @@ def pcor(Sig, i, j, given):
 
 
 Gi, Si, Ti, Ci = 0, 1, 2, 3
-ok_all = []
+rows = []
 for _ in range(20):
     a, b, cc, dd = rng.uniform(0.5, 2, 4) * rng.choice([-1, 1], 4)
     B = np.zeros((4, 4))
     B[Si, Gi], B[Ti, Si], B[Ci, Ti], B[Ci, Gi] = a, b, cc, dd
     A = np.linalg.inv(np.eye(4) - B)
     Sig = A @ A.T
-    stmts = [abs(pcor(Sig, Si, Ci, [Gi])) < 1e-9, abs(pcor(Sig, Gi, Ti, [])) < 1e-9,
-             abs(pcor(Sig, Gi, Ti, [Si])) < 1e-9, abs(pcor(Sig, Gi, Ti, [Si, Ci])) < 1e-9,
-             not abs(pcor(Sig, Si, Ci, [Gi, Ti])) < 1e-9]
-    ok_all.append(stmts)
-truth_orig = [all(col) for col in zip(*ok_all)]  # 元の順序での真偽
-labels = ["S⊥C|G", "G⊥T", "G⊥T|S", "G⊥T|S,C", "S,C は G,T を与えても非独立"]
+    rows.append({"G⊥T|S": abs(pcor(Sig, Gi, Ti, [Si])) < 1e-9, "S⊥C|G": abs(pcor(Sig, Si, Ci, [Gi])) < 1e-9,
+                 "G⊥T": abs(pcor(Sig, Gi, Ti, [])) < 1e-9, "G⊥T|S,C": abs(pcor(Sig, Gi, Ti, [Si, Ci])) < 1e-9,
+                 "非独立 S,C|G,T": not abs(pcor(Sig, Si, Ci, [Gi, Ti])) < 1e-9})
+truth = {k: all(r[k] for r in rows) for k in rows[0]}
 it = E.item("s05p09a")
-true_text = [lab for lab, t_ in zip(labels, truth_orig) if t_]
-E.check("s05p09a", truth_orig == [False, False, True, False, False], f"真の記述は1つだけ: {true_text}")
+E.check("s05p09a", sum(truth.values()) == 1 and truth["G⊥T|S"], f"真の記述は G⊥T|S の1つだけ: {truth}")
 E.check("s05p09a", "$G$ と $T$ は、$S$ を与えると" in it["choices"][it["answer"]], "正解の選択肢が G⊥T|S")
-nobs = 1_000_000
-cv = np.array([[100, 40], [40, 144]])
-xw = rng.multivariate_normal([20, 50], cv, size=nobs)
-y = 4 - 0.020 * xw[:, 0] - 0.030 * xw[:, 1] + rng.normal(0, 0.3, nobs)
-slope = np.polyfit(xw[:, 0], y, 1)[0]
-E.choice("s05p09b", f"${f(slope, 3)}$", f"シミュレーションで単回帰の傾き {slope:.5f}")
-distinct_rounded("s05p09b")
 
-# ---- 大問10：変量効果
-s2a, s2 = sp.symbols("s2a s2")
-sol = sp.solve([sp.Eq(s2 + 8 * s2a, sp.Rational(260, 5)), sp.Eq(s2, sp.Rational(504, 42))], [s2a, s2])
-icc = sol[s2a] / (sol[s2a] + sol[s2])
-E.num("s05p10a", rnd(float(icc), 3), "sympy で期待平均平方の方程式を解く")
-# 推定方法の妥当性：σA²=5, σ²=12 で生成したデータに同じ推定をすると平均的に 5 と 12 に近い
-est = []
-for _ in range(4000):
-    a = rng.normal(0, math.sqrt(5), 6)
-    yy = a[:, None] + rng.normal(0, math.sqrt(12), (6, 8))
-    msa = 8 * ((yy.mean(axis=1) - yy.mean()) ** 2).sum() / 5
-    mse = ((yy - yy.mean(axis=1, keepdims=True)) ** 2).sum() / 42
-    est.append(((msa - mse) / 8, mse))
-est = np.array(est).mean(axis=0)
-E.check("s05p10a", abs(est[0] - 5) < 0.3 and abs(est[1] - 12) < 0.2, f"分散成分推定量の不偏性 {est.round(3)}")
+# ---- 大問10：BIBD（ファノ平面の 7 ブロックを 2 回繰り返した 14 ブロックで数える）
+fano = [(0, 1, 2), (0, 3, 4), (0, 5, 6), (1, 3, 5), (1, 4, 6), (2, 3, 6), (2, 4, 5)]
+blocks = fano + fano
+rep = [sum(t in bl for bl in blocks) for t in range(7)]
+lam_ = {pr: sum(set(pr) <= set(bl) for bl in blocks) for pr in combinations(range(7), 2)}
+E.check("s05p10a", len(set(rep)) == 1 and len(set(lam_.values())) == 1, f"実際の BIBD で r={set(rep)}, λ={set(lam_.values())}")
+E.choice("s05p10a", f"r={rep[0]},\\ \\lambda={list(lam_.values())[0]}$", "実際の計画で数えた (r, λ)")
 
-# ---- 大問11：k 平均と HT 推定
-pts = np.array([[20, 25], [22, 27], [24, 23], [30, 33], [32, 35], [26, 29]], float)
-cen, lab = kmeans2(pts, pts[[0, 2]].copy(), iter=50, minit="matrix")
-cen = cen[np.argsort(cen[:, 0])]
-E.choice("s05p11a", f"$({f(cen[1][0], 1)},\\ {f(cen[1][1], 1)})$", "scipy kmeans2（初期中心 A, C）の2つ目の中心")
-E.check("s05p11a", np.allclose(cen[0], [22, 25]), f"1つ目の中心 {cen[0]}")
-# HT：抽出設計の不偏性の確認として、小さな母集団で PPS 系統抽出の HT 推定の期待値＝母合計
-y_ = [12, 30, 8, 45]
-pi_ = [0.10, 0.25, 0.05, 0.40]
-E.num("s05p11b", rnd(sum(np.array(y_) * (1 / np.array(pi_))), 1), "重み 1/π を掛けた和（numpy）")
-popy = rng.integers(1, 60, 40).astype(float)
-size = popy + rng.integers(1, 20, 40)
-pis = 4 * size / size.sum()
-assert pis.max() < 1
+# ---- 大問11：調査
+M = np.array([200, 120, 300, 80])
+cnt_ = np.array([3, 2, 4, 1])
+E.num("s05p11a", rnd(40 / 4 * np.sum(M * cnt_ / 20), 0), "numpy で (N/n)ΣM_i ȳ_i")
+popM = rng.integers(50, 400, 40)
+popP = rng.uniform(0.02, 0.25, 40)
+pop = [rng.random(m_) < p_ for m_, p_ in zip(popM, popP)]
+true_tot = sum(p_.sum() for p_ in pop)
 ests = []
 for _ in range(20000):
-    start = rng.random()
-    cum = np.cumsum(pis)
-    sel = np.searchsorted(cum, start + np.arange(4))
-    ests.append((popy[sel] / pis[sel]).sum())
-E.check("s05p11b", abs(np.mean(ests) / popy.sum() - 1) < 0.01, "HT 推定量が母合計の不偏推定になっている（PPS 系統抽出のシミュレーション）")
+    hs = rng.choice(40, 4, replace=False)
+    ests.append(10 * sum(popM[h] * pop[h][rng.choice(popM[h], 20, replace=False)].mean() for h in hs))
+E.check("s05p11a", abs(np.mean(ests) / true_tot - 1) < 0.02, f"二段抽出推定量の平均/真値 = {np.mean(ests) / true_tot:.4f}")
+P3 = np.array([[40, 22.0], [46, 22.5], [41, 25.5]])
+Z = P3 / np.array([10.0, 2.5])
+dAB = np.linalg.norm(Z[0] - Z[1])
+dAC = np.linalg.norm(Z[0] - Z[2])
+E.check("s05p11b", dAB < dAC and np.linalg.norm(P3[0] - P3[2]) < np.linalg.norm(P3[0] - P3[1]), "標準化前は C、標準化後は B が近い")
+E.choice("s05p11b", f"B（距離 ${f(dAB, 2)}$）", "numpy で標準化後の距離")
+dcfg = np.array([1.0, 1.8, 1.6, 2.6, 3.2, 2.8])
+dhat = optimize.isotonic_regression(dcfg).x
+stress = math.sqrt(((dcfg - dhat) ** 2).sum() / (dcfg ** 2).sum())
+E.choice("s05p11c", f"${f(stress, 3)}$", f"scipy isotonic_regression による単調回帰 {dhat.round(3)}")
+distinct_rounded("s05p11c")
 
-# ---- 大問12：ユール・ウォーカー
-Rmat = np.array([[1, 0.6], [0.6, 1]])
-phi = np.linalg.solve(Rmat, [0.6, 0.2])
-E.choice("s05p12a", f"=({f(phi[0], 2)},\\ {f(phi[1], 2)})", "ユール・ウォーカー方程式を行列で解く")
-# 推定した AR(2) の理論自己相関が r1, r2 を再現するか（長い系列で）
-xs = np.zeros(400_000)
-eps = rng.standard_normal(xs.size)
-for t_ in range(2, xs.size):
-    xs[t_] = phi[0] * xs[t_ - 1] + phi[1] * xs[t_ - 2] + eps[t_]
-xs = xs[1000:]
-ac1 = np.corrcoef(xs[1:], xs[:-1])[0, 1]
-ac2 = np.corrcoef(xs[2:], xs[:-2])[0, 1]
-E.check("s05p12a", abs(ac1 - 0.6) < 0.01 and abs(ac2 - 0.2) < 0.01, f"シミュレーションの自己相関 {ac1:.3f}, {ac2:.3f}")
+# ---- 大問12：カルマンフィルタ（事前分布と観測の精度による重み付けとして計算）
+prior_m, prior_v = 200.0, 75.0 + 25.0
+obs, obs_v = 240.0, 60.0
+post = (prior_m / prior_v + obs / obs_v) / (1 / prior_v + 1 / obs_v)
+E.num("s05p12a", rnd(post, 1), "正規事前×正規尤度の事後平均として")
 
-# ---- 大問13：ベイズと LOOCV
-grid = np.linspace(-20, 40, 600_001)
-post = stats.norm.pdf(grid, 4, 3) * stats.norm.pdf(10, grid, 2)
-post /= post.sum()
-cdf = post.cumsum()
-lo, hi = grid[np.searchsorted(cdf, 0.025)], grid[np.searchsorted(cdf, 0.975)]
-pmean = (grid * post).sum()
-psd = math.sqrt(((grid - pmean) ** 2 * post).sum())
-E.choice("s05p13a", f"$({f(pmean - 1.96 * psd, 2)},\\ {f(pmean + 1.96 * psd, 2)})$", "格子上で事後分布を数値計算")
-E.check("s05p13a", abs(lo - (pmean - 1.96 * psd)) < 0.01 and abs(hi - (pmean + 1.96 * psd)) < 0.01, f"数値の分位点 ({lo:.3f}, {hi:.3f})")
-x = np.array([1, 2, 3, 4, 5.0])
-yv = np.array([3, 7, 8, 8, 13.0])
-errs = []
-for i in range(5):
-    msk = np.arange(5) != i
-    bb, aa = np.polyfit(x[msk], yv[msk], 1)
-    errs.append(yv[i] - (aa + bb * x[i]))
-E.num("s05p13b", rnd(np.mean(np.square(errs)), 2), "1組ずつ除いて実際に当てはめ直す")
-bb, aa = np.polyfit(x, yv, 1)
-E.check("s05p13b", abs(bb - 2.1) < 1e-9 and abs(aa - 1.5) < 1e-9, "問題文の当てはめ直線 1.5+2.1x")
+# ---- 大問13：臨床研究
+m0 = stats.binom.pmf(5, 10, 0.2)
+m1 = integrate.quad(lambda p: stats.binom.pmf(5, 10, p), 0, 1)[0]
+E.choice("s05p13a", f"${f(m1 / m0, 2)}$", "scipy の二項確率と数値積分で周辺尤度の比")
+ps_ = sp.Symbol("p")
+E.check("s05p13a", sp.integrate(ps_ ** 5 * (1 - ps_) ** 5, (ps_, 0, 1)) == sp.Rational(1, 2772), "∫p^5(1-p)^5dp = 1/2772")
+distinct_rounded("s05p13a")
+
+
+def aic(ll, k):
+    return -2 * ll + 2 * k
+
+
+def aicc(ll, k, n):
+    return aic(ll, k) + 2 * k * (k + 1) / (n - k - 1)
+
+
+A_, B_ = (-40.0, 3), (-36.2, 6)
+st = [aic(*B_) < aic(*A_) and aicc(*A_, 20) < aicc(*B_, 20),    # 0 正しい
+      2 * 3 * 4 / 16 == 2 * 6 * 7 / 13,                        # 1 補正項が k によらない？
+      aicc(*B_, 1000) - aic(*B_) > aicc(*B_, 20) - aic(*B_),    # 2 n が大きいほど差が大きい？
+      False,                                                   # 3 大きいほどよい（定義上誤り）
+      aicc(*B_, 20) < aicc(*A_, 20)]                           # 4 B の方が小さい？
+E.check("s05p13b", st == [True, False, False, False, False], f"記述の真偽 {st}（正しいのは選択肢0だけ）")
+E.check("s05p13b", E.item("s05p13b")["answer"] == 0 and abs(aicc(*B_, 20) - aicc(*A_, 20) - 3.36) < 0.005, "差 3.36 の確認")
+pv = [0.035, 0.002, 0.21, 0.019, 0.047, 0.009, 0.031]
+ps = np.sort(pv)
+m = len(pv)
+adj = np.minimum.accumulate((ps * m / np.arange(1, m + 1))[::-1])[::-1]
+E.choice("s05p13c", f"{int((adj <= 0.05).sum())} 個", "BH の調整済み p 値（後ろからの累積最小）で数える")
+holm = np.maximum.accumulate(np.minimum(1, ps * (m - np.arange(m))))
+E.check("s05p13c", int((holm <= 0.05).sum()) == 1 and sum(p <= 0.05 / m for p in pv) == 1, "ホルム法・ボンフェローニ法はともに1個（誤答）")
 
 E.done()

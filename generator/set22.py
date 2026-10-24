@@ -1,7 +1,7 @@
 """模擬試験 第22回（set22）の数値。values() が {大問id: {名前: 値}} を返す。
 
 題材：物流倉庫・EC配送・在庫管理・コールセンター。
-問題文に示した分布の値（指数関数の値、q 分布・t 分布・F 分布の点）は、ここでも同じ丸めた値を使って答えを計算する。
+問題文に示した関数の値（指数・対数・正規分布の値、χ² 分布・F 分布の点）は、ここでも同じ丸めた値を使って答えを計算する。
 """
 from decimal import Decimal, ROUND_HALF_UP
 from math import sqrt
@@ -20,6 +20,10 @@ def s(x, d):
     return str(Decimal(repr(float(x))).quantize(q, rounding=ROUND_HALF_UP))
 
 
+def ceil(x):
+    return int(-(-x // 1))
+
+
 def p01():
     # (a) 20 箱中 3 箱が破損。無作為な順に開けて 3 箱目で初めて破損箱
     N, D = 20, 3
@@ -27,17 +31,32 @@ def p01():
     pa = (G / N) * ((G - 1) / (N - 1)) * (D / (N - 2))
     with_rep = (G / N) ** 2 * (D / N)
     atleast = 1 - (G / N) * ((G - 1) / (N - 1)) * ((G - 2) / (N - 2))
-    # (b) 破損率の推定に必要な標本数
+    # (b) 抜取検査：20 箱を調べ破損 2 箱以上で不合格
+    n, c = 20, 2
+    p_good, p_bad = 0.05, 0.20
+    q19g, q19b = 0.3774, 0.01441          # 問題文に示す 0.95^19, 0.8^19
+    acc_g = (1 - p_good) * q19g + n * p_good * q19g     # P(X<=1 | 0.05)
+    acc_b = (1 - p_bad) * q19b + n * p_bad * q19b       # P(X<=1 | 0.20)
+    alpha = 1 - acc_g
+    beta = acc_b
+    alpha0 = 1 - (1 - p_good) * q19g                   # X=1 の項を忘れた
+    beta0 = (1 - p_bad) * q19b
+    # (c) 破損率の推定に必要な標本数
     p0, e, z = 0.15, 0.03, 1.96
     nraw = z ** 2 * p0 * (1 - p0) / e ** 2
     n_half = z ** 2 * 0.25 / e ** 2
     n_645 = 1.645 ** 2 * p0 * (1 - p0) / e ** 2
     n_width = z ** 2 * p0 * (1 - p0) / (2 * e) ** 2
-    ceil = lambda x: int(-(-x // 1))
     return {
-        "N": N, "D": D, "G": G, "G1": G - 1, "N1": N - 1, "N2": N - 2,
+        "N": N, "D": D, "G": G, "G1": G - 1, "G2": G - 2, "N1": N - 1, "N2": N - 2,
         "pa": r(pa, 3), "pa_s": s(pa, 3), "pa5": s(pa, 5), "num": G * (G - 1) * D, "den": N * (N - 1) * (N - 2),
         "with_rep": s(with_rep, 4), "atleast": s(atleast, 4),
+        "n": n, "c": c, "pg": s(p_good, 2), "pb": s(p_bad, 2), "qg": s(1 - p_good, 2), "qb": s(1 - p_bad, 1),
+        "q19g": s(q19g, 4), "q19b": s(q19b, 5), "npg": s(n * p_good, 1), "npb": s(n * p_bad, 1),
+        "acc_g": s(acc_g, 4), "acc_b": s(acc_b, 4), "alpha": s(alpha, 3), "beta": s(beta, 3),
+        "alpha4": s(alpha, 4), "beta4": s(beta, 4), "acc_g3": s(acc_g, 3), "rej_b3": s(1 - beta, 3),
+        "alpha0": s(alpha0, 3), "beta0": s(beta0, 3), "fg": s((1 - p_good) * q19g, 4), "fb": s((1 - p_bad) * q19b, 5),
+        "gg": s(n * p_good * q19g, 4), "gb": s(n * p_bad * q19b, 5),
         "p0": s(p0, 2), "q0": s(1 - p0, 2), "e": s(e, 2), "z": s(z, 2), "z2": s(z ** 2, 4),
         "pq": s(p0 * (1 - p0), 4), "e2": s(e ** 2, 4), "nraw": s(nraw, 1), "nreq": ceil(nraw),
         "n_half": ceil(n_half), "n_halfraw": s(n_half, 1), "n_645": ceil(n_645), "n_width": ceil(n_width),
@@ -55,355 +74,289 @@ def p02():
         terms.append(terms[-1] * mu / k)
     ssum = sum(terms)
     pa = 1 - em3 * ssum
-    # 誤答：P(D>=5)、1日分 Po(1.5)
     p_ge5 = 1 - em3 * (ssum - terms[-1])
-    # (b) UMVU of e^{-λ}
-    n, T, zero_days = 10, 12, 2
-    umvu = ((n - 1) / n) ** T
-    em12 = 0.3012                      # 問題文に示す e^{-1.2}
-    # (c) メトロポリス法。目標 Po(1.2)、±1 提案、現在 x=3
-    lh = T / n
-    x = 3
-    up = min(1.0, lh / (x + 1))
-    down = min(1.0, x / lh)
-    move = 0.5 * up + 0.5 * down
-    inv = 0.5 * min(1.0, (x + 1) / lh) + 0.5 * min(1.0, lh / x)
-    nofact = 0.5 * min(1.0, lh) + 0.5 * min(1.0, 1 / lh)
+    # (b) 分位点回帰による発注量
+    cu, co = 400, 100
+    lines = {0.20: (80, 20), 0.25: (84, 22), 0.50: (100, 30), 0.75: (116, 40), 0.80: (121, 44)}
+    tau = cu / (cu + co)
+    q = lambda t, x: lines[t][0] + lines[t][1] * x
     return {
         "lam": s(lam, 1), "L": L, "stock": stock, "mu": s(mu, 0), "em3": s(em3, 4), "stock1": stock + 1,
         "t0": s(terms[0], 0), "t1": s(terms[1], 0), "t2": s(terms[2], 1), "t3": s(terms[3], 1),
         "t4": s(terms[4], 3), "t5": s(terms[5], 3), "tsum": s(ssum, 1), "cdf": s(em3 * ssum, 5),
         "pa": r(pa, 3), "pa_s": s(pa, 3), "pa5": s(pa, 5), "p_ge5": s(p_ge5, 3),
-        "n": n, "T": T, "zero_days": zero_days, "n1": n - 1,
-        "umvu": s(umvu, 3), "umvu4": s(umvu, 4), "mle": s(em12, 3), "em12": s(em12, 4), "lh": s(lh, 1),
-        "prop0": s(zero_days / n, 3), "w_T1": s(((n - 1) / n) ** (T - 1), 3), "w_rev": s((1 - 1 / T) ** n, 3),
-        "ratio": s((n - 1) / n, 1),
-        "x": x, "xp": x + 1, "xm": x - 1,
-        "up": s(up, 2), "down_raw": s(x / lh, 1), "move": s(move, 2), "stay": s(1 - move, 2),
-        "inv": s(inv, 2), "upraw": s(lh / (x + 1), 2), "onlyup": s(up, 2), "nofact": s(nofact, 2),
+        "cu": cu, "co": co, "cucoh": cu + co, "tau": s(tau, 1),
+        "a20": lines[0.20][0], "b20": lines[0.20][1], "a25": lines[0.25][0], "b25": lines[0.25][1],
+        "a50": lines[0.50][0], "b50": lines[0.50][1], "a75": lines[0.75][0], "b75": lines[0.75][1],
+        "a80": lines[0.80][0], "b80": lines[0.80][1],
+        "q80": q(0.80, 1), "q20": q(0.20, 1), "q25": q(0.25, 1), "q50": q(0.50, 1), "q75": q(0.75, 1),
+        "q80x0": q(0.80, 0), "tau_rev": s(co / (cu + co), 1), "tau_ratio": s(co / cu, 2), "tau_1m": s(1 - co / cu, 2),
     }
 
 
 def p03():
-    # (a) 混合分布の積率母関数
-    w1, m1 = 0.6, 1.0           # 指数分布（平均 1）
-    w2, k2, th2 = 0.4, 2, 3.0   # ガンマ分布（形状 2、尺度 3）
-    E1 = w1 * m1 + w2 * k2 * th2
-    E2 = w1 * 2 * m1 ** 2 + w2 * k2 * (k2 + 1) * th2 ** 2
-    V = E2 - E1 ** 2
-    within = w1 * m1 ** 2 + w2 * k2 * th2 ** 2
-    indep = w1 ** 2 * m1 ** 2 + w2 ** 2 * k2 * th2 ** 2
-    # (b) 一様分布の和
-    a1, b1, a2, b2, c = 10, 30, 5, 15, 38
-    leg = (b1 + b2) - c
-    area = leg ** 2 / 2
-    tot = (b1 - a1) * (b2 - a2)
-    pb = area / tot
-    # (c) テューキー法
-    means = {"A": 32.0, "B": 28.2, "C": 27.0, "D": 25.0}
-    nn, mse, dfe, q, t = 6, 9.0, 20, 3.96, 2.086
-    hsd = q * sqrt(mse / nn)
-    lsd = t * sqrt(2 * mse / nn)
-    hsd2 = q * sqrt(2 * mse / nn)
+    # (a) 指数分布の混合のハザード
+    w1, m1, w2, m2, t = 0.6, 1.0, 0.4, 3.0, 3
+    em3, em1 = 0.0498, 0.3679     # e^{-3}, e^{-1}
+    S = w1 * em3 + w2 * em1
+    f = w1 / m1 * em3 + w2 / m2 * em1
+    h = f / S
+    h0 = w1 / m1 + w2 / m2
+    mean = w1 * m1 + w2 * m2
+    # (b) 一様分布 [0, θ] の 5 個の標本中央値と標本平均
+    th, n = 120, 5
+    k = (n + 1) // 2
+    a, b = k, n - k + 1
+    vbeta = a * b / ((a + b) ** 2 * (a + b + 1))
+    vmed = th ** 2 * vbeta
+    vmean = th ** 2 / 12 / n
+    ratio = vmed / vmean
+    asym = (1 / (4 * n * (1 / th) ** 2)) / vmean
     return {
-        "w1": s(w1, 1), "w2": s(w2, 1), "k2": k2, "th2": s(th2, 0), "k2p": k2 + 1,
-        "E1": s(E1, 1), "E2": s(E2, 1), "E1sq": s(E1 ** 2, 1), "V": s(V, 1),
-        "Vw": s(within, 1), "Vind": s(indep, 2), "M2mM1": s(E2 - E1, 1),
-        "d1": s(w1 * m1, 1), "d2": s(w2 * k2 * th2, 1), "dd1": s(w1 * 2, 1), "dd2": s(w2 * k2 * (k2 + 1) * th2 ** 2, 1),
-        "g2c": s(k2 * (k2 + 1) * th2 ** 2, 0), "vg": s(k2 * th2 ** 2, 0), "g1c": s(k2 * th2, 0),
-        "a1": a1, "b1": b1, "a2": a2, "b2": b2, "c": c, "smin": a1 + a2, "smax": b1 + b2, "xlo": c - b2,
-        "ylo": c - b1, "leg": leg, "area": s(area, 1), "tot": tot, "pb": s(pb, 4),
-        "pb_noh": s(leg ** 2 / tot, 4), "pb_uni": s((b1 + b2 - c) / (b1 + b2 - a1 - a2), 4), "pb_comp": s(1 - pb, 4),
-        "pb_400": s(area / 400, 4),
-        "mA": s(means["A"], 1), "mB": s(means["B"], 1), "mC": s(means["C"], 1), "mD": s(means["D"], 1),
-        "nn": nn, "N": 4 * nn, "mse": s(mse, 1), "dfe": dfe, "q": s(q, 2), "t": s(t, 3),
-        "msen": s(mse / nn, 1), "se1": s(sqrt(mse / nn), 4), "hsd": s(hsd, 2), "lsd": s(lsd, 2), "hsd2": s(hsd2, 2),
-        "lsd1": s(t * sqrt(mse / nn), 2), "qs": s(q * sqrt(mse), 2),
-        "dAB": s(means["A"] - means["B"], 1), "dAC": s(means["A"] - means["C"], 1), "dAD": s(means["A"] - means["D"], 1),
-        "dBC": s(means["B"] - means["C"], 1), "dBD": s(means["B"] - means["D"], 1), "dCD": s(means["C"] - means["D"], 1),
+        "w1": s(w1, 1), "w2": s(w2, 1), "m1": s(m1, 0), "m2": s(m2, 0), "t": t, "em3": s(em3, 4), "em1": s(em1, 4),
+        "S1": s(w1 * em3, 5), "S2": s(w2 * em1, 5), "S": s(S, 5), "f1": s(w1 / m1 * em3, 5), "f2": s(w2 / m2 * em1, 5),
+        "f": s(f, 5), "h": s(h, 3), "h4": s(h, 4), "h0": s(h0, 3), "f3": s(f, 3), "S3": s(S, 3), "invmean": s(1 / mean, 3),
+        "mean": s(mean, 1), "w2m2": s(w2 / m2, 4), "t3": s(t / m2, 0),
+        "th": th, "n": n, "k": k, "ba": a, "bb": b, "bab": a + b, "bab1": a + b + 1,
+        "vbeta": s(vbeta, 5), "vmed": s(vmed, 2), "vmean": s(vmean, 1), "ratio": s(ratio, 3),
+        "ratio_inv": s(1 / ratio, 3), "asym": s(asym, 3), "pi2": s(1.5708, 3), "th2": th ** 2,
+        "vbeta_frac": "1/28", "vmean_frac": "1/60",
     }
 
 
 def p04():
-    # (a) 平均 6 分の指数分布 4 件の和が 30 分以内
-    mean, k, tt = 6, 4, 30
-    m = tt / mean
-    em5 = 0.00674
-    terms = [1.0]
-    for j in range(1, k + 1):
-        terms.append(terms[-1] * m / j)
-    s3 = sum(terms[:k])
-    pa = 1 - em5 * s3
-    p_off = 1 - em5 * (s3 + terms[k])
-    em125 = 0.2865048  # 誤答用（指数分布 1 個とみなした場合）。問題文には示さない
-    # (b) M/M/2
-    lam, mu_h, c = 15, 60 / mean, 2
-    a = lam / mu_h
-    rho = a / c
-    tail = a ** 2 / 2 / (1 - rho)
-    pi0 = 1 / (1 + a + tail)
-    pw = tail * pi0
-    # 誤答：2 本の M/M/1（各 λ/2）や M/M/1 の ρ
-    mm1_rho = lam / mu_h if lam / mu_h < 1 else None
-    # (c) デルタ法
-    lc = 15
+    # (a) 半径 a の円内に一様に分布する配送先までの距離
+    a = 6.0
+    ER = 2 * a / 3
+    # (b) 重要度サンプリング：提案は [0,a] の一様分布、重み w(r)=f(r)/g(r)=2r/a
+    rs = [0.9, 2.4, 3.9, 5.4]
+    n = len(rs)
+    w = [2 * x / a for x in rs]
+    is_est = sum(x * wi for x, wi in zip(rs, w)) / n
+    sn_est = sum(x * wi for x, wi in zip(rs, w)) / sum(w)
+    naive = sum(rs) / n
+    inv_w = sum(x * (a / (2 * x)) for x in rs) / n
     return {
-        "mean": mean, "k": k, "tt": tt, "km1": k - 1, "m": s(m, 0), "em5": s(em5, 5),
-        "q0": s(terms[0], 0), "q1": s(terms[1], 0), "q2": s(terms[2], 1), "q3": s(terms[3], 4),
-        "s3": s(s3, 4), "cdf": s(em5 * s3, 4), "pa": s(pa, 3), "pa4": s(pa, 4), "q4": s(terms[4], 4),
-        "p_off": s(p_off, 3), "p_comp": s(em5 * s3, 3), "p_norm": s(0.691462, 3), "p_exp": s(1 - em125, 3),
-        "emean": k * mean, "esd": s(sqrt(k) * mean, 0),
-        "lam": lam, "mu": s(mu_h, 0), "c": c, "a": s(a, 1), "rho": s(rho, 2), "a2h": s(a ** 2 / 2, 3),
-        "tail": s(tail, 1), "den": s(1 + a + tail, 1), "pi0": s(pi0, 4), "pi1": s(a * pi0, 4),
-        "pw": r(pw, 3), "pw_s": s(pw, 3), "pw4": s(pw, 4), "pw_mm1": s(rho, 3),
-        "pw_noq": s(1 - pi0 - a * pi0, 3),
-        "lc": lc, "sq": s(sqrt(lc), 2), "dv": s(0.25, 3), "dv_nosq": s(1 / (2 * sqrt(lc)), 3),
-        "dv_nolam": s(1 / (4 * lc), 4), "dv_sd": s(sqrt(lc), 2), "dv_raw": s(lc, 1),
-        "gp": s(1 / (2 * sqrt(lc)), 4), "gp2": s(1 / (4 * lc), 5),
+        "a": s(a, 0), "ER": s(ER, 2), "Ehalf": s(a / 2, 2), "Erms": s(a / sqrt(2), 2), "E34": s(3 * a / 4, 2),
+        "E13": s(a / 3, 2), "a2": s(a ** 2, 0), "Er2": s(a ** 2 / 2, 0),
+        "r1": s(rs[0], 1), "r2": s(rs[1], 1), "r3": s(rs[2], 1), "r4": s(rs[3], 1), "nis": n,
+        "w1": s(w[0], 2), "w2": s(w[1], 2), "w3": s(w[2], 2), "w4": s(w[3], 2),
+        "rw1": s(rs[0] * w[0], 3), "rw2": s(rs[1] * w[1], 3), "rw3": s(rs[2] * w[2], 3), "rw4": s(rs[3] * w[3], 3),
+        "srw": s(sum(x * wi for x, wi in zip(rs, w)), 3), "sw": s(sum(w), 1),
+        "is": s(is_est, 2), "is4": s(is_est, 4), "sn": s(sn_est, 2), "naive": s(naive, 2), "invw": s(inv_w, 2),
     }
 
 
 def p05():
-    # (a) ホルム法
-    pv = {"A": 0.011, "B": 0.21, "C": 0.004, "D": 0.024, "E": 0.018}
-    m, alpha = 5, 0.05
-    srt = sorted(pv.items(), key=lambda kv: kv[1])
-    holm = 0
-    for i, (_, p) in enumerate(srt):
-        if p <= alpha / (m - i):
-            holm += 1
-        else:
-            break
-    nonstop = sum(1 for i, (_, p) in enumerate(srt) if p <= alpha / (m - i))
-    bonf = sum(1 for p in pv.values() if p <= alpha / m)
-    raw = sum(1 for p in pv.values() if p <= alpha)
-    # (b) 連の検定
-    seq = "NNNNSSSNNNNNSSSSNNNS"
-    n1 = seq.count("S")
-    n2 = seq.count("N")
-    N = len(seq)
-    R = 1 + sum(1 for i in range(1, N) if seq[i] != seq[i - 1])
-    ER = 1 + 2 * n1 * n2 / N
-    VR = 2 * n1 * n2 * (2 * n1 * n2 - N) / (N ** 2 * (N - 1))
-    z = (R - ER) / sqrt(VR)
-    VRn = 2 * n1 * n2 * (2 * n1 * n2 - N) / (N ** 2 * N)
-    runsS = sum(1 for i in range(N) if seq[i] == "S" and (i == 0 or seq[i - 1] != "S"))
+    # (a) 対数正規分布の後処理時間
+    mu, sig, c = 1.6, 0.5, 15
+    ln15 = 2.708
+    z = r((ln15 - mu) / sig, 2)
+    phi = 0.9868                          # Φ(2.22)
+    pa = 1 - phi
+    zvar = (ln15 - mu) / sig ** 2
+    log10_15 = 1.176
+    zlog10 = (log10_15 - mu) / sig
+    # (b) アーランの損失式（M/M/3/3）
+    lam, mean_min, cc = 20, 6, 3
+    muh = 60 / mean_min
+    aa = lam / muh
+    terms = [1.0]
+    for k in range(1, cc + 1):
+        terms.append(terms[-1] * aa / k)
+    B = terms[-1] / sum(terms)
+    acc = lam * (1 - B)
+    # 誤答用：M/M/3 の待つ確率（待たせる方式と取り違え）
+    rho = aa / cc
+    tail = terms[-1] / (1 - rho)
+    pwait = tail / (sum(terms[:-1]) + tail)
+    # (c) デルタ法
+    lc = lam
     return {
-        "pA": s(pv["A"], 3), "pB": s(pv["B"], 2), "pC": s(pv["C"], 3), "pD": s(pv["D"], 3), "pE": s(pv["E"], 3),
-        "m": m, "a1": s(alpha / 5, 3), "a2": s(alpha / 4, 4), "a3": s(alpha / 3, 4), "a4": s(alpha / 2, 3),
-        "holm": holm, "nonstop": nonstop, "bonf": bonf, "raw": raw,
-        "seq": " ".join(seq), "n1": n1, "n2": n2, "NN": N, "R": R, "n12": 2 * n1 * n2,
-        "ER": s(ER, 1), "VRnum": 2 * n1 * n2 * (2 * n1 * n2 - N), "VRden": N ** 2 * (N - 1), "VR": s(VR, 4),
-        "sdR": s(sqrt(VR), 4), "z": s(z, 2), "z_n": s((R - ER) / sqrt(VRn), 2), "z_e": s((R - (ER - 1)) / sqrt(VR), 2),
-        "z_v": s((R - ER) / VR, 2), "z_s": s((runsS - ER) / sqrt(VR), 2), "runsS": runsS, "diffR": s(R - ER, 1),
+        "mu": s(mu, 1), "sig": s(sig, 1), "c": c, "ln15": s(ln15, 3), "z": s(z, 2), "zraw": s((ln15 - mu) / sig, 3),
+        "phi": s(phi, 4), "pa": s(pa, 3), "pa4": s(pa, 4), "pa2": s(2 * pa, 3), "pcomp": s(phi, 3),
+        "pvar": "0.000", "zvar": s(zvar, 2), "log10": s(log10_15, 3), "zlog": s(zlog10, 2), "plog": s(0.8023, 3),
+        "phi085": "0.8023", "diff": s(ln15 - mu, 3), "med": s(4.953, 2),
+        "lam": lam, "mean": mean_min, "cc": cc, "muh": s(muh, 0), "aa": s(aa, 0),
+        "e0": s(terms[0], 0), "e1": s(terms[1], 0), "e2": s(terms[2], 0), "e3": s(terms[3], 4), "esum": s(sum(terms), 4),
+        "B": s(B, 4), "acc": r(acc, 2), "acc_s": s(acc, 2), "acc4": s(acc, 4), "omB": s(1 - B, 4),
+        "acc_wait": s(lam * (1 - pwait), 2), "lost": s(lam * B, 2),
+        "lc": lc, "dv": s(0.25, 3), "dv_nosq": s(1 / (2 * sqrt(lc)), 3),
+        "dv_nolam": s(1 / (4 * lc), 4), "dv_sd": s(sqrt(lc), 2), "dv_raw": s(lc, 1),
+        "gp": s(1 / (2 * sqrt(lc)), 4), "gp2": s(1 / (4 * lc), 4),
     }
 
 
 def p06():
-    n, p = 12, 2
-    xbar = (63.0, 21.0)
-    mu0 = (60.0, 20.0)
-    S = ((16.0, 4.0), (4.0, 4.0))
-    d = (xbar[0] - mu0[0], xbar[1] - mu0[1])
-    det = S[0][0] * S[1][1] - S[0][1] ** 2
-    q = (S[1][1] * d[0] ** 2 - 2 * S[0][1] * d[0] * d[1] + S[0][0] * d[1] ** 2) / det
-    T2 = n * q
-    F = (n - p) / (p * (n - 1)) * T2
-    qdiag = d[0] ** 2 / S[0][0] + d[1] ** 2 / S[1][1]
-    Fdiag = (n - p) / (p * (n - 1)) * n * qdiag
-    Fn = (n - p) / (p * n) * T2
-    Fnon = (n - p) / (p * (n - 1)) * q
+    # (a) 2 標本コルモゴロフ・スミルノフ統計量
+    A = [18, 22, 26, 30, 41]
+    B = [24, 33, 36, 44, 48]
+    pts = sorted(A + B)
+    FA = lambda x: sum(1 for v in A if v <= x) / len(A)
+    FB = lambda x: sum(1 for v in B if v <= x) / len(B)
+    D = max(abs(FA(x) - FB(x)) for x in pts)
+    DB = max(abs(FA(x) - FB(x)) for x in B)
+    # (b) バートレット検定
+    k, ni = 3, 6
+    v = [4.0, 9.0, 16.0]
+    lnv = [1.3863, 2.1972, 2.7726]
+    sp2 = sum((ni - 1) * x for x in v) / (k * (ni - 1))
+    lnsp = 2.2687
+    Nk = k * (ni - 1)
+    M = Nk * lnsp - (ni - 1) * sum(lnv)
+    C = 1 + (1 / (3 * (k - 1))) * (k / (ni - 1) - 1 / Nk)
+    Bst = M / C
+    M10 = M / 2.3026
+    sp_sd = (sum(sqrt(x) for x in v) / k) ** 2    # 標準偏差の平均の2乗（誤り）
+    M_sd = Nk * 2.1972 - (ni - 1) * sum(lnv)
     return {
-        "n": n, "p": p, "x1": s(xbar[0], 1), "x2": s(xbar[1], 1), "m1": s(mu0[0], 0), "m2": s(mu0[1], 0),
-        "s11": s(S[0][0], 0), "s12": s(S[0][1], 0), "s22": s(S[1][1], 0), "d1": s(d[0], 0), "d2": s(d[1], 0),
-        "det": s(det, 0), "qnum": s(q * det, 0), "q": s(q, 4), "T2": s(T2, 2), "np": n - p, "pn1": p * (n - 1),
-        "F": s(F, 2), "Fc": "4.10", "Fdiag": s(Fdiag, 2), "Fn": s(Fn, 2), "Fnon": s(Fnon, 2), "qdiag": s(qdiag, 4),
-        "T2diag": s(n * qdiag, 2),
+        "A1": A[0], "A2": A[1], "A3": A[2], "A4": A[3], "A5": A[4],
+        "B1": B[0], "B2": B[1], "B3": B[2], "B4": B[3], "B5": B[4],
+        "D": s(D, 1), "DB": s(DB, 1),
+        "k": k, "ni": ni, "v1": s(v[0], 1), "v2": s(v[1], 1), "v3": s(v[2], 1),
+        "l1": s(lnv[0], 4), "l2": s(lnv[1], 4), "l3": s(lnv[2], 4), "lsum": s(sum(lnv), 4),
+        "sp2": s(sp2, 3), "lnsp": s(lnsp, 4), "Nk": Nk, "df1": ni - 1,
+        "Mt1": s(Nk * lnsp, 4), "Mt2": s((ni - 1) * sum(lnv), 4), "M": s(M, 4), "C": s(C, 4), "Cin": s(k / (ni - 1) - 1 / Nk, 4),
+        "B": s(Bst, 2), "Bnc": s(M, 2), "B10": s(M10 / C, 2), "Bsd": s(M_sd / C, 2), "spsd": s(sp_sd, 1),
+        "c2": "5.99", "c3": "7.81",
     }
 
 
 def p07():
-    n = 40
-    rss1, k1 = 520.0, 3   # 切片 + 2 変数
-    rss2, k2 = 430.0, 6   # + 地域ダミー 3 個
-    q = k2 - k1
-    dfe = n - k2
-    F = ((rss1 - rss2) / q) / (rss2 / dfe)
-    F35 = ((rss1 - rss2) / q) / (rss2 / (dfe + 1))
-    Fnoq = (rss1 - rss2) / (rss2 / dfe)
-    F1 = ((rss1 - rss2) / q) / (rss1 / (n - k1))
-    # (b) 外部スチューデント化残差
-    e, h = 9.0, 0.30
-    s2 = rss2 / dfe
-    sd = sqrt(s2)
-    sqh = sqrt(1 - h)
-    rint = e / (sd * sqh)
-    s2i = (rss2 - e ** 2 / (1 - h)) / (dfe - 1)
-    sdi = sqrt(s2i)
-    t = e / (sdi * sqh)
+    b0, b1, g, d = 2.0, 0.50, 1.5, -0.30
+    xs = -g / d
     return {
-        "n": n, "rss1": s(rss1, 0), "rss2": s(rss2, 0), "k1": k1, "k2": k2, "q": q, "dfe": dfe, "dfe1": n - k1,
-        "drss": s(rss1 - rss2, 0), "msq": s((rss1 - rss2) / q, 1), "mse": s(rss2 / dfe, 4),
-        "F": r(F, 2), "F_s": s(F, 2), "F4": s(F, 4), "F35": s(F35, 2), "Fnoq": s(Fnoq, 2), "F1": s(F1, 2), "Fc": "2.88",
-        "e": s(e, 1), "h": s(h, 2), "omh": s(1 - h, 2), "s2": s(s2, 4), "sd": s(sd, 4), "sqh": s(sqh, 4),
-        "e2h": s(e ** 2 / (1 - h), 4), "s2inum": s(rss2 - e ** 2 / (1 - h), 4), "dfe_1": dfe - 1,
-        "s2i": s(s2i, 4), "sdi": s(sdi, 4), "den_t": s(sdi * sqh, 4),
-        "t": s(t, 2), "t4": s(t, 4), "rint": s(rint, 2), "e_s": s(e / sd, 2), "e_s1h": s(e / (sd * (1 - h)), 2),
-        "e_si": s(e / sdi, 2),
+        "b0": s(b0, 1), "b1": s(b1, 2), "g": s(g, 1), "d": s(d, 2), "dabs": s(-d, 2),
+        "slopeA": s(b1 + d, 2), "b0A": s(b0 + g, 1), "xs": s(xs, 1),
+        "w1": s(g / b1, 1), "w2": s(g / (b1 + d), 1), "w3": s(-xs, 1),
+        "x8": 8, "yA8": s(b0 + g + (b1 + d) * 8, 1), "yB8": s(b0 + b1 * 8, 1),
+        # (b) Q-Q プロット
+        "res": "−1.1, −0.9, −0.8, −0.6, −0.4, −0.3, −0.1, 0.4, 1.3, 2.5",
+        "nq": 10, "p10": "0.95", "z95": "1.645", "z90": "1.282", "z05": "−1.645",
     }
 
 
 def p08():
-    a1, a2, b, x = -2.0, 0.5, 0.8, 2
-    l1 = a1 + b * x
-    l2 = a2 + b * x
-    e04 = 1.4918   # e^{0.4}
-    em21 = 0.1225  # e^{-2.1}
-    P1 = 1 / (1 + e04)
-    P2 = 1 / (1 + em21)
-    pmid = P2 - P1
-    # 誤答：符号を逆（α - βx）にした場合など（値は誤答用に正確な指数で計算する）
-    import math
-    lg = lambda z: 1 / (1 + math.exp(-z))
-    wrong_sign = lg(a2 - b * x) - lg(a1 - b * x)
+    # (a) オフセットつきポアソン回帰の逸脱度
+    y = [12, 8, 20, 10]
+    m = [10, 10, 16, 14]
+    lr = [0.1823, -0.2231, 0.2231, -0.3365]   # ln(y/μ)
+    terms = [yi * l for yi, l in zip(y, lr)]
+    D = 2 * (sum(terms) - sum(yi - mi for yi, mi in zip(y, m)))
+    X2 = sum((yi - mi) ** 2 / mi for yi, mi in zip(y, m))
+    # (b) ファイ係数
+    a, b, c, dd = 10, 190, 30, 170
+    n = a + b + c + dd
+    phi = (a * dd - b * c) / sqrt((a + b) * (c + dd) * (a + c) * (b + dd))
     return {
-        "a1": s(a1, 1), "a2": s(a2, 1), "b": s(b, 1), "x": x, "l1": s(l1, 1), "l2": s(l2, 1),
-        "e04": s(e04, 4), "em21": s(em21, 4), "den1": s(1 + e04, 4), "den2": s(1 + em21, 4),
-        "P1": s(P1, 4), "P2": s(P2, 4), "pmid": s(pmid, 3), "pmid4": s(pmid, 4),
-        "P1s": s(P1, 3), "P2s": s(P2, 3), "P3s": s(1 - P2, 3), "wsign": s(wrong_sign, 3),
-        "nl1": s(-l1, 1),
+        "y1": y[0], "y2": y[1], "y3": y[2], "y4": y[3], "m1": m[0], "m2": m[1], "m3": m[2], "m4": m[3],
+        "l1": s(lr[0], 4), "l2": s(lr[1], 4), "l3": s(lr[2], 4), "l4": s(lr[3], 4),
+        "tt1": s(terms[0], 4), "tt2": s(terms[1], 4), "tt3": s(terms[2], 4), "tt4": s(terms[3], 4),
+        "tsum": s(sum(terms), 4), "D": s(D, 2), "Dh": s(D / 2, 2), "X2": s(X2, 2),
+        "a": a, "b": b, "c": c, "dd": dd, "n": n, "r1": a + b, "r2": c + dd, "c1": a + c, "c2": b + dd,
+        "ad": a * dd, "bc": b * c, "adbc": a * dd - b * c, "prod": (a + b) * (c + dd) * (a + c) * (b + dd),
+        "sq": s(sqrt((a + b) * (c + dd) * (a + c) * (b + dd)), 0),
+        "phi": r(phi, 3), "phi_s": s(phi, 3), "phi4": s(phi, 4), "chi2": s(n * phi ** 2, 2), "phi2": s(phi ** 2, 4),
     }
 
 
 def p09():
-    sz, sx, sy = 5.0, 20.0, 30.0
-    rzx, rzy, rxy = 0.5, -0.4, -0.5
-    czx = rzx * sz * sx
-    czy = rzy * sz * sy
-    cxy = rxy * sx * sy
-    iv = czy / czx
-    ols = cxy / sx ** 2
-    g1 = czx / sz ** 2
-    pi = czy / sz ** 2
-    return {
-        "sz": s(sz, 0), "sx": s(sx, 0), "sy": s(sy, 0), "rzx": s(rzx, 1), "rzy": s(rzy, 1), "rxy": s(rxy, 1),
-        "czx": s(czx, 0), "czy": s(czy, 0), "cxy": s(cxy, 0), "vz": s(sz ** 2, 0), "vx": s(sx ** 2, 0),
-        "iv": s(iv, 2), "iv_abs": s(-iv, 1), "ols": s(ols, 2), "g1": s(g1, 1), "pi": s(pi, 1), "rf": s(pi, 2),
-        "inv": s(czx / czy, 2), "rr": s(rzy / rzx, 2),
-    }
+    pw, pk = 0.2, 0.1
+    pdel = 1 - (1 - pw) * (1 - pk)
+    pw_d = pw / pdel
+    return {"pw": s(pw, 1), "pk": s(pk, 1), "pdel": s(pdel, 2), "pw_d": s(pw_d, 3), "pw_dk": s(pw, 3),
+            "qw": s(1 - pw, 1), "qk": s(1 - pk, 1), "pw_add": s(pw / (pw + pk), 3)}
 
 
 def p10():
-    Npop, n = 500, 20
-    Xbar, xbar, ybar = 120.0, 115.0, 110.0
-    sxy, sxx = 360.0, 400.0
-    b = sxy / sxx
-    yreg = ybar + b * (Xbar - xbar)
-    tot = Npop * yreg
-    yrat = ybar / xbar * Xbar
+    y = [10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32]
+    N, k = len(y), 3
+    n = N // k
+    means = [sum(y[i::k]) / n for i in range(k)]
+    Y = sum(y) / N
+    vsys = sum((m - Y) ** 2 for m in means) / k
+    S2 = sum((v - Y) ** 2 for v in y) / (N - 1)
+    vsrs = (1 - n / N) * S2 / n
     return {
-        "Npop": Npop, "n": n, "Xbar": s(Xbar, 0), "xbar": s(xbar, 0), "ybar": s(ybar, 0), "sxy": s(sxy, 0),
-        "sxx": s(sxx, 0), "b": s(b, 1), "dx": s(Xbar - xbar, 0), "adj": s(b * (Xbar - xbar), 1),
-        "yreg": s(yreg, 1), "tot": r(tot, 0), "tot_s": s(tot, 0), "tot_rat": s(Npop * yrat, 0),
-        "tot_srs": s(Npop * ybar, 0), "tot_rev": s(Npop * (ybar - b * (Xbar - xbar)), 0),
-        "tot_b1": s(Npop * (ybar + (Xbar - xbar)), 0), "tot_x": s(Npop * Xbar, 0), "yrat": s(yrat, 2),
+        "N": N, "k": k, "n": n, "m1": s(means[0], 0), "m2": s(means[1], 0), "m3": s(means[2], 0), "Y": s(Y, 0),
+        "vsys": r(vsys, 2), "vsys_s": s(vsys, 2), "vsys4": s(vsys, 4), "S2": s(S2, 1), "vsrs": s(vsrs, 2),
+        "fpc": s(1 - n / N, 4), "ssd": s(sum((m - Y) ** 2 for m in means), 0), "vsys_k1": s(vsys * k / (k - 1), 2),
+        "vsrs_nofpc": s(S2 / n, 2),
     }
 
 
 def p11():
-    ev = [2.30, 1.20, 0.80, 0.45, 0.25]
-    p = len(ev)
-    cum = []
-    c = 0
-    for v in ev:
-        c += v
-        cum.append(c / p)
-    kaiser = sum(1 for v in ev if v >= 1)
-    k80 = next(i + 1 for i, v in enumerate(cum) if v >= 0.8)
-    # (b) 直交回転
-    l = (0.6, 0.5)
-    cs, sn = 0.8, 0.6
-    rot = (l[0] * cs + l[1] * sn, -l[0] * sn + l[1] * cs)
-    rotT = (l[0] * cs - l[1] * sn, l[0] * sn + l[1] * cs)
-    h2 = l[0] ** 2 + l[1] ** 2
-    h2r = rot[0] ** 2 + rot[1] ** 2
+    # (a) 等相関の 3 指標、第 1 主成分による再構成
+    z = (1.2, 0.3, -0.6)
+    rr = 0.6
+    sz = sum(z)
+    score = sz / sqrt(3)
+    recon = sz / 3
+    res = [v - recon for v in z]
+    rss = sum(v ** 2 for v in res)
+    tot = sum(v ** 2 for v in z)
+    res_un = [v - sz for v in z]
+    # (b) 斜交因子モデル
+    l1, l2, ph = 0.7, 0.2, 0.5
+    h2 = l1 ** 2 + l2 ** 2 + 2 * l1 * l2 * ph
+    st = (l1 + l2 * ph, l1 * ph + l2)
+    # (c) 非計量 MDS のストレス
+    d = [1.0, 1.6, 1.4, 2.2, 2.8, 3.0]
+    dh = [1.0, 1.5, 1.5, 2.2, 2.8, 3.0]
+    num = sum((x - y) ** 2 for x, y in zip(d, dh))
+    den = sum(x ** 2 for x in d)
+    stress = sqrt(num / den)
+    dbar = sum(d) / len(d)
+    den2 = sum((x - dbar) ** 2 for x in d)
     return {
-        "ev1": s(ev[0], 2), "ev2": s(ev[1], 2), "ev3": s(ev[2], 2), "ev4": s(ev[3], 2), "ev5": s(ev[4], 2), "p": p,
-        "c1": s(cum[0] * 100, 0), "c2": s(cum[1] * 100, 0), "c3": s(cum[2] * 100, 0), "c4": s(cum[3] * 100, 0),
-        "kaiser": kaiser, "k80": k80,
-        "l1": s(l[0], 1), "l2": s(l[1], 1), "cs": s(cs, 1), "sn": s(sn, 1),
-        "r1": s(rot[0], 2), "r2": s(rot[1], 2), "rt1": s(rotT[0], 2), "rt2": s(rotT[1], 2),
-        "h2": s(h2, 2), "u2": s(1 - h2, 2), "h2r": s(h2r, 2), "r1sq": s(rot[0] ** 2, 4), "r2sq": s(rot[1] ** 2, 4),
-        "u_sum": s(1 - (rot[0] + rot[1]), 2), "lsum": s(rot[0] + rot[1], 2),
-        "a11": s(l[0] * cs, 2), "a12": s(l[1] * sn, 2), "a21": s(-l[0] * sn, 2), "a22": s(l[1] * cs, 2),
+        "z1": s(z[0], 1), "z2": s(z[1], 1), "z3": s(z[2], 1), "rr": s(rr, 1), "ev1": s(1 + 2 * rr, 1),
+        "sz": s(sz, 1), "score": s(score, 4), "recon": s(recon, 1), "e1": s(res[0], 1), "e2": s(res[1], 1),
+        "e3": s(res[2], 1), "rss": s(rss, 2), "tot": s(tot, 2), "sc2": s(score ** 2, 2),
+        "w_nosq": s(tot - score, 2), "w_un": s(sum(v ** 2 for v in res_un), 2),
+        "pl1": s(l1, 1), "pl2": s(l2, 1), "ph": s(ph, 1), "h2": s(h2, 2), "h2o": s(l1 ** 2 + l2 ** 2, 2),
+        "cross": s(2 * l1 * l2 * ph, 2), "st1": s(st[0], 2), "st2": s(st[1], 2), "h2st": s(st[0] ** 2 + st[1] ** 2, 2),
+        "u2": s(1 - h2, 2), "ls": s(l1 * st[0] + l2 * st[1], 2),
+        "d1": s(d[0], 1), "d2": s(d[1], 1), "d3": s(d[2], 1), "d4": s(d[3], 1), "d5": s(d[4], 1), "d6": s(d[5], 1),
+        "dh2": s(dh[1], 1), "num": s(num, 2), "den": s(den, 2), "stress": r(stress, 3), "stress_s": s(stress, 3),
+        "stress4": s(stress, 4), "ratio": s(num / den, 5), "st_nosq": s(num / den, 4),
+        "st2b": s(sqrt(num / den2), 3), "den2": s(den2, 2), "dbar": s(dbar, 1),
     }
 
 
 def p12():
-    ybar = 20.0
-    reg = {"都市": (60, 0.0), "郊外": (30, 3.0), "離島": (10, 12.0)}
-    tim = {"なし": (70, 0.0), "あり": (30, 2.0)}
-    nreg = sum(v[0] for v in reg.values())
-    mreg = sum(v[0] * v[1] for v in reg.values()) / nreg
-    mtim = sum(v[0] * v[1] for v in tim.values()) / nreg
-    sc = {k: v[1] - mreg for k, v in reg.items()}
-    st = {k: v[1] - mtim for k, v in tim.items()}
-    pred = ybar + sc["郊外"] + st["あり"]
-    ureg = sum(v[1] for v in reg.values()) / 3
-    utim = sum(v[1] for v in tim.values()) / 2
-    return {
-        "ybar": s(ybar, 1), "nU": reg["都市"][0], "nS": reg["郊外"][0], "nI": reg["離島"][0],
-        "bS": s(reg["郊外"][1], 1), "bI": s(reg["離島"][1], 1), "nN": tim["なし"][0], "nY": tim["あり"][0],
-        "bY": s(tim["あり"][1], 1), "nall": nreg,
-        "mreg": s(mreg, 1), "mtim": s(mtim, 1), "scU": s(sc["都市"], 1), "scS": s(sc["郊外"], 1), "scI": s(sc["離島"], 1),
-        "stN": s(st["なし"], 1), "stY": s(st["あり"], 1), "pred": s(pred, 1), "c0": s(ybar - mreg - mtim, 1),
-        "w_raw": s(ybar + reg["郊外"][1] + tim["あり"][1], 1),
-        "w_unw": s(ybar + reg["郊外"][1] - ureg + tim["あり"][1] - utim, 1),
-        "w_cat": s(ybar + sc["郊外"] + st["なし"], 1), "w_noint": s(sc["郊外"] + st["あり"], 1),
-        "ureg": s(ureg, 1), "utim": s(utim, 1),
-    }
+    ph = 0.6
+    ratio = ((1 + ph) / (1 - ph)) ** 2
+    half = (1 + ph) ** 2 / (1 + ph ** 2)
+    return {"ph": s(ph, 1), "opp": s(1 + ph, 1), "omp": s(1 - ph, 1), "ratio": s(ratio, 0),
+            "nosq": s((1 + ph) / (1 - ph), 1), "inv": s(1 / ratio, 4), "half": s(half, 2), "opp2": s((1 + ph) ** 2, 2),
+            "omp2": s((1 - ph) ** 2, 2), "d0": s(1 - 2 * ph + ph ** 2, 2), "dpi": s(1 + 2 * ph + ph ** 2, 2)}
 
 
 def p13():
-    f1, f2 = 0.5, 0.3
-    rho1 = f1 / (1 - f2)
-    rho2 = f1 * rho1 + f2
-    pacf2 = (rho2 - rho1 ** 2) / (1 - rho1 ** 2)
+    blocks, na, nb = 4, 3, 2
+    ss = {"blk": 18.0, "A": 36.0, "E1": 24.0, "B": 10.0, "AB": 4.0, "E2": 18.0}
+    df = {"blk": blocks - 1, "A": na - 1, "E1": (blocks - 1) * (na - 1), "B": nb - 1, "AB": (na - 1) * (nb - 1)}
+    df["E2"] = blocks * na * nb - 1 - sum(df.values())
+    ms = {k: ss[k] / df[k] for k in ss}
+    F = ms["A"] / ms["E1"]
+    F2 = ms["A"] / ms["E2"]
+    pooled = (ss["E1"] + ss["E2"]) / (df["E1"] + df["E2"])
+    Fp = ms["A"] / pooled
     return {
-        "f1": s(f1, 1), "f2": s(f2, 1), "fs": s(f1 + f2, 1), "fd": s(f2 - f1, 1), "omf2": s(1 - f2, 1),
-        "rho1": s(rho1, 3), "rho2": s(rho2, 3), "pacf2": s(pacf2, 3), "rho1sq": s(rho1 ** 2, 4),
-        "rho2_4": s(rho2, 4), "pnum": s(rho2 - rho1 ** 2, 4), "pden": s(1 - rho1 ** 2, 4),
-        "rho1_plus": s(f1 / (1 + f2), 3),
-    }
-
-
-def p14():
-    # 層 A, B：(新・誤, 新・正, 旧・誤, 旧・正)
-    A = (10, 190, 30, 270)
-    B = (6, 394, 8, 192)
-    nA, nB = sum(A), sum(B)
-    adA, bcA = A[0] * A[3] / nA, A[1] * A[2] / nA
-    adB, bcB = B[0] * B[3] / nB, B[1] * B[2] / nB
-    mh = (adA + adB) / (bcA + bcB)
-    a, b, c, d = (A[i] + B[i] for i in range(4))
-    crude = a * d / (b * c)
-    orA = A[0] * A[3] / (A[1] * A[2])
-    orB = B[0] * B[3] / (B[1] * B[2])
-    return {
-        "Aa": A[0], "Ab": A[1], "Ac": A[2], "Ad": A[3], "Ba": B[0], "Bb": B[1], "Bc": B[2], "Bd": B[3],
-        "nA": nA, "nB": nB, "nAn": A[0] + A[1], "nAo": A[2] + A[3], "nBn": B[0] + B[1], "nBo": B[2] + B[3],
-        "adA": s(adA, 2), "bcA": s(bcA, 2), "adB": s(adB, 2), "bcB": s(bcB, 4),
-        "sad": s(adA + adB, 2), "sbc": s(bcA + bcB, 4),
-        "mh": r(mh, 2), "mh_s": s(mh, 2), "mh4": s(mh, 4), "crude": s(crude, 2), "orA": s(orA, 2), "orB": s(orB, 2),
-        "avg": s((orA + orB) / 2, 2), "inv": s(1 / mh, 2),
-        "ta": a, "tb": b, "tc": c, "td": d,
+        "blocks": blocks, "na": na, "nb": nb, "nt": blocks * na * nb,
+        "sblk": s(ss["blk"], 0), "sA": s(ss["A"], 0), "sE1": s(ss["E1"], 0), "sB": s(ss["B"], 0), "sAB": s(ss["AB"], 0),
+        "sE2": s(ss["E2"], 0), "dblk": df["blk"], "dA": df["A"], "dE1": df["E1"], "dB": df["B"], "dAB": df["AB"],
+        "dE2": df["E2"], "mA": s(ms["A"], 1), "mE1": s(ms["E1"], 1), "mE2": s(ms["E2"], 1),
+        "F": s(F, 2), "F2": s(F2, 2), "Fp": s(Fp, 2), "mpool": s(pooled, 1), "dpool": df["E1"] + df["E2"],
+        "Fraw": s(ss["A"] / ss["E1"], 2), "dtot": blocks * na * nb - 1,
+        "f26": "5.14", "f29": "4.26", "f215": "3.68",
     }
 
 
 def values():
     return {"s22p01": p01(), "s22p02": p02(), "s22p03": p03(), "s22p04": p04(), "s22p05": p05(),
             "s22p06": p06(), "s22p07": p07(), "s22p08": p08(), "s22p09": p09(), "s22p10": p10(),
-            "s22p11": p11(), "s22p12": p12(), "s22p13": p13(), "s22p14": p14()}
+            "s22p11": p11(), "s22p12": p12(), "s22p13": p13()}
 
 
 if __name__ == "__main__":
