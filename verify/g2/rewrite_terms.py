@@ -345,6 +345,16 @@ check(T, "8 人：4 組×2 人≈0.056・単純無作為≈0.718・2 組×4 人�
 T = "law-of-total-probability"
 check(T, "例1 0.018+0.032=0.05・B である確率 0.64・例2 0.062・図 P(不良|B)=1−0.92", close(.6 * .03 + .4 * .08, .05, 1e-12) and close(.032 / .05, .64, 1e-12) and close(.4 * .1 + .5 * .04 + .1 * .02, .062, 1e-12) and close(1 - .92, .08, 1e-12), None)
 
+T = "rejection-region"
+check(T, "SE 2・右片側 503.29・両側 496.08 と 503.92・503.5 は右片側で棄却・両側で棄却しない", close(8 / 4, 2, 1e-12) and close(500 + 1.645 * 2, 503.29, 1e-9) and close(500 - 1.96 * 2, 496.08, 1e-9) and close(500 + 1.96 * 2, 503.92, 1e-9) and 503.29 < 503.5 < 503.92, None)
+T = "confidence-interval-test-duality"
+check(T, "95% 区間 (45.74, 54.26)・μ=45：t=2.5・p≈0.025・μ=52：t=−1.0・p≈0.33", close(50 - stats.t.isf(.025, 15) * 2, 45.74, 0.005) and close(50 + stats.t.isf(.025, 15) * 2, 54.26, 0.005) and close(2 * stats.t.sf(2.5, 15), .025, 5e-4) and close(2 * stats.t.sf(1, 15), .33, 0.005), None)
+check(T, "図の p 値の曲線（自由度 15）", np.allclose([round(2 * stats.t.sf(abs(50 - m) / 2, 15), 4) for m in range(44, 57)], [0.009, 0.0245, 0.0639, 0.1544, 0.3332, 0.6243, 1, 0.6243, 0.3332, 0.1544, 0.0639, 0.0245, 0.009]), None)
+T = "power-function"
+check(T, "境目 103.29・検出力 0.05・0.26・0.64・0.91・0.99・P(Z>−0.355)≈0.64", close(100 + 1.645 * 2, 103.29, 1e-9) and np.allclose([round(stats.norm(m, 2).sf(103.29), 2) for m in (100, 102, 104, 106, 108)], [0.05, 0.26, 0.64, 0.91, 0.99]), None)
+T = "chi-square-test-variance"
+check(T, "χ²=14×6.4/4=22.4・5% 点 23.68・p≈0.07・2.5% 点 26.12・97.5% 点 5.629", close(14 * 6.4 / 4, 22.4, 1e-9) and close(stats.chi2.isf(.05, 14), 23.68, 0.005) and close(stats.chi2.sf(22.4, 14), .07, 0.005) and close(stats.chi2.isf(.025, 14), 26.12, 0.005) and close(stats.chi2.isf(.975, 14), 5.629, 5e-4), stats.chi2.sf(22.4, 14))
+
 ng = results.count(False)
 print(f"書き直した共通の用語の検算: OK {len(results) - ng} / NG {ng}")
 sys.exit(1 if ng else 0)

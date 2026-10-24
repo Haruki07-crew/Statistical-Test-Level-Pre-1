@@ -463,7 +463,6 @@ chapters:
     title: 棄却域
     importance: B
     status: verified
-    from: pre1
   - id: type-i-and-ii-errors
     title: 第1種の過誤・第2種の過誤
     importance: A
@@ -472,7 +471,6 @@ chapters:
     title: 検出力・検出力関数
     importance: B
     status: verified
-    from: pre1
   - id: one-sided-two-sided-test
     title: 片側検定と両側検定
     importance: A
@@ -489,7 +487,6 @@ chapters:
     title: 母分散のカイ二乗検定
     importance: B
     status: verified
-    from: pre1
   - id: proportion-test
     title: 母比率の検定
     importance: A
@@ -498,7 +495,6 @@ chapters:
     title: 信頼区間と検定の対応
     importance: B
     status: verified
-    from: pre1
 - 'no': 13
   title: 2標本の検定とカイ二乗検定
   terms:

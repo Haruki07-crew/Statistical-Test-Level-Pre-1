@@ -3,7 +3,7 @@ id: type-i-and-ii-errors
 title: 第1種の過誤・第2種の過誤
 reading: だいいっしゅのかご・だいにしゅのかご
 en: Type I and type II errors
-aliases: [第一種の過誤, 第二種の過誤, αエラー, βエラー, 検出力, あわてものの誤り, ぼんやりものの誤り]
+aliases: [第一種の過誤, 第二種の過誤, αエラー, βエラー, あわてものの誤り, ぼんやりものの誤り]
 chapter: 12
 importance: A
 tags: [仮説検定, 検出力]

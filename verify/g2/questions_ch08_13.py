@@ -130,6 +130,12 @@ q.check("q12-z-test-known-variance-g2", abs((104 - 100) / (8 / 4) - 2) < 1e-12 a
 q.check("q12-one-sample-t-test-g2", abs(stats.t.isf(.025, 9) - 2.262) < 5e-4 and chosen(q, "q12-one-sample-t-test-g2") == "$t_{0.025}(9)=2.262$" and abs(stats.t.isf(.05, 9) - 1.833) < 5e-4 and abs(stats.t.isf(.025, 10) - 2.228) < 5e-4, "表の値")
 se0 = sqrt(.05 * .95 / 400)
 q.check("q12-proportion-test-g2", chosen(q, "q12-proportion-test-g2") == "$\\sqrt{0.05\\times 0.95/400}$" and abs((0.07 - 0.05) / se0 - 1.84) < 0.005 and abs((0.07 - .05) / sqrt(.07 * .93 / 400) - 1.57) < 0.005, f"z={(0.07 - .05) / se0:.3f}・p̂ を使うと {(0.07 - .05) / sqrt(.07 * .93 / 400):.3f}")
+q.num("q12-rejection-region-g1", 200 + 1.96 * 10 / 5)
+q.check("q12-confidence-interval-test-duality-g1", chosen(q, "q12-confidence-interval-test-duality-g1") == "「母平均は 12」" and not (12.4 < 12 < 15.8) and 12.4 < 13 < 15.8, "12 だけが区間の外")
+q.num("q12-power-function-g1", 1 - 0.3594)
+q.check("q12-power-function-g1", abs(stats.norm(54, 2).sf(53.29) - 0.64) < 0.005 and abs(stats.norm.sf(0.36) - 0.3594) < 5e-5, f"正確な検出力 {stats.norm(54, 2).sf(53.29):.4f}")
+q.num("q12-chi-square-test-variance-g1", 10 * 12 / 8)
+q.check("q12-chi-square-test-variance-g1", abs(stats.chi2.isf(.05, 10) - 18.31) < 0.005, "自由度 10 の 5% 点 18.31")
 run(q)
 
 q = Q(13)

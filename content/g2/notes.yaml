@@ -19,10 +19,6 @@ ci-two-sample-proportion: 2つの比率の分散を足して標準誤差を作�
 required-sample-size: 誤差の範囲を決めて n について解く計算（比率で見当がなければ p＝0.5）と、小数は切り上げることを押さえる。
 fisher-z-transformation: 相関係数を z 変換し、標準偏差 1/√(n－3) で区間を作って元に戻す手順を押さえる。
 finite-population-correction: 戻さずに抽出するとき、標本平均の分散に (N－n)/(N－1) を掛けることを押さえる。
-rejection-region: 棄却域の形（両側・右片側・左片側）と、分布表の点の選び方を押さえる。
-power-function: 検出力＝対立仮説が正しいときに棄却する確率。標本を大きくすると上がることと、簡単な z 検定での計算を押さえる。
-chi-square-test-variance: （n－1）s²/σ₀² を自由度 n－1 のカイ二乗分布の点と比べる手順を押さえる。
-confidence-interval-test-duality: 両側 α の検定で棄却されない値の範囲が、信頼係数 1－α の信頼区間になることを押さえる。
 pooled-variance: （n₁－1）s₁²＋（n₂－1）s₂² を n₁＋n₂－2 で割る計算を押さえる。
 f-test-equal-variances: 不偏分散の比を F 分布（自由度の順に注意）の点と比べる手順を押さえる。
 two-sample-proportion-test: 2群を合わせた比率で標準誤差を作る z 検定を押さえる。
