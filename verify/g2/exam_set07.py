@@ -78,14 +78,14 @@ E.choice("s07p08c", f(1 - .0793, 3), f"シミュレーション {np.mean(ma > mb
 E.check("s07p08c", abs(np.mean(ma > mb) - .921) < .003 and abs(stats.norm.sf(1.41) - .0793) < 5e-5 and opts("s07p08c") == {"0.921", "0.079", "0.500", f(stats.norm.sf(-.5), 3), f(stats.norm.sf(-1), 3)}, "表の値と誤答の由来")
 E.check("s07p09a", ans("s07p09a").startswith("推定量は標本から母数を推定する式"), "推定量と推定値")
 E.choice("s07p09b", iv(2 / 4.295, 2 * 3.855, 2), "F の点で区間")
-E.check("s07p09b", abs(stats.f.isf(.025, 10, 8) - 4.295) < 5e-4 and abs(stats.f.isf(.025, 8, 10) - 3.855) < 5e-4 and opts("s07p09b") == {iv(2 / 4.295, 2 * 3.855, 2), iv(2 / 3.855, 2 * 4.295, 2), iv(2 / 4.295, 2 * 4.295, 2), iv(2 / 3.855, 2 * 3.855, 2), iv(1 / 3.855, 3.855, 2)}, "表の値と誤答の由来")
+E.check("s07p09b", abs(stats.f.isf(.025, 10, 8) - 4.295) < 5e-4 and abs(stats.f.isf(.025, 8, 10) - 3.855) < 5e-4 and opts("s07p09b") == {iv(2 / 4.295, 2 * 3.855, 2), iv(2 / 3.855, 2 * 4.295, 2), iv(2 / 4.295, 2 * 4.295, 2), iv(2 / 3.855, 2 * 3.855, 2), iv(1 / 4.295, 3.855, 2)}, "表の値と誤答の由来")
 cov = 0
 for _ in range(4000):
     a_ = rng.normal(0, sqrt(2), 11).var(ddof=1); b_ = rng.normal(0, 1, 9).var(ddof=1); r = a_ / b_
     cov += r / 4.295 <= 2 <= r * 3.855
 E.check("s07p09b", abs(cov / 4000 - .95) < .015, f"真の比 2 での被覆率 {cov / 4000:.3f}")
 E.check("s07p09c", -1.2 < 0 < 3.4 and ans("s07p09c").startswith("区間が 0 を含むので、「母平均の差は 0」は棄却されず"), "区間が 0 を含む")
-E.check("s07p09d", ans("s07p09d") == f"幅の半分は {f(1.96 * sqrt(.25 / 100), 3)} で、標本比率が 0.5 のときに幅は最大" and max(range(1, 100), key=lambda k: k * (100 - k)) == 50, "幅の半分 0.098・p(1−p) の最大は 0.5")
+E.check("s07p09d", ans("s07p09d") == f"幅の半分は {f(1.96 * sqrt(.25 / 100), 3)} で、標本比率が 0.5 のときに幅は最大" and max(range(1, 100), key=lambda k: k * (100 - k)) == 50 and {o.split(" で")[0] for o in opts("s07p09d")} == {f"幅の半分は {v}" for v in (f(1.96 * sqrt(.25 / 100), 3), f(sqrt(.25 / 100), 2), f(1.96 * .25 / 100, 4), f(1.96 * .25, 2))}, "幅の半分 0.098・p(1−p) の最大は 0.5・誤答の値（0.05・0.0049・0.49）")
 E.check("s07p10a", ans("s07p10a") == "$Z<-1.645$", "左片側")
 E.choice("s07p10b", f"p 値 {f(stats.norm.cdf(-1.8), 4)} で、棄却する", "左片側の p 値")
 E.check("s07p10b", abs(stats.norm.sf(1.8) - .0359) < 5e-5, "表の値")

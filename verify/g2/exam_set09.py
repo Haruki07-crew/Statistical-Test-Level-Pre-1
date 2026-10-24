@@ -115,7 +115,7 @@ def r2(X):
 adj = lambda R, p: 1 - (1 - R) * 59 / (60 - p - 1)
 noise = rng.normal(0, 1, (60, 1))
 E.check("s09p10a", r2(np.c_[xx[:, :1], noise]) >= r2(xx[:, :1]) and ans("s09p10a").startswith("決定係数は減らないが"), f"無関係な変数を加えると R² {r2(xx[:, :1]):.4f} → {r2(np.c_[xx[:, :1], noise]):.4f}、調整済み {adj(r2(xx[:, :1]), 1):.4f} → {adj(r2(np.c_[xx[:, :1], noise]), 2):.4f}")
-E.check("s09p10b", ans("s09p10b") == str(10 + 2 * 3 + 5) and opts("s09p10b") == {"21", "16", "15", "26", "18"}, "代入と誤答の値")
+E.check("s09p10b", ans("s09p10b") == str(10 + 2 * 3 + 5) and opts("s09p10b") == {str(v) for v in (10 + 2 * 3 + 5, 10 + 2 * 3, 10 + 5, 10 + 2 * 3 + 5 * 3, 10 + 3 + 5)}, "代入と誤答の由来（週末を忘れる・気温を忘れる・d に 3 を入れる・係数 2 を忘れる）")
 E.check("s09p10c", -0.3 < 0 < 1.5 and ans("s09p10c").startswith("区間が 0 を含むので"), "区間が 0 を含む")
 E.check("s09p11a", ans("s09p11a").startswith("各群のデータが互いに独立で"), "分散分析の前提")
 Fs = []

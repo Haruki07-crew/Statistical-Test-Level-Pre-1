@@ -108,6 +108,7 @@ E.check("s08p11a", [k for k, p_ in zip("ABC", (.004, .03, .27)) if p_ < .01] == 
 xs = rng.normal(0, 1, 22); xs = (xs - xs.mean()) / np.sqrt(((xs - xs.mean()) ** 2).sum()) * 10
 ys = 2 * xs + rng.normal(0, 4, 22); bb, aa = np.polyfit(xs, ys, 1); rs = ys - aa - bb * xs; s_ = np.sqrt((rs ** 2).sum() / 20)
 E.check("s08p11b", abs(s_ / np.sqrt((xs ** 2).sum()) - s_ / 10) < 1e-9 and ans("s08p11b") == "標準誤差 0.4、t 値 5.0", "SE = s/√Sxx（Sxx=100 のデータで確認）")
+E.check("s08p11b", opts("s08p11b") == {"標準誤差 0.4、t 値 5.0"} | {f"標準誤差 {se:g}、t 値 {t:g}" for se, t in ((4 / 100, 2 / .04), (4, 2 / 4), (4 / 10, 2 * .4), (4 / 20, 2 / .2))}, "誤答の由来（Sxx で割る・s のまま・掛ける・自由度 20 で割る）")
 xo = np.r_[rng.normal(5, 1, 20), 20]; yo = np.r_[1 + .5 * xo[:20] + rng.normal(0, .5, 20), 0]
 b_with = np.polyfit(xo, yo, 1)[0]; b_wo = np.polyfit(xo[:20], yo[:20], 1)[0]
 E.check("s08p11c", abs(b_with - b_wo) > .3 and ans("s08p11c").startswith("その点が結果に大きな影響を与えている"), f"離れた 1 点で傾き {b_wo:.2f} → {b_with:.2f}")
