@@ -48,6 +48,7 @@ def p01():
     n_645 = 1.645 ** 2 * p0 * (1 - p0) / e ** 2
     n_width = z ** 2 * p0 * (1 - p0) / (2 * e) ** 2
     return {
+        **{'lb_' + k_: v_ for k_, v_ in p01b().items()},
         "N": N, "D": D, "G": G, "G1": G - 1, "G2": G - 2, "N1": N - 1, "N2": N - 2,
         "pa": r(pa, 3), "pa_s": s(pa, 3), "pa5": s(pa, 5), "num": G * (G - 1) * D, "den": N * (N - 1) * (N - 2),
         "with_rep": s(with_rep, 4), "atleast": s(atleast, 4),
@@ -235,6 +236,7 @@ def p06():
     t_var = (mo - mn) / (vd / sqrt(npd))
     t_nosq = (mo - mn) / sd_d
     return {
+        **{'ks_' + k_: v_ for k_, v_ in p06a().items()},
         "A1": A[0], "A2": A[1], "A3": A[2], "A4": A[3], "A5": A[4],
         "B1": B[0], "B2": B[1], "B3": B[2], "B4": B[3], "B5": B[4],
         "D": s(D, 1), "DB": s(DB, 1),
@@ -261,6 +263,7 @@ def p07():
     syy = sum(b_ ** 2 for b_ in ey)
     bav = sxy / sxx
     return {
+        **{'ct_' + k_: v_ for k_, v_ in p07a().items()},
         "b0": s(b0, 1), "b1": s(b1, 2), "g": s(g, 1), "d": s(d, 2), "dabs": s(-d, 2),
         "slopeA": s(b1 + d, 2), "b0A": s(b0 + g, 1), "xs": s(xs, 1),
         "w1": s(g / b1, 1), "w2": s(g / (b1 + d), 1), "w3": s(-xs, 1),
@@ -297,6 +300,7 @@ def p08():
     n = a + b + c + dd
     phi = (a * dd - b * c) / sqrt((a + b) * (c + dd) * (a + c) * (b + dd))
     return {
+        **{'dr_' + k_: v_ for k_, v_ in p08a().items()},
         "y1": y[0], "y2": y[1], "y3": y[2], "y4": y[3], "m1": m[0], "m2": m[1], "m3": m[2], "m4": m[3],
         "l1": s(lr[0], 4), "l2": s(lr[1], 4), "l3": s(lr[2], 4), "l4": s(lr[3], 4),
         "tt1": s(terms[0], 4), "tt2": s(terms[1], 4), "tt3": s(terms[2], 4), "tt4": s(terms[3], 4),
@@ -382,6 +386,7 @@ def p11():
     rm_w = sqrt(max(chi - df_w, 0) / (df_w * (nobs - 1)))
     rm_nosub = sqrt(chi / (dfm * (nobs - 1)))
     return {
+        **{'mh_' + k_: v_ for k_, v_ in p11a().items()},
         "z1": s(z[0], 1), "z2": s(z[1], 1), "z3": s(z[2], 1), "rr": s(rr, 1), "ev1": s(1 + 2 * rr, 1),
         "sz": s(sz, 1), "score": s(score, 4), "recon": s(recon, 1), "e1": s(res[0], 1), "e2": s(res[1], 1),
         "e3": s(res[2], 1), "rss": s(rss, 2), "tot": s(tot, 2), "sc2": s(score ** 2, 2),
@@ -456,6 +461,84 @@ def p14():
             "p_nocov": s(1 - phi[z_nocov], 3), "p_comp": s(phi[z], 3), "dx3": x3 - mu[2],
             "f077": "0.7794", "f094": "0.8264", "f132": "0.9066", "f192": "0.9726", "zunc": s(z_unc, 2), "znov": s(z_nov, 2),
             "znocov": s(z_nocov, 2), "vs0": vs0}
+
+
+def p01b():
+    """(b) ロジット変換による比率の区間。e^x は問題文の表（x を小数第 3 位に丸めた値）。"""
+    import math
+    n, k = 200, 12
+    ph = k / n
+    L = -2.752                                  # log(12/188) を問題文で示す値
+    sq = 3.3586                                 # √(n p̂ (1-p̂)) = √11.28
+    se = 1 / sq
+    ex = lambda x: math.exp(r(x, 3))
+    pr = lambda x: ex(x) / (1 + ex(x))
+    sep = sqrt(ph * (1 - ph) / n)
+    cands = {"ok": (L - 1.96 * se, L + 1.96 * se), "90": (L - 1.645 * se, L + 1.645 * se), "narrow": (L - 1.96 * sep, L + 1.96 * sep)}
+    ci = lambda a, b: f"({s(a, 3)},\\ {s(b, 3)})"
+    out = {k_: ci(pr(a), pr(b)) for k_, (a, b) in cands.items()}
+    out["odds"] = ci(ex(cands["ok"][0]), ex(cands["ok"][1]))
+    out["wald"] = ci(ph - 1.96 * sep, ph + 1.96 * sep)
+    assert len(set(out.values())) == 5
+    xs = sorted(r(v, 3) for ab in cands.values() for v in ab)
+    return {"n": n, "k": k, "nk": n - k, "ph": s(ph, 2), "qh": s(1 - ph, 2), "npq": s(n * ph * (1 - ph), 2), "sq": s(sq, 4),
+            "L3": s(L, 3), "se": s(se, 4), "sep": s(sep, 4), "lo3": s(cands["ok"][0], 3), "hi3": s(cands["ok"][1], 3),
+            "elo": s(math.exp(r(cands["ok"][0], 3)), 4), "ehi": s(math.exp(r(cands["ok"][1], 3)), 4),
+            "pL": s(pr(cands["ok"][0]), 4), "pU": s(pr(cands["ok"][1]), 4),
+            "tabx": " | ".join(s(x, 3) for x in xs), "tabsep": "---|" * len(xs), "taby": " | ".join(s(math.exp(x), 4) for x in xs),
+            **{"ci_" + k_: v for k_, v in out.items()}}
+
+
+def p06a():
+    """(a) 2 標本コルモゴロフ・スミルノフ統計量。"""
+    A, B = [1, 2, 2, 3], [2, 3, 4, 4, 5]
+    xs = sorted(set(A + B))
+    FA = [sum(v <= x for v in A) / len(A) for x in xs]
+    FB = [sum(v <= x for v in B) / len(B) for x in xs]
+    d = [abs(a - b) for a, b in zip(FA, FB)]
+    D = max(d)
+    nA, nB = len(A), len(B)
+    crit = 1.36 * sqrt((nA + nB) / (nA * nB))
+    assert D < crit and D > 1.36 / sqrt(nA + nB) and max(b - a for a, b in zip(FA, FB)) <= 0
+    j = " | "
+    return {"xa": ", ".join(map(str, A)), "xb": ", ".join(map(str, B)), "nA": nA, "nB": nB, "nAB": nA + nB, "nAnB": nA * nB,
+            "D": s(D, 2), "crit": s(crit, 2), "w_crit": s(1.36 / sqrt(nA + nB), 2), "xmax": xs[d.index(D)],
+            "ecx": j.join(map(str, xs)), "ecsep": "---|" * len(xs), "eca": j.join(s(v, 2) for v in FA), "ecb": j.join(s(v, 2) for v in FB),
+            "ecd": j.join(s(v, 2) for v in d)}
+
+
+def p07a():
+    """(a) 交互作用のあるモデルで x を平均で中心化したときの係数。"""
+    b0, b1, b2, b3, xbar = 2.0, 0.50, 1.5, -0.30, 6.0
+    g0, g2 = b0 + b1 * xbar, b2 + b3 * xbar
+    assert g2 < 0
+    return {"b0": s(b0, 1), "b1": s(b1, 2), "b2": s(b2, 1), "b3": s(b3, 2), "b3s": s(b3, 2), "xbar": s(xbar, 1),
+            "g0": s(g0, 1), "g2": s(g2, 2), "g2abs": s(-g2, 2), "w_g2": s(b2 - b3 * xbar, 2)}
+
+
+def p08a():
+    """(a) センター 4 の逸脱度残差とピアソン残差（log は問題文の 4 桁の値）。"""
+    y4, m4, lg = 10, 14, -0.3365
+    inner = y4 * lg - (y4 - m4)
+    rD = -sqrt(2 * inner)
+    rP = (y4 - m4) / 3.7417
+    return {"inner": s(inner, 3), "dev2": s(2 * inner, 2), "sqd": s(sqrt(2 * inner), 4), "rD": s(rD, 2), "rD4": s(rD, 4),
+            "rP": s(rP, 2), "rP4": s(rP, 4), "w_rD1": s(-sqrt(2 * y4 * -lg), 2), "w_rD2": s(-sqrt(inner), 2),
+            "w_rP1": s((y4 - m4) / m4, 2), "w_rP2": s((y4 - m4) / sqrt(y4), 2)}
+
+
+def p11a():
+    """(a) 等相関の相関行列で、主成分得点からマハラノビス距離の 2 乗。"""
+    rho, z = 0.6, (1.2, 0.3, -0.6)
+    l1, l2 = 1 + 2 * rho, 1 - rho
+    t1sq = sum(z) ** 2 / 3
+    zz = sum(v * v for v in z)
+    res = zz - t1sq
+    D2 = t1sq / l1 + res / l2
+    out = {"D2": s(D2, 2), "w_euc": s(zz, 2), "w_res": s(res / l2, 2), "w_mul": s(t1sq * l1 + res * l2, 2), "w_sqrt": s(t1sq / sqrt(l1) + res / sqrt(l2), 2)}
+    assert len(set(out.values())) == 5
+    return {"rho": s(rho, 1), "lam1": s(l1, 1), "lam2": s(l2, 1), "zvec": "(" + ",\\ ".join(s(v, 1) for v in z) + ")",
+            "t1sq": s(t1sq, 2), "zz": s(zz, 2), "res": s(res, 2), "p1": s(t1sq / l1, 4), "p2": s(res / l2, 4), "D24": s(D2, 4), **out}
 
 
 def values():

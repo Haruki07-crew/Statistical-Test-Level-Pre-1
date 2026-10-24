@@ -43,11 +43,21 @@ E.num("s22p01a", rnd(float(p), 3), "破損箱の位置の全列挙で最初の�
 sim = rng.permuted(np.tile(np.r_[np.ones(3), np.zeros(17)], (200000, 1)), axis=1)
 first = sim.argmax(axis=1)
 E.check("s22p01a", abs((first == 2).mean() - float(p)) < 0.003, f"シミュレーション {(first == 2).mean():.4f}")
-# (c) 半幅条件を満たす最小の n を総当たり
-z = stats.norm.ppf(0.975)
-n = next(k for k in range(1, 5000) if 1.96 * math.sqrt(0.15 * 0.85 / k) <= 0.03)
-E.num("s22p01b", n, "半幅 ≤ 0.03 となる最小の n を総当たり")
-E.check("s22p01b", abs(z - 1.96) < 0.001, f"z_0.025={z:.4f}")
+# (b) ロジット区間：numpy の正確な logit・expit で区間を作り、二項分布のシミュレーションで被覆率を確かめる
+from scipy.special import expit, logit
+k_, n_ = 12, 200
+th_ = logit(k_ / n_); se_ = 1 / math.sqrt(n_ * 0.06 * 0.94)
+lo_, hi_ = expit(th_ - stats.norm.isf(0.025) * se_), expit(th_ + stats.norm.isf(0.025) * se_)
+E.choice("s22p01b", f"$({f(lo_, 3)},\\ {f(hi_, 3)})$", f"scipy の logit・expit で ({lo_:.5f}, {hi_:.5f})")
+q1 = E.item("s22p01b")["question"]
+xs_ = [float(v_) for v_ in re.search(r"\| \$x\$ \|(.*)\|", q1).group(1).split("|")]
+ys_ = [float(v_) for v_ in re.search(r"\| \$e\^x\$ \|(.*)\|", q1).group(1).split("|")]
+E.check("s22p01b", all(abs(math.exp(a) - b) < 5e-5 for a, b in zip(xs_, ys_)), "問題文の e^x の表")
+E.check("s22p01b", abs(math.log(12 / 188) - (-2.752)) < 5e-4 and abs(math.sqrt(11.28) - 3.3586) < 5e-5, "問題文の log・√ の値")
+ks = rng.binomial(200, 0.06, 200_000); ks = ks[(ks > 0) & (ks < 200)]
+ph_ = ks / 200; sek = 1 / np.sqrt(200 * ph_ * (1 - ph_))
+cov = np.mean((expit(logit(ph_) - 1.96 * sek) <= 0.06) & (0.06 <= expit(logit(ph_) + 1.96 * sek)))
+E.check("s22p01b", abs(cov - 0.95) < 0.02, f"p=0.06, n=200 でのロジット区間の被覆率 {cov:.4f}")
 
 # ---- 大問2
 pa = stats.poisson.sf(5, 3.0)
@@ -133,17 +143,12 @@ E.check("s22p05b", abs((-2 * np.log(U).sum(1) > 12.59).mean() - 0.05) < 0.003, "
 
 # ---- 大問6
 TA = np.array([1, 2, 2, 3]); TB = np.array([2, 3, 4, 4, 5])
-rk = stats.rankdata(np.r_[TA, TB])
-Wt = rk[:4].sum()
-_, cnts = np.unique(np.r_[TA, TB], return_counts=True)
-Vt = 4 * 5 / 12 * (10 - np.sum(cnts ** 3 - cnts) / (9 * 8))
-E.choice("s22p06a", f"${f((Wt - 20) / math.sqrt(Vt), 2)}$", "scipy rankdata の中間順位と補正分散")
-# 全並べ替え（同順位あり）による W の分散と一致することを確かめる
-allv = np.r_[TA, TB]
-Ws = [rk[list(c)].sum() for c in combinations(range(9), 4)]
-E.check("s22p06a", abs(np.var(Ws) - Vt) < 1e-9, f"全 126 通りの並べ替えでの W の分散 {np.var(Ws):.4f}")
-z_mw = stats.mannwhitneyu(TA, TB, alternative="two-sided", method="asymptotic", use_continuity=False)
-E.check("s22p06a", abs(stats.norm.ppf(z_mw.pvalue / 2) - (Wt - 20) / math.sqrt(Vt)) < 1e-6, "scipy mannwhitneyu（補正つき正規近似）の p 値と一致")
+ks2 = stats.ks_2samp(TA, TB)
+crit = 1.36 * math.sqrt(9 / 20)
+E.choice("s22p06a", f"$D={f(ks2.statistic, 2)}$で、$1.36\\sqrt{{(n_A+n_B)/(n_An_B)}}={f(crit, 2)}$を超えない", f"scipy ks_2samp D={ks2.statistic:.4f}, 正確な p={ks2.pvalue:.4f}")
+E.check("s22p06a", ks2.pvalue > 0.05, "scipy の正確な p 値でも 5% で棄却されない")
+q6 = E.item("s22p06a")["question"]
+E.check("s22p06a", "1, 2, 2, 3" in q6 and "2, 3, 4, 4, 5" in q6, "問題文のデータ")
 # (b) 対応のある t：相関・標準偏差が指定どおりのデータを作り scipy.ttest_rel で計算
 z1 = rng.normal(size=16); z2 = rng.normal(size=16)
 Zm = np.c_[z1 - z1.mean(), z2 - z2.mean()]
@@ -155,9 +160,16 @@ E.check("s22p06b", np.allclose(np.cov(Xd.T), C) and np.allclose(Xd.mean(0), [62,
 E.choice("s22p06b", f"${f(stats.ttest_rel(Xd[:, 0], Xd[:, 1]).statistic, 2)}$", "scipy ttest_rel")
 
 # ---- 大問7
-xx = sp.symbols("x")
-sol = sp.solve(sp.Eq(2.0 + 0.5 * xx, 2.0 + 0.5 * xx + 1.5 - 0.30 * xx), xx)
-E.choice("s22p07a", f"${f(float(sol[0]), 1)}$", "sympy で 2 直線の交点")
+# (a) 雑音のないデータを作り、中心化した x で最小二乗をやり直す
+xs7 = np.r_[rng.uniform(2, 10, 20), rng.uniform(2, 10, 20)]
+xs7 += 6.0 - xs7.mean()
+A7 = np.r_[np.zeros(20), np.ones(20)]
+y7 = 2.0 + 0.5 * xs7 + 1.5 * A7 - 0.30 * xs7 * A7 + rng.normal(0, 0.5, 40)
+co = np.linalg.lstsq(np.c_[np.ones(40), xs7, A7, xs7 * A7], y7, rcond=None)[0]
+cc = xs7 - xs7.mean()
+gc = np.linalg.lstsq(np.c_[np.ones(40), cc, A7, cc * A7], y7, rcond=None)[0]
+E.check("s22p07a", abs(gc[0] - (co[0] + co[1] * 6.0)) < 1e-9 and abs(gc[2] - (co[2] + co[3] * 6.0)) < 1e-9 and np.allclose([gc[1], gc[3]], [co[1], co[3]]), "当てはめ直した係数が代入の式と一致（傾き・交互作用は不変）")
+E.choice("s22p07a", f"$\\hat\\gamma_0={f(2.0 + 0.5 * 6.0, 1)}$、$\\hat\\gamma_2={f(1.5 - 0.30 * 6.0, 2)}$", "代入で求めた係数")
 # (b) FWL 定理：x2 と誤差を作り、指定の残差になるデータで重回帰係数と一致することを確かめる
 ex = np.array([-2, -1, 0, 1, 2.0]); ey = np.array([-1.6, -0.4, 0.2, 0.6, 1.2])
 # 残差が [1, x2] と直交するように、[1, e1, eY] に直交する方向から x2 を作る（与えた残差と矛盾しない説明変数が存在することの確認）
@@ -186,8 +198,10 @@ for _ in range(50):
     beta = beta + np.linalg.solve(X.T @ (mu8[:, None] * X), X.T @ (y - mu8))
 mu8 = np.exp(X @ beta + off)
 E.check("s22p08a", np.allclose(mu8, [10, 10, 16, 14], atol=1e-6), f"当てはめ値 {np.round(mu8, 4)}")
-Dv = 2 * np.sum(y * np.log(y / mu8) - (y - mu8))
-E.choice("s22p08a", f"$D={f(Dv, 2)}$で、自由度2の5%点5.99を下回り", "当てはめ直した逸脱度")
+rD = np.sign(y - mu8) * np.sqrt(2 * (y * np.log(y / mu8) - (y - mu8)))
+rP = (y - mu8) / np.sqrt(mu8)
+E.choice("s22p08a", f"$r^D_4={f(rD[3], 2)}$、$r^P_4={f(rP[3], 2)}$", f"当てはめ直した μ̂ から残差 rD={np.round(rD, 4)}, rP={np.round(rP, 4)}")
+E.check("s22p08a", abs(np.sum(rD ** 2) - 2 * np.sum(y * np.log(y / mu8) - (y - mu8))) < 1e-9, "逸脱度残差の 2 乗和が逸脱度")
 T8 = np.array([[30, 5, 1], [20, 8, 3], [10, 6, 5]])
 xs8, ys8 = [], []
 for i in range(3):
@@ -225,8 +239,8 @@ R = np.full((3, 3), 0.6) + 0.4 * np.eye(3)
 w, V = np.linalg.eigh(R)
 v1 = V[:, -1]
 zv = np.array([1.2, 0.3, -0.6])
-E.choice("s22p11a", f"${f(np.sum((zv - (v1 @ zv) * v1) ** 2), 2)}$", "numpy の固有ベクトルで射影")
-E.check("s22p11a", abs(w[-1] - 2.2) < 1e-9, "最大固有値 2.2")
+E.choice("s22p11a", f"${f(zv @ np.linalg.inv(R) @ zv, 2)}$", f"numpy の逆行列で z'R^-1 z = {zv @ np.linalg.inv(R) @ zv:.5f}")
+E.check("s22p11a", np.allclose(sorted(w), [0.4, 0.4, 2.2]), f"固有値 {np.round(w, 6)}")
 edges = [("W", "D"), ("M", "D"), ("M", "S"), ("S", "O"), ("D", "C"), ("O", "C")]
 parents = {}
 for u, w_ in edges:
