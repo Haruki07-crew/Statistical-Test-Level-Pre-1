@@ -5,7 +5,7 @@ import os
 import sys
 from decimal import Decimal, ROUND_HALF_UP
 from itertools import permutations
-from math import ceil, sqrt
+from math import factorial, ceil, sqrt
 from pathlib import Path
 
 os.environ.setdefault("JD_LEVEL", "g2")
@@ -40,7 +40,7 @@ mix = np.r_[rng.normal(30, 6, 5000), rng.normal(80, 6, 5000)]
 E.check("s06p01a", np.mean(np.abs(mix - mix.mean()) < 5) < 0.02 and ans("s06p01a").startswith("平均値は 2 つの山の間"), f"二峰の平均 {mix.mean():.1f} の近くのデータの割合 {np.mean(np.abs(mix - mix.mean()) < 5):.3f}")
 A = sorted([52, 58, 61, 63, 67, 70, 74, 75, 81]); B = sorted([45, 49, 55, 56, 60, 62, 66, 72, 88])
 E.choice("s06p01b", f"A 組 {np.median(A):.0f} 点、B 組 {np.median(B):.0f} 点", "5 番目の値")
-E.check("s06p01b", opts("s06p01b") == {"A 組 67 点、B 組 60 点", f"A 組 {f(np.mean(A), 1)} 点、B 組 {f(np.mean(B), 1)} 点", f"A 組 {A[3]} 点、B 組 {B[3]} 点", f"A 組 {A[5]} 点、B 組 {B[5]} 点", "A 組 67 点、B 組 62 点"}, "誤答の由来")
+E.check("s06p01b", opts("s06p01b") == {"A 組 67 点、B 組 60 点", f"A 組 {f(np.mean(A), 1)} 点、B 組 {f(np.mean(B), 1)} 点", f"A 組 {A[3]} 点、B 組 {B[3]} 点", f"A 組 {A[5]} 点、B 組 {B[5]} 点", f"A 組 {[58, 52, 67, 63, 61, 75, 74, 70, 81][4]} 点、B 組 {B[4]} 点"}, "誤答の由来（A 組の葉を書かれた順に読むと 5 番目は 61）")
 # ---- 大問2
 x = rng.normal(62, 12, 200); x = (x - x.mean()) / x.std(ddof=1) * 12 + 62; z = (x - 62) / 12; t = 50 + 10 * z
 E.check("s06p02a", abs(z.mean()) < 1e-9 and abs(z.std(ddof=1) - 1) < 1e-9 and abs(t.mean() - 50) < 1e-9 and abs(t.std(ddof=1) - 10) < 1e-9 and ans("s06p02a").startswith("標準得点は平均 0・標準偏差 1、偏差値は平均 50・標準偏差 10"), "変換して確認")
@@ -48,7 +48,7 @@ E.check("s06p02b", abs((1 - 0.6) - 0.4) < 1e-12 and ans("s06p02b").startswith("�
 # ---- 大問3
 xx = rng.normal(0, 1, 1000); yy = 0.6 * xx + 0.8 * rng.normal(0, 1, 1000)
 r0 = np.corrcoef(xx, yy)[0, 1]; r1 = np.corrcoef(-2 * xx + 3, yy)[0, 1]
-E.check("s06p03a", abs(r1 + r0) < 1e-12 and ans("s06p03a") == "−0.6" and opts("s06p03a") == {"−0.6", "0.6", "−1.2", "1.8", "−0.9"}, f"u=−2x+3 で r が {r0:.3f} → {r1:.3f}")
+E.check("s06p03a", abs(r1 + r0) < 1e-12 and ans("s06p03a") == "−0.6" and opts("s06p03a") == {f(-0.6, 1), f(0.6, 1), f(-2 * 0.6, 1), f(-2 * 0.6 + 3, 1), f(0.6 / -2, 1)}, f"u=−2x+3 で r が {r0:.3f} → {r1:.3f}")
 lin = np.linspace(0, 10, 20)
 E.check("s06p03b", abs(np.corrcoef(lin, 5 - 3 * lin)[0, 1] + 1) < 1e-12 and ans("s06p03b").startswith("すべての点が右下がりの直線"), "直線上の点で r=−1")
 b_yx = np.polyfit(xx, yy, 1)[0]; b_xy = np.polyfit(yy, xx, 1)[0]
@@ -66,13 +66,13 @@ E.check("s06p05b", corr_all > 0.05 and max(abs(c) for c in corr_in) < 0.01 and a
 # ---- 大問6
 perms = list(permutations("ABCDE")); adj = sum(abs(p.index("A") - p.index("B")) == 1 for p in perms) / len(perms)
 E.choice("s06p06a", f(adj, 1), f"120 通りの総当たり {adj}")
-E.check("s06p06a", opts("s06p06a") == {"0.4", "0.2", "0.1", "0.5", "0.8"}, "誤答の値")
+E.check("s06p06a", opts("s06p06a") == {f(adj, 1), f(factorial(4) / factorial(5), 1), f(factorial(3) * 2 / factorial(5), 1), "0.5", f(factorial(4) * 4 / factorial(5), 1)}, "誤答の由来（並び順を忘れる 0.2・3! で数える 0.1・2 倍を 2 回 0.8）")
 spam = rng.random(2_000_000) < .2; word = rng.random(2_000_000) < np.where(spam, .6, .05)
 E.choice("s06p06b", f(.12 / .16, 2), f"シミュレーション {spam[word].mean():.4f}")
 E.check("s06p06b", abs(spam[word].mean() - .75) < .003 and opts("s06p06b") == {"0.75", "0.60", "0.12", "0.16", "0.25"}, "誤答の値")
 # ---- 大問7
 a = 1 - .2 - .5; EX = 1 * .2 + 2 * a + 3 * .5
-E.check("s06p07a", ans("s06p07a") == f"$a={f(a, 1)}$、$E[X]={f(EX, 1)}$", f"a={a}, E={EX}")
+E.check("s06p07a", ans("s06p07a") == f"$a={f(a, 1)}$、$E[X]={f(EX, 1)}$" and opts("s06p07a") == {f"$a={f(a_, 1)}$、$E[X]={f(e_, 1)}$" for a_, e_ in ((a, EX), (a, 2.0), (.5, .2 + 2 * .5 + 3 * .5), (a, 1.0), (.7, .2 + 2 * .7 + 3 * .5))}, f"a={a}, E={EX}・誤答の由来（a=0.5 なら 2.7、a=0.7 なら 3.1）")
 cov = -.5 * 2 * 3; XY = rng.multivariate_normal([0, 0], [[4, cov], [cov, 9]], 2_000_000); port = .5 * XY[:, 0] + .5 * XY[:, 1]
 E.choice("s06p07b", f(.25 * 4 + .25 * 9 + 2 * .25 * cov, 2), f"シミュレーション {port.var():.3f}")
 E.check("s06p07b", abs(port.var() - 1.75) < 0.01, "シミュレーション")
@@ -97,7 +97,7 @@ X1, X2 = rng.normal(3, 2, (2, 2_000_000)); T1 = (X1 + X2) / 2; T2 = (X1 + 2 * X2
 E.check("s06p10b", abs(T1.mean() - 3) < .005 and abs(T2.mean() - 3) < .005 and abs(T1.var() - 2) < .01 and abs(T2.var() - 4 * 5 / 9) < .01 and ans("s06p10b").startswith("どちらも不偏推定量だが"), f"分散 T1 {T1.var():.3f}（σ²/2=2）、T2 {T2.var():.3f}（5σ²/9=2.22）")
 need = (1.96 / .04) ** 2 * .16
 E.choice("s06p10c", str(ceil(need)), f"必要な n {need:.2f}")
-E.check("s06p10c", opts("s06p10c") == {"385", "384", str(ceil((1.96 / .04) ** 2 * .25)), str(ceil(1.96 / .04 * .16)), str(int((.2 / .04) ** 2 * 4))}, "誤答の由来")
+E.check("s06p10c", opts("s06p10c") == {"385", "384", str(ceil((1.96 / .04) ** 2 * .25)), str(ceil(1.96 / .04 * .16)), str(ceil((1.645 / .04) ** 2 * .16))}, "誤答の由来")
 E.check("s06p10d", abs(stats.t.isf(.025, 15) - 2.131) < 5e-4 and abs(stats.t.isf(.025, 16) - 2.120) < 5e-4, "表の値")
 E.choice("s06p10d", iv(3 - 2.131, 3 + 2.131, 2), "t 区間（自由度 15）")
 E.check("s06p10d", opts("s06p10d") == {iv(3 - k * w, 3 + k * w, 2) for k, w in ((2.131, 1), (1.96, 1), (2.120, 1), (2.131, 4), (2.131, sqrt(2)))}, "誤答の由来")
@@ -120,7 +120,7 @@ for _ in range(4000):
 E.check("s06p11f", abs(cnt / 4000 - .05) < .015 and ans("s06p11f").startswith("期待度数の小さい 2 つのカテゴリをまとめ") and abs(n * (probs[4] + probs[5]) - 5.5) < 1e-9, f"まとめて自由度 4 で検定すると棄却の割合 {cnt / 4000:.3f}（期待度数 2.1 と 3.4 → 5.5）")
 # ---- 大問12
 tv = {"x1": 4.2 / 1.4, "x2": -.9 / .2}
-E.check("s06p12a", all(abs(v) > 2.086 for v in tv.values()) and max(tv, key=lambda k: abs(tv[k])) == "x2" and ans("s06p12a") == "$x_2$（t ＝ −4.5）" and abs(stats.t.isf(.025, 20) - 2.086) < 5e-4, f"t 値 {tv}")
+E.check("s06p12a", all(abs(v) > 2.086 for v in tv.values()) and max(tv, key=lambda k: abs(tv[k])) == "x2" and ans("s06p12a") == "$x_2$（t ＝ −4.5）" and abs(stats.t.isf(.025, 20) - 2.086) < 5e-4 and "$x_2$（t ＝ " + f(.2 / -.9, 2) + "）" in opts("s06p12a"), f"t 値 {tv}・誤答（標準誤差 ÷ 推定値 ＝ " + f(.2 / -.9, 2) + "）")
 E.choice("s06p12b", f(sqrt(200 / 20), 2), "√(200/20)")
 E.check("s06p12b", opts("s06p12b") == {f(sqrt(10), 2), f(sqrt(200 / 23), 2), "10.0", f(sqrt(200), 1), f(sqrt(200 / 22), 2)}, "誤答の由来")
 P = rng.uniform(100, 300, 5000); Q = np.exp(8 - 1.2 * np.log(P))

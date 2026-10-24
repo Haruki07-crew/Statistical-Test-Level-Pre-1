@@ -36,7 +36,7 @@ def iv(lo, hi, d):
 
 
 # ---- 大問1
-E.check("s05p01a", ans("s05p01a") == f"{round(126 / 360 * 200)} 人" and opts("s05p01a") == {"70 人", "126 人", "63 人", "35 人", f"{round(126 / 450 * 200)} 人"}, "中心角 → 割合 → 人数")
+E.check("s05p01a", ans("s05p01a") == f"{round(126 / 360 * 200)} 人" and opts("s05p01a") == {"70 人", "126 人", "63 人", "35 人", f"{round(126 / 180 * 200)} 人"}, "中心角 → 割合 → 人数")
 m = np.array([5, 15, 25, 35.]); fr = np.array([4, 6, 8, 2]); raw = np.repeat(m, fr)
 E.choice("s05p01b", f(raw.std(ddof=1), 2), "階級値を度数だけ並べたデータの標準偏差")
 E.check("s05p01b", opts("s05p01b") == {f(raw.std(ddof=1), 2), f(raw.std(), 2), f(raw.var(ddof=1), 2), f(m.std(ddof=1), 2), f(sqrt(((raw - raw.mean()) ** 2).sum() / 4), 2)}, "誤答の由来")
@@ -68,7 +68,7 @@ st = [np.mean([rng.choice(s_, 10, replace=False).mean() for s_ in strata]) for _
 E.check("s05p04a", np.std(st) < np.std(srs) / 3 and ans("s05p04a").startswith("層の間で調べたい値が大きく違い"), f"層の平均が違い層内が似ているとき 標準誤差 層化 {np.std(st):.2f}・単純 {np.std(srs):.2f}")
 se = sqrt(.25 / 400)
 E.choice("s05p04b", f"約 ±{f(1.96 * se * 100, 1)} ポイント", "1.96 × 0.025")
-E.check("s05p04b", opts("s05p04b") == {f"約 ±{f(k * 100, 2 if k < 0.01 else 1)} ポイント" for k in (1.96 * se, se, 2 * 1.96 * se, 1.645 * se, 0.0025)}, "誤答の由来")
+E.check("s05p04b", opts("s05p04b") == {f"約 ±{f(k * 100, 2 if k < 0.01 else 1)} ポイント" for k in (1.96 * se, se, 2 * 1.96 * se, 1.645 * se, 1.96 * se ** 2)}, "誤答の由来")
 # ---- 大問5
 hit = (rng.random((1_000_000, 3)) < 0.3).any(1)
 E.choice("s05p05a", f(1 - 0.7 ** 3, 3), f"シミュレーション {hit.mean():.4f}")
@@ -125,7 +125,7 @@ tp = stats.ttest_rel(post, pre).statistic
 E.check("s05p09f", abs(tp - 2 / (1 / sqrt(5))) < 1e-9 and abs(2 / sqrt(64 / 5 + 64 / 5) - 0.395) < 0.001 and ans("s05p09f").startswith("対応のある t 検定では t ≈ 4.47"), f"差の平均 2・標準偏差 1 のデータで ttest_rel {tp:.3f}")
 # ---- 大問10
 E.choice("s05p10a", f(5 + .8 * 10 + 1.5 * 2 - .2 * 15, 1), "代入")
-E.check("s05p10a", opts("s05p10a") == {"13.0", f(5 + 8 + 3 + 3, 1), f(8 + 3 - 3, 1), f(5 + 8 + 3, 1), f(8 + 3 + 3 + 4, 1)}, "誤答の由来")
+E.check("s05p10a", opts("s05p10a") == {"13.0", f(5 + 8 + 3 + 3, 1), f(8 + 3 - 3, 1), f(5 + 8 + 3, 1), f(8 + 3 + 3, 1)}, "誤答の由来")
 n = 40; z0 = rng.normal(0, 1, n); X = np.c_[z0 + .05 * rng.normal(0, 1, n), z0 + .05 * rng.normal(0, 1, n), z0 + .05 * rng.normal(0, 1, n)]
 yy = X.sum(1) + rng.normal(0, 1, n); A = np.c_[np.ones(n), X]; b = np.linalg.lstsq(A, yy, rcond=None)[0]; r = yy - A @ b
 s2_ = r @ r / (n - 4); se = np.sqrt(np.diag(s2_ * np.linalg.inv(A.T @ A))); tv = b[1:] / se[1:]

@@ -38,7 +38,7 @@ def iv(lo, hi, d):
 # ---- 大問1 幹葉図
 x = np.array([42, 47, 51, 53, 55, 58, 61, 62, 62, 66, 69, 73, 75, 81, 94])
 E.choice("s02p01a", f"{int(np.median(x))} 点", f"中央値 {np.median(x)}")
-E.check("s02p01a", x.sum() == 949 and opts("s02p01a") == {"62 点", f"{x[6]} 点", f"{f(x.mean(), 1)} 点", "66 点", "60 点"} and stats.mode(x).mode == 62, "誤答の由来・平均 63.3・最頻値 62")
+E.check("s02p01a", x.sum() == 949 and opts("s02p01a") == {"62 点", f"{x[6]} 点", f"{f(x.mean(), 1)} 点", f"{(x.min() + x.max()) // 2} 点", "60 点"} and stats.mode(x).mode == 62, "誤答の由来・平均 63.3・最頻値 62")
 # ---- 大問2 偏差値
 dev = {k: 50 + 10 * (s - m) / sd for k, (m, sd, s) in {"国語": (60, 16, 68), "数学": (70, 5, 74), "英語": (40, 4, 45)}.items()}
 E.check("s02p02a", [k for k, v in dev.items() if v > 60] == ["英語"] and ans("s02p02a") == "英語だけ", f"偏差値 {dev}")
