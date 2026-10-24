@@ -301,7 +301,19 @@ def p13():
     wl, wr = nl / n, nr / n
     child = wl * h["l"] + wr * h["r"]
     ig = h["root"] - child
+    # (a) 3 つの距離で最も近い生徒
+    A, B, C = (2.9, 0.6, -0.3), (2.0, 1.6, -1.7), (0.5, 0.2, -0.5)
+    dA = [abs(x - c) for x, c in zip(A, C)]; dB = [abs(x - c) for x, c in zip(B, C)]
+    euc = lambda d: sqrt(sum(v * v for v in d))
+    near = lambda f_: "A" if f_(dA) < f_(dB) else "B"
+    assert (near(euc), near(sum), near(max)) == ("B", "A", "B") and near(min) == "A" and near(lambda d: sum(d)) == "A"
+    dm = {"a1": s(A[0], 1), "a2": s(A[1], 1), "a3": s(A[2], 1), "b1": s(B[0], 1), "b2": s(B[1], 1), "b3": s(B[2], 1),
+          "c1": s(C[0], 1), "c2": s(C[1], 1), "c3": s(C[2], 1),
+          "da1": s(dA[0], 1), "da2": s(dA[1], 1), "da3": s(dA[2], 1), "db1": s(dB[0], 1), "db2": s(dB[1], 1), "db3": s(dB[2], 1),
+          "sa": s(sum(v * v for v in dA), 2), "sb": s(sum(v * v for v in dB), 2), "ea": s(euc(dA), 3), "eb": s(euc(dB), 3),
+          "ma": s(sum(dA), 1), "mb": s(sum(dB), 1), "ca": s(max(dA), 1), "cb": s(max(dB), 1)}
     return {
+        **{"dm_" + k_: v_ for k_, v_ in dm.items()},
         "a": s(a, 2), "b": s(b, 2), "ba": s(b - a, 2), "sil": s(sil, 2), "sil4": s(sil, 4),
         "d_min": s((min(dCD, dCE) - min(dCA, dCB)) / max(min(dCD, dCE), min(dCA, dCB)), 2),
         "d_self": s((b - a_self) / b, 2), "d_diva": s((b - a) / a, 2), "d_rev": s((a - b) / max(a, b), 2), "a_self": s(a_self, 3),

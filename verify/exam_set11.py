@@ -139,14 +139,18 @@ res = stats.ttest_rel(aa, b)
 lo = res.confidence_interval(0.95).low
 E.num("s11p06a", rnd(lo, 2), "scipy ttest_rel の信頼区間")
 E.check("s11p06a", abs(stats.t.ppf(0.975, 7) - 2.365) < 5e-4 and abs(stats.t.ppf(0.975, 8) - 2.306) < 5e-4, "t の点")
-pvals = {"国語": 0.014, "数学": 0.004, "英語": 0.045, "理科": 0.011, "社会": 0.036}
-keys = sorted(pvals, key=pvals.get)
-adj, run = {}, 0
-for k_, key in enumerate(keys):
-    run = max(run, (5 - k_) * pvals[key])
-    adj[key] = min(1, run)
-rej = [k for k in keys if adj[k] <= 0.05]
-E.check("s11p06b", ans_text("s11p06b") == "・".join(rej), f"ホルム調整 p 値 {adj} → {rej}")
+# (b) 尤度比：対数尤度を数値で最大化して −2logΛ を作り、H0 のもとのシミュレーションで χ²(1) 近似の棄却率を確かめる
+from scipy import optimize
+def nll(s2, ss_, n_):
+    return 0.5 * n_ * np.log(s2) + ss_ / (2 * s2)
+opt = optimize.minimize_scalar(lambda v_: nll(v_, 1800, 30), bounds=(1, 1000), method="bounded")
+T6 = 2 * (nll(100, 1800, 30) - opt.fun)
+E.choice("s11p06b", f"$-2\\log\\Lambda={f(T6, 2)}$で、自由度1の3.841を下回るので、帰無仮説を棄却しない", f"数値最大化で σ̂²={opt.x:.3f}, −2logΛ={T6:.4f}")
+Xs6 = rng.normal(60, 10, (100_000, 30))
+sh6 = ((Xs6 - 60) ** 2).mean(1) / 100
+Ts = 30 * (sh6 - 1 - np.log(sh6))
+E.check("s11p06b", abs((Ts > stats.chi2.isf(0.05, 1)).mean() - 0.05) < 0.01, f"H0 のもとで −2logΛ>3.841 の割合 {(Ts > stats.chi2.isf(0.05, 1)).mean():.4f}")
+E.check("s11p06b", abs(stats.chi2.isf(0.05, 30) - 43.77) < 0.005 and abs(stats.chi2.ppf(0.025, 30) - 16.79) < 0.005 and abs(np.log(0.6) + 0.5108) < 5e-5, "問題文・解説の数表の値")
 
 # ---- 大問7 フリードマン検定
 A7 = [62, 58, 67, 55, 60, 69]
@@ -169,27 +173,25 @@ Fv = (0.90 / 3) * 54 / 3.90
 E.choice("s11p08a", f"${f(Fv, 2)}$", "分数で計算した F")
 E.check("s11p08a", abs(stats.f.ppf(0.95, 3, 54) - 2.78) < 0.005 and stats.f.sf(Fv, 3, 54) < 0.05, "F(3,54) の 5% 点と p 値")
 distinct_rounded("s11p08a")
-lm = 60 * 0.09
-E.check("s11p08b", stats.chi2.sf(lm, 2) > 0.05 and stats.chi2.sf(lm, 1) < 0.05 and f(lm, 2) in ans_text("s11p08b")
-        and "棄却しない" in ans_text("s11p08b") and "自由度 2" in ans_text("s11p08b") and "証明" not in ans_text("s11p08b"),
-        f"χ²(2) の p 値 {stats.chi2.sf(lm, 2):.4f}")
-E.check("s11p08b", abs(stats.f.ppf(0.95, 2, 57) - 3.16) < 0.005, "F(2,57) の 5% 点 3.16")
-# (c) 2群の平均を正確に再現するデータを作り、2段階最小二乗を行列で計算
-nz = 500
-Z = np.r_[np.ones(nz), np.zeros(nz)]
-Sx = np.r_[13.6 + rng.normal(0, 2, nz), 13.1 + rng.normal(0, 2, nz)]
-Sx[:nz] += 13.6 - Sx[:nz].mean()
-Sx[nz:] += 13.1 - Sx[nz:].mean()
-yy = np.r_[6.452 + rng.normal(0, 0.3, nz), 6.397 + rng.normal(0, 0.3, nz)]
-yy[:nz] += 6.452 - yy[:nz].mean()
-yy[nz:] += 6.397 - yy[nz:].mean()
-Zm = np.c_[np.ones(2 * nz), Z]
-Xm2 = np.c_[np.ones(2 * nz), Sx]
-Shat = Zm @ np.linalg.lstsq(Zm, Sx, rcond=None)[0]
-b2sls = np.linalg.lstsq(np.c_[np.ones(2 * nz), Shat], yy, rcond=None)[0][1]
-at = ans_text("s11p08c")
-E.check("s11p08c", f(b2sls, 3) in at and "無相関" in at and "直接" not in at, f"2段階最小二乗 {b2sls:.5f}")
-E.check("s11p08c", sum(f(b2sls, 3) in c for c in E.item("s11p08c")["choices"]) == 2, "同じ推定値の他の選択肢は条件が誤り（除外制約の逆）")
+# (b) 頑健標準誤差：不均一分散のデータで statsmodels を使わず HC0 を行列で計算し、係数は OLS と同じであることを確かめたうえで、与えた値で t を計算
+Xh = np.c_[np.ones(60), rng.uniform(0, 30, 60)]
+eh = rng.normal(0, 1, 60) * (0.2 + Xh[:, 1] / 10)
+yh = Xh @ np.array([5.0, 0.03]) + eh
+bh = np.linalg.solve(Xh.T @ Xh, Xh.T @ yh)
+rh = yh - Xh @ bh
+XtXi = np.linalg.inv(Xh.T @ Xh)
+hc0 = np.sqrt(np.diag(XtXi @ (Xh.T * rh ** 2) @ Xh @ XtXi))
+E.check("s11p08b", hc0.shape == (2,) and np.allclose(bh, np.linalg.lstsq(Xh, yh, rcond=None)[0]), "HC0 は係数を変えず標準誤差だけを変える（行列計算で確認）")
+E.choice("s11p08b", f"$t={f(0.032 / 0.012, 2)}$で5%水準で有意だが、頑健標準誤差では$t={f(0.032 / 0.019, 2)}$で有意でない", "与えた値の t")
+E.check("s11p08b", 0.032 / 0.019 < stats.t.isf(0.025, 54) < 0.032 / 0.012 and abs(stats.t.isf(0.025, 54) - 2.005) < 5e-4, "t(54) の点 2.005 と判定")
+# (c) 除外変数バイアス：大きな標本を作り、S だけの回帰の傾きが β1+γδ になることを確かめる
+nb = 400_000
+Sb = rng.normal(13, 2, nb)
+Ab = 0.25 * (Sb - 13) + rng.normal(0, np.sqrt(1 - 0.25 ** 2 * 4), nb)
+yb = 1.0 + 0.060 * Sb + 0.10 * Ab + rng.normal(0, 0.3, nb)
+slope = np.polyfit(Sb, yb, 1)[0]
+E.check("s11p08c", abs(np.cov(Sb, Ab)[0, 1] - 1.0) < 0.02 and abs(slope - 0.085) < 0.002, f"β1=0.060 の母集団で S だけの回帰の傾き {slope:.4f}（問題文の 0.085 と一致）")
+E.choice("s11p08c", f"${f(0.085 - 0.10 * 1.0 / 4.0, 3)}$", "β1 = 0.085 − γ·Cov/V")
 
 # ---- 大問9 離職
 E.choice("s11p09a", f"${f(stats.norm.cdf(-1.4 + 0.025 * 60) - stats.norm.cdf(-1.4 + 0.025 * 20), 3)}$", "scipy norm.cdf")

@@ -223,8 +223,20 @@ def p06():
         else:
             break
     assert rej == ["数学", "理科", "国語"], rej
+    # (b) 平均既知の正規分布の分散の尤度比検定
+    import math
+    n_, mu_, s0, ss = 30, 60, 100, 1800
+    sh = ss / n_
+    ratio = sh / s0
+    lg = -0.5108                                 # log 0.6（問題文の値）
+    T = n_ * (ratio - 1 - lg)
+    assert abs(math.log(ratio) - lg) < 5e-5 and T < 3.841
+    lr = {"n": n_, "mu": mu_, "s0": s0, "ss": ss, "sh": s(sh, 0), "ratio": s(ratio, 1), "in": s(ratio - 1 - lg, 4),
+          "T": s(T, 2), "T4": s(T, 4), "w1": s(n_ * (ratio - lg), 2), "w2": s(n_ * (1 / ratio - 1 + lg), 2), "exact": s(ss / s0, 0)}
+    assert float(lr["w1"]) > 3.841 and float(lr["w2"]) > 3.841
     for i in range(m):
         out[f"th{i + 1}"] = s(th[i], 4)
+    out.update({"lr_" + k_: v_ for k_, v_ in lr.items()})
     return out
 
 
@@ -273,7 +285,20 @@ def p08():
     fs = sn - sf
     iv = rf / fs
     ols = 0.085
+    # (b) 頑健標準誤差による t 値
+    b_, se_, hc_, df_, tc_ = 0.032, 0.012, 0.019, 54, 2.005
+    t1_, t2_ = b_ / se_, b_ / hc_
+    assert t2_ < tc_ < t1_
+    rb = {"b": s(b_, 3), "se": s(se_, 3), "hc": s(hc_, 3), "df": df_, "tc": s(tc_, 3), "t1": s(t1_, 2), "t2": s(t2_, 2),
+          "t14": s(t1_, 4), "t24": s(t2_, 4), "w": s(b_ / hc_ ** 2, 1)}
+    # (c) 除外変数バイアス
+    bo, g_, vs, c_ = 0.085, 0.10, 4.0, 1.0
+    d_ = c_ / vs
+    ov = {"b": s(bo, 3), "g": s(g_, 2), "vs": s(vs, 1), "c": s(c_, 1), "d": s(d_, 2), "bias": s(g_ * d_, 3),
+          "ok": s(bo - g_ * d_, 3), "w1": s(bo + g_ * d_, 3), "w3": s(bo * (1 - d_), 3), "w4": s(bo - g_, 3)}
+    assert len({ov["ok"], ov["w1"], ov["b"], ov["w3"], ov["w4"]}) == 5
     return {
+        **{"rb_" + k_: v_ for k_, v_ in rb.items()}, **{"ov_" + k_: v_ for k_, v_ in ov.items()},
         "n": n, "rss1": s(rss1, 2), "rss2": s(rss2, 2), "q": q, "k2": k2, "df2": df2, "drss": s(rss1 - rss2, 2),
         "msn": s(ms_num, 2), "msd": s(ms_den, 6), "F": s(F, 2), "F4": s(F, 4),
         "F_df55": s(ms_num / (rss2 / (n - k2)), 2), "F_q1": s((rss1 - rss2) / ms_den, 2),

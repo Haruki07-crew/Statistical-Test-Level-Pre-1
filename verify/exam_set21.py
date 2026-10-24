@@ -229,17 +229,14 @@ E.choice("s21p12c", f"${f(mlog, 2)}$", f"scipy の対数正規分布の平均 {m
 E.check("s21p12c", all(abs(np.exp(x) - v) < 5e-5 for x, v in [(0.32, 1.3771), (0.5, 1.6487), (0.68, 1.9739), (0.86, 2.3632)]), "示した指数の値")
 
 # ---- 大問13
-Dm = np.array([[0, 1.0, 3.5, 6.0, 5.5], [1.0, 0, 2.0, 5.0, 4.8], [3.5, 2.0, 0, 4.0, 4.2], [6.0, 5.0, 4.0, 0, 2.5], [5.5, 4.8, 4.2, 2.5, 0]])
-def silhouette(D, lab, i):
-    lab = np.asarray(lab)
-    own = [j for j in range(len(lab)) if lab[j] == lab[i] and j != i]
-    a_ = D[i, own].mean()
-    b_ = min(D[i, lab == g].mean() for g in set(lab) if g != lab[i])
-    return (b_ - a_) / max(a_, b_)
-silC = silhouette(Dm, [0, 0, 0, 1, 1], 2)
-E.choice("s21p13a", f"${f(silC, 2)}$", f"一般のシルエット関数で {silC:.4f}")
-sil_all = [silhouette(Dm, [0, 0, 0, 1, 1], i) for i in range(5)]
-E.check("s21p13a", all(-1 <= v <= 1 for v in sil_all), f"全員のシルエット {np.round(sil_all, 3)}")
+# (a) 問題文の表を読み取り、scipy の 3 つの距離で最も近い生徒を求める
+from scipy.spatial.distance import chebyshev, cityblock, euclidean
+q13 = E.item("s21p13a")["question"]
+pts = {m_[0]: np.array([float(x) for x in m_[1].split("|")]) for m_ in re.findall(r"\| ([ABC]) \|([^\n]*)\|", q13)}
+nearest = lambda fn: "A" if fn(pts["A"], pts["C"]) < fn(pts["B"], pts["C"]) else "B"
+ans13 = (nearest(euclidean), nearest(cityblock), nearest(chebyshev))
+E.choice("s21p13a", f"（{ans13[0]}, {ans13[1]}, {ans13[2]}）", f"scipy の距離で {ans13}、ユークリッド A {euclidean(pts['A'], pts['C']):.4f}・B {euclidean(pts['B'], pts['C']):.4f}")
+E.check("s21p13a", len(pts) == 3 and abs(euclidean(pts["A"], pts["C"]) - euclidean(pts["B"], pts["C"])) > 0.02, "表の読み取りと、ユークリッド距離の差が丸めで逆転しないこと")
 def H(*cnt):
     pr = np.array(cnt) / sum(cnt)
     return stats.entropy(pr, base=2)
