@@ -107,6 +107,32 @@ check(T, "例2 F0.025(11,9)=3.912・1/3.912≈0.256=F0.975(9,11)", close(stats.f
 check(T, "例3 F0.05(3,16)=3.239", close(stats.f.isf(.05, 3, 16), 3.239), None)
 check(T, "t² と F(1,10)：2.228²≈4.96", close(stats.f.isf(.05, 1, 10), stats.t.isf(.025, 10) ** 2, 1e-9) and close(2.228 ** 2, 4.96, 0.005), None)
 
+T = "probability-mass-and-density-function"
+c3 = stats.binom(3, .5)
+check(T, "例1 硬貨 3 枚：1/8・3/8・3/8・1/8・P(X≥2)=1/2・期待値 1.5", np.allclose(c3.pmf(range(4)), [1 / 8, 3 / 8, 3 / 8, 1 / 8]) and close(c3.sf(1), .5, 1e-12) and close(c3.mean(), 1.5, 1e-12), None)
+from scipy import integrate
+check(T, "例2 3x²：面積 1・P(X≤0.5)=0.125・E=3/4・f(1)=3", close(integrate.quad(lambda x: 3 * x * x, 0, 1)[0], 1, 1e-12) and close(integrate.quad(lambda x: 3 * x * x, 0, .5)[0], .125, 1e-12) and close(integrate.quad(lambda x: 3 * x ** 3, 0, 1)[0], .75, 1e-12), None)
+check(T, "正規分布で σ<1/√(2π)≈0.399 なら山の高さが 1 を超える", stats.norm(0, .39).pdf(0) > 1 > stats.norm(0, .41).pdf(0), None)
+T = "expectation-variance-properties"
+check(T, "例1 1.2X+10：E=82・V=144・SD=12", close(1.2 * 60 + 10, 82, 1e-9) and close(1.2 ** 2 * 100, 144, 1e-9), None)
+xa = rng.normal(20, 3, 1_000_000); yb = rng.normal(15, 4, 1_000_000)
+check(T, "例2 合計 平均 35・SD 5、差 平均 5・SD 5（シミュレーション）", close((xa + yb).mean(), 35, 0.02) and close((xa + yb).std(), 5, 0.02) and close((xa - yb).mean(), 5, 0.02) and close((xa - yb).std(), 5, 0.02), ((xa + yb).std(), (xa - yb).std()))
+check(T, "例3 E[X²]=4+9=13", 4 + 3 ** 2 == 13, None)
+zz = (xa - 20) / 3
+check(T, "標準化 (X−μ)/σ の平均 0・分散 1", close(zz.mean(), 0, 0.01) and close(zz.var(), 1, 0.01), (zz.mean(), zz.var()))
+T = "exponential-distribution"
+e8 = stats.expon(scale=8)
+check(T, "平均 8：P(>8)=e^−1≈0.368・P(>16)≈0.135・P(≤4)≈0.393・中央値 8log2≈5.5・分散 64", close(e8.sf(8), .368, 5e-4) and close(e8.sf(16), .135, 5e-4) and close(e8.cdf(4), .393, 5e-4) and close(e8.median(), 5.5, 0.05) and close(e8.var(), 64, 1e-9), e8.median())
+check(T, "無記憶性 P(T>12|T>4)=e^−1・図の値 1−e^−1≈0.632", close(e8.sf(12) / e8.sf(4), np.exp(-1), 1e-12) and close(e8.cdf(8), .632, 5e-4), None)
+check(T, "ポアソンとの関係：P(T>30)=e^−1.5（平均 20 分）= Po(1.5) の P(0) ≈0.223", close(stats.expon(scale=20).sf(30), stats.poisson(1.5).pmf(0), 1e-12) and close(np.exp(-1.5), .223, 5e-4), None)
+arr = np.cumsum(rng.exponential(8, 200000)); cnt = np.bincount((arr // 80).astype(int))[:-1]
+check(T, "到着の間隔が平均 8 分の指数分布なら 80 分の件数は平均 10 のポアソン分布（平均 ≈ 分散 ≈ 10）", close(cnt.mean(), 10, 0.1) and close(cnt.var(), 10, 0.3), (cnt.mean(), cnt.var()))
+T = "weak-law-of-large-numbers"
+check(T, "例1 上限 100/400=0.25・n≥2000 で 0.05・正規近似 2P(Z≥2)≈0.046", close(100 / 400, .25, 1e-12) and 100 / (2000 * 1) <= 0.05 and close(2 * stats.norm.sf(2), 0.046, 5e-4), None)
+check(T, "例2 表の割合の SD：100 回 0.05・10000 回 0.005", close(sqrt(.25 / 100), .05, 1e-12) and close(sqrt(.25 / 10000), .005, 1e-12), None)
+fl = rng.random((2000, 10000)) < .5; pr = fl.cumsum(1) / np.arange(1, 10001); diff = np.abs(2 * fl.cumsum(1) - np.arange(1, 10001))
+check(T, "割合は 0.5 に近づくが、表と裏の回数の差は広がる（シミュレーション）", np.abs(pr[:, 9999] - .5).mean() < np.abs(pr[:, 99] - .5).mean() / 5 and diff[:, 9999].mean() > diff[:, 99].mean() * 5, (np.abs(pr[:, 99] - .5).mean(), np.abs(pr[:, 9999] - .5).mean(), diff[:, 99].mean(), diff[:, 9999].mean()))
+
 ng = results.count(False)
 print(f"書き直した共通の用語の検算: OK {len(results) - ng} / NG {ng}")
 sys.exit(1 if ng else 0)

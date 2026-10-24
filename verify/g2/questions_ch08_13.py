@@ -5,7 +5,7 @@ from math import comb, exp, sqrt
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from qhead import Q, chosen  # noqa: E402
 import numpy as np  # noqa: E402
-from scipy import stats  # noqa: E402
+from scipy import integrate, stats  # noqa: E402
 
 ng = 0
 rng = np.random.default_rng(13)
@@ -25,6 +25,12 @@ q.num("q08-expectation-variance-properties-g1", 2 + 3 ** 2)
 q.check("q08-expectation-variance-properties-g1", abs(np.mean(X ** 2) - 11) < 0.02, f"シミュレーション {np.mean(X ** 2):.3f}")
 Y = rng.normal(0, sqrt(3), 2_000_000)
 q.check("q08-expectation-variance-properties-g2", abs(np.var(X - 2 * Y) - 14) < 0.05 and chosen(q, "q08-expectation-variance-properties-g2") == "14", f"シミュレーション {np.var(X - 2 * Y):.3f}")
+q.num("q08-expectation-variance-properties-g3", sqrt(3 ** 2 + 4 ** 2))
+TA = rng.normal(20, 3, 1_000_000) + rng.gamma(15 ** 2 / 16, 16 / 15, 1_000_000)
+q.check("q08-expectation-variance-properties-g3", abs(TA.std() - 5) < 0.02, f"正規分布とガンマ分布の和でシミュレーション 標準偏差 {TA.std():.3f}")
+q.num("q08-probability-mass-and-density-function-g1", (1 - .1 - .4 - .2) + .2)
+q.check("q08-probability-mass-and-density-function-g2", chosen(q, "q08-probability-mass-and-density-function-g2").startswith("$P(a\\le X\\le b)$ は、$a$ から $b$ までの") and abs(integrate.quad(lambda x: 3 * x * x, 0, 1)[0] - 1) < 1e-12 and 3 * 1 ** 2 > 1, "面積が確率・f(1)=3>1 の密度がある")
+q.num("q08-probability-mass-and-density-function-g3", 1 - integrate.quad(lambda x: 3 * x * x, 0, .5)[0])
 run(q)
 
 q = Q(9)
@@ -54,6 +60,10 @@ q.check("q09-standard-normal-distribution-g2", abs(stats.norm.cdf(2) - stats.nor
 q.num("q09-standard-normal-distribution-g3", 500 + 1.96 * 100)
 q.check("q09-standard-normal-distribution-g3", abs(stats.norm(500, 100).isf(0.025) - 696) < 0.1 and abs(500 + 1.645 * 100 - 664.5) < 1e-9, "上位 2.5% の境目・上位 5% なら 664.5")
 q.num("q09-exponential-distribution-g1", stats.expon(scale=10).cdf(5))
+q.num("q09-exponential-distribution-g2", stats.expon(scale=8).sf(12) / stats.expon(scale=8).sf(4))
+w8 = rng.exponential(8, 2_000_000)
+q.check("q09-exponential-distribution-g2", abs(np.mean(w8[w8 > 4] > 12) - exp(-1)) < 0.003 and abs(exp(-1) - 0.3679) < 5e-5, f"シミュレーション {np.mean(w8[w8 > 4] > 12):.4f}")
+q.check("q09-exponential-distribution-g3", abs(stats.expon(scale=8).var() - 64) < 1e-9 and chosen(q, "q09-exponential-distribution-g3") == "64", "分散 1/λ² = 64")
 run(q)
 
 q = Q(11)

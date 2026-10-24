@@ -90,5 +90,17 @@
  "q10-t-distribution-g3": {
   "hash": "02730f941e5ec52e",
   "ok": true
+ },
+ "q10-weak-law-of-large-numbers-g1": {
+  "hash": "4a8bc0fbe8fcdf83",
+  "ok": true
+ },
+ "q10-weak-law-of-large-numbers-g2": {
+  "hash": "4c4027e6ce5d6b1b",
+  "ok": true
+ },
+ "q10-weak-law-of-large-numbers-g3": {
+  "hash": "f002ebc935dfc4ef",
+  "ok": true
  }
 }

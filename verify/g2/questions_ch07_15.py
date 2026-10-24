@@ -85,6 +85,12 @@ q.check("q10-f-distribution-g1", abs(stats.f.isf(.05, 10, 5) - 4.735) < 5e-4 and
 v8 = rng.normal(0, 2, (100000, 8)).var(1, ddof=1); v13 = rng.normal(0, 2, (100000, 13)).var(1, ddof=1)
 q.check("q10-f-distribution-g2", abs(np.mean(v8 / v13 > stats.f.isf(.05, 7, 12)) - 0.05) < 0.003 and chosen(q, "q10-f-distribution-g2") == "自由度 (7, 12) の F 分布", f"シミュレーションで F(7,12) の上側 5% 点を超える割合 {np.mean(v8 / v13 > stats.f.isf(.05, 7, 12)):.4f}")
 q.check("q10-f-distribution-g3", abs(stats.f.isf(.05, 1, 10) - stats.t.isf(.025, 10) ** 2) < 1e-9 and abs(2.228 ** 2 - 4.96) < 0.005, "F(1,10) の 5% 点 = t(10) の 2.5% 点の 2 乗（answer=true）")
+q.check("q10-weak-law-of-large-numbers-g1", chosen(q, "q10-weak-law-of-large-numbers-g1") == "標本の大きさを大きくすると、標本平均は母平均に近づく", "大数の法則の内容")
+q.num("q10-weak-law-of-large-numbers-g2", 10 ** 2 / (400 * 1 ** 2))
+mb = rng.exponential(10, (20000, 400)).mean(1)
+q.check("q10-weak-law-of-large-numbers-g2", np.mean(np.abs(mb - 10) >= 1) <= 0.25 and abs(2 * stats.norm.sf(2) - 0.046) < 5e-4, f"標準偏差 10 の指数分布で n=400 のとき外れる割合 {np.mean(np.abs(mb - 10) >= 1):.4f}（上限 0.25 以下）")
+fl = rng.random((200000, 7)) < 0.5; six = fl[:, :6].all(1)
+q.check("q10-weak-law-of-large-numbers-g3", abs(np.mean(~fl[six, 6]) - 0.5) < 0.05, f"表が 6 回続いたあとの裏の割合 {np.mean(~fl[six, 6]):.3f}（answer=false）")
 run(q)
 
 q = Q(14)

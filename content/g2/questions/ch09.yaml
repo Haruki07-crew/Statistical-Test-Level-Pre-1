@@ -222,7 +222,7 @@ questions:
       $500+1.96\times 100=696$ 点です。
       「上位 2.5%」は片側なので上側 2.5% 点 1.96 を使います。上位 5% なら 1.645 を使って 664.5 点になります。
 
-  # ---------- 指数分布（共通の用語・2級の問題） ----------
+  # ---------- 指数分布（2級向けに書き直した用語） ----------
   - id: q09-exponential-distribution-g1
     term: exponential-distribution
     level: 標準
@@ -235,3 +235,35 @@ questions:
       レートは $1/10$。$P(T\le t)=1-e^{-t/10}$。
     explanation: |
       $P(T\le 5)=1-e^{-5/10}=1-0.6065=0.3935$ です。
+
+  - id: q09-exponential-distribution-g2
+    term: exponential-distribution
+    level: 標準
+    type: numeric
+    question: |
+      窓口の待ち時間 $T$（分）は平均 8 分の指数分布にしたがう。すでに 4 分待っているとき、待ち時間が全部で 12 分を超える（あと 8 分以上待つ）確率を求めよ。ただし $e^{-1}=0.3679$ とする。
+    answer: 0.3679
+    tolerance: 0.0001
+    hint: |
+      指数分布の無記憶性 $P(T>s+t\mid T>s)=P(T>t)$。
+    explanation: |
+      $P(T>12\mid T>4)=P(T>8)=e^{-8/8}=e^{-1}=0.3679$ です。
+      $P(T>12)/P(T>4)=e^{-1.5}/e^{-0.5}=e^{-1}$ と計算しても同じです。すでに待った時間は、この先の待ち時間の確率に影響しません。
+
+  - id: q09-exponential-distribution-g3
+    term: exponential-distribution
+    level: 基本
+    type: choice
+    question: |
+      平均 8 分の指数分布にしたがう待ち時間の分散はどれか。
+    choices:
+      - '64'
+      - '8'
+      - $1/64$
+      - '16'
+    answer: 0
+    hint: |
+      レート $\lambda$ の指数分布の期待値は $1/\lambda$、分散は $1/\lambda^2$。
+    explanation: |
+      平均 8 分なので $\lambda=1/8$、分散は $1/\lambda^2=64$ です（標準偏差は平均と同じ 8 分）。
+      分散を平均と同じ 8 とするのは、ポアソン分布（平均 ＝ 分散）と混同した誤りです。$1/64$ はレートの 2 乗 $\lambda^2$ です。

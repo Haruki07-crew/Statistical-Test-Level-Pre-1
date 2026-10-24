@@ -6,5 +6,21 @@
  "q08-expectation-variance-properties-g2": {
   "hash": "a365d57c533598e6",
   "ok": true
+ },
+ "q08-expectation-variance-properties-g3": {
+  "hash": "32b8a6debb940d7a",
+  "ok": true
+ },
+ "q08-probability-mass-and-density-function-g1": {
+  "hash": "683b3bc0084b8501",
+  "ok": true
+ },
+ "q08-probability-mass-and-density-function-g2": {
+  "hash": "621f6c5a8baf1498",
+  "ok": true
+ },
+ "q08-probability-mass-and-density-function-g3": {
+  "hash": "7f11d0e4e23d04db",
+  "ok": true
  }
 }

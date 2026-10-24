@@ -274,7 +274,6 @@ chapters:
     title: 確率関数と確率密度関数
     importance: A
     status: verified
-    from: pre1
   - id: cumulative-distribution-function
     title: 累積分布関数
     importance: B
@@ -284,7 +283,6 @@ chapters:
     title: 期待値と分散の性質
     importance: A
     status: verified
-    from: pre1
   - id: joint-probability-function
     title: 同時確率関数
     importance: B
@@ -339,7 +337,6 @@ chapters:
     title: 指数分布
     importance: A
     status: verified
-    from: pre1
   - id: normal-distribution
     title: 正規分布
     importance: A
@@ -369,7 +366,6 @@ chapters:
     title: 大数の弱法則
     importance: A
     status: verified
-    from: pre1
   - id: central-limit-theorem
     title: 中心極限定理
     importance: A
