@@ -1,10 +1,26 @@
 {
+ "q09-bernoulli-distribution-g1": {
+  "hash": "0fc558a208839007",
+  "ok": true
+ },
+ "q09-bernoulli-distribution-g2": {
+  "hash": "d886dfe7728f639f",
+  "ok": true
+ },
+ "q09-bernoulli-distribution-g3": {
+  "hash": "d16eaa51f1be3c74",
+  "ok": true
+ },
  "q09-binomial-distribution-g1": {
   "hash": "6afc70b46e75f6ab",
   "ok": true
  },
  "q09-binomial-distribution-g2": {
   "hash": "6ad6a44a9d01f4c1",
+  "ok": true
+ },
+ "q09-binomial-distribution-g3": {
+  "hash": "c7b70f3b791b1cc1",
   "ok": true
  },
  "q09-exponential-distribution-g1": {
@@ -24,7 +40,15 @@
   "ok": true
  },
  "q09-poisson-distribution-g1": {
-  "hash": "499a0fc89b4146fb",
+  "hash": "42e35993afbc3298",
+  "ok": true
+ },
+ "q09-poisson-distribution-g2": {
+  "hash": "14ca48c5cd7b516f",
+  "ok": true
+ },
+ "q09-poisson-distribution-g3": {
+  "hash": "c3b1e3f66835168b",
   "ok": true
  },
  "q09-standard-normal-distribution-g1": {

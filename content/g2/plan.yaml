@@ -309,17 +309,14 @@ chapters:
     title: ベルヌーイ試行・ベルヌーイ分布
     importance: A
     status: verified
-    from: pre1
   - id: binomial-distribution
     title: 二項分布
     importance: A
     status: verified
-    from: pre1
   - id: poisson-distribution
     title: ポアソン分布
     importance: A
     status: verified
-    from: pre1
   - id: geometric-distribution
     title: 幾何分布と無記憶性
     importance: B

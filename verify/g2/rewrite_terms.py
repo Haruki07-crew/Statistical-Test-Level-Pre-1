@@ -38,6 +38,25 @@ check(T, "例1 P(Z>1.25)=0.1056・0.3944・0.7888（表の値から）", close(s
 check(T, "例2 上位 10% の境目 72.8・下位 10% 47.2", close(60 + 1.282 * 10, 72.8, 0.05) and close(stats.norm(60, 10).isf(.1), 72.8, 0.05) and close(stats.norm(60, 10).ppf(.1), 47.2, 0.05), stats.norm(60, 10).isf(.1))
 check(T, "|z|>3 は両側でおよそ 0.3%・P(Z<1)=0.8413", close(2 * stats.norm.sf(3), 0.0027, 1e-4) and close(1 - 0.1587, 0.8413, 1e-9), None)
 
+T = "bernoulli-distribution"
+check(T, "例1 E=0.04・V=0.0384", close(stats.bernoulli(.04).mean(), .04, 1e-12) and close(stats.bernoulli(.04).var(), .0384, 1e-12), None)
+check(T, "例2 0/1 データの平均 0.3", close(np.mean([1, 0, 0, 1, 0, 0, 1, 0, 0, 0]), 0.3, 1e-12), None)
+check(T, "例3 p=0.5 で 0.25（最大）・p=0.1 と 0.9 で 0.09", close(.5 * .5, .25, 1e-12) and close(.1 * .9, .09, 1e-12) and close(.9 * .1, .09, 1e-12) and max(np.linspace(0, 1, 1001), key=lambda p: p * (1 - p)) == 0.5, None)
+T = "binomial-distribution"
+b5 = stats.binom(5, .25)
+check(T, "例1 P(X≥3)=(90+15+1)/1024≈0.104・E=1.25・V=0.9375", close(b5.sf(2), 106 / 1024, 1e-12) and 10 * 9 == 90 and 5 * 3 == 15 and close(106 / 1024, 0.104, 5e-4) and close(b5.mean(), 1.25, 1e-12) and close(b5.var(), .9375, 1e-12), b5.sf(2))
+check(T, "例2 B(50,0.02)：E=1・V=0.98・P(0)=0.98^50≈0.364・e^−1≈0.368", close(stats.binom(50, .02).var(), .98, 1e-12) and close(.98 ** 50, 0.364, 5e-4) and close(np.exp(-1), 0.368, 5e-4), .98 ** 50)
+b10 = stats.binom(10, .3)
+check(T, "最頻値 B(10,0.3)：P(2)≈0.233・P(3)≈0.267・P(4)≈0.200 で 3 が最大", close(b10.pmf(2), .233, 5e-4) and close(b10.pmf(3), .267, 5e-4) and close(b10.pmf(4), .200, 5e-4) and int(np.argmax(b10.pmf(range(11)))) == 3, None)
+check(T, "少なくとも 1 回 1−(1−p)^n（n=3, p=0.1 で 0.271）", close(stats.binom(3, .1).sf(0), 1 - .9 ** 3, 1e-12), None)
+T = "poisson-distribution"
+p3 = stats.poisson(3)
+check(T, "平均 = 分散 = λ（λ=3）", close(p3.mean(), 3, 1e-12) and close(p3.var(), 3, 1e-12), None)
+check(T, "例1 P(0)=0.0498・P(1)≈0.149・P(2)≈0.224・P(≤2)=8.5×0.0498≈0.423", close(p3.pmf(0), .0498, 5e-5) and close(p3.pmf(1), .149, 5e-4) and close(p3.pmf(2), .224, 5e-4) and close(8.5 * .0498, .423, 5e-4) and close(p3.cdf(2), .423, 5e-4), p3.cdf(2))
+check(T, "例2 B(300,0.01) の P(≤1)：近似 4e^−3≈0.199・正確 ≈0.198", close(4 * np.exp(-3), .199, 5e-4) and close(stats.binom(300, .01).cdf(1), .198, 5e-4), stats.binom(300, .01).cdf(1))
+pp = rng.poisson(2, 1_000_000) + rng.poisson(3, 1_000_000); p2h = rng.poisson(3, (1_000_000, 2)).sum(1)
+check(T, "和 Po(2)+Po(3)=Po(5)・2 時間なら Po(6)（シミュレーション）", close(pp.mean(), 5, 0.01) and close(pp.var(), 5, 0.02) and close(p2h.mean(), 6, 0.01) and close(p2h.var(), 6, 0.03), (pp.var(), p2h.var()))
+
 ng = results.count(False)
 print(f"書き直した共通の用語の検算: OK {len(results) - ng} / NG {ng}")
 sys.exit(1 if ng else 0)

@@ -1,6 +1,52 @@
 chapter: 9
 questions:
-  # ---------- 二項分布（共通の用語・2級の問題） ----------
+  # ---------- ベルヌーイ分布（2級向けに書き直した用語） ----------
+  - id: q09-bernoulli-distribution-g1
+    term: bernoulli-distribution
+    level: 基本
+    type: numeric
+    question: |
+      確率 0.2 で 1、確率 0.8 で 0 をとる確率変数 $X$（ベルヌーイ分布）の分散を求めよ。
+    answer: 0.16
+    tolerance: 0.0001
+    hint: |
+      ベルヌーイ分布の分散は $p(1-p)$。
+    explanation: |
+      $V[X]=0.2\times 0.8=0.16$ です。期待値は 0.2 で、$E[X^2]=0.2$ から $0.2-0.2^2=0.16$ と求めても同じです。
+
+  - id: q09-bernoulli-distribution-g2
+    term: bernoulli-distribution
+    level: 基本
+    type: choice
+    question: |
+      成功の確率が $p$ のベルヌーイ分布の分散が最も大きくなる $p$ はどれか。
+    choices:
+      - '0.5'
+      - '1'
+      - '0.25'
+      - $p$ によらず一定
+    answer: 0
+    hint: |
+      分散 $p(1-p)$ を $p$ の 2 次関数として考える。
+    explanation: |
+      $p(1-p)=-(p-0.5)^2+0.25$ なので、$p=0.5$ で最大の 0.25 になります。$p=1$ なら結果が必ず 1 で、分散は 0 です。
+      母比率の見当がつかないときに標本の大きさを $p=0.5$ で計算するのは、分散が最大の場合に備えるためです。
+
+  - id: q09-bernoulli-distribution-g3
+    term: bernoulli-distribution
+    level: 標準
+    type: numeric
+    question: |
+      ある意見に賛成する人の割合が 0.2 の大きな集団から、400 人を無作為に選ぶ。賛成を 1、反対を 0 として 400 人の平均（標本比率）をとるとき、標本比率の標準偏差を求めよ。
+    answer: 0.02
+    tolerance: 0.0001
+    hint: |
+      標本比率は、ベルヌーイ分布にしたがう 400 個の変数の標本平均。標本平均の分散は（1 個の分散）÷ $n$。
+    explanation: |
+      1 人分の分散は $0.2\times 0.8=0.16$ なので、標本比率の分散は $0.16/400=0.0004$、標準偏差は $\sqrt{0.0004}=0.02$ です。
+      分散 0.0004 のまま答えたり、$\sqrt{0.16}=0.4$（1 人分の標準偏差）を答えたりしないようにします。
+
+  # ---------- 二項分布（2級向けに書き直した用語） ----------
   - id: q09-binomial-distribution-g1
     term: binomial-distribution
     level: 基本
@@ -27,7 +73,21 @@ questions:
     explanation: |
       $1-0.9^3=1-0.729=0.271$ です。
 
-  # ---------- ポアソン分布（共通の用語・2級の問題） ----------
+  - id: q09-binomial-distribution-g3
+    term: binomial-distribution
+    level: 基本
+    type: numeric
+    question: |
+      成功の確率が 0.4 の独立な試行を 30 回行うとき、成功の回数の分散を求めよ。
+    answer: 7.2
+    tolerance: 0.001
+    hint: |
+      成功の回数は $B(30,\ 0.4)$ にしたがう。分散は $np(1-p)$。
+    explanation: |
+      $30\times 0.4\times 0.6=7.2$ です（期待値は 12）。
+      $np=12$ を分散と答えるのは、ポアソン分布（平均 ＝ 分散）と混同した誤りです。
+
+  # ---------- ポアソン分布（2級向けに書き直した用語） ----------
   - id: q09-poisson-distribution-g1
     term: poisson-distribution
     level: 基本
@@ -39,9 +99,41 @@ questions:
     hint: |
       $P(X=0)=e^{-\lambda}$。
     explanation: |
-      $P(X=0)=e^{-2}\lambda^0/0!=e^{-2}=0.1353$ です。
+      $P(X=0)=e^{-2}\cdot 2^0/0!=e^{-2}=0.1353$ です。
 
-  # ---------- 正規分布（共通の用語・2級の問題） ----------
+  - id: q09-poisson-distribution-g2
+    term: poisson-distribution
+    level: 標準
+    type: numeric
+    question: |
+      ある交差点の 1 か月の事故の件数は、平均 1.5 件のポアソン分布にしたがう。ある月の事故が 1 件以下である確率を求めよ。ただし $e^{-1.5}=0.2231$ とする。
+    answer: 0.5578
+    tolerance: 0.0005
+    hint: |
+      $P(X=0)+P(X=1)=e^{-1.5}(1+1.5)$。
+    explanation: |
+      $P(X=0)=e^{-1.5}=0.2231$、$P(X=1)=1.5e^{-1.5}=0.3347$ なので、合計 $2.5\times 0.2231\approx 0.5578$ です。
+      「1 件以下」は 0 件と 1 件の両方を含みます。
+
+  - id: q09-poisson-distribution-g3
+    term: poisson-distribution
+    level: 基本
+    type: choice
+    question: |
+      窓口 A への 1 時間の問い合わせの件数は平均 2 件、窓口 B は平均 3 件のポアソン分布にしたがい、互いに独立である。2 つの窓口の 1 時間の件数の合計がしたがう分布はどれか。
+    choices:
+      - 平均 5 のポアソン分布
+      - 平均 6 のポアソン分布
+      - 平均 5・分散 13 の分布
+      - 平均 2.5 のポアソン分布
+    answer: 0
+    hint: |
+      独立なポアソン分布の和はポアソン分布で、平均は足し算。
+    explanation: |
+      合計は平均 $2+3=5$ のポアソン分布にしたがいます。ポアソン分布なので分散も 5 です。
+      平均を掛けたり（6）、平均をとったり（2.5）しないようにします。分散 13 は $2^2+3^2$ で、平均を標準偏差と取り違えた値です。
+
+  # ---------- 正規分布（2級向けに書き直した用語） ----------
   - id: q09-normal-distribution-g1
     term: normal-distribution
     level: 標準
@@ -88,7 +180,7 @@ questions:
       $P(A-B<0)=P(Z<(0-1)/1)=P(Z<-1)=P(Z>1)=0.1587$ です。
       差の分散も足し算です（$0.36-0.64$ のように引くと負になってしまいます）。
 
-  # ---------- 標準正規分布（共通の用語・2級の問題） ----------
+  # ---------- 標準正規分布（2級向けに書き直した用語） ----------
   - id: q09-standard-normal-distribution-g1
     term: standard-normal-distribution
     level: 基本

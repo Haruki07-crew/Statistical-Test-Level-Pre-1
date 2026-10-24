@@ -34,9 +34,6 @@ expectation-variance-properties: aX＋b の期待値と分散、和の期待値�
 joint-probability-function: 同時確率の表から周辺確率・条件付き確率を求め、独立かどうかを判断できるようにする。
 marginal-distribution: 同時確率の表の行や列を足して求めることだけ押さえればよい。
 sum-of-random-variables: 独立な確率変数の和の期待値と分散、独立な正規分布の和が正規分布になることを押さえる。再生性の一般論は読み飛ばしてよい。
-bernoulli-distribution: 期待値 p、分散 p(1－p) を押さえる。二項分布と標本比率の土台。
-binomial-distribution: 確率の式（組合せを掛ける）、期待値 np、分散 np(1－p) を確実にする。母関数による導出は読み飛ばしてよい。
-poisson-distribution: 確率の式、期待値と分散がどちらも λ であること、まれな事象の件数の分布であることを押さえる。
 geometric-distribution: 初めて成功するまでの回数の分布。2級の問題は「試行の回数」で数えることが多く、そのとき期待値は 1/p。この辞典の解説は「失敗の回数」で数えているので注意。
 hypergeometric-distribution: 戻さずに取り出すときの確率を組合せの比で計算できるようにする。
 negative-binomial-distribution: 出題はまれ。幾何分布を「r 回成功するまで」に広げたものと知っておけば十分。
