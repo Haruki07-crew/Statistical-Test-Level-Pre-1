@@ -19,6 +19,10 @@
   "hash": "e3bfb9281d2b39d6",
   "ok": true
  },
+ "q07-conditional-probability-g3": {
+  "hash": "a498f9746feccb04",
+  "ok": true
+ },
  "q07-counting-1": {
   "hash": "206108523c3a8ca8",
   "ok": true
@@ -53,6 +57,10 @@
  },
  "q07-independence-of-events-g2": {
   "hash": "6d64700ed4507003",
+  "ok": true
+ },
+ "q07-independence-of-events-g3": {
+  "hash": "a2b3e88721d4c33b",
   "ok": true
  },
  "q07-law-of-total-probability-g1": {

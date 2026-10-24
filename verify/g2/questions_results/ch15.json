@@ -31,6 +31,10 @@
   "hash": "722d2d9d5c0a9819",
   "ok": true
  },
+ "q15-one-way-anova-g3": {
+  "hash": "d79de2e0d6b0bed2",
+  "ok": true
+ },
  "q15-randomized-block-design-g1": {
   "hash": "a75827e70f9d48be",
   "ok": true
@@ -45,6 +49,10 @@
  },
  "q15-sum-of-squares-decomposition-g2": {
   "hash": "a6a0ad46db8d1b37",
+  "ok": true
+ },
+ "q15-sum-of-squares-decomposition-g3": {
+  "hash": "18c2c27757447711",
   "ok": true
  },
  "q15-treatment-and-control-1": {

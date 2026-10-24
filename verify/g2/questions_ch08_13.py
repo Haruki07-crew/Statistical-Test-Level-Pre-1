@@ -136,6 +136,15 @@ q.check("q11-ci-variance-g2", abs(stats.chi2.isf(.025, 15) - 27.49) < 0.005 and 
 sv = [np.random.default_rng(1100 + k).normal(0, 2, n_).var() for k, n_ in enumerate([5, 50, 5000])]
 q.check("q11-consistent-estimator-g2", abs(sv[2] - 4) < 0.3 and q.qs["q11-consistent-estimator-g2"]["answer"] is False, f"n を増やすと標本分散は 4 に近づく {[round(v, 2) for v in sv]}")
 q.num("q11-required-sample-size-g2", min(n_ for n_ in range(1, 5000) if 1.96 * sqrt(.25 / n_) <= 0.03))
+q.num("q11-point-estimation-g3", 3.2 * 2000)
+q.num("q11-unbiased-estimator-g3", 1 / 4)
+ss11 = (np.random.default_rng(111).normal(0, 3, (200000, 5)).var(axis=1, ddof=0) * 5); q.check("q11-unbiased-estimator-g3", abs(0.25 * ss11.mean() - 9) < 0.05, f"シミュレーション σ²=9 に対して {0.25 * ss11.mean():.3f}")
+q.num("q11-standard-error-g3", sqrt(3 ** 2 + 4 ** 2))
+q.num("q11-confidence-interval-g3", (1.96 * 10 / ((53.92 - 46.08) / 2)) ** 2)
+q.num("q11-ci-mean-known-variance-g3", 80 - 2.576 * 12 / 6)
+d11 = np.array([12, 15, 9, 14, 10.]); q.num("q11-ci-mean-unknown-variance-g3", d11.mean() + stats.t.isf(.025, 4) * d11.std(ddof=1) / sqrt(5))
+q.check("q11-ci-mean-unknown-variance-g3", abs(stats.t.isf(.025, 4) - 2.776) < 5e-4 and d11.mean() == 12 and abs(d11.var(ddof=1) - 6.5) < 1e-12, "表の値・平均 12・不偏分散 6.5")
+q.num("q11-ci-proportion-g3", 2.576 * sqrt(.2 * .8 / 400))
 run(q)
 
 q = Q(12)
@@ -178,6 +187,15 @@ q.check("q12-confidence-interval-test-duality-g2", ci95(2.2, 1)[0] > 0 and ci99(
 pw12 = lambda n, a, s, d: stats.norm.sf(stats.norm.isf(a) - d / (s / sqrt(n)))
 q.check("q12-power-function-g2", pw12(25, .05, 10, 4) > pw12(16, .05, 10, 4) and pw12(16, .01, 10, 4) < pw12(16, .05, 10, 4) and pw12(16, .05, 15, 4) < pw12(16, .05, 10, 4) and pw12(16, .05, 10, 2) < pw12(16, .05, 10, 4) and chosen(q, "q12-power-function-g2") == "標本の大きさを大きくする", "検出力の式で 4 つの条件を比べる")
 q.check("q12-chi-square-test-variance-g2", 20 * 6 / 4 == 30 and abs(stats.chi2.isf(.05, 20) - 31.41) < 0.005 and 30 < 31.41 < 21 * 6 / 4 and chosen(q, "q12-chi-square-test-variance-g2").startswith("χ² ＝ 20 × 6 ÷ 4 ＝ 30 で、31.41"), "χ²=30 < 31.41（n を掛けると 31.5）")
+q.concept("q12-null-and-alternative-hypothesis-g3", "示したいことは対立仮説に置く")
+q.num("q12-significance-level-g3", 0.05 / 5)
+q.check("q12-significance-level-g3", abs(1 - 0.95 ** 5 - 0.226) < 5e-4, "5% で 5 回なら 0.226")
+q.num("q12-one-sided-two-sided-test-g3", 0.08 / 2)
+zz12 = stats.norm.isf(0.04); q.check("q12-one-sided-two-sided-test-g3", abs(2 * stats.norm.sf(zz12) - 0.08) < 1e-12, "両側 0.08 ⇔ 片側 0.04")
+q.num("q12-z-test-known-variance-g3", min(n_ for n_ in range(1, 1000) if (52 - 50) / (10 / sqrt(n_)) >= 1.96))
+d12 = np.array([13, 15, 11, 17.]); q.num("q12-one-sample-t-test-g3", stats.ttest_1samp(d12, 12).statistic)
+q.check("q12-one-sample-t-test-g3", abs(stats.t.isf(.025, 3) - 3.182) < 5e-4 and stats.ttest_1samp(d12, 12).pvalue > 0.05, "自由度 3 の 3.182 より小さい")
+q.num("q12-proportion-test-g3", min(x_ for x_ in range(101) if (x_ - 50) / 5 >= 1.645))
 run(q)
 
 q = Q(13)
@@ -219,5 +237,21 @@ q.num("q13-f-test-equal-variances-g2", 6 ** 2 / 4 ** 2)
 ct13 = stats.chi2_contingency([[110, 90], [90, 110]], correction=False).statistic; pp13 = 0.5; z13 = (0.55 - 0.45) / sqrt(pp13 * (1 - pp13) * (2 / 200))
 q.num("q13-two-sample-proportion-test-g2", 2.0 ** 2)
 q.check("q13-two-sample-proportion-test-g2", abs(z13 - 2) < 1e-9 and abs(ct13 - 4) < 1e-9 and abs(stats.chi2.isf(.05, 1) - stats.norm.isf(.025) ** 2) < 1e-9, f"110/200 と 90/200：z={z13:.3f}、χ²={ct13:.3f}")
+sp13 = (4 * 10 + 6 * 8) / 10; q.num("q13-two-sample-t-test-g3", 4 / sqrt(sp13 * (1 / 5 + 1 / 7)))
+q.check("q13-two-sample-t-test-g3", abs(stats.t.isf(.025, 10) - 2.228) < 5e-4 and 4 / sqrt(sp13 * (1 / 5 + 1 / 7)) > 2.228, "自由度 10 の 2.228 より大きい")
+rg13 = np.random.default_rng(130); rej_p = rej_w = 0
+for _ in range(4000):
+    a_ = rg13.normal(0, 2, 8); b_ = rg13.normal(0, sqrt(50), 30)
+    rej_p += stats.ttest_ind(a_, b_).pvalue < .05; rej_w += stats.ttest_ind(a_, b_, equal_var=False).pvalue < .05
+q.check("q13-welch-test-g3", abs(rej_w / 4000 - 0.05) < 0.015 and rej_p / 4000 < 0.02 and chosen(q, "q13-welch-test-g3").startswith("母分散が等しいと仮定しない"), f"母平均が等しいときの棄却率：ウェルチ {rej_w / 4000:.3f}・プール {rej_p / 4000:.3f}")
+rg13b = np.random.default_rng(131); tp = ti = 0
+for _ in range(2000):
+    base = rg13b.normal(130, 12, 10); bef = base + rg13b.normal(0, 3, 10); aft = base - 4 + rg13b.normal(0, 3, 10)
+    tp += stats.ttest_rel(bef, aft).pvalue < .05; ti += stats.ttest_ind(bef, aft).pvalue < .05
+q.check("q13-paired-t-test-g3", tp > 2 * ti and chosen(q, "q13-paired-t-test-g3").startswith("人による血圧の違い"), f"効果 4 を検出する割合：対応あり {tp / 2000:.2f}・独立として {ti / 2000:.2f}")
+gf13 = stats.chisquare([96, 28, 26, 10], [90, 30, 30, 10]); q.num("q13-goodness-of-fit-test-g3", gf13.statistic)
+q.check("q13-goodness-of-fit-test-g3", abs(stats.chi2.isf(.05, 3) - 7.81) < 0.005, "自由度 3 の 7.81")
+it13 = stats.chi2_contingency([[20, 30, 50], [30, 30, 40]], correction=False); q.num("q13-independence-test-g3", it13.statistic)
+q.check("q13-independence-test-g3", it13.dof == 2 and np.allclose(it13.expected_freq, [[25, 30, 45], [25, 30, 45]]) and abs(stats.chi2.isf(.05, 2) - 5.99) < 0.005, "期待度数・自由度 2・5.99")
 run(q)
 raise SystemExit(1 if ng else 0)

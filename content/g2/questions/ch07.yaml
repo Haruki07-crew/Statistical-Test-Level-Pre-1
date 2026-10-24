@@ -233,3 +233,31 @@ questions:
       袋 A を選ぶ確率は 1/3、袋 B は 2/3。袋ごとの赤の確率に重みを付けて足す。
     explanation: |
       $\dfrac13\times\dfrac35+\dfrac23\times\dfrac15=\dfrac{3}{15}+\dfrac{2}{15}=\dfrac13\approx 0.333$ です。2 つの袋の赤の割合の単純な平均 $(0.6+0.2)/2=0.4$ にはなりません。袋を選ぶ確率で重みを付けます。
+  - id: q07-conditional-probability-g3
+    term: conditional-probability
+    level: 応用
+    type: numeric
+    question: |
+      10 本のうち 3 本が当たりのくじを、引いたくじを戻さずに A、B の順に 1 本ずつ引く。B が当たりを引く確率を求めよ。
+    answer: 0.3
+    tolerance: 0.0001
+    hint: |
+      A が当たりの場合と外れの場合に分け、乗法定理で求めて足す。
+    explanation: |
+      $\dfrac{3}{10}\times\dfrac{2}{9}+\dfrac{7}{10}\times\dfrac{3}{9}=\dfrac{6+21}{90}=0.3$ です。A が当たりのときの $2/9$ だけを答える誤りに注意します。何番目に引いても、当たる確率は $3/10$ で同じです。
+  - id: q07-independence-of-events-g3
+    term: independence-of-events
+    level: 応用
+    type: choice
+    question: |
+      事象 $A$、$B$ について $P(A)=0.3$、$P(B)=0.4$ で、$A$ と $B$ は排反（同時には起こらない）である。正しいものはどれか。
+    choices:
+      - A と B は独立ではない
+      - A と B は独立である
+      - P(A∪B) ＝ 0.58 である
+      - B が起きたとき A が起きる条件付き確率は 0.3 である
+    answer: 0
+    hint: |
+      独立なら $P(A\cap B)=P(A)P(B)$。排反なら $P(A\cap B)=0$。
+    explanation: |
+      排反なので $P(A\cap B)=0$ ですが、$P(A)P(B)=0.12$ なので独立ではありません。$B$ が起きると $A$ は決して起きない（$P(A\mid B)=0$）ので、むしろ強く関係しています。$P(A\cup B)=0.3+0.4=0.7$ で、0.58 は独立のときの値です。確率が正の事象どうしでは、排反と独立は両立しません。

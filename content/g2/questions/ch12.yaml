@@ -417,3 +417,79 @@ questions:
       $\chi^2=\dfrac{(n-1)s^2}{\sigma_0^2}$ で、自由度は $n-1$。
     explanation: |
       $\chi^2=\dfrac{20\times 6}{4}=30$ は上側 5% 点 31.41 より小さいので、有意水準 5% では「ばらつきが大きくなった」とはいえません。$n=21$ を掛けると 31.5 になり、結論が逆になってしまいます。比べる相手は自由度ではなく、表の点です。
+  - id: q12-null-and-alternative-hypothesis-g3
+    term: null-and-alternative-hypothesis
+    level: 標準
+    type: choice
+    question: |
+      仮説検定での、帰無仮説と対立仮説の置き方として最も適切なものはどれか。
+    choices:
+      - 示したいこと（差がある・効果がある）を対立仮説に置き、帰無仮説が棄却されたときに主張する
+      - 示したいことを帰無仮説に置き、棄却されなければ主張する
+      - データを見てから、棄却しやすいほうを帰無仮説にする
+      - 帰無仮説と対立仮説は、どちらに置いても結論は同じである
+    answer: 0
+    hint: |
+      検定で強く言えるのは「棄却した」ときだけ。
+    explanation: |
+      検定は、帰無仮説が正しいとしたらデータが起こりにくいことを示して棄却する方法なので、主張したいことは対立仮説に置きます。棄却できなかったときは「差があるとはいえない」だけで、帰無仮説が正しいことは示せません。データを見てから仮説を決めるのも誤りです。
+  - id: q12-significance-level-g3
+    term: significance-level
+    level: 標準
+    type: numeric
+    question: |
+      5 つの検定を行い、そのうち少なくとも 1 つで誤って帰無仮説を棄却する確率を全体で 5% 以下に抑えたい。ボンフェローニの方法を使うとき、1 つ 1 つの検定の有意水準をいくらにすればよいか。
+    answer: 0.01
+    tolerance: 0.00001
+    hint: |
+      全体の有意水準を検定の数で割る。
+    explanation: |
+      $0.05/5=0.01$ です。それぞれを 5% で検定すると、5 つが独立なら少なくとも 1 つ誤って棄却する確率は $1-0.95^5\approx 0.23$ にもなります。
+  - id: q12-one-sided-two-sided-test-g3
+    term: one-sided-two-sided-test
+    level: 応用
+    type: numeric
+    question: |
+      z 検定の両側検定の p 値は 0.08 で、標本平均は帰無仮説の値より大きかった。同じデータで右側の片側検定を行うと、p 値はいくらか。
+    answer: 0.04
+    tolerance: 0.00001
+    hint: |
+      両側の p 値は、片側の裾の確率の 2 倍。
+    explanation: |
+      統計量が右側にあるので、右側の片側の p 値は $0.08/2=0.04$ で、有意水準 5% なら棄却されます。ただし、データを見てから片側検定に切りかえるのは誤りで、片側か両側かは検定の前に決めておきます。
+  - id: q12-z-test-known-variance-g3
+    term: z-test-known-variance
+    level: 応用
+    type: numeric
+    question: |
+      母標準偏差 10 の正規母集団で、帰無仮説「母平均 50」を有意水準 5% の両側検定で調べる。標本平均が 52 だったとき、帰無仮説が棄却されるのは標本の大きさが少なくともいくつのときか。
+    answer: 97
+    tolerance: 0.4
+    hint: |
+      $\dfrac{52-50}{10/\sqrt n}\ge 1.96$ を満たす最小の $n$。
+    explanation: |
+      $\sqrt n\ge 1.96\times 10/2=9.8$ より $n\ge 96.04$ なので、97 です。同じ差 2 でも、標本が大きいほど標準誤差が小さくなり、有意になりやすくなります。
+  - id: q12-one-sample-t-test-g3
+    term: one-sample-t-test
+    level: 応用
+    type: numeric
+    question: |
+      正規母集団から 4 個のデータ 13, 15, 11, 17 を得た。帰無仮説「母平均 12」の t 検定の検定統計量を小数第 2 位まで求めよ。
+    answer: 1.55
+    tolerance: 0.005
+    hint: |
+      平均は 14、不偏分散は $20/3$。
+    explanation: |
+      標準誤差は $\sqrt{(20/3)/4}\approx 1.291$ なので、$t=(14-12)/1.291\approx 1.55$ です。自由度 3 の両側 5% の点 3.182 より小さいので、棄却しません。
+  - id: q12-proportion-test-g3
+    term: proportion-test
+    level: 応用
+    type: numeric
+    question: |
+      コインを 100 回投げ、帰無仮説「表の確率 0.5」を、対立仮説「表の確率は 0.5 より大きい」で有意水準 5% で検定する（正規近似、連続修正なし、境目は 1.645）。帰無仮説が棄却されるのは、表が少なくとも何回出たときか。
+    answer: 59
+    tolerance: 0.4
+    hint: |
+      回数で考えると、平均 50、標準偏差 $\sqrt{100\times 0.5\times 0.5}=5$。
+    explanation: |
+      $(x-50)/5\ge 1.645$ より $x\ge 58.2$ なので、59 回以上で棄却します。58 回では $z=1.6$ で、棄却されません。

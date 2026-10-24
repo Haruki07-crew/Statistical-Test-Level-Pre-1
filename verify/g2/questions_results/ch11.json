@@ -7,6 +7,10 @@
   "hash": "c62eb1f2a2003c80",
   "ok": true
  },
+ "q11-ci-mean-known-variance-g3": {
+  "hash": "30f17f738e26f23c",
+  "ok": true
+ },
  "q11-ci-mean-unknown-variance-g1": {
   "hash": "dc7e2e322f026597",
   "ok": true
@@ -15,12 +19,20 @@
   "hash": "7bf42f44eb0cc928",
   "ok": true
  },
+ "q11-ci-mean-unknown-variance-g3": {
+  "hash": "788e485c881728c6",
+  "ok": true
+ },
  "q11-ci-proportion-g1": {
   "hash": "acbca10177368e76",
   "ok": true
  },
  "q11-ci-proportion-g2": {
   "hash": "c9f4de0a3b59d441",
+  "ok": true
+ },
+ "q11-ci-proportion-g3": {
+  "hash": "7e1d67f96c0dbbe9",
   "ok": true
  },
  "q11-ci-two-sample-mean-difference-g1": {
@@ -67,6 +79,10 @@
   "hash": "a12dcf0da37d2e8a",
   "ok": true
  },
+ "q11-confidence-interval-g3": {
+  "hash": "1990a8971ad85c59",
+  "ok": true
+ },
  "q11-consistent-estimator-g1": {
   "hash": "226fe69608692fee",
   "ok": true
@@ -91,6 +107,10 @@
   "hash": "6b95ddfa07cb5390",
   "ok": true
  },
+ "q11-point-estimation-g3": {
+  "hash": "e3daef2c16551a7b",
+  "ok": true
+ },
  "q11-required-sample-size-g1": {
   "hash": "9cd7f867eec079b1",
   "ok": true
@@ -107,12 +127,20 @@
   "hash": "2a144f4add524b43",
   "ok": true
  },
+ "q11-standard-error-g3": {
+  "hash": "33ac621267175a85",
+  "ok": true
+ },
  "q11-unbiased-estimator-g1": {
   "hash": "99d2296bde7ff11f",
   "ok": true
  },
  "q11-unbiased-estimator-g2": {
   "hash": "3e910c1be7a97b87",
+  "ok": true
+ },
+ "q11-unbiased-estimator-g3": {
+  "hash": "0d8aa422c1b26883",
   "ok": true
  }
 }

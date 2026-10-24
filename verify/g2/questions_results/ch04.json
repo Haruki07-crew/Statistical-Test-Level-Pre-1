@@ -7,6 +7,10 @@
   "hash": "16695d8eee25ee77",
   "ok": true
  },
+ "q04-coefficient-of-determination-g3": {
+  "hash": "2dbe3714c00e0f48",
+  "ok": true
+ },
  "q04-least-squares-method-g1": {
   "hash": "70c1ca544bb2666a",
   "ok": true
@@ -33,6 +37,10 @@
  },
  "q04-residual-g2": {
   "hash": "43e40ded134012e1",
+  "ok": true
+ },
+ "q04-residual-g3": {
+  "hash": "ac94a603c0622784",
   "ok": true
  },
  "q04-residual-plot-g1": {

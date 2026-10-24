@@ -422,3 +422,87 @@ questions:
       見当がつかないときは、$p(1-p)$ が最大になる $p=0.5$ を使う。
     explanation: |
       $n\ge\left(\dfrac{1.96}{0.03}\right)^2\times 0.25\approx 1067.1$ なので、最小は 1068 人です。切り捨てて 1067 にすると、幅の半分がわずかに 0.03 を超えます。
+  - id: q11-point-estimation-g3
+    term: point-estimation
+    level: 標準
+    type: numeric
+    question: |
+      2000 世帯の町から 100 世帯を無作為に選んで調べたところ、1 世帯あたりの人数の平均は 3.2 人だった。町全体の人数（総数）の推定値を求めよ。
+    answer: 6400
+    tolerance: 0.4
+    hint: |
+      母平均の推定値に、母集団の世帯数を掛ける。
+    explanation: |
+      母平均の推定値 3.2 人に世帯数 2000 を掛けて、$3.2\times 2000=6400$ 人です。標本平均は母平均の不偏推定量なので、それを $N$ 倍した値も総数の不偏推定量になります。
+  - id: q11-unbiased-estimator-g3
+    term: unbiased-estimator
+    level: 標準
+    type: numeric
+    question: |
+      大きさ 5 の標本について、$c\sum_{i=1}^{5}(X_i-\bar X)^2$ が母分散 $\sigma^2$ の不偏推定量になるような定数 $c$ を求めよ。
+    answer: 0.25
+    tolerance: 0.0001
+    hint: |
+      $E\left[\sum(X_i-\bar X)^2\right]=(n-1)\sigma^2$。
+    explanation: |
+      偏差平方和の期待値は $(5-1)\sigma^2=4\sigma^2$ なので、$c=1/4=0.25$ です。$n=5$ で割る（$c=0.2$）と、期待値は $0.8\sigma^2$ で小さめになります。
+  - id: q11-standard-error-g3
+    term: standard-error
+    level: 応用
+    type: numeric
+    question: |
+      独立な 2 つの群の標本平均の標準誤差は、それぞれ 3 と 4 だった。2 つの標本平均の差の標準誤差を求めよ。
+    answer: 5
+    tolerance: 0.001
+    hint: |
+      独立なら、差の分散は分散の和。標準誤差は足さずに、2 乗して足してから平方根。
+    explanation: |
+      $\sqrt{3^2+4^2}=5$ です。標準誤差をそのまま足して 7、引いて 1 とするのは誤りです。差でも和でも、独立な量の分散は足し算になります。
+  - id: q11-confidence-interval-g3
+    term: confidence-interval
+    level: 応用
+    type: numeric
+    question: |
+      母標準偏差が 10 の正規母集団で、標本平均から作った母平均の 95% 信頼区間は (46.08, 53.92) だった。標本の大きさを求めよ。
+    answer: 25
+    tolerance: 0.4
+    hint: |
+      幅の半分は $1.96\times 10/\sqrt n$。
+    explanation: |
+      幅の半分は $(53.92-46.08)/2=3.92$ なので、$1.96\times 10/\sqrt n=3.92$ より $\sqrt n=5$、$n=25$ です。区間の中心 50 が標本平均です。
+  - id: q11-ci-mean-known-variance-g3
+    term: ci-mean-known-variance
+    level: 標準
+    type: numeric
+    question: |
+      母標準偏差 12 の正規母集団から大きさ 36 の標本をとったところ、標本平均は 80 だった。母平均の 99% 信頼区間の下限を小数第 2 位まで求めよ（係数は 2.576 を使う）。
+    answer: 74.85
+    tolerance: 0.005
+    hint: |
+      標準誤差は $12/\sqrt{36}=2$。
+    explanation: |
+      $80-2.576\times 2=80-5.152\approx 74.85$ です。95% 信頼区間（係数 1.96）なら下限は 76.08 で、99% のほうが広くなります。
+  - id: q11-ci-mean-unknown-variance-g3
+    term: ci-mean-unknown-variance
+    level: 応用
+    type: numeric
+    question: |
+      正規母集団から 5 個のデータ 12, 15, 9, 14, 10 を得た。母平均の 95% 信頼区間の上限を小数第 2 位まで求めよ。ただし $t_{0.025}(4)=2.776$ とする。
+    answer: 15.17
+    tolerance: 0.01
+    hint: |
+      平均は 12、偏差平方和は 26、不偏分散は $26/4$。
+    explanation: |
+      不偏分散は $26/4=6.5$、標準誤差は $\sqrt{6.5/5}=\sqrt{1.3}\approx 1.140$ です。上限は $12+2.776\times 1.140\approx 15.17$ です。不偏分散を $n=5$ で割って求めたり、正規分布の 1.96 を使ったりすると、区間が狭くなりすぎます。
+  - id: q11-ci-proportion-g3
+    term: ci-proportion
+    level: 標準
+    type: numeric
+    question: |
+      無作為に選んだ 400 人のうち 80 人がある商品を使っていた。母比率の 99% 信頼区間の幅の半分を小数第 3 位まで求めよ（係数は 2.576 を使う）。
+    answer: 0.052
+    tolerance: 0.0005
+    hint: |
+      標準誤差は $\sqrt{0.2\times 0.8/400}$。
+    explanation: |
+      標準誤差は $\sqrt{0.16/400}=0.02$ なので、幅の半分は $2.576\times 0.02\approx 0.052$ です。区間は約 $(0.148,\ 0.252)$ です。

@@ -7,6 +7,10 @@
   "hash": "4a9561b98c0bcd8a",
   "ok": true
  },
+ "q14-adjusted-r-squared-g3": {
+  "hash": "e581527a1b5abc5e",
+  "ok": true
+ },
  "q14-confidence-and-prediction-interval-regression-g1": {
   "hash": "b2cb51e3007648b0",
   "ok": true
@@ -53,6 +57,10 @@
  },
  "q14-regression-coefficient-t-test-g2": {
   "hash": "ff9f15bdec09164d",
+  "ok": true
+ },
+ "q14-regression-coefficient-t-test-g3": {
+  "hash": "e5e74ee5f2c2eb5b",
   "ok": true
  },
  "q14-regression-output-1": {

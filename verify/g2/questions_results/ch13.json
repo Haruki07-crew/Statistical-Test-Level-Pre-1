@@ -23,6 +23,10 @@
   "hash": "6e0bdc6c11053bd5",
   "ok": true
  },
+ "q13-goodness-of-fit-test-g3": {
+  "hash": "2f36ea650f67e227",
+  "ok": true
+ },
  "q13-independence-test-g1": {
   "hash": "f4455f617d73a589",
   "ok": true
@@ -31,12 +35,20 @@
   "hash": "46ae312ae6461738",
   "ok": true
  },
+ "q13-independence-test-g3": {
+  "hash": "10c449301992d25b",
+  "ok": true
+ },
  "q13-paired-t-test-g1": {
   "hash": "4da731142263cab3",
   "ok": true
  },
  "q13-paired-t-test-g2": {
   "hash": "8abf85876ddb6821",
+  "ok": true
+ },
+ "q13-paired-t-test-g3": {
+  "hash": "323bc3507022d79c",
   "ok": true
  },
  "q13-pearson-chi-square-statistic-g1": {
@@ -75,12 +87,20 @@
   "hash": "5a6624eeeb009ea3",
   "ok": true
  },
+ "q13-two-sample-t-test-g3": {
+  "hash": "7692546e4c98ef34",
+  "ok": true
+ },
  "q13-welch-test-g1": {
   "hash": "65fcec0d9449e43b",
   "ok": true
  },
  "q13-welch-test-g2": {
   "hash": "67595373a2462bad",
+  "ok": true
+ },
+ "q13-welch-test-g3": {
+  "hash": "0970502c3eca85d6",
   "ok": true
  }
 }

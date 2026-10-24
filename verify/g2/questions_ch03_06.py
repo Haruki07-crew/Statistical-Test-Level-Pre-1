@@ -50,6 +50,11 @@ cv3 = np.random.default_rng(31).multivariate_normal([0, 0], [[16, 12], [12, 25]]
 pr3 = (0.5 - 0.7 * 0.7) / np.sqrt((1 - 0.49) * (1 - 0.49))
 q.check("q03-partial-correlation-coefficient-g2", abs(pr3 - 0.0196) < 5e-4 and chosen(q, "q03-partial-correlation-coefficient-g2").startswith("偏相関係数はほぼ 0 で"), f"偏相関 {pr3:.4f}")
 q.check("q03-simpsons-paradox-g2", 18 / 20 > 68 / 80 and 40 / 80 > 8 / 20 and 58 / 100 < 76 / 100 and 18 + 40 == 58 and 68 + 8 == 76 and chosen(q, "q03-simpsons-paradox-g2").startswith("X は回復しにくい重症"), "層ごとに X が高く、全体で Y が高い")
+Sxx3 = 290 - 10 * 5 ** 2; Syy3 = 700 - 10 * 8 ** 2; Sxy3 = 430 - 10 * 5 * 8; q.num("q03-covariance-and-correlation-g3", Sxy3 / np.sqrt(Sxx3 * Syy3))
+q.check("q03-covariance-and-correlation-g3", (Sxx3, Syy3, Sxy3) == (40, 60, 30), "S_xx=40・S_yy=60・S_xy=30")
+rg3 = np.random.default_rng(33); gr3 = np.repeat(np.arange(1, 7), 200); shoe = 16 + gr3 + rg3.normal(0, 1, 1200); calc = 40 + 8 * gr3 + rg3.normal(0, 8, 1200)
+within3 = [np.corrcoef(shoe[gr3 == g], calc[gr3 == g])[0, 1] for g in range(1, 7)]
+q.check("q03-spurious-correlation-g3", np.corrcoef(shoe, calc)[0, 1] > 0.6 and max(abs(np.array(within3))) < 0.2 and chosen(q, "q03-spurious-correlation-g3").startswith("学年ごとに分けて"), f"全体 {np.corrcoef(shoe, calc)[0, 1]:.2f}・学年ごと 最大 {max(abs(np.array(within3))):.2f}")
 run(q)
 
 # ---------- 第4章 ----------
@@ -84,6 +89,10 @@ xu = np.linspace(0, 10, 41); yu = 2 + 0.5 * xu ** 2; bu, au = np.polyfit(xu, yu,
 q.check("q04-residual-plot-g2", ru[0] > 0 and ru[-1] > 0 and ru[20] < 0 and abs(ru.sum()) < 1e-9 and chosen(q, "q04-residual-plot-g2").startswith("直線では表せない"), "2 次の関係に直線を当てると残差が U 字形")
 q.num("q04-log-transformation-g2", (1.1 ** 0.8 - 1) * 100)
 q.check("q04-log-transformation-g2", abs(1.1 ** 0.8 - 1.0792) < 5e-5, "表の値")
+q.num("q04-coefficient-of-determination-g3", 1.6 ** 2 * 50 / 200)
+q.check("q04-coefficient-of-determination-g3", abs((1.6 * 50) / np.sqrt(50 * 200) - 0.8) < 1e-12, "r=0.8")
+x4 = np.array([1, 2, 3, 4.]); y4 = np.array([2, 4, 5, 7.]); b4, a4 = np.polyfit(x4, y4, 1); q.num("q04-residual-g3", ((y4 - a4 - b4 * x4) ** 2).sum())
+q.check("q04-residual-g3", abs(b4 - 1.6) < 1e-9 and abs(a4 - 0.5) < 1e-9 and np.allclose(y4 - a4 - b4 * x4, [-0.1, 0.3, -0.3, 0.1]), "傾き 1.6・切片 0.5・残差")
 run(q)
 
 # ---------- 第5章 ----------
@@ -120,6 +129,10 @@ q.num("q05-seasonal-adjustment-g1", 156 / 1.2)
 xa5 = np.array([2, 4, 5, 7, 7.]); da5 = xa5 - xa5.mean(); q.num("q05-autocovariance-autocorrelation-g2", (da5[:-1] * da5[1:]).sum() / (da5 ** 2).sum())
 tr5 = 0.5 * np.arange(120) + np.random.default_rng(55).normal(0, 3, 120); dt5 = tr5 - tr5.mean(); ac5 = [(dt5[:-k] * dt5[k:]).sum() / (dt5 ** 2).sum() for k in range(1, 13)]
 q.check("q05-correlogram-g2", ac5[0] > 0.9 and min(ac5) > 0.6 and all(a > b for a, b in zip(ac5, ac5[1:])) and chosen(q, "q05-correlogram-g2").startswith("長期的に"), f"トレンドのある系列の自己相関 {ac5[0]:.2f} … {ac5[-1]:.2f}")
+q.num("q05-time-series-components-g3", 115 - 120 - (-8))
+w12 = (np.r_[np.ones(12), 0] + np.r_[0, np.ones(12)]) / 24
+q.num("q05-moving-average-g3", len(w12))
+q.check("q05-moving-average-g3", abs(w12.sum() - 1) < 1e-12 and w12[0] == w12[-1] == 1 / 24 and np.allclose(w12[1:-1], 1 / 12), "重み 1/24・1/12×11・1/24")
 run(q)
 
 # ---------- 第6章 ----------
@@ -164,5 +177,11 @@ cl_mix = rg6.normal(50, 10, (100, 20)); cl_sim = rg6.normal(0, 10, (100, 1)) + 5
 se_mix = np.std([cl_mix[rg6.choice(100, 5, replace=False)].mean() for _ in range(3000)]); se_sim = np.std([cl_sim[rg6.choice(100, 5, replace=False)].mean() for _ in range(3000)])
 q.check("q06-cluster-sampling-g2", se_mix * 2 < se_sim and chosen(q, "q06-cluster-sampling-g2").startswith("各集落の中が母集団全体と"), f"集落の中が多様 {se_mix:.2f}・集落の中が均質 {se_sim:.2f}")
 q.concept("q06-two-stage-sampling-g2", "名簿と費用の利点。精度は単純無作為抽出法よりふつう下がる")
+pick, seen6 = [], set()
+for r_ in [83, 12, 45, 12, 97, 6, 33]:
+    if 1 <= r_ <= 80 and r_ not in seen6 and len(pick) < 3: pick.append(r_); seen6.add(r_)
+q.check("q06-simple-random-sampling-g3", pick == [12, 45, 6] and chosen(q, "q06-simple-random-sampling-g3") == "12, 45, 06", f"選ばれる番号 {pick}")
+q.check("q06-sampling-and-nonsampling-error-g3", abs(np.sqrt(.25 / 400) / np.sqrt(.25 / 100) - 0.5) < 1e-12 and chosen(q, "q06-sampling-and-nonsampling-error-g3").startswith("標本誤差の大きさはおよそ半分"), "標準誤差は 1/√4 = 1/2")
+q.concept("q06-fisher-three-principles-g3", "反復は誤差の大きさを見積もるため")
 run(q)
 raise SystemExit(1 if ng else 0)

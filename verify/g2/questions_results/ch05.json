@@ -51,6 +51,10 @@
   "hash": "b6343ab39ce8e6ff",
   "ok": true
  },
+ "q05-moving-average-g3": {
+  "hash": "2ba607dfbf2cac03",
+  "ok": true
+ },
  "q05-price-index-1": {
   "hash": "da6f1f49a65b8318",
   "ok": true
@@ -73,6 +77,10 @@
  },
  "q05-time-series-components-2": {
   "hash": "27e69ba7eba91439",
+  "ok": true
+ },
+ "q05-time-series-components-g3": {
+  "hash": "d623d5087cb0e019",
   "ok": true
  }
 }

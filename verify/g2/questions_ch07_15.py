@@ -46,6 +46,9 @@ q.check("q07-independence-of-events-g1", abs(len(A_ & B_) / 6 - (len(A_) / 6) * 
 q.num("q07-independence-of-events-g2", 0.3 + 0.5 - 0.3 * 0.5)
 q.num("q07-law-of-total-probability-g2", 1 / 3 * 3 / 5 + 2 / 3 * 1 / 5)
 bag = np.random.default_rng(71).random(600000); dice = np.random.default_rng(72).random(600000) < 1 / 3; q.check("q07-law-of-total-probability-g2", abs(np.where(dice, bag < 0.6, bag < 0.2).mean() - 1 / 3) < 0.003, "シミュレーション")
+q.num("q07-conditional-probability-g3", 3 / 10 * 2 / 9 + 7 / 10 * 3 / 9)
+kuji = np.array([np.random.default_rng(700 + k).permutation(10)[1] < 3 for k in range(60000)]); q.check("q07-conditional-probability-g3", abs(kuji.mean() - 0.3) < 0.006, f"シミュレーション {kuji.mean():.4f}")
+q.check("q07-independence-of-events-g3", 0 != 0.3 * 0.4 and abs(0.3 + 0.4 - 0.7) < 1e-12 and abs(0.3 + 0.4 - 0.12 - 0.58) < 1e-12 and chosen(q, "q07-independence-of-events-g3") == "A と B は独立ではない", "P(A∩B)=0 ≠ 0.12、排反なら P(A∪B)=0.7（0.58 は独立のとき）")
 run(q)
 
 q = Q(10)
@@ -151,6 +154,8 @@ def mc14(seed, noise):
 mcr = np.mean([mc14(1400 + k, 0.02) for k in range(500)]); mcr0 = np.mean([mc14(1400 + k, 1.0) for k in range(500)])
 q.check("q14-multicollinearity-g2", mcr > 0.7 and mcr0 < 0.05 and chosen(q, "q14-multicollinearity-g2").startswith("説明変数どうしの相関"), f"相関の強い説明変数で「F は有意・t はどちらも有意でない」になる割合 {mcr:.2f}（相関の弱いとき {mcr0:.2f}）")
 q.num("q14-dummy-variable-g2", 5 - (-3))
+q.check("q14-regression-coefficient-t-test-g3", 0.8 / 0.5 == 1.6 and abs(stats.t.isf(.025, 18) - 2.101) < 5e-4 and abs(stats.t.isf(.025, 19) - 2.093) < 5e-4 and abs(stats.t.isf(.05, 18) - 1.734) < 5e-4 and chosen(q, "q14-regression-coefficient-t-test-g3").startswith("t ＝ 1.6 は、自由度 18"), "t=1.6・自由度 18 の 2.101")
+q.num("q14-adjusted-r-squared-g3", 1 - (1 - 0.5) * 20 / 16)
 run(q)
 
 q = Q(15)
@@ -179,5 +184,8 @@ q.check("q15-two-way-anova-with-replication-g1", 23 - 2 - 3 - 6 == 12, "23 − 2
 q.concept("q15-randomized-block-design-g2", "ブロックの違いを誤差から除く。繰り返しがないので交互作用は誤差と区別できない")
 q.num("q15-main-effect-and-interaction-g2", (14 + 12) / 2 - (10 + 16) / 2)
 q.check("q15-main-effect-and-interaction-g2", 14 - 10 == 4 and 12 - 16 == -4, "A1 で +4、A2 で −4")
+q.num("q15-one-way-anova-g3", (60 / 3) / ((160 - 60) / 20))
+q.check("q15-one-way-anova-g3", abs(stats.f.isf(.05, 3, 20) - 3.10) < 0.005, "F(3,20) の 3.10")
+g15 = [np.array([3, 5, 7.]), np.array([6, 8, 10.]), np.array([9, 9, 12.])]; q.num("q15-sum-of-squares-decomposition-g3", sum(((g - g.mean()) ** 2).sum() for g in g15))
 run(q)
 raise SystemExit(1 if ng else 0)
