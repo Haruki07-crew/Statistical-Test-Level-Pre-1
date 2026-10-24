@@ -135,3 +135,31 @@ questions:
       $P(\text{A かつ不良})=0.6\times 0.02=0.012$、$P(\text{B かつ不良})=0.4\times 0.05=0.020$。
       $$P(\text{B}\mid\text{不良})=\frac{0.020}{0.012+0.020}=\frac{0.020}{0.032}=0.625$$
       生産量は A のほうが多くても、不良品の中では B の製品のほうが多くなります。
+
+  - id: q07-bayes-theorem-g2
+    term: bayes-theorem
+    level: 基本
+    type: truefalse
+    question: |
+      病気の人を 99% の確率で陽性と判定する検査がある。この検査で陽性と判定された人が実際に病気である確率も、必ず 99% である。
+    answer: false
+    hint: |
+      $P(\text{陽性}\mid\text{病気})$ と $P(\text{病気}\mid\text{陽性})$ は別の量。後者は有病率や、病気でない人が陽性になる確率にもよる。
+    explanation: |
+      誤りです。例えば有病率 1%、病気でない人が陽性になる確率 5% なら、10000 人のうち陽性は病気の人 99 人と病気でない人 495 人で、陽性の人が病気である確率は $99/594\approx 0.17$ にすぎません。
+      ベイズの定理で逆向きの確率を求めるには、事前確率（有病率）が必要です。
+
+  - id: q07-bayes-theorem-g3
+    term: bayes-theorem
+    level: 標準
+    type: numeric
+    question: |
+      箱 A には赤玉 2 個・白玉 3 個、箱 B には赤玉 4 個・白玉 1 個が入っている。硬貨を投げて箱を 1 つ選び（どちらも確率 1/2）、選んだ箱から玉を 1 個取り出したところ赤玉だった。選んだ箱が A である確率を小数第 3 位まで求めよ。
+    answer: 0.333
+    tolerance: 0.001
+    hint: |
+      $P(\text{A}\mid\text{赤})=\dfrac{P(\text{赤}\mid\text{A})P(\text{A})}{P(\text{赤}\mid\text{A})P(\text{A})+P(\text{赤}\mid\text{B})P(\text{B})}$。
+    explanation: |
+      $P(\text{A かつ赤})=0.5\times 0.4=0.2$、$P(\text{B かつ赤})=0.5\times 0.8=0.4$ なので
+      $$P(\text{A}\mid\text{赤})=\frac{0.2}{0.2+0.4}=\frac{1}{3}\approx 0.333$$
+      赤玉の多い箱 B のほうが、赤玉が出たときの原因として起こりやすくなります。赤玉が出たという情報で、箱 A の確率は 1/2 から 1/3 に下がりました。

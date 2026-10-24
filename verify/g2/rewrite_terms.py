@@ -57,6 +57,13 @@ check(T, "例2 B(300,0.01) の P(≤1)：近似 4e^−3≈0.199・正確 ≈0.19
 pp = rng.poisson(2, 1_000_000) + rng.poisson(3, 1_000_000); p2h = rng.poisson(3, (1_000_000, 2)).sum(1)
 check(T, "和 Po(2)+Po(3)=Po(5)・2 時間なら Po(6)（シミュレーション）", close(pp.mean(), 5, 0.01) and close(pp.var(), 5, 0.02) and close(p2h.mean(), 6, 0.01) and close(p2h.var(), 6, 0.03), (pp.var(), p2h.var()))
 
+T = "bayes-theorem"
+pos = 0.01 * 0.95 + 0.99 * 0.10
+check(T, "例1 表：病気 95/5・病気でない 990/8910・陽性 1085・事後確率 95/1085≈0.088", round(10000 * .01 * .95) == 95 and round(10000 * .99 * .10) == 990 and round(10000 * .99 * .90) == 8910 and 95 + 990 == 1085 and close(0.01 * 0.95 / pos, 95 / 1085, 1e-12) and close(95 / 1085, 0.088, 5e-4), 95 / 1085)
+sick = rng.random(2_000_000) < 0.01; t1 = rng.random(2_000_000) < np.where(sick, .95, .10); t2 = rng.random(2_000_000) < np.where(sick, .95, .10)
+check(T, "例2 2 回とも陽性なら約 0.48（0.088 を使った計算・正確な値・シミュレーション）", close(0.088 * .95 / (0.088 * .95 + 0.912 * .10), 0.48, 0.005) and close((95 / 1085) * .95 / ((95 / 1085) * .95 + (990 / 1085) * .10), 0.477, 5e-4) and close(sick[t1 & t2].mean(), 0.477, 0.01), sick[t1 & t2].mean())
+check(T, "1 回目の陽性のシミュレーション ≈0.088", close(sick[t1].mean(), 0.0876, 0.004), sick[t1].mean())
+
 ng = results.count(False)
 print(f"書き直した共通の用語の検算: OK {len(results) - ng} / NG {ng}")
 sys.exit(1 if ng else 0)

@@ -27,7 +27,6 @@ fisher-three-principles: 反復（誤差の評価）・無作為化（偏りの�
 conditional-probability: 条件付き確率と乗法定理の計算、何が条件かを取り違えないことが中心。
 independence-of-events: 独立の定義（積事象の確率＝確率の積）と、排反との違いを押さえる。
 law-of-total-probability: 場合分けして確率を足し合わせる計算を押さえる。ベイズの定理の分母になる。
-bayes-theorem: 検査の陽性的中率のような問題を、表や樹形図で計算できるようにする。
 probability-mass-and-density-function: 離散型は確率の和、連続型は密度の面積（積分）で確率を求めることを押さえる。
 cumulative-distribution-function: 「x 以下の確率」を表す関数で、確率の差から区間の確率を求められることを押さえる。
 expectation-variance-properties: aX＋b の期待値と分散、和の期待値と分散（独立なら分散も足す）、V[X]＝E[X²]－(E[X])² が2級の計算の中心。

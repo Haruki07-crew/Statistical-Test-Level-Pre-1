@@ -268,7 +268,6 @@ chapters:
     title: ベイズの定理
     importance: A
     status: verified
-    from: pre1
 - 'no': 8
   title: 確率変数と期待値
   terms:
