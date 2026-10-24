@@ -4182,6 +4182,8 @@ window.MathJax = {
   function exBest(no) { var b = null; exHist(no).forEach(function (h) { if (!b || h.sc > b.sc) b = h; }); return b; }
   function fmtMin(ms) { var t = Math.max(0, Math.round(ms / 1000)); return Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0'); }
   function chTitle(no) { var c = chapterOf(no); return '第' + no + '章 ' + (c ? c.title : ''); }
+  // 1問の配点（2級は 100÷35 なので小数第1位までに丸めて「約」を付ける）
+  function ptsLabel(e) { return e.pts === Math.round(e.pts) ? String(e.pts) : '約' + Math.round(e.pts * 10) / 10; }
   function passTag(sc) { return sc >= PASS ? '<span class="ex-pass ok">合格</span>' : '<span class="ex-pass ng">不合格</span>'; }
 
   // 受験履歴の得点の推移（1系列の折れ線＋合格ライン。点にポインタを当てると内容が出る）
@@ -4259,7 +4261,7 @@ window.MathJax = {
     var lv = { '基本': 0, '標準': 0, '応用': 0 };
     e.items.forEach(function (it) { lv[it.lv]++; });
     detailEl.innerHTML = '<div class="article screen"><p class="crumb"><a href="#exam">模擬試験</a></p><h1 class="screen-h">' + esc(e.title) + '</h1>' +
-      '<p class="screen-sub">' + e.items.length + '問・' + e.min + '分・各' + e.pts + '点（大問 ' + e.probs.length + '）。難易度 基本 ' + lv['基本'] + '・標準 ' + lv['標準'] + '・応用 ' + lv['応用'] + '。</p>' +
+      '<p class="screen-sub">' + e.items.length + '問・' + e.min + '分・各' + ptsLabel(e) + '点（大問 ' + e.probs.length + '）。難易度 基本 ' + lv['基本'] + '・標準 ' + lv['標準'] + '・応用 ' + lv['応用'] + '。</p>' +
       '<p class="screen-sub">出題範囲：' + Object.keys(chs).map(function (k) { return '第' + k + '章'; }).join('・') + '</p>' +
       (cur && cur.s === no ? '<a class="big-btn" href="#exam/' + no + '/run">途中から再開する</a>' : '') +
       '<div class="ex-modes"><button type="button" class="ex-mode" data-ex-start="r"><b>本番モード</b><span>残り時間のタイマー。問題番号から自由に移動し、「あとで見直す」の印を付けられます。最後にまとめて採点し、時間切れで自動採点します。</span></button>' +
@@ -4280,7 +4282,7 @@ window.MathJax = {
     var p = e.probs[it.p], v = cur.a[it.id], checked = cur.m === 'p' && cur.k[it.id];
     var first = e.items.filter(function (x) { return x.p === it.p; });
     var h = '<div class="ex-prob"><p class="ex-prob-h">大問' + (it.p + 1) + '　' + esc(p.t) + (first.length > 1 ? '<small>（問' + first[0].n + '〜' + first[first.length - 1].n + '）</small>' : '') + '</p><div class="body ex-ctx">' + p.ctx + '</div></div>' +
-      '<h2 class="ex-qh">問' + it.n + '<small>' + e.pts + '点・' + esc(it.lv) + '</small></h2><div class="body ex-text">' + it.q + '</div>';
+      '<h2 class="ex-qh">問' + it.n + '<small>' + ptsLabel(e) + '点・' + esc(it.lv) + '</small></h2><div class="body ex-text">' + it.q + '</div>';
     if (it.type === 'choice') {
       h += '<div class="ex-opts" role="radiogroup">' + it.c.map(function (c, i) {
         var cls = checked ? (i === it.a ? ' correct' : (i === v ? ' wrong' : '')) : '';
