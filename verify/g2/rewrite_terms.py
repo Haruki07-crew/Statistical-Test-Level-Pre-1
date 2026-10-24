@@ -159,6 +159,37 @@ se0 = sqrt(.05 * .95 / 400)
 check(T, "連続修正 (27.5−20)/4.36≈1.72 > 1.645", close(7.5 / sqrt(19), 1.72, 0.005) and 7.5 / sqrt(19) > 1.645, 7.5 / sqrt(19))
 check(T, "p̂=0.07・SE≈0.0109・z≈1.84・p 値 0.0329・回数で 8/4.36・p̂ を使うと 0.0128 と 1.57", close(28 / 400, .07, 1e-12) and close(se0, .0109, 5e-5) and close(.02 / se0, 1.84, 0.005) and close(stats.norm.sf(1.84), .0329, 5e-5) and close(sqrt(400 * .05 * .95), 4.36, 0.005) and close(8 / sqrt(19), 1.84, 0.005) and close(sqrt(.07 * .93 / 400), .0128, 5e-5) and close(.02 / sqrt(.07 * .93 / 400), 1.57, 0.005), .02 / se0)
 
+T = "point-estimation"
+d5 = np.array([12, 15, 9, 14, 10.])
+check(T, "例 平均 12・不偏分散 26/4=6.5・標準誤差 √6.5/√5≈1.14・46/200=0.23", close(d5.mean(), 12, 1e-12) and close(((d5 - 12) ** 2).sum(), 26, 1e-12) and close(d5.var(ddof=1), 6.5, 1e-12) and close(sqrt(6.5) / sqrt(5), 1.14, 0.005) and close(46 / 200, .23, 1e-12), None)
+check(T, "図 10/√25=2", close(10 / sqrt(25), 2, 1e-12), None)
+T = "unbiased-estimator"
+check(T, "例1 (4/5)×4=3.2・図：n=5 で gamma(2, 0.5) の平均 1・gamma(2, 0.4) の平均 0.8", close(4 / 5 * 4, 3.2, 1e-12) and close(stats.gamma(2, scale=.5).mean(), 1, 1e-12) and close(stats.gamma(2, scale=.4).mean(), .8, 1e-12), None)
+v5 = rng.normal(0, 1, (400000, 5)); s2 = v5.var(1, ddof=1)
+check(T, "図：不偏分散（n=5）の分布は gamma(2, 0.5) と一致（平均・分散）", close(s2.mean(), 1, 0.01) and close(s2.var(), stats.gamma(2, scale=.5).var(), 0.01), (s2.mean(), s2.var()))
+check(T, "例2 V[X̄]=σ²/3≈0.333・V[T]=6/16=0.375", close(3 / 9, .333, 5e-4) and close(6 / 16, .375, 1e-12), None)
+check("unbiased-estimator", "標本比率は不偏（シミュレーション）", close((rng.binomial(50, .3, 400000) / 50).mean(), .3, 0.001), None)
+T = "standard-error"
+check(T, "図 12/√n・例1 400 と 200・例2 √(0.21/400)≈0.0229・±0.045", np.allclose([12 / sqrt(n_) for n_ in (1, 4, 9, 16, 25, 36, 49, 64, 81, 100)], [12.0, 6.0, 4.0, 3.0, 2.4, 2.0, 1.7143, 1.5, 1.3333, 1.2], atol=1e-4) and 2400 / 6 == 400 and 2400 / 12 == 200 and close(sqrt(.21 / 400), .0229, 5e-5) and close(1.96 * .0229, .045, 5e-4), None)
+check(T, "6/√100=0.6", close(6 / 10, .6, 1e-12), None)
+check(T, "例3 √(144/36+81/81)=√5≈2.24", close(sqrt(144 / 36 + 81 / 81), 2.24, 0.005), None)
+T = "confidence-interval"
+se_ = 2.8 / 1.96
+check(T, "例 中央 51.0・半分 2.8・SE≈1.43・99% は ±3.68 → (47.3, 54.7)", close((48.2 + 53.8) / 2, 51, 1e-9) and close((53.8 - 48.2) / 2, 2.8, 1e-9) and close(se_, 1.43, 0.005) and close(se_ * 2.576, 3.68, 0.005) and close(51 - se_ * 2.576, 47.3, 0.05) and close(51 + se_ * 2.576, 54.7, 0.05), se_ * 2.576)
+check(T, "99% と 95% の幅の比 ≈1.3", close(2.576 / 1.96, 1.3, 0.02), 2.576 / 1.96)
+T = "ci-mean-known-variance"
+check(T, "例1 90%・95%・99% の区間", close(120 - 1.645 * 3, 115.07, 0.005) and close(120 + 1.645 * 3, 124.93, 0.005) and close(120 - 1.96 * 3, 114.12, 1e-9) and close(120 + 1.96 * 3, 125.88, 1e-9) and close(120 - 2.576 * 3, 112.27, 0.005) and close(120 + 2.576 * 3, 127.73, 0.005), None)
+check(T, "例2 9.8²=96.04 → 97", close(9.8 ** 2, 96.04, 1e-9) and min(n_ for n_ in range(1, 500) if 1.96 * 15 / sqrt(n_) <= 3) == 97, None)
+check("ci-mean-known-variance", "区間と検定 115 は含む・126 は含まない", 114.12 < 115 < 125.88 < 126, None)
+T = "ci-mean-unknown-variance"
+check(T, "例 SE≈1.732・t0.025(11)=2.201・68±3.81 → (64.19, 71.81)・1.96 なら ±3.39 → (64.61, 71.39)", close(6 / sqrt(12), 1.732, 5e-4) and close(stats.t.isf(.025, 11), 2.201) and close(2.201 * 6 / sqrt(12), 3.81, 0.005) and close(68 - 2.201 * 6 / sqrt(12), 64.19, 0.005) and close(1.96 * 6 / sqrt(12), 3.39, 0.005) and close(68 + 1.96 * 6 / sqrt(12), 71.39, 0.005), None)
+check("ci-mean-unknown-variance", "90%：1.796 で ±3.11 → (64.89, 71.11)・99%：3.106 で ±5.38 → (62.62, 73.38)", close(stats.t.isf(.05, 11), 1.796) and close(stats.t.isf(.005, 11), 3.106) and close(1.796 * 6 / sqrt(12), 3.11, 0.005) and close(68 - 1.796 * 6 / sqrt(12), 64.89, 0.005) and close(3.106 * 6 / sqrt(12), 5.38, 0.005) and close(68 + 3.106 * 6 / sqrt(12), 73.38, 0.005), None)
+T = "ci-proportion"
+sep = sqrt(.36 * .64 / 500)
+check(T, "例1 180/500=0.36・SE≈0.0215・±0.042 → (0.318, 0.402)", close(180 / 500, .36, 1e-12) and close(sep, .0215, 5e-5) and close(1.96 * sep, .042, 5e-4) and close(.36 - 1.96 * sep, .318, 5e-4) and close(.36 + 1.96 * sep, .402, 5e-4), sep)
+check(T, "誤差の目安 1000 人 ±3.1・400 人 ±4.9", close(1.96 * sqrt(.25 / 1000), .031, 5e-4) and close(1.96 * sqrt(.25 / 400), .049, 5e-4), None)
+check(T, "例2 98²×0.25=2401・p=0.36 なら約 2213", close(98 ** 2 * .25, 2401, 1e-9) and int(np.ceil((1.96 / .02) ** 2 * .36 * .64)) == 2213, (1.96 / .02) ** 2 * .36 * .64)
+
 ng = results.count(False)
 print(f"書き直した共通の用語の検算: OK {len(results) - ng} / NG {ng}")
 sys.exit(1 if ng else 0)

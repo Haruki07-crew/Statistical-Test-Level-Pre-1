@@ -37,16 +37,9 @@ uniform-distribution: 区間 [a, b] の一様分布の期待値（a＋b）/2 と
 bivariate-normal-distribution: 出題はまれ。相関係数が 0 なら独立になる、という性質だけ知っておけば十分。
 chebyshev-inequality: 分布の形によらず、平均から標準偏差の k 倍以上離れる確率は 1/k² 以下、という使い方を押さえる。
 continuity-correction: 「k 以上」を k－0.5 から、「k 以下」を k＋0.5 までとして標準化する修正を押さえる。
-point-estimation: 推定量（式）と推定値（数値）の区別、標本平均・標本比率・不偏分散で母数を推定することを押さえる。
-unbiased-estimator: 期待値が母数に等しい推定量のこと。不偏分散が n－1 で割る理由として押さえる。
 consistent-estimator: 標本を大きくすると母数に近づく推定量のこと。不偏性との違いを押さえる。
-standard-error: 推定量の標準偏差の推定値。標本平均なら s/√n、標本比率なら √(p̂(1－p̂)/n) を押さえる。
-confidence-interval: 95% 信頼区間の正しい解釈（くり返し作った区間の約 95% が母数を含む）と、区間の幅が標本の大きさや信頼係数でどう変わるかを押さえる。
 confidence-coefficient: 信頼係数を上げると区間が広くなること、90%・95%・99% に対応する点（1.645・1.96・2.576）を押さえる。
-ci-mean-known-variance: 標本平均 ± 1.96 × σ/√n の計算を確実にする。
-ci-mean-unknown-variance: t 分布の点（自由度 n－1）を使う区間の計算を確実にする。2級で最もよく出る区間推定。
 ci-variance: カイ二乗分布の上側と下側の2つの点を使う区間の計算を押さえる。
-ci-proportion: 標本比率 ± 1.96 × √(p̂(1－p̂)/n) の計算を確実にする。ウィルソン区間などは読み飛ばしてよい。
 ci-two-sample-mean-difference: 2つの分散を足して標準誤差を作ること、等分散を仮定するときはプールした分散と自由度 n₁＋n₂－2 を使うことを押さえる。
 ci-variance-ratio: 出題はまれ。F 分布の2つの点を使うことだけ知っておけば十分。
 ci-two-sample-proportion: 2つの比率の分散を足して標準誤差を作る計算を押さえる。
