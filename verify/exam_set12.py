@@ -68,18 +68,14 @@ distinct("s12p01b", 3)
 E.check("s12p02a", f(0.95 ** 19, 4) == "0.3774" and f(0.95 ** 20, 4) == "0.3585", "0.95^19, 0.95^20")
 E.choice("s12p02a", f"${f(stats.binom.sf(1, 20, 0.05), 3)}$", "scipy binom.sf(1,20,0.05)")
 distinct("s12p02a", 3)
-p = 0.05
-Bv = np.array([0, 1])
-pr = np.array([1 - p, p])
-rho3 = (np.abs(Bv - p) ** 3 * pr).sum()
-sig = math.sqrt((pr * (Bv - p) ** 2).sum())
-E.check("s12p02b", close(math.sqrt(0.0475), 0.2179, 5e-5), "√0.0475")
-be = 0.4748 * rho3 / (sig ** 3 * math.sqrt(400))
-nearest("s12p02b", be, "（丸めなしの上界）")
-kk = np.arange(0, 60)
-dist = np.max(np.abs(stats.binom.cdf(kk, 400, p) - stats.norm.cdf((kk - 20) / math.sqrt(400 * p * (1 - p)))))
-E.check("s12p02b", dist <= be, f"実際の最大のずれ {dist:.4f} は上界以下")
-distinct("s12p02b", 3)
+# (b) 加算推定量 (S+1)/(m+2) の平均二乗誤差を二項分布の全列挙で
+sv = np.arange(0, 49)
+pmf = stats.binom.pmf(sv, 48, 0.05)
+mse = float((pmf * ((sv + 1) / 50 - 0.05) ** 2).sum())
+E.choice("s12p02b", f"${f(mse * 1e4, 2)}\\times10^{{-4}}$", "二項分布を全列挙した平均二乗誤差")
+mses = [float((stats.binom.pmf(np.arange(m_ + 1), m_, 0.05) * ((np.arange(m_ + 1) + 1) / (m_ + 2) - 0.05) ** 2).sum()) for m_ in (48, 480, 4800)]
+E.check("s12p02b", mses[0] > mses[1] > mses[2] and mses[2] < 1e-5, f"m を増やすと MSE→0（平均二乗収束） {mses}")
+distinct("s12p02b", 2)
 
 # ---- 大問3
 g = stats.gamma(2, scale=0.5)
@@ -123,13 +119,15 @@ distinct("s12p05a", 3)
 # ---- 大問6
 for (q, dfv), s_ in (((0.975, 11), 21.92), ((0.025, 11), 3.816), ((0.975, 12), 23.34), ((0.025, 12), 4.404), ((0.95, 2), 5.991)):
     E.check("s12p06a", close(stats.chi2.ppf(q, dfv), s_, 0.006 if s_ > 10 else 6e-4), f"χ² の点 {s_}")
-ss = 11 * 0.0484
-lo, hi = math.sqrt(ss / stats.chi2.ppf(0.975, 11)), math.sqrt(ss / stats.chi2.ppf(0.025, 11))
-E.choice("s12p06a", f"({f(lo, 3)},\\ {f(hi, 3)})", "scipy のパーセント点で区間")
-smp = rng.normal(0, 0.2, size=(200_000, 12))
-s2s = smp.var(axis=1, ddof=1)
-cov = ((11 * s2s / stats.chi2.ppf(0.975, 11) <= 0.04) & (0.04 <= 11 * s2s / stats.chi2.ppf(0.025, 11))).mean()
-E.check("s12p06a", close(cov, 0.95, 0.003), f"被覆率 {cov:.4f}")
+E.check("s12p06a", close(stats.t.ppf(0.975, 11), 2.201, 5e-4) and close(math.sqrt(13 / 12), 1.0408, 5e-5), "t_11(0.025), √(13/12)")
+h = stats.t.ppf(0.975, 11) * 0.22 * math.sqrt(1 + 1 / 12)
+E.choice("s12p06a", f"${f(h, 3)}$", "scipy の t 点で予測区間の半幅")
+smp = rng.normal(0, 0.22, size=(200_000, 13))
+xb = smp[:, :12].mean(axis=1)
+sd = smp[:, :12].std(axis=1, ddof=1)
+covp = (np.abs(smp[:, 12] - xb) <= stats.t.ppf(0.975, 11) * sd * math.sqrt(13 / 12)).mean()
+E.check("s12p06a", close(covp, 0.95, 0.003), f"予測区間の被覆率 {covp:.4f}")
+distinct("s12p06a", 3)
 s2 = np.array([0.0484, 0.0225, 0.0729])
 for v, s_ in ((math.log(s2.mean()), -3.0379), (math.log(0.0484), -3.0283), (math.log(0.0225), -3.7942), (math.log(0.0729), -2.6187)):
     E.check("s12p06b", close(v, s_, 6e-5), f"ln の値 {s_}")
@@ -176,13 +174,20 @@ for q, s_ in ((9 / 11, 0.908), (0.85, 1.036), (0.90, 1.282), (0.95, 1.645)):
     E.check("s12p09c", close(stats.norm.ppf(q), s_, 6e-4), f"分位点 {s_}")
 E.choice("s12p09c", f"${f(stats.norm.ppf((9 - 0.5) / 10), 3)}$", "scipy norm.ppf(0.85)")
 
-# ---- 大問10 トービット：数値積分
-mu, sgm = 0.5, 1.0
-ey = integrate.quad(lambda y: y * stats.norm.pdf(y, mu, sgm), 0, np.inf)[0]
-E.check("s12p10a", close(stats.norm.cdf(0.5), 0.6915, 5e-5) and close(stats.norm.pdf(0.5), 0.3521, 5e-5), "Φ(0.5), φ(0.5)")
-E.choice("s12p10a", f"${f(ey, 3)}$", "数値積分 ∫_0^∞ y φ")
-E.check("s12p10a", close(np.maximum(rng.normal(mu, sgm, 2_000_000), 0).mean(), ey, 0.002), "シミュレーション")
-distinct("s12p10a", 3)
+# ---- 大問10 ポアソン回帰を数値最適化で当てはめ直し、対数尤度から逸脱度を求める
+from scipy.optimize import minimize  # noqa: E402
+yv10 = np.array([3, 7, 5, 9])
+xs10 = np.array([1.0, 2.0, 3.0, 4.0])
+nll = lambda b: -(yv10 * (b[0] + b[1] * xs10) - np.exp(b[0] + b[1] * xs10)).sum()  # noqa: E731
+fit = minimize(nll, [1.0, 0.1], method="BFGS", options={"gtol": 1e-12})
+mu10 = np.exp(fit.x[0] + fit.x[1] * xs10)
+E.check("s12p10a", all(f(m_, 2) == s_ for m_, s_ in zip(mu10, ["3.81", "5.00", "6.57", "8.62"])), f"当てはめ値 {np.round(mu10, 4)} が表と一致")
+for v, s_ in ((math.log(3 / 3.81), -0.23902), (math.log(7 / 5.00), 0.33647), (math.log(5 / 6.57), -0.27308), (math.log(9 / 8.62), 0.04314)):
+    E.check("s12p10a", close(v, s_, 6e-6), f"ln の値 {s_}")
+dev = 2 * (stats.poisson.logpmf(yv10, yv10).sum() - stats.poisson.logpmf(yv10, mu10).sum())
+nearest("s12p10a", dev, "（丸めない当てはめ値での逸脱度）")
+E.choice("s12p10a", f"${f(dev, 2)}$", "scipy の対数尤度（飽和モデルとの差の2倍）")
+distinct("s12p10a", 2)
 
 # ---- 大問11 分割区法
 E.check("s12p11a", close(stats.f.ppf(0.95, 2, 6), 5.14, 0.005), f"F(2,6) 5% 点 {stats.f.ppf(0.95, 2, 6):.3f}")
@@ -247,10 +252,19 @@ E.check("s12p13b", close(Rimp[0, 1], r12, 1e-12) and close(Rimp[0, 2], r13, 1e-1
         "負荷量の外積が 3 つの相関を再現")
 E.choice("s12p13b", f"${f(1 - lam_[0] ** 2, 2)}$", "独自分散")
 distinct("s12p13b", 2)
-d = np.array([1.0, 2.0, 2.5, 3.0, 1.5, 2.0])
-dh = np.array([1.0, 1.8, 2.5, 3.0, 1.7, 2.0])
-E.choice("s12p13c", f"${f(np.linalg.norm(d - dh) / np.linalg.norm(d), 3)}$", "ノルムの比")
-distinct("s12p13c", 3)
+# (c) ICA：順序と尺度の不定性を数値で確認（非正規な独立信号を混合し、置換・尺度を変えても観測が同じ）
+S3 = rng.uniform(-1, 1, size=(3, 1000))
+A3 = rng.normal(size=(3, 3))
+P3 = np.eye(3)[[2, 0, 1]]
+D3 = np.diag([2.0, -0.5, 3.0])
+E.check("s12p13c", np.allclose(A3 @ S3, (A3 @ np.linalg.inv(D3) @ np.linalg.inv(P3)) @ (P3 @ D3 @ S3)), "置換と尺度を変えても観測は同じ（順序・尺度は決まらない）")
+# 正規な独立信号は回転しても独立（共分散が単位行列のまま、高次の情報なし）
+G2 = rng.normal(size=(2, 200_000))
+th = 0.7
+Rot = np.array([[math.cos(th), -math.sin(th)], [math.sin(th), math.cos(th)]])
+E.check("s12p13c", np.allclose(np.cov(Rot @ G2), np.eye(2), atol=0.01) and abs(stats.kurtosis((Rot @ G2)[0])) < 0.03,
+        "正規信号は回転後も無相関・尖度0で区別できない（選択肢 2 は誤り）")
+E.check("s12p13c", E.item("s12p13c")["answer"] == 1 and "順序と尺度" in E.item("s12p13c")["choices"][1], "正解は順序と尺度の不定性の記述")
 
 # ---- 大問14
 tab = np.array([[30, 12], [22, 63]])
@@ -278,7 +292,7 @@ for x_ in (0, 1):
     py_ = np.where(Msim, np.where(Usim, yu[(1, 1)], yu[(1, 0)]), np.where(Usim, yu[(0, 1)], yu[(0, 0)]))
     res_do.append((rng.random(Nn) < py_).mean())
 exact = [sum((pm[x_] if m_ else 1 - pm[x_]) * ((1 - q) * yu[(m_, 0)] + q * yu[(m_, 1)]) for m_ in (0, 1)) for x_ in (0, 1)]
-E.num("s12p14b", rnd(exact[1] - exact[0], 3), "構造モデルで U について平均した介入効果")
-E.check("s12p14b", close(res_do[1] - res_do[0], exact[1] - exact[0], 0.002), f"介入のシミュレーション {res_do[1] - res_do[0]:.4f}")
+E.num("s12p14b", rnd(exact[1], 3), "構造モデルで U について平均した P(Y=1|do(X=1))")
+E.check("s12p14b", close(res_do[1], exact[1], 0.001), f"介入のシミュレーション {res_do[1]:.4f}")
 
 E.done()

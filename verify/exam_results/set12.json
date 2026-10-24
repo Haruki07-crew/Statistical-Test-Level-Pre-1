@@ -13,7 +13,7 @@
  },
  "s12p02b": {
   "ok": true,
-  "hash": "a6f9d501246f2731"
+  "hash": "95b1ed2208738b5d"
  },
  "s12p03a": {
   "ok": true,
@@ -33,7 +33,7 @@
  },
  "s12p06a": {
   "ok": true,
-  "hash": "27c1860f9bcc7bcd"
+  "hash": "0c3ad43d32162311"
  },
  "s12p06b": {
   "ok": true,
@@ -65,7 +65,7 @@
  },
  "s12p10a": {
   "ok": true,
-  "hash": "653ff410edebe787"
+  "hash": "f5c89a1fcc1c9449"
  },
  "s12p11a": {
   "ok": true,
@@ -89,7 +89,7 @@
  },
  "s12p13c": {
   "ok": true,
-  "hash": "0120f6f490d6fb2c"
+  "hash": "607d124346722cc3"
  },
  "s12p14a": {
   "ok": true,
@@ -97,6 +97,6 @@
  },
  "s12p14b": {
   "ok": true,
-  "hash": "f10571ca1d6d09fa"
+  "hash": "6b1af54e8421e17f"
  }
 }

@@ -93,9 +93,11 @@ E.check("s05p02b", abs((S2 > cut).mean() - 0.05) < 0.003, f"シミュレーシ�
 distinct_rounded("s05p02b")
 
 # ---- 大問3：流行の監視
-E.check("s05p03a", phi_ok({0.21: 0.5832, 1.50: 0.9332, 1.57: 0.9418, 1.64: 0.9495}), "示した Φ の値")
-E.choice("s05p03a", f"${f(stats.norm.sf(59.5, 49, 7), 3)}$", "scipy norm.sf(59.5, 49, 7)")
-nearest("s05p03a", stats.poisson.sf(59, 49), "正確なポアソン確率")
+E.check("s05p03a", abs(stats.norm.isf(0.05) - 1.645) < 5e-4 and abs(stats.norm.isf(0.025) - 1.960) < 5e-4, "示した上側点")
+k_cc = next(k for k in range(49, 200) if stats.norm.sf(k - 0.5, 49, 7) <= 0.05)
+E.choice("s05p03a", f"${k_cc}$", "k を 1 ずつ増やして scipy norm.sf(k-0.5, 49, 7)≤0.05 となる最初の k")
+k_ex = next(k for k in range(49, 200) if stats.poisson.sf(k - 1, 49) <= 0.05)
+E.check("s05p03a", k_ex == k_cc, f"正確なポアソン確率でも同じ基準 k={k_ex}")
 distinct_rounded("s05p03a")
 # 部分尤度：リスク集合の指示行列で計算（浮動小数）し分数に直す
 tt = np.array([2, 3, 4, 5, 7])
@@ -143,10 +145,9 @@ for _ in range(20000):
 E.check("s05p05a", abs(np.std(zz) - 1) < 0.03, f"帰無仮説のもとで統計量の標準偏差 {np.std(zz):.3f}≈1")
 
 # ---- 大問6：用量反応
-tab = np.array([[10, 16, 22], [30, 24, 18]])
-G = stats.chi2_contingency(tab, correction=False, lambda_="log-likelihood")[0]
-E.choice("s05p06a", f"${f(G, 2)}$", "scipy chi2_contingency(lambda_='log-likelihood')")
-E.check("s05p06a", all(abs(math.log(a) - b) < 5e-5 for a, b in ((0.625, -0.4700), (1.375, 0.3185), (1.25, 0.2231), (0.75, -0.2877))), "示した対数の値")
+bt = stats.binomtest(7, 10, 0.4, alternative="greater")
+E.choice("s05p06a", f"${f(bt.pvalue, 3)}$", "scipy binomtest(alternative='greater')")
+E.check("s05p06a", abs(np.mean(rng.binomial(10, 0.4, 2_000_000) >= 7) - bt.pvalue) < 0.001, "シミュレーションで P(X≥7)（許容 0.001）")
 distinct_rounded("s05p06a")
 zs = stats.norm.ppf([0.3085, 0.9332])
 slope, icpt = np.polyfit(np.log([4, 16]), zs, 1)
@@ -255,9 +256,16 @@ obs, obs_v = 240.0, 60.0
 post = (prior_m / prior_v + obs / obs_v) / (1 / prior_v + 1 / obs_v)
 E.num("s05p12a", rnd(post, 1), "正規事前×正規尤度の事後平均として")
 
-e_ = np.array([1, 2, 1, -1, -2, -1, 1, -1.0])
-E.num("s05p12b", rnd(np.sum(np.diff(e_) ** 2) / np.sum(e_ ** 2), 2), "numpy の diff で DW 比")
-E.check("s05p12b", abs(e_.sum()) < 1e-12, "残差の和が 0（切片ありの回帰と整合）")
+# DFBETA：行列計算で全データと1点除外の最小二乗を解く
+X5 = np.column_stack([np.ones(5), [2, 4, 6, 8, 10.0]])
+y5 = np.array([40, 36, 30, 28, 14.0])
+b_all = np.linalg.lstsq(X5, y5, rcond=None)[0]
+b_del = np.linalg.lstsq(X5[:4], y5[:4], rcond=None)[0]
+E.num("s05p12b", rnd(b_all[1] - b_del[1], 2), "numpy lstsq で 5 週と 4 週の傾きの差")
+H = X5 @ np.linalg.inv(X5.T @ X5) @ X5.T
+res = y5 - X5 @ b_all
+dfb_mat = (np.linalg.inv(X5.T @ X5) @ X5[4] * res[4] / (1 - H[4, 4]))[1]
+E.check("s05p12b", abs(dfb_mat - (b_all[1] - b_del[1])) < 1e-10, "ハット行列による DFBETA の公式と一致")
 
 # ---- 大問13：臨床研究
 m0 = stats.binom.pmf(5, 10, 0.2)

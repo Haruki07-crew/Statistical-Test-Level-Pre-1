@@ -1,17 +1,14 @@
 """模擬試験 第15回（set15）の検算。generator/set15.py とは別の方法（scipy の分布関数・数値積分・シミュレーション・
-sympy・行列計算・定義からの直接計算）で正解を求め直し、問題文に示した数表の値も確かめる。"""
+全列挙・行列計算・定義からの直接計算）で正解を求め直し、問題文に示した数表の値も確かめる。"""
 import math
 import re
 import sys
 from decimal import Decimal, ROUND_HALF_UP
-from fractions import Fraction
+from itertools import permutations
 from pathlib import Path
 
 import numpy as np
-import sympy as sp
 from scipy import integrate, stats
-from scipy.spatial.distance import pdist, squareform
-from scipy.special import expit
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from examcheck import Exam  # noqa: E402
@@ -44,233 +41,241 @@ def distinct(iid, d):
 
 
 # ---- 大問1
-# (a) 数値積分で条件付き確率
-fxy = lambda x, y: x + y
-E.check("s15p01a", abs(integrate.dblquad(lambda y, x: fxy(x, y), 0, 1, 0, 1)[0] - 1) < 1e-10, "同時密度の積分が 1")
-fx = integrate.quad(lambda y: fxy(0.25, y), 0, 1)[0]
-pc = integrate.quad(lambda y: fxy(0.25, y), 0.5, 1)[0] / fx
-E.choice("s15p01a", f"${f(pc, 3)}$", "数値積分で P(Y>1/2 | X=1/4)")
-distinct("s15p01a", 3)
-# 誤答「X<=1/4 で条件付け」の値も数値積分で確認
-le = integrate.dblquad(lambda y, x: fxy(x, y), 0, 0.25, 0.5, 1)[0] / integrate.dblquad(lambda y, x: fxy(x, y), 0, 0.25, 0, 1)[0]
-E.check("s15p01a", f(le, 3) in E.item("s15p01a")["choices"][4], f"誤答 X<=1/4 の値 {le:.4f}")
-# (b) scipy の χ² 上側確率と表の値、シミュレーション
-for c, v in [(2.25, "0.9869"), (13.5, "0.1413"), (20.25, "0.0164"), (22.5, "0.0074")]:
-    E.check("s15p01b", f(stats.chi2.sf(c, 9), 4) == v, f"表 P(χ²_9>{c})={v}")
-E.choice("s15p01b", f"${f(stats.chi2.sf(9 * 1.5 ** 2, 9), 4)}$", "scipy chi2.sf(9×1.5², 9)")
-X = rng.normal(0, 1, size=(400_000, 10))
-sim = np.mean(X.std(axis=1, ddof=1) > 1.5)
-E.check("s15p01b", abs(sim - 0.0164) < 0.001, f"シミュレーションで P(S>1.5σ)={sim:.4f}")
-# (c) scipy の χ² 分位点で区間
-lo, hi = stats.chi2.ppf([0.025, 0.975], 9)
-E.check("s15p01c", f(lo, 2) == "2.70" and f(hi, 2) == "19.02", f"χ²_9 の 2.5% 点 {lo:.4f}, {hi:.4f}")
-ci = (math.sqrt(9 * 2.6 ** 2 / 19.02), math.sqrt(9 * 2.6 ** 2 / 2.70))
-E.choice("s15p01c", f"({f(ci[0], 2)},\\{f(ci[1], 2)})", "表の点から σ の区間")
-ci_exact = (math.sqrt(9 * 2.6 ** 2 / hi), math.sqrt(9 * 2.6 ** 2 / lo))
-E.check("s15p01c", f(ci_exact[0], 2) == f(ci[0], 2) and f(ci_exact[1], 2) == f(ci[1], 2), f"正確な分位点でも同じ {ci_exact}")
-# 被覆確率のシミュレーション
-Xs = rng.normal(0, 2.0, size=(100_000, 10))
-S2 = Xs.var(axis=1, ddof=1)
-cov = np.mean((9 * S2 / 19.02 < 4.0) & (4.0 < 9 * S2 / 2.70))
-E.check("s15p01c", abs(cov - 0.95) < 0.005, f"区間の被覆確率 {cov:.4f}")
+# (a) 真の状態とA・Bの判定をシミュレーション（条件付き独立）
+N = 1_000_000
+D = rng.random(N) < 0.3
+A = np.where(D, rng.random(N) < 0.80, rng.random(N) < 0.10)
+B = np.where(D, rng.random(N) < 0.70, rng.random(N) < 0.05)
+pos = A | B
+sens, spec = pos[D].mean(), (~pos[~D]).mean()
+E.check("s15p01a", abs(sens - 0.94) < 0.002 and abs(spec - 0.855) < 0.002, f"シミュレーション 感度 {sens:.4f} 特異度 {spec:.4f}")
+E.choice("s15p01a", f"感度{1 - 0.2 * 0.3:.3f}、特異度{0.9 * 0.95:.3f}", "全確率から")
+# (b) scipy で区間と表の e^x
+tab = np.array([[24, 36], [24, 96]])
+lor = math.log(tab[0, 0] * tab[1, 1] / (tab[0, 1] * tab[1, 0]))
+se = math.sqrt((1 / tab).sum())
+z = stats.norm.isf(0.025)
+lo, hi = math.exp(lor - z * se), math.exp(lor + z * se)
+E.choice("s15p01b", f"({f(lo, 2)},\\{f(hi, 2)})", f"正確な z と log で ({lo:.4f}, {hi:.4f})")
+E.check("s15p01b", f(lor, 3) == "0.981", "log(8/3)=0.981")
+for x, v in [(0.298, "1.347"), (0.408, "1.504"), (0.743, "2.102"), (1.219, "3.384"), (1.554, "4.730"), (1.664, "5.280")]:
+    E.check("s15p01b", f(math.exp(x), 3) == v, f"e^{x}={v}")
 
 # ---- 大問2
-w = [Fraction(5, 10), Fraction(3, 10), Fraction(2, 10)]
-fa = [Fraction(10, 100), Fraction(20, 100), Fraction(35, 100)]
-post = w[2] * fa[2] / sum(a * b for a, b in zip(w, fa))
-E.choice("s15p02a", f"${f(float(post), 3)}$", f"分数で厳密に {post}")
-distinct("s15p02a", 3)
-# (b) scipy の負の二項分布（失敗回数で数える）：3 回目の成功までの失敗が 7 回
-v = stats.nbinom.pmf(7, 3, 0.2)
-E.num("s15p02b", rnd(v, 4), "scipy nbinom.pmf(7, 3, 0.2)")
-sim = rng.random((200_000, 10)) < 0.2
-cs = sim.cumsum(axis=1)
-hit = np.mean((cs[:, 9] == 3) & (cs[:, 8] == 2))
-E.check("s15p02b", abs(hit - v) < 0.002, f"シミュレーション {hit:.4f}")
+# (a) ハザードを数値積分して条件付き確率
+h = lambda t: 0.06 if t < 1 else (0.02 if t < 4 else 0.01)
+H = integrate.quad(h, 1, 12, points=[4])[0]
+E.num("s15p02a", rnd(1 - math.exp(-H), 3), f"数値積分 H={H:.4f}")
+for x, v in [(0.14, "0.8694"), (0.20, "0.8187"), (0.12, "0.8869")]:
+    E.check("s15p02a", f(math.exp(-x), 4) == v, f"e^-{x}={v}")
+# (b) カプラン・マイヤーとグリーンウッドを手続きで計算
+times = [2, 3, 4, 4, 6, 7, 9, 10, 12, 12]
+event = [1, 0, 1, 1, 0, 1, 0, 1, 0, 0]
+S, g = 1.0, 0.0
+for t in sorted(set(tt for tt, e in zip(times, event) if e)):
+    if t > 7:
+        break
+    n = sum(1 for tt in times if tt >= t)
+    d = sum(1 for tt, e in zip(times, event) if tt == t and e)
+    S *= 1 - d / n
+    g += d / (n * (n - d))
+E.num("s15p02b", rnd(math.sqrt(S * S * g), 3), f"S(7)={S:.4f}")
 
 # ---- 大問3
-x = np.array([2, 7, 1, 5, 8, 3, 0, 6])
-D = ((x - x.mean()) ** 2).sum() / x.mean()
-c7, c7h, c8 = stats.chi2.isf(0.05, 7), stats.chi2.isf(0.025, 7), stats.chi2.isf(0.05, 8)
-E.check("s15p03a", (f(c7, 2), f(c7h, 2), f(c8, 2)) == ("14.07", "16.01", "15.51"), "χ² の点（表）")
-E.check("s15p03a", abs(D - 15.0) < 1e-12 and stats.chi2.sf(D, 7) < 0.05 < stats.chi2.sf(D, 8), f"D={D}, p(df7)={stats.chi2.sf(D, 7):.4f}")
-E.choice("s15p03a", "自由度7の上側5%点14.07を超えるので、帰無仮説を棄却し過分散と判断する", "D>14.07 で棄却・過分散")
-E.check("s15p03a", f"D={f(D, 1)}" in E.item("s15p03a")["choices"][1].replace("$", ""), "正解の選択肢の D の値")
-# (b) scipy のポアソン分布
-g = (0.05 - stats.poisson.cdf(1, 6)) / stats.poisson.pmf(2, 6)
-E.check("s15p03b", f(math.exp(-6), 6) == "0.002479", "e^{-6}=0.002479")
-E.num("s15p03b", rnd(g, 2), f"scipy poisson で γ={g:.5f}")
-size = stats.poisson.cdf(1, 6) + rnd(g, 2) * stats.poisson.pmf(2, 6)
-E.check("s15p03b", abs(size - 0.05) < 0.0005, f"γ=0.73 での検定の大きさ {size:.5f}")
+# (a) シミュレーションで対数正規の変動係数
+C = np.exp(rng.normal(1.0, math.sqrt(0.2), 2_000_000))
+cv_sim = C.std() / C.mean()
+E.check("s15p03a", abs(cv_sim - math.sqrt(math.exp(0.2) - 1)) < 0.003, f"シミュレーション CV {cv_sim:.4f}")
+E.choice("s15p03a", f"${f(math.sqrt(math.exp(0.2) - 1), 3)}$", "√(e^0.2−1)")
+E.check("s15p03a", f(math.exp(0.2), 4) == "1.2214" and f(math.exp(0.1), 4) == "1.1052", "e^0.2, e^0.1")
+# (b) 比の標準誤差をシミュレーション
+xt = rng.normal(80, 16 / math.sqrt(20), 1_000_000)
+xr = rng.normal(100, 20 / math.sqrt(20), 1_000_000)
+sd_sim = (xt / xr).std()
+nearest("s15p03b", sd_sim, "（シミュレーション）")
+distinct("s15p03b", 4)
 
 # ---- 大問4
-# (a) マルコフの上界は 2 点分布で到達（平均 12 のまま P(X>=60)=0.2）
-pts, pr = np.array([0, 60]), np.array([0.8, 0.2])
-E.check("s15p04a", abs((pts * pr).sum() - 12) < 1e-12, "2 点分布 {0:0.8, 60:0.2} の平均が 12（上界が最良）")
-E.choice("s15p04a", "$0.200$", "E[X]/a")
-E.check("s15p04a", f(math.exp(-5), 4) == "0.0067", "誤答の e^{-5}")
-# (b) sympy で連立方程式
-k, th = sp.symbols("k theta", positive=True)
-sol = sp.solve([k * th - sp.Rational(126, 10), k * th ** 2 - sp.Rational(504, 10)], [k, th], dict=True)[0]
-E.num("s15p04b", rnd(float(sol[k]), 2), f"sympy で k={sol[k]}")
-smp = rng.gamma(float(sol[k]), float(sol[th]), size=2_000_000)
-E.check("s15p04b", abs(smp.mean() - 12.6) < 0.05 and abs(smp.var() - 50.4) < 0.5, "推定値のガンマ分布の平均・分散")
+for (m, n, c), v in {(9, 7, 2.25): "0.1488", (9, 7, 1.5): "0.3033", (7, 9, 2.25): "0.1278", (10, 8, 2.25): "0.1315"}.items():
+    E.check("s15p04a", f(stats.f.sf(c, m, n), 4) == v, f"P(F({m},{n})>{c})={v}")
+Xa = rng.normal(0, 1, (300_000, 10))
+Xb = rng.normal(0, 1, (300_000, 8))
+pr = np.mean(Xa.std(axis=1, ddof=1) > 1.5 * Xb.std(axis=1, ddof=1))
+E.check("s15p04a", abs(pr - 0.1488) < 0.003, f"シミュレーション {pr:.4f}")
+E.choice("s15p04a", f"${f(stats.f.sf(2.25, 9, 7), 4)}$", "scipy f.sf(2.25, 9, 7)")
+# (b) scipy の t 分布で区間
+sp2 = (9 * 0.2 ** 2 + 7 * 0.16 ** 2) / 16
+hw = stats.t.isf(0.025, 16) * math.sqrt(sp2 * (1 / 10 + 1 / 8))
+E.check("s15p04b", f(stats.t.isf(0.025, 16), 3) == "2.120" and f(stats.t.isf(0.05, 16), 3) == "1.746", "t 表")
+E.choice("s15p04b", f"({f(0.22 - hw, 3)},\\{f(0.22 + hw, 3)})", "scipy t.isf で区間")
+# (c) 実データで単位変換して回帰し直す
+x = rng.uniform(60, 300, 50)
+y = 3.6 + 0.98 * x + rng.normal(0, 8, 50)
+
+
+def fit(xx, yy):
+    X = np.column_stack([np.ones(len(xx)), xx])
+    b, rss = np.linalg.lstsq(X, yy, rcond=None)[:2]
+    s2 = rss[0] / (len(xx) - 2)
+    seb = math.sqrt(s2 * np.linalg.inv(X.T @ X)[1, 1])
+    r2 = 1 - rss[0] / ((yy - yy.mean()) ** 2).sum()
+    return b, b[1] / seb, r2
+
+
+b1, t1, r1 = fit(x, y)
+b2, t2, r2 = fit(x / 18, y / 18)
+E.check("s15p04c", abs(b1[1] - b2[1]) < 1e-10 and abs(b1[0] / 18 - b2[0]) < 1e-10 and abs(t1 - t2) < 1e-8 and abs(r1 - r2) < 1e-12,
+        "両方 18 で割ると傾き・t・R² 不変、切片は 1/18")
+E.choice("s15p04c", f"切片は{f(3.6 / 18, 2)}、傾きは0.98のまま、傾きの$t$値と決定係数も変わらない", "正解の文")
 
 # ---- 大問5
-R = np.array([[1, 0.50, -0.60], [0.50, 1, -0.55], [-0.60, -0.55, 1]])
-P = np.linalg.inv(R)
-pcor = -P[0, 1] / math.sqrt(P[0, 0] * P[1, 1])
-E.choice("s15p05a", f"${f(pcor, 3)}$", "相関行列の逆行列から偏相関")
-distinct("s15p05a", 3)
-# (b) 決定係数を経由した F（総平方和は任意の値で打ち消し合う）
-TSS = 7.3
-r2r, r2f = 1 - 4.20 / TSS, 1 - 3.40 / TSS
-F = ((r2f - r2r) / 2) / ((1 - r2f) / 56)
-E.choice("s15p05b", f"${f(F, 2)}$", "決定係数の差から F")
-E.check("s15p05b", f(stats.f.isf(0.05, 2, 56), 2) == "3.16", "F_0.05(2,56)=3.16（解説）")
-distinct("s15p05b", 2)
-# (c) Cp を総当たりで
-s2 = 3.40 / (60 - 4)
-cps = {m: rss / s2 - 60 + 2 * kk for m, rss, kk in [("M1", 4.20, 2), ("M2", 3.46, 3), ("M3", 3.70, 3), ("M4", 3.40, 4)]}
-best = min(cps, key=cps.get)
-E.choice("s15p05c", f"{best}（$C_p={f(cps[best], 2)}$）", f"Cp {cps}")
+# (a) 順序統計量をシミュレーション
+L = np.sort(rng.exponential(36, (1_000_000, 5)), axis=1)
+E.check("s15p05a", abs(L[:, 1].mean() - 16.2) < 0.05, f"シミュレーション E[X(2)]={L[:, 1].mean():.3f}")
+E.num("s15p05a", rnd(integrate.quad(lambda t: t * 20 * (1 - math.exp(-t / 36)) * math.exp(-4 * t / 36) / 36, 0, np.inf)[0], 1),
+      "X(2) の密度を数値積分")
+# (b) 大きさ 5% の確認と棄却限界
+c = 36 * stats.chi2.ppf(0.05, 10) / 2
+E.check("s15p05b", f(stats.chi2.ppf(0.05, 10), 3) == "3.940" and f(stats.chi2.isf(0.05, 10), 2) == "18.31" and f(stats.chi2.ppf(0.05, 5), 3) == "1.145", "χ² 表")
+E.choice("s15p05b", f"\\sumX_i\\le{f(c, 1)}$", "scipy の χ² 点")
+size = np.mean(rng.exponential(36, (400_000, 5)).sum(axis=1) <= 70.9)
+E.check("s15p05b", abs(size - 0.05) < 0.002, f"大きさのシミュレーション {size:.4f}")
 
-# ---- 大問6
-# 関係式 (n-2)s² = (n-3)s_(i)² + e_i²/(1-h_i) を、乱数データで当てはめ直して確認
-xx = rng.uniform(0, 10, 12)
-yy = 1 + 2 * xx + rng.normal(0, 1, 12)
-Xd = np.column_stack([np.ones(12), xx])
-H = Xd @ np.linalg.inv(Xd.T @ Xd) @ Xd.T
-res = yy - H @ yy
-s2all = (res ** 2).sum() / 10
-i = 3
-Xm, ym = np.delete(Xd, i, 0), np.delete(yy, i)
-bm = np.linalg.lstsq(Xm, ym, rcond=None)[0]
-s2m = ((ym - Xm @ bm) ** 2).sum() / 9
-E.check("s15p06a", abs(10 * s2all - (9 * s2m + res[i] ** 2 / (1 - H[i, i]))) < 1e-9, "関係式を再当てはめで確認")
-# r_i から t_i を求める別の公式
-ri = 1.60 / (0.8 * math.sqrt(1 - 0.36))
-ti = ri * math.sqrt((12 - 3) / (12 - 2 - ri ** 2))
-E.choice("s15p06a", f"${f(ti, 2)}$", "t_i = r_i √((n-3)/(n-2-r_i²))")
-E.check("s15p06a", f(stats.t.isf(0.025, 9), 3) == "2.262", "t_0.025(9)=2.262")
-distinct("s15p06a", 2)
+# ---- 大問6：全列挙で最小の k
+k = next(k for k in range(1, 200) if 1 - 0.95 ** k >= 0.5)
+E.num("s15p06a", k, "1−0.95^k≥0.5 を直接探索")
+E.check("s15p06a", f(math.log(0.5), 4) == "-0.6931" and f(math.log(0.95), 4) == "-0.0513", "対数の値")
+# 無記憶性のシミュレーション
+G = rng.geometric(0.05, 2_000_000)
+cond = G[G > 20] - 20
+E.check("s15p06a", abs(np.median(cond) - 14) <= 0.5, f"20 人後の追加人数の中央値 {np.median(cond)}")
 
 # ---- 大問7
-a = [1, 2, 3, 4, 5, 6, 7, 8]
-b = [2, 1, 4, 3, 6, 8, 5, 7]
-E.num("s15p07a", rnd(stats.spearmanr(a, b).statistic, 3), "scipy spearmanr")
-eta1, eta2 = 1.2 - 1.5, 2.8 - 1.5
-pv = expit(eta2) - expit(eta1)
-nearest("s15p07b", pv, "（正確な exp で計算）")
-E.choice("s15p07b", f"${f(pv, 3)}$", "scipy expit の差")
-for z, v in [(0.3, "1.3499"), (-1.3, "0.2725"), (-1.2, "0.3012"), (-2.8, "0.0608")]:
-    E.check("s15p07b", f(math.exp(z), 4) == v, f"e^{z}={v}")
-distinct("s15p07b", 3)
+# (a) 帰無仮説のもとでの z（プール）
+p = 18 / 360
+zz = (14 / 200 - 4 / 160) / math.sqrt(p * (1 - p) * (1 / 200 + 1 / 160))
+E.choice("s15p07a", f"$z={f(zz, 2)}$で1.96を超えないので、帰無仮説を棄却しない", "プールした z")
+chi2, pv, _, _ = stats.chi2_contingency(np.array([[14, 186], [4, 156]]), correction=False)
+E.check("s15p07a", abs(chi2 - zz ** 2) < 1e-9 and pv > 0.05, f"連続修正なしの χ² = z² ({chi2:.4f}, p={pv:.4f})")
+# (b) 経験ベイズ
+yv = np.array([12, 15, 9, 14, 10.0])
+tau2 = yv.var(ddof=1) - 4
+post = yv.mean() + tau2 / (tau2 + 4) * (yv[1] - yv.mean())
+E.num("s15p07b", rnd(post, 2), "事後平均 = (τ²y+σ²μ)/(τ²+σ²)")
 
-# ---- 大問8：基本行列 N=(I-Q)^{-1} の行和
-Qm = np.array([[0.85, 0.10], [0.20, 0.60]])
-Nm = np.linalg.inv(np.eye(2) - Qm)
-E.num("s15p08a", rnd(Nm[0].sum(), 1), "基本行列の行和")
-# シミュレーション
-st = np.zeros(200_000, dtype=int)
-steps = np.zeros(200_000)
-alive = np.ones(200_000, dtype=bool)
-T = np.array([[0.85, 0.10, 0.05], [0.20, 0.60, 0.20]])
-while alive.any():
-    u = rng.random(alive.sum())
-    cur = st[alive]
-    cum = T[cur].cumsum(axis=1)
-    nxt = (u[:, None] > cum).sum(axis=1)
-    steps[alive] += 1
-    st[alive] = nxt
-    alive[alive] = nxt < 2
-E.check("s15p08a", abs(steps.mean() - 12.5) < 0.1, f"シミュレーションの平均 {steps.mean():.3f}")
+# ---- 大問8：推移確率行列の固有ベクトル
+P = np.zeros((4, 4))
+for kk in range(4):
+    up = 0.4 if kk < 3 else 0
+    dn = 0.2 * kk
+    if kk < 3:
+        P[kk, kk + 1] = up
+    if kk > 0:
+        P[kk, kk - 1] = dn
+    P[kk, kk] = 1 - up - dn
+w, v = np.linalg.eig(P.T)
+pi = np.real(v[:, np.argmin(abs(w - 1))])
+pi /= pi.sum()
+E.num("s15p08a", rnd(pi[3], 3), f"固有ベクトル π={np.round(pi, 4)}")
+E.check("s15p08a", np.allclose(np.linalg.matrix_power(P, 200)[0], pi), "P^200 の行が定常分布")
 
-# ---- 大問9：個票を作って共分散の比（2 段階最小二乗法と同じ）
-n1 = n0 = 1000
-Z = np.r_[np.ones(n1), np.zeros(n0)]
-Xp = np.r_[np.ones(700), np.zeros(300), np.ones(300), np.zeros(700)]
-Yp = np.r_[np.ones(120), np.zeros(880), np.ones(180), np.zeros(820)]
-iv = np.cov(Z, Yp)[0, 1] / np.cov(Z, Xp)[0, 1]
-# 2SLS：第1段で X を Z に回帰、第2段で Y を当てはめ値に回帰
-Zd = np.column_stack([np.ones(2000), Z])
-xhat = Zd @ np.linalg.lstsq(Zd, Xp, rcond=None)[0]
-b2 = np.linalg.lstsq(np.column_stack([np.ones(2000), xhat]), Yp, rcond=None)[0][1]
-E.check("s15p09a", abs(iv - b2) < 1e-9, f"共分散の比と 2SLS が一致 {iv:.4f}")
-E.choice("s15p09a", f"${f(b2, 3)}$", "2 段階最小二乗法")
-distinct("s15p09a", 3)
+# ---- 大問9
+# (a) データを作って二元配置の平方和から偏 η²（与えた平方和の比で定義どおり）
+E.choice("s15p09a", f"${f(48 / 90, 3)}$", "48/(48+42)")
+distinct("s15p09a", 2)
+# (b) 全並べ替えで J の帰無分布の平均・分散を確かめ z を計算
+vals = [1, 3, 4, 7, 2, 6, 8, 9, 5, 10, 11, 12]
+
+
+def Jstat(arr):
+    g = [arr[0:4], arr[4:8], arr[8:12]]
+    return sum(1 for i in range(3) for j in range(i + 1, 3) for a in g[i] for b in g[j] if a < b)
+
+
+J = Jstat(vals)
+sim = np.array([Jstat(list(rng.permutation(12) + 1)) for _ in range(60_000)])
+E.check("s15p09b", abs(sim.mean() - 24) < 0.1 and abs(sim.var() - 46.667) < 1.0, f"並べ替え分布 平均 {sim.mean():.3f} 分散 {sim.var():.3f}")
+E.num("s15p09b", rnd((J - 24) / math.sqrt(3360 / 72), 2), f"J={J}")
 
 # ---- 大問10
-from scipy.stats import studentized_range  # noqa: E402
-qv = studentized_range.isf(0.05, 3, 15)
-E.check("s15p10a", f(qv, 2) == "3.67" and f(stats.t.isf(0.025, 15), 3) == "2.131", f"q={qv:.4f}, t=2.131")
-hsd = 3.67 * math.sqrt(0.36 / 6)
-means = {"A": 2.10, "B": 2.85, "C": 3.30}
-sig = [(u, v) for u in means for v in means if u < v and abs(means[u] - means[v]) > hsd]
-E.check("s15p10a", sig == [("A", "C")], f"HSD={hsd:.4f} で有意な組 {sig}")
-E.choice("s15p10a", f"基準{f(hsd, 2)}、AとCの組だけが有意", "HSD とその結論")
-# 同時有意水準のシミュレーション（帰無仮説のもと、3 群すべての対）
-Ysim = rng.normal(0, 0.6, size=(100_000, 3, 6))
-mm = Ysim.mean(axis=2)
-mse = Ysim.var(axis=2, ddof=1).mean(axis=1)
-rng_ = mm.max(axis=1) - mm.min(axis=1)
-fw = np.mean(rng_ > 3.67 * np.sqrt(mse / 6))
-E.check("s15p10a", abs(fw - 0.05) < 0.004, f"テューキー法の群全体の誤り率 {fw:.4f}")
+# (a) 折れ線の予測
+E.choice("s15p10a", f"${f(120 - 0.5 * 80 - 0.8 * max(80 - 65, 0), 1)}$", "予測値")
+distinct("s15p10a", 1)
+# (b) 実際にデータで DFBETAS の定義を確認したうえで値を計算
+xx = rng.uniform(40, 90, 40)
+yy = 120 - 0.9 * xx + rng.normal(0, 8, 40)
+X = np.column_stack([np.ones(40), xx])
+b = np.linalg.lstsq(X, yy, rcond=None)[0]
+i = 5
+Xi, yi = np.delete(X, i, 0), np.delete(yy, i)
+bi = np.linalg.lstsq(Xi, yi, rcond=None)[0]
+si = math.sqrt(((yi - Xi @ bi) ** 2).sum() / 37)
+c11 = np.linalg.inv(X.T @ X)[1, 1]
+sxx = ((xx - xx.mean()) ** 2).sum()
+E.check("s15p10b", abs(c11 - 1 / sxx) < 1e-12, "単回帰で c11 = 1/Sxx")
+dfb = (-0.90 - (-0.84)) / (8.0 * math.sqrt(1 / 4000))
+E.choice("s15p10b", f"${f(dfb, 3)}$", "定義式")
+distinct("s15p10b", 3)
+# (c)
+n = 40
+tbl = {"L": (300.0, 3), "S": (295.6, 4), "Q": (291.0, 6)}
+aic = {m: v + 2 * kk for m, (v, kk) in tbl.items()}
+aicc = {m: aic[m] + 2 * kk * (kk + 1) / (n - kk - 1) for m, (v, kk) in tbl.items()}
+E.choice("s15p10c", f"AICではモデル{min(aic, key=aic.get)}、AICcではモデル{min(aicc, key=aicc.get)}を選ぶ", f"AIC {aic} AICc {aicc}")
 
-# ---- 大問11
-Wh = np.array([0.6, 0.3, 0.1])
-Sh = np.array([8, 12, 20])
-mh = np.array([70, 60, 50])
-nh = np.array([60, 30, 10])
-sims = (Wh * rng.normal(mh, Sh / np.sqrt(nh), size=(400_000, 3))).sum(axis=1)
-se_exact = math.sqrt((Wh ** 2 * Sh ** 2 / nh).sum())
-E.choice("s15p11a", f"${f(se_exact, 2)}$", "Σ W_h² S_h²/n_h の平方根")
-E.check("s15p11a", abs(sims.std() - se_exact) < 0.01, f"シミュレーションの標準誤差 {sims.std():.4f}")
-distinct("s15p11a", 2)
-Qv = np.array([64.2, 65.0, 63.6, 64.8, 64.4])
-Uv = np.array([1.30, 1.25, 1.35, 1.28, 1.32])
-Tv = Uv.mean() + (1 + 1 / 5) * Qv.var(ddof=1)
-E.num("s15p11b", rnd(math.sqrt(Tv), 2), f"numpy で T={Tv:.4f}")
+# ---- 大問11：ガンマ分布のシミュレーションで平均と標準偏差の比
+shape = 2.0
+mu0 = 50.0
+mu1 = mu0 * math.exp(0.40 + 2 * 0.10)
+Y0 = rng.gamma(shape, mu0 / shape, 1_000_000)
+Y1 = rng.gamma(shape, mu1 / shape, 1_000_000)
+E.check("s15p11a", abs(Y1.mean() / Y0.mean() - 1.8221) < 0.01 and abs(Y1.std() / Y0.std() - 1.8221) < 0.01, "平均・標準偏差の比")
+E.choice("s15p11a", f"期待値{f(math.exp(0.6), 2)}倍、標準偏差{f(math.exp(0.6), 2)}倍", "e^0.6")
+E.check("s15p11a", f(math.exp(0.6), 4) == "1.8221" and f(math.exp(0.5), 4) == "1.6487" and f(math.sqrt(1.8221), 4) == "1.3499", "e^x の値")
 
-# ---- 大問12
-Lm = np.array([[0.80, 0.20], [0.75, 0.10], [0.70, 0.30], [0.20, 0.85], [0.10, 0.65]])
-contrib = (Lm ** 2).sum(axis=0)
-E.choice("s15p12a", f"${f(contrib[1] / 5, 3)}$", "負荷量行列の列の 2 乗和 / 5")
-# 直交回転しても共通性と寄与の合計は変わらない（解説の主張）
-ang = 0.4
-Rot = np.array([[math.cos(ang), -math.sin(ang)], [math.sin(ang), math.cos(ang)]])
-L2 = Lm @ Rot
-E.check("s15p12a", np.allclose((L2 ** 2).sum(axis=1), (Lm ** 2).sum(axis=1)) and abs((L2 ** 2).sum() - (Lm ** 2).sum()) < 1e-12,
-        "直交回転で共通性と寄与の合計が不変")
-distinct("s15p12a", 3)
-# 確認的因子分析の自由度：15 個の分散共分散 − (負荷 5 + 独自分散 5 + 因子相関 1)
-E.check("s15p12b", 5 * 6 // 2 - (5 + 5 + 1) == 4, "CFA の自由度 4")
-E.choice("s15p12b", f"${f(math.sqrt((13.6 - 4) / (4 * 300)), 3)}$", "RMSEA")
-distinct("s15p12b", 3)
+# ---- 大問12：小さな母集団を作り 2 段抽出の推定量の不偏性をシミュレーションで確認し、データから推定値を計算
+Mi = rng.integers(20, 100, 40)
+Yi = np.array([rng.integers(0, m + 1) for m in Mi])
+est = []
+for _ in range(20_000):
+    sel = rng.choice(40, 4, replace=False)
+    tot = 0.0
+    for j in sel:
+        units = np.r_[np.ones(Yi[j]), np.zeros(Mi[j] - Yi[j])]
+        smp = rng.choice(units, 10, replace=False)
+        tot += Mi[j] * smp.mean()
+    est.append(40 / 4 * tot)
+E.check("s15p12a", abs(np.mean(est) - Yi.sum()) / Yi.sum() < 0.01, f"不偏性 {np.mean(est):.1f} vs {Yi.sum()}")
+E.num("s15p12a", 40 / 4 * sum(m * x / 10 for m, x in zip([50, 80, 30, 60], [6, 4, 7, 5])), "推定値")
 
-# ---- 大問13
-pts = np.array([[130, 6.0], [140, 6.2], [128, 7.6]])
-Dm = squareform(pdist(pts / np.array([15, 1.0])))
-np.fill_diagonal(Dm, np.inf)
-i, j = np.unravel_index(np.argmin(Dm), Dm.shape)
-pair = "PQR"[min(i, j)] + "と" + "PQR"[max(i, j)]
-E.choice("s15p13a", f"{pair}（距離{f(Dm[i, j], 2)}）", "scipy pdist（標準化）")
-Draw = squareform(pdist(pts))
-np.fill_diagonal(Draw, np.inf)
-E.check("s15p13a", np.unravel_index(np.argmin(Draw), Draw.shape) in [(0, 2), (2, 0)], "標準化しないと P と R が最も近い")
+# ---- 大問13：scipy の正規密度で負担率
+w1 = 0.7 * stats.norm.pdf(6.4, 5.6, 0.4)
+w2 = 0.3 * stats.norm.pdf(6.4, 7.2, 0.8)
+E.choice("s15p13a", f"${f(w2 / (w1 + w2), 3)}$", "scipy norm.pdf")
+E.check("s15p13a", f(stats.norm.pdf(1), 4) == "0.2420" and f(stats.norm.pdf(2), 4) == "0.0540", "φ の値")
+distinct("s15p13a", 3)
 
 # ---- 大問14
-tabs = [np.array([[10, 40], [20, 30]]), np.array([[6, 54], [9, 51]])]
-num = sum(t[0, 0] * t[1, 1] / t.sum() for t in tabs)
-den = sum(t[0, 1] * t[1, 0] / t.sum() for t in tabs)
-E.num("s15p14a", rnd(num / den, 2), "MH 推定量（表から直接）")
-# MH 推定量は各層のオッズ比の重み付き平均（重み b_k c_k / n_k）でもある
-ors = [t[0, 0] * t[1, 1] / (t[0, 1] * t[1, 0]) for t in tabs]
-wts = [t[0, 1] * t[1, 0] / t.sum() for t in tabs]
-E.check("s15p14a", abs(sum(o * w for o, w in zip(ors, wts)) / sum(wts) - num / den) < 1e-12, "重み付き平均の形と一致")
-pb = stats.betabinom.pmf(2, 2, 25, 5)
-E.num("s15p14b", rnd(pb, 3), "scipy betabinom.pmf(2; n=2, a=25, b=5)")
-pq = integrate.quad(lambda p: p ** 2 * stats.beta(25, 5).pdf(p), 0, 1)[0]
-E.check("s15p14b", abs(pq - pb) < 1e-10, "事後分布での E[p²] を数値積分")
+# (a) 相関のある因子をシミュレーションして共通部分の分散
+F = rng.multivariate_normal([0, 0], [[1, 0.4], [0.4, 1]], 1_000_000)
+hs = (0.5 * F[:, 0] + 0.3 * F[:, 1]).var()
+E.check("s15p14a", abs(hs - 0.46) < 0.003, f"シミュレーション {hs:.4f}")
+E.choice("s15p14a", f"${f(np.array([0.5, 0.3]) @ np.array([[1, 0.4], [0.4, 1]]) @ np.array([0.5, 0.3]), 3)}$", "λ'Φλ")
+# (b) 単調回帰（PAVA）で d̂ を求め直してストレス
+d = [1.0, 1.4, 1.2, 2.1, 3.2, 2.8]
+blocks = [[v] for v in d]
+changed = True
+while changed:
+    changed = False
+    for j in range(len(blocks) - 1):
+        if np.mean(blocks[j]) > np.mean(blocks[j + 1]):
+            blocks[j] = blocks[j] + blocks.pop(j + 1)
+            changed = True
+            break
+dh = [np.mean(bk) for bk in blocks for _ in bk]
+E.check("s15p14b", np.allclose(dh, [1.0, 1.3, 1.3, 2.1, 3.0, 3.0]), f"PAVA の結果 {dh}")
+st = math.sqrt(sum((a - b) ** 2 for a, b in zip(d, dh)) / sum(a * a for a in d))
+E.choice("s15p14b", f"${f(st, 3)}$", "ストレス")
+distinct("s15p14b", 3)
 
 E.done()

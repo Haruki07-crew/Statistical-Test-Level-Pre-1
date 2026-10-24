@@ -137,14 +137,23 @@ ex_a = stats.binom(400, 0.5).sf(219)
 ex_b = stats.binom(400, 0.58).cdf(219)
 E.check("s13p04c", abs(ex_a - al) < 0.01 and abs(ex_b - be) < 0.03, f"二項分布の正確な値 α={ex_a:.4f}, β={ex_b:.4f} と近い")
 
-# ---- 大問5 ルビーン検定：scipy.stats.levene(center="mean")
-G = [[10, 12, 14, 12], [8, 16, 12, 12], [6, 18, 9, 15]]
-lv = stats.levene(*G, center="mean")
-E.choice("s13p05a", f"$F={f(lv.statistic, 2)}$で、4.256を超えないので帰無仮説を棄却しない", f"scipy levene(center='mean') の統計量 {lv.statistic:.4f}")
-E.check("s13p05a", tab("F_0.05(2,9)", 4.256, stats.f.ppf(0.95, 2, 9), 5e-4) and tab("F_0.05(2,11)", 3.982, stats.f.ppf(0.95, 2, 11), 5e-4), "F 分布の点")
-E.check("s13p05a", lv.pvalue > 0.05, f"p 値 {lv.pvalue:.4f}")
-Zs = [np.abs(np.array(g_) - np.mean(g_)) for g_ in G]
-E.check("s13p05a", abs(stats.f_oneway(*Zs).statistic - lv.statistic) < 1e-12, "絶対偏差への f_oneway と一致")
+# ---- 大問5 予備検定の問題：シミュレーションで手順全体の第一種の過誤と、ウェルチ検定の水準を比べる
+n1_, n2_, sd1, sd2 = 8, 12, 6.8, 3.9
+R = 40000
+a1 = rng.normal(0, sd1, (R, n1_))
+a2 = rng.normal(0, sd2, (R, n2_))
+v1_, v2_ = a1.var(1, ddof=1), a2.var(1, ddof=1)
+Fst = v1_ / v2_
+pF = 2 * np.minimum(stats.f.sf(Fst, n1_ - 1, n2_ - 1), stats.f.cdf(Fst, n1_ - 1, n2_ - 1))
+p_pool = stats.ttest_ind(a1, a2, axis=1, equal_var=True).pvalue
+p_welch = stats.ttest_ind(a1, a2, axis=1, equal_var=False).pvalue
+two = np.where(pF < 0.05, p_welch, p_pool) < 0.05
+E.check("s13p05a", abs(two.mean() - 0.05) > 0.01, f"母分散が異なるとき二段階の手順の誤り率 {two.mean():.4f}（5% からずれる）")
+E.check("s13p05a", abs((p_welch < 0.05).mean() - 0.05) < 0.006, f"ウェルチ検定の誤り率 {(p_welch < 0.05).mean():.4f} ≈ 5%")
+E.check("s13p05a", (p_pool[pF >= 0.05] < 0.05).mean() > 0.06, f"予備検定を通った後のプールした t 検定の誤り率 {(p_pool[pF >= 0.05] < 0.05).mean():.4f} > 5%（選択肢 0・4 は誤り）")
+b1_ = rng.normal(0, 5, (R, n1_)); b2_ = rng.normal(0, 5, (R, n2_))
+E.check("s13p05a", abs((stats.ttest_ind(b1_, b2_, axis=1, equal_var=False).pvalue < 0.05).mean() - 0.05) < 0.006, "等分散でもウェルチ検定の水準は約 5%（選択肢 2 は誤り）")
+E.check("s13p05a", E.item("s13p05a")["answer"] == 1, "正解は選択肢 1")
 
 # ---- 大問6 ケース・コントロール：母集団を仮定して抽出をシミュレーションし、オッズ比は保たれ投票率は保たれないことを確認
 a, b, c, d = 160, 240, 100, 300
@@ -166,25 +175,19 @@ E.check("s13p06a", abs(A_ / (A_ + C_) - p1v) > 0.03, f"抽出表の行比率 {A_
 E.check("s13p06a", abs(p1v / p0v - 2.0) > 0.3, f"投票率 55% では相対リスク {p1v / p0v:.3f} はオッズ比 2 から離れる")
 E.check("s13p06a", E.item("s13p06a")["answer"] == 1, "正解はオッズ比の記述")
 
-# ---- 大問7 吸収マルコフ連鎖：基本行列 N=(I−Q)^{-1}
-Q = sp.Matrix([[sp.Rational(87, 100), sp.Rational(5, 100)], [sp.Rational(35, 100), sp.Rational(50, 100)]])
-Nf = (sp.eye(2) - Q).inv()
-tE = float((Nf * sp.Matrix([1, 1]))[0])
-E.num("s13p07a", float(f(tE, 2)), "基本行列 (I−Q)^{-1} の行和（sympy）")
-# シミュレーション
-Pm = np.array([[0.87, 0.05, 0.08], [0.35, 0.50, 0.15]])
-st = np.zeros(200_000, dtype=int)
-steps = np.zeros(200_000)
-alive = np.ones(200_000, bool)
-while alive.any():
-    u = rng.random(alive.sum())
-    cur = st[alive]
-    cum = Pm[cur].cumsum(axis=1)
-    nxt = (u[:, None] > cum).sum(axis=1)
-    steps[alive] += 1
-    st[alive] = nxt
-    alive[alive] = nxt < 2
-E.check("s13p07a", abs(steps.mean() - tE) < 0.08, f"シミュレーションの平均 {steps.mean():.3f}")
+# ---- 大問7 状態の分類：到達可能性の推移閉包と、行列のべき乗の極限
+Pm = np.array([[0.90, 0.04, 0.03, 0.03], [0.10, 0.85, 0.02, 0.03], [0, 0, 0.80, 0.20], [0, 0, 0, 1]])
+E.check("s13p07a", np.allclose(Pm.sum(1), 1), "行和 1")
+Rch = (Pm > 0).astype(int)
+for _ in range(4):
+    Rch = ((Rch + Rch @ Rch) > 0).astype(int)
+closed = [i for i in range(4) if all(Rch[j, i] for j in range(4) if Rch[i, j])]
+E.check("s13p07a", closed == [3], f"到達先から必ず戻れる（再帰的）状態は {closed}（状態 4 のみ）")
+Pn = np.linalg.matrix_power(Pm, 2000)
+E.check("s13p07a", np.allclose(Pn[:, 3], 1, atol=1e-9), "P^2000 の第 4 列がすべて 1（確率 1 で吸収）")
+w_, vec = np.linalg.eig(Pm.T)
+E.check("s13p07a", np.sum(np.abs(w_ - 1) < 1e-9) == 1, "固有値 1 は 1 個（定常分布は (0,0,0,1) のみ）")
+E.check("s13p07a", E.item("s13p07a")["answer"] == 2, "正解は選択肢 2")
 
 # ---- 大問8
 # (a) 交互作用：個票を作って最小二乗で β1+β3 とその分散を推定（共分散行列が問題の値に比例することを確認）
@@ -196,15 +199,11 @@ E.check("s13p08a", abs(XtXi[1, 3] + XtXi[1, 1]) < 1e-12, "完全交互作用モ�
 V = np.array([[0.00016, -0.00016], [-0.00016, 0.00036]])
 se_ = np.sqrt(np.array([1, 1]) @ V @ np.array([1, 1]))
 E.choice("s13p08a", f"推定値 ${f(0.05 - 0.03, 3)}$、標準誤差 ${f(se_, 4)}$", "行列計算 c'Vc")
-# (b) Q-Q：プロット位置と分位点
-E.check("s13p08b", tab("Φ^-1(0.9875)", 2.241, stats.norm.ppf(0.9875), 5e-4), "上側 1.25% 点")
-E.check("s13p08b", 3.35 > stats.norm.ppf(39.5 / 40) and -1.62 > stats.norm.ppf(0.5 / 40), "最大点は直線の上、最小点は 0 側（右に歪み）")
-# 右に歪んだ分布（対数正規）の標準化残差の Q-Q で同じ形になることを確認
-z = rng.lognormal(0, 0.6, 40)
-z = np.sort((z - z.mean()) / z.std(ddof=1))
-qq = stats.norm.ppf((np.arange(1, 41) - 0.5) / 40)
-E.check("s13p08b", z[-1] > qq[-1] and z[0] > qq[0], "右に歪んだ分布の Q-Q プロットで同じパターン")
-E.check("s13p08b", E.item("s13p08b")["answer"] == 1, "正解は選択肢 1")
+# (b) ハット行列のトレース
+Xh = np.column_stack([np.ones(40), rng.standard_normal((40, 4))])
+Hh = Xh @ np.linalg.inv(Xh.T @ Xh) @ Xh.T
+E.check("s13p08b", abs(np.trace(Hh) - 5) < 1e-9, "数値で tr(H)=5")
+E.num("s13p08b", round(float(np.trace(Hh)) - 4.62, 2), "tr(H) の数値から 4.62 を引く")
 # (c) 楽観度：シミュレーションで E[新しい観測の平均二乗誤差] − E[RSS/n] = 2pσ²/n を確認し、推定値を計算
 Xd5 = np.column_stack([np.ones(40), rng.standard_normal((40, 4))])
 Hm = Xd5 @ np.linalg.pinv(Xd5)
@@ -298,9 +297,8 @@ Phi = np.array([[1, 0.4], [0.4, 1]])
 Fz = rng.multivariate_normal([0, 0], Phi, 1_000_000)
 comm = Fz @ np.array([0.6, 0.3])
 h2 = np.array([0.6, 0.3]) @ Phi @ np.array([0.6, 0.3])
-E.choice("s13p12b", f"${f(h2, 3)}$", "l'Φl の行列計算")
+E.num("s13p12b", float(f(h2, 3)), "l'Φl の行列計算")
 E.check("s13p12b", abs(comm.var() - h2) < 0.003, f"シミュレーションの共通部分の分散 {comm.var():.4f}")
-distinct("s13p12b", 3)
 
 # ---- 大問13 AR(1) のスペクトル：自己共分散のフーリエ和で数値的に求める
 phi = 0.6

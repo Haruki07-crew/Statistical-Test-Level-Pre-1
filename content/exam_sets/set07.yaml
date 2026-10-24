@@ -35,60 +35,61 @@ problems:
 
       - id: s07p01b
         chapter: 2
-        terms: [moment-generating-function, moments, expectation-variance-properties]
-        topic: 支払なしの確率の塊とガンマ分布の混合を表す積率母関数を2回微分して年間支払額の分散を求める
-        level: 標準
+        terms: [moment-generating-function, survival-function, cumulative-distribution-function]
+        topic: 積率母関数の形から支払なしの塊とガンマ分布の混合だと見抜き年間支払額が一定額を超える確率を求める
+        level: 応用
         definition: false
         type: choice
         question: |
           1 契約の年間支払額 $S$（万円）の積率母関数が
           $$M_S(t)=E\left[e^{tS}\right]=«w0»+«w1»\,(1-«th»t)^{-«k»}\qquad\left(t<\tfrac{1}{«th»}\right)$$
-          であることがわかっている。$V[S]$ に最も近い値はどれか。
+          であることがわかっている。年間支払額が «x0» 万円を超える確率 $P(S>«x0»)$ に最も近い値はどれか。
+          ただし、形状 $k$・尺度 $\theta$ のガンマ分布（密度 $\dfrac{x^{k-1}e^{-x/\theta}}{\Gamma(k)\theta^{k}}$、$x>0$）の積率母関数は $(1-\theta t)^{-k}$ であり、積率母関数が一致する 2 つの分布は同じ分布である。必要なら $e^{-«ex»}=«emx»$ を使え。
         choices:
-          - "$«v_m2»$"
-          - "$«v_gam»$"
-          - "$«var»$"
-          - "$«v_cond»$"
-          - "$«v_m2m»$"
+          - "$«t_noW»$"
+          - "$«t_exp»$"
+          - "$«t_ok»$"
+          - "$«t_w08»$"
+          - "$«t_cdf»$"
         answer: 2
         distractors:
-          - M''(0)=E[S^2] を分散と取り違えた
-          - 支払が起きたときのガンマ分布の分散だけを答え、支払なしの確率を無視した
+          - 支払が起きる確率 0.2 を掛け忘れ、ガンマ分布の上側確率をそのまま答えた
+          - ガンマ分布（形状2）の上側確率を指数分布のように e^{-x/θ} だけとし、(1+x/θ) の因子を落とした
           - 正解
-          - 支払があるときの分散に確率 0.2 を掛けただけで、平均の違いによる分散を落とした
-          - E[S^2] から E[S]^2 ではなく E[S] を引いた
+          - 定数項 0.8 を支払が起きる確率と取り違えた
+          - 上側確率ではなく分布関数 P(S≤8) を答えた
         explanation: |
-          **方針** $M_S'(0)=E[S]$、$M_S''(0)=E[S^2]$ を使い、$V[S]=E[S^2]-(E[S])^2$。
-          （$M_S(t)$ は「確率 «w0» で 0（支払なし）、確率 «w1» で形状 «k»・尺度 «th» のガンマ分布」の混合分布の積率母関数である。）
+          **方針** 積率母関数を「確率 «w0» で値 0（定数 0 の積率母関数は 1）、確率 «w1» で形状 «k»・尺度 «th» のガンマ分布」の混合の積率母関数と読む。積率母関数が分布を決めるので、$S$ はこの混合分布に従う。上側確率は成分ごとの上側確率を重み付けして足す。
 
-          **途中式**
-          $$M_S'(t)=«w1»\times«k»\times«th»\,(1-«th»t)^{-«k1»},\qquad M_S''(t)=«w1»\times«k»\times«k1»\times«th»^2\,(1-«th»t)^{-4}$$
-          $$E[S]=M_S'(0)=«a1»,\qquad E[S^2]=M_S''(0)=«a2»$$
-          $$V[S]=«m2»-«m1»^2=«m2»-«m1sq»=«var»$$
+          **途中式** 混合の積率母関数は $«w0»\times E[e^{t\cdot0}]+«w1»\times(1-«th»t)^{-«k»}$ と一致する。$G$ を形状 «k»・尺度 «th» のガンマ分布に従う変数とすると、密度は $\dfrac{x\,e^{-x/«th»}}{«th»^2}$ で、部分積分により
+          $$P(G>x)=\int_x^{\infty}\frac{u\,e^{-u/«th»}}{«th»^2}\,du=e^{-x/«th»}\left(1+\frac{x}{«th»}\right)$$
+          $x=«x0»$ では $P(G>«x0»)=e^{-«ex»}\times(1+«ex»)=«emx»\times«ex1»=«g_sf»$。支払なしの部分は $S=0$ なので «x0» を超えない。
+          $$P(S>«x0»)=«w1»\times«g_sf»=«t_ok4»$$
 
-          **答え** $«var»$
+          **答え** $«t_ok»$
 
-          **間違えやすい点** 定数項 «w0» は微分で消えるが、確率 «w0» で 0 になることは期待値・2 次モーメントに «w1» が掛かる形で効いている。ガンマ分布の分散 $«gvar»$ をそのまま答えるのは誤り。
-          全分散の公式で確かめると、$V[S]=E[V[S\mid I]]+V[E[S\mid I]]=«w1»\times«gvar»+«w1»\times«w0»\times«gmean»^2=«var»$（$I$ は支払の有無）。支払の有無による平均の違いの分を落とすと $«v_cond»$ になる。
+          **間違えやすい点** 定数項 «w0» は「確率 «w0» で支払が 0」を表すので、ガンマ分布の上側確率に «w1» を掛ける（掛け忘れると $«t_noW»$）。
+          形状 «k» のガンマ分布は指数分布 2 つの和で、上側確率は $e^{-x/\theta}$ だけではなく $(1+x/\theta)$ が掛かる（落とすと $«t_exp»$）。
+          なお、この分布の平均と分散は $M_S'(0)=«m1»$、$M_S''(0)-M_S'(0)^2=«var»$ である（次問で使う）。
 
       - id: s07p01c
         chapter: 7
         terms: [central-limit-theorem, expectation-variance-properties]
         topic: 独立な契約の年間支払総額が保険料収入を超える確率を1%以下に抑える1契約あたり保険料を中心極限定理で決める
-        level: 応用
+        level: 標準
         definition: false
         type: numeric
         question: |
-          前問の支払額の分布をもつ契約が «n» 件あり、各契約の支払額は互いに独立とする。全契約から同じ保険料 $P$ 万円を集めるとき、
+          前問の支払額の分布（平均 $E[S]=«m1»$、分散 $V[S]=«var»$）をもつ契約が «n» 件あり、各契約の支払額は互いに独立とする。全契約から同じ保険料 $P$ 万円を集めるとき、
           年間の支払総額が保険料収入の合計 «n»$P$ を超える確率が 1% 以下になる最小の $P$ を、中心極限定理による正規近似で求めよ。
-          標準正規分布の上側 1% 点は «z» とし、必要なら前問の結果を使え。
+          標準正規分布の上側 1% 点は «z» とする。
         answer: «prem»
         tolerance: 0.01
         answer_format: 万円単位で小数第2位まで（小数第3位を四捨五入）で答えよ。±0.01 の差まで正解とする。
         explanation: |
           **方針** 支払総額 $T=S_1+\cdots+S_{«n»}$ は独立同分布の和なので、中心極限定理により平均 $nE[S]$、分散 $nV[S]$ の正規分布で近似できる。$P(T>nP)\le0.01$ を $P$ について解く。
 
-          **途中式** $E[S]=«m1»$、$V[S]=«var»$（前問）より $E[T]=«n»\times«m1»=«tot_mean»$、$T$ の標準偏差は $\sqrt{«n»\times«var»}=«sqn»\times\sqrt{«var»}=«sqn»\times«sdv»=«tot_sd»$。
+          **途中式** $E[S]=«m1»$、$V[S]=«var»$（問題文）より $E[T]=«n»\times«m1»=«tot_mean»$、$T$ の標準偏差は $\sqrt{«n»\times«var»}=«sqn»\times\sqrt{«var»}=«sqn»\times«sdv»=«tot_sd»$。
           $$P(T>«n»P)\approx P\left(Z>\frac{«n»P-«tot_mean»}{«tot_sd»}\right)\le0.01\iff «n»P\ge«tot_mean»+«z»\times«tot_sd»$$
           両辺を «n» で割ると
           $$P\ge«m1»+\frac{«z»\times«sdv»}{\sqrt{«n»}}=«m1»+«load»=«prem4»$$

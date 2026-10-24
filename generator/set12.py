@@ -43,22 +43,21 @@ def p02():
     p0 = q20
     p1 = n * p * q19
     acc = p0 + p1
-    # (b) ベリー・エッセン
-    N, C = 400, 0.4748
-    var = p * (1 - p)
-    sq = 0.2179
-    rho3 = var * ((1 - p) ** 2 + p ** 2)
-    sig3 = var * sq
-    den = sig3 * math.sqrt(N)
-    bound = C * rho3 / den
+    # (b) 加算推定量 (S+1)/(m+2) の平均二乗誤差
+    m = 48
+    bias = (m * p + 1) / (m + 2) - p
+    vr = m * p * (1 - p) / (m + 2) ** 2
+    mse = vr + bias ** 2
+    mse_u = p * (1 - p) / m
+    bias_w = 1 / (m + 2)
     return {
         "n": n, "c": c, "p": s(p, 2), "q19": s(q19, 4), "q20": s(q20, 4), "p0": s(p0, 4), "p1": s(p1, 4),
         "acc": s(acc, 4), "risk": s(1 - acc, 3), "risk4": s(1 - acc, 4), "o_p0": s(p0, 3), "o_p1": s(p1, 3),
         "o_only0": s(1 - p0, 3), "o_acc": s(acc, 3),
-        "N": N, "C": s(C, 4), "var": s(var, 4), "sq": s(sq, 4), "q2p2": s((1 - p) ** 2 + p ** 2, 4),
-        "rho3": s(rho3, 7), "sig3": s(sig3, 8), "sqrtN": int(math.sqrt(N)), "den": s(den, 7), "num": s(C * rho3, 7),
-        "bound": s(bound, 3), "bound4": s(bound, 4), "b_nosq": s(C * rho3 / sig3, 3), "b_n": s(C * rho3 / (sig3 * N), 3),
-        "b_var": s(C * rho3 / (var * math.sqrt(N)), 3), "b_noc": s(rho3 / den, 3),
+        "m": m, "m2": m + 2, "mp": s(m * p, 1), "mp1": s(m * p + 1, 1), "mean_est": s((m * p + 1) / (m + 2), 3),
+        "bias": s(bias, 3), "mpq": s(m * p * (1 - p), 2), "m22": (m + 2) ** 2,
+        "vr": s(vr * 1e4, 2), "b2": s(bias ** 2 * 1e4, 2), "mse": s(mse * 1e4, 2), "mse_u": s(mse_u * 1e4, 2),
+        "mse_w": s((vr + bias_w ** 2) * 1e4, 2), "pq": s(p * (1 - p), 4),
     }
 
 
@@ -116,7 +115,12 @@ def p06():
     c11u, c11l, c12u, c12l = 21.92, 3.816, 23.34, 4.404
     ss = (n - 1) * s2[0]
     lo, hi = math.sqrt(ss / c11u), math.sqrt(ss / c11l)
+    t11, sq1312 = 2.201, 1.0408
+    s_ = 0.22
     out = {
+        "t11": s(t11, 3), "sq1312": s(sq1312, 4), "s": s(s_, 2), "pi": s(t11 * s_ * sq1312, 3), "pi4": s(t11 * s_ * sq1312, 4),
+        "ts": s(t11 * s_, 4), "ci": s(t11 * s_ / 3.4641, 3), "piz": s(1.96 * s_ * sq1312, 3), "pinos": s(t11 * s_, 3),
+        "piv": s(t11 * 0.0484 * sq1312, 3), "sq12": "3.4641",
         "n": n, "df": n - 1, "s2a": s(s2[0], 4), "s2b": s(s2[1], 4), "s2c": s(s2[2], 4), "sa": s(math.sqrt(s2[0]), 2),
         "c11u": s(c11u, 2), "c11l": s(c11l, 3), "c12u": s(c12u, 2), "c12l": s(c12l, 3), "ss": s(ss, 4),
         "v_lo": s(ss / c11u, 5), "v_hi": s(ss / c11l, 5),
@@ -198,14 +202,20 @@ def p09():
 
 
 def p10():
-    m, sig = 0.5, 1.0
-    Phi, phi = 0.6915, 0.3521
-    ey = Phi * m + sig * phi
-    return {
-        "m": s(m, 1), "sig": s(sig, 1), "Phi": s(Phi, 4), "phi": s(phi, 4), "t1": s(Phi * m, 5),
-        "ey": s(ey, 3), "ey4": s(ey, 4), "noPhi": s(m + phi, 3), "nophi": s(Phi * m, 3),
-        "cond": s(m + phi / Phi, 3), "ratio": s(phi / Phi, 4),
-    }
+    y = [3, 7, 5, 9]
+    mu = [3.81, 5.00, 6.57, 8.62]                  # 速度 1,2,3,4 で当てはめた値（小数第2位まで）
+    lg = [-0.23902, 0.33647, -0.27308, 0.04314]   # ln(y/mu)
+    terms = [yy * l for yy, l in zip(y, lg)]
+    D = 2 * sum(terms)
+    pear = sum((yy - m) ** 2 / m for yy, m in zip(y, mu))
+    swap = 2 * sum(-m * l for m, l in zip(mu, lg))
+    out = {f"y{i + 1}": y[i] for i in range(4)}
+    out.update({f"mu{i + 1}": f"{mu[i]:.2f}" for i in range(4)})
+    out.update({f"l{i + 1}": f"{lg[i]:.5f}" for i in range(4)})
+    out.update({f"tt{i + 1}": f"{terms[i]:.5f}" for i in range(4)})
+    out.update({"sumt": s(sum(terms), 5), "D": s(D, 2), "D4": s(D, 4), "half": s(sum(terms), 2), "pear": s(pear, 2),
+                "swap": s(swap, 2), "neg": s(-D, 2), "chi2": "5.991", "musum": s(sum(mu), 2)})
+    return out
 
 
 def p11():
@@ -285,7 +295,7 @@ def p14():
         "px1": s(px1, 1), "px0": s(1 - px1, 1), "pm1": s(pm[1], 2), "pm0": s(pm[0], 2),
         "pm1c": s(1 - pm[1], 2), "pm0c": s(1 - pm[0], 2),
         "y11": s(py[(1, 1)], 2), "y10": s(py[(1, 0)], 2), "y01": s(py[(0, 1)], 2), "y00": s(py[(0, 0)], 2),
-        "in1": s(inner[1], 3), "in0": s(inner[0], 3), "do1": s(do[1], 4), "do0": s(do[0], 4),
+        "in1": s(inner[1], 3), "in0": s(inner[0], 3), "do1": s(do[1], 4), "do0": s(do[0], 4), "do1v": r(do[1], 3), "do1s": s(do[1], 3),
         "ace": r(ace, 3), "ace_s": s(ace, 3), "ace4": s(ace, 4),
         "obs1": s(obs[1], 3), "obs0": s(obs[0], 3), "naive": s(obs[1] - obs[0], 3),
         "t11": s(py[(1, 1)] * px1, 3), "t10": s(py[(1, 0)] * (1 - px1), 3),

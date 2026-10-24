@@ -102,8 +102,8 @@ def p02():
 def p03():
     # (a) Box-Cox 変換のプロファイル対数尤度
     n, sumlog = 20, 30.0
-    sse = {0: 2.40, 0.5: 9.00, 1: 40.0}
-    lnr = {0: -2.1203, 0.5: -0.7985, 1: 0.6931}  # ln(SSE/n)
+    sse = {0: 2.40, 0.5: 9.40, 1: 40.0}
+    lnr = {0: -2.1203, 0.5: -0.7550, 1: 0.6931}  # ln(SSE/n)
     for k, v in sse.items():
         assert abs(math.log(v / n) - lnr[k]) < 5e-5
     ll = {k: -n / 2 * lnr[k] + (k - 1) * sumlog for k in sse}

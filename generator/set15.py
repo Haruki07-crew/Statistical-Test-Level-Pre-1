@@ -202,7 +202,7 @@ def p07():
         "y1": y[0], "y2": y[1], "y3": y[2], "y4": y[3], "y5": y[4], "sig2": s(sig2, 0), "m": m,
         "yb": s(yb, 0), "ss": s(s2u * (m - 1), 0), "s2u": s(s2u, 1), "tau2": s(tau2, 1), "vtot": s(sig2 + tau2, 1),
         "B": s(B, 4), "omB": s(1 - B, 4), "dev": s(y[1] - yb, 0), "est": r(est, 2), "est4": s(est, 4),
-        "w_rev": s(yb + B * (y[1] - yb), 2), "w_n": s(yb + (1 - Bn) * (y[1] - yb), 2), "s2n": s(s2n, 1),
+        "w_rev": s(yb + B * (y[1] - yb), 2), "w_n": s(yb + (1 - Bn) * (y[1] - yb), 2), "s2n": s(s2n, 1), "devsq": "+".join(s((v - yb) ** 2, 0) for v in y),
     }
 
 
@@ -246,7 +246,8 @@ def p09():
         "c_noE": s(SA / (SA + SB + SAB), 3), "c_F": s((SA / dfA) / mse, 2), "SAE": s(SA + SE, 1),
         "u12": u12, "u13": u13, "u23": u23, "J": J, "N": N, "EJ": s(EJ, 0), "VJ": s(VJ, 3),
         "sdJ": s(sqrt(VJ), 4), "z": r(z, 2), "z4": s(z, 4), "N2": N * N, "sumn2": sum(n * n for n in ns),
-        "vnum": N * N * (2 * N + 3) - sum(n * n * (2 * n + 3) for n in ns), "w_noc": s((J - EJ) / VJ, 2),
+        "vnum": N * N * (2 * N + 3) - sum(n * n * (2 * n + 3) for n in ns), "w_noc": s((J - EJ) / VJ, 2), "JmE": s(J - EJ, 0), "twoN3": 2 * N + 3,
+        "vsub": sum(n * n * (2 * n + 3) for n in ns),
     }
     for i, grp in enumerate(g):
         for j, v in enumerate(grp):

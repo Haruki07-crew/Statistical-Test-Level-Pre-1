@@ -75,16 +75,15 @@ def p02():
 
 
 def p03():
-    # (a) ポアソン分布の連続修正つき正規近似
-    lam, k = 49, 60
+    # (a) 誤った注意報の確率を 5% 以下にする最小の基準 k（ポアソンの連続修正つき正規近似）
+    lam = 49
     sd = sqrt(lam)
-    phi = {0.21: 0.5832, 1.50: 0.9332, 1.57: 0.9418, 1.64: 0.9495}
-    z_ok = r((k - 0.5 - lam) / sd, 2)
-    z_no = r((k - lam) / sd, 2)
-    z_up = r((k + 0.5 - lam) / sd, 2)
-    z_var = r((k - 0.5 - lam) / lam, 2)
-    for z in (z_ok, z_no, z_up, z_var):
-        assert z in phi, z
+    z05, z025 = 1.645, 1.960  # 標準正規分布の上側 5%・2.5% 点（問題文に示す値）
+    b_ok = lam + 0.5 + z05 * sd
+    b_nocc = lam + z05 * sd
+    k_ok = math.ceil(b_ok)
+    from math import exp, factorial
+    pois_sf = lambda k: 1 - sum(exp(-lam) * lam ** j / factorial(j) for j in range(k))
     # (b) コックスの部分尤度（ハザード比 0.5 を仮定）
     hr = 0.5
     pts = [("A", 2, 0, 1), ("B", 3, 1, 1), ("C", 4, 0, 0), ("D", 5, 0, 1), ("E", 7, 1, 1)]
@@ -101,11 +100,10 @@ def p03():
             L *= ww(x) / sum(ww(q[2]) for q in risk)
         return L
     ok = pl(Fr(1, 2))
-    out = {"lam": lam, "k": k, "sd": s(sd, 0), "km": s(k - 0.5, 1), "kp": s(k + 0.5, 1),
-           "zok": s(z_ok, 2), "zno_raw": s((k - lam) / sd, 4), "zno": s(z_no, 2), "zup": s(z_up, 2),
-           "fA": s(phi[0.21], 4), "fB": s(phi[1.50], 4), "fC": s(phi[1.57], 4), "fD": s(phi[1.64], 4),
-           "c_ok": s(1 - phi[z_ok], 3), "c_ok4": s(1 - phi[z_ok], 4), "c_no": s(1 - phi[z_no], 3), "c_up": s(1 - phi[z_up], 3),
-           "c_var": s(1 - phi[z_var], 3), "c_low": s(phi[z_ok], 3),
+    out = {"lam": lam, "sd": s(sd, 0), "z05": z05, "z025": z025, "b_ok": s(b_ok, 3), "b_nocc": s(b_nocc, 3),
+           "k_ok": k_ok, "k_nocc": math.ceil(b_nocc), "k_floor": math.floor(b_nocc),
+           "k_two": math.ceil(lam + z025 * sd), "k_twocc": math.ceil(lam + 0.5 + z025 * sd),
+           "ex61": s(pois_sf(61), 3), "ex62": s(pois_sf(62), 3),
            "hr": hr, "L_ok": str(ok), "L_b0": str(pl(Fr(1))), "L_keepc": str(pl(Fr(1, 2), keep_censored=True)),
            "L_cev": str(pl(Fr(1, 2), censor_as_event=True)), "L_inv": str(pl(Fr(2))),
            "L_ok_dec": s(float(ok), 4)}
@@ -142,27 +140,17 @@ def p05():
             "z_n": s((z1 - z2) / sqrt(1 / n1 + 1 / n2), 2), "z_n1": s((z1 - z2) / sqrt(1 / (n1 - 1) + 1 / (n2 - 1)), 2)}
 
 def p06():
-    # (a) 3 用量群の有効率の一様性を G 統計量で
-    ng = 40
-    resp = [10, 16, 22]
-    tot = sum(resp)
-    pbar = tot / (3 * ng)
-    er, en = ng * pbar, ng * (1 - pbar)
-    non = [ng - y for y in resp]
-    ln = {10: -0.4700, 16: 0.0, 22: 0.3185, 30: 0.2231, 24: 0.0, 18: -0.2877}  # log(O/E)（問題文に示す値）
-    terms_r = [y * ln[y] for y in resp]
-    terms_n = [y * ln[y] for y in non]
-    half = sum(terms_r) + sum(terms_n)
-    G = 2 * half
-    X2 = sum((y - er) ** 2 / er for y in resp) + sum((y - en) ** 2 / en for y in non)
-    out = {
-        "ng": ng, "r0": resp[0], "r1": resp[1], "r2": resp[2], "n0": non[0], "n1": non[1], "n2": non[2],
-        "tot": tot, "pbar": s(pbar, 1), "er": s(er, 0), "en": s(en, 0),
-        "lnA": s(ln[10], 4), "lnB": s(ln[22], 4), "lnC": s(ln[30], 4), "lnD": s(ln[18], 4),
-        "g0": s(terms_r[0], 4), "g2": s(terms_r[2], 4), "g3": s(terms_n[0], 4), "g5": s(terms_n[2], 4),
-        "half": s(half, 4), "G": s(G, 2), "G4": s(G, 4), "X2": s(X2, 2), "Ghalf": s(half, 2),
-        "Grow": s(2 * sum(terms_r), 2), "Gneg": s(-G, 2), "crit": 5.991,
-    }
+    # (a) 二項分布による正確な片側検定の p 値
+    bn, bx, bp0 = 10, 7, 0.4
+    pm = lambda j: math.comb(bn, j) * bp0 ** j * (1 - bp0) ** (bn - j)
+    pv = sum(pm(j) for j in range(bx, bn + 1))
+    se0 = sqrt(bp0 * (1 - bp0) / bn)
+    bz = (bx / bn - bp0) / se0
+    Phi = lambda z: 0.5 * (1 + math.erf(z / sqrt(2)))
+    out = {"bn": bn, "bx": bx, "bp0": bp0, "t7": s(pm(7), 6), "t8": s(pm(8), 6), "t9": s(pm(9), 6), "t10": s(pm(10), 6),
+           "bp4": s(pv, 4), "bp_ok": s(pv, 3), "bp_eq": s(pm(bx), 3), "bp_gt": s(pv - pm(bx), 3),
+           "bp_comp": s(1 - pv, 3), "bz": s(bz, 2), "bp_norm": s(1 - Phi(bz), 3),
+           "bp_cc": s(1 - Phi((bx - 0.5 - bn * bp0) / (bn * se0)), 3)}
     # (b) プロビット：用量 4 mg で 30.85%（Φ(-0.5)）、16 mg で 93.32%（Φ(1.5)）
     d1, d2, z1, z2 = 4, 16, -0.5, 1.5
     p1, p2 = 0.3085, 0.9332
@@ -199,26 +187,7 @@ def p07():
 def p08():
     # (a) ダミー変数
     b0, b1, b2, b3 = 2.0, 0.8, 1.5, 0.10
-    # (b) 1 人を除いたときの傾きの変化（DFBETA）
-    x = [1, 2, 3, 4, 5]
-    y = [3, 4, 8, 7, 13]
-    n = len(x)
-    xb, yb = sum(x) / n, sum(y) / n
-    sxx = sum((u - xb) ** 2 for u in x)
-    sxy = sum((u - xb) * (v - yb) for u, v in zip(x, y))
-    bb = sxy / sxx
-    aa = yb - bb * xb
-    fit = [aa + bb * u for u in x]
-    e = [v - f_ for v, f_ in zip(y, fit)]
-    i = 4
-    h = 1 / n + (x[i] - xb) ** 2 / sxx
-    dfb = (x[i] - xb) * e[i] / (sxx * (1 - h))
-    out = {"b0": s(b0, 1), "b1": s(b1, 1), "b2": s(b2, 1), "b3": s(b3, 2), "b21": s(b2 - b1, 1),
-           "xb": s(xb, 0), "sxx": s(sxx, 0), "bb": s(bb, 1), "aa": s(aa, 1), "hi": s(h, 1), "omh": s(1 - h, 1),
-           "dxi": s(x[i] - xb, 0), "ei": s(e[i], 1), "dfb": s(dfb, 2), "b_new": r(bb - dfb, 2), "b_new_s": s(bb - dfb, 2),
-           "b_noh": s(bb - (x[i] - xb) * e[i] / sxx, 2), "b_plus": s(bb + dfb, 2)}
-    for j in range(n):
-        out.update({f"x{j}": x[j], f"y{j}": y[j], f"f{j}": s(fit[j], 1), f"e{j}": s(e[j], 1)})
+    out = {"b0": s(b0, 1), "b1": s(b1, 1), "b2": s(b2, 1), "b3": s(b3, 2), "b21": s(b2 - b1, 1)}
     # (c) トービットモデル（検出限界で左側打ち切り）
     mu, sig, L = 2.0, 1.0, 1.0
     Phi1, phi1 = 0.8413, 0.2420  # Φ(1), φ(1)
@@ -304,18 +273,29 @@ def p12():
     out = {"m0": s(m0, 0), "P0": s(P0, 0), "q": s(q, 0), "h": s(h, 0), "y": s(y, 0), "Pp": s(Pp, 0),
            "K": s(K, 3), "res": s(y - m0, 0), "mt": r(mt, 1), "mt_s": s(mt, 1), "Pt": s(Pt, 1),
            "m_noq": s(m0 + K_noq * (y - m0), 1), "m_inv": s(m0 + K_inv * (y - m0), 1), "K_noq": s(K_noq, 4)}
-    # (b) ダービン・ワトソン比
-    e = [1, 2, 1, -1, -2, -1, 1, -1]
-    num = sum((e[i] - e[i - 1]) ** 2 for i in range(1, len(e)))
-    den = sum(v * v for v in e)
-    dw = num / den
-    r1 = sum(e[i] * e[i - 1] for i in range(1, len(e))) / den
-    out.update({"dnum": num, "dden": den, "dw": r(dw, 2), "dw4": s(dw, 4), "rho": s(1 - dw / 2, 2), "r1": s(r1, 3),
-                "dw_n1": s(num / (len(e) - 1) / (den / len(e)), 2)})
-    for i, v in enumerate(e):
-        out[f"e{i}"] = v
-    for i in range(1, len(e)):
-        out[f"g{i}"] = e[i] - e[i - 1]
+    # (b) 1 週を除いたときの傾きの変化（DFBETA）
+    x = [2, 4, 6, 8, 10]
+    y = [40, 36, 30, 28, 14]
+
+    def fit(xs, ys):
+        n = len(xs)
+        xb, yb = sum(xs) / n, sum(ys) / n
+        sxx = sum((u - xb) ** 2 for u in xs)
+        sxy = sum((u - xb) * (v - yb) for u, v in zip(xs, ys))
+        return xb, yb, sxx, sxy, sxy / sxx, yb - sxy / sxx * xb
+    xb, yb, sxx, sxy, bb, aa = fit(x, y)
+    xb4, yb4, sxx4, sxy4, bb4, _ = fit(x[:4], y[:4])
+    i = 4
+    ei = y[i] - (aa + bb * x[i])
+    h = 1 / len(x) + (x[i] - xb) ** 2 / sxx
+    dfb = bb - bb4
+    assert abs(dfb - (x[i] - xb) * ei / (sxx * (1 - h))) < 1e-12
+    out.update({"xb": s(xb, 0), "yb": s(yb, 1), "sxx": s(sxx, 0), "sxy": s(sxy, 0), "bb": s(bb, 1), "aa": s(aa, 1),
+                "xb4": s(xb4, 0), "yb4": s(yb4, 1), "sxx4": s(sxx4, 0), "sxy4": s(sxy4, 0), "bb4": s(bb4, 1),
+                "dfb": r(dfb, 2), "dfb_s": s(dfb, 2), "ei": s(ei, 1), "hi": s(h, 1), "omh": s(1 - h, 1),
+                "dxi": s(x[i] - xb, 0), "dfb_noh": s((x[i] - xb) * ei / sxx, 2), "dfb_rev": s(-dfb, 2)})
+    for j in range(5):
+        out[f"x{j}"], out[f"y{j}"] = x[j], y[j]
     return out
 
 def p13():
@@ -337,7 +317,7 @@ def p13():
     kl = lg + (sp_ ** 2 + (mp - mq) ** 2) / (2 * sq ** 2) - 0.5
     kl_rev = -lg + (sq ** 2 + (mp - mq) ** 2) / (2 * sp_ ** 2) - 0.5
     out.update({"mp": s(mp, 0), "spp": s(sp_, 0), "mq": s(mq, 0), "sq": s(sq, 0), "lg": lg,
-                "sp2": s(sp_ ** 2, 0), "dm2": s((mp - mq) ** 2, 0), "sq2x2": s(2 * sq ** 2, 0), "frac": s((sp_ ** 2 + (mp - mq) ** 2) / (2 * sq ** 2), 4),
+                "spsq": s(sp_ ** 2, 0), "dm2": s((mp - mq) ** 2, 0), "sq2x2": s(2 * sq ** 2, 0), "frac": s((sp_ ** 2 + (mp - mq) ** 2) / (2 * sq ** 2), 4),
                 "kl": s(kl, 3), "kl4": s(kl, 4), "kl_rev": s(kl_rev, 3), "kl_nohalf": s(kl + 0.5, 3),
                 "kl_nolog": s(kl - lg, 3), "kl_sign": s(kl - 2 * lg, 3)})
     # (c) BH 法

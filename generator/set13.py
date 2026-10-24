@@ -151,31 +151,8 @@ def p04c():
 
 
 def p05():
-    """3 地域の処理日数の分散の比較（ルビーン検定）"""
-    G = [[10, 12, 14, 12], [8, 16, 12, 12], [6, 18, 9, 15]]
-    k, n = 3, 4
-    means = [sum(g_) / n for g_ in G]
-    Z = [[abs(v - m_) for v in g_] for g_, m_ in zip(G, means)]
-    zm = [sum(z) / n for z in Z]
-    zb = sum(sum(z) for z in Z) / (k * n)
-    ssb = n * sum((m_ - zb) ** 2 for m_ in zm)
-    ssw = sum(sum((v - m_) ** 2 for v in z) for z, m_ in zip(Z, zm))
-    F = (ssb / (k - 1)) / (ssw / (k * n - k))
-    Z2 = [[(v - m_) ** 2 for v in g_] for g_, m_ in zip(G, means)]
-    z2m = [sum(z) / n for z in Z2]
-    z2b = sum(sum(z) for z in Z2) / (k * n)
-    ssb2 = n * sum((m_ - z2b) ** 2 for m_ in z2m)
-    ssw2 = sum(sum((v - m_) ** 2 for v in z) for z, m_ in zip(Z2, z2m))
-    F2 = (ssb2 / 2) / (ssw2 / 9)
-    d = {"F": s(F, 2), "F4": s(F, 4), "w_nodf": s(ssb / ssw, 2), "w_sq": s(F2, 2), "ssb": s(ssb, 1), "ssw": s(ssw, 1),
-         "msb": s(ssb / 2, 1), "msw": s(ssw / 9, 4), "zb": s(zb, 1), "F209": "4.256", "F211": "3.982"}
-    for i in range(3):
-        d[f"m{i+1}"] = s(means[i], 0)
-        d[f"zm{i+1}"] = s(zm[i], 1)
-        d[f"z{i+1}"] = "、".join(s(v, 0) for v in Z[i])
-        d[f"g{i+1}"] = "、".join(str(v) for v in G[i])
-        d[f"sw{i+1}"] = s(sum((v - zm[i]) ** 2 for v in Z[i]), 0)
-    return d
+    """2 局の処理日数の比較と予備検定"""
+    return {"n1": 8, "n2": 12, "m1": "21.5", "m2": "18.0", "s1": "6.8", "s2": "3.9", "pF": "0.09"}
 
 
 def p06():
@@ -193,23 +170,16 @@ def p06():
 
 
 def p07():
-    """就業・失業・引退のマルコフ連鎖"""
-    pEE, pEU, pER = 0.87, 0.05, 0.08
-    pUE, pUU, pUR = 0.35, 0.50, 0.15
-    # t_U = (1 + pUE t_E)/(1-pUU) = 2 + 0.7 t_E
-    a0 = 1 / (1 - pUU)
-    a1 = pUE / (1 - pUU)
-    # (1 - pEE) t_E = 1 + pEU (a0 + a1 t_E)
-    lhs = (1 - pEE) - pEU * a1
-    rhs = 1 + pEU * a0
-    tE = rhs / lhs
-    tU = a0 + a1 * tE
-    return {
-        "pEE": pEE, "pEU": pEU, "pER": pER, "pUE": pUE, "pUU": pUU, "pUR": pUR,
-        "a0": s(a0, 0), "a1": s(a1, 1), "omEE": s(1 - pEE, 2), "omUU": s(1 - pUU, 2),
-        "pEUa0": s(pEU * a0, 2), "pEUa1": s(pEU * a1, 3), "rhs": s(rhs, 2), "lhs": s(lhs, 3),
-        "tE": r(tE, 2), "tE4": s(tE, 4), "tU": s(tU, 2), "w_geo": s(1 / pER, 2),
-    }
+    """住まいの状態の推移（状態の分類）"""
+    P = [[0.90, 0.04, 0.03, 0.03], [0.10, 0.85, 0.02, 0.03], [0, 0, 0.80, 0.20], [0, 0, 0, 1]]
+    d = {}
+    for i in range(4):
+        for j in range(4):
+            d[f"p{i+1}{j+1}"] = s(P[i][j], 2) if P[i][j] else "0"
+    d["p44"] = "1"
+    d["out12"] = s(P[0][2] + P[0][3], 2)
+    d["out22"] = s(P[1][2] + P[1][3], 2)
+    return d
 
 
 def p08():
@@ -226,7 +196,7 @@ def p08():
         "slope": s(slope, 3), "var": s(var, 5), "se": s(se, 4), "se6": s(se, 6), "tval": s(slope / se, 2),
         "w_nocov": s(sqrt(v1 + v3), 4), "w_plus": s(sqrt(v1 + v3 - 2 * c13), 4), "w_b3": s(sqrt(v3), 4),
         "se1": s(sqrt(v1), 4),
-        "n": n, "pp": s((n - 0.5) / n, 4), "zq": "2.241", "rmax": "3.35", "rmin": "-1.62",
+        "n": n, "hsum": "4.62", "hk": r(5 - 4.62, 2), "hk_s": s(5 - 4.62, 2), "hbar": s(5 / n, 3), "hcut": s(2 * 5 / n, 2),
         **p08c(),
     }
 
@@ -337,7 +307,7 @@ def p12():
     l1, l2, phi = 0.60, 0.30, 0.40
     h2 = l1 ** 2 + l2 ** 2 + 2 * l1 * l2 * phi
     d.update({"l1": s(l1, 2), "l2": s(l2, 2), "phi": s(phi, 2), "l1s": s(l1 ** 2, 2), "l2s": s(l2 ** 2, 2),
-              "cross": s(2 * l1 * l2 * phi, 3), "h2": s(h2, 3), "u2": s(1 - h2, 3), "orth": s(l1 ** 2 + l2 ** 2, 3),
+              "cross": s(2 * l1 * l2 * phi, 3), "h2": s(h2, 3), "h2n": r(h2, 3), "u2": s(1 - h2, 3), "orth": s(l1 ** 2 + l2 ** 2, 3),
               "w_once": s(l1 ** 2 + l2 ** 2 + l1 * l2 * phi, 3), "w_twice": s(l1 ** 2 + l2 ** 2 + 4 * l1 * l2 * phi, 3)})
     return d
 
