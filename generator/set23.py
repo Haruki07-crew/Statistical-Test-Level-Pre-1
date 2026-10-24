@@ -280,9 +280,9 @@ def p11():
         out[f"e{i}"] = s(e, 4)
         out[f"v{i}"] = s(v, 4)
     # (b) ガンマ回帰（対数リンク）
-    b0, b1, b2, x2, phi = 0.50, 0.405, 0.10, 4, 0.16
+    b0, b1, b2, x2, phi = 0.40, 0.405, 0.10, 4, 0.16
     eta = b0 + b1 + b2 * x2
-    e_eta, e_no = 3.687, 2.460     # e^{1.305}, e^{0.900}
+    e_eta, e_no = 3.337, 2.226     # e^{1.205}, e^{0.800}
     mu = e_eta
     out.update({"b0": s(b0, 2), "b1": s(b1, 3), "b2": s(b2, 2), "x2": x2, "phi": s(phi, 2), "eta": s(eta, 3),
                 "e_eta": s(e_eta, 3), "e_no": s(e_no, 3), "eta_no": s(b0 + b2 * x2, 3), "rphi": s(sqrt(phi), 1),

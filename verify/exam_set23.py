@@ -216,18 +216,18 @@ lr = stats.logrank(A, B)
 E.num("s23p11a", rnd(lr.statistic ** 2, 2), f"scipy logrank（z={lr.statistic:.4f}）の 2 乗")
 E.check("s23p11a", lr.pvalue > 0.05, f"p 値 {lr.pvalue:.3f} > 0.05")
 # (b) scipy のガンマ分布（形状 1/φ、尺度 μφ）
-mu = math.exp(0.50 + 0.405 + 0.10 * 4)
+mu = math.exp(0.40 + 0.405 + 0.10 * 4)
 g = stats.gamma(a=1 / 0.16, scale=mu * 0.16)
 E.choice("s23p11b", f"平均 ${f(g.mean(), 2)}$、標準偏差 ${f(g.std(), 2)}$", "scipy gamma の平均と標準偏差")
-E.check("s23p11b", near(math.exp(1.305), 3.687, 5e-4) and near(math.exp(0.9), 2.460, 5e-4), "示した e の値")
+E.check("s23p11b", near(math.exp(1.205), 3.337, 5e-4) and near(math.exp(0.8), 2.226, 5e-4), "示した e の値")
 
 # ---- 大問12
 # (a) 費用一定のもとで分散を最小にする配分を数値最適化し、合計 120 に縮める
 Nh, Sh, ch = np.array([600, 300, 100.]), np.array([2, 3, 8.]), np.array([4, 9, 16.])
 W = Nh / Nh.sum()
-var = lambda nn: np.sum(W ** 2 * Sh ** 2 / nn)
+var = lambda nn: 1e4 * np.sum(W ** 2 * Sh ** 2 / nn)
 cons = {"type": "eq", "fun": lambda nn: np.dot(ch, nn) - 1000}
-sol = optimize.minimize(var, x0=np.array([50, 30, 10.]), constraints=[cons], bounds=[(1, None)] * 3, method="SLSQP")
+sol = optimize.minimize(var, x0=np.array([50, 30, 10.]), constraints=[cons], bounds=[(1, None)] * 3, method="SLSQP", options={"ftol": 1e-14, "maxiter": 1000})
 alloc = sol.x / sol.x.sum() * 120
 E.num("s23p12a", rnd(alloc[2], 0), f"数値最適化の配分 {np.round(alloc, 3)}")
 # (b) ジェフリーズ事前分布 √I(p) を数値積分で正規化して事後平均を計算

@@ -43,16 +43,11 @@ E.num("s22p01a", rnd(float(p), 3), "破損箱の位置の全列挙で最初の�
 sim = rng.permuted(np.tile(np.r_[np.ones(3), np.zeros(17)], (200000, 1)), axis=1)
 first = sim.argmax(axis=1)
 E.check("s22p01a", abs((first == 2).mean() - float(p)) < 0.003, f"シミュレーション {(first == 2).mean():.4f}")
-# (b) scipy の二項分布
-a = stats.binom.sf(1, 20, 0.05)
-b = stats.binom.cdf(1, 20, 0.20)
-E.choice("s22p01b", f"\\alpha={f(a, 3)}$、$\\beta={f(b, 3)}", "scipy binom の α・β")
-E.check("s22p01b", near(0.95 ** 19, 0.3774, 5e-5) and near(0.8 ** 19, 0.01441, 5e-6), "示した 0.95^19, 0.8^19")
 # (c) 半幅条件を満たす最小の n を総当たり
 z = stats.norm.ppf(0.975)
 n = next(k for k in range(1, 5000) if 1.96 * math.sqrt(0.15 * 0.85 / k) <= 0.03)
-E.num("s22p01c", n, "半幅 ≤ 0.03 となる最小の n を総当たり")
-E.check("s22p01c", abs(z - 1.96) < 0.001, f"z_0.025={z:.4f}")
+E.num("s22p01b", n, "半幅 ≤ 0.03 となる最小の n を総当たり")
+E.check("s22p01b", abs(z - 1.96) < 0.001, f"z_0.025={z:.4f}")
 
 # ---- 大問2
 pa = stats.poisson.sf(5, 3.0)
@@ -99,11 +94,6 @@ uu = rng.uniform(0, a6, 400000)
 E.check("s22p04b", abs(np.mean(uu * fpdf(uu) / gpdf(uu)) - 4.0) < 0.02, "多数の提案値で不偏性を確認")
 
 # ---- 大問5
-pT = stats.lognorm(s=0.5, scale=math.exp(1.6)).sf(15)
-E.choice("s22p05a", f"${f(1 - stats.norm.cdf(2.22), 3)}$", "Φ(2.22) から")
-E.check("s22p05a", abs(pT - 0.013) < 0.0012, f"scipy lognorm.sf(15)={pT:.4f}（丸めなし）")
-E.check("s22p05a", abs(math.log(15) - 2.708) < 5e-4 and abs(math.log10(15) - 1.176) < 5e-4
-        and abs(stats.norm.cdf(2.22) - 0.9868) < 5e-5 and abs(stats.norm.cdf(0.85) - 0.8023) < 5e-5, "示した対数と Φ")
 # (b) 遷移率行列の定常分布を数値的に解く
 lam, mu = 20.0, 10.0
 Q = np.zeros((4, 4))
@@ -115,7 +105,7 @@ for i in range(4):
     Q[i, i] = -Q[i].sum()
 A = np.vstack([Q.T, np.ones(4)])
 pi = np.linalg.lstsq(A, np.r_[np.zeros(4), 1], rcond=None)[0]
-E.num("s22p05b", rnd(lam * (1 - pi[3]), 2), "生成行列から定常分布を解いて λ(1−π3)")
+E.num("s22p05a", rnd(lam * (1 - pi[3]), 2), "生成行列から定常分布を解いて λ(1−π3)")
 # 離散事象シミュレーション
 t, busy, acc, arr = 0.0, [], 0, 0
 T_END = 20000.0
@@ -127,17 +117,33 @@ while nxt < T_END:
         busy.append(nxt + rng.exponential(1 / mu))
         acc += 1
     nxt += rng.exponential(1 / lam)
-E.check("s22p05b", abs(acc / T_END - lam * (1 - pi[3])) < 0.15, f"シミュレーションの受付率 {acc / T_END:.3f}/時")
-# (c) シミュレーションで V[√N]
+E.check("s22p05a", abs(acc / T_END - lam * (1 - pi[3])) < 0.15, f"シミュレーションの受付率 {acc / T_END:.3f}/時")
 Nn = rng.poisson(20, 1000000)
-E.choice("s22p05c", "$0.250$", "デルタ法の値")
-E.check("s22p05c", abs(np.sqrt(Nn).var() - 0.25) < 0.02, f"シミュレーションの V[√N]={np.sqrt(Nn).var():.4f}")
+E.choice("s22p02c", "$0.250$", "デルタ法の値")
+E.check("s22p02c", abs(np.sqrt(Nn).var() - 0.25) < 0.02, f"シミュレーションの V[√N]={np.sqrt(Nn).var():.4f}")
+# (b) フィッシャーの方法
+pv = np.array([0.08, 0.12, 0.06])
+X = -2 * np.log(pv).sum()
+E.check("s22p05b", all(abs(math.log(p_) - q_) < 5e-5 for p_, q_ in zip(pv, [-2.5257, -2.1203, -2.8134])), "示した対数")
+E.check("s22p05b", abs(stats.chi2.ppf(0.95, 6) - 12.59) < 0.005 and abs(stats.chi2.ppf(0.95, 3) - 7.81) < 0.005, "χ² の点")
+E.check("s22p05b", stats.combine_pvalues(pv, method="fisher").pvalue < 0.05, f"scipy combine_pvalues p={stats.combine_pvalues(pv, method='fisher').pvalue:.4f}")
+E.choice("s22p05b", f"$X={f(X, 2)}$が$\\chi^2_{{0.05}}(6)", "−2Σlog p")
+U = rng.uniform(size=(200000, 3))
+E.check("s22p05b", abs((-2 * np.log(U).sum(1) > 12.59).mean() - 0.05) < 0.003, "帰無仮説のもとのシミュレーションで棄却率 5%")
 
 # ---- 大問6
-A6 = np.array([18, 22, 26, 30, 41])
-B6 = np.array([24, 33, 36, 44, 48])
-ks = stats.ks_2samp(A6, B6).statistic
-E.choice("s22p06a", f"${f(ks, 1)}$", "scipy ks_2samp の統計量")
+TA = np.array([1, 2, 2, 3]); TB = np.array([2, 3, 4, 4, 5])
+rk = stats.rankdata(np.r_[TA, TB])
+Wt = rk[:4].sum()
+_, cnts = np.unique(np.r_[TA, TB], return_counts=True)
+Vt = 4 * 5 / 12 * (10 - np.sum(cnts ** 3 - cnts) / (9 * 8))
+E.choice("s22p06a", f"${f((Wt - 20) / math.sqrt(Vt), 2)}$", "scipy rankdata の中間順位と補正分散")
+# 全並べ替え（同順位あり）による W の分散と一致することを確かめる
+allv = np.r_[TA, TB]
+Ws = [rk[list(c)].sum() for c in combinations(range(9), 4)]
+E.check("s22p06a", abs(np.var(Ws) - Vt) < 1e-9, f"全 126 通りの並べ替えでの W の分散 {np.var(Ws):.4f}")
+z_mw = stats.mannwhitneyu(TA, TB, alternative="two-sided", method="asymptotic", use_continuity=False)
+E.check("s22p06a", abs(stats.norm.ppf(z_mw.pvalue / 2) - (Wt - 20) / math.sqrt(Vt)) < 1e-6, "scipy mannwhitneyu（補正つき正規近似）の p 値と一致")
 # (b) 非心 t 分布の正規近似。示した t・Φ の値を scipy で確認し、近似値を計算
 E.check("s22p06b", abs(stats.t.ppf(0.95, 15) - 1.753) < 5e-4 and abs(stats.t.ppf(0.975, 15) - 2.131) < 5e-4, "t の点")
 E.check("s22p06b", all(abs(stats.norm.cdf(z) - v) < 5e-5 for z, v in [(0.37, 0.6443), (0.75, 0.7734), (0.86, 0.8051), (1.13, 0.8708)]), "Φ の値")
@@ -178,13 +184,16 @@ mu8 = np.exp(X @ beta + off)
 E.check("s22p08a", np.allclose(mu8, [10, 10, 16, 14], atol=1e-6), f"当てはめ値 {np.round(mu8, 4)}")
 Dv = 2 * np.sum(y * np.log(y / mu8) - (y - mu8))
 E.choice("s22p08a", f"$D={f(Dv, 2)}$で、自由度2の5%点5.99を下回り", "当てはめ直した逸脱度")
-tab = np.array([[10, 190], [30, 170]])
-xs = np.r_[np.ones(200), np.zeros(200)]
-ys = np.r_[np.ones(10), np.zeros(190), np.ones(30), np.zeros(170)]
-phi = np.corrcoef(xs, ys)[0, 1]
-E.num("s22p08b", rnd(phi, 3), "0/1 データの相関係数")
-chi = stats.chi2_contingency(tab, correction=False)[0]
-E.check("s22p08b", abs(chi - 400 * phi ** 2) < 1e-9, f"χ²={chi:.3f} = nφ²")
+T8 = np.array([[30, 5, 1], [20, 8, 3], [10, 6, 5]])
+xs8, ys8 = [], []
+for i in range(3):
+    for j in range(3):
+        xs8 += [i] * T8[i, j]; ys8 += [j] * T8[i, j]
+xs8, ys8 = np.array(xs8), np.array(ys8)
+dx = np.sign(xs8[:, None] - xs8[None, :]); dy = np.sign(ys8[:, None] - ys8[None, :])
+Cc = np.sum((dx * dy) > 0) / 2; Dd = np.sum((dx * dy) < 0) / 2
+E.num("s22p08b", rnd((Cc - Dd) / (Cc + Dd), 3), "全ての対を総当たりで比べた γ")
+E.check("s22p08b", Cc == 960 and Dd == 322, f"C={Cc}, D={Dd}")
 
 # ---- 大問9
 cnt = {}
@@ -245,24 +254,27 @@ xx = 50 + eps[1:] + 0.6 * eps[:-1]
 E.check("s22p12a", abs(np.corrcoef(xx[2:], xx[:-2])[0, 1]) < 0.01 and abs(np.corrcoef(xx[1:], xx[:-1])[0, 1] - 0.6 / 1.36) < 0.01,
         "シミュレーションで ρ1=θ/(1+θ²)・ρ2=0")
 
-# ---- 大問13：8 処理の対比表を作り、各分け方でどの効果が日と交絡するかを全探索
-import itertools  # noqa: E402
-runs = list(itertools.product([-1, 1], repeat=3))
-name = lambda r_: "".join(c for c, v in zip("abc", r_) if v > 0) or "(1)"
-effects = {"A": (0,), "B": (1,), "C": (2,), "AB": (0, 1), "AC": (0, 2), "BC": (1, 2), "ABC": (0, 1, 2)}
-def confounded(day2):
-    out = []
-    for k_, idx in effects.items():
-        col = [np.prod([r_[i] for i in idx]) for r_ in runs]
-        blk = [1 if name(r_) in day2 else -1 for r_ in runs]
-        if abs(np.dot(col, blk)) == 8:
-            out.append(k_)
-    return out
-it = E.item("s22p13a")
-ok = []
-for i, c in enumerate(it["choices"]):
-    day2 = set(x.strip() for x in c.split("2 日目 {")[1].rstrip("}").split(","))
-    ok.append(confounded(day2))
-E.check("s22p13a", ok[it["answer"]] == ["ABC"] and all(o != ["ABC"] for i, o in enumerate(ok) if i != it["answer"]), f"交絡する効果 {ok}")
+# ---- 大問13：平均と誤差分散が問題文どおりになるデータを作り、回帰（1次・2次）で平方和を分解する
+m13 = np.array([20.0, 24.0, 30.0])
+lev = np.repeat([20, 30, 40], 5)
+ybar = np.repeat(m13, 5)
+xlin = (lev - 30) / 10.0
+Xl = np.c_[np.ones(15), xlin]
+fit = Xl @ np.linalg.lstsq(Xl, ybar, rcond=None)[0]
+ss_lin = np.sum((fit - ybar.mean()) ** 2)
+E.choice("s22p13a", f"平方和${f(ss_lin, 1)}$、$F={f(ss_lin / 8.0, 2)}$", "1 次回帰の回帰平方和")
+E.check("s22p13a", abs(stats.f.ppf(0.95, 1, 12) - 4.75) < 0.005, "F_0.05(1,12)=4.75")
+
+# ---- 大問14
+Sig = np.array([[100, 40, 30], [40, 64, 24], [30, 24, 36.0]])
+E.check("s22p14a", np.all(np.linalg.eigvalsh(Sig) > 0), "Σ が正定値")
+A = np.array([[1, 1, 0], [0, 0, 1.0]])
+mS = A @ np.array([100, 80, 60.0]); SS = A @ Sig @ A.T
+cm = mS[0] + SS[0, 1] / SS[1, 1] * (72 - mS[1]); cv = SS[0, 0] - SS[0, 1] ** 2 / SS[1, 1]
+E.choice("s22p14a", f"${f(1 - stats.norm.cdf(round((210 - cm) / math.sqrt(cv), 2)), 3)}$", "行列で条件付き分布を求め scipy の Φ")
+E.check("s22p14a", all(abs(stats.norm.cdf(z_) - v_) < 5e-5 for z_, v_ in [(0.77, 0.7794), (0.94, 0.8264), (1.32, 0.9066), (1.92, 0.9726)]), "Φ の値")
+Z = rng.multivariate_normal([100, 80, 60], Sig, 2000000)
+sel = np.abs(Z[:, 2] - 72) < 0.5
+E.check("s22p14a", abs(((Z[sel, 0] + Z[sel, 1]) > 210).mean() - 0.174) < 0.01, f"シミュレーション {((Z[sel, 0] + Z[sel, 1]) > 210).mean():.3f}")
 
 E.done()
