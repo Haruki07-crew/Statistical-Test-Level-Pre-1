@@ -26,7 +26,6 @@ def m(x, d):
     return s(x, d)
 
 
-# ---------------------------------------------------------------- 大問1 限界希釈法
 def p01():
     W, W0 = 96, 58
     W1 = W - W0
@@ -63,7 +62,6 @@ def p01():
     }
 
 
-# ---------------------------------------------------------------- 大問2 天秤の測定誤差
 def p02():
     # (a) 丸め誤差の和
     mm, h, thr = 48, 0.1, 0.1
@@ -109,7 +107,6 @@ def p02():
     }
 
 
-# ---------------------------------------------------------------- 大問3 製剤の安定性試験
 def p03():
     lam, c = 0.1, 24
     lc = lam * c
@@ -130,7 +127,6 @@ def p03():
     }
 
 
-# ---------------------------------------------------------------- 大問4 ラベルの貼り直し
 def p04():
     k = 4
     terms = [(-1) ** j / math.factorial(j) for j in range(k + 1)]
@@ -145,126 +141,6 @@ def p04():
     }
 
 
-# ---------------------------------------------------------------- 大問5 2種類の培地の汚染率
-def p05():
-    nA, xA, nB, xB = 200, 18, 250, 10
-    pA, pB = xA / nA, xB / nB
-    pp = (xA + xB) / (nA + nB)
-    se = sqrt(pp * (1 - pp) * (1 / nA + 1 / nB))
-    z = (pA - pB) / se
-    se_u = sqrt(pA * (1 - pA) / nA + pB * (1 - pB) / nB)
-    # (b) ウルフの区間
-    a, b, c, d = xA, nA - xA, xB, nB - xB
-    orr = a * d / (b * c)
-    lor = r(math.log(orr), 4)
-    v = 1 / a + 1 / b + 1 / c + 1 / d
-    se_l = r(sqrt(v), 4)
-    lo, hi = lor - 1.96 * se_l, lor + 1.96 * se_l
-    lo90, hi90 = lor - 1.645 * se_l, lor + 1.645 * se_l
-    se_ac = r(sqrt(1 / a + 1 / c), 4)
-    loac, hiac = lor - 1.96 * se_ac, lor + 1.96 * se_ac
-    etab = {0.068: 1.0704, 0.091: 1.0953, 0.196: 1.2165, 1.533: 4.6321, 1.637: 5.1397, 1.661: 5.2646}
-    for x in (lo, hi, lo90, hi90, loac, hiac):
-        assert r(x, 3) in etab, x
-    E = lambda x: etab[r(x, 3)]
-    raw_lo, raw_hi = orr - 1.96 * se_l, orr + 1.96 * se_l
-    # (c) ガンマ・ポアソンの事後予測確率
-    al, be, days, ysum = 2, 4, 5, 3
-    ap, bp = al + ysum, be + days
-    pred0 = (bp / (bp + 1)) ** ap
-    e0556, e06 = 0.5735, 0.5488
-    assert abs(math.exp(-0.556) - e0556) < 1e-4 and r(ap / bp, 3) == 0.556 and abs(math.exp(-ysum / days) - e06) < 1e-4
-    return {
-        "nA": nA, "xA": xA, "nB": nB, "xB": xB, "pA": s(pA, 2), "pB": s(pB, 2), "diff": s(pA - pB, 2),
-        "xs": xA + xB, "ns": nA + nB, "pp": s(pp, 5), "qq": s(1 - pp, 5), "inv": s(1 / nA + 1 / nB, 3),
-        "se": s(se, 5), "z": r(z, 2), "z_s": s(z, 2), "z4": s(z, 4), "z_u": s((pA - pB) / se_u, 2), "se_u": s(se_u, 5),
-        "a": a, "b": b, "c": c, "d": d, "or": s(orr, 3), "lor": s(lor, 4), "v": s(v, 4), "se_l": s(se_l, 4),
-        "ia": s(1 / a, 5), "ib": s(1 / b, 5), "ic": s(1 / c, 5), "id": s(1 / d, 5), "v5": s(v, 5),
-        "half": s(1.96 * se_l, 4), "se_ac": s(se_ac, 4), "lo": s(lo, 4), "hi": s(hi, 4),
-        "e068": s(etab[0.068], 4), "e091": s(etab[0.091], 4), "e196": s(etab[0.196], 4),
-        "e1533": s(etab[1.533], 4), "e1637": s(etab[1.637], 4), "e1661": s(etab[1.661], 4),
-        "ci_lo": s(E(lo), 3), "ci_hi": s(E(hi), 3),
-        "c90_lo": s(E(lo90), 3), "c90_hi": s(E(hi90), 3),
-        "cac_lo": s(E(loac), 3), "cac_hi": s(E(hiac), 3),
-        "nx_lo": s(lo, 3), "nx_hi": s(hi, 3), "raw_lo": s(raw_lo, 3), "raw_hi": s(raw_hi, 3),
-        "al": al, "be": be, "pmean0": s(al / be, 1), "days": days, "ysum": ysum, "ap": ap, "bp": bp, "bp1": bp + 1,
-        "pmean": s(ap / bp, 4), "pratio": s(bp / (bp + 1), 1), "pred": s(pred0, 3), "pred5": s(pred0, 5),
-        "e0556": s(e0556, 4), "e06": s(e06, 4), "w_plug": s(e0556, 3), "w_mle": s(e06, 3),
-        "w_prior": s((be / (be + 1)) ** al, 3), "w_noup": s((be / (be + 1)) ** ap, 3),
-    }
-
-
-# ---------------------------------------------------------------- 大問6 2ロットの含量
-def p06():
-    n1, m1, s1 = 8, 99.6, 1.2
-    n2, m2, s2 = 10, 98.4, 1.0
-    df = n1 + n2 - 2
-    sp2 = ((n1 - 1) * s1 ** 2 + (n2 - 1) * s2 ** 2) / df
-    inv = 1 / n1 + 1 / n2
-    se = sqrt(sp2 * inv)
-    t16, t18, z = 2.120, 2.101, 1.960
-    lo = (m1 - m2) - t16 * se
-    return {
-        "n1": n1, "m1": m1, "s1": s1, "n2": n2, "m2": m2, "s2": s2, "df": df, "df2": n1 + n2,
-        "ss1": s((n1 - 1) * s1 ** 2, 2), "ss2": s((n2 - 1) * s2 ** 2, 2), "sp2": s(sp2, 4), "inv": s(inv, 3),
-        "se": s(se, 4), "diff": s(m1 - m2, 1), "t16": s(t16, 3), "t18": s(t18, 3), "z": s(z, 3),
-        "half": s(t16 * r(se, 4), 4), "lo": r(lo, 3), "lo4": s((m1 - m2) - r(t16 * r(se, 4), 4), 4),
-        "hi": s((m1 - m2) + t16 * se, 3),
-        "w18": s((m1 - m2) - t18 * se, 3), "wz": s((m1 - m2) - z * se, 3),
-    }
-
-
-# ---------------------------------------------------------------- 大問7 分注機の作動遅延
-def p07():
-    th0, th1, n, alpha = 2.0, 2.5, 5, 0.05
-    root = 0.98979                         # 0.95^{1/5}
-    cc = th0 * root
-    ratio = th0 / th1
-    pw = 1 - (1 - alpha) * ratio ** n
-    return {
-        "th0": s(th0, 1), "th1": s(th1, 1), "n": n, "root": s(root, 5), "cc": s(cc, 4),
-        "ratio": s(ratio, 1), "rpow": s(ratio ** n, 5), "beta": s((1 - alpha) * ratio ** n, 4),
-        "pw": s(pw, 3), "pw4": s(pw, 4),
-        "w_beta": s((1 - alpha) * ratio ** n, 3), "w_noa": s(1 - ratio ** n, 3),
-        "w_one": s(1 - cc / th1, 3), "w_noroot": s(1 - (th0 * (1 - alpha) / th1) ** n, 3),
-        "c_noroot": s(th0 * (1 - alpha), 2),
-    }
-
-
-# ---------------------------------------------------------------- 大問8 インキュベーターの運用
-def p08():
-    up = [0.5, 0.4, 0.3]                   # k→k+1（k=0,1,2）
-    dn = [0.2, 0.3, 0.6]                   # k→k-1（k=1,2,3）
-    w = [1.0]
-    for k in range(3):
-        w.append(w[-1] * up[k] / dn[k])
-    tot = sum(w)
-    pi = [x / tot for x in w]
-    wr = [1.0]
-    for k in range(3):
-        wr.append(wr[-1] * dn[k] / up[k])
-    pr = wr[3] / sum(wr)
-    mean_use = sum(k * pi[k] for k in range(4))
-    stay = [1 - up[0], 1 - up[1] - dn[0], 1 - up[2] - dn[1], 1 - dn[2]]
-    # 整数比 6:15:20:10
-    ints = [round(x * 6) for x in w]
-    assert all(abs(x * 6 - i) < 1e-9 for x, i in zip(w, ints))
-    # (b) DF 検定
-    g, se = -0.12, 0.045
-    tau = g / se
-    return {
-        "u0": up[0], "u1": up[1], "u2": up[2], "d1": dn[0], "d2": dn[1], "d3": dn[2],
-        "s0": s(stay[0], 1), "s1": s(stay[1], 1), "s2": s(stay[2], 1), "s3": s(stay[3], 1),
-        "w1": s(w[1], 1), "w2": s(w[2], 4), "w3": s(w[3], 4), "i0": ints[0], "i1": ints[1], "i2": ints[2], "i3": ints[3],
-        "isum": sum(ints), "ans": s(pi[3], 3), "ans4": s(pi[3], 4),
-        "w_unif": s(0.25, 3), "w_rev": s(pr, 3), "w_two": s(pi[2], 3), "w_rate": s(mean_use / 3, 3),
-        "mean_use": s(mean_use, 3),
-        "g": s(g, 2), "se": s(se, 3), "tau": s(tau, 2), "rho": s(1 + g, 2), "wrong_t": s((1 + g) / se, 2),
-        "dfc": "-2.89", "tc": "-1.661", "tc2": "1.985",
-    }
-
-
-# ---------------------------------------------------------------- 大問9 HPLC の検量線
 def p09():
     n = 12
     rss = {1: 0.0480, 2: 0.0210, 3: 0.0190}
@@ -301,86 +177,6 @@ def p09():
     }
 
 
-# ---------------------------------------------------------------- 大問10 酵素活性と温度
-def p10():
-    b0, b1, b2, knot, t = 2.0, 0.30, -0.75, 37, 41
-    pred = b0 + b1 * t + b2 * max(t - knot, 0)
-    return {
-        "b0": s(b0, 1), "b1": s(b1, 2), "b2": s(b2, 2), "knot": knot, "t": t, "dt": t - knot,
-        "lin": s(b1 * t, 2), "hinge": s(b2 * (t - knot), 2),
-        "pred": s(pred, 2), "slope": s(b1 + b2, 2),
-        "w_nohinge": s(b0 + b1 * t, 2), "w_full": s(b0 + b1 * t + b2 * t, 2),
-    }
-
-
-# ---------------------------------------------------------------- 大問11 培養条件の実験
-def p11():
-    days, a, b = 4, 3, 2
-    total = days * a * b - 1
-    df_blk, df_a = days - 1, a - 1
-    df_e1 = (days - 1) * (a - 1)
-    df_b, df_ab = b - 1, (a - 1) * (b - 1)
-    df_e2 = a * days * (b - 1) - df_b - df_ab
-    assert df_e2 == total - df_blk - df_a - df_e1 - df_b - df_ab
-    df_pool = df_e1 + df_e2
-    df_rep = a * b * (days - 1)                     # 日を無視した繰り返しのある二元配置
-    # (b) 逸脱度残差
-    y, mu, ln16 = 12, 7.5, 0.4700
-    assert abs(math.log(y / mu) - ln16) < 1e-4
-    dev = 2 * (y * ln16 - (y - mu))
-    dres = sqrt(dev)
-    pear = (y - mu) / sqrt(mu)
-    return {
-        "days": days, "a": a, "b": b, "total": total, "dfb": df_blk, "dfa": df_a, "dfe1": df_e1,
-        "dfB": df_b, "dfab": df_ab, "dfe2": df_e2, "dfpool": df_pool, "dfrep": df_rep, "N": days * a * b,
-        "ainc": a * days,
-        "y": y, "mu": s(mu, 1), "ln16": s(ln16, 4), "ylog": s(y * ln16, 2), "ymu": s(y - mu, 1),
-        "devi": s(dev, 2), "dres": r(dres, 2), "dres4": s(dres, 4), "pear": s(pear, 2),
-        "w_noterm": s(sqrt(2 * y * ln16), 2), "w_no2": s(sqrt(dev / 2), 2), "ratio": s(y / mu, 1),
-    }
-
-
-# ---------------------------------------------------------------- 大問12 安全意識調査
-def p12():
-    N, nR, yR, nF, yF = 400, 240, 72.0, 20, 60.0
-    nNR = N - nR
-    wgt = nNR / nF
-    est = (nR * yR + nF * wgt * yF) / N
-    bias = yR - est
-    return {
-        "N": N, "nR": nR, "yR": s(yR, 1), "nNR": nNR, "nF": nF, "yF": s(yF, 1), "wgt": s(wgt, 0),
-        "rr": s(nR / N, 1), "nr": s(nNR / N, 1), "est": s(est, 1), "bias": r(bias, 1), "bias_s": s(bias, 1),
-        "gap": s(yR - yF, 1), "sumR": s(nR * yR, 0), "sumF": s(nF * wgt * yF, 0),
-        "w_half": s(yR - (yR + yF) / 2, 1), "w_full": s(yR - yF, 1),
-    }
-
-
-# ---------------------------------------------------------------- 大問13 微生物株のクラスタリング
-def p13():
-    n, T = 30, 300.0
-    W = {2: 150.0, 3: 90.0, 4: 75.0, 5: 66.0}
-    ch = {k: ((T - w) / (k - 1)) / (w / (n - k)) for k, w in W.items()}
-    best = max(ch, key=ch.get)
-    assert best == 3
-    ch_n = {k: ((T - w) / (k - 1)) / (w / n) for k, w in W.items()}
-    ch_k = {k: ((T - w) / k) / (w / (n - k)) for k, w in W.items()}
-    bw = {k: (T - w) / w for k, w in W.items()}
-    assert max(ch_n, key=ch_n.get) == 3 and max(ch_k, key=ch_k.get) == 3 and max(bw, key=bw.get) == 5
-    out = {"n": n, "T": s(T, 0), "best": best}
-    for k, w in W.items():
-        out[f"W{k}"] = s(w, 0)
-        out[f"B{k}"] = s(T - w, 0)
-        out[f"bm{k}"] = s((T - w) / (k - 1), 2)
-        out[f"wm{k}"] = s(w / (n - k), 4)
-        out[f"ch{k}"] = s(ch[k], 2)
-        out[f"chr{k}"] = s(ch[k], 1)
-        out[f"nk{k}"] = n - k
-        out[f"bw{k}"] = s(bw[k], 2)
-    out.update({"w_n": s(ch_n[3], 1), "w_k": s(ch_k[3], 1), "w_bw": s(bw[5], 2)})
-    return out
-
-
-# ---------------------------------------------------------------- 大問14 錠剤の品質特性
 def p14():
     r12, r13, r23 = 0.6, 0.5, 0.3
     num = r12 ** 2 + r13 ** 2 - 2 * r12 * r13 * r23
@@ -409,12 +205,173 @@ def p14():
     }
 
 
+# ---- 2026-10-24 夕方：公開済みのセットと同じ型だった 16 問を作り直した分
+def n02b():
+    v1, v2 = 40, 60
+    hm = 2 / (1 / v1 + 1 / v2)
+    return {"v1": v1, "v2": v2, "inv1": s(1 / v1, 4), "inv2": s(1 / v2, 4), "hm": s(hm, 1), "hm4": s(hm, 4), "am": s((v1 + v2) / 2, 1),
+            "gm": s(sqrt(v1 * v2), 1), "w_inv": s((60 / v1 + 60 / v2) / 2, 2), "w_sum": s(v1 + v2, 1)}
+
+
+def n02c():
+    n, r_, r0 = 28, 0.80, 0.90
+    z1, z0 = 1.0986, 1.4722
+    d = z1 - z0
+    zs = d * sqrt(n - 3)
+    assert zs < -1.645 and zs > -1.96
+    return {"n": n, "r": s(r_, 2), "r0": s(r0, 2), "z1": s(z1, 4), "z0": s(z0, 4), "nm3": n - 3, "rt": s(sqrt(n - 3), 0), "d": s(d, 4),
+            "zstat": s(zs, 2), "zstat4": s(zs, 4), "w_n": s(d * sqrt(n), 2), "w_wald": s((r_ - r0) / ((1 - r0 ** 2) / sqrt(n)), 2)}
+
+
+def n03b():
+    ln10 = 2.3026
+    ey = 9 / ln10
+    return {"ey": s(ey, 2), "ey4": s(ey, 4), "g": s(3.1623, 2), "w_mid": "5.50", "w_ln": "9.00"}
+
+
+def p05():
+    a, b, c, d = 18, 42, 8, 52
+    r1, r2, c1, c2 = a + b, c + d, a + c, b + d
+    n = r1 + r2
+    O = [[a, b], [c, d]]; E = [[r1 * c1 / n, r1 * c2 / n], [r2 * c1 / n, r2 * c2 / n]]
+    lg = [[r(math.log(O[i][j] / E[i][j]), 4) for j in range(2)] for i in range(2)]
+    G = 2 * sum(O[i][j] * lg[i][j] for i in range(2) for j in range(2))
+    X = sum((O[i][j] - E[i][j]) ** 2 / E[i][j] for i in range(2) for j in range(2))
+    assert G > 3.841
+    num = a * d - b * c; den = sqrt(r1 * r2 * c1 * c2); phi = num / den
+    out = {"a": a, "b": b, "c": c, "d": d, "r1": r1, "r2": r2, "c1": c1, "c2": c2, "n": n,
+           "e11": s(E[0][0], 0), "e12": s(E[0][1], 0), "e21": s(E[1][0], 0), "e22": s(E[1][1], 0),
+           "l11": s(lg[0][0], 4), "l12": s(lg[0][1], 4), "l21": s(lg[1][0], 4), "l22": s(lg[1][1], 4),
+           "G": s(G, 2), "G4": s(G, 4), "w_half": s(G / 2, 2), "w_abs": s(2 * sum(abs(O[i][j] * lg[i][j]) for i in range(2) for j in range(2)), 2), "X": s(X, 2),
+           "num": num, "den": s(den, 1), "phi": s(phi, 3), "phi4": s(phi, 4), "nphi2": s(n * phi * phi, 2), "nphi24": s(n * phi * phi, 4),
+           "w_phi2": s(phi * phi, 3), "w_G": s(G, 2), "w_or": s(a * d / (b * c), 3), "w_neg": s(-phi, 3)}
+    # (c) ベータ・二項
+    al, be, nn, k = 2, 8, 20, 3
+    A, B = al + k, be + nn - k
+    out.update({"al": al, "be": be, "nn": nn, "k": k, "A": A, "B": B, "pm": s(A / (A + B), 3), "pm4": s(A / (A + B), 4),
+                "map": s((A - 1) / (A + B - 2), 3), "map4": s((A - 1) / (A + B - 2), 4), "mle": s(k / nn, 3), "prior": s(al / (al + be), 3),
+                "w_add": s((al + k) / (al + k + be + nn), 3)})
+    assert len({out["pm"], out["map"], out["mle"], out["prior"], out["w_add"]}) == 5
+    return out
+
+
+def p06():
+    lm, ls, n = 4.605, 0.10, 9
+    t8, t9 = 2.306, 2.262
+    se = ls / sqrt(n)
+    hw = t8 * se
+    hwz = 1.96 * se
+    em, ep, emz, epz = 0.9260, 1.0799, 0.9368, 1.0675
+    assert abs(math.exp(-r(hw, 4)) - em) < 5e-5 and abs(math.exp(r(hw, 4)) - ep) < 5e-5
+    assert abs(math.exp(-r(hwz, 4)) - emz) < 5e-5 and abs(math.exp(r(hwz, 4)) - epz) < 5e-5
+    return {"lm": s(lm, 3), "ls": s(ls, 2), "t8": t8, "t9": t9, "se": s(se, 4), "hw": s(hw, 4), "hw3": s(hw, 4), "hwz": s(hwz, 4),
+            "em": s(em, 4), "ep": s(ep, 4), "emz": s(emz, 4), "epz": s(epz, 4),
+            "lo": s(100 * em, 1), "hi": s(100 * ep, 1), "w_s_lo": s(100 - 100 * hw, 1), "w_s_hi": s(100 + 100 * hw, 1),
+            "w_z_lo": s(100 * emz, 1), "w_z_hi": s(100 * epz, 1)}
+
+
+def p07():
+    n, l0, l1 = 3, 2, 4
+    from math import exp, factorial
+    sf = lambda m_, t: 1 - sum(exp(-m_) * m_ ** k / factorial(k) for k in range(t))
+    out = {"n": n, "l0": l0, "l1": l1}
+    for t in (9, 10, 11, 12):
+        out[f"p0_{t}"] = s(sf(n * l0, t), 4); out[f"p1_{t}"] = s(sf(n * l1, t), 4)
+    c = next(t for t in range(1, 40) if sf(n * l0, t) <= 0.05)
+    assert c == 11
+    out.update({"pow": s(sf(n * l1, c), 3), "w10": s(sf(n * l1, 10), 3), "w12": s(sf(n * l1, 12), 3),
+                "size": s(sf(n * l0, c), 3), "beta": s(1 - sf(n * l1, c), 3)})
+    return out
+
+
+def p08():
+    a, b = 0.6, 0.2
+    p0 = b / (a + b)
+    out = {"a": s(a, 1), "b": s(b, 1), "q": s(1 - a, 1), "p0": s(p0, 2), "rec": s(1 / p0, 2), "soj": s(1 / b, 2),
+           "w_rec1": s((a + b) / a, 2), "w_soj": s(1 / a, 2), "w_cyc": s(1 / a + 1 / b, 2), "w_soj2": s(1 / (1 - b), 2)}
+    assert abs((1 - a) * 1 + a * (1 + 1 / b) - 1 / p0) < 1e-12
+    phi, se = 0.8, 0.3
+    var = se * se / (1 - phi * phi)
+    out.update({"phi": s(phi, 1), "se": s(se, 2), "se2": s(se * se, 2), "om": s(1 - phi * phi, 2), "var": s(var, 2), "sd": s(sqrt(var), 2),
+                "w_sd": s(se / sqrt(1 - phi), 2), **{f"r{k}": s(phi ** k, 4) for k in range(1, 5)}})
+    assert phi ** 3 > 0.5 > phi ** 4
+    return out
+
+
+def n09a():
+    h6, h12 = 0.090, 0.262        # 濃度 2〜12 を 2 回ずつ測った計画で、1/12+(x−7)²/140 を丸めた値
+    assert abs(1 / 12 + 1 / 140 - h6) < 5e-4 and abs(1 / 12 + 25 / 140 - h12) < 5e-4
+    pts = {"A": (2.5, h6), "B": (1.6, h12), "C": (0.5, h12)}
+    D = {k: rr * rr / 2 * h / (1 - h) for k, (rr, h) in pts.items()}
+    assert max(D, key=D.get) == "B"
+    out = {}
+    for k, (rr, h) in pts.items():
+        out["r" + k] = s(rr, 1); out["h" + k] = s(h, 3); out["d" + k] = s(D[k], 2); out["d" + k + "4"] = s(D[k], 4)
+    out.update({"w_A": s(D["A"] * 2, 2), "w_B": s(D["B"] * 2, 2)})
+    return out
+
+
+def p10():
+    return {}
+
+
+def p11():
+    n = [4, 6, 5]; m_ = [12.0, 15.0, 13.0]; mse = 4.0
+    N = sum(n); gm = sum(a * b for a, b in zip(n, m_)) / N
+    ssb = sum(a * (b - gm) ** 2 for a, b in zip(n, m_))
+    F = ssb / 2 / mse
+    um = sum(m_) / 3
+    out = {"n1": n[0], "n2": n[1], "n3": n[2], "m1": s(m_[0], 1), "m2": s(m_[1], 1), "m3": s(m_[2], 1), "mse": s(mse, 1),
+           "dfe": N - 3, "fc": 3.885, "N": N, "gm": s(gm, 4), "ssb": s(ssb, 4), "F": s(F, 2), "F4": s(F, 4),
+           "w_unw": s(sum(a * (b - um) ** 2 for a, b in zip(n, m_)) / 2 / mse, 2), "w_df": s(ssb / 3 / mse, 2),
+           "w_nodf": s(ssb / mse, 2), "w_eq": s(sum(5 * (b - um) ** 2 for b in m_) / 2 / mse, 2)}
+    assert F < 3.885 and ssb / mse > 3.885
+    assert len({out["F"], out["w_unw"], out["w_df"], out["w_nodf"], out["w_eq"]}) == 5
+    # (b) ポアソン回帰
+    ya, yb = 6.0, 4.5
+    lna, lnb = 1.7918, 1.5041
+    b1 = lnb - lna
+    out.update({"m": 10, "ya": s(ya, 1), "yb": s(yb, 1), "lna": s(lna, 4), "lnb": s(lnb, 4), "b1": r(b1, 3), "b1_s": s(b1, 3), "b14": s(b1, 4),
+                "rr": s(yb / ya, 2), "diff": s(yb - ya, 1)})
+    assert abs(math.log(ya) - lna) < 5e-5 and abs(math.log(yb) - lnb) < 5e-5
+    return out
+
+
+def p12():
+    x = [100, 200, 300, 400]; X = sum(x)
+    y2, y4 = 30, 70
+    pi2, pi4 = 2 * x[1] / X, 2 * x[3] / X
+    ht = y2 / pi2 + y4 / pi4
+    return {"x1": x[0], "x2": x[1], "x3": x[2], "x4": x[3], "X": X, "y2": y2, "y4": y4, "pi2": s(pi2, 1), "pi4": s(pi4, 1),
+            "t2": s(y2 / pi2, 1), "t4": s(y4 / pi4, 1), "ht": r(ht, 1), "ht_s": s(ht, 1),
+            "w_once": s(y2 / (x[1] / X) + y4 / (x[3] / X), 1), "w_srs": s(4 * (y2 + y4) / 2, 1)}
+
+
+def p13():
+    P = [(1, 1), (2, 1), (1, 2), (5, 4), (6, 5), (4, 5)]
+    c = [(1, 1), (2, 1)]
+    d2 = lambda p, q: (p[0] - q[0]) ** 2 + (p[1] - q[1]) ** 2
+    lab = [min(range(2), key=lambda k: d2(p, c[k])) for p in P]
+    cen = lambda lb: [tuple(sum(P[i][j] for i in range(6) if lb[i] == k) / lb.count(k) for j in range(2)) for k in range(2)]
+    wss = lambda cc, lb: sum(d2(P[i], cc[lb[i]]) for i in range(6))
+    c1 = cen(lab)
+    lab2 = [min(range(2), key=lambda k: d2(p, c1[k])) for p in P]
+    c2 = cen(lab2)
+    assert lab == [0, 1, 0, 1, 1, 1] and lab2 == [0, 0, 0, 1, 1, 1]
+    other = [P[i] for i in (3, 4, 5)]
+    wu = sum(p[0] for p in other) / 3; wv = sum(p[1] for p in other) / 3
+    return {"c2u": s(c1[1][0], 2), "c2v": s(c1[1][1], 2), "d2": s(d2(P[1], c1[1]), 3), "w_u": s(wu, 2), "w_v": s(wv, 2),
+            "w0": s(wss(c, lab), 2), "w1": s(wss(c1, lab), 2), "w2": s(wss(c2, lab2), 2)}
+
+
 def values():
-    return {"s25p01": p01(), "s25p02": p02(), "s25p03": p03(), "s25p04": p04(), "s25p05": p05(),
-            "s25p06": p06(), "s25p07": p07(), "s25p08": p08(), "s25p09": p09(), "s25p10": p10(),
-            "s25p11": p11(), "s25p12": p12(), "s25p13": p13(), "s25p14": p14()}
+    v = {"s25p01": p01(), "s25p02": p02(), "s25p03": p03(), "s25p04": p04(), "s25p05": p05(), "s25p06": p06(), "s25p07": p07(),
+         "s25p08": p08(), "s25p09": p09(), "s25p10": p10(), "s25p11": p11(), "s25p12": p12(), "s25p13": p13(), "s25p14": p14()}
+    v["s25p02"].update({"nb_" + k: x for k, x in n02b().items()}); v["s25p02"].update({"nc_" + k: x for k, x in n02c().items()})
+    v["s25p03"].update({"nd_" + k: x for k, x in n03b().items()}); v["s25p09"].update({"ne_" + k: x for k, x in n09a().items()})
+    return v
 
 
 if __name__ == "__main__":
-    for k, v in values().items():
-        print(k, v)
+    import pprint
+    pprint.pprint(values())
