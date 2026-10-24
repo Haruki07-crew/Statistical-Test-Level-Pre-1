@@ -83,7 +83,7 @@ chapters:
   - id: scatter-plot
     title: 散布図
     importance: A
-    status: planned
+    status: verified
   - id: covariance-and-correlation
     title: 共分散と相関係数
     importance: A
@@ -97,7 +97,7 @@ chapters:
   - id: stratified-scatter
     title: 層別の散布図
     importance: B
-    status: planned
+    status: verified
   - id: spurious-correlation
     title: 擬似相関
     importance: A
@@ -111,7 +111,7 @@ chapters:
   - id: cross-tabulation
     title: 度数表と2元クロス表
     importance: A
-    status: planned
+    status: verified
   - id: simpsons-paradox
     title: シンプソンのパラドックス
     importance: B
@@ -123,7 +123,7 @@ chapters:
   - id: simple-regression
     title: 単回帰と回帰直線
     importance: A
-    status: planned
+    status: verified
   - id: least-squares-method
     title: 最小二乗法
     importance: A
@@ -155,23 +155,23 @@ chapters:
   - id: time-series-components
     title: 時系列の変動（トレンド・季節変動・不規則変動）
     importance: A
-    status: planned
+    status: verified
   - id: growth-rate
     title: 成長率と平均成長率
     importance: A
-    status: planned
+    status: verified
   - id: index-number
     title: 指数化と指数
     importance: A
-    status: planned
+    status: verified
   - id: price-index
     title: 物価指数（ラスパイレス・パーシェ）
     importance: B
-    status: planned
+    status: verified
   - id: moving-average
     title: 移動平均
     importance: A
-    status: planned
+    status: verified
   - id: autocovariance-autocorrelation
     title: 自己共分散・自己相関
     importance: B
@@ -193,11 +193,11 @@ chapters:
   - id: observational-vs-experimental
     title: 観察研究と実験研究
     importance: A
-    status: planned
+    status: verified
   - id: population-and-sample
     title: 母集団と標本・全数調査と標本調査
     importance: A
-    status: planned
+    status: verified
   - id: simple-random-sampling
     title: 単純無作為抽出
     importance: A
@@ -244,11 +244,11 @@ chapters:
   - id: counting
     title: 順列と組合せ
     importance: B
-    status: planned
+    status: verified
   - id: events-and-probability
     title: 事象と確率（加法定理）
     importance: A
-    status: planned
+    status: verified
   - id: conditional-probability
     title: 条件付き確率と乗法定理
     importance: A
@@ -366,7 +366,7 @@ chapters:
   - id: sampling-distribution-of-mean
     title: 標本平均の分布
     importance: A
-    status: planned
+    status: verified
   - id: chebyshev-inequality
     title: チェビシェフの不等式
     importance: B
@@ -410,7 +410,7 @@ chapters:
   - id: statistical-tables
     title: 分布表の読み方（上側確率点）
     importance: A
-    status: planned
+    status: verified
 - 'no': 11
   title: 推定
   terms:
@@ -621,7 +621,7 @@ chapters:
   - id: regression-output
     title: 回帰分析の出力の読み方
     importance: A
-    status: planned
+    status: verified
   - id: multiple-regression-model
     title: 重回帰モデル
     importance: A
@@ -663,11 +663,11 @@ chapters:
   - id: treatment-and-control
     title: 処理群と対照群
     importance: A
-    status: planned
+    status: verified
   - id: anova-table
     title: 分散分析表の読み方
     importance: A
-    status: planned
+    status: verified
   - id: one-way-anova
     title: 一元配置分散分析
     importance: A

@@ -1144,4 +1144,24 @@
     a.info.textContent = k % 2 ? k + ' 項の値の平均を、真ん中の時点に置きます（両端の ' + Math.floor(k / 2) + ' 時点は計算できません）。'
       : k + ' 項は偶数なので、隣り合う 2 つの ' + k + ' 項平均をさらに平均した「中心化移動平均」です（両端の値には 1/2 の重み）。';
   });
+  // stratified-scatter: { gap（2 つの層の平均のずれ, 3）, within（層の中の傾き, -0.5）, n（各層の点の数, 40） } 層別の散布図
+  // 層の中では右下がり（または無相関）でも、層の平均がずれていると全体では右上がりの相関が出る
+  reg('stratified-scatter', function (a, p, c) {
+    var rand = mulberryLike(7), gap = num(p.gap, 3), wb = num(p.within, -0.5), n = Math.max(5, Math.round(num(p.n, 40))), ds = [], all = [];
+    var lab = p.labels || ['層 A', '層 B'], rs = [];
+    [0, 1].forEach(function (g) {
+      var xs = [], ys = [];
+      for (var i = 0; i < n; i++) { var x = g * gap + gauss(rand), y = g * gap + wb * (x - g * gap) + 0.6 * gauss(rand); xs.push(x); ys.push(y); all.push([x, y]); }
+      rs.push(corrOf(xs, ys));
+      ds.push({ type: 'scatter', label: lab[g], data: pts(xs, ys), backgroundColor: g ? c.c2 : c.c1, pointRadius: 3 });
+    });
+    var r = corrOf(all.map(function (q) { return q[0]; }), all.map(function (q) { return q[1]; }));
+    var o = opts(a, c, { legend: true, ymin: null, xTitle: p.xlabel || 'x', yTitle: p.ylabel || 'y' });
+    o.interaction = { mode: 'nearest', intersect: true };
+    a.chart('', { data: { datasets: ds }, options: o });
+    a.info.textContent = '全体の相関係数 r = ' + a.fmt(r, 3) + '　' + lab[0] + 'の中 r = ' + a.fmt(rs[0], 3) + '　' + lab[1] + 'の中 r = ' + a.fmt(rs[1], 3);
+  });
+  function mulberryLike(seed) { var t = seed >>> 0; return function () { t += 0x6D2B79F5; var r = Math.imul(t ^ t >>> 15, 1 | t); r ^= r + Math.imul(r ^ r >>> 7, 61 | r); return ((r ^ r >>> 14) >>> 0) / 4294967296; }; }
+  function gauss(rand) { var u = 1 - rand(), v = rand(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+  function corrOf(xs, ys) { var mx = mean(xs), my = mean(ys), sxx = 0, syy = 0, sxy = 0; xs.forEach(function (x, i) { sxx += (x - mx) * (x - mx); syy += (ys[i] - my) * (ys[i] - my); sxy += (x - mx) * (ys[i] - my); }); return sxy / Math.sqrt(sxx * syy); }
 })(typeof globalThis !== 'undefined' ? globalThis : this);

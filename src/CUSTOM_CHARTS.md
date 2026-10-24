@@ -67,3 +67,4 @@
 | box-plot | 箱ひげ図（四分位数は中央値で分けた下半分・上半分の中央値。ひげは 1.5×IQR の内側の最も外の値まで、外は外れ値の点） | groups: [{label, data: [...]}], xlabel, mean: 1 で平均を × で表示 |
 | lorenz-curve | ローレンツ曲線とジニ係数 | values: [...]（1人あたりの量）, weights: [...]（人数、省略時は1） |
 | moving-average | 元の系列と中心化移動平均（k が偶数なら 2×k の中心化） | y: [...], x: [...], k(3), xlabel, ylabel |
+| stratified-scatter | 層別の散布図（層の中と全体で相関が違う例） | gap(3：層の平均のずれ), within(-0.5：層の中の傾き), n(40：各層の点の数), labels: [層の名前2つ], xlabel, ylabel |
