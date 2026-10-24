@@ -15,6 +15,10 @@
   "hash": "892c343d47dd8231",
   "ok": true
  },
+ "q02-coefficient-of-variation-g1": {
+  "hash": "98b56eb5e4bafcf9",
+  "ok": true
+ },
  "q02-lorenz-curve-gini-1": {
   "hash": "b47d39f7a5f50304",
   "ok": true
@@ -75,6 +79,10 @@
   "hash": "48087ea38bad16f3",
   "ok": true
  },
+ "q02-skewness-kurtosis-g1": {
+  "hash": "1131a31c842a15b3",
+  "ok": true
+ },
  "q02-standard-score-1": {
   "hash": "e74610cd933ef6c3",
   "ok": true
@@ -89,6 +97,10 @@
  },
  "q02-standard-score-4": {
   "hash": "273f82d0bbe2efda",
+  "ok": true
+ },
+ "q02-weighted-geometric-harmonic-mean-g1": {
+  "hash": "a282e83c60711615",
   "ok": true
  }
 }

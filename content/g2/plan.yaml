@@ -62,7 +62,6 @@ chapters:
     title: 変動係数
     importance: B
     status: verified
-    from: pre1
   - id: lorenz-curve-gini
     title: ローレンツ曲線とジニ係数
     importance: A
@@ -71,12 +70,10 @@ chapters:
     title: 歪度と尖度
     importance: B
     status: verified
-    from: pre1
   - id: weighted-geometric-harmonic-mean
     title: 加重平均・幾何平均・調和平均
     importance: B
     status: verified
-    from: pre1
 - 'no': 3
   title: 2変数データの記述
   terms:
@@ -136,12 +133,10 @@ chapters:
     title: 残差プロット
     importance: B
     status: verified
-    from: pre1
   - id: log-transformation
     title: 対数変換
     importance: B
     status: verified
-    from: pre1
 - 'no': 5
   title: 時系列データ
   terms:

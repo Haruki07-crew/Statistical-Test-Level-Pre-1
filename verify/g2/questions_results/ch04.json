@@ -19,12 +19,20 @@
   "hash": "0a73c13089bb2b24",
   "ok": true
  },
+ "q04-log-transformation-g1": {
+  "hash": "ea235725ea33be3c",
+  "ok": true
+ },
  "q04-residual-g1": {
   "hash": "d87badded92c29c4",
   "ok": true
  },
  "q04-residual-g2": {
   "hash": "43e40ded134012e1",
+  "ok": true
+ },
+ "q04-residual-plot-g1": {
+  "hash": "5879409f1911724f",
   "ok": true
  },
  "q04-simple-regression-1": {

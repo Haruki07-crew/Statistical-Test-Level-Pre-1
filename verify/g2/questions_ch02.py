@@ -6,6 +6,7 @@ os.environ.setdefault("JD_LEVEL", "g2")
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 from qcheck import Q  # noqa: E402
 import numpy as np  # noqa: E402
+from scipy import stats  # noqa: E402
 
 q = Q(2)
 c = q.qs
@@ -59,4 +60,8 @@ q.check("q02-lorenz-curve-gini-2", np.abs(eq[:, None] - eq[None, :]).sum() == 0 
 q.concept("q02-lorenz-curve-gini-3", "少ない順に累積する（answer=false）")
 h = np.r_[np.full(80, 50 / 80), np.full(20, 50 / 20)]; cum = np.cumsum(np.sort(h)) / h.sum()
 q.check("q02-lorenz-curve-gini-4", abs(cum[79] - 0.5) < 1e-12 and ans("q02-lorenz-curve-gini-4") == "(0.8, 0.5)", "下位 80% が 50% → 点 (0.8, 0.5)")
+sav = np.random.default_rng(22).lognormal(6.5, 0.9, 100000)
+q.check("q02-skewness-kurtosis-g1", sav.mean() > np.median(sav) and stats.skew(sav) > 0 and ans("q02-skewness-kurtosis-g1") == "右に裾が長く、歪度は正と考えられる", f"右に裾の長い分布で 平均 {sav.mean():.0f} ＞ 中央値 {np.median(sav):.0f}、歪度 {stats.skew(sav):.2f}")
+q.num("q02-coefficient-of-variation-g1", 12 / 80)
+q.num("q02-weighted-geometric-harmonic-mean-g1", 2 / (1 / 30 + 1 / 60))
 q.done()

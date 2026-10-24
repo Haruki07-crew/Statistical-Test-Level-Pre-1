@@ -306,6 +306,25 @@ check(T, "F=(0.5/3)/(0.5/21)=7.0・F(3,21) 5% 点 3.072・8 件なら 1.33 と 6
 T = "dummy-variable"
 check(T, "20+3×25=95・+8=103・図の 2 本の直線", 20 + 3 * 25 == 95 and 20 + 3 * 25 + 8 == 103 and [20 + 3 * x for x in range(0, 40, 5)] == [20, 35, 50, 65, 80, 95, 110, 125] and [28 + 3 * x for x in range(0, 40, 5)] == [28, 43, 58, 73, 88, 103, 118, 133], None)
 
+T = "skewness-kurtosis"
+dk = np.array([1, 2, 2, 3, 3, 3, 4, 10.])
+check(T, "平均 3.5・中央値 3・歪度≈1.80・尖度−3≈2.03・10 を除くと平均≈2.57・中央値 3", close(dk.mean(), 3.5, 1e-12) and np.median(dk) == 3 and close(stats.skew(dk), 1.80, 0.005) and close(stats.kurtosis(dk), 2.03, 0.005) and close(dk[:-1].mean(), 2.57, 0.005) and np.median(dk[:-1]) == 3, (stats.skew(dk), stats.kurtosis(dk)))
+check(T, "正規分布の歪度 0・尖度 3", close(stats.norm.stats(moments="s"), 0, 1e-12) and close(stats.norm.stats(moments="k") + 3, 3, 1e-12), None)
+T = "coefficient-of-variation"
+check(T, "13.3%・15.0%・3.5%・40.0%（図の値）", np.allclose([round(400 / 3000 * 100, 1), 9 / 60 * 100, round(6 / 170 * 100, 1), 4000 / 10000 * 100], [13.3, 15.0, 3.5, 40.0]), None)
+xcv = rng.gamma(4, 2, 1000)
+check(T, "c 倍で変動係数は不変・定数を足すと変わる", close((3 * xcv).std() / (3 * xcv).mean(), xcv.std() / xcv.mean(), 1e-12) and abs((xcv + 10).std() / (xcv + 10).mean() - xcv.std() / xcv.mean()) > 0.1, None)
+T = "weighted-geometric-harmonic-mean"
+check(T, "加重 65.2・幾何 1.35^(1/3)≈1.105・算術 11.7%・調和 ≈158（算術 ≈183）", close((30 * 62 + 20 * 70) / 50, 65.2, 1e-12) and close(1.2 * .9 * 1.25, 1.35, 1e-12) and close(1.35 ** (1 / 3), 1.105, 5e-4) and close(35 / 3, 11.7, 0.05) and close(3 / (1 / 100 + 1 / 200 + 1 / 250), 158, 0.5) and close(550 / 3, 183, 0.5), None)
+check(T, "算術 ≥ 幾何 ≥ 調和（a=2, b=8 で 5・4・3.2）", close((2 + 8) / 2, 5, 1e-12) and close(sqrt(16), 4, 1e-12) and close(2 / (1 / 2 + 1 / 8), 3.2, 1e-12), None)
+T = "log-transformation"
+check(T, "e^0.05≈1.051・e^0.10≈1.105・2^−1.5≈0.35", close(np.exp(.05), 1.051, 5e-4) and close(np.exp(.1), 1.105, 5e-4) and close(2 ** -1.5, .35, 0.005), None)
+ln_ = rng.lognormal(1, .5, 200000)
+check(T, "図：対数正規の log は N(1, 0.5²)・もとの値の歪度は正", close(np.log(ln_).mean(), 1, 0.01) and close(np.log(ln_).std(), .5, 0.01) and stats.skew(ln_) > 1, None)
+T = "residual-plot"
+xq = np.arange(1, 8.); bq, aq = np.polyfit(xq, xq ** 2, 1)
+check(T, "y=x²：ŷ=−12+8x・残差 5, 0, −3, −4, −3, 0, 5・決定係数≈0.96", close(aq, -12, 1e-9) and close(bq, 8, 1e-9) and np.allclose(xq ** 2 - aq - bq * xq, [5, 0, -3, -4, -3, 0, 5]) and close(np.corrcoef(xq, xq ** 2)[0, 1] ** 2, .96, 0.005), None)
+
 ng = results.count(False)
 print(f"書き直した共通の用語の検算: OK {len(results) - ng} / NG {ng}")
 sys.exit(1 if ng else 0)

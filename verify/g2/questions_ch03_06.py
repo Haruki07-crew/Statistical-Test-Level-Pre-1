@@ -69,6 +69,10 @@ q.check("q04-coefficient-of-determination-g2", chosen(q, "q04-coefficient-of-det
 q.num("q04-residual-g1", 47 - (30 + 0.5 * 40))
 xr = np.array([1, 3, 4, 8, 9.]); yr = np.array([2, 9, 4, 3, 12.]); br, ar = np.polyfit(xr, yr, 1)
 q.check("q04-residual-g2", abs((yr - ar - br * xr).sum()) < 1e-9 and np.corrcoef(xr, yr)[0, 1] < 0.6, "当てはまりの悪いデータでも残差の合計は 0（answer=false）")
+q.num("q04-log-transformation-g1", (np.exp(0.2) - 1) * 100)
+q.check("q04-log-transformation-g1", abs(np.exp(0.2) - 1.2214) < 5e-5, "表の値 e^0.2")
+xf = np.linspace(1, 10, 400); yf = 2 + 3 * xf + np.random.default_rng(4).normal(0, 0.3 * xf); bf, af = np.polyfit(xf, yf, 1); ef = yf - af - bf * xf; pf = af + bf * xf
+q.check("q04-residual-plot-g1", np.std(ef[pf > np.median(pf)]) > 1.8 * np.std(ef[pf <= np.median(pf)]) and chosen(q, "q04-residual-plot-g1").startswith("誤差の分散が一定でない"), "誤差の標準偏差が x に比例するデータで残差が扇形")
 run(q)
 
 # ---------- 第5章 ----------
