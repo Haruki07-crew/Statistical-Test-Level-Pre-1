@@ -1,0 +1,102 @@
+{
+ "s06p01a": {
+  "ok": true,
+  "hash": "478b3d310cbe85cd"
+ },
+ "s06p01b": {
+  "ok": true,
+  "hash": "0e064c5e7f09379f"
+ },
+ "s06p01c": {
+  "ok": true,
+  "hash": "5e7127c71b15a5ba"
+ },
+ "s06p02a": {
+  "ok": true,
+  "hash": "0434fef57789b9f0"
+ },
+ "s06p02b": {
+  "ok": true,
+  "hash": "af813b05bf7a72ba"
+ },
+ "s06p03a": {
+  "ok": true,
+  "hash": "f9b2a5c63a089089"
+ },
+ "s06p04a": {
+  "ok": true,
+  "hash": "c87b08b8bb9d5f36"
+ },
+ "s06p04b": {
+  "ok": true,
+  "hash": "df75dd8ff26db5d4"
+ },
+ "s06p05a": {
+  "ok": true,
+  "hash": "d5af905df86f6999"
+ },
+ "s06p05b": {
+  "ok": true,
+  "hash": "a8c6ced33bdc56dd"
+ },
+ "s06p06a": {
+  "ok": true,
+  "hash": "227ef3b0f0f6d9ad"
+ },
+ "s06p06b": {
+  "ok": true,
+  "hash": "493a419a2836e2c3"
+ },
+ "s06p07a": {
+  "ok": true,
+  "hash": "98425dd1cdfb34c9"
+ },
+ "s06p07b": {
+  "ok": true,
+  "hash": "1b7b8967ed1eb076"
+ },
+ "s06p08a": {
+  "ok": true,
+  "hash": "891fb54933e18e8c"
+ },
+ "s06p09a": {
+  "ok": true,
+  "hash": "1c94ae606043d495"
+ },
+ "s06p09b": {
+  "ok": true,
+  "hash": "a795677d820f09d6"
+ },
+ "s06p10a": {
+  "ok": true,
+  "hash": "3689aaf66c1a04c9"
+ },
+ "s06p11a": {
+  "ok": true,
+  "hash": "7eda6064c2cbc518"
+ },
+ "s06p12a": {
+  "ok": true,
+  "hash": "908bda429130f81d"
+ },
+ "s06p12b": {
+  "ok": true,
+  "hash": "12502dd98b5393bc"
+ },
+ "s06p12c": {
+  "ok": true,
+  "hash": "781fded0d58f4365"
+ },
+ "s06p13a": {
+  "ok": true,
+  "hash": "6f7fa1a259767ff8"
+ },
+ "s06p13b": {
+  "ok": true,
+  "hash": "43594448329d65e7"
+ },
+ "s06p13c": {
+  "ok": true,
+  "hash": "dd5391f3cf790a22"
+ }
+}

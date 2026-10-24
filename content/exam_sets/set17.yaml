@@ -1,0 +1,975 @@
+set: 17
+title: 模擬試験 第17回
+minutes: 90
+problems:
+  - id: s17p01
+    title: レストランの追加注文の組み合わせ
+    context: |
+      ある洋食レストランでは、ランチセットに「前菜」「デザート」「ドリンク」を追加で注文できる。来店客 1 組が前菜を注文する事象を $A$、デザートを注文する事象を $B$、ドリンクを注文する事象を $C$ とする。
+      過去の大量の伝票から、追加注文の組み合わせの割合は次のとおりだった（○は注文あり、－は注文なし）。
+
+      | 前菜 | デザート | ドリンク | 割合 |
+      |---|---|---|---|
+      | ○ | ○ | ○ | «t_abc» |
+      | ○ | ○ | － | «t_ab» |
+      | ○ | － | ○ | «t_ac» |
+      | － | ○ | ○ | «t_bc» |
+      | ○ | － | － | «t_a» |
+      | － | ○ | － | «t_b» |
+      | － | － | ○ | «t_c» |
+      | － | － | － | «t_none» |
+    items:
+      - id: s17p01a
+        chapter: 1
+        terms: [independence-of-events, conditional-probability]
+        topic: 追加注文3品の組み合わせの割合から対ごとには独立だが相互独立ではないことを見分ける
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          無作為に選んだ 1 組について、事象 $A,B,C$ の独立性に関する記述として正しいものはどれか。
+        choices:
+          - '$A,B,C$ は互いに独立（相互独立）である'
+          - '$A$ と $B$、$A$ と $C$、$B$ と $C$ はどれも独立だが、$A,B,C$ は相互独立ではない'
+          - '$P(A\cap B)\ne P(A)P(B)$ なので、$A$ と $B$ は独立ではない'
+          - '$P(C\mid A\cap B)=P(C)=«pc»$ である'
+          - 'どの 2 つも独立なので、少なくとも 1 品を追加注文する確率は $1-«qa»\times«qb»\times«qc»=«union_ind»$ である'
+        answer: 1
+        distractors:
+          - 対ごとの独立だけを確かめて、3 つの積の条件を確かめなかった
+          - 正解
+          - 周辺確率を表の「その品だけ」の行から読み取り、積を誤って計算した
+          - 対ごとに独立なら 2 つの事象で条件づけても確率は変わらないと思い込んだ
+          - 対ごとの独立から相互独立のときの公式を使った
+        explanation: |
+          **方針** まず表を足し合わせて $P(A),P(B),P(C)$ と 2 つずつの共通部分の確率を求める。2 つずつの独立は $P(A\cap B)=P(A)P(B)$ など 3 本の式、相互独立はそれに加えて $P(A\cap B\cap C)=P(A)P(B)P(C)$ も必要である。
+
+          **途中式** 該当する行を足すと
+          $$P(A)=«t_abc»+«t_ab»+«t_ac»+«t_a»=«pa»,\quad P(B)=«t_abc»+«t_ab»+«t_bc»+«t_b»=«pb»,\quad P(C)=«t_abc»+«t_ac»+«t_bc»+«t_c»=«pc»$$
+          $$P(A\cap B)=«t_abc»+«t_ab»=«pab»=«pa»\times«pb»,\quad P(A\cap C)=«t_abc»+«t_ac»=«pac»=«pa»\times«pc»,\quad P(B\cap C)=«t_abc»+«t_bc»=«pbc»=«pb»\times«pc»$$
+          よってどの 2 つも独立である。一方
+          $$P(A\cap B\cap C)=«pabc»\ne P(A)P(B)P(C)=«papbpc»$$
+          なので相互独立ではない。実際 $P(C\mid A\cap B)=«pabc»/«pab»=«cgab»$ で、$P(C)=«pc»$ と異なる。
+          また、少なくとも 1 品を注文する確率は表から $1-«t_none»=«union»$ で、相互独立を仮定した $«union_ind»$ とは一致しない。
+
+          **答え** 「$A$ と $B$、$A$ と $C$、$B$ と $C$ はどれも独立だが、$A,B,C$ は相互独立ではない」
+
+          **間違えやすい点** 2 つずつ独立であっても、3 つが相互独立とは限らない。3 事象の積の式まで確かめること。相互独立でないので、$P(C\mid A\cap B)=P(C)$ や「余事象の積」の公式は使えない。
+          周辺確率は「その品を含むすべての行」の和であり、「その品だけ」の行（例えば前菜だけの «t_a»）ではない。
+
+  - id: s17p02
+    title: ビジネスホテルの客室単価の重回帰
+    context: |
+      ある地域のビジネスホテル «n» 軒について、平日の平均客室単価 $y$（千円）を説明する重回帰モデル（切片あり、誤差は互いに独立に $N(0,\sigma^2)$ に従う）を最小二乗法で当てはめた。
+      候補のモデルと残差平方和 RSS は次のとおりである（$p$ は切片を除く説明変数の個数）。
+
+      | モデル | 説明変数 | $p$ | RSS |
+      |---|---|---|---|
+      | M1 | 駅からの距離・客室面積・築年数 | 3 | «rss1» |
+      | M2 | M1 ＋ 朝食の評価 | 4 | «rss2» |
+      | M3 | M1 ＋ 朝食の評価・大浴場の有無 | 5 | «rss3» |
+      | M4 | M3 ＋ 駐車場の有無・客室数 | 7 | «rss4» |
+    items:
+      - id: s17p02a
+        chapter: 16
+        terms: [partial-f-test, multiple-regression-model, f-distribution]
+        topic: 客室単価の回帰に朝食評価と大浴場の2変数を加えたときのRSSの減少から部分F検定の統計量を求める
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          M1 に「朝食の評価」と「大浴場の有無」の 2 変数を加えた M3 が、M1 より有意に当てはまりを改善するかを調べたい。
+          帰無仮説「追加した 2 変数の偏回帰係数はともに 0」に対する部分 $F$ 検定の統計量 $F$ の値を求めよ。
+        answer: «F»
+        tolerance: 0.01
+        answer_format: 小数第2位まで（小数第3位を四捨五入）で答えよ。±0.01 の差まで正解とする。
+        explanation: |
+          **方針** 部分 $F$ 統計量は「追加した変数による RSS の減少を、追加した変数の個数で割ったもの」を、「大きいほうのモデル（M3）の誤差の平均平方」で割る。
+
+          **途中式** RSS の減少は $«rss1»-«rss3»=«drss»$、追加した変数は «dp» 個。M3 の残差の自由度は $n-p-1=«n»-5-1=«df2»$。
+          $$F=\frac{(«rss1»-«rss3»)/«dp»}{«rss3»/«df2»}=\frac{«msd»}{«mse2»}=«F_s»$$
+          帰無仮説のもとで $F$ は自由度 $(«dp»,«df2»)$ の $F$ 分布に従う。上側 5% 点は約 «Fc» なので、5% で有意である。
+
+          **答え** $«F_s»$
+
+          **間違えやすい点** 分母は大きいほうのモデル M3 の $\mathrm{RSS}/(n-p-1)$。M1 の RSS を使うと $«F_rss1»$、自由度を $n-p=«n»-5$ と切片を数え忘れると $«F_df35»$、分子を追加した変数の個数 2 で割り忘れると $«F_nodiv»$ になる。
+
+      - id: s17p02b
+        chapter: 30
+        terms: [mallows-cp, model-selection, variable-selection]
+        topic: 客室単価の4つの候補モデルを全変数モデルの誤差分散を使ったマローズのCpで比べる
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          4 つのモデルをマローズの $C_p$ で比べる。$C_p=\dfrac{\mathrm{RSS}}{\hat\sigma^2}-n+2k$ と定義する。ここで $k$ は**切片を含む**回帰係数の個数、
+          $\hat\sigma^2$ は説明変数をすべて含むモデル M4 の誤差分散の不偏推定値である。$C_p$ が最小となるモデルとその $C_p$ の値の組として正しいものはどれか。
+        choices:
+          - 'M4（$C_p=«cp4»$）'
+          - 'M3（$C_p=«cp_nointer»$）'
+          - 'M3（$C_p=«cp3»$）'
+          - 'M3（$C_p=«cp_n»$）'
+          - 'M3（$C_p=«cp_non»$）'
+        answer: 2
+        distractors:
+          - RSS が最小のモデルを選んだ（全変数モデルの Cp は常に k に等しい）
+          - k に切片を数えず 2p とした
+          - 正解
+          - σ̂² を M4 の RSS/n（最尤推定値）にした
+          - 定義の −n を落とした
+        explanation: |
+          **方針** まず M4 から $\hat\sigma^2$ を作り、各モデルの $\mathrm{RSS}/\hat\sigma^2-n+2k$ を計算して最小のものを選ぶ。
+
+          **途中式** M4 の残差の自由度は $«n»-7-1=«df4»$ なので $\hat\sigma^2=«rss4»/«df4»=«s2full»$。
+          $$C_p(\mathrm{M1})=\frac{«rss1»}{«s2full»}-«n»+2\times«k1»=«r1»-«nk1»=«cp1»$$
+          $$C_p(\mathrm{M2})=\frac{«rss2»}{«s2full»}-«n»+2\times«k2»=«r2»-«nk2»=«cp2»$$
+          $$C_p(\mathrm{M3})=\frac{«rss3»}{«s2full»}-«n»+2\times«k3»=«r3»-«nk3»=«cp3»$$
+          $$C_p(\mathrm{M4})=\frac{«rss4»}{«s2full»}-«n»+2\times«k4»=«r4»-«nk4»=«cp4»$$
+          最小は M3。
+
+          **答え** M3（$C_p=«cp3»$）
+
+          **間違えやすい点** 全変数モデルの $C_p$ は定義から必ず $k$（ここでは «k4»）になるので、RSS が最小だからといって選ばれるわけではない。
+          $k$ に切片を数えないと $«cp_nointer»$、$\hat\sigma^2$ を $«rss4»/«n»=«s2n»$ にすると $«cp_n»$、$-n$ を落とすと $«cp_non»$ になる（どれも M3 が最小になるが値が違う）。
+
+      - id: s17p02c
+        chapter: 17
+        terms: [studentized-residual, standardized-residual, leverage, outlier-and-influential-point]
+        topic: 残差とてこ比から1軒を除いた誤差分散を求め外部スチューデント化残差を計算する
+        level: 応用
+        definition: false
+        type: numeric
+        question: |
+          M3 を採用した。あるホテル $i$ の残差は $e_i=«e»$、てこ比は $h_{ii}=«h»$ だった。
+          このホテルを除いて M3 を当てはめ直したときの誤差分散の不偏推定値を $\hat\sigma_{(i)}^2$ とし、外部スチューデント化残差
+          $t_i=\dfrac{e_i}{\hat\sigma_{(i)}\sqrt{1-h_{ii}}}$ の値を求めよ。
+          なお、ホテル $i$ を除いて当てはめたときの残差平方和は $\mathrm{RSS}-\dfrac{e_i^2}{1-h_{ii}}$ になる（RSS は全 «n» 軒で当てはめたときの値）。
+        answer: «t_ext»
+        tolerance: 0.01
+        answer_format: 小数第2位まで（小数第3位を四捨五入）で答えよ。±0.01 の差まで正解とする。
+        explanation: |
+          **方針** ホテル $i$ を除いた残差平方和と、その自由度（観測が 1 つ減るので $n-p-2$）から $\hat\sigma_{(i)}^2$ を求め、定義の式に代入する。
+
+          **途中式** 除いたときの残差平方和は
+          $$«rss3»-\frac{«e»^2}{«omh»}=«rss3»-\frac{«e2»}{«omh»}=«rss3»-«e2h»=«rss_i»$$
+          自由度は $(«n»-1)-5-1=«df2m1»$ なので $\hat\sigma_{(i)}^2=«rss_i»/«df2m1»=«s2_i»$、$\hat\sigma_{(i)}=«s_i»$。
+          $$t_i=\frac{«e»}{«s_i»\times\sqrt{«omh»}}=\frac{«e»}{«den_ext»}=«t_ext4»\cdots$$
+
+          **答え** $«t_ext_s»$
+
+          **間違えやすい点** 全データの $\hat\sigma^2=«rss3»/«df2»=«mse2»$ を使うと内部スチューデント化残差（標準化残差）$r_i=«e»/«den_int»=«r_int»$ になる。外れ値の候補は自分自身が $\hat\sigma$ を大きくしているので、除いて推定した $\hat\sigma_{(i)}$ を使うと値が大きくなる。
+          $\sqrt{1-h_{ii}}$ を掛け忘れると $«t_noh»$ になる。自由度は $n-p-1=«df2»$ ではなく 1 つ少ない «df2m1»。
+
+          **別解** $r_i=«r_int4»$ から $t_i=r_i\sqrt{\dfrac{n-p-2}{n-p-1-r_i^2}}=«r_int4»\times\sqrt{\dfrac{«df2m1»}{«df2»-«rint2»}}=«t_ext4»$ としても同じ値になる。
+
+  - id: s17p03
+    title: 喫茶店の予約なし来店
+    context: |
+      ある喫茶店で、平日の 1 時間ごとに予約なしで来店した客の組数を、«n» 個の時間帯について数えた。
+
+      «x»
+
+      （合計 «T» 組、平均 $\bar x=«m»$）。各時間帯の組数 $X_1,\ldots,X_{«n»}$ は互いに独立に同じ分布に従うとする。
+    items:
+      - id: s17p03a
+        chapter: 12
+        terms: [dispersion-test, poisson-distribution, chi-squared-distribution]
+        topic: 時間帯ごとの来店組数がポアソン分布より過分散かを分散指数検定で調べる
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          組数がポアソン分布に従う（平均と分散が等しい）という帰無仮説に対し、「ポアソン分布より散らばりが大きい（過分散）」を対立仮説として、分散指数検定を有意水準 5% で行う。
+          正しいものはどれか。必要なら次のカイ二乗分布の上側パーセント点を使え（$\chi^2_{\alpha}(m)$ は自由度 $m$ の上側 $100\alpha\%$ 点）。
+
+          | $\chi^2_{0.05}(«df»)$ | $\chi^2_{0.95}(«df»)$ | $\chi^2_{0.05}(«df10»)$ |
+          |---|---|---|
+          | «c9» | «c9lo» | «c10» |
+        choices:
+          - '統計量は $D=«D»$ で、$\chi^2_{0.05}(«df»)=«c9»$ を超えないので、過分散とはいえない'
+          - '統計量は $D=«D»$ で、$\chi^2_{0.05}(«df10»)=«c10»$ を超えないので、過分散とはいえない'
+          - '統計量は $D=«D_raw»$ で、$\chi^2_{0.05}(«df»)=«c9»$ を超えないので、過分散とはいえない'
+          - '統計量は $D=«D»$ で、$\chi^2_{0.95}(«df»)=«c9lo»$ を超えるので、過分散と判定する'
+          - '統計量は $D=«Dratio»$ で、1 より小さいので、ポアソン分布より散らばりが小さい（過少分散）と判定する'
+        answer: 0
+        distractors:
+          - 正解
+          - 自由度を n−1 ではなく n とした
+          - 偏差平方和を平均で割り忘れた
+          - 上側検定なのに下側の点（χ²_0.95）と比べた
+          - 分散と平均の比 s²/x̄ をそのまま統計量とし、分布と比べずに判定した
+        explanation: |
+          **方針** ポアソン分布なら分散と平均が等しいので、$D=\dfrac{\sum (X_i-\bar X)^2}{\bar X}=(n-1)\dfrac{s^2}{\bar X}$ は帰無仮説のもとで近似的に自由度 $n-1$ のカイ二乗分布に従う。過分散なら $D$ が大きくなるので上側で棄却する。
+
+          **途中式** $\sum x_i^2=«sx2»$ より偏差平方和は
+          $$\sum(x_i-\bar x)^2=«sx2»-«n»\times«m»^2=«sx2»-«nm2»=«ss»$$
+          $$D=\frac{«ss»}{«m»}=«D»$$
+          自由度は $«n»-1=«df»$ で、$D=«D»<\chi^2_{0.05}(«df»)=«c9»$ なので帰無仮説は棄却されない。
+
+          **答え** 「統計量は $D=«D»$ で、$\chi^2_{0.05}(«df»)=«c9»$ を超えないので、過分散とはいえない」
+
+          **間違えやすい点** 平均 $\lambda$ を $\bar x$ で推定しているので自由度は $n-1=«df»$（$n$ ではない）。偏差平方和 «ss» を平均で割るのを忘れないこと。
+          比 $s^2/\bar x=«s2»/«m»\approx«Dratio»$ は 1 より小さいが、それだけでは判定できず、分布と比べる必要がある。また過分散を対立仮説とする上側検定なので、下側の点 «c9lo» と比べるのは誤り。
+
+      - id: s17p03b
+        chapter: 8
+        terms: [rao-blackwell-theorem, sufficient-statistic, unbiased-estimator, invariance-of-mle]
+        topic: 来店ゼロの時間帯の確率をポアソンの十分統計量で条件づけたラオ・ブラックウェル化により不偏推定する
+        level: 応用
+        definition: false
+        type: choice
+        question: |
+          以下、組数は平均 $\lambda$ のポアソン分布に従うとする。ある 1 時間に予約なしの客が 1 組も来ない確率 $\theta=e^{-\lambda}$ を推定したい。
+          $\mathbb{1}\{X_1=0\}$（$X_1=0$ なら 1、そうでなければ 0）は $\theta$ の不偏推定量である。これを十分統計量 $T=\sum_{i=1}^{«n»}X_i$ で条件づけた
+          $E[\mathbb{1}\{X_1=0\}\mid T]$ のデータにおける値に最も近いものはどれか。必要なら $e^{-1.2}=«e12»$ を使え。
+        choices:
+          - '$«zf»$'
+          - '$«um_p1»$'
+          - '$«um»$'
+          - '$«mle»$'
+          - '$«um_m1»$'
+        answer: 2
+        distractors:
+          - 条件づけをせず、0 組だった時間帯の割合を答えた
+          - 指数を T+1 にした
+          - 正解
+          - 最尤推定量 e^{-x̄}（不変性）を答えた（不偏ではない）
+          - 指数を T−1 にした
+        explanation: |
+          **方針** $T=t$ が与えられたとき、$X_1$ は試行回数 $t$、成功確率 $1/n$ の二項分布に従う（独立なポアソン変数の和で条件づけると多項分布になる）。ラオ・ブラックウェルの定理より、条件付き期待値も不偏で、分散は元の推定量以下になる。
+
+          **途中式**
+          $$E[\mathbb{1}\{X_1=0\}\mid T=t]=P(X_1=0\mid T=t)=\left(1-\frac1n\right)^{t}$$
+          データでは $n=«n»$、$t=«T»$ なので
+          $$\left(1-\frac{1}{«n»}\right)^{«T»}=«q»^{«T»}=«um4»\cdots$$
+
+          **答え** $«um»$
+
+          **間違えやすい点** 最尤推定量は不変性から $e^{-\bar x}=e^{-«m»}=«e12»$ だが、$E[e^{-\bar X}]\ne e^{-\lambda}$ なので不偏ではない。0 組だった時間帯の割合 $«zf»$ は不偏だが、十分統計量の情報を使っていないので分散が大きい。
+          $T$ が与えられたもとで $X_1$ が従うのは二項分布 $B(t,1/n)$ であり、指数は $t$ そのもの。
+
+      - id: s17p03c
+        chapter: 6
+        terms: [gamma-distribution, exponential-distribution, poisson-distribution]
+        topic: 3組目の予約なし客が来るまでの時間をガンマ分布とみてポアソン過程の件数の確率から上側確率を求める
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          予約なしの客の到着は、1 時間あたり $\lambda=«lam»$ 組のポアソン過程に従うとみなす。開店から **3 組目**の予約なし客が来るまでの時間が «t» 時間を超える確率を求めよ。
+          必要なら $e^{-2.4}=«e24»$ を使え。
+        answer: «p3»
+        tolerance: 0.001
+        answer_format: 小数第3位まで（小数第4位を四捨五入）で答えよ。±0.001 の差まで正解とする。
+        explanation: |
+          **方針** 3 組目までの時間 $S_3$ は到着間隔（レート $\lambda$ の指数分布）3 つの和なので、形状 3・レート $\lambda$ のガンマ分布（アーラン分布）に従う。
+          「$S_3>t$」は「時間 $t$ までの到着数 $N(t)$ が 2 組以下」と同じ事象なので、ポアソン分布の確率で計算できる。
+
+          **途中式** $N(«t»)$ は平均 $\lambda t=«lam»\times«t»=«mu»$ のポアソン分布に従う。
+          $$P(S_3>«t»)=P(N(«t»)\le2)=e^{-«mu»}\left(1+«mu»+\frac{«mu»^2}{2}\right)=«e24»\times(1+«mu»+«mu2h»)=«e24»\times«poly»=«p3_4»\cdots$$
+
+          **答え** $«p3_s»$
+
+          **間違えやすい点** 「3 組目が $t$ 時間を超えて来る」は「$t$ 時間までに 2 組以下」であり、3 組以下（$«p3_up3»$）でも 1 組以下（$«p3_no2»$）でもない。
+          指数分布 1 つの上側確率 $e^{-«mu»}=«p3_exp»$ は 1 組目までの時間の確率である。
+
+  - id: s17p04
+    title: 温泉旅館のリピーターの割合
+    context: |
+      ある温泉旅館で、ある月の宿泊客から無作為に «n» 組を選んで調べたところ、«x» 組が以前にも宿泊したことのあるリピーターだった。宿泊客全体に占めるリピーターの割合を $p$、標本割合を $\hat p=«x»/«n»=«ph»$ とする。
+    items:
+      - id: s17p04a
+        chapter: 9
+        terms: [wilson-interval, ci-proportion, wald-confidence-interval]
+        topic: リピーター割合の95%信頼区間をスコア法（ウィルソン区間）で作り上限を求める
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          正規近似にもとづく不等式 $|\hat p-p|\le «z»\sqrt{p(1-p)/n}$ を $p$ について解いて得られる 95% 信頼区間（ウィルソンのスコア信頼区間、連続修正なし）の**上限**を求めよ。
+        answer: «up»
+        tolerance: 0.001
+        answer_format: 小数第3位まで（小数第4位を四捨五入）で答えよ。±0.001 の差まで正解とする。
+        explanation: |
+          **方針** 分母の標準誤差に未知の $p$ を残したまま両辺を 2 乗すると $p$ の 2 次不等式になる。その解が
+          $$\frac{\hat p+\frac{z^2}{2n}\pm z\sqrt{\frac{\hat p(1-\hat p)}{n}+\frac{z^2}{4n^2}}}{1+\frac{z^2}{n}}$$
+          である（$z=«z»$）。
+
+          **途中式** $z^2=«z2»$、$z^2/n=«z2n»$、$z^2/(2n)=«z2_2n»$、$z^2/(4n^2)=«z2_4n2»$。
+          $$\text{中心}=\frac{«ph»+«z2_2n»}{1+«z2n»}=\frac{«num_c»}{«den»}=«cen»$$
+          $$\text{半幅}=\frac{«z»\sqrt{«pq_n»+«z2_4n2»}}{«den»}=\frac{«z»\times«srad»}{«den»}=«half»$$
+          上限 $=«cen»+«half»=«up4»\cdots$（下限は約 «lo»）。
+
+          **答え** $«up_s»$
+
+          **間違えやすい点** 標準誤差に $\hat p$ を代入するワルド区間の上限 $«ph»+«z»\times«sep»=«wald_up»$ とは違う。ウィルソン区間の中心は $\hat p$ ではなく $1/2$ の側に寄る（ここでは «cen»）。
+          分母の $1+z^2/n$ で割り忘れないこと。
+
+      - id: s17p04b
+        chapter: 7
+        terms: [delta-method, odds-and-odds-ratio, standard-error]
+        topic: リピーターのオッズの推定量の標準誤差をデルタ法で近似する
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          リピーターのオッズ $\omega=p/(1-p)$ を $\hat\omega=\hat p/(1-\hat p)$ で推定する（推定値 $«odds»$）。
+          デルタ法で求めた $\hat\omega$ の標準誤差の推定値に最も近いものはどれか（$p$ には $\hat p$ を代入する）。
+        choices:
+          - '$«se_p»$'
+          - '$«se_g1nosq»$'
+          - '$«se_logit»$'
+          - '$«se_odds»$'
+          - '$«var_odds»$'
+        answer: 3
+        distractors:
+          - p̂ そのものの標準誤差を答えた
+          - 微分係数 g'(p) を 2 乗せずに分散に掛けた
+          - 対数オッズの標準誤差 √{1/(np(1−p))} を答えた
+          - 正解
+          - 分散を答え、平方根をとらなかった
+        explanation: |
+          **方針** $g(p)=p/(1-p)$ とおくと、デルタ法で $V[g(\hat p)]\approx\{g'(p)\}^2V[\hat p]$、$V[\hat p]=p(1-p)/n$。
+
+          **途中式** $g'(p)=\dfrac{(1-p)+p}{(1-p)^2}=\dfrac{1}{(1-p)^2}$ なので、$\hat p=«ph»$ を代入して $g'=1/«qh»^2=«g1»$。
+          $$V[\hat\omega]\approx«g1»^2\times\frac{«ph»\times«qh»}{«n»}=«g1sq»\times«vp»=«var_odds»$$
+          $$\mathrm{SE}=\sqrt{«var_odds»}=«se_odds»$$
+          （整理すると $V[\hat\omega]\approx\dfrac{p}{n(1-p)^3}$。）
+
+          **答え** $«se_odds»$
+
+          **間違えやすい点** 微分係数は 2 乗して掛ける（2 乗しないと $\sqrt{«g1»\times«vp»}=«se_g1nosq»$）。$\hat p$ の標準誤差 $«se_p»$ や、対数オッズの標準誤差 $«se_logit»$ と取り違えないこと。最後に平方根をとる。
+
+  - id: s17p05
+    title: 新レシピのパスタの試食会
+    context: |
+      イタリア料理店で新しいレシピのパスタを試すため、常連客 «N» 人を無作為に «nn» 人ずつに分け、一方に新レシピ、もう一方に従来のレシピを出した。
+      食後に「また注文したい」と答えた人数は次のとおりだった。
+
+      | | また注文したい | そうでもない | 計 |
+      |---|---|---|---|
+      | 新レシピ | «a» | «b» | «nn» |
+      | 従来レシピ | «c» | «d» | «nn» |
+      | 計 | «K» | «K» | «N» |
+    items:
+      - id: s17p05a
+        chapter: 5
+        terms: [fisher-exact-test, hypergeometric-distribution]
+        topic: 少人数の試食会の2×2表で周辺度数を固定したフィッシャーの正確検定の片側p値を超幾何分布から求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          行の合計と列の合計を固定したフィッシャーの正確検定で、「新レシピのほうが『また注文したい』と答える確率が高い」を対立仮説とする**片側** $p$ 値に最も近いものはどれか。
+        choices:
+          - '$«p_6»$'
+          - '$«p_5»$'
+          - '$«p_one»$'
+          - '$«p_two»$'
+          - '$«p_ge4»$'
+        answer: 2
+        distractors:
+          - 観測より極端な表（6 人）だけを足し、観測された表の確率を入れなかった
+          - 観測された表の確率だけを答え、より極端な表を足さなかった
+          - 正解
+          - 両側の p 値（片側の 2 倍）を答えた
+          - 「以上」の境界を 1 つずらし、4 人以上を足した
+        explanation: |
+          **方針** 周辺度数を固定すると、新レシピ群で「また注文したい」と答える人数 $X$ は、帰無仮説（2 つのレシピで確率が等しい）のもとで超幾何分布に従う：
+          «N» 人中「また注文したい」«K» 人から、新レシピ群の «nn» 人を選んだときの人数。片側 $p$ 値は $P(X\ge «a»)$。
+
+          **途中式** 全体の場合の数は $\binom{«N»}{«nn»}=«tot»$。
+          $$P(X=5)=\frac{\binom{6}{5}\binom{6}{1}}{«tot»}=\frac{«c65»\times«c61»}{«tot»}=\frac{«pk5»}{«tot»},\qquad P(X=6)=\frac{\binom{6}{6}\binom{6}{0}}{«tot»}=\frac{«pk6»}{«tot»}$$
+          $$P(X\ge5)=\frac{«sum56»}{«tot»}=«p_one4»\cdots$$
+
+          **答え** $«p_one»$（5% で有意）
+
+          **間違えやすい点** $p$ 値は「観測された表と、それより極端な表」の確率の和。観測された表だけ（$«p_5»$）や、より極端な表だけ（$«p_6»$）では足りない。
+          片側の対立仮説なので 2 倍しない（両側なら $«p_two»$）。4 人以上を足すと $\frac{«sum456»}{«tot»}=«p_ge4»$ になる。
+
+  - id: s17p06
+    title: ホテルのレストランの4つのコース
+    context: |
+      ホテルのレストランで 4 つのコース A, B, C, D の満足度（10 点満点）を比べるため、客 «N» 人を各コース «n» 人ずつ無作為に割り当てた。
+      各コースの平均点は次のとおりで、一元配置分散分析の誤差の平均平方は $\mathrm{MSE}=«mse»$（自由度 «dfe»）だった。満足度は等分散の正規分布に従うとする。
+
+      | コース | A | B | C | D |
+      |---|---|---|---|---|
+      | 平均点 | «mA» | «mB» | «mC» | «mD» |
+    items:
+      - id: s17p06a
+        chapter: 20
+        terms: [tukey-multiple-comparison, studentized-range-distribution, one-way-anova]
+        topic: 4コースの満足度の平均をテューキーの方法（HSD）で全ペア比較し有意な組を数える
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          テューキーの方法で、すべての組の平均の差を全体の有意水準 5% で比べる。HSD（有意となる平均の差の最小値）と有意な組について正しいものはどれか。
+          必要なら次の値を使え。$q_{0.05}(k,\nu)$ はスチューデント化された範囲の分布（群の数 $k$、自由度 $\nu$）の上側 5% 点、$t_{0.025}(\nu)$ は $t$ 分布の上側 2.5% 点である。
+
+          | $q_{0.05}(4,«dfe»)$ | $q_{0.05}(4,«N»)$ | $t_{0.025}(«dfe»)$ |
+          |---|---|---|
+          | «q» | «q24» | «t20» |
+        choices:
+          - 'HSD は $«hsd2»$ で、有意な組はない'
+          - 'HSD は $«hsd»$ で、有意な組は A と C、C と D の 2 組'
+          - 'HSD は $«lsd»$ で、有意な組は A と C、C と D、B と C の 3 組'
+          - 'HSD は $«hsd_ns»$ で、有意な組は A と C、C と D、B と C、A と B の 4 組'
+          - 'HSD は $«hsd_non»$ で、有意な組はない'
+        answer: 1
+        distractors:
+          - √(MSE/n) の代わりに 2 標本の標準誤差 √(2MSE/n) を q に掛けた
+          - 正解
+          - 多重比較の調整をしない t の最小有意差（LSD）を使った
+          - √ をとらずに q×MSE/n とした
+          - MSE を n で割り忘れた
+        explanation: |
+          **方針** 各群の大きさが等しいとき、テューキーの方法では $|\bar y_i-\bar y_j|>q_{0.05}(k,\nu)\sqrt{\mathrm{MSE}/n}$ の組を有意とする（$k=4$、$\nu=«dfe»$ は誤差の自由度）。
+
+          **途中式**
+          $$\mathrm{HSD}=«q»\times\sqrt{\frac{«mse»}{«n»}}=«q»\times«smn»=«hsd»$$
+          平均の差は A–B $«dAB»$、A–C $«dAC»$、A–D $«dAD»$、B–C $«dBC»$、B–D $«dBD»$、C–D $«dCD»$。«hsd» を超えるのは A–C と C–D の 2 組。
+
+          **答え** HSD は $«hsd»$ で、有意な組は A と C、C と D の 2 組。
+
+          **間違えやすい点** スチューデント化された範囲 $q$ には $\sqrt{\mathrm{MSE}/n}$ を掛ける（$t$ 分布のときの $\sqrt{2\mathrm{MSE}/n}$ ではない）。$\sqrt{2\mathrm{MSE}/n}$ を掛けると $«hsd2»$ になる。
+          $q$ の自由度は総数 «N» ではなく誤差の自由度 «dfe»。調整しない $t$ の最小有意差 $«t20»\times\sqrt{2\times«mse»/«n»}=«lsd»$ を使うと、全体の第 1 種の誤りの確率が 5% を超える。
+
+      - id: s17p06b
+        chapter: 10
+        terms: [holm-method, bonferroni-correction, multiple-testing]
+        topic: コース6組の対比較のp値にホルム法とボンフェローニ法を当てはめ有意な組を比べる
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          同じデータで 6 組の対比較それぞれに $t$ 検定（MSE を使い自由度 «dfe»）を行ったところ、両側 $p$ 値は次のとおりだった。
+
+          | 組 | A–B | A–C | A–D | B–C | B–D | C–D |
+          |---|---|---|---|---|---|---|
+          | $p$ 値 | «pAB» | «pAC» | «pAD» | «pBC» | «pBD» | «pCD» |
+
+          全体の有意水準（ファミリーワイズの第 1 種の誤りの確率）を 5% に抑える方法として、ホルム法とボンフェローニ法を使う。正しいものはどれか。
+        choices:
+          - 'ホルム法でもボンフェローニ法でも、有意なのは A–C の 1 組だけである'
+          - 'ホルム法では A–C と C–D の 2 組が有意で、ボンフェローニ法では A–C の 1 組だけが有意である'
+          - '多重性の調整をしても各 $p$ 値は 0.05 と比べてよいので、A–C、C–D、B–C の 3 組が有意である'
+          - 'ホルム法はボンフェローニ法より保守的なので、ホルム法で有意な組はボンフェローニ法でも必ず有意である'
+          - 'ホルム法でもボンフェローニ法でも、A–C と C–D の 2 組が有意である'
+        answer: 1
+        distractors:
+          - ホルム法の 2 番目の基準を 0.05/6 のまま比べた（ボンフェローニ法と同じにした）
+          - 正解
+          - 多重性を調整しなかった
+          - ホルム法とボンフェローニ法の保守性の関係を逆にした
+          - ボンフェローニ法の基準 0.05/6 を 0.01 程度と見積もり、C–D も有意とした
+        explanation: |
+          **方針** ボンフェローニ法はすべての $p$ 値を $0.05/m$（$m=6$）と比べる。ホルム法は $p$ 値を小さい順に並べ、$i$ 番目を $0.05/(m-i+1)$ と比べ、初めて基準を超えたところで止める。
+
+          **途中式** 小さい順に A–C «pAC»、C–D «pCD»、B–C «pBC»、…。
+          - ボンフェローニ法：基準 $0.05/6=«th1»$。«pAC» だけが下回るので A–C の 1 組。
+          - ホルム法：1 番目 $«pAC»\le0.05/6=«th1»$ で有意、2 番目 $«pCD»\le0.05/5=«th2»$ で有意、3 番目 $«pBC»>0.05/4=«th3»$ で止める。A–C と C–D の 2 組。
+
+          **答え** 「ホルム法では A–C と C–D の 2 組が有意で、ボンフェローニ法では A–C の 1 組だけが有意である」
+
+          **間違えやすい点** ホルム法は基準が段階的にゆるくなるので、ボンフェローニ法で有意な組は必ずホルム法でも有意になり、その逆は成り立たない（ホルム法のほうが検出力が高い）。
+          C–D の $p$ 値 «pCD» は $0.05/6=«th1»$ をわずかに上回るので、ボンフェローニ法では有意にならない。調整しないと B–C まで有意になり、全体の誤りの確率が 5% を超える。
+
+  - id: s17p07
+    title: 2店舗のランチの待ち時間のばらつき
+    context: |
+      チェーンの 2 店舗 X, Y で、ランチの注文から料理が出るまでの待ち時間（分）を無作為に選んだ客について測った。
+      X 店は «n1» 人で標準偏差 «s1»、Y 店は «n2» 人で標準偏差 «s2» だった（標準偏差は不偏分散の平方根）。待ち時間は各店で正規分布に従うとする。
+    items:
+      - id: s17p07a
+        chapter: 11
+        terms: [f-test-equal-variances, f-distribution, significance-level]
+        topic: 2店舗の待ち時間の母分散が等しいかを両側5%のF検定で判定する（分散比と棄却点の選び方）
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          帰無仮説「2 店舗の待ち時間の母分散は等しい」、対立仮説「等しくない」として、有意水準 5% の両側 $F$ 検定を行う。正しいものはどれか。
+          必要なら次の $F$ 分布の上側パーセント点を使え（$F_{\alpha}(m,n)$ は分子の自由度 $m$、分母の自由度 $n$ の上側 $100\alpha\%$ 点）。
+
+          | $F_{0.025}(«df1»,«df2»)$ | $F_{0.05}(«df1»,«df2»)$ | $F_{0.025}(«n1»,«n2»)$ |
+          |---|---|---|
+          | «f025» | «f05» | «f025b» |
+        choices:
+          - '$F=«F»$ は $F_{0.05}(«df1»,«df2»)=«f05»$ を超えるので、帰無仮説を棄却する'
+          - '$F=«F»$ は $F_{0.025}(«df1»,«df2»)=«f025»$ を超えないので、帰無仮説を棄却しない'
+          - '$F=«Fsd»$ は $F_{0.025}(«df1»,«df2»)=«f025»$ を超えないので、帰無仮説を棄却しない'
+          - '$F=«F»$ は $F_{0.025}(«n1»,«n2»)=«f025b»$ を超えないので、帰無仮説を棄却しない'
+          - '$F=«F»$ は $F_{0.025}(«df1»,«df2»)=«f025»$ を超えないので、2 店舗の母分散は等しいことが示された'
+        answer: 1
+        distractors:
+          - 両側検定なのに片側 5% 点と比べた
+          - 正解
+          - 分散ではなく標準偏差の比を F とした
+          - 自由度を n1, n2 とし、1 を引かなかった
+          - 帰無仮説を棄却しないことを、帰無仮説が正しいことの証明と取り違えた
+        explanation: |
+          **方針** 不偏分散の比 $F=s_X^2/s_Y^2$ は、帰無仮説のもとで自由度 $(n_X-1,n_Y-1)$ の $F$ 分布に従う。大きいほうの分散を分子にしたとき、両側 5% 検定では上側 2.5% 点と比べる。
+
+          **途中式** $s_X^2=«s1»^2=«v1»$、$s_Y^2=«s2»^2=«v2»$。
+          $$F=\frac{«v1»}{«v2»}=«F»,\qquad\text{自由度}(«n1»-1,«n2»-1)=(«df1»,«df2»)$$
+          $F=«F»<F_{0.025}(«df1»,«df2»)=«f025»$ なので棄却しない。
+
+          **答え** 「$F=«F»$ は $F_{0.025}(«df1»,«df2»)=«f025»$ を超えないので、帰無仮説を棄却しない」
+
+          **間違えやすい点** 片側 5% 点 «f05» と比べると棄却してしまうが、それは「X 店のほうが分散が大きい」を対立仮説とする片側検定の判定で、データを見てから片側に変えることはできない。
+          標準偏差の比 «Fsd» は $F$ 分布に従わない。自由度は $n-1$。棄却しないことは「等しいことが示された」ことを意味しない（差を検出できなかっただけ）。
+
+  - id: s17p08
+    title: 客室アップグレード提案の受諾率
+    context: |
+      あるシティホテルでは、チェックインのときに有料の客室アップグレードを提案している。提案を受け入れる確率を $p$ とし、
+      その事前分布として密度 $\pi(p)=2(1-p)$（$0<p<1$、ベータ分布 $\mathrm{Be}(«a0»,«b0»)$）を置く。
+    items:
+      - id: s17p08a
+        chapter: 4
+        terms: [logit-logistic-transformation, change-of-variables, prior-distribution]
+        topic: 受諾率のベータ事前分布をロジット変換した対数オッズの事前密度をヤコビアンで求める
+        level: 応用
+        definition: false
+        type: choice
+        question: |
+          受諾の対数オッズ $\theta=\log\dfrac{p}{1-p}$（$-\infty<\theta<\infty$）について、上の事前分布から導かれる $\theta$ の密度関数として正しいものはどれか。
+        choices:
+          - '$\dfrac{2}{1+e^{\theta}}$'
+          - '$\dfrac{2e^{\theta}}{(1+e^{\theta})^{3}}$'
+          - '$\dfrac{2e^{2\theta}}{(1+e^{\theta})^{3}}$'
+          - '$\dfrac{2(1+e^{\theta})}{e^{\theta}}$'
+          - '$\dfrac{2e^{\theta}}{(1+e^{\theta})^{2}}$'
+        answer: 1
+        distractors:
+          - ヤコビアン dp/dθ を掛け忘れた
+          - 正解
+          - p と 1−p を取り違え、1−p=e^θ/(1+e^θ) とした
+          - ヤコビアンを逆数（dθ/dp）で掛けた
+          - 事前密度の (1−p) を落とし、ヤコビアン 2p(1−p) だけを残した
+        explanation: |
+          **方針** $\theta=\log\frac{p}{1-p}$ は単調増加なので、逆変換 $p=\dfrac{e^{\theta}}{1+e^{\theta}}$ を代入し、ヤコビアン $\left|\dfrac{dp}{d\theta}\right|$ を掛ける。
+
+          **途中式** $\dfrac{dp}{d\theta}=\dfrac{e^{\theta}}{(1+e^{\theta})^2}=p(1-p)$、$1-p=\dfrac{1}{1+e^{\theta}}$ より
+          $$f(\theta)=\pi(p)\left|\frac{dp}{d\theta}\right|=2(1-p)\cdot p(1-p)=2\cdot\frac{1}{1+e^{\theta}}\cdot\frac{e^{\theta}}{(1+e^{\theta})^2}=\frac{2e^{\theta}}{(1+e^{\theta})^3}$$
+          確認：$\int_{-\infty}^{\infty}f(\theta)\,d\theta=\int_0^1 2(1-p)\,dp=1$。
+
+          **答え** $\dfrac{2e^{\theta}}{(1+e^{\theta})^{3}}$
+
+          **間違えやすい点** ヤコビアンを掛け忘れた $\dfrac{2}{1+e^{\theta}}$ は積分が発散し、密度にならない。$1-p=\dfrac{1}{1+e^{\theta}}$ と $p=\dfrac{e^{\theta}}{1+e^{\theta}}$ を取り違えると $\mathrm{Be}(2,1)$ の場合の式になる。
+          なお、$p$ について「受諾率は低め」という事前分布でも、$\theta$ の尺度では形が変わる。事前分布の形はパラメータの取り方で変わることに注意する。
+
+      - id: s17p08b
+        chapter: 31
+        terms: [beta-binomial-model, predictive-distribution, conjugate-prior]
+        topic: 受諾率のベータ事前分布と提案結果から次の2人がともに受諾する事後予測確率を求める
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          ある週に «m» 組に提案したところ、«y» 組が受け入れた（$p$ が与えられたとき各組は独立に確率 $p$ で受け入れるとする）。
+          この結果のもとで、次に提案する 2 組が**どちらも**受け入れる事後予測確率を求めよ。
+        answer: «pred»
+        tolerance: 0.001
+        answer_format: 小数第3位まで（小数第4位を四捨五入）で答えよ。±0.001 の差まで正解とする。
+        explanation: |
+          **方針** ベータ分布は二項分布の共役事前分布なので、事後分布は $\mathrm{Be}(\alpha+y,\beta+m-y)$。次の 2 組がともに受け入れる確率は、$p^2$ の事後期待値 $E[p^2\mid\text{データ}]$ である。
+
+          **途中式** 事後分布は $\mathrm{Be}(«a0»+«y»,\ «b0»+«my»)=\mathrm{Be}(«a1»,«b1»)$。$\mathrm{Be}(a,b)$ について $E[p^2]=\dfrac{a(a+1)}{(a+b)(a+b+1)}$ なので
+          $$E[p^2\mid\text{データ}]=\frac{«a1»\times«a2»}{«ab1»\times«ab2»}=\frac{«num»}{«den»}=«pred4»\cdots$$
+
+          **答え** $«pred_s»$
+
+          **間違えやすい点** 事後平均 $«a1»/«ab1»=«pm»$ を 2 乗すると $«pm2»$ になり、$E[p^2]=\{E[p]\}^2+V[p]$ の分散の分だけ小さすぎる（1 組目の受諾が 2 組目の予測を引き上げる効果を無視している）。
+          観測割合 $«y»/«m»$ をそのまま 2 乗した $«plug»$ も、事前分布と推定の不確かさを無視している。
+
+  - id: s17p09
+    title: 飲食店の会員の利用状態
+    context: |
+      ある飲食店の会員制度で、各月の会員の状態を「利用中」（状態 1）、「休眠」（状態 2）、「退会」（状態 3）に分ける。
+      月ごとの状態の推移は、次の推移確率行列をもつ時間的に一様なマルコフ連鎖に従うとする（行が今月、列が翌月の状態）。退会した会員は戻らない。
+      $$P=\begin{pmatrix}«p11» & «p12» & «p13»\\ «p21» & «p22» & «p23»\\ 0 & 0 & 1\end{pmatrix}$$
+    items:
+      - id: s17p09a
+        chapter: 14
+        terms: [absorbing-state, first-passage-time, markov-chain]
+        topic: 利用中・休眠・退会の3状態マルコフ連鎖で退会までに在籍する月数の期待値を求める
+        level: 応用
+        definition: false
+        type: numeric
+        question: |
+          今月「利用中」である会員が退会するまでに会員として在籍する月数の期待値を求めよ。
+          月数は今月を 1 か月目として数え、初めて「退会」になった月は数えない（今月が利用中で翌月に退会なら 1 か月）。
+        answer: «m1»
+        tolerance: 0.01
+        answer_format: 小数第2位まで（小数第3位を四捨五入）で答えよ。±0.01 の差まで正解とする。
+        explanation: |
+          **方針** 状態 $i$ から始めたときの退会までの月数の期待値を $m_i$ とおく。1 か月在籍したあと、翌月の状態に応じて同じ問題が繰り返されるので、一歩先で条件づけた連立方程式を立てる。
+
+          **途中式**
+          $$m_1=1+«p11»\,m_1+«p12»\,m_2,\qquad m_2=1+«p21»\,m_1+«p22»\,m_2$$
+          （退会した場合は 0 か月を足す。）整理すると
+          $$«a11»\,m_1-«p12»\,m_2=1,\qquad -«p21»\,m_1+«a22»\,m_2=1$$
+          行列式は $«a11»\times«a22»-«p12»\times«p21»=«det»$。クラメルの公式より
+          $$m_1=\frac{1\times«a22»+«p12»\times1}{«det»}=«m1_4»\cdots,\qquad m_2=\frac{«a11»\times1+«p21»\times1}{«det»}=«m2»$$
+          （基本行列 $N=(I-Q)^{-1}$ で見ると、利用中として過ごす月数の期待値 $«n11»$ と休眠として過ごす月数の期待値 $«n12»$ の和である。）
+
+          **答え** $«m1_s»$ か月
+
+          **間違えやすい点** 休眠を経由する道を無視して、利用中から毎月 «p13» の確率で退会するとみると $1/«p13»=«naive»$ か月になる。利用中で過ごす月数 $«n11»$ だけを答えるのも誤り（休眠の月も在籍に含む）。
+          今月を数えないと $«m1_minus1»$ になる。数え方の約束を確認すること。
+
+  - id: s17p10
+    title: ホテルの顧客満足度調査
+    context: |
+      あるホテルチェーンで宿泊客にアンケートを行い、総合満足度 $Y$ を 1（不満）、2（普通）、3（満足）の 3 段階で尋ねた。会員なら $x=1$、非会員なら $x=0$ とする。
+      満足度を次の比例オッズモデル（順序ロジットモデル）で分析した。
+      $$\log\frac{P(Y\le j\mid x)}{1-P(Y\le j\mid x)}=\theta_j-\beta x\quad(j=1,2)$$
+      推定値は $\theta_1=«th1»$、$\theta_2=«th2»$、$\beta=«beta»$ だった（$\beta>0$ は会員のほうが高い満足度になりやすいことを表す）。
+    items:
+      - id: s17p10a
+        chapter: 18
+        terms: [ordered-logit-model, logistic-regression, link-function]
+        topic: 3段階の満足度の比例オッズモデルで閾値と会員の係数から「普通」と答える確率を求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          推定したモデルで、会員（$x=1$）が「普通」（$Y=2$）と答える確率に最も近いものはどれか。必要なら次の値を使え。
+
+          | $u$ | $-2.0$ | $-1.2$ | $-0.4$ | $0.2$ | $1.0$ | $1.8$ |
+          |---|---|---|---|---|---|---|
+          | $e^{u}$ | «em20» | «em12» | «em04» | «e02» | «e10» | «e18» |
+        choices:
+          - '$«wsign»$'
+          - '$«p3»$'
+          - '$«ans»$'
+          - '$«nonmem»$'
+          - '$«cum2»$'
+        answer: 2
+        distractors:
+          - 線形予測子の符号を逆にして θ_j+βx とした
+          - 「満足」（Y=3）の確率を答えた
+          - 正解
+          - 非会員（x=0）の確率を答えた
+          - 累積確率 P(Y≤2) を答え、P(Y≤1) を引かなかった
+        explanation: |
+          **方針** 累積確率 $P(Y\le j\mid x)=\dfrac{e^{\theta_j-\beta x}}{1+e^{\theta_j-\beta x}}$ を $j=1,2$ について求め、差をとる：$P(Y=2)=P(Y\le2)-P(Y\le1)$。
+
+          **途中式** 会員では $\theta_1-\beta=«th1»-«beta»=«z1»$、$\theta_2-\beta=«th2»-«beta»=«z2»$。
+          $$P(Y\le1\mid x=1)=\frac{«em20»}{«em20p1»}=«c1»,\qquad P(Y\le2\mid x=1)=\frac{«e02»}{«e02p1»}=«c2»$$
+          $$P(Y=2\mid x=1)=«c2»-«c1»=«ans4»\cdots$$
+
+          **答え** $«ans»$
+
+          **間違えやすい点** このモデルは $\theta_j-\beta x$ の形なので、会員では累積確率が小さくなる（高い満足度に寄る）。$\theta_j+\beta x$ とすると $«wsign»$ になる。
+          累積確率 $P(Y\le2)=«cum2»$ や、「満足」の確率 $1-«c2»=«p3»$ と取り違えないこと。非会員なら $e^{1.0}$ と $e^{-1.2}$ を使って $«nonmem»$ になる。
+
+      - id: s17p10b
+        chapter: 26
+        terms: [goodness-of-fit-indices, structural-equation-modeling]
+        topic: 顧客満足の構造方程式モデルの適合度カイ二乗と自由度と標本の大きさからRMSEAを求める
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          同じアンケートの回答者 $N=«N»$ 人のデータで、満足度・再訪意向・推奨意向などを観測変数とする構造方程式モデルを最尤法で当てはめたところ、
+          適合度のカイ二乗統計量は $\chi^2=«chi2»$、自由度は $df=«dfm»$ だった。RMSEA（分母に $N-1$ を用いる定義）の値に最も近いものはどれか。
+        choices:
+          - '$«rm_nosqrt»$'
+          - '$«rmsea»$'
+          - '$«rm_nodf»$'
+          - '$«rm_nodfden»$'
+          - '$«rm_ratio»$'
+        answer: 1
+        distractors:
+          - 平方根をとらなかった
+          - 正解
+          - χ² から自由度を引かなかった
+          - 分母の自由度 df を掛け忘れた
+          - χ²/df の比をそのまま答えた
+        explanation: |
+          **方針** RMSEA は、カイ二乗統計量の期待値（自由度）を超える部分を、自由度と $N-1$ で割って平方根をとった量で、
+          $$\mathrm{RMSEA}=\sqrt{\max\left\{\frac{\chi^2-df}{df\,(N-1)},\,0\right\}}$$
+          と定義される。
+
+          **途中式**
+          $$\frac{«chi2»-«dfm»}{«dfm»\times«N1»}=\frac{«dchi»}{«dN»}=«rm2»,\qquad\sqrt{«rm2»}=«rmsea»$$
+          目安（0.05 以下でよい、0.08 以下でまずまず、0.1 以上で悪い）では「まずまず」の当てはまりである。
+
+          **答え** $«rmsea»$
+
+          **間違えやすい点** カイ二乗統計量はモデルが正しくても自由度程度の大きさになるので、$\chi^2-df$ を使う（引かないと $«rm_nodf»$）。分母の $df$ を忘れると $«rm_nodfden»$、平方根を忘れると $«rm_nosqrt»$。
+          $\chi^2/df=«rm_ratio»$ は別の目安であり RMSEA ではない。
+
+  - id: s17p11
+    title: 都市ホテルの客室需要と価格
+    context: |
+      ある都市ホテルの 52 週分の週次データで、販売客室数の対数 $\log Q$ を平均客室単価の対数 $\log P$ に回帰して、需要の価格弾力性 $\beta$ を推定したい
+      （モデル $\log Q=\alpha+\beta\log P+u$）。ホテルは需要が多いと見込んだ週に価格を上げるので、$\log P$ は誤差 $u$ と相関している。
+      そこで、リネン・清掃の委託単価 $Z$ を操作変数として使う。$Z$ は費用を通じて価格に影響するが、需要の誤差 $u$ とは無相関と仮定する。
+      標本分散と標本共分散は次のとおりだった。
+
+      | | $Z$ | $\log P$ | $\log Q$ |
+      |---|---|---|---|
+      | $Z$ | «vz» | «czp» | «czq» |
+      | $\log P$ | «czp» | «vp» | «cpq» |
+      | $\log Q$ | «czq» | «cpq» | «vq» |
+    items:
+      - id: s17p11a
+        chapter: 19
+        terms: [instrumental-variable-method, endogeneity, two-stage-least-squares]
+        topic: 価格が内生的な客室需要関数で費用側の操作変数から価格弾力性を推定する
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          操作変数法（2 段階最小二乗法と同じ）による価格弾力性 $\beta$ の推定値に最も近いものはどれか。
+        choices:
+          - '$«iv»$'
+          - '$«rf»$'
+          - '$«inv»$'
+          - '$«czq_vp»$'
+          - '$«ols»$'
+        answer: 0
+        distractors:
+          - 正解
+          - 誘導形の係数 Cov(Z,logQ)/Var(Z) を答え、第 1 段階の係数で割らなかった
+          - 比を逆にして Cov(Z,logP)/Cov(Z,logQ) とした
+          - 分母に Cov(Z,logP) ではなく Var(logP) を使った
+          - 内生性を無視した最小二乗推定値 Cov(logP,logQ)/Var(logP) を答えた
+        explanation: |
+          **方針** 説明変数・操作変数が 1 つずつのとき、操作変数推定量は $\hat\beta_{IV}=\dfrac{\mathrm{Cov}(Z,\log Q)}{\mathrm{Cov}(Z,\log P)}$。
+          2 段階で見ると、第 1 段階 $\log P$ を $Z$ に回帰した係数 $\mathrm{Cov}(Z,\log P)/\mathrm{Var}(Z)$ で、誘導形の係数 $\mathrm{Cov}(Z,\log Q)/\mathrm{Var}(Z)$ を割ったものになる。
+
+          **途中式**
+          $$\hat\beta_{IV}=\frac{«czq»}{«czp»}=«iv»$$
+          2 段階で見ると、第 1 段階 $«czp»/«vz»=«fs»$、誘導形 $«czq»/«vz»=«rf»$ で、$«rf»/«fs»=«iv»$。
+
+          **答え** $«iv»$
+
+          **間違えやすい点** 最小二乗推定値は $«cpq»/«vp»=«ols»$ で、需要が多い週ほど価格が高いという正の相関（誤差と価格の相関）を拾い、弾力性を 0 の側に偏らせている。
+          誘導形の係数 «rf» だけでは「委託単価 1 単位あたり」の効果であり、価格への効き方（第 1 段階の «fs»）で割る必要がある。
+
+  - id: s17p12
+    title: 海辺のカフェの日次売上
+    context: |
+      海水浴場に面したカフェで、夏の 60 日間について、ビールの売上 $Y_1$、かき氷の売上 $Y_2$、その日の最高気温 $T$ を記録した。標本相関係数は次のとおりだった。
+
+      | | $Y_1$（ビール） | $Y_2$（かき氷） | $T$（最高気温） |
+      |---|---|---|---|
+      | $Y_1$ | 1 | «r12» | «r1t» |
+      | $Y_2$ | «r12» | 1 | «r2t» |
+      | $T$ | «r1t» | «r2t» | 1 |
+    items:
+      - id: s17p12a
+        chapter: 3
+        terms: [partial-correlation-coefficient, spurious-correlation, covariance-and-correlation]
+        topic: ビールとかき氷の売上の相関から最高気温の影響を除いた偏相関係数を求め見かけの相関を見抜く
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          最高気温 $T$ の影響を除いた $Y_1$ と $Y_2$ の偏相関係数 $r_{12\cdot T}$ を求めよ。
+        answer: «pc»
+        tolerance: 0.01
+        answer_format: 小数第2位まで（小数第3位を四捨五入）で答えよ。±0.01 の差まで正解とする。
+        explanation: |
+          **方針** 偏相関係数は、$Y_1$ と $Y_2$ をそれぞれ $T$ に回帰した残差どうしの相関で、
+          $$r_{12\cdot T}=\frac{r_{12}-r_{1T}\,r_{2T}}{\sqrt{(1-r_{1T}^2)(1-r_{2T}^2)}}$$
+          で求められる。
+
+          **途中式**
+          $$r_{12}-r_{1T}r_{2T}=«r12»-«r1t»\times«r2t»=«r12»-«prod»=«num»$$
+          $$(1-«r1t»^2)(1-«r2t»^2)=«a1»\times«a2»=«den2»,\qquad\sqrt{«den2»}=«den»$$
+          $$r_{12\cdot T}=\frac{«num»}{«den»}=«pc4»\cdots$$
+
+          **答え** $«pc_s»$
+
+          **間違えやすい点** 平方根をとり忘れると $«pc_nosqrt»$ になる。分子の $r_{12}-r_{1T}r_{2T}=«num»$ をそのまま答えるのも誤り。
+          ビールとかき氷の相関 «r12» の大部分は、どちらも暑い日に売れることによる見かけの相関で、気温の影響を除くとほとんど残らない。
+
+      - id: s17p12b
+        chapter: 27
+        terms: [arma-model, autocovariance-autocorrelation, stationarity-condition]
+        topic: 気温の影響を除いた日次売上の偏差をARMA11とみて2次の自己相関を求める
+        level: 応用
+        definition: false
+        type: choice
+        question: |
+          気温などの影響を除いた日次売上の偏差 $X_t$ が、定常かつ反転可能な ARMA(1,1) モデル
+          $$X_t=«phi»\,X_{t-1}+\varepsilon_t+«th»\,\varepsilon_{t-1}$$
+          （$\varepsilon_t$ は平均 0、分散 $\sigma^2$ のホワイトノイズ）に従うとする。2 次の自己相関係数 $\rho(2)$ に最も近いものはどれか。
+        choices:
+          - '$«ar2»$'
+          - '$«rho2»$'
+          - '$«naive»$'
+          - '$«wd»$'
+          - '$«rho1_3»$'
+        answer: 1
+        distractors:
+          - MA 部分を無視して AR(1) の ρ(2)=φ² とした
+          - 正解
+          - ρ(1)=φ+θ と誤って ρ(2)=φ(φ+θ) とした
+          - ρ(1) の分母を 1+θ² とした（γ(0) の 2φθ を落とした）
+          - 1 次の自己相関 ρ(1) を答えた
+        explanation: |
+          **方針** ARMA(1,1)（$X_t=\phi X_{t-1}+\varepsilon_t+\theta\varepsilon_{t-1}$）では
+          $$\rho(1)=\frac{(1+\phi\theta)(\phi+\theta)}{1+2\phi\theta+\theta^2},\qquad\rho(k)=\phi\,\rho(k-1)\ (k\ge2)$$
+          となる。$\varepsilon_{t-1}$ の影響は 1 期先までしか直接届かないので、2 次以降は AR 部分の $\phi$ を掛けて減衰する。
+
+          **途中式** $\phi=«phi»$、$\theta=«th»$ より $\phi\theta=«pt»$。
+          $$\rho(1)=\frac{(1+«pt»)(«phi»+«th»)}{1+2\times«pt»+«th»^2}=\frac{«n1»\times«ppt»}{1+«tpt»+«th2»}=\frac{«rnum»}{«d1»}=«rho1»$$
+          $$\rho(2)=«phi»\times«rho1»=«rho2_4»\cdots$$
+
+          **答え** $«rho2»$
+
+          **間違えやすい点** AR(1) の公式 $\rho(2)=\phi^2=«ar2»$ は MA 部分を無視している。$\rho(1)$ は $\phi+\theta$ ではない（そうすると $«naive»$）。
+          $\gamma(0)=\dfrac{1+2\phi\theta+\theta^2}{1-\phi^2}\sigma^2$ の $2\phi\theta$ を落とすと $«wd»$ になる。$\rho(1)=«rho1_3»$ と取り違えないこと。
+
+  - id: s17p13
+    title: リゾートホテルの宿泊客アンケート
+    context: |
+      あるリゾートホテルの 1 か月の宿泊客 $N=«N»$ 組から、«n» 組を単純無作為抽出（非復元）してアンケートを行った。
+    items:
+      - id: s17p13a
+        chapter: 21
+        terms: [regression-estimation, simple-random-sampling, ratio-estimation]
+        topic: 予約システムの平均泊数を補助情報にした回帰推定量で1組あたりの館内支出を推定する
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          1 組あたりの館内での支出 $y$（千円）と泊数 $x$ について、標本では $\bar y=«yb»$、$\bar x=«xb»$、$y$ の $x$ への標本回帰係数 $b=«b»$ だった。
+          予約システムから、全宿泊客の平均泊数は $\bar X=«X»$ とわかっている。回帰推定量による 1 組あたりの平均支出の推定値はどれか。
+        choices:
+          - '$«bx»$'
+          - '$«rev»$'
+          - '$«yb»$'
+          - '$«reg»$'
+          - '$«ratio»$'
+        answer: 3
+        distractors:
+          - 切片を無視して b×X̄ とした
+          - 補正の向きを逆にして b(x̄−X̄) を足した
+          - 補助情報を使わない標本平均を答えた
+          - 正解
+          - 比推定量 (ȳ/x̄)X̄ を答えた
+        explanation: |
+          **方針** 回帰推定量は、標本の $\bar x$ が母平均 $\bar X$ からずれている分を、回帰係数で $y$ に引き直して補正する：$\bar y_{\mathrm{reg}}=\bar y+b(\bar X-\bar x)$。
+
+          **途中式**
+          $$\bar y_{\mathrm{reg}}=«yb»+«b»\times(«X»-«xb»)=«yb»+«b»\times«dx»=«yb»+«adj»=«reg»$$
+
+          **答え** $«reg»$（千円）
+
+          **間違えやすい点** 標本の平均泊数 «xb» は母集団の «X» より短いので、標本平均 «yb» は過小と考えて上に補正する。向きを逆にすると «rev»。
+          比推定量 $(\bar y/\bar x)\bar X=«ratio»$ は回帰直線が原点を通るときに適した推定量で、回帰推定量とは一般に一致しない。
+
+      - id: s17p13b
+        chapter: 29
+        terms: [multiple-imputation, rubins-rules, missing-data-mechanism]
+        topic: 世帯年収の無回答を5回の多重代入で補いルービンのルールで併合した推定値の標準誤差を求める
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          世帯年収の質問には無回答があったため、多重代入法で $m=«m»$ 組の代入済みデータを作り、それぞれで平均世帯年収（百万円）の推定値 $Q_j$ とその分散の推定値 $U_j$ を求めた。
+
+          | $j$ | 1 | 2 | 3 | 4 | 5 |
+          |---|---|---|---|---|---|
+          | $Q_j$ | «q1» | «q2» | «q3» | «q4» | «q5» |
+          | $U_j$ | «u1» | «u2» | «u3» | «u4» | «u5» |
+
+          ルービンのルールで併合した推定値 $\bar Q$ の標準誤差を求めよ（代入間分散は $m-1$ で割る不偏分散とする）。
+        answer: «se»
+        tolerance: 0.001
+        answer_format: 小数第3位まで（小数第4位を四捨五入）で答えよ。±0.001 の差まで正解とする。
+        explanation: |
+          **方針** 全分散 $T=\bar U+\left(1+\dfrac1m\right)B$ を求めて平方根をとる。$\bar U$ は代入内分散の平均、$B$ は推定値 $Q_j$ の代入間の分散。
+
+          **途中式** $\bar Q=«qb»$、$\bar U=«W»$。各 $Q_j-\bar Q$ は «dv1», «dv2», «dv3», «dv4», «dv5» で、偏差平方和は «ssq» なので $B=«ssq»/(«m»-1)=«ssq»/«m1»=«B»$。
+          $$T=«W»+«fac»\times«B»=«W»+«fB»=«T»,\qquad\sqrt{«T»}=«se4»\cdots$$
+
+          **答え** $«se_s»$
+
+          **間違えやすい点** 代入内分散 $\bar U$ だけを使うと $\sqrt{«W»}=«se_w»$ となり、代入による不確かさを無視して標準誤差を過小に見積もる。
+          $(1+1/m)$ を付け忘れると $«se_nof»$、$B$ を $m$ で割ると $«se_bm»$ になる。
+
+  - id: s17p14
+    title: 宿泊予約サイトの口コミ評価
+    context: |
+      ある宿泊予約サイトで、多数のホテルについて 6 項目（清潔さ・立地・接客・朝食・設備・コストパフォーマンス）の平均評価点を集計した。
+    items:
+      - id: s17p14a
+        chapter: 22
+        terms: [kaiser-criterion, cumulative-contribution-ratio, pca-on-correlation-matrix]
+        topic: 口コミ6項目の相関行列の固有値からカイザー基準と累積寄与率80%基準で主成分の数を決める
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          6 項目の相関行列にもとづく主成分分析を行ったところ、固有値は大きい順に «ev1», «ev2», «ev3», «ev4», «ev5», «ev6» だった。
+          採用する主成分の個数について正しいものはどれか。
+        choices:
+          - 'カイザー基準（固有値が 1 以上）では 3 個、累積寄与率 80% 以上となる最小の個数では 2 個を採用する'
+          - 'カイザー基準でも累積寄与率 80% 基準でも 2 個を採用する'
+          - 'カイザー基準では 2 個、累積寄与率 80% 以上となる最小の個数では 3 個を採用する'
+          - 'カイザー基準でも累積寄与率 80% 基準でも 3 個を採用する'
+          - '第 1 主成分の寄与率は $«ev1»/(«ev1»+«ev2»)\approx«c12»$ である'
+        answer: 2
+        distractors:
+          - 2 つの基準を取り違えた
+          - 累積寄与率の分母を誤り、2 個で 80% に達すると判断した
+          - 正解
+          - カイザー基準で 0.8 も 1 に近いとして数えた
+          - 寄与率の分母を固有値の総和（相関行列では 6）ではなく採用した主成分の固有値の和にした
+        explanation: |
+          **方針** 相関行列の固有値の和は変数の数 $p=«p»$ に等しい。カイザー基準は固有値が 1（1 変数分の分散）以上の主成分を採用する。累積寄与率は固有値の累積和を «p» で割る。
+
+          **途中式** 1 以上の固有値は «ev1» と «ev2» の 2 個。累積寄与率は
+          $$\frac{«ev1»}{«p»}=«cum1»,\qquad\frac{«s2»}{«p»}=«cum2»,\qquad\frac{«s3»}{«p»}=«cum3»$$
+          で、80% 以上になるのは 3 個目から。
+
+          **答え** 「カイザー基準では 2 個、累積寄与率 80% 以上となる最小の個数では 3 個を採用する」
+
+          **間違えやすい点** 寄与率の分母は全固有値の和（相関行列なら変数の数 «p»）。採用する主成分の固有値の和で割ると «c12» のように過大になる。
+          2 つの基準は一般に違う個数を与えるので、どちらの基準を使ったかを明記する。
+
+      - id: s17p14b
+        chapter: 25
+        terms: [factor-rotation, communality, factor-loading]
+        topic: 2因子モデルの負荷量を直交回転したあとの負荷量を計算し共通性が回転で変わらないことを確かめる
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          同じデータに直交 2 因子モデル（因子どうしは無相関で分散 1）を当てはめ、「接客」の因子負荷量は $(«l11»,\ «l12»)$ だった。
+          負荷量行列 $\Lambda$ を直交行列 $T=\begin{pmatrix}«c» & -«sn»\\ «sn» & «c»\end{pmatrix}$ で $\Lambda^{*}=\Lambda T$ と回転したとき、
+          「接客」の回転後の負荷量と共通性の組として正しいものはどれか。
+        choices:
+          - '負荷量 $(«rt1»,\ «rt2»)$、共通性 $«comm»$'
+          - '負荷量 $(«r1»,\ «r2»)$、共通性 $«rsum»$'
+          - '負荷量 $(«w1»,\ «w2»)$、共通性 $«wcomm»$'
+          - '負荷量 $(«r1»,\ «r2»)$、共通性 $«comm»$'
+          - '負荷量 $(«r1»,\ «r2»)$、共通性 $«uniq»$'
+        answer: 3
+        distractors:
+          - 行ベクトルに T の転置を掛けた（回転の向きを逆にした）
+          - 共通性を負荷量の 2 乗和ではなく和にした
+          - T の対角成分だけを掛けた（行列の積の誤り）
+          - 正解
+          - 共通性と独自分散を取り違えた
+        explanation: |
+          **方針** 行ベクトル（ある項目の負荷量）に右から $T$ を掛ける。共通性は負荷量の 2 乗和で、直交回転では行ベクトルの長さが変わらないので共通性も変わらない。
+
+          **途中式** $(«l11»,\ «l12»)T$ の第 1 成分は $T$ の第 1 列 $(«c»,«sn»)^\top$ との内積、第 2 成分は第 2 列 $(-«sn»,«c»)^\top$ との内積：
+          $$«l11»\times«c»+«l12»\times«sn»=«e1»+«e2»=«r1»,\qquad «l11»\times(-«sn»)+«l12»\times«c»=-«e3»+«e4»=«r2»$$
+          共通性は回転前 $«l11»^2+«l12»^2=«comm»$、回転後 $«r1»^2+(«r2»)^2=«r1sq»+«r2sq»=«comm»$ で一致する。
+
+          **答え** 負荷量 $(«r1»,\ «r2»)$、共通性 $«comm»$
+
+          **間違えやすい点** $\Lambda T$ と $\Lambda T^\top$ を取り違えると $(«rt1»,\ «rt2»)$ になる。共通性は 2 乗和（和の «rsum» ではない）。
+          独自分散は $1-«comm»=«uniq»$（観測変数を標準化した場合）で、共通性とは別のもの。直交回転ではモデルが再現する相関行列も変わらない。

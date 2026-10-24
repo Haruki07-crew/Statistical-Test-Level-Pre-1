@@ -34,26 +34,16 @@ def p01():
     distinct(*c.values())
     # (b) 平均残存期間 m(t) = (θ+t)/(α-1)
     mrl = (th + t) / (al - 1)
-    # (c) カプラン・マイヤー（同時刻は解約を先に数える）
-    data = [(2, 1), (3, 1), (3, 0), (5, 1), (5, 1), (6, 0), (7, 1), (9, 0), (10, 1), (12, 0)]
-    S = 1.0
-    steps = []
-    for tt in sorted({x for x, e in data if e == 1}):
-        n_at = sum(1 for x, _ in data if x >= tt)
-        d = sum(1 for x, e in data if x == tt and e == 1)
-        S *= (n_at - d) / n_at
-        steps.append((tt, n_at, d, S))
-    S8 = [st[3] for st in steps if st[0] <= 8][-1]
+    # (c) 比例ハザード：S1(t) = S0(t)^{exp(β)}
+    S0, hr = 0.55, 0.500
+    S1 = S0 ** hr
     return {
         "al": al, "th": th, "t": t, "tht": th + t, "ratio": s(th / (th + t), 3), "St": s(St, 4),
         **c, "f4": s(f, 4), "Ft": s(1 - St, 4),
         "al1": s(al - 1, 1), "mrl": r(mrl, 2), "mrl4": s(mrl, 4), "ET": s(th / (al - 1), 2),
         "mrl_cond": s(mrl + t, 2), "mrl_al": s((th + t) / al, 2),
-        "S8": r(S8, 3), "S8_4": s(S8, 4), "S8_naive": s(1 - 5 / 10, 3), "S8_drop": s(3 / 8, 3),
-        "n1": steps[0][1], "n2": steps[1][1], "n3": steps[2][1], "n4": steps[3][1],
-        "S1": s(steps[0][3], 3), "S2": s(steps[1][3], 3), "S3": s(steps[2][3], 4), "S4": s(steps[3][3], 4),
-        "S_model8": s((th / (th + 8)) ** al, 3),
-        "S2_cfirst": s(0.9 * 7 / 8, 4),
+        "S0": S0, "hr": s(hr, 3), "S1": r(S1, 3), "S1_4": s(S1, 4), "S1_half": s(1 - hr * (1 - S0), 3),
+        "S1_sq": s(S0 ** 2, 4), "S1_mul": s(S0 * hr, 3),
     }
 
 
@@ -72,14 +62,7 @@ def p02():
 
 
 def p03():
-    n = 200
-    p1, p2, p3 = 0.45, 0.35, 0.20
-    vd = n * (p1 * (1 - p1) + p3 * (1 - p3) + 2 * p1 * p3)
-    c = dict(ok=s(vd, 1), nocov=s(n * (p1 * (1 - p1) + p3 * (1 - p3)), 1),
-             minus=s(n * (p1 * (1 - p1) + p3 * (1 - p3) - 2 * p1 * p3), 1),
-             sd=s(sqrt(vd), 2), bin=s(n * (p1 - p3) * (1 - (p1 - p3)), 1))
-    distinct(*c.values())
-    # (b) NPS のワルド区間
+    # NPS のワルド区間
     m, a1, a2, a3 = 400, 188, 140, 72
     q1, q3 = a1 / m, a3 / m
     d = q1 - q3
@@ -88,14 +71,11 @@ def p03():
     lo = d - 1.96 * se
     se_ind = sqrt((q1 * (1 - q1) + q3 * (1 - q3)) / m)
     return {
-        "n": n, "p1": p1, "p2": p2, "p3": p3, "q1p": s(p1 * (1 - p1), 4), "q3p": s(p3 * (1 - p3), 2),
-        "c13": s(p1 * p3, 2), "c13n": s(n * p1 * p3, 0), "var1": s(n * p1 * (1 - p1), 1), "var3": s(n * p3 * (1 - p3), 1),
-        "per": s(vd / n, 4), "Ed": s(p1 - p3, 2), "Ed2": s(p1 + p3, 2), "Ed_sq": s((p1 - p3) ** 2, 4),
-        **c,
         "m": m, "a1": a1, "a2": a2, "a3": a3, "q1": s(q1, 2), "q3": s(q3, 2), "d": s(d, 2), "dsq": s(d ** 2, 4),
         "q13": s(q1 + q3, 2), "vv": s(vv, 4), "vvm": s(vv / m, 8), "se": s(se, 5), "hw": s(1.96 * se, 5),
         "lo": r(lo, 3), "lo4": s(lo, 4), "hi": s(d + 1.96 * se, 3),
         "se_ind": s(se_ind, 5), "lo_ind": s(d - 1.96 * se_ind, 3),
+        "c13": s(q1 * q3, 4), "v1": s(q1 * (1 - q1), 4), "v3": s(q3 * (1 - q3), 4),
     }
 
 
@@ -109,150 +89,155 @@ def p04():
     half = n * ln1 + (sx - n) * ln2
     G2 = 2 * half
     wald = (p - p0) ** 2 / (p ** 2 * (1 - p) / n)
-    score = (p - p0) ** 2 / (p0 ** 2 * (1 - p0) / n)
+    score = (n / p0 - (sx - n) / (1 - p0)) ** 2 / (n / (p0 ** 2 * (1 - p0)))   # スコアの2乗 / p0 での情報量
     c = dict(G=s(G2, 2), half=s(half, 2), wald=s(wald, 2), score=s(score, 2))
     distinct(*c.values())
+    crlb = (1 - p) / (p ** 2 * n)
     return {
+        "crlb": r(crlb, 3), "crlb4": s(crlb, 4), "p2": s(p ** 2, 4), "p2n": s(p ** 2 * n, 4), "dt": s(1 / p ** 4, 0),
+        "cr_noinv": s(p ** 2 * (1 - p) / n, 4), "cr_sd": s(sqrt(crlb), 3), "cr_noq": s(1 / (p ** 2 * n), 3), "cr_pq": s((1 - p) / (p * n), 3),
         "n": n, "sx": sx, "fail": sx - n, "xbar": s(sx / n, 1), "p": s(p, 2), "q": s(1 - p, 2),
         "info": s(1 / (p ** 2 * (1 - p)), 4), "se": r(se, 4), "se6": s(se, 6), "varp": s(p ** 2 * (1 - p) / n, 7),
         "se_bin": s(sqrt(p * (1 - p) / n), 4), "se_noq": s(sqrt(p ** 2 / n), 4),
-        "p0": p0, "ln1": ln1, "ln2": ln2, "t1": s(n * ln1, 3), "t2": s((sx - n) * ln2, 3),
+        "half3": s(half, 3), "G3": s(G2, 3), "p0": p0, "U0": s(n / p0 - (sx - n) / (1 - p0), 1), "I0": s(n / (p0 ** 2 * (1 - p0)), 1), "ln1": ln1, "ln2": ln2, "t1": s(n * ln1, 3), "t2": s((sx - n) * ln2, 3),
         **c,
     }
 
 
 def p05():
-    n, mu, sd = 100, 5.0, 3.0
-    ES, SDS = n * mu, sqrt(n) * sd
-    k = 60 / SDS
-    cheb = 1 - 1 / k ** 2
-    phi2, phi02 = 0.9772, 0.5793
-    clt = 2 * phi2 - 1
-    # 誤り：合計の SD を n×σ=300 とした
-    clt_bad = 2 * phi02 - 1
+    # (a) コーシー分布の標本中央値の漸近標準誤差 πγ/(2√n)
+    n, gam, pi = 100, 2, 3.1416
+    se_med = pi * gam / (2 * sqrt(n))
+    c = dict(ok=s(se_med, 3), var=s(se_med ** 2, 3), half=s(se_med / 2, 3), dbl=s(2 * se_med, 3), mean=s(gam / sqrt(n), 3))
+    distinct(*c.values())
     # (b) ブートストラップ
     x = [2, 3, 4, 6, 10]
     m = sum(x) / len(x)
     ss = sum((v - m) ** 2 for v in x)
     vb = ss / len(x) / len(x)
-    c = dict(ok=s(vb, 2), unb=s(ss / (len(x) - 1) / len(x), 2), sig=s(ss / len(x), 2),
-             s2=s(ss / (len(x) - 1), 2), bsd=s(sqrt(vb), 2))
-    distinct(*c.values())
+    cb = dict(ok=s(vb, 2), unb=s(ss / (len(x) - 1) / len(x), 2), sig=s(ss / len(x), 2),
+              s2=s(ss / (len(x) - 1), 2), bsd=s(sqrt(vb), 2))
+    distinct(*cb.values())
     return {
-        "n": n, "mu": s(mu, 1), "sd": s(sd, 1), "ES": s(ES, 0), "SDS": s(SDS, 0), "VS": s(SDS ** 2, 0),
-        "lo": s(ES - 60, 0), "hi": s(ES + 60, 0), "k": s(k, 0), "cheb": s(cheb, 2), "cheb_lin": s(1 - 1 / k, 2),
-        "phi2": phi2, "phi02": phi02, "clt": s(clt, 3), "clt1": s(phi2, 3), "out_c": s(1 / k ** 2, 2),
-        "out_n": s(1 - clt, 3), "clt_bad": s(clt_bad, 3), "SDbad": s(n * sd, 0),
+        "n": n, "gam": gam, "pi": pi, "fm": s(1 / (pi * gam), 4), "pig": s(pi * gam, 4), "sqn": s(sqrt(n), 0), **{"x_" + k: v for k, v in c.items()},
         "x1": x[0], "x2": x[1], "x3": x[2], "x4": x[3], "x5": x[4], "xm": s(m, 0), "ss": s(ss, 0),
-        "nb": len(x), "sig2": s(ss / len(x), 0), "s2v": s(ss / (len(x) - 1), 0), **c,
+        "nb": len(x), "sig2": s(ss / len(x), 0), "s2v": s(ss / (len(x) - 1), 0), **cb,
     }
 
 
 def p06():
-    n, rr, rho0 = 40, 0.62, 0.4
-    z_r, z_0 = 0.7250, 0.4236   # artanh の値（問題文に示す）
-    Z = (z_r - z_0) * sqrt(n - 3)
-    Zn = (z_r - z_0) * sqrt(n)
-    tt = rr * sqrt(n - 2) / sqrt(1 - rr ** 2)
-    c = dict(Z=s(Z, 2), Zn=s(Zn, 2), diff=s(z_r - z_0, 2), t=s(tt, 2))
+    # (a) 無相関検定が有意になる |r| の境界
+    n = 40
+    t2, t1, z = 2.024, 1.686, 1.960
+    rc = lambda q, df: q / sqrt(df + q * q)
+    c = dict(ok=s(rc(t2, n - 2), 3), one=s(rc(t1, n - 2), 3), z=s(rc(z, n - 2), 3), nosq=s(t2 / sqrt(n - 2), 3),
+             r2=s(rc(t2, n - 2) ** 2, 3))
     distinct(*c.values())
-    # (b) 欠落変数バイアス
-    b1, b2, vx, cxw, vw = 0.8, 2.5, 4.0, 1.2, 2.25
-    dlt = cxw / vx
-    short = b1 + b2 * dlt
-    cc = dict(ok=s(short, 2), none=s(b1, 2), minus=s(b1 - b2 * dlt, 2), nodiv=s(b1 + b2 * cxw, 2),
-              rev=s(b1 + b2 * cxw / vw, 2))
-    distinct(*cc.values())
-    return {"n": n, "r": rr, "rho0": rho0, "zr": s(z_r, 4), "z0": s(z_0, 4), "n3": n - 3, "sq": s(sqrt(n - 3), 4),
-            "dz": s(z_r - z_0, 4), "n2": n - 2, **c,
-            "b1": b1, "b2": b2, "vx": vx, "cxw": cxw, "vw": vw, "dlt": s(dlt, 2), "bias": s(b2 * dlt, 2),
-            **{"o_" + k: v for k, v in cc.items()}}
-
-
-L8 = [[1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 2, 2, 2, 2], [1, 2, 2, 1, 1, 2, 2], [1, 2, 2, 2, 2, 1, 1],
-      [2, 1, 2, 1, 2, 1, 2], [2, 1, 2, 2, 1, 2, 1], [2, 2, 1, 1, 2, 2, 1], [2, 2, 1, 2, 1, 1, 2]]
-Y8 = [63, 58, 55, 57, 66, 71, 61, 64]
+    # (b) 2次の回帰で粗利 - 広告費を最大にする広告費
+    b0, b1, b2, mg = 200, 6.0, 0.12, 0.4
+    xs = (mg * b1 - 1) / (2 * mg * b2)
+    return {"n": n, "r": 0.62, "t2": t2, "t1": t1, "df": n - 2, "t2sq": s(t2 ** 2, 4), "den": s(n - 2 + t2 ** 2, 4),
+            "sden": s(sqrt(n - 2 + t2 ** 2), 4), **{"r_" + k: v for k, v in c.items()},
+            "b0": b0, "b1": s(b1, 1), "b2": s(b2, 2), "mg": mg, "mb1": s(mg * b1, 1), "mb2": s(2 * mg * b2, 3),
+            "num": s(mg * b1 - 1, 1), "xs": r(xs, 2), "xs4": s(xs, 4), "xmax": s(b1 / (2 * b2), 1),
+            "xnomg": s((b1 - 1) / (2 * b2), 2), "xno2": s((mg * b1 - 1) / (mg * b2), 2),
+            "yxs": s(b0 + b1 * xs - b2 * xs ** 2, 2)}
 
 
 def p07():
-    # (a) フリードマン検定
-    ranks = [(1, 2, 3), (1, 3, 2), (2, 1, 3), (1, 2, 3), (2, 1, 3), (1, 2, 3), (2, 3, 1), (1, 2, 3)]
-    n, k = len(ranks), 3
-    R = [sum(rw[j] for rw in ranks) for j in range(k)]
-    sR2 = sum(x * x for x in R)
-    Q = 12 / (n * k * (k + 1)) * sR2 - 3 * n * (k + 1)
-    rbar = [x / n for x in R]
-    small = sum((x - (k + 1) / 2) ** 2 for x in rbar)
-    c = dict(Q=s(Q, 2), raw=s(12 / (n * k * (k + 1)) * sR2, 2), small=s(small, 2))
+    # (a) ヨンクヒール・タプストラ検定（価格が高いほど販売数が少ないという順序対立仮説）
+    g = {"L": [12, 15, 18], "M": [10, 13, 14], "H": [8, 9, 11]}
+    U = lambda a, b: sum(1 for x in g[a] for y in g[b] if x > y)
+    uLM, uLH, uMH = U("L", "M"), U("L", "H"), U("M", "H")
+    J = uLM + uLH + uMH
+    ns = [len(v) for v in g.values()]
+    N = sum(ns)
+    EJ = (N ** 2 - sum(k * k for k in ns)) / 4
+    VJ = (N ** 2 * (2 * N + 3) - sum(k * k * (2 * k + 3) for k in ns)) / 72
+    Z = (J - EJ) / sqrt(VJ)
+    c = dict(ok=s(Z, 2), rev=s((sum(a * b for a, b in [(3, 3)] * 3) - J - EJ) / sqrt(VJ), 2), adj=s((uLM + uMH - EJ) / sqrt(VJ), 2),
+             var=s((J - EJ) / VJ, 2), sq=s((J - EJ) / sqrt(EJ), 2))
     distinct(*c.values())
-    # (b) L8 直交表
-    T = []
-    for j in range(7):
-        t1 = sum(y for y, row in zip(Y8, L8) if row[j] == 1)
-        t2 = sum(y for y, row in zip(Y8, L8) if row[j] == 2)
-        T.append((t1, t2, (t1 - t2) ** 2 / 8))
-    ybar = sum(Y8) / 8
-    ST = sum((y - ybar) ** 2 for y in Y8)
-    assert abs(ST - sum(x[2] for x in T)) < 1e-9
-    SA, SB, SC = T[0][2], T[1][2], T[3][2]
-    Se = ST - SA - SB - SC
-    Ve = Se / 4
-    FA = SA / Ve
+    # (b) 2^{4-1} 一部実施要因計画 D=ABC
+    runs = [(a, b, cc) for cc in (-1, 1) for b in (-1, 1) for a in (-1, 1)]
+    y = [52, 61, 58, 55, 63, 57, 54, 68]
+    D = [a * b * cc for a, b, cc in runs]
+    plus = sum(v for v, d in zip(y, D) if d > 0)
+    minus = sum(v for v, d in zip(y, D) if d < 0)
+    eff = (plus - minus) / 4
+    ce = dict(ok=s(eff, 1), half=s(eff / 2, 1), tot=s(plus - minus, 1))
+    distinct(*ce.values())
     return {
-        **{f"r{i}{j}": ranks[i][j] for i in range(n) for j in range(k)},
-        "RA": R[0], "RB": R[1], "RC": R[2], "RA2": R[0] ** 2, "RB2": R[1] ** 2, "RC2": R[2] ** 2, "sR2": sR2,
-        "nn": n, "kk": k, "coef": s(12 / (n * k * (k + 1)), 3), "sub": 3 * n * (k + 1),
-        "rbA": s(rbar[0], 3), "rbB": s(rbar[1], 3), "rbC": s(rbar[2], 3), **c,
-        **{f"y{i + 1}": Y8[i] for i in range(8)},
-        "TA1": T[0][0], "TA2": T[0][1], "TB1": T[1][0], "TB2": T[1][1], "TC1": T[3][0], "TC2": T[3][1],
-        "SA": s(SA, 3), "SB": s(SB, 3), "SC": s(SC, 3), "ST": s(ST, 3), "Se": s(Se, 3), "Ve": s(Ve, 4),
-        "FA": r(FA, 2), "FA4": s(FA, 4), "FA_e3": s(SA / (Se / 3), 2), "FA_e7": s(SA / (Se / 7), 2),
-        "dA": T[0][1] - T[0][0], "dB": T[1][0] - T[1][1], "dC": T[3][0] - T[3][1],
+        **{f"{k}{i + 1}": v[i] for k, v in g.items() for i in range(3)}, "uLM": uLM, "uLH": uLH, "uMH": uMH, "J": J,
+        "N": N, "N2": N ** 2, "sn2": sum(k * k for k in ns), "EJ": s(EJ, 1), "VJ": s(VJ, 2), "SJ": s(sqrt(VJ), 1),
+        "num1": N ** 2 * (2 * N + 3), "num2": sum(k * k * (2 * k + 3) for k in ns), "Jrev": 27 - J,
+        **{"j_" + k: v for k, v in c.items()},
+        **{f"y{i + 1}": y[i] for i in range(8)}, **{f"A{i + 1}": "+" if runs[i][0] > 0 else "−" for i in range(8)},
+        **{f"B{i + 1}": "+" if runs[i][1] > 0 else "−" for i in range(8)}, **{f"C{i + 1}": "+" if runs[i][2] > 0 else "−" for i in range(8)},
+        **{f"D{i + 1}": "+" if D[i] > 0 else "−" for i in range(8)},
+        "Dp": plus, "Dm": minus, "Ddiff": plus - minus, **{"f_" + k: v for k, v in ce.items()},
     }
 
 
 def p08():
-    lam, mu = 24, 30
-    rho = lam / mu
-    Wq = rho / (mu - lam) * 60
-    W = 1 / (mu - lam) * 60
-    L = rho / (1 - rho)
-    Lq = rho ** 2 / (1 - rho)
-    c = dict(Wq=s(Wq, 1), W=s(W, 1), Lq=s(Lq, 1), L=s(L, 1), Lqmu=s(Lq / mu * 60, 1))
+    la, lw = 6, 18      # アプリ・Web（件/時）
+    tmin = 5
+    lt = (la + lw) * tmin / 60
+    ex = {0.5: 0.6065, 1.5: 0.2231, 2.0: 0.1353}
+    pa = la / (la + lw)
+    c = dict(ok=s(pa * ex[lt], 3), app=s(pa * ex[la * tmin / 60], 3), web=s(pa * ex[lw * tmin / 60], 3),
+             noroute=s(ex[lt], 3), cdf=s(pa * (1 - ex[lt]), 3))
     distinct(*c.values())
-    return {"lam": lam, "mu": mu, "svc": s(60 / mu, 0), "rho": s(rho, 1), "dif": mu - lam, **c}
+    return {"la": la, "lw": lw, "tmin": tmin, "lsum": la + lw, "lt": s(lt, 1), "pa": s(pa, 2),
+            "e05": ex[0.5], "e15": ex[1.5], "e20": ex[2.0], **c}
 
 
 def p09():
-    b1, se1, b3, se3, cov = -2.40, 0.50, 1.10, 0.60, -0.24
-    est = b1 + b3
-    var = se1 ** 2 + se3 ** 2 + 2 * cov
-    se = sqrt(var)
-    t = est / se
-    return {"b1": s(b1, 2), "se1": s(se1, 2), "b3": s(b3, 2), "se3": s(se3, 2), "cov": s(cov, 2),
-            "est": s(est, 2), "v1": s(se1 ** 2, 2), "v3": s(se3 ** 2, 2), "cov2": s(2 * cov, 2), "var": s(var, 2),
-            "se": s(se, 4), "t": r(t, 2), "t4": s(t, 4),
-            "t_nocov": s(est / sqrt(se1 ** 2 + se3 ** 2), 2), "t_plus": s(est / sqrt(se1 ** 2 + se3 ** 2 - 2 * cov), 2),
-            "t_b3": s(b3 / se3, 2), "corr": s(cov / (se1 * se3), 1)}
+    # (a) 両対数モデルの予測比
+    b1, b2 = -1.8, 0.6
+    pw, e6 = 1.2088, 1.8221   # 0.9^{-1.8}, e^{0.6}
+    ratio = pw * e6
+    # (b) HC0 標準誤差
+    d = [-5, -3, -1, 1, 3, 5]
+    e = [2.0, -1.6, -0.4, -0.4, -1.6, 2.0]
+    assert abs(sum(e)) < 1e-12 and abs(sum(a * b for a, b in zip(d, e))) < 1e-12
+    Sxx = sum(a * a for a in d)
+    de2 = [a * a * b * b for a, b in zip(d, e)]
+    hc0 = sqrt(sum(de2)) / Sxx
+    se2 = sum(b * b for b in e) / (len(d) - 2)
+    us = sqrt(se2 / Sxx)
+    h6 = 1 / len(d) + d[5] ** 2 / Sxx
+    dfb = -d[5] * e[5] / (Sxx * (1 - h6))
+    cd = dict(ok=s(dfb, 2), noh=s(-d[5] * e[5] / Sxx, 2), sign=s(-dfb, 2), h=s(-d[5] * e[5] / (Sxx * h6), 2))
+    distinct(*cd.values())
+    return {"h6": s(h6, 4), "h6n": s(1 - h6, 4), "dfb": r(dfb, 2), "dfb4": s(dfb, 4), **{"db_" + k: v for k, v in cd.items()},
+            "de6": s(d[5] * e[5], 1), "Sh": s(Sxx * (1 - h6), 4),
+            "b1": b1, "b2": b2, "pw": pw, "ex6": e6, "ratio": r(ratio, 2), "ratio4": s(ratio, 4),
+            "add": s(1 + 0.18 + 0.6, 2), "addm": s(pw + e6 - 1, 2), "lin": s(1.18 * 1.6, 2),
+            **{f"d{i + 1}": d[i] for i in range(6)}, **{f"e{i + 1}": s(e[i], 1) for i in range(6)},
+            **{f"q{i + 1}": s(de2[i], 2) for i in range(6)}, "Sxx": Sxx, "Sxx2": Sxx ** 2,
+            "sq": s(sum(de2), 2), "vhc": s(sum(de2) / Sxx ** 2, 6), "hc0": r(hc0, 3), "hc04": s(hc0, 4),
+            "se2": s(sum(b * b for b in e), 2), "s2": s(se2, 2), "us": s(us, 3), "us4": s(us, 4),
+            "hc1": s(hc0 * sqrt(len(d) / (len(d) - 2)), 3), "nosq": s(sqrt(sum(de2) / Sxx), 3)}
 
 
 def p10():
-    N = 20
-    pis = [0.8, 0.5, 0.4, 0.2]
-    ys = [40, 22, 18, 7]
-    ht = sum(y / p for y, p in zip(ys, pis))
-    c = dict(ok=s(ht, 1), eq=s(N * sum(ys) / len(ys), 1), raw=s(sum(ys), 1),
-             mult=s(sum(y * p for y, p in zip(ys, pis)), 1), divn=s(ht / len(ys), 1))
+    W = [0.30, 0.50, 0.20]
+    nh = [60, 200, 140]
+    yh = [3.2, 3.6, 4.1]
+    n = sum(nh)
+    ps = sum(w * y for w, y in zip(W, yh))
+    un = sum(a * y for a, y in zip(nh, yh)) / n
+    wt = [w / (a / n) for w, a in zip(W, nh)]
+    inv = [(a / n) / w for w, a in zip(W, nh)]
+    winv = sum(a * y * v for a, y, v in zip(nh, yh, inv)) / sum(a * v for a, v in zip(nh, inv))
+    c = dict(ok=s(ps, 3), un=s(un, 3), simple=s(sum(yh) / 3, 3), inv=s(winv, 3),
+             wavg=s(sum(w * y for w, y in zip(wt, yh)) / 3, 3))
     distinct(*c.values())
-    # (b) てこ比
-    n, xbar, Sxx, x0 = 20, 1.5, 12.0, 4.5
-    h = 1 / n + (x0 - xbar) ** 2 / Sxx
-    cc = dict(h=s(h, 2), nn=s((x0 - xbar) ** 2 / Sxx, 2), nosq=s(1 / n + (x0 - xbar) / Sxx, 2))
-    distinct(*cc.values())
-    return {"N": N, **{f"pi{i + 1}": pis[i] for i in range(4)}, **{f"y{i + 1}": ys[i] for i in range(4)},
-            **{f"w{i + 1}": s(ys[i] / pis[i], 1) for i in range(4)}, **c,
-            "n": n, "xbar": xbar, "Sxx": Sxx, "x0": x0, "dev": s(x0 - xbar, 1), "dev2": s((x0 - xbar) ** 2, 2),
-            "invn": s(1 / n, 2), "crit": s(2 * 2 / n, 2), **{"h_" + k: v for k, v in cc.items()}}
+    return {**{f"W{i + 1}": s(100 * W[i], 0) for i in range(3)}, **{f"Wd{i + 1}": W[i] for i in range(3)},
+            **{f"n{i + 1}": nh[i] for i in range(3)}, **{f"y{i + 1}": yh[i] for i in range(3)}, "n": n,
+            **{f"sh{i + 1}": s(100 * nh[i] / n, 0) for i in range(3)}, **{f"w{i + 1}": s(wt[i], 3) for i in range(3)},
+            **{f"t{i + 1}": s(W[i] * yh[i], 2) for i in range(3)}, **c}
 
 
 def p11():
@@ -267,76 +252,71 @@ def p11():
 
 
 def p12():
-    # (a) 共分散行列の主成分
-    s11, s12, s22 = 9, 4, 3
-    tr = s11 + s22
-    det = s11 * s22 - s12 ** 2
-    disc = sqrt((tr / 2) ** 2 - det)
-    l1, l2 = tr / 2 + disc, tr / 2 - disc
-    rr = s12 / sqrt(s11 * s22)
+    # (a) 特異値と低ランク近似
+    sv = [6, 3, 2, 1]
+    tot = sum(v * v for v in sv)
     pct = lambda v: s(100 * v, 1) + "\\%"
-    c = dict(ok=pct(l1 / tr), cor=pct((1 + rr) / 2), var1=pct(s11 / tr), r=pct(rr), second=pct(l2 / tr))
+    c = dict(ok=pct((sv[0] ** 2 + sv[1] ** 2) / tot), nosq=pct((sv[0] + sv[1]) / sum(sv)), one=pct(sv[0] ** 2 / tot),
+             res=pct((sv[2] ** 2 + sv[3] ** 2) / tot), sq=pct(((sv[0] ** 2 + sv[1] ** 2) / tot) ** 2))
     distinct(*c.values())
-    # (b) k-means
-    pts = {"P1": (1, 1), "P2": (2, 1), "P3": (1, 3), "P4": (4, 4), "P5": (5, 6), "P6": (6, 5)}
-    c1, c2 = pts["P1"], pts["P3"]
-    d2 = lambda a, b: (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2
-    cl2 = [k for k, v in pts.items() if d2(v, c2) < d2(v, c1)]
-    assert cl2 == ["P3", "P4", "P5", "P6"], cl2
-    for k, v in pts.items():
-        assert d2(v, c1) != d2(v, c2)
-    cen2 = (sum(pts[k][0] for k in cl2) / 4, sum(pts[k][1] for k in cl2) / 4)
-    avg = lambda ks, extra=(): (sum([pts[k][0] for k in ks] + [e[0] for e in extra]) / (len(ks) + len(extra)),
-                                sum([pts[k][1] for k in ks] + [e[1] for e in extra]) / (len(ks) + len(extra)))
-    fmt = lambda c: f"({s(c[0], 1)},\\ {s(c[1], 1)})"
-    kc = dict(ok=fmt(cen2), c1=fmt(avg(["P1", "P2"])), old=fmt(avg(cl2, (c2,))), p2=fmt(avg(cl2 + ["P2"])),
-              nop3=fmt(avg(["P4", "P5", "P6"])))
-    distinct(*kc.values())
-    # (c) 単純ベイズ
-    pr, m1, m0, k1, k0 = 0.2, 0.6, 0.2, 0.5, 0.3
-    num = pr * m1 * k1
-    den = num + (1 - pr) * m0 * k0
-    cc = dict(ok=s(num / den, 3), noprior=s(m1 * k1 / (m1 * k1 + m0 * k0), 3), onlyM=s(pr * m1 / (pr * m1 + (1 - pr) * m0), 3),
-              lik=s(m1 * k1, 3), num=s(num, 3))
+    # (b) 混合正規モデルの負担率
+    w1, m1, m2, sd, x0 = 0.6, 2.0, 5.0, 1.0, 3.2
+    ph1, ph2 = 0.1942, 0.0790   # φ(1.2), φ(1.8)
+    num1, num2 = w1 * ph1, (1 - w1) * ph2
+    cc = dict(ok=s(num1 / (num1 + num2), 3), now=s(ph1 / (ph1 + ph2), 3), hard="1.000", prior=s(w1, 3), other=s(num2 / (num1 + num2), 3))
     distinct(*cc.values())
+    # (c) ジニ不純度
+    N, P, nl, pl = 100, 30, 40, 20
+    nr, pr_ = N - nl, P - pl
+    g = lambda p: 1 - p * p - (1 - p) ** 2
+    gp, gl, gr = g(P / N), g(pl / nl), g(pr_ / nr)
+    after = nl / N * gl + nr / N * gr
+    mis_p = min(P, N - P) / N
+    mis_a = (min(pl, nl - pl) + min(pr_, nr - pr_)) / N
+    cg = dict(ok=s(gp - after, 3), mis=s(mis_p - mis_a, 3), unw=s(gp - (gl + gr) / 2, 3), after=s(after, 3), par=s(gp, 3))
+    distinct(*cg.values())
     return {
-        "s11": s11, "s12": s12, "s22": s22, "tr": tr, "det": det, "half": s(tr / 2, 0), "disc2": s((tr / 2) ** 2 - det, 0),
-        "disc": s(disc, 0), "l1": s(l1, 0), "l2": s(l2, 0), "rr": s(rr, 4), **{"pc_" + k: v for k, v in c.items()},
-        **{f"{k}x": v[0] for k, v in pts.items()}, **{f"{k}y": v[1] for k, v in pts.items()},
-        "c2x": s(cen2[0], 1), "c2y": s(cen2[1], 1), "sx2": 16, "sy2": 18, **{"km_" + k: v for k, v in kc.items()},
-        "pr": pr, "m1": m1, "m0": m0, "k1": k1, "k0": k0, "nb_num": s(num, 3), "nb_oth": s((1 - pr) * m0 * k0, 3),
-        "nb_den": s(den, 3), **{"nb_" + k: v for k, v in cc.items()},
+        **{f"sv{i + 1}": sv[i] for i in range(4)}, "tot": tot, "top2": sv[0] ** 2 + sv[1] ** 2, **{"sv_" + k: v for k, v in c.items()},
+        "w1": w1, "w2": s(1 - w1, 1), "m1": m1, "m2": m2, "x0": x0, "z1": s((x0 - m1) / sd, 1), "z2": s((m2 - x0) / sd, 1),
+        "ph1": ph1, "ph2": ph2, "num1": s(num1, 5), "num2": s(num2, 4), "den": s(num1 + num2, 5), **{"h_" + k: v for k, v in cc.items()},
+        "N": N, "P": P, "nl": nl, "pl": pl, "nr": nr, "pr": pr_, "gp": s(gp, 2), "gl": s(gl, 2), "gr": s(gr, 4),
+        "glw": s(nl / N * gl, 2), "grw": s(nr / N * gr, 4), "after4": s(after, 4), "dec4": s(gp - after, 4),
+        "pfr": s(pl / nl, 1), "prr": s(pr_ / nr, 4), "mis_p": s(mis_p, 2), "mis_a": s(mis_a, 2),
+        **{"g_" + k: v for k, v in cg.items()},
     }
 
 
 def p13():
-    # (a) シンプソンのパラドックス
-    A = {"sp": (36, 900), "pc": (30, 250)}
-    B = {"sp": (6, 200), "pc": (110, 1000)}
-    rate = lambda a: 100 * a[0] / a[1]
-    tA = (sum(v[0] for v in A.values()), sum(v[1] for v in A.values()))
-    tB = (sum(v[0] for v in B.values()), sum(v[1] for v in B.values()))
-    assert rate(A["sp"]) > rate(B["sp"]) and rate(A["pc"]) > rate(B["pc"]) and rate(tA) < rate(tB)
-    # (b) フロントドア調整
-    px = 0.4
-    pm = {1: 0.7, 0: 0.2}
-    py = {(1, 1): 0.30, (1, 0): 0.10, (0, 1): 0.20, (0, 0): 0.05}
-    inner = {m: py[(1, m)] * px + py[(0, m)] * (1 - px) for m in (0, 1)}
-    do = {x: pm[x] * inner[1] + (1 - pm[x]) * inner[0] for x in (0, 1)}
-    ace = do[1] - do[0]
-    naive = {x: pm[x] * py[(x, 1)] + (1 - pm[x]) * py[(x, 0)] for x in (0, 1)}
-    return {
-        "Asp": A["sp"][0], "Asn": A["sp"][1], "Apc": A["pc"][0], "Apn": A["pc"][1],
-        "Bsp": B["sp"][0], "Bsn": B["sp"][1], "Bpc": B["pc"][0], "Bpn": B["pc"][1],
-        "rAs": s(rate(A["sp"]), 1), "rAp": s(rate(A["pc"]), 1), "rBs": s(rate(B["sp"]), 1), "rBp": s(rate(B["pc"]), 1),
-        "tA": tA[0], "tAn": tA[1], "tB": tB[0], "tBn": tB[1], "rA": s(rate(tA), 2), "rB": s(rate(tB), 2),
-        "avA": s((rate(A["sp"]) + rate(A["pc"])) / 2, 1), "avB": s((rate(B["sp"]) + rate(B["pc"])) / 2, 1),
-        "wA": s(100 * A["sp"][1] / tA[1], 1), "wB": s(100 * B["sp"][1] / tB[1], 1),
-        "px": px, "qx": s(1 - px, 1), "pm1": pm[1], "pm0": pm[0], "qm1": s(1 - pm[1], 1), "qm0": s(1 - pm[0], 1),
-        "y11": s(py[(1, 1)], 2), "y10": s(py[(1, 0)], 2), "y01": s(py[(0, 1)], 2), "y00": s(py[(0, 0)], 2),
-        "in1": s(inner[1], 2), "in0": s(inner[0], 2), "do1": s(do[1], 3), "do0": s(do[0], 3),
-        "ace": r(ace, 3), "ace4": s(ace, 4), "nv1": s(naive[1], 2), "nv0": s(naive[0], 2), "nace": s(naive[1] - naive[0], 2),
-    }
+    # (a) イェーツ補正つきカイ二乗
+    a, b, c_, d = 30, 90, 20, 160
+    n = a + b + c_ + d
+    r1, r2, k1, k2 = a + b, c_ + d, a + c_, b + d
+    adbc = abs(a * d - b * c_)
+    den = r1 * r2 * k1 * k2
+    chiY = n * (adbc - n / 2) ** 2 / den
+    chi = n * adbc ** 2 / den
+    cy = dict(ok=s(chiY, 2), no=s(chi, 2), full=s(n * (adbc - n) ** 2 / den, 2), z=s(sqrt(chiY), 2), phi=s(sqrt(chi / n), 2))
+    distinct(*cy.values())
+    # (b) 幾何分布の無記憶性：5通連続で購入しなかった会員があと3通以内に購入する確率
+    pp, k0, k1 = 0.2, 5, 3
+    ok = 1 - (1 - pp) ** k1
+    cf = dict(ok=s(ok, 3), unc=s(1 - (1 - pp) ** (k0 + k1), 3), joint=s((1 - pp) ** k0 - (1 - pp) ** (k0 + k1), 3),
+              add=s(pp * k1, 3), no=s((1 - pp) ** k1, 3))
+    distinct(*cf.values())
+    # (c) 合流点で条件づけたときの偏相関：X,Y 独立 N(0,1)、C = X + Y + e、e~N(0,1)
+    vx, vy, ve = 1, 1, 1
+    vc = vx + vy + ve
+    cxy_c = 0 - vx * vy / vc
+    vx_c = vx - vx ** 2 / vc
+    pc = cxy_c / vx_c
+    ck = dict(ok=s(pc, 2), cov=s(cxy_c, 2), zero=s(0, 2), pos=s(-pc, 2), noe=s(-1 / 1, 2))
+    distinct(*ck.values())
+    return {"a": a, "b": b, "c": c_, "d": d, "n": n, "r1": r1, "r2": r2, "k1": k1, "k2": k2, "ad": a * d, "bc": b * c_,
+            "adbc": adbc, "half": n // 2, "adj": s(adbc - n / 2, 0), "den": den, "adj2": s((adbc - n / 2) ** 2, 0),
+            **{"y_" + k: v for k, v in cy.items()},
+            "pp": pp, "k0": k0, "k0p": k0 + 1, "k1": k1, "k01": k0 + k1, "q": s(1 - pp, 1), "q3": s((1 - pp) ** k1, 3), "q5": s((1 - pp) ** k0, 5),
+            "q8": s((1 - pp) ** (k0 + k1), 8), **{"f_" + k: v for k, v in cf.items()},
+            "vc": vc, "cxyc": s(cxy_c, 4), "vxc": s(vx_c, 4), **{"k_" + k: v for k, v in ck.items()}}
 
 
 def values():

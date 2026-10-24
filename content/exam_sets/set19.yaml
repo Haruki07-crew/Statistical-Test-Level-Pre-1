@@ -1,0 +1,956 @@
+set: 19
+title: 模擬試験 第19回
+minutes: 90
+problems:
+  - id: s19p01
+    title: カードローンの申込経路と延滞
+    context: |
+      ある銀行のカードローンは、店頭・Web・提携先の 3 つの経路で申し込まれる。過去の契約の記録から、各経路の割合と、契約後 1 年以内に延滞する割合は次のとおりである。
+
+      | 申込経路 | 店頭 | Web | 提携先 |
+      |---|---|---|---|
+      | 契約に占める割合 | «ws» | «ww» | «wa» |
+      | 1 年以内に延滞する割合 | «ds» | «dw» | «da» |
+    items:
+      - id: s19p01a
+        chapter: 1
+        terms: [bayes-theorem, law-of-total-probability, conditional-probability]
+        topic: 3つの申込経路の割合と延滞率から延滞した契約がWeb経由である事後確率を求める
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          1 年以内に延滞した契約を 1 件無作為に選んだとき、それが Web 経由の契約である確率に最も近い値はどれか。
+        choices:
+          - "$«c_joint»$"
+          - "$«c_tot»$"
+          - "$«c_cond»$"
+          - "$«post»$"
+          - "$«c_prior»$"
+        answer: 3
+        distractors:
+          - 同時確率 P(Web かつ延滞) を条件付き確率と取り違えた
+          - 全体の延滞率 P(延滞) を答えた
+          - 条件の向きを逆にし、P(延滞 | Web) を答えた
+          - 正解
+          - 延滞したという情報を使わず、事前の割合 P(Web) を答えた
+        explanation: |
+          **方針** 求めるのは $P(\text{Web}\mid\text{延滞})$。分母の $P(\text{延滞})$ を全確率の公式で求め、ベイズの定理を使う。
+
+          **途中式**
+          - 各経路の同時確率：店頭 $«ws»\times«ds»=«js»$、Web $«ww»\times«dw»=«jw»$、提携先 $«wa»\times«da»=«ja»$
+          - 全確率の公式：$P(\text{延滞})=«js»+«jw»+«ja»=«tot»$
+          - ベイズの定理：$P(\text{Web}\mid\text{延滞})=\dfrac{«jw»}{«tot»}=«post4»\cdots$
+
+          **答え** $«post»$
+
+          **間違えやすい点** $P(\text{延滞}\mid\text{Web})=«dw»$ と $P(\text{Web}\mid\text{延滞})$ は条件の向きが逆で、別の量である。Web 経由は契約の半分だが延滞率が高いので、延滞した契約の中では Web 経由の割合が事前の «ww» より大きくなる。
+
+      - id: s19p01b
+        chapter: 7
+        terms: [delta-method, standard-error, logit-logistic-transformation]
+        topic: 標本の延滞率からロジット（対数オッズ）の標準誤差をデルタ法で求める
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          ある年に契約したカードローンから «n» 件を無作為に選んで調べたところ、1 年以内に延滞したのは «x» 件だった。延滞率 $p$ を $\hat p=«x»/«n»$ で推定し、
+          延滞の対数オッズ（ロジット）$\operatorname{logit}(p)=\log\dfrac{p}{1-p}$（自然対数）を $\operatorname{logit}(\hat p)$ で推定する。
+          $V[\hat p]=p(1-p)/n$ とデルタ法を用い、$p$ に $\hat p$ を代入して、$\operatorname{logit}(\hat p)$ の標準誤差を求めよ。
+        answer: «se_logit»
+        tolerance: 0.001
+        answer_format: 小数第3位まで（小数第4位を四捨五入）で答えよ。±0.001 の差まで正解とする。
+        explanation: |
+          **方針** デルタ法：$g(\hat p)$ の分散は $\{g'(p)\}^2V[\hat p]$ で近似できる。$g(p)=\log p-\log(1-p)$ とおく。
+
+          **途中式**
+          - $g'(p)=\dfrac1p+\dfrac1{1-p}=\dfrac{1}{p(1-p)}$
+          - $V[\operatorname{logit}(\hat p)]\approx\dfrac{1}{\{p(1-p)\}^2}\cdot\dfrac{p(1-p)}{n}=\dfrac{1}{np(1-p)}$
+          - $\hat p=«ph»$ を代入：$n\hat p(1-\hat p)=«n»\times«ph»\times«qh»=«npq»$
+          - 標準誤差 $=\dfrac{1}{\sqrt{«npq»}}=\dfrac{1}{«sqnpq»}=«se_logit4»\cdots$
+
+          **答え** $«se_logit_s»$
+
+          **間違えやすい点** $\hat p$ 自身の標準誤差 $\sqrt{\hat p(1-\hat p)/n}=«se_p»$ を答えるのは誤り（変換の微分 $g'(p)$ を掛けていない）。分散 $1/\{n\hat p(1-\hat p)\}=«se_nosqrt»$ のまま答えて平方根をとり忘れないこと。
+          なお、ロジットの標準誤差は $\dfrac{1}{x}+\dfrac{1}{n-x}=\dfrac1{«x»}+\dfrac1{«nx»}$ の平方根とも書ける（同じ値になる）。
+
+  - id: s19p02
+    title: 決済サービスの不正利用件数
+    context: |
+      ある決済サービスで、不正利用と判定された取引の件数を «n» 日間記録したところ、日ごとの件数は次のとおりだった。
+
+      «data»
+
+      合計は $T=\sum x_i=«T»$ 件、平均は $\bar x=«m»$ 件、$\sum x_i^2=«sx2»$ である。各日の件数は互いに独立に同じ分布に従うとする。
+    items:
+      - id: s19p02a
+        chapter: 12
+        terms: [dispersion-test, poisson-distribution, chi-squared-distribution]
+        topic: 日ごとの不正利用件数に分散指数検定を当てはめポアソン分布より散らばりが大きいかを調べる
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          日ごとの件数がポアソン分布に従う（帰無仮説）か、ポアソン分布より散らばりが大きい（過大分散、対立仮説）かを、分散指数
+          $$D=\frac{\sum_{i=1}^{n}(x_i-\bar x)^2}{\bar x}$$
+          を使って調べる。帰無仮説のもとで $D$ は近似的に自由度 $n-1$ のカイ二乗分布に従う。有意水準 5% の**片側**検定（$D$ が大きいとき棄却）とする。
+          カイ二乗分布の上側 5% 点は、自由度 11 で «chi11»、自由度 12 で «chi12»、自由度 11 の上側 95% 点は «chi11_lo» である。
+          $D$ の値と結論の組として正しいものを選べ。
+        choices:
+          - $D=«D»$ で «chi11» より小さいので、帰無仮説を棄却しない（過大分散があるとはいえない）
+          - $D=«D»$ で «chi11_lo» より大きいので、帰無仮説を棄却する（過大分散がある）
+          - $D=«D_raw»$ で «chi11» より大きいので、帰無仮説を棄却する（過大分散がある）
+          - $D=«ratio»$ で «chi11» より小さいので、帰無仮説を棄却しない（過大分散があるとはいえない）
+          - $D=«D»$ で «chi11» より小さいので、日ごとの件数がポアソン分布に従うことが示された
+        answer: 0
+        distractors:
+          - 正解
+          - 上側 5% 点の代わりに上側 95% 点（下側 5% 点）と比べた
+          - 平均を引かずに Σx_i^2 / x̄ を計算した
+          - 不偏分散と平均の比 s^2/x̄ を統計量と取り違えた（自由度 n−1 のカイ二乗分布に従うのは (n−1)s^2/x̄）
+          - 棄却されないことを、帰無仮説が正しいことの証明と取り違えた
+        explanation: |
+          **方針** ポアソン分布では平均と分散が等しい。分散指数 $D=(n-1)s^2/\bar x$ は「不偏分散と平均の比」の $n-1$ 倍で、ポアソン分布なら近似的に $\chi^2(n-1)$ に従う。過大分散なら $D$ が大きくなるので、上側で棄却する。
+
+          **途中式**
+          - $\sum(x_i-\bar x)^2=\sum x_i^2-n\bar x^2=«sx2»-«n»\times«m»^2=«sx2»-«nm2»=«ss»$
+          - $D=«ss»/«m»=«D»$、自由度 $«n»-1=«df»$
+          - $«D»<«chi11»$ なので有意水準 5% で棄却しない
+
+          **答え** $D=«D»$ で、過大分散があるとはいえない（選択肢 0）
+
+          **間違えやすい点** 棄却しないことは「ポアソン分布に従うことが示された」ことを意味しない（«n» 日分のデータでは検出力も低い）。統計量は不偏分散と平均の比 $«ratio»$ そのものではなく、その $n-1$ 倍である。片側検定の棄却限界は上側 5% 点 «chi11» で、下側の点 «chi11_lo» と比べるのは誤り。
+
+      - id: s19p02b
+        chapter: 8
+        terms: [rao-blackwell-theorem, complete-statistic, unbiased-estimator]
+        topic: ポアソン件数がゼロになる確率の一様最小分散不偏推定量を十分統計量で条件付けて求める
+        level: 応用
+        definition: false
+        type: choice
+        question: |
+          前問の結果も踏まえ、日ごとの件数 $X_1,\dots,X_{«n»}$ は互いに独立に平均 $\lambda$ のポアソン分布に従うとする。
+          不正利用が 1 件もない日の確率 $\theta=P(X=0)=e^{-\lambda}$ を推定したい。
+          $\theta$ の不偏推定量 $I(X_1=0)$（$X_1=0$ なら 1、そうでなければ 0）を、完備十分統計量 $T=\sum X_i$ で条件付けたもの $E[I(X_1=0)\mid T]$ は、
+          $\theta$ の一様最小分散不偏推定量になる。このデータでのその値に最も近いものを選べ。必要なら $e^{-1}=«e_m1»$ を使え。
+        choices:
+          - "$«w_n1»$"
+          - "$«emp»$"
+          - "$«umvu»$"
+          - "$«mle»$"
+          - "$«w_np1»$"
+        answer: 2
+        distractors:
+          - 条件付き分布の成功確率を 1/(n−1) とし、(1−1/(n−1))^T とした
+          - 0 件の日の割合（経験的な割合）をそのまま答えた（不偏だが十分統計量の関数ではない）
+          - 正解
+          - 最尤推定量 e^{−x̄}（不変性による）を答えた。不偏ではない
+          - (n/(n+1))^T と分母を取り違えた
+        explanation: |
+          **方針** ラオ・ブラックウェルの定理：不偏推定量を十分統計量で条件付けると、分散が小さくなり不偏性は保たれる。$T$ が完備なら、その結果が一様最小分散不偏推定量になる（レーマン・シェフェの定理）。
+          独立なポアソン変数の和で条件付けると、各 $X_i$ は二項分布に従う。
+
+          **途中式**
+          - $T=t$ のもとで $(X_1,\dots,X_n)$ は試行回数 $t$、各確率 $1/n$ の多項分布なので、$X_1\mid T=t\sim B(t,\,1/n)$
+          - $E[I(X_1=0)\mid T=t]=P(X_1=0\mid T=t)=\left(1-\dfrac1n\right)^{t}$
+          - $n=«n»$、$t=«T»$ を代入：$\left(«frac»\right)^{«T»}=«base»^{«T»}=«umvu4»\cdots$
+
+          **答え** $«umvu»$
+
+          **間違えやすい点** 最尤推定値 $e^{-\bar x}=e^{-1}=«mle»$ は不変性から得られるが、$E[e^{-\bar X}]=\exp\{-n\lambda(1-e^{-1/n})\}\ne e^{-\lambda}$ なので不偏ではない。
+          0 件の日の割合 $«nz»/«n»=«emp»$ も不偏だが $T$ の関数ではない。これを $T$ で条件付けると（ラオ・ブラックウェル化すると）同じ $(1-1/n)^T$ になり、分散が小さくなる。
+
+  - id: s19p03
+    title: 定期預金の満期前解約と現在価値
+    context: |
+      ある銀行の長期の定期預金について、契約から満期前に解約されるまでの時間 $T$（年）が、レート $\lambda=«lam»$ の指数分布（密度 $f_T(t)=\lambda e^{-\lambda t}$、$t>0$、平均 «mean» 年）に従うとみなす。
+      解約時点で 1 単位の払い戻しが生じるとし、それを年率 $\delta=«delta»$ の連続複利で現在に割り引いた係数 $D=e^{-\delta T}$（$0<D<1$）を考える。
+    items:
+      - id: s19p03a
+        chapter: 4
+        terms: [change-of-variables, exponential-distribution, cumulative-distribution-function]
+        topic: 指数分布に従う解約時期を連続複利で割り引いた係数の密度関数を変数変換で求める
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          $D=e^{-\delta T}$ の確率密度関数 $f_D(d)$（$0<d<1$）として正しいものはどれか。
+        choices:
+          - "$«lam»\\,d^{«k»}$"
+          - "$d^{«k»}$"
+          - "$«k»d^{«km1»}$"
+          - "$«k»(1-d)^{«km1»}$"
+          - "$«inv»\\,d^{«invm1»}$"
+        answer: 2
+        distractors:
+          - ヤコビアン |dt/dd|=1/(δd) を掛け忘れ、f_T(t(d)) だけを書いた
+          - 密度ではなく分布関数 F_D(d) を答えた
+          - 正解
+          - D が T の減少関数であることを見落とし、P(D≦d)=P(T≦−log d/δ) として向きを逆にした
+          - 指数を λ/δ ではなく δ/λ とした
+        explanation: |
+          **方針** $d=e^{-\delta t}$ は $t$ の減少関数。分布関数を経由して求めると向きを間違えにくい。逆変換は $t=-\log d/\delta$。
+
+          **途中式**
+          - $F_D(d)=P(e^{-\delta T}\le d)=P\left(T\ge-\dfrac{\log d}{\delta}\right)=\exp\left(\dfrac{\lambda}{\delta}\log d\right)=d^{\lambda/\delta}=d^{«k»}$（$\lambda/\delta=«lam»/«delta»=«k»$）
+          - $f_D(d)=F_D'(d)=«k»d^{«km1»}\quad(0<d<1)$
+          - ヤコビアンで確かめると $f_T\left(-\dfrac{\log d}{\delta}\right)\left|\dfrac{dt}{dd}\right|=\lambda d^{\lambda/\delta}\cdot\dfrac{1}{\delta d}=\dfrac{\lambda}{\delta}d^{\lambda/\delta-1}$ で一致する。
+
+          **答え** $«k»d^{«km1»}$（ベータ分布 $\mathrm{Beta}(«k»,1)$）
+
+          **間違えやすい点** ヤコビアン $1/(\delta d)$ を掛け忘れると $«lam»\,d^{«k»}$ になり、積分しても 1 にならない。$D$ は $T$ の減少関数なので「$D\le d$」は「$T\ge\cdots$」に対応する。
+
+      - id: s19p03b
+        chapter: 2
+        terms: [moment-generating-function, expectation-variance-properties, exponential-distribution]
+        topic: 指数分布の積率母関数を負の点で評価して割引現在価値の期待値と標準偏差を求める
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          $T$ の積率母関数は $M_T(s)=E[e^{sT}]=\dfrac{\lambda}{\lambda-s}$（$s<\lambda$）である。これを使って、解約時に払い戻す 100 万円の現在価値 $100D$（万円）の**標準偏差**を求めよ。
+        answer: «sd»
+        tolerance: 0.01
+        answer_format: 万円単位で、小数第2位まで（小数第3位を四捨五入）で答えよ。±0.01 の差まで正解とする。
+        explanation: |
+          **方針** $E[D]=E[e^{-\delta T}]=M_T(-\delta)$、$E[D^2]=E[e^{-2\delta T}]=M_T(-2\delta)$ として積率母関数を負の点で評価する。途中は分数のまま計算する。
+
+          **途中式**
+          - $E[D]=M_T(-«delta»)=\dfrac{«lam»}{«lam»+«delta»}=«ed»$
+          - $E[D^2]=M_T(-2\times«delta»)=\dfrac{«lam»}{«lam»+0.1}=«ed2_f»$
+          - $V[D]=«ed2_f»-(«ed»)^2=«ed2_f»-«ed_sq»=«vd_f»$
+          - $V[100D]=100^2\times«vd_f»=«vpv»$、標準偏差 $\sqrt{«vpv»}=«sd4»\cdots$
+
+          **答え** $«sd_s»$ 万円（期待値は «pv_mean» 万円）
+
+          **間違えやすい点** $M_T(\delta)$ と符号を誤ると $\lambda/(\lambda-\delta)=«w_plus»>1$ となり、$0<D<1$ に反する。分散 «w_var» のまま答えたり、$E[(100D)^2]$ の平方根 $«w_nosq»$ を答えたりしないこと。
+          前問の $\mathrm{Beta}(«k»,1)$ の分散 $\dfrac{«k»\times1}{(«k»+1)^2(«k»+2)}=«vd_f»$ とも一致する。
+
+  - id: s19p04
+    title: 家計調査の消費と所得
+    context: |
+      ある市の «N» 世帯から «n» 世帯を単純無作為抽出（非復元）して、家計の月間の消費支出・月収・カードのリボ払い残高などを調べた（金額の単位は万円）。
+    items:
+      - id: s19p04a
+        chapter: 21
+        terms: [regression-estimation, simple-random-sampling, ratio-estimation]
+        topic: 税務データの市全体の平均月収を補助情報にして世帯の平均消費支出を回帰推定する
+        level: 基本
+        definition: false
+        type: numeric
+        question: |
+          標本の平均消費支出は $\bar y=«ybar»$、平均月収は $\bar x=«xbar»$ で、標本から求めた消費支出の月収への回帰係数（傾き）は $b=«b»$ だった。
+          また、税務データから市全体の世帯の平均月収 $\bar X=«Xbar»$ がわかっている。回帰推定量 $\bar y_{\mathrm{reg}}=\bar y+b(\bar X-\bar x)$ による市全体の平均消費支出の推定値を求めよ。
+        answer: «yreg»
+        tolerance: 0.01
+        answer_format: 万円単位で、小数第2位まで（小数第3位を四捨五入）で答えよ。±0.01 の差まで正解とする。
+        explanation: |
+          **方針** 標本の平均月収が母集団より高めに出たぶんだけ、消費支出の標本平均を回帰の傾きで補正する。
+
+          **途中式**
+          - $\bar X-\bar x=«Xbar»-«xbar»=«dx»$
+          - $b(\bar X-\bar x)=«b»\times(«dx»)=«adj»$
+          - $\bar y_{\mathrm{reg}}=«ybar»+(«adj»)=«yreg_s»$
+
+          **答え** $«yreg_s»$ 万円
+
+          **間違えやすい点** 補正の向きを逆にして $\bar y-b(\bar X-\bar x)=«ysign»$ としないこと（標本は月収が高めなので、消費も高めに出ていると考えて下方修正する）。
+          比推定量 $\bar y\,\bar X/\bar x=«yratio»$ は原点を通る直線を仮定した推定量で、回帰推定量とは別のもの。
+
+      - id: s19p04b
+        chapter: 3
+        terms: [partial-correlation-coefficient, spurious-correlation, covariance-and-correlation]
+        topic: 月収の影響を除いた消費支出とリボ払い残高の偏相関係数を3つの相関係数から求める
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          標本の «n» 世帯で、消費支出 $C$・リボ払い残高 $R$・月収 $X$ の相関係数は $r_{CR}=«rcr»$、$r_{CX}=«rcx»$、$r_{RX}=«rrx»$ だった。
+          月収 $X$ の影響を取り除いた $C$ と $R$ の偏相関係数 $r_{CR\cdot X}$ を求めよ。
+        answer: «pc»
+        tolerance: 0.001
+        answer_format: 小数第3位まで（小数第4位を四捨五入）で答えよ。±0.001 の差まで正解とする。
+        explanation: |
+          **方針** 偏相関係数は、$C$ と $R$ をそれぞれ $X$ に回帰した残差どうしの相関で、
+          $$r_{CR\cdot X}=\frac{r_{CR}-r_{CX}r_{RX}}{\sqrt{(1-r_{CX}^2)(1-r_{RX}^2)}}$$
+          で求められる。
+
+          **途中式**
+          - 分子：$«rcr»-«rcx»\times«rrx»=«rcr»-«prod»=«num»$
+          - 分母：$\sqrt{(1-«rcx»^2)(1-«rrx»^2)}=\sqrt{«a1»\times«a2»}=\sqrt{«aa»}=«den»$
+          - $r_{CR\cdot X}=«num»/«den»=«pc4»\cdots$
+
+          **答え** $«pc_s»$
+
+          **間違えやすい点** 分母の平方根を忘れると $«pc_nosq»$ になる。$R$ 側だけから $X$ の影響を除いた部分相関 $«num»/\sqrt{1-«rrx»^2}=«pc_semi»$ とも区別する。
+          単純な相関 «rcr» の大部分は、どちらも月収と相関していることによる見かけの相関（擬似相関）で、月収をそろえると関係はほとんど残らない。
+
+      - id: s19p04c
+        chapter: 19
+        terms: [instrumental-variable-method, endogeneity, two-stage-least-squares]
+        topic: 自己申告の月収に測定誤差があるとき口座の入金額を操作変数にして限界消費性向を推定する
+        level: 応用
+        definition: false
+        type: choice
+        question: |
+          消費支出 $C$ を真の月収 $X^*$ で説明するモデル $C=\alpha+\beta X^*+u$ を考える。調査票の月収 $X$ は自己申告で、$X=X^*+e$（$e$ は測定誤差で $X^*$・$u$ と無相関）である。
+          そこで、同じ世帯の給与振込口座の月平均入金額 $Z$ を操作変数とする（$Z$ は $X^*$ と相関し、$u$ とも $e$ とも無相関と仮定する）。
+          標本の分散・共分散は $V(X)=«vx»$、$\mathrm{Cov}(X,C)=«cxc»$、$\mathrm{Cov}(Z,C)=«czc»$、$\mathrm{Cov}(Z,X)=«czx»$、$V(Z)=«vz»$ だった。
+          $\beta$ の操作変数推定値として正しいものを選べ。
+        choices:
+          - "$«ols»$"
+          - "$«rf»$"
+          - "$«fs»$"
+          - "$«inv»$"
+          - "$«iv»$"
+        answer: 4
+        distractors:
+          - 測定誤差を無視した最小二乗推定値 Cov(X,C)/V(X) を答えた（0 の側に偏る）
+          - C を Z に回帰した傾き（誘導形）Cov(Z,C)/V(Z) を答えた
+          - X を Z に回帰した傾き（第1段階）Cov(Z,X)/V(Z) を答えた
+          - 分子と分母を逆にした
+          - 正解
+        explanation: |
+          **方針** 説明変数が誤差項と相関する（内生性）と最小二乗推定量は一致性をもたない。測定誤差があると $X$ と合成誤差 $u-\beta e$ が相関し、最小二乗推定量は 0 の側に偏る（希薄化）。
+          操作変数推定量 $\hat\beta_{IV}=\mathrm{Cov}(Z,C)/\mathrm{Cov}(Z,X)$ は、$Z$ が誤差と無相関なら一致推定量になる。
+
+          **途中式**
+          - $C=\alpha+\beta X+(u-\beta e)$ と書き直す。$\mathrm{Cov}(Z,\,u-\beta e)=0$ より $\mathrm{Cov}(Z,C)=\beta\,\mathrm{Cov}(Z,X)$
+          - $\hat\beta_{IV}=\dfrac{«czc»}{«czx»}=«iv»$
+          - 参考：最小二乗推定値は $«cxc»/«vx»=«ols»$ で、操作変数推定値より小さい（希薄化）
+
+          **答え** $«iv»$
+
+          **間違えやすい点** 誘導形の傾き $«rf»$ や第1段階の傾き $«fs»$ はどちらも途中の量で、$\hat\beta_{IV}$ はその比 $«rf»/«fs»=«iv»$ である。
+          2段階最小二乗法（第1段階で $X$ を $Z$ に回帰した予測値 $\hat X$ で $C$ を回帰する）でも同じ値になる。
+
+  - id: s19p05
+    title: 住宅ローン金利の回帰モデル
+    context: |
+      ある銀行が住宅ローン «n» 件について、適用金利の上乗せ幅 $y$（%）を説明する線形回帰モデルを最小二乗法で当てはめた。次の 3 つの入れ子のモデルを比べる（$p$ は切片を含む回帰係数の個数）。
+
+      | モデル | 説明変数 | $p$ | 残差平方和 |
+      |---|---|---|---|
+      | M1 | 返済負担率、借入比率 | «p1» | «rss1» |
+      | M2 | M1 ＋ 勤続年数、自営業ダミー | «p2» | «rss2» |
+      | M3 | M2 ＋ 他行借入件数、年齢 | «p3» | «rss3» |
+
+      誤差は互いに独立に $N(0,\sigma^2)$ に従うとする。
+    items:
+      - id: s19p05a
+        chapter: 16
+        terms: [partial-f-test, multiple-regression-model, f-distribution]
+        topic: 勤続年数と自営業ダミーの2変数を追加した効果を残差平方和の差から部分F検定で調べる
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          M1 に勤続年数と自営業ダミーを加えたモデル M2 で、追加した 2 つの係数がともに 0 という帰無仮説を検定する F 統計量の値として正しいものを選べ。
+          （参考：$F_{0.05}(2,55)=«f_crit»$）
+        choices:
+          - "$«F_q4»$"
+          - "$«F_small»$"
+          - "$«F»$"
+          - "$«F_n»$"
+          - "$«F_noq»$"
+        answer: 2
+        distractors:
+          - 分子の自由度を M2 の説明変数の個数 4 とした
+          - 分母に小さいモデル M1 の残差平方和と自由度を使った
+          - 正解
+          - 分母の残差平方和を自由度 n−p ではなく n で割った
+          - 残差平方和の差を分子の自由度 2 で割り忘れた
+        explanation: |
+          **方針** 入れ子のモデルの比較（部分 F 検定）：$F=\dfrac{(S_{M1}-S_{M2})/q}{S_{M2}/(n-p_2)}$。$q=p_2-p_1$ は追加した係数の個数で、帰無仮説のもとで $F\sim F(q,\,n-p_2)$。
+
+          **途中式**
+          - 分子：$(«rss1»-«rss2»)/«q»=«drss»/«q»=«msd»$
+          - 分母：$«rss2»/(«n»-«p2»)=«rss2»/«dfe2»=«mse2»$
+          - $F=«msd»/«mse2»=«F»$
+
+          **答え** $«F»$（$«F»>«f_crit»$ なので、有意水準 5% で 2 つの変数を加える意味があると判断できる）
+
+          **間違えやすい点** 分母は大きいモデル（M2）の残差平方和を、その残差の自由度 $n-p_2=«dfe2»$ で割る。M1 の $«rss1»/«dfe1»=«mse1»$ を使うと $«F_small»$ になる。差を $q$ で割り忘れると $«F_noq»$。
+
+      - id: s19p05b
+        chapter: 17
+        terms: [studentized-residual, standardized-residual, leverage]
+        topic: 標準化残差から1件を除いた誤差分散で外部スチューデント化残差を求め外れ値を判定する
+        level: 応用
+        definition: false
+        type: numeric
+        question: |
+          モデル M2 で、ある 1 件のローンの残差は $e_i=«e»$、てこ比は $h_{ii}=«h»$ だった。誤差分散の推定値は $s^2=S_{M2}/(n-p_2)$ である。
+          内部スチューデント化残差（標準化残差）$r_i=\dfrac{e_i}{s\sqrt{1-h_{ii}}}$ と、
+          この 1 件を除いて当てはめたときの誤差分散を使う外部スチューデント化残差
+          $$t_i=r_i\sqrt{\frac{n-p-1}{n-p-r_i^2}}$$
+          （$p$ は切片を含む係数の個数）がある。この 1 件の外部スチューデント化残差 $t_i$ を求めよ。
+        answer: «ti»
+        tolerance: 0.01
+        answer_format: 小数第2位まで（小数第3位を四捨五入）で答えよ。±0.01 の差まで正解とする。
+        explanation: |
+          **方針** まず $r_i^2$ を求め、式に代入する。$n=«n»$、$p=p_2=«p2»$、$s^2=«rss2»/«dfe2»=«mse2»$。
+
+          **途中式**
+          - $r_i^2=\dfrac{e_i^2}{s^2(1-h_{ii})}=\dfrac{«e»^2}{«mse2»\times«omh»}=«r2»$、$r_i=\sqrt{«r2»}=«ri»$
+          - $n-p-1=«nmp1»$、$n-p-r_i^2=«nmp»-«r2»=«den_t»$
+          - $t_i^2=«r2»\times\dfrac{«nmp1»}{«den_t»}=«t2»$、$t_i=\sqrt{«t2»}=«ti4»\cdots$
+
+          **答え** $«ti_s»$（$t_i$ は自由度 $n-p-1=«nmp1»$ の $t$ 分布に従うので、3 を大きく超えるこの 1 件は外れ値の候補である）
+
+          **間違えやすい点** 内部スチューデント化残差 $r_i=«ri2»$ をそのまま答えないこと。外れ値があると $s$ がその点に引っ張られて大きくなるので、その点を除いた誤差分散を使う $t_i$ は、$|r_i|>1$ のとき $|r_i|$ より大きくなる。
+          $p$ に切片を数え忘れたり、$n-p$ と $n-p-1$ を入れ替えたりすると値がずれる（入れ替えると $«t_wrong_df»$）。
+
+      - id: s19p05c
+        chapter: 30
+        terms: [mallows-cp, model-selection, overfitting]
+        topic: 最大モデルの残差分散を基準にマローズのCpを3つの入れ子モデルで計算し最小のモデルを選ぶ
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          マローズの $C_p=\dfrac{S_p}{\hat\sigma^2}-n+2p$（$S_p$ はそのモデルの残差平方和、$p$ は切片を含む係数の個数）で 3 つのモデルを比べ、$C_p$ が最小のモデルを選ぶ。
+          $\hat\sigma^2$ には最大のモデル M3 の誤差分散の不偏推定値 $S_{M3}/(n-p_3)$ を使う。各モデルの $C_p$ と選ぶモデルの組として正しいものを選べ。
+        choices:
+          - "«cp_noint»。M2 を選ぶ"
+          - "«cp_own»。M1 を選ぶ"
+          - "«cp»。M2 を選ぶ"
+          - "«cp_minus»。M3 を選ぶ"
+          - "«cp_n»。M2 を選ぶ"
+        answer: 2
+        distractors:
+          - p に切片を数えなかった
+          - σ^2 の推定に各モデル自身の残差分散を使った（すると C_p は常に p になり比べられない）
+          - 正解
+          - 罰則項 2p を足すべきところで引いた
+          - σ^2 の推定で残差平方和を n−p ではなく n で割った
+        explanation: |
+          **方針** $\hat\sigma^2$ を M3 から 1 つだけ求め、すべてのモデルに共通に使う。$C_p$ はモデルの予測の平均二乗誤差（を $\sigma^2$ で割ったもの）の推定量で、当てはまりのよいモデルでは $C_p\approx p$ になる。
+
+          **途中式**
+          - $\hat\sigma^2=«rss3»/(«n»-«p3»)=«rss3»/«dfe3»=«sig2»$
+          - M1：$«rss1»/«sig2»-«n»+2\times«p1»=«cpr1»-«n»+6=«cp1»$
+          - M2：$«rss2»/«sig2»-«n»+2\times«p2»=«cpr2»-«n»+10=«cp2»$
+          - M3：$«rss3»/«sig2»-«n»+2\times«p3»=«cpr3»-«n»+14=«cp3»$（最大モデルでは必ず $C_p=p$）
+
+          **答え** «cp»。$C_p$ が最小の M2 を選ぶ
+
+          **間違えやすい点** $\hat\sigma^2$ を各モデルの残差から求めると $C_p=(n-p)-n+2p=p$ となり、係数の少ないモデルほど有利に見えるだけで比較の意味がなくなる。
+          $p$ に切片を数えるかどうかで値はずれるが（数えないと «cp_noint»）、本問は切片を含めると定めている。
+
+  - id: s19p06
+    title: 与信スコアの判別力
+    context: |
+      ある銀行は、申込者に 0〜100 点の与信スコアを付けている（点数が高いほど返済能力が高いとされる）。
+    items:
+      - id: s19p06a
+        chapter: 23
+        terms: [roc-curve-and-auc, mann-whitney-u-test, sensitivity-and-specificity]
+        topic: 延滞した人としなかった人のスコアの全ペアの比較から与信スコアのAUCを求める
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          検証用の 10 人のうち、契約後に延滞した «nb» 人のスコアは «bad»、延滞しなかった «ng» 人のスコアは «good» だった。
+          「スコアがある値以下なら延滞すると予測する」判別で、しきい値を動かしたときの ROC 曲線の下の面積（AUC）を求めよ。
+        answer: «auc»
+        tolerance: 0.001
+        answer_format: 小数第3位まで（小数第4位を四捨五入）で答えよ。±0.001 の差まで正解とする。
+        explanation: |
+          **方針** AUC は「延滞しなかった人と延滞した人を 1 人ずつ無作為に選んだとき、延滞しなかった人のスコアのほうが高い確率」に等しい（同点は 1/2 と数える）。$«nb»\times«ng»=«pairs»$ 組をすべて比べる。
+
+          **途中式**
+          - 延滞者 42 点より高い非延滞者：«w1» 人
+          - 延滞者 55 点より高い非延滞者：«w2» 人
+          - 延滞者 61 点より高い非延滞者：«w3» 人（58 点の 1 人は低い）
+          - 延滞者 70 点より高い非延滞者：«w4» 人（58・66 点の 2 人は低い）
+          - 合計 «wins» 組なので AUC $=«wins»/«pairs»=«auc_s»$
+
+          **答え** $«auc_s»$
+
+          **間違えやすい点** 向きを逆にして「延滞者のほうが高い」組の割合 $«auc_rev»$ を求めないこと（AUC が 0.5 未満なら向きが逆）。
+          これはマン・ホイットニーの $U$ 統計量を組の数で割ったものと同じである。
+
+      - id: s19p06b
+        chapter: 18
+        terms: [logistic-regression, odds-and-odds-ratio, logit-logistic-transformation]
+        topic: ロジスティック回帰の係数から延滞確率が20%以下になる与信スコアの下限を求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          多数の契約データに、延滞の有無を目的変数、スコア $x$ を説明変数とするロジスティック回帰
+          $$\log\frac{p}{1-p}=\beta_0+\beta_1x$$
+          を当てはめたところ、$\hat\beta_0=«b0»$、$\hat\beta_1=-«b1»$ だった（$p$ は延滞確率、対数は自然対数）。
+          推定した延滞確率が 0.2 以下になるスコアの下限に最も近い値を選べ。必要なら $\log 4=«ln4»$、$\log 5=«ln5»$ を使え。
+        choices:
+          - "$«s_noint»$"
+          - "$«s_rev»$"
+          - "$«s_lin»$"
+          - "$«s_ok»$"
+          - "$«s_lnp»$"
+        answer: 3
+        distractors:
+          - 切片を忘れて log 4 / 0.08 とした
+          - 延滞しない確率 0.8 のロジット（+log 4）を使った
+          - ロジットに変換せず、β0+β1x=0.2 として確率を直接線形で解いた
+          - 正解
+          - オッズ 0.25 ではなく確率 0.2 そのものの対数（−log 5）を使った
+        explanation: |
+          **方針** 確率の条件をロジットの条件に直す。ロジットは $p$ の増加関数なので、$p\le0.2$ は $\log\frac{p}{1-p}\le\log\frac{0.2}{0.8}=-\log4$ と同値。
+
+          **途中式**
+          - $«b0»-«b1»x\le-«ln4»$
+          - $«b1»x\ge«b0»+«ln4»=«num»$
+          - $x\ge«num»/«b1»=«s_ok2»$
+
+          **答え** 約 $«s_ok»$ 点
+
+          **間違えやすい点** 0.2 のロジットはオッズ $0.2/0.8=0.25$ の対数で、$\log0.2=-\log5$ ではない。係数が負なので、スコアが高いほど延滞確率は下がり、条件は「下限」になる。
+          スコアが 10 点上がるとオッズは $e^{-0.8}\approx«or10»$ 倍になる。
+
+  - id: s19p07
+    title: 信用格付けの推移
+    context: |
+      ある銀行は貸出先を毎年、格付け A・B とデフォルト D の 3 状態で評価している。1 年ごとの推移が時間的に一様なマルコフ連鎖に従い、推移確率行列が次のとおりとする（D は吸収状態）。
+
+      | 今年 ＼ 翌年 | A | B | D |
+      |---|---|---|---|
+      | A | «aa» | «ab» | «ad» |
+      | B | «ba» | «bb» | «bd» |
+      | D | 0 | 0 | 1 |
+    items:
+      - id: s19p07a
+        chapter: 14
+        terms: [n-step-transition-probability, chapman-kolmogorov-equation, absorbing-state]
+        topic: 格付け推移行列の2乗から格付けAの貸出先が2年以内にデフォルトする確率を求める
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          現在格付け A の貸出先が、2 年後までにデフォルトしている確率（2 年後に状態 D にいる確率）に最も近い値はどれか。
+        choices:
+          - "$«w_sq»$"
+          - "$«w_noabs»$"
+          - "$«w_ind»$"
+          - "$«w_twice»$"
+          - "$«two»$"
+        answer: 4
+        distractors:
+          - 2 年続けて A から D に移る確率 0.02^2 とした
+          - 1 年目にデフォルトしてそのまま D にとどまる経路（D→D）を数え忘れた
+          - 毎年独立に確率 0.02 でデフォルトするとし、格付けの変化を無視した
+          - 1 年のデフォルト確率を単純に 2 倍した
+          - 正解
+        explanation: |
+          **方針** D は吸収状態なので、「2 年後に D にいる」ことと「2 年以内にデフォルトする」ことは同じ。チャップマン・コルモゴロフの式より、2 年後の推移確率は推移確率行列の 2 乗の (A, D) 成分で、1 年後の状態で場合分けして足す。
+
+          **途中式**
+          $$P^{(2)}_{AD}=P_{AA}P_{AD}+P_{AB}P_{BD}+P_{AD}P_{DD}$$
+          $$=«aa»\times«ad»+«ab»\times«bd»+«ad»\times1=«t1»+«t2»+«t3»=«two»$$
+
+          **答え** $«two»$
+
+          **間違えやすい点** 1 年目にデフォルトした経路 $P_{AD}P_{DD}$ を忘れると $«w_noabs»$ になる。格付けが B に下がるとデフォルト確率が «bd» に上がるので、毎年 «ad» で独立とみなした $1-(1-«ad»)^2=«w_ind»$ より大きくなる。
+
+  - id: s19p08
+    title: 支店の内部監査
+    context: |
+      ある銀行の監査部は、支店ごとに伝票を抜き取って処理の誤りを調べている。
+    items:
+      - id: s19p08a
+        chapter: 5
+        terms: [hypergeometric-distribution, binomial-distribution]
+        topic: 誤りを含む伝票の束から非復元で抜き取って誤りを少なくとも1件見つける確率を超幾何分布で求める
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          ある支店の 1 日分の伝票 «N» 件のうち、ちょうど «D» 件に誤りがある。監査人が «n» 件を非復元で無作為に抜き取るとき、誤りのある伝票を少なくとも 1 件見つける確率に最も近い値はどれか。
+        choices:
+          - "$«w_p1»$"
+          - "$«w_binom»$"
+          - "$«ans»$"
+          - "$«w_p0»$"
+          - "$«w_mean»$"
+        answer: 2
+        distractors:
+          - ちょうど 1 件見つける確率 P(X=1) を答えた
+          - 復元抽出とみなし、二項分布で 1−0.94^10 とした
+          - 正解
+          - 余事象の確率 P(X=0) を答えた
+          - 見つかる件数の期待値 nD/N を確率と取り違えた
+        explanation: |
+          **方針** 見つかる誤りの件数 $X$ は超幾何分布に従う。「少なくとも 1 件」は余事象 $X=0$ から求める。
+
+          **途中式**
+          $$P(X=0)=\frac{\binom{«ND»}{«n»}}{\binom{«N»}{«n»}}=\frac{40\cdot39\cdot38}{50\cdot49\cdot48}=\frac{«p0_num»}{«p0_den»}=«p0»$$
+          （$\binom{47}{10}/\binom{50}{10}=\dfrac{47!\,40!}{37!\,50!}$ で、約分すると上の形になる）
+          $$P(X\ge1)=1-«p0»=«ans4»\cdots$$
+
+          **答え** $«ans»$
+
+          **間違えやすい点** 非復元抽出では 1 件抜くごとに誤りのない伝票の割合が変わる。二項分布で $1-(1-«D»/«N»)^{«n»}=1-«q94»=«w_binom»$ とすると、見つける確率を低く見積もる。
+
+      - id: s19p08b
+        chapter: 10
+        terms: [holm-method, bonferroni-correction, multiple-testing]
+        topic: 5支店の誤り率の検定のp値にホルム法を当てはめ有意となる支店数を求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          5 つの支店 A〜E について「誤り率が基準値を上回る」かを検定し、p 値は A «pA»、B «pB»、C «pC»、D «pD»、E «pE» だった。
+          5 つの検定全体の第 1 種の過誤の確率（ファミリーワイズ・エラー率）を 0.05 以下に抑えるホルム法を使うとき、帰無仮説が棄却される支店の数はどれか。
+        choices:
+          - 0 支店
+          - 1 支店
+          - 2 支店
+          - 3 支店
+          - 4 支店
+        answer: 2
+        distractors:
+          - ホルム法の調整済み p 値 (m−i+1)p_(i) を、さらに 0.05/5 と比べて二重に補正した
+          - すべての p 値を 0.05/5=0.01 と比べるボンフェローニ法の結果を答えた
+          - 正解
+          - 3 番目で基準を超えたあとも比較を続け、4 番目（0.022 ≤ 0.025）も棄却した
+          - 多重性を考えず、それぞれを 0.05 と比べた
+        explanation: |
+          **方針** ホルム法：p 値を小さい順に $p_{(1)}\le\cdots\le p_{(m)}$ と並べ、$p_{(i)}\le\alpha/(m-i+1)$ を $i=1$ から順に確かめる。初めて満たさなくなったところで止め、それより前の仮説だけを棄却する。
+
+          **途中式**（$m=5$、$\alpha=0.05$）
+          - $p_{(1)}=«pB»$（B）$\le0.05/5=«th1»$ → 棄却
+          - $p_{(2)}=«pE»$（E）$\le0.05/4=«th2»$ → 棄却
+          - $p_{(3)}=«pD»$（D）$>0.05/3=«th3»$ → ここで止める
+          - 残りの A（«pA»）と C（«pC»）も棄却しない
+
+          **答え** 2 支店（B と E）
+
+          **間違えやすい点** 途中で止めずに続けると A の «pA» $\le0.05/2=«th4»$ も棄却したくなるが、ホルム法は止めたところで終わる（ステップダウン法）。
+          ボンフェローニ法ではすべてを «th1» と比べるので 1 支店、補正しないと 4 支店になる。
+
+  - id: s19p09
+    title: ATM の現金引出額
+    context: |
+      ある銀行は、ATM に補充する現金の量を決めるために、1 日の現金引出総額（百万円）を調べている。日々の引出総額は互いに独立に正規分布に従うとみなす。
+    items:
+      - id: s19p09a
+        chapter: 9
+        terms: [ci-variance, chi-squared-distribution, confidence-interval]
+        topic: ATMの日次引出総額の母標準偏差の95%信頼区間をカイ二乗分布で求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          駅前の ATM で «n» 日間の引出総額を記録したところ、不偏分散は $s^2=«s2»$ だった。母標準偏差 $\sigma$ の 95% 信頼区間として正しいものを選べ。
+          カイ二乗分布の上側確率の点は次のとおりである。
+
+          | 自由度 | 0.975 | 0.95 | 0.05 | 0.025 |
+          |---|---|---|---|---|
+          | 14 | «c_lo» | «c90_lo» | «c90_hi» | «c_hi» |
+          | 15 | «c15_lo» | «c15_95» | «c15_05» | «c15_hi» |
+        choices:
+          - "$«ci_var»$"
+          - "$«ci_norm»$"
+          - "$«ci_ok»$"
+          - "$«ci_n»$"
+          - "$«ci_90»$"
+        answer: 2
+        distractors:
+          - 分散 σ^2 の信頼区間を答え、平方根をとり忘れた
+          - s ± 1.96 s/√(2(n−1)) の正規近似で作った区間で、正確な区間ではない
+          - 正解
+          - 自由度を n=15 とし、n s^2 を使った
+          - 90% 点（上側 0.95・0.05 の点）を使った
+        explanation: |
+          **方針** $(n-1)s^2/\sigma^2\sim\chi^2(n-1)$ をピボットにして $\sigma^2$ の区間を作り、平方根をとる。
+
+          **途中式**
+          - $(n-1)s^2=«df»\times«s2»=«ss»$
+          - $P\left(«c_lo»\le\dfrac{«ss»}{\sigma^2}\le«c_hi»\right)=0.95$ より $\dfrac{«ss»}{«c_hi»}\le\sigma^2\le\dfrac{«ss»}{«c_lo»}$、すなわち $«v_lo»\le\sigma^2\le«v_hi»$
+          - 平方根をとって $\sigma$ の区間にする
+
+          **答え** $«ci_ok»$
+
+          **間違えやすい点** 割る数は、下限が上側 0.025 の点 «c_hi»、上限が上側 0.975 の点 «c_lo» で、逆数をとるので向きが入れ替わる。区間は $s=0.8$ について左右対称ではない。自由度は $n-1=«df»$。
+
+      - id: s19p09b
+        chapter: 20
+        terms: [tukey-multiple-comparison, studentized-range-distribution, one-way-anova]
+        topic: 3か所のATMの平均引出額をテューキー法で一斉比較し有意な組を求める
+        level: 応用
+        definition: false
+        type: choice
+        question: |
+          駅前・商業施設・住宅地の 3 か所の ATM で、それぞれ «m» 日ずつ引出総額を記録した。平均は駅前 «mst»、商業施設 «mco»、住宅地 «mre» で、一元配置分散分析の誤差の平均平方は $V_E=«mse»$（自由度 «dfe»）だった。
+          有意水準 5% のテューキー法で 3 つの組の平均の差を一斉に比べる。スチューデント化された範囲の上側 5% 点は $q(3,«dfe»)=«q»$、$q(3,7)=«q7»$、$t$ 分布の上側 2.5% 点は $t_{0.025}(«dfe»)=«t21»$ である。
+          差が有意と判定される基準値（平均の差がこれを超えれば有意）と、有意な組の組合せとして正しいものを選べ。
+        choices:
+          - 基準値 «hsd2» で、有意な組はない
+          - 基準値 «lsd» で、駅前と商業施設、駅前と住宅地の 2 組が有意
+          - 基準値 «hsd» で、駅前と住宅地の 1 組だけが有意
+          - 基準値 «hsd_nosq» で、3 組すべてが有意
+          - 基準値 «hsd7» で、駅前と住宅地の 1 組だけが有意
+        answer: 2
+        distractors:
+          - q に √(2V_E/m) を掛けた（q の定義では √(V_E/m) を掛ける）
+          - 多重性を考えない t 検定（最小有意差法）の基準 t√(2V_E/m) を使った
+          - 正解
+          - √(V_E/m) の平方根をとり忘れて q V_E/m とした
+          - q の自由度を誤差の自由度 21 ではなく 1 か所の m−1=7 とした
+        explanation: |
+          **方針** テューキー法では、各群の大きさが等しいとき、平均の差の絶対値が $q(k,\nu)\sqrt{V_E/m}$ を超える組を有意とする（$k$ は群の数、$\nu$ は誤差の自由度）。
+
+          **途中式**
+          - $\sqrt{V_E/m}=\sqrt{«mse»/«m»}=\sqrt{«msem»}=«se_q»$
+          - 基準値 $=«q»\times«se_q»=«hsd4»\approx«hsd»$
+          - 平均の差：駅前−商業施設 «d_sc»、商業施設−住宅地 «d_cr»、駅前−住宅地 «d_sr»
+          - «hsd» を超えるのは駅前−住宅地（«d_sr»）だけ
+
+          **答え** 基準値 «hsd» で、駅前と住宅地の 1 組だけが有意
+
+          **間違えやすい点** スチューデント化された範囲 $q$ は「範囲 ÷ 平均の標準誤差 $\sqrt{V_E/m}$」の分布なので、2 群の差の標準誤差 $\sqrt{2V_E/m}$ を掛けない（掛けると «hsd2»）。
+          $t$ 検定を 3 回くり返す基準 «lsd» では、全体の第 1 種の過誤の確率が 5% を超える。$q$ の自由度は誤差の自由度 $«N»-3=«dfe»$。
+
+  - id: s19p10
+    title: 支店の顧客満足度と預金の伸び
+    context: |
+      ある地方銀行の 7 支店について、顧客満足度調査の平均点と、1 年間の預金残高の増加率（%）は次のとおりだった。
+
+      | 支店 | A | B | C | D | E | F | G |
+      |---|---|---|---|---|---|---|---|
+      | 満足度 | «sA» | «sB» | «sC» | «sD» | «sE» | «sF» | «sG» |
+      | 増加率 | «gA» | «gB» | «gC» | «gD» | «gE» | «gF» | «gG» |
+    items:
+      - id: s19p10a
+        chapter: 13
+        terms: [spearman-rank-correlation, rank-and-ties]
+        topic: 7支店の満足度と預金増加率を順位に直してスピアマンの順位相関係数を求める
+        level: 基本
+        definition: false
+        type: numeric
+        question: |
+          満足度と増加率のスピアマンの順位相関係数を求めよ（同順位はない）。
+        answer: «rs»
+        tolerance: 0.001
+        answer_format: 小数第3位まで（小数第4位を四捨五入）で答えよ。±0.001 の差まで正解とする。
+        explanation: |
+          **方針** それぞれを大きい順（小さい順でも両方そろえればよい）に順位に直し、順位の差 $d_i$ から $r_s=1-\dfrac{6\sum d_i^2}{n(n^2-1)}$ で求める。
+
+          **途中式**
+
+          | 支店 | A | B | C | D | E | F | G |
+          |---|---|---|---|---|---|---|---|
+          | 満足度の順位 | «rA» | «rB» | «rC» | «rD» | «rE» | «rF» | «rG» |
+          | 増加率の順位 | «qA» | «qB» | «qC» | «qD» | «qE» | «qF» | «qG» |
+          | 差 $d_i$ | «dA» | «dB» | «dC» | «dD» | «dE» | «dF» | «dG» |
+
+          - $\sum d_i^2=1+1+1+1+4+1+1=«d2»$
+          - $r_s=1-\dfrac{6\times«d2»}{7\times(49-1)}=1-\dfrac{«six»}{«den»}=«rs4»\cdots$
+
+          **答え** $«rs_s»$
+
+          **間違えやすい点** 分母は $n(n^2-1)=«den»$ で、$n(n^2+1)$ とすると $«w_np1»$ になる。係数 6 を忘れると $«w_no6»$。
+          順位をつける向きは、2 つの変数でそろえる（片方だけ逆にすると符号が反転する）。
+
+  - id: s19p11
+    title: 金融リテラシー調査
+    context: |
+      ある金融機関が、«n» 人に家計管理・貯蓄・借入・投資・保険・詐欺対策の 6 項目の金融リテラシーの設問に答えてもらい、各項目の得点を得た。
+    items:
+      - id: s19p11a
+        chapter: 22
+        terms: [kaiser-criterion, cumulative-contribution-ratio, pca-on-correlation-matrix]
+        topic: 6項目の相関行列の固有値からカイザー基準と累積寄与率80%で採用する主成分数を比べる
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          6 項目の得点の相関行列で主成分分析を行ったところ、固有値は大きい順に «l1»、«l2»、«l3»、«l4»、«l5»、«l6» だった。正しい記述を選べ。
+        choices:
+          - 固有値が 1 以上の主成分を採用するカイザー基準では、3 個の主成分を採用する
+          - 累積寄与率が 80% 以上になるまで採用する基準では、第 2 主成分までで足りる
+          - カイザー基準では 2 個、累積寄与率 80% 以上の基準では 3 個の主成分を採用する
+          - 第 3 主成分の寄与率は «c3»% である
+          - 分散共分散行列から主成分分析をしても固有値は同じなので、採用する主成分の数は変わらない
+        answer: 2
+        distractors:
+          - 1 に近い固有値 0.95 も 1 以上と数えた
+          - 第 2 主成分までの累積寄与率（65%）を 80% 以上と誤った
+          - 正解
+          - 寄与率と累積寄与率を取り違えた（第 3 主成分の寄与率は 15.83%）
+          - 相関行列と分散共分散行列では固有値が一般に異なる（単位や分散の大きさに左右される）ことを見落とした
+        explanation: |
+          **方針** 相関行列の固有値の合計は変数の個数 6 に等しい。寄与率は固有値 ÷ 6、累積寄与率はその累積。カイザー基準は「固有値が 1（変数 1 個分の分散）以上」。
+
+          **途中式**
+          - 合計：$«l1»+«l2»+«l3»+«l4»+«l5»+«l6»=«tot»$
+          - 累積寄与率：第 1 主成分まで «c1»%、第 2 まで «c2»%、第 3 まで «c3»%、第 4 まで «c4»%
+          - 固有値 1 以上は «l1» と «l2» の 2 個。累積寄与率が初めて 80% 以上になるのは第 3 主成分まで
+
+          **答え** カイザー基準では 2 個、累積寄与率 80% 以上の基準では 3 個（選択肢 2）
+
+          **間違えやすい点** 第 3 主成分の寄与率は $«l3»/6=«r3»$% で、«c3»% は第 3 主成分までの累積寄与率である。基準によって採用数が変わることはよくあるので、スクリープロットなども合わせて判断する。
+          相関行列は各変数を標準化した分散共分散行列なので、元の単位のまま分散共分散行列を使うと固有値も主成分も一般に変わる。
+
+      - id: s19p11b
+        chapter: 26
+        terms: [structural-equation-modeling, goodness-of-fit-indices, factor-analysis-model]
+        topic: 2因子の確認的因子分析モデルの自由度を数えてRMSEAを求める
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          6 項目を「知識」（家計管理・貯蓄・借入）と「行動」（投資・保険・詐欺対策）の 2 因子で説明する確認的因子分析モデル（構造方程式モデリング）を最尤法で当てはめた。
+          各項目はどちらか一方の因子だけに負荷をもち、2 つの因子の分散は 1 に固定し、因子間の相関は推定する。独自因子は互いに無相関で、その分散はすべて推定する。平均構造は扱わない。
+          適合度のカイ二乗統計量は $\chi^2=«chi2»$ だった。標本の大きさを $n=«n»$、モデルの自由度を $df$ として
+          $$\mathrm{RMSEA}=\sqrt{\max\left\{\frac{\chi^2-df}{df\,(n-1)},\ 0\right\}}$$
+          を求めよ。
+        answer: «rmsea»
+        tolerance: 0.001
+        answer_format: 小数第3位まで（小数第4位を四捨五入）で答えよ。±0.001 の差まで正解とする。
+        explanation: |
+          **方針** 自由度は「標本の分散共分散行列の異なる要素の数」−「推定する母数の数」。
+
+          **途中式**
+          - 分散共分散行列の要素：$6\times7/2=«moments»$
+          - 母数：因子負荷 6 ＋ 独自因子の分散 6 ＋ 因子間相関 1 ＝ «npar»
+          - $df=«moments»-«npar»=«df»$
+          - $\dfrac{\chi^2-df}{df(n-1)}=\dfrac{«chi2»-«df»}{«df»\times«n1»}=\dfrac{«num»}{«den»}=«ratio»$
+          - $\mathrm{RMSEA}=\sqrt{«ratio»}=«rmsea4»\cdots$
+
+          **答え** $«rmsea_s»$（0.05〜0.08 程度で「まずまずの当てはまり」とされる範囲）
+
+          **間違えやすい点** 因子間の相関を数え忘れると $df=«df9»$ となり $«w_df9»$ になる。平方根をとり忘れると $«w_nosq»$。
+          分子から $df$ を引き忘れて $\sqrt{\chi^2/(df(n-1))}$ とすると $«w_chi»$ になる。
+
+  - id: s19p12
+    title: 預金残高の月次変動
+    context: |
+      ある銀行の個人預金残高の前月比の変化率から、季節変動と平均を除いた系列 $X_t$ が、定常かつ反転可能な ARMA(1,1) モデル
+      $$X_t=«phi»X_{t-1}+\varepsilon_t+«th»\varepsilon_{t-1}$$
+      に従うとする（$\varepsilon_t$ は平均 0、分散 $\sigma^2$ のホワイトノイズ）。
+    items:
+      - id: s19p12a
+        chapter: 27
+        terms: [arma-model, autocovariance-autocorrelation, stationarity-condition]
+        topic: ARMA(1,1)モデルの1次と2次の自己相関係数を自己共分散の連立方程式から求める
+        level: 応用
+        definition: false
+        type: choice
+        question: |
+          $X_t$ の 1 次と 2 次の自己相関係数 $\rho(1)$、$\rho(2)$ の組として正しいものを選べ。
+        choices:
+          - "$«c_ar»$"
+          - "$«c_sum»$"
+          - "$«c_ok»$"
+          - "$«c_sq»$"
+          - "$«c_neg»$"
+        answer: 2
+        distractors:
+          - MA 部分を無視して AR(1) の自己相関 φ, φ^2 とした
+          - ρ(1)=φ+θ と、AR と MA の係数を単純に足した
+          - 正解
+          - ρ(2) を AR(1) と同じく ρ(1)^2 とした（ARMA(1,1) では ρ(2)=φρ(1)）
+          - MA の係数の符号を逆（−0.3）にした
+        explanation: |
+          **方針** $\phi=«phi»$、$\theta=«th»$ とおく。$X_t$ と $\varepsilon_t$、$X_t$ と $\varepsilon_{t-1}$ の共分散を先に求め、自己共分散 $\gamma(0)$、$\gamma(1)$ の連立方程式を解く。
+
+          **途中式**
+          - $\mathrm{Cov}(X_t,\varepsilon_t)=\sigma^2$、$\mathrm{Cov}(X_t,\varepsilon_{t-1})=\phi\sigma^2+\theta\sigma^2=(\phi+\theta)\sigma^2$
+          - $\gamma(0)=\phi\gamma(1)+\sigma^2+\theta(\phi+\theta)\sigma^2$、$\gamma(1)=\phi\gamma(0)+\theta\sigma^2$
+          - 解くと $\gamma(0)=\dfrac{1+2\phi\theta+\theta^2}{1-\phi^2}\sigma^2$、$\gamma(1)=\dfrac{(1+\phi\theta)(\phi+\theta)}{1-\phi^2}\sigma^2$
+          - $\rho(1)=\dfrac{(1+\phi\theta)(\phi+\theta)}{1+2\phi\theta+\theta^2}=\dfrac{«a1»\times«a2»}{1+«pt2»+«th2»}=\dfrac{«g1num»}{«g0num»}=«rho1_4»\cdots$
+          - $k\ge2$ では $\gamma(k)=\phi\gamma(k-1)$ なので $\rho(2)=\phi\rho(1)=«phi»\times«rho1_4»\approx«rho2»$
+
+          **答え** $«c_ok»$
+
+          **間違えやすい点** MA(1) の部分は 1 次の自己相関だけに直接効き、2 次以降は AR の係数で $\phi$ 倍ずつ減衰する。$\rho(2)=\rho(1)^2$ が成り立つのは AR(1) のときだけである。
+
+  - id: s19p13
+    title: 延滞者への督促と新しい少額ローン
+    context: |
+      ある消費者金融会社では、返済が遅れている顧客への督促の方法と、新商品の延滞率を調べている。
+    items:
+      - id: s19p13a
+        chapter: 28
+        terms: [mantel-haenszel-estimator, three-way-table, odds-and-odds-ratio]
+        topic: 延滞日数で層別したSMS督促と延滞解消の2つの2×2表から共通オッズ比をマンテル・ヘンツェル推定量で求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          返済が遅れている顧客に、SMS で督促した群としなかった群で、翌月までに延滞が解消したかを延滞日数の層別に集計した。
+
+          | 層 | 督促 | 解消 | 未解消 | 計 |
+          |---|---|---|---|---|
+          | 延滞 30 日未満 | SMS あり | «a1» | «b1» | 100 |
+          | 延滞 30 日未満 | SMS なし | «c1» | «d1» | 100 |
+          | 延滞 30 日以上 | SMS あり | «a2» | «b2» | 50 |
+          | 延滞 30 日以上 | SMS なし | «c2» | «d2» | 50 |
+
+          各層のオッズ比が共通であるとみて、「SMS あり」の「SMS なし」に対する延滞解消の共通オッズ比をマンテル・ヘンツェル推定量で求める。最も近い値を選べ。
+        choices:
+          - "$«inv»$"
+          - "$«crude»$"
+          - "$«avg»$"
+          - "$«mh»$"
+          - "$«or1»$"
+        answer: 3
+        distractors:
+          - 分子と分母を逆にし、SMS なしの SMS ありに対するオッズ比を求めた
+          - 層を無視して 2 つの表を合計してからオッズ比を求めた
+          - 層ごとのオッズ比 2.67 と 1.56 を単純に平均した
+          - 正解
+          - 延滞 30 日未満の層のオッズ比だけを答えた
+        explanation: |
+          **方針** 層 $k$ の表を $(a_k,b_k;c_k,d_k)$、総数を $n_k$ とすると、マンテル・ヘンツェル推定量は
+          $$\hat\psi_{MH}=\frac{\sum_k a_kd_k/n_k}{\sum_k b_kc_k/n_k}$$
+          で、層ごとのオッズ比を層の大きさなどで重み付けしてまとめたものになる。
+
+          **途中式**
+          - 30 日未満（$n_1=«n1»$）：$a_1d_1/n_1=«a1»\times«d1»/«n1»=«ad1»$、$b_1c_1/n_1=«b1»\times«c1»/«n1»=«bc1»$
+          - 30 日以上（$n_2=«n2»$）：$a_2d_2/n_2=«a2»\times«d2»/«n2»=«ad2»$、$b_2c_2/n_2=«b2»\times«c2»/«n2»=«bc2»$
+          - $\hat\psi_{MH}=\dfrac{«ad1»+«ad2»}{«bc1»+«bc2»}=\dfrac{«num»}{«den»}=«mh4»\cdots$
+
+          **答え** $«mh»$
+
+          **間違えやすい点** 層を合計した表（SMS あり：解消 «A»・未解消 «B»、SMS なし：解消 «C»・未解消 «D»）のオッズ比 «crude» は、層の情報を捨てている。層によって SMS の割合が違えば交絡で偏り、この例のように割合が同じ（どちらの層も 50%）でも、オッズ比は層を合計すると値が変わる性質があるので «mh» とは一致しない。
+          層ごとのオッズ比 «or1» と «or2» の単純平均 «avg» は、マンテル・ヘンツェル推定量とは異なる。
+
+      - id: s19p13b
+        chapter: 31
+        terms: [beta-binomial-model, predictive-distribution, conjugate-prior]
+        topic: ベータ事前分布と少数の貸出実績から次の2件がともに延滞する事後予測確率を求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          新しい少額ローン商品の延滞率 $\theta$ に、類似商品の実績から事前分布 $\mathrm{Beta}(«al»,«be»)$（密度 $\propto\theta^{«al»-1}(1-\theta)^{«be»-1}$、平均 0.04）をおく。
+          発売後の «nn» 件の貸出のうち «y» 件が延滞した。$\theta$ が与えられたもとで各貸出の延滞は独立とする。
+          次に貸し出す 2 件が**ともに**延滞する事後予測確率に最も近い値を選べ。
+        choices:
+          - "$«w_prior»$"
+          - "$«w_plug»$"
+          - "$«w_bad»$"
+          - "$«pred»$"
+          - "$«w_mle»$"
+        answer: 3
+        distractors:
+          - データを使わず事前平均 0.04 の 2 乗を答えた
+          - 事後平均 0.05 を θ に代入して 2 乗した（θ の不確かさを無視した）
+          - 事後分布の第2母数に延滞しなかった件数 47 ではなく貸出件数 50 を足した
+          - 正解
+          - 事前分布を無視して最尤推定値 3/50 の 2 乗を答えた
+        explanation: |
+          **方針** ベータ分布は二項分布の共役事前分布で、事後分布は $\mathrm{Beta}(\alpha+y,\ \beta+n-y)$。予測確率は $\theta^2$ の事後期待値 $E[\theta^2\mid\text{データ}]$ である。
+
+          **途中式**
+          - 事後分布：$\mathrm{Beta}(«al»+«y»,\ «be»+«ny»)=\mathrm{Beta}(«ap»,«bp»)$、事後平均 $«ap»/«apb»=«pmean»$
+          - $\mathrm{Beta}(a,b)$ では $E[\theta^2]=\dfrac{a(a+1)}{(a+b)(a+b+1)}$
+          - $P(\text{2 件とも延滞}\mid\text{データ})=\dfrac{«ap»\times«ap1»}{«apb»\times«apb1»}=\dfrac{«pnum»}{«pden»}=«pred6»\cdots$
+
+          **答え** $«pred»$
+
+          **間違えやすい点** 事後平均を代入した $«pmean»^2=«w_plug»$ は、$\theta$ の不確かさ（事後分散）を無視しているので小さくなる。$E[\theta^2]=\{E[\theta]\}^2+V[\theta]$ である。
+          事後分布の第 2 母数に足すのは延滞しなかった件数 $«nn»-«y»=«ny»$ で、貸出件数 «nn» ではない。

@@ -1,0 +1,1030 @@
+set: 5
+title: 模擬試験 第5回
+minutes: 90
+problems:
+  - id: s05p01
+    title: 感染症のスクリーニング検査
+    context: |
+      ある地域で、無症状の住民を対象に感染症のスクリーニングを行う。住民の感染割合（有病率）は «prev» とする。
+      使える検査は次の 2 種類である。
+
+      | 検査 | 感度（感染者が陽性になる確率） | 特異度（非感染者が陰性になる確率） |
+      |---|---|---|
+      | 簡易検査 A | «seA» | «spA» |
+      | 確認検査 B | «seB» | «spB» |
+    items:
+      - id: s05p01a
+        chapter: 1
+        terms: [conditional-independence, bayes-theorem, conditional-probability]
+        topic: 2つの検査を直列に使い両方陽性のときだけ陽性とする判定の陽性的中率（感染の有無を与えて条件付き独立）
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          まず全員に検査 A を行い、A が陽性の人にだけ検査 B を行う。**A と B の両方が陽性**のときに「陽性」と判定する。
+          感染しているかどうかを与えたとき、2 つの検査の結果は条件付き独立とする。
+          「陽性」と判定された人が実際に感染している確率（陽性的中率）に最も近い値はどれか。
+        choices:
+          - "$«ppvA»$"
+          - "$«ppv_par»$"
+          - "$«ppv»$"
+          - "$«ppv_fpw»$"
+          - "$«ppv_noprev»$"
+        answer: 2
+        distractors:
+          - 検査 A だけの陽性的中率を答えた
+          - どちらか一方が陽性なら陽性とする並列の判定で計算した
+          - 正解
+          - 非感染者が両方陽性になる確率を 1-(特異度の積) とした
+          - 有病率を無視して 感度/(感度+偽陽性率) とした
+        explanation: |
+          **方針** 判定全体の感度と偽陽性率（1−特異度）を、条件付き独立を使って掛け算で求め、ベイズの定理で $P(\text{感染}\mid\text{陽性})$ を出す。
+
+          **途中式** 感染者が両方陽性になる確率は $«seA»\times«seB»=«sens»$。
+          非感染者が両方陽性になる確率は $(1-«spA»)(1-«spB»)=«fpA»\times«fpB»=«fp»$。
+          $$P(\text{感染}\mid\text{陽性})=\frac{«prev»\times«sens»}{«prev»\times«sens»+(1-«prev»)\times«fp»}=\frac{«num»}{«num»+«fpm»}=\frac{«num»}{«den»}=«ppv4»\cdots$$
+
+          **答え** $«ppv»$
+
+          **間違えやすい点** 検査 A だけなら陽性的中率は $«ppvA»$ にすぎない。有病率が低いと偽陽性が多くなるため、直列にして偽陽性率を $«fp»$ まで下げる意味がある。
+          非感染者が両方陽性になる確率は「両方とも誤る」確率なので $(1-\text{特異度}_A)(1-\text{特異度}_B)$ であり、$1-«spA»\times«spB»=«fp_par»$（どちらか一方でも誤る確率）ではない（これを使うと $«ppv_fpw»$）。
+          有病率を掛けずに $«sens»/(«sens»+«fp»)$ とすると $«ppv_noprev»$ となり、事前確率を無視する誤りになる。
+
+      - id: s05p01b
+        chapter: 5
+        terms: [bernoulli-distribution, binomial-distribution, independence-of-events]
+        topic: 検体を10人分まとめて検査し陽性のプールだけ個別に再検査するプール検査の期待検査回数
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          検査の回数を減らすため、«N» 人の検体を «k» 人ずつ «pools» 組に分けて混ぜ（プール）、まずプールごとに 1 回検査する。
+          プールが陽性なら、その «k» 人を 1 人ずつ検査し直す（1 組あたり追加 «k» 回）。陰性ならその «k» 人は全員陰性とする。
+          各人は互いに独立に確率 «prev» で感染しており、検査に誤りはない（感染者が 1 人でも含まれるプールは必ず陽性）とする。
+          «N» 人全体で必要な検査回数の期待値を求めよ。必要なら $0.98^{10}=«q10»$ を使え。
+        answer: «tests»
+        tolerance: 0.1
+        answer_format: 小数第1位まで（小数第2位を四捨五入）で答えよ。±0.1 の差まで正解とする。
+        explanation: |
+          **方針** 1 組の検査回数は「プール検査 1 回」＋「プールが陽性なら «k» 回」。プールが陽性になるのは «k» 人のうち少なくとも 1 人が感染しているとき。期待値の線形性で «pools» 組分を足す。
+
+          **途中式** 1 組が陽性になる確率は、全員が非感染である確率の余事象なので
+          $$P(\text{プール陽性})=1-(1-«prev»)^{«k»}=1-«q10»=«ppos»$$
+          1 組あたりの検査回数の期待値は $1+«k»\times«ppos»=1+«kppos»$。«pools» 組では
+          $$«pools»\times(1+«kppos»)=«tests_s»$$
+          （1 人あたり $«per»$ 回で、全員を個別に検査する «N» 回の 3 割ほどで済む。）
+
+          **答え** $«tests_s»$ 回
+
+          **間違えやすい点** プールが陽性になる確率を感染割合 «prev» そのものとすると $«pools»\times(1+«k»\times«prev»)=«tests_wrong»$ 回となり、少なく見積もってしまう。
+          プール陽性は「«k» 人のうち 1 人以上が感染」なので、余事象 $1-(1-p)^{k}$ で計算する。最初のプール検査 «pools» 回を足し忘れないこと。
+
+  - id: s05p02
+    title: 健診での血圧の再測定
+    context: |
+      健康診断の受診者について、1 回目の収縮期血圧 $X_1$ と、1 か月後に（治療なしで）測り直した $X_2$（単位：mmHg）は、
+      ともに平均 «mu»、標準偏差 «sig» で、相関係数 «rho» の 2 変量正規分布に従うとする。
+    items:
+      - id: s05p02a
+        chapter: 3
+        terms: [covariance-and-correlation, expectation-variance-properties, spurious-correlation]
+        topic: 治療なしでも初回値と変化量に負の相関が出る平均への回帰を相関係数で示す
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          変化量 $D=X_2-X_1$ と初回値 $X_1$ の相関係数 $\mathrm{Corr}(X_1,D)$ に最も近い値はどれか。
+        choices:
+          - "$«corr»$"
+          - "$«corr_w0»$"
+          - "$«corr_w1»$"
+          - "$«corr_w2»$"
+          - "$«corr_w3»$"
+        answer: 0
+        distractors:
+          - 正解
+          - 治療をしていないので変化量は初回値と無関係だと考えた
+          - 平方根をとらずに -(1-ρ)/2 とした
+          - V[D]=2(1-ρ)σ² の 2 を落とした
+          - 共分散の符号を取り違えた
+        explanation: |
+          **方針** 共分散の双線形性で $\mathrm{Cov}(X_1,D)$ と $V[D]$ を求め、相関係数の定義に当てはめる。
+
+          **途中式** $\sigma^2=«var»$、$\mathrm{Cov}(X_1,X_2)=\rho\sigma^2=«cov»$ なので
+          $$\mathrm{Cov}(X_1,D)=\mathrm{Cov}(X_1,X_2)-V[X_1]=(\rho-1)\sigma^2=«cxd»$$
+          $$V[D]=V[X_1]+V[X_2]-2\mathrm{Cov}(X_1,X_2)=2(1-\rho)\sigma^2=«vd»$$
+          $$\mathrm{Corr}(X_1,D)=\frac{(\rho-1)\sigma^2}{\sigma\sqrt{2(1-\rho)}\,\sigma}=-\sqrt{\frac{1-\rho}{2}}=-\sqrt{«half»}=«corr»$$
+
+          **答え** $«corr»$
+
+          **間違えやすい点** 治療をしていなくても、初回値が高い人ほど次は下がる傾向が出る（平均への回帰）。「初回が高い人ほど大きく下がった」ことだけで効果があるとは言えない。
+          $\sqrt{\phantom{x}}$ を忘れると $«corr_w1»$、分母の 2 を落とすと $«corr_w2»$ になる。$\rho<1$ なら符号は必ず負である。
+
+      - id: s05p02b
+        chapter: 6
+        terms: [chi-squared-distribution, normal-distribution, expectation-variance-properties]
+        topic: 治療なしの血圧の変化量の標本分散がとりうる上側5%点を相関を考えた分散とカイ二乗分布から求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          無作為に選んだ «n» 人の受診者の変化量 $D_1,\ldots,D_{«n»}$（$D_i=X_{2i}-X_{1i}$、互いに独立）から不偏分散 $S^2$ を計算する。
+          治療をしていないのに $S^2$ が大きすぎないかを調べるため、$P(S^2>c)=0.05$ となる $c$ を求めたい。最も近い値はどれか。
+          必要なら、カイ二乗分布の上側 5% 点 $\chi^2_{0.05}(9)=«c9»$、$\chi^2_{0.05}(10)=«c10»$ を使え。
+        choices:
+          - "$«cut_n»$"
+          - "$«cut»$"
+          - "$«cut_df»$"
+          - "$«cut_sig»$"
+          - "$«cut_ind»$"
+        answer: 1
+        distractors:
+          - (n-1)S²/σ² ではなく nS²/σ² としてn で割った
+          - 正解
+          - 自由度を n-1=9 ではなく n=10 とした
+          - 変化量ではなく血圧そのものの分散 σ²=400 を使った
+          - 2回の測定の相関を無視して V[D]=2σ²=800 とした
+        explanation: |
+          **方針** $D_i$ は正規分布に従うので、不偏分散について $\dfrac{(n-1)S^2}{V[D]}\sim\chi^2(n-1)$。まず $V[D]$ を相関を考えて求める。
+
+          **途中式** $V[D]=V[X_1]+V[X_2]-2\mathrm{Cov}(X_1,X_2)=2(1-\rho)\sigma^2=2\times(1-«rho»)\times«var»=«vd»$。
+          $$P(S^2>c)=P\left(\chi^2(«df»)>\frac{«df»\,c}{«vd»}\right)=0.05\quad\Rightarrow\quad\frac{«df»\,c}{«vd»}=«c9»$$
+          $$c=\frac{«vd»\times«c9»}{«df»}=«cut»$$
+
+          **答え** $«cut»$
+
+          **間違えやすい点** $X_1$ と $X_2$ には正の相関があるので、差の分散は $2\sigma^2=«vd2»$ よりずっと小さい（相関を無視すると $«cut_ind»$）。
+          自由度は標本の大きさ «n» ではなく $n-1=«df»$（平均を推定して 1 つ失う）。
+
+  - id: s05p03
+    title: 感染症の潜伏期間と治療
+    context: |
+      ある感染症の流行で、潜伏期間の長さと、発症した患者の回復までの日数を調べる。
+    items:
+      - id: s05p03a
+        chapter: 7
+        terms: [extreme-value-distribution, convergence-in-distribution, exponential-distribution]
+        topic: 感染者200人の潜伏期間の最大値をガンベル分布で近似して95%を覆う健康観察期間を決める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          潜伏期間は人ごとに独立に平均 «m» 日の指数分布に従うとする。ある集団感染で感染した «n» 人全員について、
+          「全員の潜伏期間の最大値 $M$ が $t$ 日以下になる確率」が 0.95 となる $t$ を、極値分布（ガンベル分布）による近似で求めたい。
+          最も近い値はどれか。必要なら $\log «n»=«logn»$、$-\log(-\log 0.95)=«gq»$、オイラー定数 $0.5772$ を使え（$\log$ は自然対数）。
+        choices:
+          - "$«t_one»$"
+          - "$«t_loc»$"
+          - "$«t_mean»$"
+          - "$«t_z»$"
+          - "$«t95»$"
+        answer: 4
+        distractors:
+          - 1人の潜伏期間の95%点の考え方で log n の項を落とした
+          - 位置の項 5 log n だけを答え、分位点の項を落とした
+          - 最大値の期待値（ガンベル分布の平均）を答えた
+          - ガンベル分布の95%点の代わりに正規分布の95%点1.645を使った
+          - 正解
+        explanation: |
+          **方針** 平均 $\mu=«m»$ の指数分布で $P(M\le t)=\big(1-e^{-t/\mu}\big)^{n}$。$t=\mu(\log n+x)$ とおくと、$n$ が大きいとき
+          $$P\big(M\le\mu(\log n+x)\big)=\left(1-\frac{e^{-x}}{n}\right)^{n}\to\exp\left(-e^{-x}\right)$$
+          となり、$M/\mu-\log n$ は標準ガンベル分布に近づく。
+
+          **途中式** $\exp(-e^{-x})=0.95$ を解くと $x=-\log(-\log 0.95)=«gq»$。よって
+          $$t=«m»\times(\log «n»+«gq»)=«m»\times(«logn»+«gq»)=«m»\times«sum_l»=«t95_3»$$
+
+          **答え** 約 $«t95»$ 日
+
+          **間違えやすい点** 1 人だけなら 95% 点は $«m»\log 20\approx 15$ 日だが、«n» 人全員を覆うには最大値の分布を考える必要があり、およそ $«m»\log «n»$ 日だけ長くなる。
+          ガンベル分布は左右対称ではないので、正規分布の 1.645 を使うと短すぎる（$«t_z»$）。最大値の平均 $«m»(\log «n»+0.5772)=«t_mean»$ を答えると、半分近い確率で超えてしまう。
+          なお正確な値 $-«m»\log\big(1-0.95^{1/«n»}\big)$ も約 41.34 日で、近似はよく合う。
+
+      - id: s05p03b
+        chapter: 29
+        terms: [log-rank-test, censored-data, survival-function]
+        topic: 新薬群と標準治療群の回復までの日数を打ち切りを含むログランク検定で比べる統計量
+        level: 応用
+        definition: false
+        type: choice
+        question: |
+          発症した患者を新薬群（A）と標準治療群（B）に無作為に分け、回復までの日数を観察した。$+$ の付いた値は、その日に転院したため以後の経過がわからない（右側打ち切り）ことを表す。
+
+          | 群 | 回復までの日数 |
+          |---|---|
+          | A | $5,\ 8^{+},\ 10,\ 12^{+}$ |
+          | B | $2,\ 3,\ 5,\ 7,\ 9^{+}$ |
+
+          回復が起きた各時点で 2×2 表を作り、A 群の回復数の期待値 $E$ と超幾何分布にもとづく分散 $V$ を足し合わせるログランク検定の統計量
+          $\chi^2=(O-E)^2/V$（$O$ は A 群の回復数の合計）の値に最も近いものはどれか。
+        choices:
+          - "$«chi»$"
+          - "$«chiE»$"
+          - "$«zabs»$"
+          - "$«chi_nc»$"
+          - "$«peto»$"
+        answer: 0
+        distractors:
+          - 正解
+          - 分散 V の代わりに A 群の期待値 E で割った
+          - (O-E)/√V を2乗しなかった
+          - 同時に2人回復した時点の分散に (n-d)/(n-1) の補正を掛けなかった
+          - 超幾何分散ではなく (O-E)²/E_A+(O-E)²/E_B の近似式を使った
+        explanation: |
+          **方針** 回復が起きた時点 $t_j$ ごとに、その直前のリスク集合の人数 $n_{Aj},n_{Bj}$（$n_j=n_{Aj}+n_{Bj}$）と回復数 $d_j$ を数え、
+          $$E_j=d_j\frac{n_{Aj}}{n_j},\qquad V_j=d_j\frac{n_{Aj}}{n_j}\cdot\frac{n_{Bj}}{n_j}\cdot\frac{n_j-d_j}{n_j-1}$$
+          を足し合わせる。打ち切られた人は、その日以降のリスク集合から除く。
+
+          **途中式**
+
+          | $t_j$ | $n_{Aj}$ | $n_{Bj}$ | $d_j$ | A の回復 | $E_j$ | $V_j$ |
+          |---|---|---|---|---|---|---|
+          | «t0» | «nA0» | «nB0» | «d0» | «dA0» | «e0» | «v0» |
+          | «t1» | «nA1» | «nB1» | «d1» | «dA1» | «e1» | «v1» |
+          | «t2» | «nA2» | «nB2» | «d2» | «dA2» | «e2» | «v2» |
+          | «t3» | «nA3» | «nB3» | «d3» | «dA3» | «e3» | «v3» |
+          | «t4» | «nA4» | «nB4» | «d4» | «dA4» | «e4» | «v4» |
+
+          （7 日目の時点では A の 8+ 日の人はまだ観察中、10 日目の時点では B の 9+ 日の人は除かれている。）
+          $$O=«O»,\quad E=«E»,\quad O-E=«OE»,\quad V=«V»$$
+          $$\chi^2=\frac{(«OE»)^2}{«V»}=\frac{«OE2»}{«V»}=«chi4»\cdots$$
+
+          **答え** $«chi»$（自由度 1 のカイ二乗分布の上側 5% 点 3.841 より小さいので、5% 水準では差があるとはいえない）
+
+          **間違えやすい点** 同時に 2 人が回復した 5 日目の分散には $(n_j-d_j)/(n_j-1)$ の補正が付く（付け忘れると $«chi_nc»$）。
+          $(O-E)^2/E_A+(O-E)^2/E_B$ は簡便な近似で、ここで求める超幾何分散を使った統計量（$«chi»$）より小さめになる（$«peto»$）。
+          A 群は回復が遅い（$O<E$）が、例数が少ないため有意にはならない。
+
+  - id: s05p04
+    title: 新薬の安全性の評価
+    context: |
+      新薬の安全性を、臨床試験と市販後の病棟の記録で評価する。
+    items:
+      - id: s05p04a
+        chapter: 9
+        terms: [wilson-interval, wald-confidence-interval, ci-proportion]
+        topic: 少数例でしか起きない副作用の発現率についてウィルソンの95%信頼区間の上限を求める
+        level: 基本
+        definition: false
+        type: numeric
+        question: |
+          臨床試験で新薬を投与した «n» 人のうち、«x» 人に特定の副作用が起きた。発現率 $p$ の 95% 信頼区間を、
+          ウィルソンの方法（スコア法）
+          $$\frac{x+z^2/2}{n+z^2}\ \pm\ \frac{z\sqrt{\hat p(1-\hat p)/n+z^2/(4n^2)}}{1+z^2/n}\qquad(\hat p=x/n,\ z=«z»)$$
+          で求めるとき、**上限**を求めよ。
+        answer: «up»
+        tolerance: 0.001
+        answer_format: 小数第3位まで（小数第4位を四捨五入）で答えよ。±0.001 の差まで正解とする。
+        explanation: |
+          **方針** 与えられた式に $\hat p=«x»/«n»=«ph»$、$z^2=«z2»$ を代入し、中心と半径を別々に計算する。
+
+          **途中式** 中心は
+          $$\frac{«x»+«z2h»}{«n»+«z2»}=\frac{«num_c»}{«den_c»}=«cen»$$
+          半径は、根号の中が $\dfrac{«ph»\times(1-«ph»)}{«n»}+\dfrac{«z2»}{4\times«n»^2}=«a1»+«a2»=«a12»$ なので
+          $$\frac{«z»\times\sqrt{«a12»}}{1+«z2»/«n»}=\frac{«z»\times«sq»}{«fac»}=«rad»$$
+          上限は $«cen»+«rad»=«up5»$。
+
+          **答え** $«up»$（下限は $«lo»$）
+
+          **間違えやすい点** ワルド型 $\hat p\pm z\sqrt{\hat p(1-\hat p)/n}$ だと上限は $«wald»$ で、$\hat p$ が 0 に近く $n$ が小さいときは区間が狭すぎ、被覆確率が 95% を大きく下回る。
+          ウィルソンの区間は $|\hat p-p|\le z\sqrt{p(1-p)/n}$ を $p$ について解いたもので、中心が $\hat p$ より 0.5 の側に寄る。
+
+      - id: s05p04b
+        chapter: 8
+        terms: [efficient-estimator, cramer-rao-inequality, delta-method, poisson-distribution]
+        topic: 0件の日の割合だけから推定したポアソン平均の、標本平均に対する漸近相対効率
+        level: 応用
+        definition: false
+        type: choice
+        question: |
+          市販後、ある病棟で 1 日に報告される軽い副作用の件数は、日ごとに独立に平均 $\lambda$ のポアソン分布に従うとする。
+          ある病院では件数を記録しておらず、「0 件だった日かどうか」だけが $n$ 日分残っている。0 件だった日の割合を $\hat p_0$ として、
+          $\tilde\lambda=-\log\hat p_0$ で $\lambda$ を推定する。
+
+          件数の記録があれば使える最尤推定量 $\bar X$（標本平均）に対する $\tilde\lambda$ の漸近相対効率
+          $$\frac{\bar X\text{ の漸近分散}}{\tilde\lambda\text{ の漸近分散}}$$
+          は、$\lambda=«lam»$ のときいくらか。最も近い値を選べ。必要なら $e^{«lam»}=«ep»$、$e^{-«lam»}=«em»$ を使え。
+        choices:
+          - "$«eff_p0»$"
+          - "$«eff»$"
+          - "$«eff_inv»$"
+          - "$«eff_le»$"
+          - "$«eff_nog»$"
+        answer: 1
+        distractors:
+          - 0件の日の確率 e^{-λ} を効率と取り違えた
+          - 正解
+          - 分散の比を逆にした（効率の逆数）
+          - λe^{-λ}（1件の日の確率）を答えた
+          - デルタ法で g'(p)^2 を掛け忘れた
+        explanation: |
+          **方針** $\hat p_0$ は成功確率 $p_0=e^{-\lambda}$ の二項割合なので $V[\hat p_0]=p_0(1-p_0)/n$。$g(p)=-\log p$ にデルタ法を使って $\tilde\lambda$ の漸近分散を出し、$\bar X$ の分散 $\lambda/n$（クラメール・ラオの下限に一致）と比べる。
+
+          **途中式** $g'(p)=-1/p$ より
+          $$V[\tilde\lambda]\approx\{g'(p_0)\}^2\frac{p_0(1-p_0)}{n}=\frac{1-p_0}{n\,p_0}=\frac{e^{\lambda}-1}{n}$$
+          一方 $V[\bar X]=\lambda/n$。よって漸近相対効率は
+          $$\frac{\lambda/n}{(e^\lambda-1)/n}=\frac{\lambda}{e^\lambda-1}=\frac{«lam»}{«ep»-1}=\frac{«lam»}{«ep1»}=«eff4»\cdots$$
+
+          **答え** $«eff»$（件数を捨てたことで、同じ精度を得るのに約 $1/«eff»$ 倍の日数が要る）
+
+          **間違えやすい点** デルタ法では分散に $\{g'(p_0)\}^2=1/p_0^2$ を掛ける。掛け忘れると $«lam»/\{«em»\times(1-«em»)\}=«eff_nog»$ となり、1 を超えてクラメール・ラオの不等式に反する。
+          比の向きを逆にすると $«eff_inv»$。効率は 1 以下で、$\lambda\to0$ で 1 に近づく（まれな事象なら 0 か 1 件以上かでほぼ情報が尽きる）。
+
+  - id: s05p05
+    title: 片頭痛予防薬のクロスオーバー試験
+    context: |
+      片頭痛の患者 «n» 人に、新薬とプラセボを期間を分けて（順序は無作為に）両方投与するクロスオーバー試験を行った。
+      患者ごとに「新薬期の値 − プラセボ期の値」を差として求める。
+    items:
+      - id: s05p05a
+        chapter: 11
+        terms: [hotelling-t2, paired-t-test, f-distribution]
+        topic: 頭痛日数と鎮痛薬使用回数の2つの差を同時に検定するホテリングのT²を対応のあるデータで求めF統計量に直す
+        level: 応用
+        definition: false
+        type: numeric
+        question: |
+          主要な 2 つの評価項目、1 か月の頭痛日数の差 $d_1$ と鎮痛薬の使用回数の差 $d_2$ について、«n» 人の平均ベクトルと不偏分散共分散行列は
+          $$\bar{\boldsymbol d}=\begin{pmatrix}«d1»\\«d2»\end{pmatrix},\qquad S=\begin{pmatrix}«s11»&«s12»\\«s12»&«s22»\end{pmatrix}$$
+          だった。差の母平均ベクトルが $\boldsymbol 0$ という帰無仮説を、ホテリングの $T^2=n\,\bar{\boldsymbol d}^{\top}S^{-1}\bar{\boldsymbol d}$ で検定する。
+          帰無仮説のもとで $F$ 分布に従うように $T^2$ を定数倍した統計量 $F$ の値を求めよ（差は 2 変量正規分布に従うとする）。
+        answer: «F»
+        tolerance: 0.01
+        answer_format: 小数第2位まで（小数第3位を四捨五入）で答えよ。±0.01 の差まで正解とする。
+        explanation: |
+          **方針** $p$ 変量・標本の大きさ $n$ の 1 標本ホテリング検定では、帰無仮説のもとで
+          $$F=\frac{n-p}{p(n-1)}T^2\sim F(p,\ n-p)$$
+          となる。2×2 行列の逆行列を使って $T^2$ を求め、定数を掛ける。
+
+          **途中式** $\det S=«s11»\times«s22»-«s12»^2=«det»$、$S^{-1}=\dfrac{1}{«det»}\begin{pmatrix}«s22»&-«s12»\\-«s12»&«s11»\end{pmatrix}$。
+          $$\bar{\boldsymbol d}^{\top}S^{-1}\bar{\boldsymbol d}=\frac{«s22»\times(«d1»)^2-2\times«s12»\times(«d1»)\times(«d2»)+«s11»\times(«d2»)^2}{«det»}=\frac{«q1»-«q2»+«q3»}{«det»}=\frac{«qn»}{«det»}=«quad»$$
+          $$T^2=«n»\times«quad»=«T2»,\qquad F=\frac{«n»-«p»}{«p»\times(«n»-1)}\times«T2»=\frac{«fnum»}{«fden»}\times«T2»=«F4»\cdots$$
+
+          **答え** $«F»$（$F_{0.05}(«p»,«fnum»)=«Fcrit»$ より小さいので、5% 水準で棄却されない）
+
+          **間違えやすい点** 自由度は $(p,\ n-p)=(«p»,«fnum»)$ で、定数は $(n-p)/\{p(n-1)\}$。$T^2=«T2_s»$ をそのまま $F$ 表と比べないこと。
+          2 つの差の相関（共分散 «s12»）を無視して対角成分だけで計算すると $F=«F_diag»$ と過大になる。
+          頭痛日数だけの対応のある $t$ 検定では $t=«t1»$ で $|t|>t_{0.025}(9)=«tcrit»$ となるが、2 項目を同時に検定すると有意にならない。1 項目ずつ検定を繰り返すと第 1 種の誤りが増えることに注意。
+
+      - id: s05p05b
+        chapter: 10
+        terms: [false-discovery-rate, multiple-testing, bonferroni-correction]
+        topic: 副次評価項目7個のp値にベンジャミニ・ホッホベルグ法を当てはめ偽発見率5%で有意とする数
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          副次評価項目 «m» 個について、次の $p$ 値が得られた。
+
+          | 項目 | «nm0» | «nm1» | «nm2» | «nm3» | «nm4» | «nm5» | «nm6» |
+          |---|---|---|---|---|---|---|---|
+          | $p$ 値 | «pv0» | «pv1» | «pv2» | «pv3» | «pv4» | «pv5» | «pv6» |
+
+          ベンジャミニ・ホッホベルグ法で偽発見率（FDR）を «q» 以下に抑えるとき、有意と判断される項目の数はどれか。
+        choices:
+          - "«kbon» 個"
+          - "«kstep» 個"
+          - "«kind» 個"
+          - "«kbh» 個"
+          - "«kraw» 個"
+        answer: 3
+        distractors:
+          - ボンフェローニ法（またはホルム法）で判断した
+          - 小さい順に比べて初めて基準を超えたところで止めた（ステップダウンと取り違えた）
+          - 各 p 値を自分の順位の基準とだけ比べ、基準以下の項目だけを数えた
+          - 正解
+          - 多重性を調整せず 0.05 未満をすべて有意とした
+        explanation: |
+          **方針** $p$ 値を小さい順に $p_{(1)}\le\cdots\le p_{(m)}$ と並べ、$p_{(k)}\le\dfrac{k}{m}q$ を満たす**最大の** $k$ を探し、$p_{(1)},\ldots,p_{(k)}$ をすべて有意とする（ステップアップ法）。
+
+          **途中式** $m=«m»$、$q=«q»$ のとき基準は $k\times«q»/«m»$。
+
+          | $k$ | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+          |---|---|---|---|---|---|---|---|
+          | $p_{(k)}$ | «sp1» | «sp2» | «sp3» | «sp4» | «sp5» | «sp6» | «sp7» |
+          | $kq/m$ | «th1» | «th2» | «th3» | «th4» | «th5» | «th6» | «th7» |
+          | 判定 | ○ | ○ | ○ | × | ○ | × | × |
+
+          ○ となる最大の $k$ は 5。よって $k=4$ の項目（$p=«sp4»$）も含めて、小さい方から 5 個を有意とする。
+
+          **答え** «kbh» 個
+
+          **間違えやすい点** $k=4$ で基準を超えたところで止めると «kstep» 個、○ の項目だけを数えると «kind» 個になる。BH 法は「基準を満たす最大の順位まで全部」を有意とする。
+          ボンフェローニ法（基準 $«q»/«m»$）は家族単位の誤り率を抑える方法で «kbon» 個しか有意にならない。調整しなければ «kraw» 個だが、偽陽性が混じる割合を管理できない。
+          なお BH 法が FDR を $q$ 以下に保つのは、$p$ 値が独立（または正の依存）の場合である。
+
+  - id: s05p06
+    title: 新薬の用量反応試験
+    context: |
+      新薬の用量と効果の関係を、いくつかの試験で調べる。
+    items:
+      - id: s05p06a
+        chapter: 12
+        terms: [g-statistic, homogeneity-test, pearson-chi-square-statistic]
+        topic: 3用量群の有効率が等しいかを分割表の尤度比（G）統計量で検定する
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          患者を 3 つの用量群に «ng» 人ずつ無作為に割り付け、有効かどうかを判定した。
+
+          | | 低用量 | 中用量 | 高用量 |
+          |---|---|---|---|
+          | 有効 | «r0» | «r1» | «r2» |
+          | 無効 | «n0» | «n1» | «n2» |
+
+          「3 群の有効率は等しい」という帰無仮説を、尤度比検定の統計量 $G=2\sum O\log(O/E)$（$O$ は観測度数、$E$ は帰無仮説のもとでの期待度数、和は 6 つのセル）で検定する。
+          $G$ の値に最も近いものはどれか。必要なら $\log 0.625=«lnA»$、$\log 1.375=«lnB»$、$\log 1.25=«lnC»$、$\log 0.75=«lnD»$ を使え（自然対数）。
+        choices:
+          - "$«Ghalf»$"
+          - "$«X2»$"
+          - "$«G»$"
+          - "$«Gneg»$"
+          - "$«Grow»$"
+        answer: 2
+        distractors:
+          - 2 倍するのを忘れた
+          - ピアソンのカイ二乗統計量を計算した
+          - 正解
+          - log(E/O) を使い符号が逆になった
+          - 有効の行だけで和をとり無効の行を忘れた
+        explanation: |
+          **方針** 帰無仮説のもとで共通の有効率を全体の有効割合で推定し、期待度数を作る。各セルの $O\log(O/E)$ を足して 2 倍する。
+
+          **途中式** $\hat p=«tot»/{120}=«pbar»$ なので、期待度数は各群で有効 $«ng»\times«pbar»=«er»$、無効 «en»。
+          $O/E$ は有効の行で $«r0»/«er»=0.625$、$1$、$«r2»/«er»=1.375$、無効の行で $«n0»/«en»=1.25$、$1$、$«n2»/«en»=0.75$。$O/E=1$ のセルは $\log 1=0$。
+          $$\sum O\log\frac OE=«r0»\times(«lnA»)+«r2»\times«lnB»+«n0»\times«lnC»+«n2»\times(«lnD»)$$
+          $$=(«g0»)+«g2»+«g3»+(«g5»)=«half»$$
+          $$G=2\times«half»=«G4»$$
+
+          **答え** $«G»$（自由度 $(2-1)(3-1)=2$、上側 5% 点 «crit» を超えるので有効率は等しいとはいえない）
+
+          **間違えやすい点** $G$ は対数尤度比の 2 倍で、2 を掛け忘れると $«Ghalf»$ になる。
+          ピアソンの $X^2=\sum(O-E)^2/E=«X2»$ とは別の統計量だが、どちらも帰無仮説のもとで近似的に自由度 2 のカイ二乗分布に従い、値も近くなる。
+          符号を逆にした $«Gneg»$ はありえない（$G\ge0$）。
+
+      - id: s05p06b
+        chapter: 4
+        terms: [probit-transformation, log-transformation, lognormal-distribution]
+        topic: 2用量での反応率をプロビット変換し対数用量との直線から50%有効量（ED50）を求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          別の試験で、患者ごとに「効果が出る最小の用量（耐性）」$T$ があり、$\log T$ が正規分布 $N(\mu,\sigma^2)$ に従うと考える。
+          このとき用量 $d$ で効果が出る割合は $P(T\le d)=\Phi\big((\log d-\mu)/\sigma\big)$ である。
+          用量 «dd1» mg で «pp1»%、«dd2» mg で «pp2»% の患者に効果が出た。$\Phi(«zz1»)=«pr1»$、$\Phi(«zz2»)=«pr2»$ を使って、
+          半数の患者に効果が出る用量（ED50）を求めると、最も近い値はどれか（単位：mg）。
+        choices:
+          - "$«ed_geo»$"
+          - "$«ed50»$"
+          - "$«ed_lin»$"
+          - "$«ed_ari»$"
+          - "$«ed_loglin»$"
+        answer: 1
+        distractors:
+          - 2つの用量の幾何平均（対数用量の中点）を答えた
+          - 正解
+          - 用量と反応率をそのまま直線で補間した
+          - 2つの用量の算術平均を答えた
+          - 反応率を変換せず対数用量に対して直線で補間した
+        explanation: |
+          **方針** 反応率をプロビット変換（$\Phi^{-1}$）すると、$\Phi^{-1}(P)=(\log d-\mu)/\sigma$ は $\log d$ の一次式になる。2 点から直線を決め、$\Phi^{-1}(P)=0$ となる用量を求める。
+
+          **途中式** プロビット値は $«dd1»$ mg で $«zz1»$、$«dd2»$ mg で $«zz2»$。底を 2 とする対数 $\log_2 d$ で考えると $\log_2«dd1»=2$、$\log_2«dd2»=4$ で、
+          $\log_2 d$ が 2 増えるとプロビット値が 2 増えるので、傾きは 1。プロビット値 0 は $\log_2 d=2+0.5=«l50»$ のとき。
+          $$\mathrm{ED50}=2^{«l50»}=4\sqrt2=4\times«rt2»=«ed50»$$
+          （これは $T$ の中央値 $e^{\mu}$ にあたる。）
+
+          **答え** $«ed50»$ mg
+
+          **間違えやすい点** 2 つの用量での反応率は 50% をはさんで対称ではない（プロビット値 $-0.5$ と $1.5$）ので、対数用量の中点（幾何平均 $«ed_geo»$）ではない。
+          反応率と用量の関係は S 字形なので、変換せずに直線補間すると $«ed_lin»$ や $«ed_loglin»$ のようにずれる。
+
+      - id: s05p06c
+        chapter: 19
+        terms: [nonlinear-regression, least-squares-method]
+        topic: 最大効果（Emax）モデルを逆数変換で直線化した回帰係数から半数効果濃度EC50を求める
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          血中濃度 $C$ と降圧効果 $E$ の関係は、最大効果モデル
+          $$E=\frac{E_{\max}\,C}{EC_{50}+C}$$
+          に従うとする（$E_{\max}$ は最大効果、$EC_{50}$ は最大効果の半分が得られる濃度）。
+          両辺の逆数をとった $1/E$ を $1/C$ に回帰したところ、切片 «ia»、傾き «ib» の直線が得られた。$EC_{50}$ の推定値はどれか。
+        choices:
+          - "$«ec_w1»$"
+          - "$«ec_w3»$"
+          - "$«ec_w2»$"
+          - "$«emax»$"
+          - "$«ec50»$"
+        answer: 4
+        distractors:
+          - 傾きをそのまま EC50 とした
+          - 傾きの逆数を EC50 とした
+          - 最大効果の半分（効果の値）と EC50（濃度）を取り違えた
+          - 最大効果 Emax を答えた
+          - 正解
+        explanation: |
+          **方針** 逆数をとると一次式になるので、切片と傾きを $E_{\max}$、$EC_{50}$ に対応させる。
+
+          **途中式**
+          $$\frac1E=\frac{EC_{50}+C}{E_{\max}C}=\frac{1}{E_{\max}}+\frac{EC_{50}}{E_{\max}}\cdot\frac1C$$
+          切片 $1/E_{\max}=«ia»$ より $E_{\max}=«emax»$。傾き $EC_{50}/E_{\max}=«ib»$ より
+          $$EC_{50}=\frac{\text{傾き}}{\text{切片}}=\frac{«ib»}{«ia»}=«ec50»$$
+
+          **答え** $«ec50»$
+
+          **間違えやすい点** $EC_{50}$ は濃度であり、効果の値 $E_{\max}/2=«ec_w2»$ ではない。傾きは $EC_{50}/E_{\max}$ なので、$E_{\max}$ を掛け戻す必要がある。
+          なお逆数変換は濃度の低い点の誤差を大きく拡大するので、実際には元の式のまま非線形最小二乗法で当てはめる方がよい。
+
+  - id: s05p07
+    title: 慢性疾患の寛解と再燃
+    context: |
+      ある慢性疾患の患者は「寛解」と「再燃（活動期）」の 2 つの状態を行き来する。状態の変化を連続時間マルコフ連鎖で表し、
+      寛解から再燃へ移る推移率を $a=«a»$（1 年あたり）、再燃から寛解へ移る推移率を $b=«b»$（1 年あたり）とする。
+    items:
+      - id: s05p07a
+        chapter: 14
+        terms: [continuous-time-markov-chain, stationary-distribution, markov-property]
+        topic: 寛解と再燃の2状態連続時間マルコフ連鎖でいま再燃中の患者が2年後も再燃中である確率
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          いま再燃中の患者が、«t» 年後に再燃中である確率を求めよ（途中で寛解して再び再燃した場合も含む）。
+          必要なら $e^{-1.6}=«e16»$、$e^{-1.2}=«e12»$ を使え。
+        answer: «pt»
+        tolerance: 0.001
+        answer_format: 小数第3位まで（小数第4位を四捨五入）で答えよ。±0.001 の差まで正解とする。
+        explanation: |
+          **方針** 時刻 $t$ に再燃中である確率を $p(t)$ とおき、前進方程式（微小時間での出入り）を立てて解く。
+
+          **途中式** 微小時間 $h$ の間に、再燃中の人は確率 $bh$ で寛解し、寛解中の人は確率 $ah$ で再燃するので
+          $$p'(t)=-b\,p(t)+a\{1-p(t)\}=a-(a+b)p(t)$$
+          定常状態は $p'=0$ より $\pi=\dfrac{a}{a+b}=\dfrac{«a»}{«ab»}=«pi»$。解は
+          $$p(t)=\pi+\{p(0)-\pi\}e^{-(a+b)t}$$
+          $p(0)=1$、$(a+b)t=«ab»\times«t»=«abt»$ を代入して
+          $$p(«t»)=«pi»+«pi1»\times e^{-«abt»}=«pi»+«pi1»\times«e16»=«pt4»\cdots$$
+
+          **答え** $«pt»$
+
+          **間違えやすい点** $e^{-b t}=e^{-1.2}=«w_stay»$ は「«t» 年間一度も寛解しない」確率で、いったん寛解してから再燃した場合を数えていない。
+          定常確率 $«w_pi»$ は $t\to\infty$ の極限で、«t» 年ではまだ初期状態の影響が残っている。収束の速さは $a+b$ で決まる。
+
+  - id: s05p08
+    title: 入院患者データの回帰分析
+    context: |
+      ある病院の入院患者のデータを使って、入院日数や退院時の状態を説明するモデルを当てはめる。
+    items:
+      - id: s05p08a
+        chapter: 16
+        terms: [dummy-variable, multiple-regression-model, multicollinearity]
+        topic: 喫煙状況の3区分をダミー変数にした重回帰の係数の解釈と基準カテゴリーの扱い
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          入院日数 $y$ を、喫煙状況（非喫煙・過去喫煙・現在喫煙の 3 区分）と年齢 $w$（歳）で説明する重回帰
+          $$y=\beta_0+\beta_1D_1+\beta_2D_2+\beta_3w+\varepsilon$$
+          を当てはめた。$D_1$ は過去喫煙なら 1、$D_2$ は現在喫煙なら 1 のダミー変数（非喫煙が基準）で、
+          推定値は $\hat\beta_0=«b0»$、$\hat\beta_1=«b1»$、$\hat\beta_2=«b2»$、$\hat\beta_3=«b3»$ だった。正しい記述はどれか。
+        choices:
+          - 喫煙状況を「非喫煙 0・過去喫煙 1・現在喫煙 2」の 1 つの数値変数にして入れても、同じ当てはめ値が得られる。
+          - 3 つの区分すべてにダミー変数を作り、切片と一緒にモデルに入れると、推定の精度が上がる。
+          - $\hat\beta_2=«b2»$ は、年齢をそろえずに比べた現在喫煙者と非喫煙者の平均入院日数の差である。
+          - 同じ年齢の現在喫煙者と過去喫煙者とでは、入院日数の予測値の差は «b21» 日である。
+          - 基準の区分を現在喫煙に変えて当てはめ直すと、年齢の係数 $\hat\beta_3$ の値も変わる。
+        answer: 3
+        distractors:
+          - 数値化すると区分の間隔が等しいという制約が入り、一般に当てはめが変わる
+          - 3つのダミーの和が切片の列と一致し完全な多重共線性になって推定できない
+          - β2 は年齢を固定したときの差（調整済みの差）である
+          - 正解
+          - 基準の取り替えはダミーの組み替えにすぎず、当てはめ値と年齢の係数は変わらない
+        explanation: |
+          **方針** ダミー変数の係数は、他の説明変数（年齢）を固定したときの「基準の区分との差」を表す。2 つの区分の差は係数の差になる。
+
+          **途中式** 年齢 $w$ が同じなら、予測値は現在喫煙者で $\hat\beta_0+\hat\beta_2+\hat\beta_3w$、過去喫煙者で $\hat\beta_0+\hat\beta_1+\hat\beta_3w$。差は
+          $$\hat\beta_2-\hat\beta_1=«b2»-«b1»=«b21»$$
+
+          **答え** 「同じ年齢の現在喫煙者と過去喫煙者の予測値の差は «b21» 日」
+
+          **間違えやすい点** 3 区分すべてのダミーを切片と一緒に入れると $D_0+D_1+D_2=1$ が切片の列と一致し、$X^\top X$ が逆行列をもたなくなる（ダミー変数の罠）。
+          0・1・2 と数値化すると「非喫煙→過去」と「過去→現在」の差が等しいと仮定することになる（ここでは $«b1»$ と $«b21»$ で等しくない）。
+          基準を変えてもモデルの当てはめ値は同じで、年齢の係数も変わらない（ダミーの係数の解釈だけが変わる）。
+
+      - id: s05p08b
+        chapter: 17
+        terms: [robust-standard-error, heteroscedasticity, residual]
+        topic: 重症度と入院日数の単回帰で残差から不均一分散に頑健なHC0標準誤差を手計算する
+        level: 応用
+        definition: false
+        type: numeric
+        question: |
+          5 人の患者の重症度スコア $x$ と入院日数 $y$ に直線 $y=a+bx$ を最小二乗法で当てはめたところ、$\hat y=«aa»+«bb»x$ となった。
+
+          | $x$ | «x0» | «x1» | «x2» | «x3» | «x4» |
+          |---|---|---|---|---|---|
+          | $y$ | «y0» | «y1» | «y2» | «y3» | «y4» |
+          | 残差 $e_i$ | «e0» | «e1» | «e2» | «e3» | «e4» |
+
+          誤差の分散が患者ごとに異なってもよいとする、ホワイトの頑健な標準誤差（HC0 型）
+          $$\widehat{\mathrm{SE}}(\hat b)=\sqrt{\frac{\sum_{i}(x_i-\bar x)^2e_i^2}{\left\{\sum_i(x_i-\bar x)^2\right\}^2}}$$
+          の値を求めよ。
+        answer: «hc0»
+        tolerance: 0.001
+        answer_format: 小数第3位まで（小数第4位を四捨五入）で答えよ。±0.001 の差まで正解とする。
+        explanation: |
+          **方針** $\hat b=\sum(x_i-\bar x)y_i/S_{xx}$ は $y_i$ の一次式なので $V[\hat b]=\sum(x_i-\bar x)^2\sigma_i^2/S_{xx}^2$。未知の $\sigma_i^2$ を $e_i^2$ で置き換えたのが HC0 型である。
+
+          **途中式** $\bar x=«xb»$、$S_{xx}=«sxx»$。$(x_i-\bar x)^2$ は $«dx0»,«dx1»,«dx2»,«dx3»,«dx4»$、$e_i^2$ は $«e20»,«e21»,«e22»,«e23»,«e24»$ なので、積は
+          $$«w0»+«w1»+«w2»+«w3»+«w4»=«wsum»$$
+          $$\widehat{V}[\hat b]=\frac{«wsum»}{«sxx»^2}=\frac{«wsum»}{«sxx2»}=«hc0v»,\qquad\widehat{\mathrm{SE}}=\sqrt{«hc0v»}=«hc0_5»\cdots$$
+
+          **答え** $«hc0»$
+
+          **間違えやすい点** 分母は $S_{xx}$ ではなく $S_{xx}^2$（$S_{xx}$ で割ると $\sqrt{«hc0_nosq»}$ となって大きすぎる）。
+          等分散を仮定した通常の標準誤差は $\sqrt{s^2/S_{xx}}$（$s^2=«rss»/3=«s2»$）で $«ols»$ となり、残差の大きさと $x$ の離れ具合の対応を反映しない。HC0 は標本が小さいと過小になりやすいので、実務では自由度で補正した型も使う。
+
+      - id: s05p08c
+        chapter: 18
+        terms: [ordered-logit-model, logistic-regression, link-function]
+        topic: 退院時の状態3段階の比例オッズ順序ロジットモデルで合併症のある患者が中間の段階になる確率
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          退院時の状態 $Y$ を 1（軽快）、2（不変）、3（悪化）の 3 段階で記録し、合併症の有無 $x$（あり 1、なし 0）を説明変数とする比例オッズモデル
+          $$\log\frac{P(Y\le j)}{1-P(Y\le j)}=\theta_j-\beta x\qquad(j=1,2)$$
+          を当てはめたところ、$\hat\theta_1=«th1»$、$\hat\theta_2=«th2»$、$\hat\beta=«beta»$ だった。
+          合併症のある患者が $Y=2$（不変）となる確率の推定値に最も近いものはどれか。必要なら次の値を使え。
+
+          | $v$ | $-2.8$ | $-2.0$ | $-1.3$ | $-1.2$ | $-0.5$ | $0.3$ |
+          |---|---|---|---|---|---|---|
+          | $e^{v}$ | «eE» | «eC» | «eF» | «eA» | «eD» | «eB» |
+        choices:
+          - "$«pY2_0»$"
+          - "$«pY2»$"
+          - "$«pY2_s»$"
+          - "$«pC2»$"
+          - "$«pY3»$"
+        answer: 1
+        distractors:
+          - 合併症なし（x=0）の確率を求めた
+          - 正解
+          - θj − βx を θj + βx と符号を取り違えた
+          - 累積確率 P(Y≦2) を答えた
+          - P(Y=3) を答えた
+        explanation: |
+          **方針** 累積確率 $P(Y\le j)=\dfrac{1}{1+e^{-(\theta_j-\beta x)}}$ を $j=1,2$ について求め、差をとる。$\beta>0$ は合併症があると悪い段階になりやすいことを表す。
+
+          **途中式** $x=1$ のとき $\theta_2-\beta=«u2»$、$\theta_1-\beta=«u1»$。
+          $$P(Y\le2)=\frac{1}{1+e^{-1.2}}=\frac{1}{«den2»}=«c2»,\qquad P(Y\le1)=\frac{1}{1+e^{0.3}}=\frac{1}{«den1»}=«c1»$$
+          $$P(Y=2)=«c2»-«c1»=«pY2_4»$$
+
+          **答え** $«pY2»$
+
+          **間違えやすい点** このモデルの符号の約束では $\beta x$ を**引く**。足すと合併症で良い段階になりやすいことになり、$«pY2_s»$ を得る。
+          $P(Y=2)$ は累積確率の差で、$P(Y\le 2)=«pC2»$ そのものではない。比例オッズモデルでは、$x$ による累積オッズ比 $e^{-\beta}$ が $j$ によらず共通である。
+
+  - id: s05p09
+    title: 喫煙と肺がんの因果構造
+    context: |
+      喫煙と肺がんの関係を、変数の間の因果の向きを表すグラフで整理する。
+    items:
+      - id: s05p09a
+        chapter: 25
+        terms: [directed-acyclic-graph, graphical-model, conditional-independence]
+        topic: 遺伝要因と喫煙とタール沈着と肺がんの有向非巡回グラフから成り立つ条件付き独立を読み取る
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          遺伝的素因 $G$、喫煙 $S$、肺へのタール沈着 $T$、肺がん $C$ の関係が、次の有向非巡回グラフ（DAG）で表され、
+          同時分布はこのグラフに従って $p(g)\,p(s\mid g)\,p(t\mid s)\,p(c\mid g,t)$ と分解されるとする。
+
+          $$G\to S,\qquad S\to T,\qquad T\to C,\qquad G\to C$$
+
+          グラフの構造から（分布の細かな値によらず）必ず成り立つ条件付き独立として、正しいものはどれか。
+        choices:
+          - $G$ と $T$ は、$S$ を与えると条件付き独立である。
+          - $S$ と $C$ は、$G$ を与えると条件付き独立である。
+          - $G$ と $T$ は（何も条件づけなくても）独立である。
+          - $G$ と $T$ は、$S$ と $C$ の両方を与えると条件付き独立である。
+          - $S$ と $C$ は、$G$ と $T$ の両方を与えても条件付き独立にならない。
+        answer: 0
+        distractors:
+          - 正解
+          - S→T→C の道が G では遮断されない
+          - G→S→T の道が開いている
+          - 合流点 C を条件づけると G→C←T の道が開く
+          - G と T を与えると S と C の間の道はすべて遮断される
+        explanation: |
+          **方針** 2 つの変数の間の道（矢印の向きを無視した経路）がすべて遮断されるかを調べる（d 分離）。
+          道の途中の頂点が「連鎖 $\to\cdot\to$」か「分岐 $\leftarrow\cdot\to$」なら、その頂点を条件づけると遮断される。「合流点 $\to\cdot\leftarrow$」なら、条件づけ**ない**と遮断され、条件づけると開く。
+
+          **途中式** $G$ と $T$ の間の道は 2 本ある。
+          - $G\to S\to T$：$S$ は連鎖。$S$ を条件づけると遮断。
+          - $G\to C\leftarrow T$：$C$ は合流点。$C$ を条件づけなければ遮断。
+
+          したがって $S$ だけを与えると両方の道が遮断され、$G$ と $T$ は条件付き独立になる。
+          （確認：分解 $p(g)p(s\mid g)p(t\mid s)p(c\mid g,t)$ を $c$ について和をとると $p(g,s,t)=p(g)p(s\mid g)p(t\mid s)$ となり、$p(t\mid g,s)=p(t\mid s)$ が成り立つ。）
+
+          **答え** 「$G$ と $T$ は、$S$ を与えると条件付き独立である」
+
+          **間違えやすい点** $G$ を与えても $S\to T\to C$ の道が開いているので、$S$ と $C$ は独立にならない。
+          合流点 $C$（またはその子孫）を条件づけると、本来遮断されていた $G\to C\leftarrow T$ の道が開く。$G$ と $T$ の両方を与えると、$S$ と $C$ の間の道 $S\to T\to C$（$T$ で遮断）と $S\leftarrow G\to C$（$G$ で遮断）がすべて遮断されるので、最後の記述も誤り。
+
+  - id: s05p10
+    title: 4病院の比較
+    context: |
+      地域の 4 つの病院 P、Q、R、S について、患者アンケートと診療指標を比べる。
+    items:
+      - id: s05p10a
+        chapter: 20
+        terms: [tukey-multiple-comparison, studentized-range-distribution, one-way-anova]
+        topic: 4病院の満足度得点の平均をテューキーの方法で対比較し有意差のある組の数を数える
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          各病院から «nn» 人ずつ無作為に選んだ患者の満足度得点の平均は、P «mP»、Q «mQ»、R «mR»、S «mS» だった。
+          一元配置分散分析の誤差の平均平方は $MS_E=«mse»$（自由度 «dfe»）である。
+          テューキーの方法で 6 通りの対比較を同時に行う（有意水準 5%）とき、平均に有意な差があると判定される組の数はどれか。
+          必要なら、スチューデント化された範囲の上側 5% 点 $q_{0.05}(«kk»,«dfe»)=«q»$、$t$ 分布の上側 2.5% 点 $t_{0.025}(«dfe»)=«tq»$ を使え。
+        choices:
+          - "«k_non» 組"
+          - "«k_sq2» 組"
+          - "«k_ok» 組"
+          - "«k_lsd» 組"
+          - "«k_all» 組"
+        answer: 2
+        distractors:
+          - 基準値を q√MSE として各群の人数で割り忘れた
+          - 基準値を q√(2MSE/n) として √2 を余分に掛けた
+          - 正解
+          - 多重性を調整しない t 検定（最小有意差法）で判定した
+          - 分散分析の F 検定が有意なら全部の組に差があると考えた
+        explanation: |
+          **方針** 各群の大きさが等しいとき、テューキーの方法では平均の差の絶対値が
+          $$\mathrm{HSD}=q_{0.05}(k,\nu)\sqrt{\frac{MS_E}{n}}$$
+          を超える組を有意とする（$k$ は群の数、$\nu$ は誤差の自由度、$n$ は 1 群の人数）。
+
+          **途中式** $\sqrt{«mse»/«nn»}=«se1»$ より $\mathrm{HSD}=«q»\times«se1»=«hsd»$。差の絶対値は
+
+          | 組 | P–Q | P–R | P–S | Q–R | Q–S | R–S |
+          |---|---|---|---|---|---|---|
+          | 差 | «dPQ» | «dPR» | «dPS» | «dQR» | «dQS» | «dRS» |
+
+          «hsd» を超えるのは P–R と P–S の 2 組。
+
+          **答え** «k_ok» 組
+
+          **間違えやすい点** スチューデント化された範囲は「平均の標準誤差 $\sqrt{MS_E/n}$」を単位にした最大差なので、$\sqrt{2MS_E/n}$ を使うと基準が $«hsd2»$ と大きすぎる（«k_sq2» 組）。
+          多重性を調整しない $t$ 検定（最小有意差 $«tq»\sqrt{2\times«mse»/«nn»}=«lsd»$）だと «k_lsd» 組となり、6 回の検定全体で第 1 種の誤りが 5% を超えてしまう。
+
+      - id: s05p10b
+        chapter: 24
+        terms: [average-linkage, hierarchical-clustering, dendrogram]
+        topic: 4病院の診療指標の距離行列に群平均法を適用し最後に併合されるときの距離を求める
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          4 病院の診療指標（標準化済み）から求めた病院間の距離は次のとおりである。
+
+          | | P | Q | R | S |
+          |---|---|---|---|---|
+          | P | 0 | «PQ» | «PR» | «PS» |
+          | Q | «PQ» | 0 | «QR» | «QS» |
+          | R | «PR» | «QR» | 0 | «RS» |
+          | S | «PS» | «QS» | «RS» | 0 |
+
+          群平均法（クラスター間の距離を、異なるクラスターに属する対象の組の距離の平均とする方法）で階層的クラスタリングを行う。
+          最後の併合（2 つのクラスターが 1 つになるとき）の距離はどれか。
+        choices:
+          - "$«h_single»$"
+          - "$«h_wrong»$"
+          - "$«h_ok»$"
+          - "$«h_comp»$"
+          - "$«h_sum»$"
+        answer: 2
+        distractors:
+          - 最短距離法（組の距離の最小値）で計算した
+          - 2回目の併合で R を {P, Q} の側に入れてしまった
+          - 正解
+          - 最長距離法（組の距離の最大値）で計算した
+          - 組の距離を平均せず合計した
+        explanation: |
+          **方針** 距離が最小のクラスターの組を順に併合し、そのたびに新しいクラスターと他との距離を「組の距離の平均」で計算し直す。
+
+          **途中式** 1 回目：最小の距離 «PQ» で P と Q を併合。
+          $\{P,Q\}$ と R の距離は $(«PR»+«QR»)/2=«pqr»$、$\{P,Q\}$ と S の距離は $(«PS»+«QS»)/2=«pqs»$、R と S の距離は «RS»。
+          2 回目：最小は R–S の «RS» なので R と S を併合。
+          3 回目：$\{P,Q\}$ と $\{R,S\}$ の距離は 4 組の平均
+          $$\frac{d(P,R)+d(P,S)+d(Q,R)+d(Q,S)}{4}=\frac{«PR»+«PS»+«QR»+«QS»}{4}=«h_ok»$$
+
+          **答え** $«h_ok»$
+
+          **間違えやすい点** 2 回目は $\{P,Q\}$–R の «pqr» より R–S の «RS» の方が小さいので、R は S と先に結合する（R を $\{P,Q\}$ に入れると $«h_wrong»$）。
+          最短距離法なら $«h_single»$、最長距離法なら $«h_comp»$ になり、方法によって樹形図の高さが変わる。
+
+  - id: s05p11
+    title: 県民健康調査
+    context: |
+      ある県で、成人の高血圧の有病率と健康意識を調べる標本調査を行った。
+    items:
+      - id: s05p11a
+        chapter: 21
+        terms: [stratified-sampling, proportional-allocation, standard-error]
+        topic: 年齢3層の比例配分による層別抽出で高血圧有病率の推定値の標準誤差を求める
+        level: 基本
+        definition: false
+        type: numeric
+        question: |
+          成人を年齢で 3 層に分け、層の大きさの割合 $W_h$ に比例して合計 «n» 人を無作為に抽出した（比例配分）。各層の標本での高血圧の割合 $\hat p_h$ は次のとおりである。
+
+          | 層 | 20〜44 歳 | 45〜64 歳 | 65 歳以上 |
+          |---|---|---|---|
+          | $W_h$ | «W0» | «W1» | «W2» |
+          | 標本数 $n_h$ | «nh0» | «nh1» | «nh2» |
+          | $\hat p_h$ | «p0» | «p1» | «p2» |
+
+          層別推定量 $\hat p_{st}=\sum_h W_h\hat p_h$ の標準誤差を、$\widehat V[\hat p_{st}]=\sum_h W_h^2\,\hat p_h(1-\hat p_h)/n_h$ で推定して求めよ（母集団は十分大きく、有限母集団修正は無視する）。
+        answer: «se»
+        tolerance: 0.0001
+        answer_format: 小数第4位まで（小数第5位を四捨五入）で答えよ。±0.0001 の差まで正解とする。
+        explanation: |
+          **方針** 層ごとに独立に抽出しているので、層別推定量の分散は各層の分散に $W_h^2$ を掛けて足したものになる。
+
+          **途中式** 推定値は $\hat p_{st}=«W0»\times«p0»+«W1»\times«p1»+«W2»\times«p2»=«pst»$。分散の各項は
+          $$\frac{«W20»\times«pq0»}{«nh0»}=«tm0»,\quad\frac{«W21»\times«pq1»}{«nh1»}=«tm1»,\quad\frac{«W22»\times«pq2»}{«nh2»}=«tm2»$$
+          合計 $«var»$ より、標準誤差は $\sqrt{«var»}=«se5»\cdots$。
+
+          **答え** $«se»$
+
+          **間違えやすい点** $W_h$ は 2 乗して掛ける（$\hat p_{st}$ は $W_h\hat p_h$ の和なので、分散には $W_h^2$ が付く）。
+          全体を単純無作為抽出とみなして $\sqrt{«pst»\times(1-«pst»)/«n»}=«srs»$ とすると、層の間の有病率の違いの分だけ大きくなる。層別（比例配分）は単純無作為抽出より分散が大きくならない。
+
+      - id: s05p11b
+        chapter: 26
+        terms: [goodness-of-fit-indices, structural-equation-modeling, factor-analysis-model]
+        topic: 健康意識の質問票の確認的因子分析モデルの適合度をカイ二乗値からRMSEAとCFIで評価する
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          同じ調査の «nn» 人の回答から、健康意識の質問 8 項目に 2 因子の確認的因子分析モデル（構造方程式モデリング）を当てはめた。
+          モデルの適合度のカイ二乗値は «chiM»（自由度 «dfM»）、全項目が無相関とする独立モデルでは «chiB»（自由度 «dfB»）だった。
+          RMSEA（分母に $n-1$ を用いる定義）と CFI の値の組として正しいものはどれか。
+        choices:
+          - "$«f_nfi»$"
+          - "$«f_nodf»$"
+          - "$«f_inv»$"
+          - "$«f_nosq»$"
+          - "$«f_ok»$"
+        answer: 4
+        distractors:
+          - CFI の代わりに 1-χ²M/χ²B（NFI）を計算した
+          - RMSEA で χ² から自由度を引かなかった
+          - CFI を 1 から引き忘れた（相対的な悪さを答えた）
+          - RMSEA の平方根をとらなかった
+          - 正解
+        explanation: |
+          **方針** RMSEA と CFI は、カイ二乗値から自由度を引いた「非心度」の推定値 $\chi^2-df$ を使う。
+          $$\mathrm{RMSEA}=\sqrt{\frac{\max(\chi^2_M-df_M,\ 0)}{df_M\,(n-1)}},\qquad\mathrm{CFI}=1-\frac{\max(\chi^2_M-df_M,0)}{\max(\chi^2_B-df_B,\ \chi^2_M-df_M,\ 0)}$$
+
+          **途中式** $\chi^2_M-df_M=«chiM»-«dfM»=«exM»$、$\chi^2_B-df_B=«chiB»-«dfB»=«exB»$。
+          $$\mathrm{RMSEA}=\sqrt{\frac{«exM»}{«dfM»\times(«nn»-1)}}=\sqrt{\frac{«exM»}{«dn»}}=\sqrt{«rm2»}=«rm»$$
+          $$\mathrm{CFI}=1-\frac{«exM»}{«exB»}=«cfi4»\cdots$$
+
+          **答え** $«f_ok»$（RMSEA は 0.08 未満、CFI は 0.95 以上で、よく使われる目安ではおおむね良好な適合）
+
+          **間違えやすい点** カイ二乗値は標本が大きいとわずかなずれでも大きくなるため、モデルの自由度を引いて標本の大きさで割った RMSEA などで評価する。自由度を引かないと RMSEA は $«rm_nodf»$ になる。
+          $1-\chi^2_M/\chi^2_B=«nfi»$ は NFI で、CFI とは別の指標である。
+
+  - id: s05p12
+    title: インフルエンザ定点報告の平滑化
+    context: |
+      ある保健所は、週ごとのインフルエンザ定点報告数 $y_t$ を、ゆっくり変わる真の流行水準 $\mu_t$ と観測のばらつきに分けて捉えるため、局所水準モデル（状態空間モデル）
+      $$y_t=\mu_t+\varepsilon_t,\quad\varepsilon_t\sim N(0,\ «h»),\qquad\mu_t=\mu_{t-1}+\eta_t,\quad\eta_t\sim N(0,\ «q»)$$
+      を使っている（$\varepsilon_t,\eta_t$ はすべて独立）。
+    items:
+      - id: s05p12a
+        chapter: 27
+        terms: [state-space-model, forecasting, time-series]
+        topic: 局所水準モデルのカルマンフィルタで新しい週の報告数から流行水準の推定値を1回更新する
+        level: 基本
+        definition: false
+        type: numeric
+        question: |
+          前週までのデータによる $\mu_{t-1}$ の推定値（フィルタ推定値）は «m0»、その誤差分散は «P0» だった。今週の報告数は $y_t=«y»$ である。
+          カルマンフィルタで今週の水準 $\mu_t$ のフィルタ推定値を求めよ。
+        answer: «mt»
+        tolerance: 0.1
+        answer_format: 小数第1位まで答えよ。±0.1 の差まで正解とする。
+        explanation: |
+          **方針** 予測（1 期先の水準を予測し、誤差分散に $\eta_t$ の分散を足す）→ 更新（予測誤差にカルマンゲインを掛けて修正）の 2 段階で計算する。
+
+          **途中式** 予測：$\mu_t$ の予測値は «m0»、誤差分散は $«P0»+«q»=«Pp»$。
+          カルマンゲイン（予測の誤差分散と観測誤差の分散の比で決まる重み）は
+          $$K=\frac{«Pp»}{«Pp»+«h»}=«K»$$
+          更新：
+          $$\hat\mu_t=«m0»+«K»\times(«y»-«m0»)=«m0»+«K»\times«res»=«mt_s»$$
+          （更新後の誤差分散は $(1-K)\times«Pp»=«Pt»$。）
+
+          **答え** $«mt_s»$
+
+          **間違えやすい点** 予測の段階で水準の変動 $\eta_t$ の分散 «q» を足し忘れると、ゲインが $«K_noq»$ となり $«m_noq»$ になる。
+          ゲインの分子と分母を取り違えて観測誤差の分散 «h» を分子にすると $«m_inv»$ になる。観測のばらつきが大きいほど、新しい観測を割り引いて使う。
+
+  - id: s05p13
+    title: 臨床研究の統計解析
+    context: |
+      新薬の開発の各段階で、ベイズ流の評価とモデル選択を行う。
+    items:
+      - id: s05p13a
+        chapter: 31
+        terms: [bayes-factor, marginal-likelihood, beta-binomial-model]
+        topic: 第II相試験の有効例数から既存薬と同じ有効率という仮説と一様事前分布の仮説をベイズ因子で比べる
+        level: 応用
+        definition: false
+        type: choice
+        question: |
+          第 II 相試験で «n» 人中 «x» 人が有効だった。各人の有効は独立で、有効率を $p$ とする。次の 2 つの仮説を比べる。
+          - $H_0$：$p=«p0»$（既存薬と同じ有効率）
+          - $H_1$：$p$ は区間 $(0,1)$ の一様分布に従う
+
+          $H_1$ の $H_0$ に対するベイズ因子 $B_{10}=\dfrac{P(\text{データ}\mid H_1)}{P(\text{データ}\mid H_0)}$ に最も近い値はどれか。
+          必要なら $\displaystyle\int_0^1p^{5}(1-p)^{5}\,dp=\frac{1}{«bint»}$ を使え。
+        choices:
+          - "$«bf_inv»$"
+          - "$«bf_lr»$"
+          - "$«bf_one»$"
+          - "$«bf»$"
+          - "$«bf_nocomb»$"
+        answer: 3
+        distractors:
+          - B01（H0 の H1 に対するベイズ因子）を答えた
+          - H1 の周辺尤度の代わりに最尤推定値 p=0.5 での尤度を使った（最大尤度比）
+          - H1 の周辺尤度を 1 とした
+          - 正解
+          - H1 の周辺尤度にだけ二項係数を掛け忘れた
+        explanation: |
+          **方針** ベイズ因子は 2 つの仮説の周辺尤度の比。$H_0$ は点仮説なので尤度そのもの、$H_1$ は尤度を事前分布で平均（積分）したものになる。
+
+          **途中式** $H_0$：$P(\text{データ}\mid H_0)=\binom{«n»}{«x»}«p0»^{«x»}(1-«p0»)^{«n»-«x»}=«comb»\times«pp»=«m0»$。
+          $H_1$：一様事前分布で積分して
+          $$P(\text{データ}\mid H_1)=\int_0^1\binom{«n»}{«x»}p^{«x»}(1-p)^{«n»-«x»}dp=\frac{«comb»}{«bint»}=\frac{1}{11}=«m1»$$
+          $$B_{10}=\frac{«m1»}{«m0»}=«bf4»\cdots$$
+
+          **答え** $«bf»$（データは $H_1$ を約 3.4 倍支持する）
+
+          **間違えやすい点** $H_1$ の周辺尤度は、$p$ の値ごとの尤度を事前分布で平均したもの。最尤推定値 $p=0.5$ での尤度を使うと $«bf_lr»$ となり、$H_1$ を過大に有利にする（平均すると尤度の低い $p$ も含まれる）。
+          二項係数は両方の仮説に共通なので、付けるなら両方に付ける（片方だけだと $«bf_nocomb»$）。
+
+      - id: s05p13b
+        chapter: 30
+        terms: [mallows-cp, model-selection, variable-selection]
+        topic: 血圧低下量を予測する候補モデルを全変数モデルの誤差分散を使ったマローズのCpで選ぶ
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          第 III 相試験の «N» 人のデータで、血圧低下量を予測する線形回帰の候補モデル（すべて切片あり）を比べる。
+          説明変数 6 個をすべて入れたモデル M4 の残差平方和から、誤差分散を $\hat\sigma^2=«rM4»/(«N»-«pf»)=«sig2»$ と推定した。
+
+          | モデル | 説明変数の数 | 残差平方和 |
+          |---|---|---|
+          | M1 | «kM1» | «rM1» |
+          | M2 | «kM2» | «rM2» |
+          | M3 | «kM3» | «rM3» |
+          | M4 | «kM4» | «rM4» |
+
+          マローズの $C_p=\dfrac{\text{残差平方和}}{\hat\sigma^2}-n+2p$（$p$ は切片を含む回帰係数の数）が最小のモデルとその $C_p$ の組はどれか。
+        choices:
+          - "$«cp_ok»$"
+          - "$«cp_noi»$"
+          - "$«cp_non»$"
+          - "$«cp_full»$"
+          - "$«cp_own»$"
+        answer: 0
+        distractors:
+          - 正解
+          - p に切片を数えなかった
+          - 式の -n を忘れた
+          - 残差平方和が最小のモデルを選んだ（全変数モデルの Cp は常に p）
+          - 各モデル自身の残差平方和で σ² を推定した（そうすると Cp は常に p になる）
+        explanation: |
+          **方針** すべての候補で共通の $\hat\sigma^2=«sig2»$ を使い、$C_p$ を計算して比べる。$C_p$ は予測の平均二乗誤差の推定量（を $\sigma^2$ で割ったもの）で、小さいほどよい。
+
+          **途中式** $p$ はそれぞれ $3,4,5,7$。
+          $$C_p(\mathrm{M1})=«qM1»-«N»+6=«cM1»,\quad C_p(\mathrm{M2})=«qM2»-«N»+8=«cM2»$$
+          $$C_p(\mathrm{M3})=«qM3»-«N»+10=«cM3»,\quad C_p(\mathrm{M4})=«qM4»-«N»+14=«cM4»$$
+          最小は M2。
+
+          **答え** $«cp_ok»$
+
+          **間違えやすい点** 残差平方和は変数を増やすほど必ず減るので、それだけで選ぶと全変数モデルになる。$C_p$ は $2p$ の罰則で複雑さを補正する。
+          全変数モデルでは定義上 $C_p=p$（ここでは $«cM4»$）になる。$\sigma^2$ は候補ごとではなく、全変数モデルなど共通の推定値を使う。

@@ -1,0 +1,102 @@
+{
+ "s08p01a": {
+  "ok": true,
+  "hash": "a9094f66a2cce0ad"
+ },
+ "s08p01b": {
+  "ok": true,
+  "hash": "6546260cc71aed18"
+ },
+ "s08p02a": {
+  "ok": true,
+  "hash": "e850dfe8a3293859"
+ },
+ "s08p02b": {
+  "ok": true,
+  "hash": "595d13347d3def66"
+ },
+ "s08p03a": {
+  "ok": true,
+  "hash": "770366b58a4a80dc"
+ },
+ "s08p03b": {
+  "ok": true,
+  "hash": "70efad092747b050"
+ },
+ "s08p04a": {
+  "ok": true,
+  "hash": "957ede55b154cd67"
+ },
+ "s08p05a": {
+  "ok": true,
+  "hash": "eebeee8dc0794649"
+ },
+ "s08p05b": {
+  "ok": true,
+  "hash": "6772033e17a39bc3"
+ },
+ "s08p06a": {
+  "ok": true,
+  "hash": "c9f7beb29dbb9fa9"
+ },
+ "s08p06b": {
+  "ok": true,
+  "hash": "27e98f8462d84fb5"
+ },
+ "s08p07a": {
+  "ok": true,
+  "hash": "61eba55ea738f9d2"
+ },
+ "s08p07b": {
+  "ok": true,
+  "hash": "7cc81e3b99cbc889"
+ },
+ "s08p07c": {
+  "ok": true,
+  "hash": "0976bfa56ed7fe9b"
+ },
+ "s08p08a": {
+  "ok": true,
+  "hash": "5661972fb2b7f60e"
+ },
+ "s08p08b": {
+  "ok": true,
+  "hash": "f61dd20460baa99c"
+ },
+ "s08p09a": {
+  "ok": true,
+  "hash": "dde78dacaee3a943"
+ },
+ "s08p10a": {
+  "ok": true,
+  "hash": "f05cba0d85eb98eb"
+ },
+ "s08p10b": {
+  "ok": true,
+  "hash": "d47c5342287e8472"
+ },
+ "s08p10c": {
+  "ok": true,
+  "hash": "1a0432df2c1fde7f"
+ },
+ "s08p11a": {
+  "ok": true,
+  "hash": "5a7b63a4b8473644"
+ },
+ "s08p12a": {
+  "ok": true,
+  "hash": "190311995d3f57d6"
+ },
+ "s08p13a": {
+  "ok": true,
+  "hash": "546cb1680124b2f3"
+ },
+ "s08p13b": {
+  "ok": true,
+  "hash": "3ab0343bd2b20a59"
+ },
+ "s08p14a": {
+  "ok": true,
+  "hash": "3a97e7c46d93935e"
+ }
+}

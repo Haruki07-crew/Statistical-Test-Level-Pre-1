@@ -1,0 +1,973 @@
+set: 12
+title: 模擬試験 第12回
+minutes: 90
+problems:
+  - id: s12p01
+    title: ガラス瓶の気泡と傷
+    context: |
+      ある飲料メーカーが使うガラス瓶について、1 本あたりの気泡の数 $X$（0, 1, 2 個のいずれか）と、傷の有無 $Y$（傷あり $Y=1$、傷なし $Y=0$）の同時確率が、大量の検査記録から次のようにわかっている。
+
+      | | $Y=0$ | $Y=1$ |
+      |---|---|---|
+      | $X=0$ | «p00» | «p01» |
+      | $X=1$ | «p10» | «p11» |
+      | $X=2$ | «p20» | «p21» |
+    items:
+      - id: s12p01a
+        chapter: 2
+        terms: [joint-probability-function, conditional-probability-function, marginal-probability-function]
+        topic: 気泡数と傷の有無の同時確率表から傷のある瓶の気泡数の条件付き期待値を求める
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          傷のある瓶（$Y=1$）に限ったときの気泡の数の条件付き期待値 $E[X\mid Y=1]$ として正しいものはどれか。
+        choices:
+          - '$«joint1»$'
+          - '$«ex_y0»$'
+          - '$«ex»$'
+          - '$«ex_y1»$'
+          - '$«pge1»$'
+        answer: 3
+        distractors:
+          - 同時確率 P(X=x, Y=1) で重みづけたまま P(Y=1) で割り忘れた
+          - Y=0 の側で条件付けた
+          - 条件を付けずに周辺分布の期待値 E[X] を求めた
+          - 正解
+          - 期待値ではなく条件付き確率 P(X≥1 | Y=1) を求めた
+        explanation: |
+          **方針** まず $Y$ の周辺確率 $P(Y=1)$ を求め、条件付き確率関数 $P(X=x\mid Y=1)=P(X=x,Y=1)/P(Y=1)$ をつくってから期待値をとる。
+
+          **途中式** $P(Y=1)=«p01»+«p11»+«p21»=«py1»$。条件付き確率関数は
+          $$P(X=0\mid Y=1)=\frac{«p01»}{«py1»},\quad P(X=1\mid Y=1)=\frac{«p11»}{«py1»},\quad P(X=2\mid Y=1)=\frac{«p21»}{«py1»}$$
+          で、どれも $1/3$。よって
+          $$E[X\mid Y=1]=\frac{0\times«p01»+1\times«p11»+2\times«p21»}{«py1»}=\frac{«num1»}{«py1»}=«ex_y1»$$
+
+          **答え** $«ex_y1»$
+
+          **間違えやすい点** 分子の $«num1»$ は $E[X\cdot 1\{Y=1\}]$ で、$P(Y=1)$ で割って初めて条件付き期待値になる。
+          条件を付けない $E[X]=1\times«px1»+2\times«px2»=«ex»$ や、傷なしの瓶での $E[X\mid Y=0]\approx«ex_y0»$ と取り違えないこと。傷のある瓶は気泡も多い傾向がある。
+
+      - id: s12p01b
+        chapter: 3
+        terms: [covariance-and-correlation, moments, expectation-variance-properties]
+        topic: 気泡数と傷の有無（0-1変数）の同時確率表から相関係数を求める
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          $X$ と $Y$ の相関係数を求めよ。
+        answer: «rho»
+        tolerance: 0.001
+        answer_format: 小数第3位まで（小数第4位を四捨五入）で答えよ。±0.001 の差まで正解とする。
+        explanation: |
+          **方針** 周辺分布から $E[X]$・$V[X]$・$E[Y]$・$V[Y]$ を求め、$\mathrm{Cov}(X,Y)=E[XY]-E[X]E[Y]$ を計算して $\rho=\mathrm{Cov}(X,Y)/\sqrt{V[X]V[Y]}$ とする。
+
+          **途中式** $X$ の周辺分布は $P(X=0)=«px0»$、$P(X=1)=«px1»$、$P(X=2)=«px2»$。
+          $$E[X]=«ex»,\quad E[X^2]=1\times«px1»+4\times«px2»=«ex2»,\quad V[X]=«ex2»-«ex_sq»=«vx»$$
+          $Y$ は 0-1 変数なので $E[Y]=P(Y=1)=«ey»$、$V[Y]=«ey»\times(1-«ey»)=«vy»$。
+          $XY$ が 0 でないのは $Y=1$ かつ $X\ge1$ のときだけなので
+          $$E[XY]=1\times«p11»+2\times«p21»=«exy»,\qquad \mathrm{Cov}(X,Y)=«exy»-«ex»\times«ey»=«exy»-«exey»=«cov»$$
+          $$\rho=\frac{«cov»}{\sqrt{«vx»\times«vy»}}=\frac{«cov»}{\sqrt{«prod»}}=\frac{«cov»}{«sq»}=«rho4»\cdots$$
+
+          **答え** $«rho_s»$
+
+          **間違えやすい点** 分母に標準偏差の積ではなく分散の積 $V[X]V[Y]$ を使うと $«rho_e»$ となり、1 を超えてしまう。
+          $E[XY]$ をそのまま共分散とみなして $E[X]E[Y]$ を引き忘れると $«rho_noc»$ になる。$V[X]$ は $E[X^2]-(E[X])^2$ で、$E[X^2]$ に 2 の 2 乗の 4 を掛けることも忘れないこと。
+
+  - id: s12p02
+    title: 3 段階の連続反応の所要時間
+    context: |
+      ある合成工程は 3 つの反応段階を順に行う。各段階の所要時間（時間）は互いに独立で、どれも平均 0.5 時間（率 «rate» / 時間）の指数分布に従うとする。
+    items:
+      - id: s12p02a
+        chapter: 6
+        terms: [gamma-distribution, exponential-distribution, poisson-distribution]
+        topic: 3段階の指数時間の合計（ガンマ分布）が規定時間を超える確率をポアソン分布との関係で求める
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          3 段階の合計時間 $T$ が «t» 時間を超える確率 $P(T>«t»)$ を求めよ。必要なら $e^{-3}=«e3»$ を使え。
+        answer: «ans»
+        tolerance: 0.001
+        answer_format: 小数第3位まで（小数第4位を四捨五入）で答えよ。±0.001 の差まで正解とする。
+        explanation: |
+          **方針** 独立な同じ率 $\lambda=«rate»$ の指数分布 «k» 個の和は、形状 «k»・率 «rate» のガンマ分布に従う。
+          指数分布の待ち時間はポアソン過程の到着間隔とみなせるので、「«k» 回目の到着が時刻 $t$ より後」は「時刻 $t$ までの到着が «k» 回未満（2 回以下）」と同じ事象になる。
+
+          **途中式** 時刻 $t=«t»$ までの到着回数 $N$ は平均 $\lambda t=«rate»\times«t»=«lam»$ のポアソン分布に従う。
+          $$P(T>«t»)=P(N\le 2)=e^{-3}\left(1+3+\frac{3^2}{2}\right)=«e3»\times«sum3»=«ans4»$$
+
+          **答え** $«ans_s»$
+
+          **間違えやすい点** 「2 回以下」の 3 項のうち $3^2/2!$ の項を落とすと $«wrong2»$ になる。
+          「3 回以下」まで足す（$P(N\le3)$）と $«wrong_k4»$ で、これは 4 段階の場合の値。
+          ガンマ分布の密度 $\frac{\lambda^3t^2}{2}e^{-\lambda t}$ を $«t»$ から $\infty$ まで部分積分しても同じ式になる。
+
+          **別解** ガンマ分布の上側確率 $\int_{1.5}^{\infty}4t^2e^{-2t}\,dt$ を部分積分を 2 回くり返して計算すると、$e^{-3}(1+3+4.5)$ が得られる。
+
+      - id: s12p02b
+        chapter: 4
+        terms: [change-of-variables, exponential-distribution, sum-of-random-variables]
+        topic: 率の異なる2つの指数時間の比 X/(X+Y) の密度をヤコビアンで求める
+        level: 応用
+        definition: false
+        type: choice
+        question: |
+          触媒を変えた結果、第 1 段階の時間 $X$ は率 «l1» の指数分布、第 2 段階の時間 $Y$ は率 «l2» の指数分布になった（$X$ と $Y$ は独立）。
+          2 段階の合計時間のうち第 1 段階が占める割合 $U=X/(X+Y)$ の確率密度関数 $f_U(u)$（$0<u<1$）として正しいものはどれか。
+        choices:
+          - '$f_U(u)=1$'
+          - '$f_U(u)=\dfrac{3}{1+2u}$'
+          - '$f_U(u)=\dfrac{3}{(1+2u)^2}$'
+          - '$f_U(u)=\dfrac{3}{(3-2u)^2}$'
+          - '$f_U(u)=\dfrac{6}{(1+2u)^3}$'
+        answer: 2
+        distractors:
+          - 率が等しいときの結果（一様分布）をそのまま使った
+          - ヤコビアン w を掛け忘れた
+          - 正解
+          - 2 つの率を取り違えた（U を Y/(X+Y) の密度にした）
+          - ヤコビアンを w^2 とした（積分しても 1 にならない）
+        explanation: |
+          **方針** $(X,Y)$ から $(U,W)=(X/(X+Y),\,X+Y)$ へ変数変換し、同時密度を $W$ について積分して $U$ の周辺密度を求める。
+
+          **途中式** 逆変換は $x=uw$、$y=(1-u)w$。ヤコビアンは
+          $$\left|\frac{\partial(x,y)}{\partial(u,w)}\right|=\left|\det\begin{pmatrix}w & u\\ -w & 1-u\end{pmatrix}\right|=w(1-u)+wu=w$$
+          $X,Y$ の同時密度は $3e^{-3x}\cdot e^{-y}$ なので
+          $$f_{U,W}(u,w)=3e^{-3uw}e^{-(1-u)w}\cdot w=3w\,e^{-(1+2u)w}\qquad(0<u<1,\ w>0)$$
+          $\int_0^\infty w e^{-aw}dw=1/a^2$ を使うと
+          $$f_U(u)=\int_0^\infty 3w\,e^{-(1+2u)w}\,dw=\frac{3}{(1+2u)^2}$$
+          確認：$\int_0^1\frac{3}{(1+2u)^2}du=\left[-\frac{3}{2(1+2u)}\right]_0^1=-\frac12+\frac32=1$。
+
+          **答え** $f_U(u)=\dfrac{3}{(1+2u)^2}$
+
+          **間違えやすい点** ヤコビアン $w$ を忘れると $\frac{3}{1+2u}$ になり、$0$ から $1$ まで積分しても 1 にならない（$\frac32\log 3$）。
+          2 つの率が等しいときに限り $U$ は一様分布になる。ここでは第 1 段階のほうが速い（率が大きい）ので、密度は $u$ が小さいほど大きい減少関数になる。
+          $\frac{3}{(3-2u)^2}$ は $Y/(X+Y)$ の密度で、増加関数になっている点からも誤りとわかる。
+
+          **別解** 分布関数から求めてもよい。$P(U\le u)=P\!\left(X\le \frac{u}{1-u}Y\right)=E\!\left[1-e^{-3uY/(1-u)}\right]=1-\frac{1}{1+3u/(1-u)}=\frac{3u}{1+2u}$。これを $u$ で微分すると $\frac{3}{(1+2u)^2}$。
+
+  - id: s12p03
+    title: 酒米の等級検査
+    context: |
+      ある酒蔵が仕入れる酒米の袋は、検査で「特上」「上」「並」の 3 等級に分けられ、各袋が独立にそれぞれ確率 «p1»、«p2»、«p3» でこの等級になるとする。
+      ある月に «n» 袋を検査し、特上の袋数を $N_1$、上を $N_2$、並を $N_3$ とする（$N_1+N_2+N_3=«n»$）。
+      酒蔵は品質の指標として $D=N_1-N_3$（特上の袋数から並の袋数を引いた数）を記録している。
+    items:
+      - id: s12p03a
+        chapter: 5
+        terms: [multinomial-distribution, binomial-distribution, covariance-and-correlation]
+        topic: 多項分布の負の共分散を使って2つの等級の袋数の差の分散を求める
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          $D=N_1-N_3$ の分散 $V[D]$ を求めよ。
+        answer: «var»
+        tolerance: 0.1
+        answer_format: 小数第1位まで（小数第2位を四捨五入）で答えよ。±0.1 の差まで正解とする。
+        explanation: |
+          **方針** $(N_1,N_2,N_3)$ は多項分布に従う。各 $N_j$ は二項分布で $V[N_j]=np_j(1-p_j)$、異なる等級の袋数は $\mathrm{Cov}(N_i,N_j)=-np_ip_j$（負の共分散）をもつ。
+
+          **途中式**
+          $$V[D]=V[N_1]+V[N_3]-2\,\mathrm{Cov}(N_1,N_3)=n\{p_1(1-p_1)+p_3(1-p_3)+2p_1p_3\}$$
+          $$=«n»\times(«v1»+«v3»+«cv2»)=«n»\times«inner»=«var_s»$$
+
+          **答え** $«var_s»$
+
+          **間違えやすい点** $N_1$ と $N_3$ を独立とみなして共分散を無視すると $«var_nocov»$ になる。
+          多項分布では一方が多いと他方は少なくなりやすいので共分散は負で、差をとると $-2\mathrm{Cov}$ が**正**の寄与になる。符号を逆にすると $«var_minus»$ になる。
+
+          **別解** 袋ごとに「特上なら $+1$、並なら $-1$、上なら $0$」の得点 $Z_i$ をつけると $D=\sum Z_i$。$E[Z]=«p1»-«p3»$、$E[Z^2]=«p1»+«p3»=«p13»$ なので $V[Z]=«p13»-«dsq»=«inner_alt»$、$V[D]=«n»\times«inner_alt»=«var_s»$。
+
+      - id: s12p03b
+        chapter: 7
+        terms: [chebyshev-inequality, multinomial-distribution]
+        topic: 等級の袋数の差が期待値から大きく外れる確率の上界をチェビシェフの不等式で求める
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          $E[D]=«n»\times(«p1»-«p3»)=«mean»$ である。分布の形を仮定せず、前問の $V[D]$ だけを使って
+          $P\left(|D-(«mean»)|\ge «kk»\right)$ の上界をチェビシェフの不等式から求めるとき、その上界はどれか。
+        choices:
+          - '$«b_norm»$'
+          - '$«b_half»$'
+          - '$«b_nocov»$'
+          - '$«bound»$'
+          - '$«b_sd»$'
+        answer: 3
+        distractors:
+          - 上界ではなく中心極限定理による正規近似の値を求めた
+          - 片側だけの確率と考えて 2 で割った
+          - 共分散を無視した分散 37.8 を使った
+          - 正解
+          - 分散ではなく標準偏差を k で割った
+        explanation: |
+          **方針** チェビシェフの不等式 $P(|D-E[D]|\ge k)\le \dfrac{V[D]}{k^2}$ を使う。分布の形によらず成り立つ上界である。
+
+          **途中式**
+          $$P\left(|D-(«mean»)|\ge «kk»\right)\le\frac{«var_s»}{«kk»^2}=\frac{«var_s»}{«kk2»}=«bound»$$
+
+          **答え** $«bound»$
+
+          **間違えやすい点** 不等式の右辺は分散を $k^2$ で割ったもの。標準偏差 $«sd»$ を $k$ で割ると $«b_sd»$ になる。
+          チェビシェフの上界は両側の確率に対するもので、2 で割ってよいわけではない（分布が対称でも片側の上界が半分になるとは限らない）。
+          正規近似では $z=«kk»/«sd»\approx«z»$ から約 $«b_norm»$ となり、上界 $«bound»$ よりずっと小さい。チェビシェフの不等式はどんな分布でも成り立つ代わりに粗い。
+
+  - id: s12p04
+    title: 結晶粒径の上限の推定
+    context: |
+      ある合金の断面で観察される結晶粒の径（µm）は、区間 $(0,\theta)$ の一様分布に従うとする。上限 $\theta$ を推定するため、«n» 個の粒の径 $X_1,\ldots,X_{«n»}$ を独立に測った。
+      $\bar X$ を標本平均、$X_{(n)}=\max_i X_i$ を標本最大値とする。
+    items:
+      - id: s12p04a
+        chapter: 8
+        terms: [order-statistics, unbiased-estimator, efficient-estimator, mean-squared-error]
+        topic: 一様分布の上端の不偏推定量として標本最大値の定数倍と標本平均の2倍の分散比を求める
+        level: 応用
+        definition: false
+        type: choice
+        question: |
+          $\theta$ の 2 つの不偏推定量 $T_1=2\bar X$、$T_2=\dfrac{n+1}{n}X_{(n)}$ を比べる。$n=«n»$ のときの分散の比 $V[T_2]/V[T_1]$ として正しいものはどれか。
+        choices:
+          - '$«wrongvar»$'
+          - '$«noscale»$'
+          - '$«ratio»$'
+          - '$«mse_max»$'
+          - '$«inv»$'
+        answer: 2
+        distractors:
+          - 一様分布の分散を θ^2/12 ではなく θ^2/4 とした
+          - X_(n) の分散を (n+1)/n 倍の調整をせずに使った
+          - 正解
+          - 偏りのある X_(n) そのものの平均二乗誤差を使った
+          - 比を逆にした V[T1]/V[T2]
+        explanation: |
+          **方針** $T_1$ の分散は一様分布の分散 $\theta^2/12$ から求める。$T_2$ は最大値の分布 $P(X_{(n)}\le x)=(x/\theta)^n$ から、密度 $nx^{n-1}/\theta^n$ を使って 1 次・2 次のモーメントを計算する。
+
+          **途中式** $V[T_1]=4\cdot\dfrac{\theta^2}{12n}=\dfrac{\theta^2}{3n}$。最大値については
+          $$E[X_{(n)}]=\int_0^\theta x\cdot\frac{nx^{n-1}}{\theta^n}dx=\frac{n}{n+1}\theta,\qquad E[X_{(n)}^2]=\frac{n}{n+2}\theta^2$$
+          $$V[X_{(n)}]=\frac{n}{n+2}\theta^2-\frac{n^2}{(n+1)^2}\theta^2=\frac{n\theta^2}{(n+1)^2(n+2)}$$
+          $$V[T_2]=\frac{(n+1)^2}{n^2}V[X_{(n)}]=\frac{\theta^2}{n(n+2)}$$
+          よって
+          $$\frac{V[T_2]}{V[T_1]}=\frac{\theta^2/(n(n+2))}{\theta^2/(3n)}=\frac{3}{n+2}=\frac{3}{«n2»}=«ratio»$$
+
+          **答え** $«ratio»$
+
+          **間違えやすい点** $V[T_2]$ は $X_{(n)}$ の分散に $\{(n+1)/n\}^2$ を掛けたもので、掛け忘れると $«noscale»$ になる。
+          一様分布 $(0,\theta)$ の分散は $\theta^2/12$。$T_2$ の分散は $1/n^2$ のオーダーで小さくなり、$1/n$ のオーダーの $T_1$ よりはるかに効率がよい（クラメール・ラオの下限は台が $\theta$ に依存するこの分布には当てはまらない）。
+
+      - id: s12p04b
+        chapter: 32
+        terms: [bootstrap, order-statistics]
+        topic: 標本最大値のブートストラップ分布が元の最大値に確率の塊をもつことを再標本の確率で示す
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          «n» 個の測定値はすべて異なる値だった。標本最大値 $X_{(n)}$ の誤差を評価するため、«n» 個の測定値から復元抽出で «n» 個を選び直すノンパラメトリック・ブートストラップを行う。
+          1 回の再標本の最大値が、もとの標本最大値に**一致する**確率はどれか。必要なら $0.9^{9}=«q9»$、$0.9^{10}=«q10»$ を使え。
+        choices:
+          - '$«single»$'
+          - '$«comp»$'
+          - '$«once»$'
+          - '$«limit»$'
+          - '$«boot»$'
+        answer: 4
+        distractors:
+          - 1 回の抽出で最大値が選ばれる確率 1/n を答えた
+          - 最大値が 1 度も選ばれない確率（余事象）を答えた
+          - 最大値がちょうど 1 回だけ選ばれる確率を答えた
+          - n→∞ の極限値 1-e^{-1} を使った
+          - 正解
+        explanation: |
+          **方針** 再標本の最大値がもとの最大値に一致するのは、«n» 回の復元抽出のうち少なくとも 1 回、もとの最大値が選ばれるとき。余事象「1 回も選ばれない」の確率から求める。
+
+          **途中式** 1 回の抽出で最大値が選ばれない確率は $1-1/«n»=0.9$ なので
+          $$P(\text{一致})=1-0.9^{10}=1-«q10»=«boot4»$$
+
+          **答え** $«boot»$
+
+          **間違えやすい点** 「ちょうど 1 回」の確率 $10\times0.1\times0.9^9=«once»$ ではなく「1 回以上」。
+          $n$ が大きいと $1-(1-1/n)^n\to1-e^{-1}\approx0.632$ に近づくが、$n=«n»$ では $«boot»$。
+          ブートストラップ分布の 6 割以上がもとの最大値 1 点に集まり、$\theta$ より大きい値は決して出ないので、標本最大値のような端点の推定量にはブートストラップがうまく働かない。
+
+  - id: s12p05
+    title: 食品ロットの異物検査
+    context: |
+      ある食品工場では、ロットごとに一定量の製品を検査して、混入していた異物の個数を数えている。
+    items:
+      - id: s12p05a
+        chapter: 12
+        terms: [dispersion-test, poisson-distribution, chi-squared-distribution]
+        topic: ロットごとの異物個数に分散指数検定を行いポアソン分布より過分散かを判定する
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          «n» ロットの異物の個数は次のとおりだった。
+
+          $$«xs»$$
+
+          帰無仮説「個数は同じ平均のポアソン分布に従う（分散＝平均）」、対立仮説「分散が平均より大きい（過分散）」とし、分散指数
+          $D=\sum_{i}(x_i-\bar x)^2/\bar x$ を用いて有意水準 5% の片側検定を行う。$D$ は帰無仮説のもとで近似的にカイ二乗分布に従う。
+          次のカイ二乗分布のパーセント点を使ってよい（$\chi^2_\nu(\alpha)$ は自由度 $\nu$ の上側 $100\alpha\%$ 点）。
+
+          | | $\chi^2_{9}(0.05)$ | $\chi^2_{10}(0.05)$ | $\chi^2_{9}(0.95)$ |
+          |---|---|---|---|
+          | 値 | «c9» | «c10» | «c9l» |
+
+          正しい記述はどれか。
+        choices:
+          - '$D=«D»$ で、自由度 «df» の上側 5% 点 «c9» を超えるので、帰無仮説を棄却し過分散と判断する。'
+          - '$D=«D»$ で、«c9» を超えるので、ロットの異物個数の平均が «m» より大きいと判断する。'
+          - '$D=«Dvar»$ で、«c9» を超えないので、帰無仮説を棄却しない。'
+          - '$D=«svar»$ で、«c9» を超えないので、帰無仮説を棄却しない。'
+          - '$D=«D»$ だが、過分散の検定の棄却域は下側 «c9l» 以下なので、帰無仮説を棄却しない。'
+        answer: 0
+        distractors:
+          - 正解
+          - 分散が平均より大きいかの検定を、平均の大きさの検定と取り違えた
+          - 不偏分散と平均の比（分散指数を n-1 で割った値）を統計量とした
+          - 不偏分散そのものを統計量とした
+          - 過分散なら D は大きくなるので、棄却域は上側。下側と取り違えた
+        explanation: |
+          **方針** ポアソン分布では分散＝平均なので、$D=\sum(x_i-\bar x)^2/\bar x$ は帰無仮説のもとで近似的に自由度 $n-1$ のカイ二乗分布に従う（平均を 1 つ推定したので 1 引く）。過分散なら $D$ が大きくなるので、上側で棄却する。
+
+          **途中式** 合計 «tot»、$\bar x=«m»$。偏差は $-1,-3,2,-2,0,5,-3,-1,3,0$ で、偏差平方和は
+          $$\sum(x_i-\bar x)^2=1+9+4+4+0+25+9+1+9+0=«ss»$$
+          $$D=\frac{«ss»}{«m»}=«D»>\chi^2_{«df»}(0.05)=«c9»$$
+
+          **答え** $D=«D»$ で上側 5% 点を超え、帰無仮説を棄却して過分散と判断する（選択肢 0）。
+
+          **間違えやすい点** この検定が調べるのは「分散が平均に等しいか」で、平均の大きさではない（平均 «m» は帰無仮説のもとでも自由な値）。
+          自由度は $n-1=«df»$ で、$n=«df1»$ ではない（この例では «c10» と比べても結論は同じ）。過分散なら $D$ が大きくなるので、棄却域は上側にとる。
+          不偏分散と平均の比 $«svar»/«m»=«Dvar»$ は「分散が平均の何倍か」を表す目安で、検定統計量はその $(n-1)$ 倍の $D$ である。
+
+      - id: s12p05b
+        chapter: 9
+        terms: [clopper-pearson-interval, one-sided-confidence-limit, required-sample-size]
+        topic: 異物ゼロのときの不良率の正確な片側95%上限を1%以下にする検査個数
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          出荷前に $n$ 個の製品を検査し、異物入りの製品が 1 個も見つからなかったとする。異物入りの割合 $p$ の**片側** 95% 信頼上限を、二項分布にもとづく正確な方法（クロッパー・ピアソン型）で
+          $(1-p_U)^n=0.05$ を満たす $p_U$ と定める。$p_U\le0.01$ を保証するのに必要な最小の検査個数 $n$ はどれか。
+          必要なら次の値を使え：$\ln0.05=«ln05»$、$\ln0.025=«ln025»$、$\ln0.01=«ln01»$、$\ln0.99=«ln99»$。
+        choices:
+          - '$«n_trunc»$'
+          - '$«n_ok»$'
+          - '$«n_r3»$'
+          - '$«n_two»$'
+          - '$«n_99»$'
+        answer: 1
+        distractors:
+          - 298.08 を切り捨てた（これでは p_U が 1% をわずかに超える）
+          - 正解
+          - 3 の法則（p_U≈3/n）の近似を使った
+          - 両側 95%（片側 2.5%）の上限で計算した
+          - 0.05 の代わりに 0.01 を使った（信頼係数 99% の上限）
+        explanation: |
+          **方針** $p_U$ は $n$ が増えるほど小さくなるので、$p_U\le0.01$ は $(1-0.01)^n\le0.05$ と同じ。両辺の対数をとって $n$ について解く。
+
+          **途中式**
+          $$n\ln0.99\le\ln0.05\iff n\ge\frac{\ln0.05}{\ln0.99}=\frac{«ln05»}{«ln99»}=«nraw»$$
+          （負の数で割るので不等号の向きが変わる。）$n$ は整数なので最小は $«n_ok»$。
+
+          **答え** $«n_ok»$
+
+          **間違えやすい点** $«nraw»$ を切り捨てて $«n_trunc»$ にすると、$(0.99)^{298}>0.05$ で上限が 1% をわずかに超える。
+          「3 の法則」$p_U\approx3/n$ は $-\ln0.05\approx3$、$-\ln(1-p)\approx p$ による近似で $«n_r3»$ を与えるが、正確な値は $«n_ok»$。
+          片側の上限なので 0.025 は使わない（使うと $«nraw_two»$ から $«n_two»$）。
+
+  - id: s12p06
+    title: アルコール分の 2 つの測定法の比較
+    context: |
+      日本酒のアルコール分を、迅速な振動式密度計（方法 A）と公定法の蒸留法（方法 B）で測る。«n» 本の酒をそれぞれ両方の方法で測り、差（A − B、単位は 0.01 度）を求めたところ次のようになった。
+
+      $$«ds»$$
+
+      差の合計は «tot»、差の 2 乗の合計は «sq» である。
+    items:
+      - id: s12p06a
+        chapter: 11
+        terms: [paired-t-test, t-statistic, one-sample-t-test]
+        topic: 同じ試料を2つの方法で測った差から対応のあるt検定の統計量を求める
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          差の母平均を $\mu_d$ とし、$H_0:\mu_d=0$ を対応のある $t$ 検定で調べる。標本分散は $n-1$ で割る不偏分散とする。$t$ 統計量の値を求めよ。必要なら $\sqrt{10}=«sqrtn»$ を使え。
+        answer: «t»
+        tolerance: 0.01
+        answer_format: 小数第2位まで（小数第3位を四捨五入）で答えよ。±0.01 の差まで正解とする。
+        explanation: |
+          **方針** 同じ酒を 2 つの方法で測っているので、差 $d_i$ を 1 標本とみなす。$t=\bar d/(s_d/\sqrt n)$（自由度 $n-1$）。
+
+          **途中式** $\bar d=«tot»/«n»=«m»$。
+          $$\sum(d_i-\bar d)^2=\sum d_i^2-n\bar d^2=«sq»-«n»\times«m»^2=«sq»-«nm2»=«ss»$$
+          $$s_d^2=\frac{«ss»}{«n»-1}=«s2»,\qquad s_d=«sd»,\qquad \frac{s_d}{\sqrt{«n»}}=\frac{«sd»}{«sqrtn»}=«se»$$
+          $$t=\frac{«m»}{«se»}=«t4»\cdots$$
+
+          **答え** $«t_s»$
+
+          **間違えやすい点** 2 つの方法の測定値を独立な 2 群とみなして 2 標本 $t$ 検定をすると、酒ごとの違い（大きな共通の変動）が誤差に入り、検出力が大きく下がる。
+          $n$ で割る標本分散を使うと $«t_mle»$、標準誤差にせず $s_d$ で割ると $«t_nosqrt»$ になる。
+          自由度 9 の両側 5% 点は 2.262 なので、方法 A は方法 B より系統的に高めに出ているといえる。
+
+      - id: s12p06b
+        chapter: 13
+        terms: [sign-test, binomial-test, nonparametric-methods-overview]
+        topic: 2つの測定法の差の正負の数から符号検定の両側の正確なp値を求める
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          同じデータに、差の分布の形を仮定しない符号検定を行う。帰無仮説は「差の中央値が 0（差が正になる確率が 1/2）」、対立仮説は両側とする。
+          二項分布による正確な両側 $p$ 値（片側 $p$ 値の 2 倍）はどれか。
+        choices:
+          - '$«p9»$'
+          - '$«p9two»$'
+          - '$«p_eq»$'
+          - '$«p_one»$'
+          - '$«p_two»$'
+        answer: 4
+        distractors:
+          - 正の個数が 8 より大きい場合（9 以上）だけを数え、片側のままにした
+          - 9 以上だけを数えて 2 倍した（観測値 8 を含め忘れた）
+          - ちょうど 8 個になる確率だけを求めた
+          - 片側 p 値を答えた
+          - 正解
+        explanation: |
+          **方針** 差が正の個数 $S$ は帰無仮説のもとで $B(«n»,1/2)$ に従う。$p$ 値は観測値以上に極端な結果の確率なので、観測値 $S=«npos»$ を含めて $P(S\ge«npos»)$ を求め、両側なので 2 倍する。
+
+          **途中式** 差が正なのは «npos» 本、負は 2 本（0 はない）。
+          $$P(S\ge«npos»)=\frac{\binom{10}{8}+\binom{10}{9}+\binom{10}{10}}{2^{10}}=\frac{«c8»+«c9»+«c10»}{1024}=\frac{«tail»}{1024}=«p_one4»$$
+          両側 $p$ 値は $2\times«tail»/1024=«p_two»$。
+
+          **答え** $«p_two»$
+
+          **間違えやすい点** $p$ 値には観測値そのもの（$S=8$）を含める。含めないと $«p9two»$ と小さくなりすぎる。
+          符号検定は差の大きさを使わないので、前問の $t$ 検定（有意）と違い、有意水準 5% では有意にならない。情報を捨てているぶん検出力が低い。
+
+  - id: s12p07
+    title: 品質検査室の待ち行列
+    context: |
+      ある醸造所の品質検査室には、分析を依頼する試料が平均して 1 時間に «lam» 件のポアソン過程で届く。分析員は 1 人で、1 件の分析時間は平均 «mu_min» 分の指数分布に従い、届いた順に 1 件ずつ分析する（M/M/1 待ち行列）。
+    items:
+      - id: s12p07a
+        chapter: 15
+        terms: [mm1-queue, littles-law, traffic-intensity, queueing-theory]
+        topic: 検査室の試料をM/M/1待ち行列とみなしリトルの公式で分析開始までの平均待ち時間を求める
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          定常状態で、試料が届いてから**分析が始まるまで**の平均待ち時間（分）として正しいものはどれか。
+        choices:
+          - '«w_rs» 分'
+          - '«w_lqmu» 分'
+          - '«wq» 分'
+          - '«w» 分'
+          - '«w_bad» 分'
+        answer: 2
+        distractors:
+          - 利用率に平均分析時間を掛けただけ（待っている件数を考えていない）
+          - 待ち行列の長さを到着率ではなくサービス率で割った
+          - 正解
+          - 分析時間も含めた系内の平均滞在時間を答えた
+          - リトルの公式で到着率 λ の代わりに λ(1-ρ) で割った
+        explanation: |
+          **方針** 到着率 $\lambda=«lam»$ 件/時、サービス率 $\mu=60/«mu_min»=«mu»$ 件/時、利用率 $\rho=\lambda/\mu$。M/M/1 の待ち行列の平均の長さ $L_q=\rho^2/(1-\rho)$ を求め、リトルの公式 $L_q=\lambda W_q$ で平均待ち時間 $W_q$ にする。
+
+          **途中式** $\rho=«lam»/«mu»=«rho»$。
+          $$L_q=\frac{«rho»^2}{1-«rho»}=«lq»\ \text{件},\qquad W_q=\frac{L_q}{\lambda}=\frac{«lq»}{«lam»}=«wq_h»\ \text{時間}=«wq»\ \text{分}$$
+
+          **答え** «wq» 分
+
+          **間違えやすい点** 系内の平均滞在時間 $W=W_q+1/\mu=«wq»+«mu_min»=«w»$ 分と取り違えないこと（$W=1/(\mu-\lambda)$ でも求まる）。
+          リトルの公式は「平均の人数 ＝ 到着率 × 平均時間」で、割るのはサービス率 $\mu$ ではなく到着率 $\lambda$。
+          利用率 «rho» は 1 に近く、平均分析時間が 8 分でも待ち時間はその 4 倍にもなる。
+
+  - id: s12p08
+    title: 日本酒の香気成分と官能評価
+    context: |
+      吟醸酒 «n» 点について、専門家パネルの官能評価点 $y$ を、香気成分など 4 つの説明変数（酢酸イソアミル濃度 $x_1$、カプロン酸エチル濃度 $x_2$、酸度 $x_3$、アミノ酸度 $x_4$）で重回帰した。
+      誤差は独立に平均 0、分散 $\sigma^2$ の正規分布に従うとする。
+
+      - モデル F（切片と $x_1,x_2,x_3,x_4$）：残差平方和 «rss_f»
+      - モデル R（切片と $x_1,x_2$ のみ）：残差平方和 «rss_r»
+    items:
+      - id: s12p08a
+        chapter: 16
+        terms: [partial-f-test, multiple-regression-model, f-distribution]
+        topic: 4変数の重回帰から酸度とアミノ酸度の2変数をまとめて除けるかを部分F検定で調べる
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          $H_0:\beta_3=\beta_4=0$ を検定する $F$ 統計量の値として正しいものはどれか。なお、$F(«q»,«df_f»)$ の上側 5% 点は «Fcrit» である。
+        choices:
+          - '$«F_red»$'
+          - '$«F»$'
+          - '$«F_df»$'
+          - '$«F_noq»$'
+          - '$«F_ratio»$'
+        answer: 1
+        distractors:
+          - 分母に小さいモデル R の残差平方和と自由度を使った
+          - 正解
+          - 分母の自由度を n-4 とした（切片を数え忘れた）
+          - 分子を制約の数 2 で割り忘れた
+          - 残差平方和の増加率を F 統計量と取り違えた
+        explanation: |
+          **方針** 入れ子のモデルの比較には部分 $F$ 検定を使う。
+          $F=\dfrac{(S_R-S_F)/q}{S_F/(n-p_F-1)}$（$q$ は 0 とおく係数の数、$p_F$ はモデル F の切片を除く説明変数の数）は、$H_0$ のもとで自由度 $(q,\,n-p_F-1)$ の $F$ 分布に従う。
+
+          **途中式** $q=«q»$、モデル F の残差の自由度は $«n»-«kf»-1=«df_f»$。
+          $$\frac{S_R-S_F}{q}=\frac{«rss_r»-«rss_f»}{«q»}=«num»,\qquad \frac{S_F}{«df_f»}=\frac{«rss_f»}{«df_f»}=«mse»$$
+          $$F=\frac{«num»}{«mse»}=«F»$$
+
+          **答え** $«F»$（«Fcrit» 未満なので、有意水準 5% では $x_3,x_4$ をまとめて除いてよい）
+
+          **間違えやすい点** 分母は**大きいモデル F**の誤差分散の推定値で、自由度は切片も数えて $n-5=«df_f»$。分子を $q=2$ で割り忘れると $«F_noq»$ となり、結論が逆になる。
+          個々の $t$ 検定を 2 回くり返すのではなく、2 つの係数を同時に 0 とおく仮説は 1 回の $F$ 検定で調べる。
+
+      - id: s12p08b
+        chapter: 17
+        terms: [studentized-residual, standardized-residual, leverage, outlier-and-influential-point]
+        topic: 1点を除いた誤差分散で割る外部スチューデント化残差を残差とてこ比から求める
+        level: 応用
+        definition: false
+        type: choice
+        question: |
+          モデル F で、ある 1 点の残差は $e_i=«e»$、てこ比は $h_{ii}=«h»$ だった。この点を除いて推定した誤差分散 $s_{(i)}^2$ を使う**外部スチューデント化残差**
+          $t_i=\dfrac{e_i}{s_{(i)}\sqrt{1-h_{ii}}}$ の値に最も近いものはどれか。
+          ただし、$i$ 番目の点を除いてモデル F を当てはめ直したときの残差平方和は $S_F-\dfrac{e_i^2}{1-h_{ii}}$ になる（$S_F$ はモデル F の残差平方和）。必要なら $\sqrt{0.75}=«sq1h»$ を使え。
+        choices:
+          - '$«r_raw»$'
+          - '$«r_int»$'
+          - '$«t_bad»$'
+          - '$«t_ext»$'
+          - '$«r_noroot»$'
+        answer: 3
+        distractors:
+          - てこ比を考えずに残差を全体の s で割っただけ
+          - 全データの s を使った内部スチューデント化残差（標準化残差）を答えた
+          - 1 点を除いた残差平方和で e_i^2/(1-h) ではなく e_i^2 を引いた
+          - 正解
+          - √(1-h) ではなく (1-h) で割った
+        explanation: |
+          **方針** 与えられた式で $i$ 番目を除いた残差平方和を求め、その自由度 $(n-p_F-1)-1$ で割って $s_{(i)}^2$ を出す。$s_{(i)}$ は外れ値の影響を受けないので、外れ値の検出に向く。
+
+          **途中式**
+          $$\frac{e_i^2}{1-h_{ii}}=\frac{«e2»}{«omh»}=«e2h»,\qquad s_{(i)}^2=\frac{«rss_f»-«e2h»}{«df_f»-1}=\frac{«rss_i»}{«df_i»}=«s2i»,\qquad s_{(i)}=«si»$$
+          $$t_i=\frac{«e»}{«si»\times«sq1h»}=\frac{«e»}{«den»}=«t_ext4»\cdots$$
+
+          **答え** $«t_ext»$
+
+          **間違えやすい点** 全データの $s=\sqrt{«mse»}=«s_full»$ を使う内部スチューデント化残差は $«e»/(«s_full»\times«sq1h»)\approx«r_int»$。
+          外れ値があると $s$ 自体が大きくなるので、内部スチューデント化残差は外れ値を小さめに見せる。外部スチューデント化残差は自由度 «df_i» の $t$ 分布に従うので、そのまま $t$ 分布の点と比べられる。
+          1 点を除いた残差平方和で引くのは $e_i^2$ ではなく $e_i^2/(1-h_{ii})$（除いた点の予測残差の 2 乗に $(1-h_{ii})$ を掛けたもの）。
+
+      - id: s12p08c
+        chapter: 19
+        terms: [instrumental-variable-method, endogeneity, two-stage-least-squares]
+        topic: 測定誤差のある酸度の効果を仕込み水の硬度を操作変数として推定する
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          別の分析として、官能評価点 $y$ を酸度 $x$ だけで説明する単回帰 $y=\alpha+\beta x+\varepsilon$ を考える。酸度の測定には誤差があり、また酸度と相関する未観測の要因もあるため、$x$ は $\varepsilon$ と相関している疑いがある。
+          そこで仕込み水の硬度 $z$ を操作変数として使う（$z$ は $x$ と相関し、$\varepsilon$ とは無相関と仮定する）。標本の分散・共分散は次のとおりだった。
+
+          | $V[x]$ | $V[z]$ | $\mathrm{Cov}(x,y)$ | $\mathrm{Cov}(z,x)$ | $\mathrm{Cov}(z,y)$ |
+          |---|---|---|---|---|
+          | «vx» | «vz» | «cxy» | «czx» | «czy» |
+
+          $\beta$ の操作変数推定値はどれか。
+        choices:
+          - '$«ols»$'
+          - '$«rf»$'
+          - '$«fs»$'
+          - '$«ivinv»$'
+          - '$«iv»$'
+        answer: 4
+        distractors:
+          - 最小二乗推定値 Cov(x,y)/V[x] を答えた（内生性を無視）
+          - y を z に回帰した傾き（誘導形）を答えた
+          - x を z に回帰した傾き（第1段階）を答えた
+          - 操作変数推定値の分子と分母を逆にした
+          - 正解
+        explanation: |
+          **方針** $z$ と $\varepsilon$ が無相関なら $\mathrm{Cov}(z,y)=\beta\,\mathrm{Cov}(z,x)$ が成り立つ。これを $\beta$ について解いた $\hat\beta_{IV}=\mathrm{Cov}(z,y)/\mathrm{Cov}(z,x)$ が操作変数推定値。
+
+          **途中式**
+          $$\hat\beta_{IV}=\frac{\mathrm{Cov}(z,y)}{\mathrm{Cov}(z,x)}=\frac{«czy»}{«czx»}=«iv»$$
+
+          **答え** $«iv»$
+
+          **間違えやすい点** 最小二乗推定値 $«cxy»/«vx»=«ols»$ は、$x$ と $\varepsilon$ が相関していると一致性がない。
+          2 段階最小二乗法で考えても同じ：第 1 段階 $\hat x=\hat\pi z$（$\hat\pi=«czx»/«vz»=«fs»$）、第 2 段階で $y$ を $\hat x$ に回帰すると、傾きは $\dfrac{\hat\pi\,\mathrm{Cov}(z,y)}{\hat\pi^2V[z]}=\dfrac{«czy»}{«fs»\times«vz»}=«iv»$。
+          誘導形の傾き $«czy»/«vz»=«rf»$ は「$z$ が 1 増えると $y$ がどれだけ変わるか」で、$\beta$ ではない。
+
+  - id: s12p09
+    title: 熟成期間と官能評価の 3 段階
+    context: |
+      ある蒸留所では、ウイスキーの原酒を官能評価で「1：不可」「2：可」「3：良」の 3 段階に格付けしている。熟成期間 $x$（年）と格付け $Y$ の関係を、次の順序ロジットモデル（比例オッズモデル）で表した。
+      $$P(Y\le j\mid x)=\frac{1}{1+\exp\{-(\theta_j-\beta x)\}}\qquad(j=1,2)$$
+      推定値は $\hat\theta_1=«th1»$、$\hat\theta_2=«th2»$、$\hat\beta=«beta»$ だった（$\beta>0$ なら熟成が長いほど高い格付けになりやすい）。
+    items:
+      - id: s12p09a
+        chapter: 18
+        terms: [ordered-logit-model, logistic-regression, link-function]
+        topic: 順序ロジットモデルの累積確率の差から中間カテゴリになる確率を求める
+        level: 応用
+        definition: false
+        type: choice
+        question: |
+          熟成期間 $x=«x»$ 年の原酒が「2：可」と格付けされる確率 $P(Y=2\mid x=«x»)$ の推定値に最も近いものはどれか。
+          必要なら次の値を使え：$e^{3}=«e3»$、$e^{0.5}=«e05»$、$e^{-1}=«em1»$、$e^{-3.5}=«em35»$。
+        choices:
+          - '$«p1»$'
+          - '$«wrong»$'
+          - '$«p2»$'
+          - '$«cum2»$'
+          - '$«p3»$'
+        answer: 2
+        distractors:
+          - P(Y=1) を答えた
+          - θ_j − βx の符号を誤り θ_j + βx として計算した
+          - 正解
+          - 累積確率 P(Y≤2) をそのまま答えた
+          - P(Y=3) を答えた
+        explanation: |
+          **方針** 順序ロジットモデルが与えるのは累積確率 $P(Y\le j)$。中間のカテゴリの確率は差 $P(Y=2)=P(Y\le2)-P(Y\le1)$ で求める。
+
+          **途中式** $\hat\beta x=«beta»\times«x»=«bx»$ なので $\theta_1-\beta x=«a1»$、$\theta_2-\beta x=«a2»$。
+          $$P(Y\le1)=\frac{1}{1+e^{3}}=\frac{1}{«d1»}=«c1»,\qquad P(Y\le2)=\frac{1}{1+e^{0.5}}=\frac{1}{«d2»}=«c2»$$
+          $$P(Y=2)=«c2»-«c1»=«p2_4»$$
+
+          **答え** $«p2»$
+
+          **間違えやすい点** $\exp\{-(\theta_j-\beta x)\}$ の指数は $-(«a1»)=3$、$-(«a2»)=0.5$ で、符号に注意する。$\theta_j+\beta x$ としてしまうと $«wrong»$ になる。
+          累積確率 $P(Y\le2)=«cum2»$ のままでは「不可または可」の確率で、「良」の確率は $1-«c2»\approx«p3»$。
+          このモデルでは熟成期間が 1 年延びると、どの $j$ でも「$j$ より上の格付け」のオッズが $e^{\beta}$ 倍になる（比例オッズ）。
+
+  - id: s12p10
+    title: 原薬ロット間の純度のばらつき
+    context: |
+      ある原薬の純度（%）について、製造ロット間のばらつきを調べたい。多数のロットから «a» ロットを無作為に選び、各ロットから «rr» 回ずつ測定した。
+      モデルは $y_{ij}=\mu+a_i+\varepsilon_{ij}$（$a_i\sim N(0,\sigma_A^2)$、$\varepsilon_{ij}\sim N(0,\sigma^2)$、すべて独立）の変量効果モデルとする。
+      一元配置の分散分析で、ロット間平方和 «ssa»、ロット内（誤差）平方和 «sse» を得た。
+    items:
+      - id: s12p10a
+        chapter: 20
+        terms: [fixed-and-random-effects, expected-mean-square, one-way-anova]
+        topic: 変量効果の一元配置で期待平均平方からロット間分散成分を推定し級内相関を求める
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          期待平均平方の関係を使ってロット間分散 $\sigma_A^2$ と誤差分散 $\sigma^2$ を推定し、級内相関係数 $\rho=\dfrac{\sigma_A^2}{\sigma_A^2+\sigma^2}$ の推定値を求めよ。
+        answer: «icc»
+        tolerance: 0.001
+        answer_format: 小数第3位まで（小数第4位を四捨五入）で答えよ。±0.001 の差まで正解とする。
+        explanation: |
+          **方針** 各ロット $r$ 回の測定なら $E[MS_A]=\sigma^2+r\sigma_A^2$、$E[MS_E]=\sigma^2$。平均平方を期待値に等しいとおいて解く（分散分析による推定）。
+
+          **途中式** 自由度はロット間 $«a»-1=«dfa»$、誤差 $«a»\times(«rr»-1)=«dfe»$。
+          $$MS_A=\frac{«ssa»}{«dfa»}=«msa»,\qquad MS_E=\frac{«sse»}{«dfe»}=«mse»$$
+          $$\hat\sigma^2=«mse»,\qquad \hat\sigma_A^2=\frac{MS_A-MS_E}{r}=\frac{«msa»-«mse»}{«rr»}=«sa2»$$
+          $$\hat\rho=\frac{«sa2»}{«sa2»+«mse»}=\frac{«sa2»}{«tot»}=«icc4»\cdots$$
+
+          **答え** $«icc_s»$
+
+          **間違えやすい点** $MS_A$ の期待値には、ロットあたりの測定回数 $r=«rr»$ が掛かる。ロット数 «a» で割ると $«icc_a»$ になる。
+          $MS_E$ を引かずに $MS_A/r$ をロット間分散とすると、誤差分散の一部を二重に数えて $«icc_nosub»$ になる。
+          純度のばらつきの半分以上がロット間の違いによるので、測定回数を増やすより、ロットを多く調べるほうが平均の推定精度が上がる。
+
+  - id: s12p11
+    title: 原料タンクの汚染量の調査
+    context: |
+      ある食品工場の倉庫には容量の異なる «N» 基の原料タンクがある。汚染された原料の総量（kL）を推定するため、容量に比例した包含確率で 3 基を非復元抽出し（容量比例確率抽出）、各タンクの汚染量を測った。
+    items:
+      - id: s12p11a
+        chapter: 21
+        terms: [horvitz-thompson-estimator, inclusion-probability, probability-proportional-to-size-sampling]
+        topic: 容量比例の包含確率で選んだ3基のタンクからホービッツ・トンプソン推定量で総量を推定する
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          選ばれた 3 基の汚染量 $y_i$ と包含確率 $\pi_i$ は次のとおりだった。
+
+          | タンク | 1 | 2 | 3 |
+          |---|---|---|---|
+          | 汚染量 $y_i$（kL） | «y1» | «y2» | «y3» |
+          | 包含確率 $\pi_i$ | «pi1» | «pi2» | «pi3» |
+
+          倉庫全体の汚染量の合計のホービッツ・トンプソン推定値はどれか。
+        choices:
+          - '«mul»'
+          - '«avg»'
+          - '«sumratio»'
+          - '«ht»'
+          - '«nmean»'
+        answer: 3
+        distractors:
+          - 包含確率で割る代わりに掛けた
+          - y/π の和ではなく平均をとった（合計ではなく1基あたりと混同）
+          - y の和を包含確率の平均で割った
+          - 正解
+          - 包含確率を無視し、単純無作為抽出として N×(標本平均) とした
+        explanation: |
+          **方針** ホービッツ・トンプソン推定量は $\hat\tau=\sum_{i\in s}y_i/\pi_i$。各標本を「自分が代表する $1/\pi_i$ 基分」として重みづける。
+
+          **途中式**
+          $$\hat\tau=\frac{«y1»}{«pi1»}+\frac{«y2»}{«pi2»}+\frac{«y3»}{«pi3»}=«w1»+«w2»+«w3»=«ht»$$
+
+          **答え** «ht» kL
+
+          **間違えやすい点** 容量の大きいタンクほど選ばれやすいので、単純平均に «N» を掛ける $«nmean»$ は大きいタンクを過大に代表させてしまう。
+          包含確率は「選ばれやすさ」なので、選ばれやすいものほど小さい重み $1/\pi_i$ をつける。
+          汚染量が容量にほぼ比例していれば $y_i/\pi_i$ はほぼ一定になり、この推定量の分散は小さくなる。
+
+      - id: s12p11b
+        chapter: 29
+        terms: [multiple-imputation, rubins-rules, missing-data-mechanism]
+        topic: 多重代入法の5組の推定値と分散からルービンのルールで総量推定の標準誤差を求める
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          翌年はタンクを増やした大規模な調査を行ったが、一部のタンクで汚染量の測定値が欠測した。欠測値を多重代入法で $m=«m»$ 回補完し、補完済みデータごとに総量の推定値 $\hat Q_k$ とその分散の推定値 $U_k$ を求めた。
+
+          | $k$ | 1 | 2 | 3 | 4 | 5 |
+          |---|---|---|---|---|---|
+          | $\hat Q_k$ | 812 | 806 | 818 | 809 | 815 |
+          | $U_k$ | 140 | 150 | 145 | 138 | 152 |
+
+          ルービンのルールで統合した推定値の標準誤差を求めよ。代入間分散は $m-1$ で割るものとする。
+        answer: «se»
+        tolerance: 0.01
+        answer_format: 小数第2位まで（小数第3位を四捨五入）で答えよ。±0.01 の差まで正解とする。
+        explanation: |
+          **方針** ルービンのルールでは、全分散 $T=\bar U+\left(1+\frac1m\right)B$。$\bar U$ は代入内分散の平均、$B$ は推定値の代入間分散。
+
+          **途中式** $\bar Q=«qb»$、$\bar U=«ub»$。
+          偏差は $0,-6,6,-3,3$ なので
+          $$B=\frac{0+36+36+9+9}{«m»-1}=\frac{«ssq»}{4}=«B»$$
+          $$T=«ub»+«fac»\times«B»=«ub»+«fB»=«T»,\qquad \sqrt{«T»}=«se4»\cdots$$
+
+          **答え** $«se_s»$
+
+          **間違えやすい点** $(1+1/m)$ を付け忘れると $\sqrt{«ub»+«B»}=«se_nofac»$。代入内分散 $\bar U$ だけを使う（1 回だけ補完したデータを完全データとして扱う）と $«se_u»$ となり、欠測による不確かさを無視して精度を過大評価する。
+          $(1+1/m)$ は、代入回数が有限であることによる $\bar Q$ のばらつきを加えるための係数である。
+
+  - id: s12p12
+    title: コーヒー豆の官能特性の多変量解析
+    context: |
+      あるロースターが、焙煎したコーヒー豆の官能特性をパネルで評価し、多変量解析を行った。
+    items:
+      - id: s12p12a
+        chapter: 22
+        terms: [principal-component-analysis, eigenvalue-and-eigenvector, principal-component-score]
+        topic: 2変量の分散共分散行列の固有方程式を解き1つの豆の第1主成分得点を求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          苦味 $x_1$ と酸味 $x_2$ の評点の分散共分散行列は
+          $$S=\begin{pmatrix}«s11» & «s12»\\ «s12» & «s22»\end{pmatrix}$$
+          だった。分散共分散行列にもとづく主成分分析を行い、第 1 主成分の係数ベクトルは長さ 1 で第 1 成分が正の向きにとる。
+          平均からの偏差が $(x_1-\bar x_1,\,x_2-\bar x_2)=(«d1»,\,«d2»)$ の豆の第 1 主成分得点はどれか。必要なら $\sqrt5=«sq5»$ を使え。
+        choices:
+          - '$«eqw»$'
+          - '$«contrib»$'
+          - '$«score»$'
+          - '$«score2»$'
+          - '$«unnorm»$'
+        answer: 2
+        distractors:
+          - 固有ベクトルを求めずに (1,1)/√2 の等しい重みを使った
+          - 第1主成分の寄与率を得点と取り違えた
+          - 正解
+          - 小さいほうの固有値の固有ベクトル (1,-2)/√5 を使った
+          - 固有ベクトルを長さ 1 に正規化しなかった
+        explanation: |
+          **方針** 固有方程式 $\det(S-\lambda I)=0$ を解いて最大固有値を求め、その固有ベクトルを長さ 1 にして偏差との内積をとる。
+
+          **途中式** $\det(S-\lambda I)=\lambda^2-«tr»\lambda+«det»=0$ より
+          $$\lambda=\frac{«tr»\pm\sqrt{«tr»^2-4\times«det»}}{2}=\frac{«tr»\pm«sqd»}{2}=«l1»,\ «l2»$$
+          $\lambda_1=«l1»$ について $(S-«l1»I)\boldsymbol v=\boldsymbol 0$ は $-v_1+2v_2=0$ なので $\boldsymbol v\propto(2,1)$、長さ 1 にすると $(2,1)/\sqrt5$。
+          $$z_1=\frac{2\times«d1»+1\times(«d2»)}{\sqrt5}=\frac{«numer»}{«sq5»}=«score»$$
+
+          **答え** $«score»$
+
+          **間違えやすい点** 係数ベクトルは長さ 1 にする（しないと $«unnorm»$）。小さい固有値 «l2» の固有ベクトル $(1,-2)/\sqrt5$ を使うと第 2 主成分得点 $«score2»$ になる。
+          第 1 主成分の寄与率は $«l1»/«tr»\approx«contrib»$ で、得点とは別のもの。分散共分散行列を使っているので、分散の大きい苦味の重みが大きくなっている。
+
+      - id: s12p12b
+        chapter: 25
+        terms: [maximum-likelihood-factor-analysis, number-of-factors, factor-analysis-model]
+        topic: 最尤法の因子分析で因子数の適合度検定のカイ二乗の自由度を回転の不定性を考えて数える
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          苦味・酸味・甘味・コク・香りなど «p» 項目の評点に、最尤法で «k» 因子の因子分析モデルを当てはめ、「«k» 因子で十分」という仮説の尤度比（カイ二乗）検定を行う。
+          この検定統計量が漸近的に従うカイ二乗分布の自由度はどれか。
+        choices:
+          - '«df_norot»'
+          - '«df»'
+          - '«df_nouniq»'
+          - '«df_nouniq_rot»'
+          - '«df_ind»'
+        answer: 1
+        distractors:
+          - 因子負荷量の回転の不定性 k(k-1)/2 を引かなかった
+          - 正解
+          - 独自分散 p 個をパラメータとして数え忘れた
+          - 独自分散と回転の不定性の両方を考えなかった
+          - 変数どうしの相関の数 p(p-1)/2（無相関の検定の自由度）を答えた
+        explanation: |
+          **方針** 自由度は「分散共分散行列の自由な要素の数」から「モデルの実質的なパラメータ数」を引いたもの。因子負荷量 $pk$ 個と独自分散 $p$ 個があるが、負荷行列は直交回転しても同じ共分散行列を与えるので、その分 $k(k-1)/2$ を引く。
+
+          **途中式**
+          $$\frac{p(p+1)}{2}-\left\{pk+p-\frac{k(k-1)}{2}\right\}=«pp1»-(«pk»+«p»-«rot»)=«df»$$
+          公式 $\dfrac{(p-k)^2-(p+k)}{2}=\dfrac{36-10}{2}=«df»$ とも一致する。
+
+          **答え** «df»
+
+          **間違えやすい点** 回転の不定性を引き忘れると «df_norot»、独自分散を数え忘れると «df_nouniq»。
+          自由度が正であることは、モデルが共分散構造に実質的な制約を課していて検定できるための条件でもある。
+
+      - id: s12p12c
+        chapter: 26
+        terms: [path-analysis, structural-equation-modeling, spurious-correlation]
+        topic: 焙煎度を共通の原因にもつパス図から苦味と総合評価のモデル上の相関を分解して求める
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          焙煎度 $R$、苦味 $B$、総合評価 $S$ を標準化し、次のパス図（逐次モデル）を当てはめた。誤差は互いに独立で、$R$ とも無相関とする。
+
+          - $R\to B$：パス係数 «pa»
+          - $B\to S$：パス係数 «pb»
+          - $R\to S$：パス係数 «pc»
+
+          このモデルが示す苦味 $B$ と総合評価 $S$ の相関係数はどれか。
+        choices:
+          - '$«ab»$'
+          - '$«total»$'
+          - '$«rbs»$'
+          - '$«pb»$'
+          - '$«rbs_m»$'
+        answer: 2
+        distractors:
+          - R から S への間接効果 a×b を答えた
+          - R から S への総合効果を答えた
+          - 正解
+          - 直接効果だけを相関とみなし、共通の原因 R を通る経路を無視した
+          - 共通の原因を通る経路の積 (-0.2)×0.6 の符号を逆にした
+        explanation: |
+          **方針** 標準化した逐次モデルでは、2 変数の相関は 2 変数を結ぶすべての経路（直接効果・間接効果・共通の原因を通る経路）のパス係数の積の和になる。
+
+          **途中式** $S=«pb»B+(«pc»)R+e_S$ と $B$ との共分散をとると、$V[B]=1$、$\mathrm{Cov}(R,B)=«pa»$ なので
+          $$r_{BS}=«pb»\times1+(«pc»)\times«pa»=«pb»+(«ca»)=«rbs»$$
+
+          **答え** $«rbs»$
+
+          **間違えやすい点** $B\to S$ の直接効果 «pb» だけでは、共通の原因 $R$ を通る見かけの相関（$B\leftarrow R\to S$ の経路）を見落とす。この経路の積は負なので、相関は直接効果より小さくなる。
+          $R$ から $S$ への総合効果 $«pc»+«pa»\times«pb»=«total»$ は別の量である。
+
+  - id: s12p13
+    title: 新しい殺菌工程の効果
+    context: |
+      ある乳飲料メーカーは、新しい殺菌工程（新工程）を一部のラインに導入した。製品が賞味期限内に腐敗したかどうかで、旧工程と比べる。
+    items:
+      - id: s12p13a
+        chapter: 28
+        terms: [mantel-haenszel-estimator, odds-ratio-interval, three-way-table, simpsons-paradox]
+        topic: 2工場で層別した腐敗の2×2表からマンテル・ヘンツェルの共通オッズ比を求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          2 つの工場で、出荷した製品から無作為に選んだものの腐敗の有無を調べた。
+
+          | 工場 | 工程 | 腐敗あり | 腐敗なし |
+          |---|---|---|---|
+          | A | 新 | «Aa» | «Ab» |
+          | A | 旧 | «Ac» | «Ad» |
+          | B | 新 | «Ba» | «Bb» |
+          | B | 旧 | «Bc» | «Bd» |
+
+          工場で層別した、新工程の旧工程に対する腐敗のオッズ比（新／旧）のマンテル・ヘンツェル推定値に最も近いものはどれか。
+        choices:
+          - '$«crude»$'
+          - '$«mh»$'
+          - '$«noN»$'
+          - '$«mean»$'
+          - '$«inv»$'
+        answer: 1
+        distractors:
+          - 工場を無視して2つの表を合算したオッズ比を求めた
+          - 正解
+          - 各層の積を層の大きさ n_k で割らずに足した
+          - 層ごとのオッズ比を単純平均した
+          - オッズ比の向きを逆（旧／新）にした
+        explanation: |
+          **方針** 各層 $k$ の表を $\begin{pmatrix}a_k&b_k\\c_k&d_k\end{pmatrix}$（行：新・旧、列：腐敗あり・なし）、層の大きさを $n_k$ とすると、
+          $\hat\psi_{MH}=\dfrac{\sum_k a_kd_k/n_k}{\sum_k b_kc_k/n_k}$。
+
+          **途中式** $n_A=«An»$、$n_B=«Bn»$。
+          $$\frac{a_Ad_A}{n_A}=\frac{«Aad»}{«An»}=«Aadn»,\quad \frac{b_Ac_A}{n_A}=\frac{«Abc»}{«An»}=«Abcn»,\quad \frac{a_Bd_B}{n_B}=\frac{«Bad»}{«Bn»}=«Badn»,\quad \frac{b_Bc_B}{n_B}=\frac{«Bbc»}{«Bn»}=«Bbcn»$$
+          $$\hat\psi_{MH}=\frac{«Aadn»+«Badn»}{«Abcn»+«Bbcn»}=\frac{«numer»}{«denom»}=«mh»$$
+
+          **答え** $«mh»$
+
+          **間違えやすい点** 工場を無視して合算すると $\frac{«ta»\times«td»}{«tb»\times«tc»}=«crude»$ と、効果を大きく見積もってしまう。
+          腐敗しにくい工場 A で新工程が多く使われているため、工場が交絡因子になっている。層ごとのオッズ比は A が $«orA»$、B が $«orB»$ で、MH 推定値はその重みつきの平均にあたる。単純平均（$«mean»$）とは違う。
+
+      - id: s12p13b
+        chapter: 33
+        terms: [frontdoor-criterion, causal-effect, backdoor-criterion]
+        topic: 未観測の交絡があるとき残存菌の検出を中間変数にしたフロントドア調整で工程の因果効果を求める
+        level: 応用
+        definition: false
+        type: numeric
+        question: |
+          多数の工場のデータでは、工程の選択と腐敗の両方に影響する原料の汚染度 $U$ が観測されていない。そこで、工程 $X$（新 1、旧 0）→ 出荷前検査での残存菌の検出 $M$（検出 1、なし 0）→ 腐敗 $Y$（あり 1、なし 0）という経路に注目する。
+          次を仮定する：$X$ は $M$ を通してのみ $Y$ に影響する、$U$ は $X$ と $Y$ に影響するが $M$ には直接影響しない、$X\to M$ と $M\to Y$ の間にほかの交絡はない。
+          観測データから次の確率が得られた。
+
+          - $P(X=1)=«px1»$
+          - $P(M=1\mid X=1)=«pm1»$、$P(M=1\mid X=0)=«pm0»$
+          - $P(Y=1\mid M=1,X=1)=«y11»$、$P(Y=1\mid M=1,X=0)=«y10»$、$P(Y=1\mid M=0,X=1)=«y01»$、$P(Y=1\mid M=0,X=0)=«y00»$
+
+          フロントドア基準による調整で、平均因果効果 $P(Y=1\mid do(X=1))-P(Y=1\mid do(X=0))$ を求めよ。
+        answer: «ace»
+        tolerance: 0.001
+        answer_format: 小数第3位まで（小数第4位を四捨五入）で答えよ。負の値は符号をつける。±0.001 の差まで正解とする。
+        explanation: |
+          **方針** フロントドア調整の式
+          $$P(Y=1\mid do(X=x))=\sum_m P(M=m\mid X=x)\sum_{x'}P(Y=1\mid M=m,X=x')P(X=x')$$
+          を使う。内側の和は「$M$ を固定したときの $M\to Y$ の効果」を、$X$ について（バックドア）調整したものである。
+
+          **途中式** 内側の和：
+          $$m=1:\ «y11»\times«px1»+«y10»\times«px0»=«t11»+«t10»=«in1»,\qquad m=0:\ «y01»\times«px1»+«y00»\times«px0»=«t01»+«t00»=«in0»$$
+          外側の和：
+          $$P(Y=1\mid do(X=1))=«pm1»\times«in1»+«pm1c»\times«in0»=«do1»$$
+          $$P(Y=1\mid do(X=0))=«pm0»\times«in1»+«pm0c»\times«in0»=«do0»$$
+          差は $«do1»-«do0»=«ace4»$。
+
+          **答え** $«ace_s»$
+
+          **間違えやすい点** 観測された条件付き確率の差 $P(Y=1\mid X=1)-P(Y=1\mid X=0)=«obs1»-«obs0»=«naive»$ は、汚染度の高い工場ほど新工程を導入していたという交絡で、効果を小さく見せている。
+          内側の和で $P(Y=1\mid M=m,X=x)$ の $x$ を固定したまま使うのは誤りで、$X$ の周辺分布 $P(X=x')$ で平均する必要がある（$M\to Y$ の関係には $X\leftarrow U\to Y$ を通るバックドア経路があるため）。

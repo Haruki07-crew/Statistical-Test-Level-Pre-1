@@ -55,8 +55,9 @@ def texts():
     for p in exam_lib.set_files():
         try:
             data, _ = exam_lib.load_set(p)   # generator の値を差し込んだあとの文で調べる
-        except Exception:
-            data = yaml.safe_load(p.read_text(encoding="utf-8")) or {}
+        except Exception as e:  # 書きかけのセットは check_exam.py がエラーとして報告するので、ここでは飛ばす
+            print(f"[SKIP] {p.relative_to(ROOT)}: 読み込めないため数式チェックを省略（{str(e)[:80]}）")
+            continue
         for blk in data.get("problems") or []:
             for k in ("context", "title"):
                 if isinstance(blk.get(k), str):

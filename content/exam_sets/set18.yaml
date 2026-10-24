@@ -1,0 +1,977 @@
+set: 18
+title: 模擬試験 第18回
+minutes: 90
+problems:
+  - id: s18p01
+    title: 魚の集団の遺伝子頻度
+    context: |
+      ある湖の魚の集団で、電気泳動で 3 つの遺伝子型をすべて見分けられる（共優性の）遺伝子座を調べた。対立遺伝子は $A$ と $a$ の 2 つで、無作為に採集した «n» 尾の遺伝子型は次のとおりだった。
+
+      | 遺伝子型 | $AA$ | $Aa$ | $aa$ | 計 |
+      |---|---|---|---|---|
+      | 尾数 | «nAA» | «nAa» | «naa» | «n» |
+
+      対立遺伝子 $A$ の頻度を $p$ とする。個体は互いに独立とする。
+    items:
+      - id: s18p01a
+        chapter: 8
+        terms: [maximum-likelihood-estimator, fisher-information, standard-error]
+        topic: 共優性の遺伝子型の数から対立遺伝子頻度の最尤推定量の標準誤差をフィッシャー情報量で求める
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          遺伝子型の確率は $AA:p^2$、$Aa:2p(1-p)$、$aa:(1-p)^2$（ハーディ・ワインベルグ平衡）であると仮定する。
+          $p$ の最尤推定量 $\hat p$ の標準誤差を、フィッシャー情報量の逆数の平方根に $\hat p$ を代入して求めよ。
+        answer: «se»
+        tolerance: 0.0001
+        answer_format: 小数第4位まで（小数第5位を四捨五入）で答えよ。±0.0001 の差まで正解とする。
+        explanation: |
+          **方針** 対数尤度を $p$ で書き、最尤推定量とフィッシャー情報量 $I(p)=-E[\ell''(p)]$ を求める。標準誤差は $1/\sqrt{I(\hat p)}$。
+
+          **途中式** 遺伝子型の数を $n_{AA},n_{Aa},n_{aa}$ とすると、定数を除いて
+          $$\ell(p)=2n_{AA}\log p+n_{Aa}\{\log p+\log(1-p)\}+2n_{aa}\log(1-p)=(2n_{AA}+n_{Aa})\log p+(n_{Aa}+2n_{aa})\log(1-p)$$
+          $\ell'(p)=0$ より $\hat p=\dfrac{2n_{AA}+n_{Aa}}{2n}=\dfrac{«cntA»}{«n2»}=«p»$（集団の «n2» 本の遺伝子のうち $A$ の割合）。
+          $2n_{AA}+n_{Aa}$ は二項分布 $B(2n,p)$ に従うので期待値は $2np$。よって
+          $$I(p)=E\left[\frac{2n_{AA}+n_{Aa}}{p^2}+\frac{n_{Aa}+2n_{aa}}{(1-p)^2}\right]=\frac{2np}{p^2}+\frac{2n(1-p)}{(1-p)^2}=\frac{2n}{p(1-p)}$$
+          $$\mathrm{SE}(\hat p)=\sqrt{\frac{\hat p(1-\hat p)}{2n}}=\sqrt{\frac{«p»\times«q»}{«n2»}}=\sqrt{«var»}=«se6»\cdots$$
+
+          **答え** $«se_s»$
+
+          **間違えやすい点** 標本の大きさは個体数 $n=«n»$ ではなく遺伝子の本数 $2n=«n2»$。$n$ で割ると $«se_n»$ になる。
+
+      - id: s18p01b
+        chapter: 10
+        terms: [likelihood-ratio-test, wilks-theorem, degrees-of-freedom-gof]
+        topic: 遺伝子型の度数でハーディ・ワインベルグ平衡を尤度比（G統計量）で検定し推定した母数の分だけ自由度を減らす
+        level: 応用
+        definition: false
+        type: choice
+        question: |
+          帰無仮説「遺伝子型の確率は $p^2,\ 2p(1-p),\ (1-p)^2$（ハーディ・ワインベルグ平衡）」、対立仮説「3 つの遺伝子型の確率は任意（和は 1）」として尤度比検定を行う。
+          検定統計量は $G=-2\log\Lambda=2\sum O\log(O/E)$（$O$ は観測度数、$E$ は帰無仮説のもとで $p$ を最尤推定して求めた期待度数、$\log$ は自然対数）とし、有意水準 1% で、$G$ が漸近的に従うカイ二乗分布と比べる。
+          必要なら次の値を使え。
+
+          | $\log(«nAA»/«eAA»)$ | $\log(«nAa»/«eAa»)$ | $\log(«naa»/«eaa»)$ |
+          |---|---|---|
+          | «l1» | «l2» | «l3» |
+
+          | 自由度 | 上側 5% 点 | 上側 1% 点 | 上側 0.5% 点 |
+          |---|---|---|---|
+          | 1 | «c11» | «c12» | «c13» |
+          | 2 | «c21» | «c22» | «c23» |
+
+          正しいものはどれか。
+        choices:
+          - '$G=«half»$、自由度 1 で、$«c12»$ を超えないので棄却しない'
+          - '$G=«G»$、自由度 2 で、$«c22»$ を超えないので棄却しない'
+          - '$G=«G»$、自由度 1 で、$«c12»$ を超えるので棄却する'
+          - '$G=«G»$、自由度 1 で、両側検定として上側 0.5% 点 $«c13»$ と比べ、超えないので棄却しない'
+          - '$G=«Gm»$、自由度 2 で、$«c22»$ を超えるので棄却する'
+        answer: 2
+        distractors:
+          - 2 倍を忘れて Σ O log(O/E) をそのまま G とした
+          - 自由度を カテゴリー数−1=2 とし、推定した母数 p の分を引かなかった
+          - 正解
+          - カイ二乗検定は上側だけで判定するのに、両側として 0.5% 点と比べた
+          - 期待度数をメンデル比 1:2:1（50, 100, 50）で作った（別の仮説の検定）
+        explanation: |
+          **方針** 帰無仮説のもとで $\hat p=«p»$ を使って期待度数を作り、$G$ を計算する。自由度は（対立仮説の自由な母数の数）−（帰無仮説の自由な母数の数）。
+
+          **途中式** 期待度数は
+          $$E_{AA}=«n»\times«p2»=«eAA»,\quad E_{Aa}=«n»\times«pq2»=«eAa»,\quad E_{aa}=«n»\times«q2»=«eaa»$$
+          $$\sum O\log\frac{O}{E}=«nAA»\times«l1»+«nAa»\times(«l2»)+«naa»\times«l3»=«t1»+(«t2»)+«t3»=«half»$$
+          $$G=2\times«half»=«G»$$
+          対立仮説の母数は 3 つの確率（和が 1）で自由な数は 2、帰無仮説では $p$ の 1 つなので、自由度は $2-1=1$（ウィルクスの定理）。
+          $«G»>«c12»$ なので有意水準 1% で棄却する。
+
+          **答え** $G=«G»$、自由度 1 で棄却する（ハーディ・ワインベルグ平衡からずれている。ヘテロ接合体 $Aa$ が期待より少ない）。
+
+          **間違えやすい点** カテゴリーが 3 つでも、帰無仮説のもとで $p$ を推定しているので自由度は 1 減って 1 になる（自由度 2 とすると «c22» と比べて棄却しない）。
+          尤度比検定は $G$ が大きいときだけ棄却する上側の検定なので、1% 点 «c12» と比べる。$-2\log\Lambda$ の 2 倍を忘れないこと。
+
+      - id: s18p01c
+        chapter: 29
+        terms: [em-algorithm, maximum-likelihood-estimator, missing-data-mechanism]
+        topic: 優性の表現型しか観測できない遺伝子座で対立遺伝子頻度をEMアルゴリズムで1回更新する
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          同じ集団の別の遺伝子座では、対立遺伝子 $B$ が $b$ に対して完全に優性で、$BB$ と $Bb$ は同じ表現型（優性形質）になり見分けられない。
+          «nn» 尾を調べたところ、優性形質は «nD» 尾、劣性形質（$bb$）は «nR» 尾だった。ハーディ・ワインベルグ平衡を仮定し、$B$ の頻度 $\theta$ を EM アルゴリズムで推定する。
+          完全データを遺伝子型の数 $(n_{BB},n_{Bb},n_{bb})$ とし、初期値 $\theta^{(0)}=«p0»$ から E ステップと M ステップを **1 回ずつ**行ったときの $\theta^{(1)}$ を求めよ。
+        answer: «p1»
+        tolerance: 0.001
+        answer_format: 小数第3位まで（小数第4位を四捨五入）で答えよ。±0.001 の差まで正解とする。
+        explanation: |
+          **方針** E ステップでは、優性形質の «nD» 尾を、現在の $\theta$ のもとでの条件付き確率で $BB$ と $Bb$ に振り分けた期待値を求める。M ステップでは、その期待値を遺伝子型の数とみなして完全データの最尤推定量 $(2n_{BB}+n_{Bb})/(2n)$ を計算する。
+
+          **途中式** $\theta^{(0)}=«p0»$ のとき、$P(BB)=«pp0»$、$P(Bb)=2\theta(1-\theta)=«pq0»$、優性形質の確率は $«pp0»+«pq0»=«den0»$。
+          $$E[n_{BB}]=«nD»\times\frac{«pp0»}{«den0»}=«eBB_f»\approx«eBB»,\qquad E[n_{Bb}]=«nD»\times\frac{«pq0»}{«den0»}=«eBb_f»\approx«eBb»$$
+          $n_{bb}=«nR»$ は観測されている。M ステップは
+          $$\theta^{(1)}=\frac{2E[n_{BB}]+E[n_{Bb}]}{2\times«nn»}=\frac{«two_eBB»+«eBb»}{«nn2»}=\frac{«num1»}{«nn2»}=«p1_4»\cdots$$
+
+          **答え** $«p1_s»$
+
+          **間違えやすい点** M ステップの分母は遺伝子の本数 $2n=«nn2»$。分子の $BB$ は $B$ を 2 本もつので 2 倍する（$E[n_{BB}]+E[n_{Bb}]$ を個体数 «nn» で割ると、優性形質の割合 $«p1_wrong»$ になってしまう）。
+          この例では反復を続けると最尤推定値 $\hat\theta=1-\sqrt{«nR»/«nn»}=1-«q_mle»=«p_mle»$ に収束する。1 回目の値と取り違えないこと。
+
+  - id: s18p02
+    title: 野鳥の産卵数と孵化数
+    context: |
+      ある野鳥の 1 つの巣の産卵数 $N$ は平均 $\lambda=«lam»$ のポアソン分布に従う。産まれた卵はそれぞれ独立に確率 $h=«h»$ で孵化し、孵化した卵の数を $X$ とする（$N=n$ が与えられたとき $X$ は二項分布 $B(n,h)$ に従う）。
+      必要なら $e^{-2.7}=«e27»$、$e^{-4.5}=«e45»$、$e^{-1.8}=«e18»$ を使え。
+    items:
+      - id: s18p02a
+        chapter: 2
+        terms: [marginal-probability-function, conditional-probability-function, poisson-distribution]
+        topic: ポアソン分布の産卵数と二項分布の孵化から孵化数の周辺確率関数を求める
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          1 つの巣で孵化数がちょうど «k» 個である確率 $P(X=«k»)$ に最も近い値はどれか。
+        choices:
+          - '$«p_cum»$'
+          - '$«p_n»$'
+          - '$«p_1»$'
+          - '$«pk»$'
+          - '$«p_w»$'
+        answer: 3
+        distractors:
+          - P(X≦2) を求めた
+          - 孵化を考えず、産卵数 N がちょうど 2 個である確率 P(N=2) を求めた
+          - 平均 2.7 のポアソン分布で P(X=1) を計算した（k の取り違え）
+          - 正解
+          - 孵化しない卵の数の平均 λ(1−h)=1.8 を使った
+        explanation: |
+          **方針** $N$ について和をとって $X$ の周辺確率関数を求める：$P(X=k)=\sum_{n\ge k}P(N=n)P(X=k\mid N=n)$。
+
+          **途中式**
+          $$P(X=k)=\sum_{n=k}^{\infty}e^{-\lambda}\frac{\lambda^n}{n!}\binom{n}{k}h^k(1-h)^{n-k}=e^{-\lambda}\frac{(\lambda h)^k}{k!}\sum_{n=k}^{\infty}\frac{\{\lambda(1-h)\}^{n-k}}{(n-k)!}=e^{-\lambda h}\frac{(\lambda h)^k}{k!}$$
+          つまり $X$ は平均 $\lambda h=«lam»\times«h»=«mu»$ のポアソン分布に従う。
+          $$P(X=«k»)=e^{-«mu»}\times\frac{«mu»^2}{2}=«e27»\times\frac{«mu2»}{2}=«pk5»$$
+
+          **答え** $«pk»$
+
+          **間違えやすい点** 産卵数の分布のまま $P(N=2)=«e45»\times4.5^2/2=«p_n»$ とするのは誤り。ポアソン分布に従う個数を独立に確率 $h$ でふるい分けると、残った個数は平均が $h$ 倍のポアソン分布になる。
+          孵化しなかった数の平均 «mu0» を使うと $«p_w»$ になる。
+
+      - id: s18p02b
+        chapter: 3
+        terms: [conditional-expectation, conditional-probability-function, poisson-distribution]
+        topic: 孵化数が観測された巣の産卵数の条件付き期待値をポアソンのふるい分けから求める
+        level: 応用
+        definition: false
+        type: numeric
+        question: |
+          調査に訪れたとき卵はすでに孵化しており、ある巣では孵化したひなが «k» 羽、殻が残っていない（孵化しなかった卵は数えられない）状態だった。
+          この巣の産卵数の条件付き期待値 $E[N\mid X=«k»]$ を求めよ。
+        answer: «cond»
+        tolerance: 0.05
+        answer_format: 小数第1位まで（小数第2位を四捨五入）で答えよ。±0.05 の差まで正解とする。
+        explanation: |
+          **方針** $N=X+Y$（$Y$ は孵化しなかった卵の数）と分ける。ポアソン分布のふるい分けでは $X$ と $Y$ が独立になることを使う。
+
+          **途中式** $N=n$ のときの同時確率は
+          $$P(X=x,Y=y)=e^{-\lambda}\frac{\lambda^{x+y}}{(x+y)!}\binom{x+y}{x}h^x(1-h)^y=e^{-\lambda h}\frac{(\lambda h)^x}{x!}\cdot e^{-\lambda(1-h)}\frac{\{\lambda(1-h)\}^y}{y!}$$
+          と積に分かれるので、$X$ と $Y$ は独立で、$Y$ は平均 $\lambda(1-h)=«lam»\times«h0»=«mu0»$ のポアソン分布に従う。よって
+          $$E[N\mid X=«k»]=«k»+E[Y\mid X=«k»]=«k»+E[Y]=«k»+«mu0»=«cond_s»$$
+
+          **答え** $«cond_s»$
+
+          **間違えやすい点** 「孵化率が «h» なので $«k»/«h»=«c_div»$」とするのは、$N$ が与えられたときの $X$ の期待値 $E[X\mid N]=Nh$ を逆向きに使った誤り。
+          $X$ と無関係に $E[N]=«lam»$ と答えるのも、$«k»+«lam»=«c_add»$ とするのも誤り（観測した «k» 個に、平均 «mu0» の見えない卵を足す）。
+
+  - id: s18p03
+    title: 養殖魚の体長と体重のばらつき
+    context: |
+      ある養殖場で育てた魚の体長と体重について調べる。小問ごとに置く仮定が異なるので、それぞれの問題文に従うこと。
+    items:
+      - id: s18p03a
+        chapter: 4
+        terms: [change-of-variables, uniform-distribution, power-transformation]
+        topic: 一様分布に従う体長の3乗に比例する体重の密度関数を変数変換で求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          選別機を通した後の出荷魚の体長 $L$（cm）は区間 $[«a»,«b»]$ の一様分布に従い、体重 $W$（g）は $W=L^3/«c»$ で決まるとする。
+          $W$ の確率密度関数 $f_W(w)$ として正しいものはどれか。
+        choices:
+          - '$f_W(w)=\dfrac{1}{«wr»}\quad(«wa»\le w\le «wb»)$'
+          - '$f_W(w)=\dfrac{\sqrt[3]{«c»}}{30}\,w^{-2/3}\quad(«wa»\le w\le «wb»)$'
+          - '$f_W(w)=\dfrac{\sqrt[3]{«c»}}{10}\,w^{-2/3}\quad(«wa»\le w\le «wb»)$'
+          - '$f_W(w)=\dfrac{3}{1000}\,(«c»w)^{2/3}\quad(«wa»\le w\le «wb»)$'
+          - '$f_W(w)=\dfrac{\sqrt[3]{«c»}}{30}\,w^{-2/3}\quad(«a»\le w\le «b»)$'
+        answer: 1
+        distractors:
+          - 一様分布を変換しても一様分布のままだと考えた
+          - 正解
+          - 微分 dl/dw の係数 1/3 を掛け忘れた
+          - ヤコビアンを逆向き（dw/dl）に掛けた
+          - 台（値のとる範囲）を変換し忘れた
+        explanation: |
+          **方針** $w=l^3/«c»$ は $l>0$ で単調増加。逆変換 $l=(«c»w)^{1/3}$ を代入し、ヤコビアン $|dl/dw|$ を掛ける。台も変換する。
+
+          **途中式** $f_L(l)=1/10$（$«a»\le l\le «b»$）。$l=«c»^{1/3}w^{1/3}$ より $\dfrac{dl}{dw}=\dfrac{«c»^{1/3}}{3}w^{-2/3}$。
+          $$f_W(w)=f_L\big((«c»w)^{1/3}\big)\left|\frac{dl}{dw}\right|=\frac{1}{10}\cdot\frac{\sqrt[3]{«c»}}{3}w^{-2/3}=\frac{\sqrt[3]{«c»}}{30}w^{-2/3}$$
+          台は $l=«a»$ のとき $w=«a»^3/«c»=«wa»$、$l=«b»$ のとき $w=«wb»$。
+          確認：$\displaystyle\int_{«wa»}^{«wb»}\frac{\sqrt[3]{«c»}}{30}w^{-2/3}dw=\frac{\sqrt[3]{«c»}}{10}\left(«wb»^{1/3}-«wa»^{1/3}\right)=\frac{(«c»\times«wb»)^{1/3}-(«c»\times«wa»)^{1/3}}{10}=\frac{«b»-«a»}{10}=1$。
+
+          **答え** $f_W(w)=\dfrac{\sqrt[3]{«c»}}{30}w^{-2/3}$（$«wa»\le w\le «wb»$）
+
+          **間違えやすい点** 非線形な変換では一様分布は一様分布にならない（重い魚ほど密度が低い）。ヤコビアンは「新しい変数で古い変数を微分したもの」$dl/dw$ で、$dw/dl$ を掛けると積分が 1 にならない。台を «a»〜«b» のままにしないこと。
+
+      - id: s18p03b
+        chapter: 6
+        terms: [chi-squared-distribution, normal-distribution]
+        topic: 10尾の体長の不偏分散が母分散の何倍を超える確率が5%になるかをカイ二乗分布で決める
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          別の池の魚の体長は正規分布 $N(\mu,\sigma^2)$ に従うとする。毎月 «n» 尾を無作為に取り上げ、体長の不偏分散 $s^2$（偏差平方和を $n-1$ で割ったもの）を計算する。
+          $P(s^2>k\sigma^2)=0.05$ となる定数 $k$ に最も近い値はどれか。必要なら次のカイ二乗分布の上側パーセント点を使え。
+
+          | 自由度 | 上側 5% 点 | 上側 2.5% 点 |
+          |---|---|---|
+          | 9 | «c95_9» | «c975_9» |
+          | 10 | «c95_10» | «c975_10» |
+        choices:
+          - '$«k_n»$'
+          - '$«k_ok»$'
+          - '$«k_10n»$'
+          - '$«k_10»$'
+          - '$«k_25»$'
+        answer: 1
+        distractors:
+          - 自由度 9 の 5% 点を n=10 で割った
+          - 正解
+          - 自由度を 10 として 10 で割った
+          - 自由度 10 の 5% 点を n−1=9 で割った
+          - 両側と考えて上側 2.5% 点を使った
+        explanation: |
+          **方針** 正規母集団からの標本では $(n-1)s^2/\sigma^2$ が自由度 $n-1$ のカイ二乗分布に従う。
+
+          **途中式**
+          $$P(s^2>k\sigma^2)=P\left(\frac{(n-1)s^2}{\sigma^2}>(n-1)k\right)=0.05\iff(n-1)k=\chi^2_{0.05}(«n1df»)=«c95_9»$$
+          $$k=\frac{«c95_9»}{«n1df»}=«k_ok4»$$
+
+          **答え** $«k_ok»$（不偏分散が母分散の «k_ok» 倍を超えるのは 20 回に 1 回程度）
+
+          **間違えやすい点** 自由度は $n-1=«n1df»$（母平均の代わりに標本平均を使うため 1 減る）。«c95_9» を $n$ で割ると $«k_n»$ になる。片側の確率なので 2.5% 点は使わない。
+
+      - id: s18p03c
+        chapter: 11
+        terms: [f-test-equal-variances, f-distribution, one-sided-two-sided-test]
+        topic: 2つの養殖池の体重のばらつきが等しいかを両側F検定で判定し結論の述べ方を確かめる
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          2 つの池 X、Y で育てた魚の体重は、それぞれ正規分布に従うとする。池 X から «m1» 尾、池 Y から «m2» 尾を無作為に取り上げたところ、体重の不偏分散は $s_X^2=«v1»$、$s_Y^2=«v2»$ だった。
+          帰無仮説 $\sigma_X^2=\sigma_Y^2$、対立仮説 $\sigma_X^2\ne\sigma_Y^2$ の $F$ 検定を有意水準 5%（両側）で行う。
+          $F$ 分布の上側パーセント点は $F_{0.05}(«d1»,«d2»)=«f05»$、$F_{0.025}(«d1»,«d2»)=«f025»$、$F_{0.025}(«d2»,«d1»)=«f025r»$ である（$F(m,n)$ は分子の自由度 $m$、分母の自由度 $n$）。正しいものはどれか。
+        choices:
+          - '$F=«Fsd»$ で、$«f025»$ を超えないので帰無仮説を棄却しない'
+          - '$F=«F»$ で、$«f05»$ を超えるので帰無仮説を棄却する'
+          - '$F=«F»$ で、$«f025»$ を超えないので帰無仮説を棄却しない'
+          - '$F=«F»$ で、$«f025r»$ を超えないので帰無仮説を棄却しない（自由度 $(«d2»,«d1»)$ と比べる）'
+          - '$F=«F»$ で、$«f025»$ を超えないので、2 つの池の母分散は等しいことが示された'
+        answer: 2
+        distractors:
+          - 分散ではなく標準偏差の比を F とした
+          - 両側検定なのに上側 5% 点と比べた
+          - 正解
+          - F 分布の自由度の順番を逆にした
+          - 棄却しないことを、帰無仮説が正しいと示されたと解釈した
+        explanation: |
+          **方針** 大きいほうの不偏分散を分子にして $F=s_X^2/s_Y^2$ とし、自由度（分子 $«m1»-1$、分母 $«m2»-1$）の $F$ 分布の上側 2.5% 点と比べる（両側 5%）。
+
+          **途中式**
+          $$F=\frac{s_X^2}{s_Y^2}=\frac{«v1»}{«v2»}=«F»,\qquad\text{自由度 }(«d1»,«d2»)$$
+          両側 5% なので棄却域は $F>F_{0.025}(«d1»,«d2»)=«f025»$ または $F<1/F_{0.025}(«d2»,«d1»)=1/«f025r»$。$«F»$ はどちらにも入らない。
+
+          **答え** $F=«F»$、$«f025»$ を超えないので棄却しない。
+
+          **間違えやすい点** 両側検定で大きいほうを分子にしたときは上側 2.5% 点と比べる。上側 5% 点 «f05» と比べると棄却してしまう（片側検定の扱い）。
+          自由度の順番は（分子, 分母）。また「棄却しない」は「差があるとはいえない」という意味で、母分散が等しいことを証明したわけではない。
+
+  - id: s18p04
+    title: 人工ふ化の孵化率
+    context: |
+      ある水産試験場で、サケの受精卵 «n» 粒を同じ条件で人工ふ化させたところ、«x» 粒が孵化した。各卵は独立に確率 $p$ で孵化するとみなし、$\hat p=«x»/«n»=«p»$ とする。
+      孵化率のような 0 と 1 に近い割合を扱うため、ロジット $\psi=\log\dfrac{p}{1-p}$（自然対数）の尺度で推測を行う。
+    items:
+      - id: s18p04a
+        chapter: 7
+        terms: [delta-method, logit-logistic-transformation, asymptotic-normality-of-mle]
+        topic: 孵化率の推定値をロジット変換した量の標準誤差をデルタ法で求める
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          $\hat\psi=\log\dfrac{\hat p}{1-\hat p}$ の標準誤差を、デルタ法を使い、未知の $p$ に $\hat p$ を代入して求めよ。
+        answer: «se»
+        tolerance: 0.001
+        answer_format: 小数第3位まで（小数第4位を四捨五入）で答えよ。±0.001 の差まで正解とする。
+        explanation: |
+          **方針** デルタ法：$V[g(\hat p)]\approx\{g'(p)\}^2V[\hat p]$。$g(p)=\log\dfrac{p}{1-p}$、$V[\hat p]=\dfrac{p(1-p)}{n}$。
+
+          **途中式** $g'(p)=\dfrac1p+\dfrac1{1-p}=\dfrac{1}{p(1-p)}$ より
+          $$V[\hat\psi]\approx\frac{1}{\{p(1-p)\}^2}\cdot\frac{p(1-p)}{n}=\frac{1}{np(1-p)}$$
+          $$\mathrm{SE}(\hat\psi)=\frac{1}{\sqrt{«n»\times«p»\times(1-«p»)}}=\frac{1}{\sqrt{«npq»}}=«se4»\cdots$$
+
+          **答え** $«se_s»$
+
+          **間違えやすい点** $\hat p$ 自身の標準誤差 $\sqrt{\hat p(1-\hat p)/n}=«se_p»$ と取り違えないこと。デルタ法では微分 $g'(p)$ を **2 乗**して分散に掛ける。2 乗せずに $V[\hat p]$ に $g'(p)$ を 1 回だけ掛けると $1/n$ になり、その平方根 $1/\sqrt{«n»}=«se_wrong»$ と誤る。
+
+      - id: s18p04b
+        chapter: 9
+        terms: [confidence-interval, ci-proportion, wald-confidence-interval]
+        topic: 孵化率をロジット尺度で作った95%信頼区間を確率の尺度に逆変換する
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          前問の標準誤差 $«se4»$ を使い、ロジット尺度で $\hat\psi\pm1.96\times\mathrm{SE}$ の 95% 信頼区間を作ってから、$p=1/(1+e^{-\psi})$ で孵化率 $p$ の尺度に戻す。
+          区間の端点は小数第 3 位に丸めてから変換するものとし、必要なら $\log 4=«ln4»$ と次の値を使え。
+
+          | $x$ | 0.986 | 1.051 | 1.322 | 1.450 | 1.722 | 1.786 |
+          |---|---|---|---|---|---|---|
+          | $e^{-x}$ | «e1» | «e2» | «e3» | «e4» | «e5» | «e6» |
+
+          得られる孵化率 $p$ の 95% 信頼区間に最も近いものはどれか。
+        choices:
+          - '$«ci_wald»$'
+          - '$«ci_naive»$'
+          - '$«ci_90»$'
+          - '$«ci_ok»$'
+          - '$«ci_flip»$'
+        answer: 3
+        distractors:
+          - ロジット変換をせず、確率の尺度でワルド型の区間を作った
+          - ロジット尺度の区間に p̂ の標準誤差 0.0327 を使った
+          - 1.96 の代わりに 1.645（90% 区間）を使った
+          - 正解
+          - 逆変換を e^{-ψ}/(1+e^{-ψ}) と誤り、1−p の区間を求めた
+        explanation: |
+          **方針** ロジット尺度で対称な区間を作り、単調増加な逆変換 $p=1/(1+e^{-\psi})$ で端点をそれぞれ変換する。
+
+          **途中式** $\hat\psi=\log\dfrac{«p»}{1-«p»}=\log4=«ln4»$、半幅は $1.96\times«se4»=«hw»$。
+          $$\psi\text{ の区間}:(«ln4»-«hw»,\ «ln4»+«hw»)\approx(«lo»,\ «hi»)$$
+          $$p_L=\frac{1}{1+e^{-«lo»}}=\frac{1}{1+«e1»}=«pl»,\qquad p_U=\frac{1}{1+e^{-«hi»}}=\frac{1}{1+«e6»}=«pu»$$
+
+          **答え** $«ci_ok»$（$\hat p=«p»$ に対して左右非対称な区間になる）
+
+          **間違えやすい点** 確率の尺度のワルド区間 $«p»\pm1.96\times«se_p»$ は $«ci_wald»$ で、上下対称になる（割合が 0 や 1 に近いと範囲外にはみ出すこともある）。
+          ロジット尺度の標準誤差は前問の «se4» で、$\hat p$ の標準誤差 «se_p» を使うと区間が狭くなりすぎる。逆変換は $e^{\psi}/(1+e^{\psi})=1/(1+e^{-\psi})$ で、$e^{-\psi}/(1+e^{-\psi})$ は $1-p$ になる。
+
+  - id: s18p05
+    title: 湿地の希少植物の調査
+    context: |
+      ある湖岸の湿地で、希少植物の分布を 1 m 四方の方形区（コドラート）を単位に調べる。
+    items:
+      - id: s18p05a
+        chapter: 5
+        terms: [negative-binomial-distribution, binomial-distribution, geometric-distribution]
+        topic: 希少植物のある方形区を3つ見つけるまでに調べる区画数が5以下である確率を負の二項分布と二項分布の関係で求める
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          各方形区には独立に確率 «th» で希少植物が生えているとする。方形区を 1 つずつ調べ、希少植物のある方形区が «k» つ見つかった時点で調査をやめる。
+          調べた方形区の総数（«k» つ目に見つかった区画を含む）を $Y$ とするとき、$P(Y\le «m»)$ に最も近い値はどれか。
+        choices:
+          - '$«fail5»$'
+          - '$«ge2»$'
+          - '$«only5»$'
+          - '$«eq3»$'
+          - '$«ok»$'
+        answer: 4
+        distractors:
+          - Y を「見つからなかった区画の数」と取り違え、総数 8 以下の確率を求めた
+          - 「5 区画中 2 区画以上」の確率を求めた
+          - P(Y=5) だけを求め、Y=3, 4 を足し忘れた
+          - 「5 区画中ちょうど 3 区画で見つかる」確率 P(B(5,0.2)=3) を求めた
+          - 正解
+        explanation: |
+          **方針** $Y\le «m»$ は「最初の «m» 区画のうち «k» 区画以上で見つかる」ことと同じ。最初の «m» 区画で見つかる数は二項分布 $B(«m»,«th»)$ に従う。
+
+          **途中式**
+          $$P(Y\le «m»)=P(B(«m»,«th»)\ge «k»)=\binom{5}{3}«th»^3«q»^2+\binom{5}{4}«th»^4«q»+«th»^5=«b3»+«b4»+«b5»=«ok5»$$
+          負の二項分布の確率関数 $P(Y=y)=\binom{y-1}{2}«th»^3«q»^{y-3}$ を $y=3,4,5$ で足しても $«f3»+«f4»+«f5»=«ok5»$ と一致する。
+
+          **答え** $«ok»$
+
+          **間違えやすい点** $P(Y=«m»)=«only5»$ だけでは $Y=3,4$ が抜ける。負の二項分布は「成功までの失敗回数」で定義する流儀もあるが、ここでは問題文どおり区画の総数を数える（失敗回数で «m» 以下とすると $«fail5»$ になる）。
+
+      - id: s18p05b
+        chapter: 21
+        terms: [stratified-sampling, proportional-allocation, finite-population-correction]
+        topic: 湿地を沿岸帯と内陸帯に分けた比例配分の層別抽出で1区画あたり平均個体数の標準誤差を有限母集団修正つきで求める
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          別の植物の個体数を調べるため、湿地を沿岸帯（«N1» 区画）と内陸帯（«N2» 区画）の 2 つの層に分け、比例配分でそれぞれ «n1» 区画と «n2» 区画を非復元の単純無作為抽出で選んだ。
+          1 区画あたりの個体数の標本平均と不偏分散は次のとおりだった。
+
+          | 層 | 区画数 $N_h$ | 標本数 $n_h$ | 標本平均 | 不偏分散 |
+          |---|---|---|---|---|
+          | 沿岸帯 | «N1» | «n1» | «y1» | «v1» |
+          | 内陸帯 | «N2» | «n2» | «y2» | «v2» |
+
+          湿地全体の 1 区画あたり平均個体数の層別推定量について、その標準誤差（推定した分散の平方根）を、有限母集団修正を含めて求めよ。
+        answer: «se»
+        tolerance: 0.01
+        answer_format: 小数第2位まで（小数第3位を四捨五入）で答えよ。±0.01 の差まで正解とする。
+        explanation: |
+          **方針** 層別推定量 $\bar y_{st}=\sum W_h\bar y_h$（$W_h=N_h/N$）の分散は、層ごとの単純無作為抽出の分散を $W_h^2$ で重みづけて足したもの：
+          $\hat V(\bar y_{st})=\sum_h W_h^2\left(1-\dfrac{n_h}{N_h}\right)\dfrac{s_h^2}{n_h}$。
+
+          **途中式** $W_1=\dfrac{«N1»}{«N1»+«N2»}=«W1»$、$W_2=«W2»$。推定値は $«W1»\times«y1»+«W2»\times«y2»=«mean»$。
+          抽出率はどちらの層も $«n1»/«N1»=«n2»/«N2»=0.1$ なので、有限母集団修正は $1-0.1=«f1»$。
+          $$\hat V=«W1s»\times«f1»\times\frac{«v1»}{«n1»}+«W2s»\times«f2»\times\frac{«v2»}{«n2»}=«t1»+«t2»=«var»$$
+          $$\mathrm{SE}=\sqrt{«var»}=«se4»\cdots$$
+
+          **答え** $«se»$
+
+          **間違えやすい点** 有限母集団修正 $(1-n_h/N_h)$ を付け忘れると $\sqrt{«var_nf»}\approx«se_nf»$ になる。重みは $W_h$ ではなく $W_h^2$ を掛ける。
+          分散 $«se_var»$ を答えないこと（問うているのは標準誤差）。
+
+  - id: s18p06
+    title: 魚の体長と体重の相対成長
+    context: |
+      ある魚種の «n» 尾について、体重 $W$（g）と体長 $L$（cm）の自然対数をとり、単回帰 $\log W=\alpha+\beta\log L+\varepsilon$（誤差は独立に $N(0,\sigma^2)$）を最小二乗法で当てはめた。
+      傾きの推定値は $\hat\beta=«b»$、その標準誤差は $«se»$ だった。体形が成長によって変わらない（等成長）なら $\beta=«b0»$ である。
+    items:
+      - id: s18p06a
+        chapter: 16
+        terms: [regression-coefficient-t-test, log-transformation, multiple-regression-model]
+        topic: 体長と体重の両対数回帰の傾きが等成長の値3と異なるかをt検定で判定し成長の型を読む
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          帰無仮説 $\beta=«b0»$、対立仮説 $\beta\ne«b0»$ を有意水準 5%（両側）で検定する。
+          $t$ 分布の上側パーセント点は $t_{0.025}(23)=«t23»$、$t_{0.005}(23)=«t23h»$、$t_{0.025}(24)=«t24»$ である。正しいものはどれか。
+        choices:
+          - '$t=«t0»$ で棄却する。等成長ではない'
+          - '$t=«t»$ で、自由度 23 の $«t23»$ を超えるので棄却する。体長が大きい魚ほど体長に比べて重くなる（正の相対成長）'
+          - '$t=«t»$ で、自由度 23 の $«t23»$ を超えるので棄却する。体長が大きい魚ほど体長に比べて軽くなる（負の相対成長）'
+          - '$t=«t_nose»$ で、$«t23»$ を超えないので棄却しない'
+          - '$t=«t»$ で、自由度 23 の上側 0.5% 点 $«t23h»$ を超えないので棄却しない'
+        answer: 1
+        distractors:
+          - 帰無仮説の値 3 を引かず、β=0 の検定統計量を計算した
+          - 正解
+          - 傾きが 3 より大きいことの解釈を逆にした
+          - 標準誤差で割り忘れた
+          - 有意水準 5% の両側検定なのに 0.5% 点（有意水準 1% の両側）と比べた
+        explanation: |
+          **方針** 回帰係数の $t$ 検定は $t=(\hat\beta-\beta_0)/\mathrm{SE}(\hat\beta)$ で、自由度は $n-(\text{推定した回帰係数の数})=«n»-2=«df»$。
+
+          **途中式**
+          $$t=\frac{«b»-«b0»}{«se»}=«t»$$
+          $|t|=«t»>t_{0.025}(«df»)=«t23»$ なので棄却する。
+
+          **答え** 棄却する。$\hat\beta=«b»>«b0»$ なので、$W\propto L^{\beta}$ の指数が 3 より大きく、大きい魚ほど体長の 3 乗に比べて重くなる（正の相対成長）。
+
+          **間違えやすい点** 回帰ソフトの出力にある $t$ 値は $\beta=0$ の検定（$«t0»$）で、等成長かどうかの検定ではない。自由度は切片と傾きの 2 つを推定するので $n-2=«df»$。
+          $\beta>3$ は「同じ割合で体長が伸びると体重はそれ以上の割合で増える」ことを意味する。
+
+      - id: s18p06b
+        chapter: 17
+        terms: [studentized-residual, standardized-residual, outlier-and-influential-point]
+        topic: 両対数回帰の1尾の標準化残差からその1尾を除いた残差分散を使う外部スチューデント化残差を求める
+        level: 応用
+        definition: false
+        type: numeric
+        question: |
+          この回帰で、ある 1 尾の残差を $e_i$、てこ比を $h_{ii}$、全データの残差分散を $s^2=\mathrm{SSE}/(n-2)$ とする。
+          標準化残差 $r_i=\dfrac{e_i}{s\sqrt{1-h_{ii}}}$ は $«rr»$ だった。この 1 尾を除いて当てはめた回帰の残差平方和は $\mathrm{SSE}_{(i)}=\mathrm{SSE}-\dfrac{e_i^2}{1-h_{ii}}$ で与えられる。
+          $s_{(i)}^2=\mathrm{SSE}_{(i)}/(n-3)$ として、外部スチューデント化残差 $t_i=\dfrac{e_i}{s_{(i)}\sqrt{1-h_{ii}}}$ を求めよ。
+        answer: «ext»
+        tolerance: 0.01
+        answer_format: 小数第2位まで（小数第3位を四捨五入）で答えよ。±0.01 の差まで正解とする。
+        explanation: |
+          **方針** $s_{(i)}^2$ を $s^2$ と $r_i$ で表すと、$t_i=r_i\cdot s/s_{(i)}$ が $r_i$ と $n$ だけで書ける。
+
+          **途中式** $\dfrac{e_i^2}{1-h_{ii}}=r_i^2s^2$ と $\mathrm{SSE}=(n-2)s^2$ より
+          $$s_{(i)}^2=\frac{(n-2)s^2-r_i^2s^2}{n-3}=s^2\cdot\frac{n-2-r_i^2}{n-3}$$
+          $$t_i=r_i\frac{s}{s_{(i)}}=r_i\sqrt{\frac{n-3}{n-2-r_i^2}}=«rr»\times\sqrt{\frac{«np1»}{«np»-«rr2»}}=«rr»\times\sqrt{\frac{«np1»}{«den»}}=«rr»\times«sq»=«ext4»\cdots$$
+
+          **答え** $«ext_s»$（この 1 尾は自由度 «np1» の $t$ 分布で見ても外れ値の候補になる）
+
+          **間違えやすい点** 外れ値の候補を含めたままの $s$ では、その観測の影響で $s$ が大きくなり、残差が小さく見える。そのため外部スチューデント化残差は標準化残差 «rr» より大きくなる。
+          分子と分母の自由度を取り違えて $r_i\sqrt{(n-2)/(n-3-r_i^2)}$ とすると $«ext_w»$ になる。
+
+  - id: s18p07
+    title: 湖ごとの寄生虫の感染
+    context: |
+      2 つの湖 A、B で、ある魚種の寄生虫の感染を調べた。体の大きさで大型・小型に分けた結果は次のとおりである。
+
+      | 湖 | 体の大きさ | 感染あり | 感染なし |
+      |---|---|---|---|
+      | A | 大型 | «A0» | «A1» |
+      | A | 小型 | «A2» | «A3» |
+      | B | 大型 | «B0» | «B1» |
+      | B | 小型 | «B2» | «B3» |
+
+      湖 A の調査数は «nA» 尾、湖 B は «nB» 尾である。
+    items:
+      - id: s18p07a
+        chapter: 28
+        terms: [mantel-haenszel-estimator, three-way-table, odds-ratio-interval]
+        topic: 湖ごとに層別した2×2表から体の大きさと寄生虫感染の共通オッズ比をマンテル・ヘンツェル推定量で求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          湖による違いを調整した、大型の小型に対する感染のオッズ比を、マンテル・ヘンツェル推定量で求める。最も近い値はどれか。
+        choices:
+          - '$«mh»$'
+          - '$«nos»$'
+          - '$«orP»$'
+          - '$«orA»$'
+          - '$«orM»$'
+        answer: 0
+        distractors:
+          - 正解
+          - 各湖の ad と bc を層の大きさ n で割らずに足し合わせた
+          - 2 つの湖を合算した 1 つの表からオッズ比を求めた（層別の調整をしていない）
+          - 湖 A だけのオッズ比を答えた
+          - 湖ごとのオッズ比 2.25 と 1.714 を単純平均した
+        explanation: |
+          **方針** マンテル・ヘンツェル推定量は $\hat\psi_{MH}=\dfrac{\sum_k a_kd_k/n_k}{\sum_k b_kc_k/n_k}$（$a$：大型・感染あり、$b$：大型・感染なし、$c$：小型・感染あり、$d$：小型・感染なし、$n_k$：層の総数）。
+
+          **途中式**
+          湖 A：$a d/n=«A0»\times«A3»/«nA»=«adA»$、$b c/n=«A1»\times«A2»/«nA»=«bcA»$。
+          湖 B：$a d/n=«B0»\times«B3»/«nB»=«adB»$、$b c/n=«B1»\times«B2»/«nB»=«bcB»$。
+          $$\hat\psi_{MH}=\frac{«adA»+«adB»}{«bcA»+«bcB»}=\frac{«sad»}{«sbc»}=«mh4»$$
+
+          **答え** $«mh»$（湖ごとのオッズ比 «orA» と «orB» の間に入る）
+
+          **間違えやすい点** 2 つの湖を合算した表（大型 «P0»/«P1»、小型 «P2»/«P3»）のオッズ比 «orP» は、湖によって大型の割合と感染率がともに違うことによる交絡を含む。
+          各湖の項は層の大きさ $n_k$ で割ってから足す（割らないと $«nos»$）。単純平均 $«orM»$ はマンテル・ヘンツェル推定量ではない。
+
+      - id: s18p07b
+        chapter: 18
+        terms: [logistic-regression, odds-and-odds-ratio, logit-logistic-transformation]
+        topic: 体長を説明変数とする感染のロジスティック回帰で感染確率が半分になる体長とオッズ比の解釈を読む
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          湖 A の魚の体長 $x$（cm）を説明変数として、感染の有無をロジスティック回帰に当てはめたところ
+          $$\log\frac{p(x)}{1-p(x)}=«b0»+«b1»x$$
+          となった（$p(x)$ は体長 $x$ の魚の感染確率）。必要なら $e^{1.2}=«e12»$、$e^{-1.2}=«em12»$ を使え。正しいものはどれか。
+        choices:
+          - '感染確率が 0.5 になる体長は «x50» cm で、体長が 10 cm 大きいと感染確率が «e12» 倍になる'
+          - '感染確率が 0.5 になる体長は «x50» cm で、体長が 10 cm 大きいと感染のオッズが «e12» 倍になる'
+          - '感染確率が 0.5 になる体長は «x50» cm で、体長が 10 cm 大きいと感染のオッズが «b10» 倍になる'
+          - '体長 «x50» cm 付近では、体長が 1 cm 大きいと感染確率がおよそ «b1» 増える'
+          - '体長 20 cm の魚の感染確率は $e^{«lp20»}=«em12»$ である'
+        answer: 1
+        distractors:
+          - オッズの比を確率の比と取り違えた
+          - 正解
+          - 係数の指数をとり忘れ、10β=1.2 をオッズ比とした
+          - 確率の傾き β p(1−p)=0.03 の p(1−p) を掛け忘れた
+          - オッズ e^{-1.2} を確率と取り違えた（正しくは 0.3012/1.3012=0.231）
+        explanation: |
+          **方針** ロジット $=«b0»+«b1»x=0$ のとき $p=0.5$。$x$ が $\Delta$ 増えるとロジット（対数オッズ）が $«b1»\Delta$ 増えるので、オッズは $e^{«b1»\Delta}$ 倍になる。
+
+          **途中式**
+          $p=0.5\iff«b0»+«b1»x=0\iff x=«mb0»/«b1»=«x50»$。
+          10 cm 大きいとき、オッズ比は $e^{«b1»\times10}=e^{1.2}=«e12»$。
+          参考：体長 20 cm ではロジット $=«b0»+«b1»\times20=«lp20»$、オッズ $e^{-1.2}=«em12»$、確率 $«em12»/(1+«em12»)=«p20»$。
+          $x=«x50»$ 付近での確率の傾きは $\dfrac{dp}{dx}=«b1»\,p(1-p)=«b1»\times0.25=«slope»$。
+
+          **答え** 感染確率 0.5 の体長は «x50» cm、10 cm 大きいとオッズが «e12» 倍。
+
+          **間違えやすい点** $e^{\beta}$ は**オッズ**の比で、確率の比ではない（確率は 1 を超えられないので、一定の倍率では増えない）。オッズ比は係数そのもの（«b10»）ではなく指数をとったもの。
+          確率の変化量は $\beta p(1-p)$ で、$p=0.5$ でも $\beta/4=«slope»$ にとどまる。オッズ $e^{-1.2}$ と確率 «p20» を混同しないこと。
+
+  - id: s18p08
+    title: 3種類の餌による成長の比較
+    context: |
+      養殖魚の稚魚を 3 群に «n» 尾ずつ無作為に分け、餌 A、B、C を 8 週間与えて体重の増加量（g）を測った。各群の平均は A：«mA»、B：«mB»、C：«mC» で、一元配置分散分析の誤差の平均平方は $\mathrm{MSE}=«mse»$（自由度 «dfe»）だった。
+    items:
+      - id: s18p08a
+        chapter: 20
+        terms: [tukey-multiple-comparison, studentized-range-distribution, one-way-anova]
+        topic: 3種類の餌の平均増加量の全ての対をテューキーの方法で比べ臨界差と有意な対を判定する
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          3 つの平均のすべての対を、テューキーの方法（全体の有意水準 5%）で比べる。
+          スチューデント化された範囲の分布の上側 5% 点は $q_{0.05}(3,«dfe»)=«q»$（群の数 3、誤差の自由度 «dfe»）、$t$ 分布の上側 2.5% 点は $t_{0.025}(«dfe»)=«t»$ である。
+          臨界差（平均の差がこれを超えれば有意とする値）と、有意な差のある対の組合せとして正しいものはどれか。
+        choices:
+          - '臨界差 «w2»：A と C の 1 対だけが有意'
+          - '臨界差 «w3»：有意な対はない'
+          - '臨界差 «w4»：A と B、A と C の 2 対が有意'
+          - '臨界差 «lsd»：A と B、A と C の 2 対が有意'
+          - '臨界差 «hsd»：A と C の 1 対だけが有意'
+        answer: 4
+        distractors:
+          - q に √(2MSE/n) を掛けた（q を使うときは √(MSE/n)）
+          - MSE を n で割り忘れた（q√MSE）
+          - q√(MSE/n) をさらに √2 で割った
+          - 多重性を考えず、t 分布による最小有意差 t√(2MSE/n) を使った
+          - 正解
+        explanation: |
+          **方針** 各群の大きさが等しいとき、テューキーの方法の臨界差は $q_{0.05}(k,\nu)\sqrt{\mathrm{MSE}/n}$。平均の差の絶対値がこれを超える対を有意とする。
+
+          **途中式**
+          $$\text{臨界差}=«q»\times\sqrt{\frac{«mse»}{«n»}}=«q»\times«sq»=«hsd»$$
+          平均の差は $|A-B|=«dAB»$、$|A-C|=«dAC»$、$|B-C|=«dBC»$。«hsd» を超えるのは $A$ と $C$ だけ。
+
+          **答え** 臨界差 «hsd»、有意なのは A と C の対だけ。
+
+          **間違えやすい点** 3 対を $t$ 検定で繰り返す最小有意差 $«t»\times\sqrt{2\times«mse»/«n»}=«lsd»$ は全体の有意水準を 5% に保てず、A と B の差 «dAB» まで有意にしてしまう。
+          スチューデント化された範囲 $q$ は「平均の最大と最小の差 ÷ 平均の標準誤差 $\sqrt{\mathrm{MSE}/n}$」の分布なので、$\sqrt{2\mathrm{MSE}/n}$ と組み合わせないこと（$t$ 型で書くなら $q/\sqrt2$ と $\sqrt{2\mathrm{MSE}/n}$ の組合せになり、同じ «hsd» になる）。
+
+  - id: s18p09
+    title: 給餌量と成長の因果効果
+    context: |
+      多数の養殖池のデータから、1 日の給餌量 $X$（kg）が 3 か月間の体重増加 $Y$（kg、池の平均）に与える因果効果を知りたい。関係する変数とその因果関係は次の有向非巡回グラフで表せるとする。
+
+      - $Z$：給餌機の型（新型か旧型かを、くじで池に割り当てた）
+      - $W$：水温、$A$：藻類の量、$M$：残餌の量、$K$：管理者の点検回数
+      - 矢印：$Z\to X$、$W\to X$、$W\to Y$、$W\to A$、$A\to Y$、$X\to Y$、$X\to M$、$M\to Y$、$X\to K$、$Y\to K$
+
+      ここで「因果効果」は $X$ から $Y$ へのすべての経路（$M$ を通るものも含む）による効果とし、変数間の関係は線形とみなす。
+    items:
+      - id: s18p09a
+        chapter: 19
+        terms: [instrumental-variable-method, endogeneity, omitted-variable-bias]
+        topic: くじで割り当てた給餌機の型を操作変数にして水温が未測定のときの給餌量の効果をワルド推定量で求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          水温 $W$ を測っていなかった年のデータでは、$Y$ を $X$ に単回帰した傾きは «ols» だった。一方、給餌機の型ごとの平均は次のとおりだった。
+
+          | 給餌機 | $X$ の平均 | $Y$ の平均 |
+          |---|---|---|
+          | 新型（$Z=1$） | «x1» | «y1» |
+          | 旧型（$Z=0$） | «x0» | «y0» |
+
+          $Z$ を操作変数として推定した、給餌量 1 kg あたりの体重増加の効果に最も近い値はどれか。
+        choices:
+          - '$«iv»$'
+          - '$«red»$'
+          - '$«inv»$'
+          - '$«per»$'
+          - '$«ols»$'
+        answer: 0
+        distractors:
+          - 正解
+          - Z の Y への効果（誘導形）だけを答え、Z の X への効果で割らなかった
+          - 比の分子と分母を逆にした
+          - Y の差を新型の X の平均で割った
+          - 水温による交絡を含む単回帰の傾きをそのまま使った
+        explanation: |
+          **方針** $Z$ はくじで割り当てたので $W$ と独立で、$Y$ には $X$ を通してだけ影響する（グラフで $Z$ から出る矢印は $Z\to X$ だけ）。このとき 2 値の操作変数による推定量（ワルド推定量）は
+          $\hat\beta_{IV}=\dfrac{\bar Y_{Z=1}-\bar Y_{Z=0}}{\bar X_{Z=1}-\bar X_{Z=0}}$。
+
+          **途中式**
+          $$\hat\beta_{IV}=\frac{«y1»-«y0»}{«x1»-«x0»}=\frac{«dy»}{«dx»}=«iv»$$
+
+          **答え** $«iv»$
+
+          **間違えやすい点** 単回帰の傾き «ols» は $X\leftarrow W\to Y$ の経路を通る見かけの関連を含む（水温が高い池ほど給餌量も成長も大きい）ので、効果を過大に見積もる。
+          $Z$ の $Y$ への効果 «dy» は「給餌機を変えた効果」で、給餌量 1 kg あたりにするには $Z$ が $X$ を動かした量 «dx» で割る。
+
+      - id: s18p09b
+        chapter: 33
+        terms: [backdoor-criterion, causal-effect, d-separation]
+        topic: 給餌量と成長の有向非巡回グラフでバックドア基準を満たす調整変数の組を選ぶ（中間変数と合流点の子孫を除く）
+        level: 応用
+        definition: false
+        type: choice
+        question: |
+          水温 $W$、藻類 $A$、残餌 $M$、点検回数 $K$、給餌機 $Z$ がすべて測定できる年のデータで、$X$ から $Y$ への因果効果をバックドア調整で推定したい。
+          次のうち、$(X,Y)$ についてバックドア基準を満たす変数の集合はどれか。
+        choices:
+          - '$\{Z\}$'
+          - '$\{A\}$'
+          - '$\{W\}$'
+          - '$\{W,M\}$'
+          - '$\{W,K\}$'
+        answer: 2
+        distractors:
+          - Z は X の原因だがバックドア経路 X←W→Y を遮断しない
+          - A は X←W→A→Y は遮断するが X←W→Y を遮断しない
+          - 正解
+          - M は X の子孫（中間変数）で、調整すると M を通る効果を取り除いてしまう
+          - K は X と Y の両方を親にもつ合流点で X の子孫。調整すると X と Y の間に見かけの関連が生じる
+        explanation: |
+          **方針** バックドア基準：(1) 集合のどの変数も $X$ の子孫でない、(2) $X$ に入る矢印から始まる $X$ と $Y$ の間のすべての経路（バックドア経路）を遮断する。
+
+          **途中式** $X$ に入る矢印は $Z\to X$ と $W\to X$。バックドア経路は
+          - $X\leftarrow W\to Y$
+          - $X\leftarrow W\to A\to Y$
+
+          （$Z$ からは $X$ 以外への矢印がないので、$Z$ を通るバックドア経路はない。）$\{W\}$ は両方の経路の分岐点 $W$ を条件づけるので両方とも遮断し、$W$ は $X$ の子孫でもない。
+          - $\{Z\}$：どちらの経路も遮断しない。
+          - $\{A\}$：$X\leftarrow W\to Y$ が開いたまま。
+          - $\{W,M\}$、$\{W,K\}$：$M$ と $K$ は $X$ の子孫なので条件 (1) を満たさない。
+
+          **答え** $\{W\}$
+
+          **間違えやすい点** 「関係する変数はできるだけ調整したほうがよい」は誤り。中間変数 $M$ を調整すると $X\to M\to Y$ の効果が消え、合流点 $K$（$X\to K\leftarrow Y$）を調整すると関連が新しく生じる。
+          なお $\{W,Z\}$ や $\{W,A\}$ もバックドア基準を満たすが、選択肢にはない。
+
+  - id: s18p10
+    title: 湖のプランクトン群集
+    context: |
+      ある地域の 8 つの湖で、夏の表層水温（℃）と動物プランクトンの種数を調べた。
+
+      | 湖 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+      |---|---|---|---|---|---|---|---|---|
+      | 水温 | «t0» | «t1» | «t2» | «t3» | «t4» | «t5» | «t6» | «t7» |
+      | 種数 | «s0» | «s1» | «s2» | «s3» | «s4» | «s5» | «s6» | «s7» |
+    items:
+      - id: s18p10a
+        chapter: 13
+        terms: [spearman-rank-correlation, kendall-rank-correlation, rank-and-ties]
+        topic: 8つの湖の水温と動物プランクトン種数の順位からスピアマンの順位相関係数を求める
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          水温と種数のスピアマンの順位相関係数に最も近い値はどれか（同順位はない）。
+        choices:
+          - '$«r_inv»$'
+          - '$«tau»$'
+          - '$«r_den»$'
+          - '$«rho»$'
+          - '$«r_no6»$'
+        answer: 3
+        distractors:
+          - 1 から引くのを忘れ、6Σd²/(n(n²−1)) を答えた
+          - ケンドールの順位相関係数を計算した
+          - 分母を n²(n−1) とした
+          - 正解
+          - 係数 6 を掛け忘れた
+        explanation: |
+          **方針** それぞれの変数を小さい順に順位に直し、順位の差 $d_i$ から $r_s=1-\dfrac{6\sum d_i^2}{n(n^2-1)}$ を計算する（同順位がないとき、順位どうしのピアソン相関係数と一致する）。
+
+          **途中式**
+
+          | 湖 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+          |---|---|---|---|---|---|---|---|---|
+          | 水温の順位 | «rt0» | «rt1» | «rt2» | «rt3» | «rt4» | «rt5» | «rt6» | «rt7» |
+          | 種数の順位 | «rs0» | «rs1» | «rs2» | «rs3» | «rs4» | «rs5» | «rs6» | «rs7» |
+
+          $\sum d_i^2=«d2list»=«sd2»$。
+          $$r_s=1-\frac{6\times«sd2»}{«n»\times(«n»^2-1)}=1-\frac{«num»}{«den»}=«rho4»$$
+
+          **答え** $«rho»$
+
+          **間違えやすい点** 分母は $n(n^2-1)=«den»$（$n^2(n-1)$ とすると $«r_den»$）。ケンドールの $\tau$（一致対 «conc»、不一致対 «disc» から $«tau»$）とは別の量。
+
+      - id: s18p10b
+        chapter: 24
+        terms: [average-linkage, hierarchical-clustering, single-linkage, complete-linkage]
+        topic: 5つの湖のプランクトン群集の非類似度から群平均法で階層的クラスタリングを行い最後の結合距離を求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          このうち 5 つの湖 P、Q、R、S、T のプランクトン群集の種組成から、湖どうしの非類似度を次のように定めた。
+
+          | | P | Q | R | S | T |
+          |---|---|---|---|---|---|
+          | P | 0 | «AB» | «AC» | «AD» | «AE» |
+          | Q | «AB» | 0 | «BC» | «BD» | «BE» |
+          | R | «AC» | «BC» | 0 | «CD» | «CE» |
+          | S | «AD» | «BD» | «CD» | 0 | «DE» |
+          | T | «AE» | «BE» | «CE» | «DE» | 0 |
+
+          群平均法（2 つのクラスターの距離を、異なるクラスターに属する湖のすべての組の非類似度の平均とする）で階層的クラスタリングを行う。最後（4 回目）の結合が起こる距離はどれか。
+        choices:
+          - '$«single»$'
+          - '$«wpgma»$'
+          - '$«fin»$'
+          - '$«ab_de»$'
+          - '$«complete»$'
+        answer: 2
+        distractors:
+          - 最短距離法で計算した
+          - クラスター距離の平均を、湖の数で重みづけせずに単純平均した（重み付き群平均法）
+          - 正解
+          - 2 回目の結合の後、{P,Q} と {S,T} を先に結合すると誤った
+          - 最長距離法で計算した
+        explanation: |
+          **方針** 最も近い 2 つのクラスターを結合し、新しいクラスターとほかのクラスターの距離を「すべての組の非類似度の平均」で計算し直すことを繰り返す。
+
+          **途中式**
+          1 回目：最小は $d(P,Q)=«AB»$ → $\{P,Q\}$。
+          $d(\{P,Q\},R)=(«AC»+«BC»)/2=«ab_c»$、$d(\{P,Q\},S)=«ab_d»$、$d(\{P,Q\},T)=«ab_e»$。
+          2 回目：残りの最小は $d(S,T)=«DE»$ → $\{S,T\}$。
+          $d(\{P,Q\},\{S,T\})=(«AD»+«AE»+«BD»+«BE»)/4=«ab_de»$、$d(R,\{S,T\})=(«CD»+«CE»)/2=«c_de»$。
+          3 回目：最小は $d(R,\{S,T\})=«c_de»$ → $\{R,S,T\}$。
+          4 回目：$\{P,Q\}$ と $\{R,S,T\}$ の 6 組の平均
+          $$\frac{«AC»+«BC»+«AD»+«AE»+«BD»+«BE»}{6}=\frac{«fin_sum»}{6}=«fin»$$
+
+          **答え** $«fin»$
+
+          **間違えやすい点** 3 回目の後に $\{P,Q\}$ と $\{R,S,T\}$ の距離を、$d(\{P,Q\},R)=«ab_c»$ と $d(\{P,Q\},\{S,T\})=«ab_de»$ の単純平均で $«wpgma»$ とするのは誤り。群平均法では、湖 1 つの $R$ と 2 つの $\{S,T\}$ を個体数で重みづける（$(1\times«ab_c»+2\times«ab_de»)/3=«fin»$）。
+          最短距離法なら $«single»$、最長距離法なら $«complete»$ になる。
+
+  - id: s18p11
+    title: 二枚貝の近縁種の形態計測
+    context: |
+      外見がよく似た二枚貝の近縁種 1、2 を、殻の計測値で見分けたい。標本から求めた殻長 $x_1$（mm）と殻高 $x_2$（mm）の平均ベクトルは、種 1 が $(«m11»,«m12»)$、種 2 が $(«m21»,«m22»)$ で、2 種に共通の（プールした）分散共分散行列は
+      $$S=\begin{pmatrix}«s11»&«s12»\\«s12»&«s22»\end{pmatrix}$$
+      だった。
+    items:
+      - id: s18p11a
+        chapter: 23
+        terms: [fisher-linear-discriminant-function, linear-discriminant-analysis, mahalanobis-distance]
+        topic: 二枚貝2種の殻長と殻高の平均と共通の分散共分散行列から線形判別関数の値を計算して新しい個体を判別する
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          線形判別関数 $z(\boldsymbol x)=(\bar{\boldsymbol x}_1-\bar{\boldsymbol x}_2)^\top S^{-1}\left(\boldsymbol x-\dfrac{\bar{\boldsymbol x}_1+\bar{\boldsymbol x}_2}{2}\right)$ を使い、$z>0$ なら種 1、$z<0$ なら種 2 と判別する（2 種の事前確率と誤判別の損失は等しいとする）。
+          殻長 «x1» mm、殻高 «x2» mm の個体について正しいものはどれか。
+        choices:
+          - '$z=«zS»$ で正なので種 1'
+          - '$z=«zE»$ で正なので種 1'
+          - '$z=«z»$ で負なので種 2'
+          - '$z=«z»$ で負なので種 1'
+          - '$z=0.50$ で正なので種 1'
+        answer: 2
+        distractors:
+          - S の逆行列ではなく S そのものを掛けた
+          - S^{-1} を掛けず、平均の差ベクトルとの内積（ユークリッド距離の比較と同じ）で判別した
+          - 正解
+          - 符号と判別先の対応を逆にした
+          - x と中点の差の向きを逆にして符号を誤った
+        explanation: |
+          **方針** 係数ベクトル $\boldsymbol w=S^{-1}(\bar{\boldsymbol x}_1-\bar{\boldsymbol x}_2)$ を求め、個体と 2 つの平均の中点との差との内積をとる。
+
+          **途中式** $\det S=«s11»\times«s22»-«s12»^2=«det»$、$S^{-1}=\dfrac{1}{«det»}\begin{pmatrix}«s22»&-«s12»\\-«s12»&«s11»\end{pmatrix}$。
+          平均の差は $(«d1»,«d2»)$ なので
+          $$\boldsymbol w=\frac{1}{«det»}\begin{pmatrix}«s22»\times«d1»-«s12»\times«d2»\\-«s12»\times«d1»+«s11»\times«d2»\end{pmatrix}=\begin{pmatrix}«w1»\\«w2»\end{pmatrix}$$
+          中点は $(«mid1»,«mid2»)$、個体との差は $(«dx1»,«dx2»)$。
+          $$z=«w1»\times«dx1»+«w2»\times(«dx2»)=«z»<0$$
+
+          **答え** $z=«z»$ で種 2 と判別する。
+
+          **間違えやすい点** $S^{-1}$ を掛けずに平均の差 $(«d1»,«d2»)$ との内積をとると $«zE»>0$ で種 1 になる（相関とばらつきの違いを無視した判別）。$S$ を掛けると $(«Sd1»,«Sd2»)$ との内積で $«zS»$ になる。
+          殻高のばらつきが大きいことと殻長・殻高の正の相関を考えると、この個体の殻高の低さが種 2 の特徴として強く効く。
+
+      - id: s18p11b
+        chapter: 25
+        terms: [factor-score, factor-analysis-model, factor-loading]
+        topic: 殻の3つの計測値の1因子モデルで回帰法（トムソン法）による個体の因子得点を求める
+        level: 応用
+        definition: false
+        type: choice
+        question: |
+          種 1 の個体の殻長・殻高・殻幅をそれぞれ標準化した値 $x_1,x_2,x_3$ に、1 因子モデル
+          $$x_j=\lambda_jf+e_j\quad(j=1,2,3),\qquad V[f]=1,\ V[e_j]=\psi_j,\ f\text{ と }e_j\text{ は互いに独立}$$
+          を当てはめたところ、因子負荷量は $\lambda=(«l1»,«l2»,«l3»)$、独自分散は $\psi=(«p1»,«p2»,«p3»)$ だった。$f$ と $e_j$ はすべて正規分布に従うとする。
+          標準化した計測値が $(«x1f»,«x2f»,«x3f»)$ の個体について、回帰法（トムソン法）による因子得点 $\hat f=E[f\mid\boldsymbol x]$ に最も近い値はどれか。
+          なお $\boldsymbol\lambda^\top(\boldsymbol\lambda\boldsymbol\lambda^\top+\Psi)^{-1}=\dfrac{\boldsymbol\lambda^\top\Psi^{-1}}{1+\boldsymbol\lambda^\top\Psi^{-1}\boldsymbol\lambda}$ が成り立つ（$\Psi$ は $\psi_j$ を対角に並べた行列）。
+        choices:
+          - '$«bart»$'
+          - '$«lx»$'
+          - '$«mean»$'
+          - '$«lsum»$'
+          - '$«reg»$'
+        answer: 4
+        distractors:
+          - 分母の 1 を忘れた（バートレット法の因子得点）
+          - 負荷量で重みづけた和 λ'x をそのまま答えた
+          - 3 つの計測値を単純平均した
+          - λ'x/λ'λ（独自分散の違いを無視した最小二乗）を計算した
+          - 正解
+        explanation: |
+          **方針** $(f,\boldsymbol x)$ は同時正規分布で、$\mathrm{Cov}(f,\boldsymbol x)=\boldsymbol\lambda^\top$、$V[\boldsymbol x]=\boldsymbol\lambda\boldsymbol\lambda^\top+\Psi$。条件付き期待値は $E[f\mid\boldsymbol x]=\boldsymbol\lambda^\top(\boldsymbol\lambda\boldsymbol\lambda^\top+\Psi)^{-1}\boldsymbol x$ で、与えられた等式を使うと
+          $$\hat f=\frac{\sum_j(\lambda_j/\psi_j)x_j}{1+\sum_j\lambda_j^2/\psi_j}$$
+
+          **途中式** $\lambda_j/\psi_j=(«lp1»,«lp2»,«lp3»)$、$\lambda_j^2/\psi_j=(«q1»,«q2»,«q3»)$。
+          $$\text{分子}=«lp1»\times«x1f»+«lp2»\times«x2f»+«lp3»\times(«x3f»)=«num»$$
+          $$\text{分母}=1+«q1»+«q2»+«q3»=«den1»$$
+          $$\hat f=\frac{«num»}{«den1»}=«reg4»$$
+
+          **答え** $«reg»$
+
+          **間違えやすい点** 分母の 1 を落とすとバートレット法（重み付き最小二乗）の得点 $«num»/«den»=«bart»$ になる。回帰法は事前の $f\sim N(0,1)$ の分だけ 0 の方向に縮む。
+          独自分散の小さい（因子をよく反映する）殻長に大きな重みがかかる点も、単純平均 «mean» や $\boldsymbol\lambda^\top\boldsymbol x=«lx»$ とは異なる。
+
+  - id: s18p12
+    title: 再導入した個体群の存続
+    context: |
+      絶滅のおそれのある小型哺乳類を、ある島に «i0» 頭再導入した。単純なモデルとして、個体数は 1 年ごとに独立に、確率 «pu» で 1 頭増え、確率 «qd» で 1 頭減るとする。
+      個体数が 0 になったら絶滅、«N» 頭に達したら「定着した」として観察を終える。
+    items:
+      - id: s18p12a
+        chapter: 15
+        terms: [random-walk, gambler-ruin-problem, absorbing-state]
+        topic: 個体数が1頭ずつ増減するランダムウォークで定着より先に絶滅する確率をギャンブラーの破産問題として求める
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          個体数が «N» 頭に達する前に絶滅する確率を求めよ。
+        answer: «ruin»
+        tolerance: 0.001
+        answer_format: 小数第3位まで（小数第4位を四捨五入）で答えよ。±0.001 の差まで正解とする。
+        explanation: |
+          **方針** 個体数 $i$ から始めて先に 0 に達する確率を $u_i$ とすると、1 年目で分けて $u_i=«pu»\,u_{i+1}+«qd»\,u_{i-1}$、$u_0=1$、$u_{«N»}=0$。これはギャンブラーの破産問題と同じで、$r=q/p$ とすると
+          $$u_i=\frac{r^i-r^{N}}{1-r^{N}}$$
+
+          **途中式** $r=«qd»/«pu»=2/3$、$r^{«i0»}=«r3»$、$r^{«N»}=«r8»$。
+          $$u_{«i0»}=\frac{«r3»-«r8»}{1-«r8»}=\frac{«num»}{«den»}=«ruin4»\cdots$$
+
+          **答え** $«ruin_s»$（定着する確率は $«succ»$）
+
+          **間違えやすい点** 上限の «N» 頭を考えない（いくらでも増えられる）場合の絶滅確率 $r^{«i0»}=«ruin_inf»$ とは異なる。$r$ は（減る確率）/（増える確率）で、逆にすると 1 を超えて確率にならない。
+
+      - id: s18p12b
+        chapter: 32
+        terms: [box-muller-method, uniform-random-number, normal-distribution]
+        topic: 個体群シミュレーションの環境変動をボックス・ミュラー法で2つの一様乱数から正規乱数に変換して作る
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          より現実的なシミュレーションでは、年ごとの増加率を $R=«mu»+«sg»Z$（$Z$ は標準正規乱数）とする。区間 $(0,1)$ の一様乱数 $U_1=«u1»$、$U_2=«u2»$ から、ボックス・ミュラー法
+          $$Z=\sqrt{-2\log U_1}\,\cos(2\pi U_2)\quad(\log\text{ は自然対数})$$
+          で $Z$ を作る。必要なら $\log «u1»=«ln1»$、$\log «u2»=«ln2»$、$\cos(0.4\pi)=«c1»$、$\sin(0.4\pi)=«s1»$、$\cos(0.6\pi)=«c2»$ を使え。
+          得られる増加率 $R$ に最も近い値はどれか。
+        choices:
+          - '$«g»$'
+          - '$«g_nosq»$'
+          - '$«g_sin»$'
+          - '$«g_swap»$'
+          - '$«g_no2»$'
+        answer: 0
+        distractors:
+          - 正解
+          - 平方根をとり忘れた
+          - cos の代わりに sin を使った（もう一方の正規乱数）
+          - U1 と U2 の役割を入れ替えた
+          - −2 log U1 の 2 を落とした
+        explanation: |
+          **方針** 式どおり $-2\log U_1$ の平方根と $\cos(2\pi U_2)$ を掛けて $Z$ を作り、$R=«mu»+«sg»Z$ に代入する。
+
+          **途中式** $-2\log «u1»=-2\times(«ln1»)=«m2ln»$、$\sqrt{«m2ln»}=«sqv»$、$2\pi\times«u2»=0.4\pi$ より
+          $$Z=«sqv»\times«c1»=«z»,\qquad R=«mu»+«sg»\times«z»=«g5»$$
+
+          **答え** $«g»$
+
+          **間違えやすい点** $U_1$ は半径（$\sqrt{-2\log U_1}$）、$U_2$ は角度（$2\pi U_2$）に使う。入れ替えると $«g_swap»$ になる。
+          $\sin$ を使った $\sqrt{-2\log U_1}\sin(2\pi U_2)$ ももう 1 つの独立な標準正規乱数だが、問題で指定した式ではない（$«g_sin»$）。

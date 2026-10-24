@@ -1,0 +1,102 @@
+{
+ "s05p01a": {
+  "ok": true,
+  "hash": "3c04e5664529b137"
+ },
+ "s05p01b": {
+  "ok": true,
+  "hash": "940224feac6a81a7"
+ },
+ "s05p01c": {
+  "ok": true,
+  "hash": "210cd12b3c2e3414"
+ },
+ "s05p02a": {
+  "ok": true,
+  "hash": "d39cb78780d25dcd"
+ },
+ "s05p02b": {
+  "ok": true,
+  "hash": "9b906ee1d24939a7"
+ },
+ "s05p03a": {
+  "ok": true,
+  "hash": "c56b39fc71646d85"
+ },
+ "s05p03b": {
+  "ok": true,
+  "hash": "b07ae9d26a6508eb"
+ },
+ "s05p04a": {
+  "ok": true,
+  "hash": "eb08e534fe885149"
+ },
+ "s05p04b": {
+  "ok": true,
+  "hash": "741bdc21d51b88a0"
+ },
+ "s05p05a": {
+  "ok": true,
+  "hash": "83d2388e61bfaab5"
+ },
+ "s05p05b": {
+  "ok": true,
+  "hash": "42e46066d80d145f"
+ },
+ "s05p06a": {
+  "ok": true,
+  "hash": "2fa73392adf9b26c"
+ },
+ "s05p06b": {
+  "ok": true,
+  "hash": "971e5fd7168d404b"
+ },
+ "s05p07a": {
+  "ok": true,
+  "hash": "aecfc7020f5a05dc"
+ },
+ "s05p08a": {
+  "ok": true,
+  "hash": "3b626585c14d881b"
+ },
+ "s05p08b": {
+  "ok": true,
+  "hash": "88e3bea24f83c017"
+ },
+ "s05p08c": {
+  "ok": true,
+  "hash": "e27bf21f130fb926"
+ },
+ "s05p09a": {
+  "ok": true,
+  "hash": "2b67344c5079ed67"
+ },
+ "s05p09b": {
+  "ok": true,
+  "hash": "1432c64dd2478518"
+ },
+ "s05p10a": {
+  "ok": true,
+  "hash": "c82bd2c8181a9388"
+ },
+ "s05p11a": {
+  "ok": true,
+  "hash": "3b75953631659743"
+ },
+ "s05p11b": {
+  "ok": true,
+  "hash": "b71d40713045ac44"
+ },
+ "s05p12a": {
+  "ok": true,
+  "hash": "990f061b7a3270df"
+ },
+ "s05p13a": {
+  "ok": true,
+  "hash": "8ab3f82f8e24f3c2"
+ },
+ "s05p13b": {
+  "ok": true,
+  "hash": "1ab038301e9b0f8f"
+ }
+}

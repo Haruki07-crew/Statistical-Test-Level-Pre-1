@@ -1,0 +1,102 @@
+{
+ "s17p01a": {
+  "ok": true,
+  "hash": "c0245473d9276d6e"
+ },
+ "s17p02a": {
+  "ok": true,
+  "hash": "c7d8cbe20737ff75"
+ },
+ "s17p02b": {
+  "ok": true,
+  "hash": "f76b7f9fa3f8a7d8"
+ },
+ "s17p02c": {
+  "ok": true,
+  "hash": "a4593d750a6f7b7b"
+ },
+ "s17p03a": {
+  "ok": true,
+  "hash": "fbabd2e7e4d83088"
+ },
+ "s17p03b": {
+  "ok": true,
+  "hash": "efc85d6d6e4e00b7"
+ },
+ "s17p03c": {
+  "ok": true,
+  "hash": "0cd2b329a611f8db"
+ },
+ "s17p04a": {
+  "ok": true,
+  "hash": "98eaac97571be95d"
+ },
+ "s17p04b": {
+  "ok": true,
+  "hash": "409db755a462c9d1"
+ },
+ "s17p05a": {
+  "ok": true,
+  "hash": "d2e596f3328c2f4d"
+ },
+ "s17p06a": {
+  "ok": true,
+  "hash": "00e9bcc8c6f45a15"
+ },
+ "s17p06b": {
+  "ok": true,
+  "hash": "8f6cd0aff252d95d"
+ },
+ "s17p07a": {
+  "ok": true,
+  "hash": "d4da10705eb86c6c"
+ },
+ "s17p08a": {
+  "ok": true,
+  "hash": "bef09a43671c29df"
+ },
+ "s17p08b": {
+  "ok": true,
+  "hash": "fce54d66d48a03eb"
+ },
+ "s17p09a": {
+  "ok": true,
+  "hash": "0a1f12af57f2121d"
+ },
+ "s17p10a": {
+  "ok": true,
+  "hash": "286f089532b201fe"
+ },
+ "s17p10b": {
+  "ok": true,
+  "hash": "47c9c7075ffb17f2"
+ },
+ "s17p11a": {
+  "ok": true,
+  "hash": "4b0849c3a01fd547"
+ },
+ "s17p12a": {
+  "ok": true,
+  "hash": "a0ab4f22e9b16abb"
+ },
+ "s17p12b": {
+  "ok": true,
+  "hash": "ce54623a35671327"
+ },
+ "s17p13a": {
+  "ok": true,
+  "hash": "3e4ae360833fcac8"
+ },
+ "s17p13b": {
+  "ok": true,
+  "hash": "0b80e3ca03bce025"
+ },
+ "s17p14a": {
+  "ok": false,
+  "hash": "512f6acb2817a364"
+ },
+ "s17p14b": {
+  "ok": true,
+  "hash": "800708dcdc40527d"
+ }
+}
