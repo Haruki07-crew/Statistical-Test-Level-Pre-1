@@ -35,8 +35,12 @@ for (const w of [375, 1280]) {
     ok(!(await page.$('.see-note')) || !(await page.textContent('.article')).includes('準1級の辞典と共通'), `${w}px 2級で書いた用語（${own.id}）に共通の注意書きが出ない`);
     await page.screenshot({ path: `${OUT}/term-own-${w}.png`, fullPage: false });
   }
-  await page.goto(base + '/g2/#' + shared.id); await page.waitForSelector('.term-title');
-  ok((await page.textContent('.article')).includes('準1級の辞典と共通'), `${w}px 共通の用語（${shared.id}）に注意書きが出る`);
+  if (shared) {
+    await page.goto(base + '/g2/#' + shared.id); await page.waitForSelector('.term-title');
+    ok((await page.textContent('.article')).includes('準1級の辞典と共通'), `${w}px 共通の用語（${shared.id}）に注意書きが出る`);
+  } else {
+    ok(true, `${w}px 共通の用語は残っていない（すべて2級向けに書き直した）`);
+  }
   await page.goto(base + '/g2/#exam'); await page.waitForSelector('.screen-h');
   ok((await page.textContent('.article')).includes('35問・90分'), `${w}px 模擬試験の説明が35問・90分`);
   await page.screenshot({ path: `${OUT}/exam-${w}.png` });

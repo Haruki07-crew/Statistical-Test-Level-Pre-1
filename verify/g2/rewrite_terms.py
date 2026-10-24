@@ -401,6 +401,41 @@ T = "chebyshev-inequality"
 check(T, "図の値 1/k² と正規分布の 2P(Z≥k)・表 25%・11.1%・6.3%・75%・88.9%・93.8%", np.allclose([round(1 / k ** 2, 4) for k in (1, 1.5, 2, 2.5, 3, 3.5, 4)], [1, 0.4444, 0.25, 0.16, 0.1111, 0.0816, 0.0625]) and np.allclose([round(2 * stats.norm.sf(k), 4) for k in (1, 1.5, 2, 2.5, 3, 3.5, 4)], [0.3173, 0.1336, 0.0455, 0.0124, 0.0027, 0.0005, 0.0001]) and close(1 / 9, .111, 5e-4) and close(1 / 16, .0625, 1e-12) and close(1 - 1 / 16, .9375, 1e-12), None)
 check(T, "例 54〜86 は 2 標準偏差・46〜94 は 3 標準偏差・正規分布なら 95.4%", (70 - 54) / 8 == 2 and (94 - 70) / 8 == 3 and close(1 - 2 * stats.norm.sf(2), .954, 5e-4), None)
 
+T = "marginal-distribution"
+JM = np.array([[.20, .25, .05], [.10, .15, .25]])
+check(T, "天気の周辺 0.5・0.5・来客の周辺 0.3・0.4・0.3・P(多い|雨)=0.5", np.allclose(JM.sum(1), [.5, .5]) and np.allclose(JM.sum(0), [.3, .4, .3]) and close(JM[1, 2] / JM[1].sum(), .5, 1e-12), None)
+T = "bivariate-normal-distribution"
+check(T, "条件付き平均 66.8・条件付き標準偏差 6.4", close(62 + .6 * 8 / 6 * 6, 66.8, 1e-9) and close(8 * sqrt(1 - .36), 6.4, 1e-9), None)
+bvx = np.random.default_rng(5).multivariate_normal([170, 62], [[36, .6 * 48], [.6 * 48, 64]], 2_000_000); bs = np.abs(bvx[:, 0] - 176) < 0.3
+check(T, "シミュレーション：身長≈176 の人の体重の平均・標準偏差", close(bvx[bs, 1].mean(), 66.8, 0.15) and close(bvx[bs, 1].std(), 6.4, 0.1), (bvx[bs, 1].mean(), bvx[bs, 1].std()))
+T = "negative-binomial-distribution"
+check(T, "P(4 回目で 2 回目の成功)=0.1728・期待値 5", close(stats.nbinom(2, .4).pmf(2), .1728, 1e-9) and close(stats.nbinom(2, .4).mean() + 2, 5, 1e-9), None)
+T = "fisher-z-transformation"
+zf = np.arctanh(.5); lo_, hi_ = zf - 1.96 * .2, zf + 1.96 * .2
+check(T, "z≈0.549・±0.392・(0.157, 0.941)・(0.16, 0.74)・図の値", close(zf, .549) and close(1.96 * .2, .392, 1e-9) and close(lo_, .157) and close(hi_, .941) and close(np.tanh(lo_), .16, 0.005) and close(np.tanh(hi_), .74, 0.005) and np.allclose(np.round(np.arctanh(np.arange(10) / 10), 3), [0, 0.1, 0.203, 0.31, 0.424, 0.549, 0.693, 0.867, 1.099, 1.472]), (np.tanh(lo_), np.tanh(hi_)))
+T = "confidence-and-prediction-interval-regression"
+t8 = stats.t.isf(.025, 8); xs_ = np.arange(11)
+ci_ = np.round(t8 * 2 * np.sqrt(.1 + (xs_ - 5) ** 2 / 40), 2); pi_ = np.round(t8 * 2 * np.sqrt(1.1 + (xs_ - 5) ** 2 / 40), 2)
+check(T, "t=2.306・x0=7 で 2.06・5.05・図の値", close(t8, 2.306) and ci_[7] == 2.06 and pi_[7] == 5.05 and np.allclose(ci_, [3.93, 3.26, 2.63, 2.06, 1.63, 1.46, 1.63, 2.06, 2.63, 3.26, 3.93]) and np.allclose(pi_, [6.06, 5.65, 5.31, 5.05, 4.89, 4.84, 4.89, 5.05, 5.31, 5.65, 6.06]), (ci_, pi_))
+T = "two-way-anova-with-replication"
+check(T, "自由度 1・2・2・18・全体 23", (2 - 1, 3 - 1, 1 * 2, 2 * 3 * 3, 24 - 1) == (1, 2, 2, 18, 23) and 1 + 2 + 2 + 18 == 23, None)
+T = "seasonal-adjustment"
+si = [.9, 1.0, .8, 1.3]
+check(T, "80/0.8=130/1.3=100・図の原数値＝調整値×指数・指数の和 4", close(80 / .8, 100, 1e-9) and close(130 / 1.3, 100, 1e-9) and np.allclose([round((100 + k) * si[k % 4], 1) for k in range(8)], [90.0, 101.0, 81.6, 133.9, 93.6, 105.0, 84.8, 139.1]) and close(sum(si), 4, 1e-12), None)
+T = "nonresponse-bias"
+nr = lambda q2: .6 * .5 / (.6 * .5 + .4 * q2)
+check(T, "0.30/0.40=0.75・図の値", close(nr(.25), .75, 1e-12) and np.allclose([round(nr(q), 3) for q in (.1, .2, .25, .3, .4, .5)], [0.882, 0.789, 0.75, 0.714, 0.652, 0.6]), None)
+T = "ci-variance-ratio"
+check(T, "比 2.5・F(9,12)=3.436・F(12,9)=3.868・(0.73, 9.67)・下側点≈0.259", close(20 / 8, 2.5, 1e-12) and close(stats.f.isf(.025, 9, 12), 3.436) and close(stats.f.isf(.025, 12, 9), 3.868) and close(2.5 / 3.436, .73, 0.005) and close(2.5 * 3.868, 9.67, 0.005) and close(stats.f.ppf(.025, 9, 12), .259), None)
+T = "finite-population-correction"
+check(T, "√(400/499)≈0.895・図の値（N=1000）", close(sqrt(400 / 499), .895) and np.allclose([round(sqrt((1000 - n) / 999), 3) for n in (10, 50, 100, 200, 300, 500, 700, 900)], [0.995, 0.975, 0.949, 0.895, 0.837, 0.707, 0.548, 0.316]), None)
+fp = np.random.default_rng(9).normal(50, 10, 500); fp = (fp - fp.mean()) / fp.std() * 10 + 50; rgf = np.random.default_rng(10)
+sm_ = [fp[rgf.permutation(500)[:100]].mean() for _ in range(20000)]
+check(T, "シミュレーション：戻さない 100 人の平均の標準偏差≈0.895", close(np.std(sm_), .895, 0.015), np.std(sm_))
+T = "test-correlation-coefficient"
+tc = .45 * sqrt(18) / sqrt(1 - .2025)
+check(T, "1.909/0.893≈2.14・t(18) の点 2.101・p≈0.046・決定係数≈0.2", close(.45 * sqrt(18), 1.909) and close(sqrt(1 - .2025), .893, 5e-4) and close(tc, 2.14, 0.005) and close(stats.t.isf(.025, 18), 2.101) and close(2 * stats.t.sf(tc, 18), .046, 5e-4) and close(stats.t.sf(2.14, 18), .023, 5e-4) and close(.45 ** 2, .2, 0.03), (tc, 2 * stats.t.sf(tc, 18)))
+
 ng = results.count(False)
 print(f"書き直した共通の用語の検算: OK {len(results) - ng} / NG {ng}")
 sys.exit(1 if ng else 0)

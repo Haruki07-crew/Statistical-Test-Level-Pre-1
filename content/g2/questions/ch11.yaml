@@ -309,3 +309,45 @@ questions:
     explanation: |
       $(1.96\times 10/1.5)^2\approx 13.07^2\approx 170.7$ なので、171 個必要です。切り捨てて 170 にすると、幅の半分がわずかに 1.5 を超えます。
 
+  # ---------- フィッシャーのz変換（2級向けに書き直した用語） ----------
+  - id: q11-fisher-z-transformation-g1
+    term: fisher-z-transformation
+    level: 標準
+    type: numeric
+    question: |
+      標本相関係数 $r=0.6$ を、フィッシャーの z 変換 $z=\dfrac12\log\dfrac{1+r}{1-r}$ で変換した値を小数第 3 位まで求めよ。ただし $\log 4=1.386$ とする。
+    answer: 0.693
+    tolerance: 0.0005
+    hint: |
+      $(1+0.6)/(1-0.6)=4$。
+    explanation: |
+      $\dfrac12\log\dfrac{1.6}{0.4}=\dfrac12\log 4=0.693$ です。大きさ $n$ の標本なら、この値は近似的に標準偏差 $1/\sqrt{n-3}$ の正規分布にしたがいます。
+
+  # ---------- 母分散比の区間推定（2級向けに書き直した用語） ----------
+  - id: q11-ci-variance-ratio-g1
+    term: ci-variance-ratio
+    level: 標準
+    type: numeric
+    question: |
+      大きさ 8 と 10 の標本の不偏分散の比 $s_1^2/s_2^2$ は 3.0 だった。母分散の比 $\sigma_1^2/\sigma_2^2$ の 95% 信頼区間の下限を小数第 2 位まで求めよ。ただし $F_{0.025}(7,9)=4.197$ とする。
+    answer: 0.71
+    tolerance: 0.005
+    hint: |
+      下限は（不偏分散の比）÷ $F_{0.025}(n_1-1,\ n_2-1)$。
+    explanation: |
+      $3.0/4.197\approx 0.71$ です。上限は自由度を入れかえた $F_{0.025}(9,7)$ を掛けて求めます。
+
+  # ---------- 有限母集団修正（2級向けに書き直した用語） ----------
+  - id: q11-finite-population-correction-g1
+    term: finite-population-correction
+    level: 基本
+    type: numeric
+    question: |
+      200 人の母集団から 50 人を戻さずに選ぶ。標本平均の標準誤差に掛ける有限母集団修正の係数 $\sqrt{(N-n)/(N-1)}$ を小数第 3 位まで求めよ。
+    answer: 0.868
+    tolerance: 0.0005
+    hint: |
+      $N=200$、$n=50$。
+    explanation: |
+      $\sqrt{150/199}\approx 0.868$ です。母集団の 4 分の 1 を調べるので、標準誤差は修正しない場合より約 13% 小さくなります。
+

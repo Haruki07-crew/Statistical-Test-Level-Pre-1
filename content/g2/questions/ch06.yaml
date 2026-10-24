@@ -253,3 +253,17 @@ questions:
       その世帯の地区が選ばれる確率 × 地区の中でその世帯が選ばれる確率。
     explanation: |
       $\dfrac{20}{200}\times\dfrac{25}{500}=0.1\times 0.05=0.005$ です。どの世帯も同じ確率で選ばれます。
+
+  # ---------- 無回答バイアス（2級向けに書き直した用語） ----------
+  - id: q06-nonresponse-bias-g1
+    term: nonresponse-bias
+    level: 標準
+    type: numeric
+    question: |
+      ある意見に本当は 50% の人が賛成している。賛成の人は 60%、反対の人は 30% の割合で調査に回答する。回答者の中の賛成の割合を小数第 3 位まで求めよ。
+    answer: 0.667
+    tolerance: 0.0005
+    hint: |
+      回答した賛成の人の割合 ÷ 回答した人の割合。
+    explanation: |
+      $\dfrac{0.5\times 0.6}{0.5\times 0.6+0.5\times 0.3}=\dfrac{0.30}{0.45}\approx 0.667$ です。本当は 50% なのに、回答者だけで計算すると約 67% と大きく偏ります。

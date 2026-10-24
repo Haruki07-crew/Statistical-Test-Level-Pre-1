@@ -23,6 +23,10 @@
   "hash": "c7b70f3b791b1cc1",
   "ok": true
  },
+ "q09-bivariate-normal-distribution-g1": {
+  "hash": "badb6f431db104ff",
+  "ok": true
+ },
  "q09-exponential-distribution-g1": {
   "hash": "c3a8cfd65f9af2ed",
   "ok": true
@@ -41,6 +45,10 @@
  },
  "q09-hypergeometric-distribution-g1": {
   "hash": "6c74d9674f71beba",
+  "ok": true
+ },
+ "q09-negative-binomial-distribution-g1": {
+  "hash": "131106cd277489f9",
   "ok": true
  },
  "q09-normal-distribution-g1": {

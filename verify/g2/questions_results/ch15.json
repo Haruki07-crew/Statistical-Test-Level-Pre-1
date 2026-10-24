@@ -50,5 +50,9 @@
  "q15-treatment-and-control-3": {
   "hash": "603b645f8d7927d4",
   "ok": true
+ },
+ "q15-two-way-anova-with-replication-g1": {
+  "hash": "68ff249f6388e4fd",
+  "ok": true
  }
 }

@@ -1,4 +1,4 @@
-# 2級の用語計画（出題範囲表の大項目に沿った15章）。from: pre1 は準1級の解説を共通で使う用語
+# 2級の用語計画（出題範囲表の大項目に沿った15章）。from: pre1 は準1級の解説を共通で使う用語（2026-10-25 時点で、すべて2級向けに書き直したので使っていない）
 chapters:
 - 'no': 1
   title: データの種類とグラフ
@@ -171,7 +171,6 @@ chapters:
     title: 季節調整
     importance: C
     status: verified
-    from: pre1
 - 'no': 6
   title: データの集め方
   terms:
@@ -211,7 +210,6 @@ chapters:
     title: 無回答バイアス
     importance: C
     status: verified
-    from: pre1
   - id: fisher-three-principles
     title: フィッシャーの3原則
     importance: A
@@ -266,7 +264,6 @@ chapters:
     title: 周辺分布
     importance: C
     status: verified
-    from: pre1
   - id: sum-of-random-variables
     title: 確率変数の和と再生性
     importance: B
@@ -298,7 +295,6 @@ chapters:
     title: 負の二項分布
     importance: C
     status: verified
-    from: pre1
   - id: uniform-distribution
     title: 一様分布
     importance: B
@@ -319,7 +315,6 @@ chapters:
     title: 2変量正規分布
     importance: C
     status: verified
-    from: pre1
 - 'no': 10
   title: 標本分布
   terms:
@@ -414,7 +409,6 @@ chapters:
     title: 母分散比の区間推定
     importance: C
     status: verified
-    from: pre1
   - id: ci-two-sample-proportion
     title: 2標本の母比率の差の区間推定
     importance: B
@@ -427,12 +421,10 @@ chapters:
     title: フィッシャーのz変換
     importance: C
     status: verified
-    from: pre1
   - id: finite-population-correction
     title: 有限母集団修正
     importance: C
     status: verified
-    from: pre1
 - 'no': 12
   title: 仮説検定の考え方と1標本の検定
   terms:
@@ -531,7 +523,6 @@ chapters:
     title: 母相関係数の検定
     importance: C
     status: verified
-    from: pre1
 - 'no': 14
   title: 回帰分析
   terms:
@@ -567,7 +558,6 @@ chapters:
     title: 回帰の信頼区間と予測区間
     importance: C
     status: verified
-    from: pre1
 - 'no': 15
   title: 実験計画と分散分析
   terms:
@@ -599,4 +589,3 @@ chapters:
     title: 二元配置分散分析（繰り返しあり）
     importance: C
     status: verified
-    from: pre1

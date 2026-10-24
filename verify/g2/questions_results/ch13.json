@@ -43,6 +43,10 @@
   "hash": "02e41251c52c6118",
   "ok": true
  },
+ "q13-test-correlation-coefficient-g1": {
+  "hash": "140bece181c0769d",
+  "ok": true
+ },
  "q13-two-sample-proportion-test-g1": {
   "hash": "a6f360adbb7b217a",
   "ok": true

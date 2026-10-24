@@ -107,6 +107,7 @@ ar = np.array(ar[1:]); r1_ = np.corrcoef(ar[:-1], ar[1:])[0, 1]
 q.check("q05-autocovariance-autocorrelation-g1", r1_ < -0.5 and np.mean(np.sign(np.diff(ar[:-1])) != np.sign(np.diff(ar[1:]))) > 0.6 and chosen(q, "q05-autocovariance-autocorrelation-g1").startswith("前の時点より大きい値の次は小さい値"), f"ラグ 1 の自己相関 {r1_:.2f} の系列で上がり下がりが入れかわる割合 {np.mean(np.sign(np.diff(ar[:-1])) != np.sign(np.diff(ar[1:]))):.2f}")
 tq = np.arange(80); yq = 50 + 8 * np.array([1, 0, -1, 0] * 20) + rr5.normal(0, 1, 80); yq -= yq.mean(); acq = lambda k: (yq[:-k] * yq[k:]).sum() / (yq ** 2).sum()
 q.check("q05-correlogram-g1", acq(4) > 0.7 and acq(8) > 0.7 and acq(2) < -0.3 and acq(6) < -0.3 and chosen(q, "q05-correlogram-g1") == "1 年（4 四半期）周期の季節変動がある", f"4 期周期の系列でラグ 2・4・6・8 の自己相関 {acq(2):.2f}・{acq(4):.2f}・{acq(6):.2f}・{acq(8):.2f}")
+q.num("q05-seasonal-adjustment-g1", 156 / 1.2)
 run(q)
 
 # ---------- 第6章 ----------
@@ -139,5 +140,8 @@ q.check("q06-cluster-sampling-g1", chosen(q, "q06-cluster-sampling-g1") == "集�
 q.num("q06-two-stage-sampling-g1", 20 / 200 * 25 / 500)
 rs2 = np.random.default_rng(62); hit2 = np.mean([(0 in rs2.choice(200, 20, replace=False)) and (0 in rs2.choice(500, 25, replace=False)) for _ in range(200000)])
 q.check("q06-two-stage-sampling-g1", abs(hit2 - 0.005) < 0.0006, f"地区 0 の世帯 0 が選ばれた割合 {hit2:.5f}")
+q.num("q06-nonresponse-bias-g1", 0.5 * 0.6 / (0.5 * 0.6 + 0.5 * 0.3))
+popn = np.random.default_rng(66).random(400000) < 0.5; resp = np.random.default_rng(67).random(400000) < np.where(popn, 0.6, 0.3)
+q.check("q06-nonresponse-bias-g1", abs(popn[resp].mean() - 2 / 3) < 0.003, f"シミュレーション {popn[resp].mean():.4f}")
 run(q)
 raise SystemExit(1 if ng else 0)

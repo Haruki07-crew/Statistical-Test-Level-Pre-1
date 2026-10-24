@@ -243,3 +243,17 @@ questions:
       合わせた比率は $(110+90)/400$。標準誤差は $\sqrt{\hat p(1-\hat p)(1/200+1/200)}$。
     explanation: |
       合わせた比率は 0.5、標準誤差は $\sqrt{0.25\times 0.01}=0.05$ なので、$z=(0.55-0.45)/0.05=2.0$ です。両側 5% の点 1.96 をわずかに超えます。
+
+  # ---------- 母相関係数の検定（2級向けに書き直した用語） ----------
+  - id: q13-test-correlation-coefficient-g1
+    term: test-correlation-coefficient
+    level: 標準
+    type: numeric
+    question: |
+      11 組のデータの標本相関係数は 0.6 だった。帰無仮説「母相関係数は 0」の検定統計量 $t=\dfrac{r\sqrt{n-2}}{\sqrt{1-r^2}}$ を求めよ。
+    answer: 2.25
+    tolerance: 0.001
+    hint: |
+      $\sqrt{n-2}=3$、$\sqrt{1-0.36}=0.8$。
+    explanation: |
+      $t=0.6\times 3/0.8=2.25$ です。自由度 9 の両側 5% の点 2.262 よりわずかに小さいので、有意水準 5% では棄却しません。

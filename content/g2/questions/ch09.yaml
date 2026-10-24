@@ -311,3 +311,31 @@ questions:
       $\dfrac{\binom{8}{3}}{\binom{12}{3}}=\dfrac{56}{220}\approx 0.255$ です。
       戻して取り出す二項分布で計算すると $(8/12)^3\approx 0.296$ で、全体が小さいと違いが出ます。
 
+  # ---------- 2変量正規分布（2級向けに書き直した用語） ----------
+  - id: q09-bivariate-normal-distribution-g1
+    term: bivariate-normal-distribution
+    level: 標準
+    type: numeric
+    question: |
+      $X$ と $Y$ は 2 変量正規分布にしたがい、$X$ は平均 50・標準偏差 10、$Y$ は平均 60・標準偏差 12、相関係数は 0.5 である。$X=70$ のときの $Y$ の条件付き平均を求めよ。
+    answer: 72
+    tolerance: 0.001
+    hint: |
+      $E[Y\mid X=x]=\mu_Y+\rho\dfrac{\sigma_Y}{\sigma_X}(x-\mu_X)$。
+    explanation: |
+      $60+0.5\times\dfrac{12}{10}\times(70-50)=60+12=72$ です。$X$ が平均より標準偏差 2 個分大きくても、$Y$ の平均は標準偏差 $2\times 0.5=1$ 個分しか大きくなりません（平均への回帰）。
+
+  # ---------- 負の二項分布（2級向けに書き直した用語） ----------
+  - id: q09-negative-binomial-distribution-g1
+    term: negative-binomial-distribution
+    level: 標準
+    type: numeric
+    question: |
+      成功の確率が 0.5 の独立な試行をくり返す。2 回目の成功がちょうど 3 回目の試行で起こる確率を求めよ。
+    answer: 0.25
+    tolerance: 0.0001
+    hint: |
+      3 回目が成功で、最初の 2 回のうちちょうど 1 回が成功。
+    explanation: |
+      $\binom{2}{1}(0.5)^1(0.5)^1\times 0.5=2\times 0.125=0.25$ です。最後の試行が成功と決まっているので、組合せは最初の 2 回の中から成功の 1 回を選ぶ $\binom{2}{1}$ です。
+

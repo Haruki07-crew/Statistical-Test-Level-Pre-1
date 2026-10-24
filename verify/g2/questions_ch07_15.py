@@ -129,6 +129,8 @@ q.num("q14-overall-f-test-regression-g1", (0.40 / 2) / (0.60 / 27))
 q.check("q14-overall-f-test-regression-g1", abs(stats.f.isf(.05, 2, 27) - 3.35) < 0.005, f"F(2,27) の 5% 点 {stats.f.isf(.05, 2, 27):.3f}")
 D4 = np.eye(4)[rng.integers(0, 4, 50)]; Xd = np.c_[np.ones(50), D4]
 q.check("q14-dummy-variable-g1", np.linalg.matrix_rank(Xd) == 4 and np.linalg.matrix_rank(Xd[:, :4]) == 4 and chosen(q, "q14-dummy-variable-g1") == "3", "切片＋4 個のダミーは列が 1 次従属（階数 4）、3 個なら独立")
+xs14 = np.linspace(0, 10, 10); hw = lambda x0, k: 2 * sqrt(k + 1 / 10 + (x0 - 5) ** 2 / ((xs14 - 5) ** 2).sum())
+q.check("q14-confidence-and-prediction-interval-regression-g1", hw(5, 1) > hw(5, 0) and hw(9, 0) > hw(5, 0) and hw(9, 1) > hw(5, 1) and chosen(q, "q14-confidence-and-prediction-interval-regression-g1").startswith("予測区間は信頼区間より広く"), "予測区間が広く、平均から離れると広がる")
 xa = rng.normal(0, 1, 5000); xb = 0.8 * xa + 0.6 * rng.normal(0, 1, 5000); yy = 2 + 1.2 * xa + 2.25 * xb + rng.normal(0, 1, 5000)
 cfm = np.linalg.lstsq(np.c_[np.ones(5000), xa, xb], yy, rcond=None)[0]; cfs = np.polyfit(xa, yy, 1)[0]
 q.check("q14-multiple-regression-model-g3", abs(cfm[1] - 1.2) < 0.05 and abs(cfs - 3.0) < 0.1 and abs(cfs - (cfm[1] + cfm[2] * np.polyfit(xa, xb, 1)[0])) < 1e-9 and chosen(q, "q14-multiple-regression-model-g3").startswith("広告費の多い店ほど面積も広い"), f"相関のある 2 変数のデータで 重回帰 {cfm[1]:.2f}・単回帰 {cfs:.2f}（単回帰 = b1 + b2 × d が成り立つ）")
@@ -155,5 +157,7 @@ q.check("q15-sum-of-squares-decomposition-g2", st3 == 60 and sa3 == 54 and se3 =
 q.num("q15-randomized-block-design-g1", (4 - 1) * (6 - 1))
 q.check("q15-randomized-block-design-g1", 23 - 3 - 5 == 15 and 24 - 4 == 20, "全体 23 − 3 − 5")
 q.num("q15-main-effect-and-interaction-g1", (35 - 22) - (25 - 20))
+q.num("q15-two-way-anova-with-replication-g1", 3 * 4 * (2 - 1))
+q.check("q15-two-way-anova-with-replication-g1", 23 - 2 - 3 - 6 == 12, "23 − 2 − 3 − 6")
 run(q)
 raise SystemExit(1 if ng else 0)
