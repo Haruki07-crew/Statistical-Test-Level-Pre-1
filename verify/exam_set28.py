@@ -51,13 +51,13 @@ y_b = stats.poisson(0.5 * 2.0).pmf(0)
 E.num("s28p01a", rnd(290 * 0.3679, 1), "示した e^-1 で 290×P(X=0)")
 E.check("s28p01a", rnd(290 * y_b, 1) == E.item("s28p01a")["answer"], f"scipy の正確な P(X=0) でも同じ丸め値 {290 * y_b:.4f}")
 # (b) sympy で微分してデルタ法、シミュレーションでも確かめる
-table("s28p01b", abs(math.exp(-0.6) - 0.5488) < 5e-5, "e^-0.6=0.5488")
+pass  # 作り替え前の小問の検算（2026-10-24 に作り替えたので無効化）
 l = sp.symbols("l", positive=True)
 se = float(sp.Abs(sp.diff(sp.exp(-l), l)).subs(l, sp.Rational(3, 5)) * sp.sqrt(sp.Rational(3, 5) / 40))
-E.choice("s28p01b", f"${f(se, 4)}$", "sympy の微分によるデルタ法")
+pass  # 作り替え前の小問の検算（2026-10-24 に作り替えたので無効化）
 X = rng.poisson(0.6, size=(200_000, 40)).mean(1)
 sim_sd = np.exp(-X).std()
-E.check("s28p01b", abs(sim_sd - se) < 0.003, f"シミュレーションの e^(-Xbar) の標準偏差 {sim_sd:.4f} ≈ {se:.4f}")
+pass  # 作り替え前の小問の検算（2026-10-24 に作り替えたので無効化）
 # (c) ガンマ分布（平均0.6, sd0.3）で Λ を発生させるシミュレーション＋全分散の公式（sympy）
 shape, scale = (0.6 / 0.3) ** 2, 0.3 ** 2 / 0.6
 Lam = rng.gamma(shape, scale, size=1_000_000)
@@ -100,10 +100,10 @@ table("s28p03b", rnd(0.25 - 0.25 * -1.3863, 4) == rnd(P, 4), "ln0.25 の丸め�
 A = np.array([512.4, 498.7, 505.1, 520.3, 509.8, 501.6, 515.2, 497.9, 507.5, 511.0])
 Bv = np.array([511.2, 497.9, 505.4, 518.8, 508.9, 501.2, 514.1, 498.1, 506.8, 510.0])
 it = E.item("s28p04a")
-E.check("s28p04a", "511.2" in E.items["s28p04a"][0]["context"], "表の B の値が generator と一致")
+pass  # 作り替え前の小問の検算（2026-10-24 に作り替えたので無効化）
 res = stats.ttest_rel(A, Bv)
-E.num("s28p04a", rnd(res.statistic, 2), f"scipy ttest_rel t = {res.statistic:.4f}")
-table("s28p04a", abs(stats.t.ppf(0.975, 9) - 2.262) < 5e-4, "t_0.025(9)=2.262")
+pass  # 作り替え前の小問の検算（2026-10-24 に作り替えたので無効化）
+pass  # 作り替え前の小問の検算（2026-10-24 に作り替えたので無効化）
 p = stats.binomtest(int(np.sum(A - Bv > 0)), 10, 0.5, alternative="greater").pvalue
 E.choice("s28p04b", f"${f(p, 4)}$", "scipy binomtest（片側）")
 
@@ -113,13 +113,13 @@ table("s28p05a", abs(math.exp(-0.04993) - 0.95130) < 5e-6 and abs(math.exp(-0.06
 cp = stats.beta.ppf(0.95, 1, 60)  # クロッパー・ピアソン片側上限（x=0）
 E.choice("s28p05a", f"${f(cp, 4)}$", f"beta.ppf(0.95,1,60) = {cp:.6f}")
 E.check("s28p05a", abs(stats.binom(60, cp).pmf(0) - 0.05) < 1e-10, "上限で 0 個の確率が 5%")
-table("s28p05b", abs(math.log(0.45) - -0.7985) < 5e-5 and abs(stats.chi2.ppf(0.95, 1) - 3.84) < 5e-3, "ln0.45, χ²_0.05(1)")
+pass  # 作り替え前の小問の検算（2026-10-24 に作り替えたので無効化）
 x = rng.exponential(1, 10)
 x = x / x.sum() * 4500
 ll = lambda th: stats.expon(scale=th).logpdf(x).sum()
 opt = optimize.minimize_scalar(lambda th: -ll(th), bounds=(10, 5000), method="bounded")
 lr = 2 * (ll(opt.x) - ll(1000))
-E.num("s28p05b", rnd(lr, 2), f"数値最適化した対数尤度から -2lnΛ = {lr:.4f}")
+pass  # 作り替え前の小問の検算（2026-10-24 に作り替えたので無効化）
 
 # ---- 大問6
 xs, th, n = sp.symbols("x theta n", positive=True)
@@ -151,8 +151,8 @@ yd = Xd @ np.array([1, 2, 3]) + rng.normal(size=20)
 H = Xd @ np.linalg.solve(Xd.T @ Xd, Xd.T)
 e = yd - H @ yd
 bl = np.linalg.lstsq(np.delete(Xd, 6, 0), np.delete(yd, 6), rcond=None)[0]
-E.check("s28p07b", abs((yd[6] - Xd[6] @ bl) - e[6] / (1 - H[6, 6])) < 1e-9, "1点除外の当てはめ直しと e/(1−h) が一致")
-E.num("s28p07b", rnd(48.0 - (48.0 - 51.2) / (1 - 0.30), 2), "PRESS 残差の式")
+pass  # 作り替え前の小問の検算（2026-10-24 に作り替えたので無効化）
+pass  # 作り替え前の小問の検算（2026-10-24 に作り替えたので無効化）
 # (c) フーバーの ψ(u)/u を直接
 psi = lambda u, k=1.345: np.clip(u, -k, k)
 uu = -6.4 / 2.0
@@ -175,47 +175,47 @@ coef = np.linalg.solve(Xc, yc)
 E.choice("s28p08b", f"${f(coef[3], 1)}$", "交互作用項の係数（差の差）")
 # (c)
 for v_, shown in [(-0.35, 0.7047), (-0.5852, 0.5570), (-0.1148, 0.8915), (0.1148, 1.1216), (0.5852, 1.7954)]:
-    table("s28p08c", abs(math.exp(v_) - shown) < 5e-5, f"e^{v_}={shown}")
+    pass  # 作り替え前の小問の検算（2026-10-24 に作り替えたので無効化）
 zq = stats.norm.ppf(0.975)
 lo, hi = np.exp(-0.35 - zq * 0.12), np.exp(-0.35 + zq * 0.12)
-E.choice("s28p08c", f"({f(lo, 3)},\\ {f(hi, 3)})", "正確な z で区間を作り指数変換")
+pass  # 作り替え前の小問の検算（2026-10-24 に作り替えたので無効化）
 
 # ---- 大問9
-table("s28p09a", abs(stats.studentized_range.ppf(0.95, 3, 15) - 3.67) < 5e-3 and abs(stats.t.ppf(0.975, 15) - 2.131) < 5e-4, "q(3,15)=3.67, t(15)=2.131")
+pass  # 作り替え前の小問の検算（2026-10-24 に作り替えたので無効化）
 hsd = 3.67 * math.sqrt(121.5 / 15 / 6)
-E.choice("s28p09a", f"${f(hsd, 2)}$", "HSD")
+pass  # 作り替え前の小問の検算（2026-10-24 に作り替えたので無効化）
 # シミュレーション：HSD を使うと3群が同じ母平均のとき全体の誤りが約5%
 sims = rng.normal(0, math.sqrt(8.1), size=(100_000, 3, 6))
 mm = sims.mean(2)
 mse = ((sims - mm[:, :, None]) ** 2).sum((1, 2)) / 15
 rngs = mm.max(1) - mm.min(1)
 crit = stats.studentized_range.ppf(0.95, 3, 15) * np.sqrt(mse / 6)
-E.check("s28p09a", abs(np.mean(rngs > crit) - 0.05) < 0.004, "シミュレーションで全体の第1種の誤り ≈ 5%")
+pass  # 作り替え前の小問の検算（2026-10-24 に作り替えたので無効化）
 
 # ---- 大問10
 Nh = np.array([2000, 3000, 5000]); sh = np.array([4.0, 6.0, 5.0]); nh = np.array([20, 30, 50])
 Vst = np.sum(Nh * sh ** 2) / Nh.sum() / 100  # 比例配分の式 Σ W s² / n
-E.num("s28p10a", rnd(math.sqrt(Vst), 3), "比例配分の式 ΣW_h s_h²/n")
-E.check("s28p10a", np.array_equal(nh, 100 * Nh / Nh.sum()), "抜取数が比例配分")
+pass  # 作り替え前の小問の検算（2026-10-24 に作り替えたので無効化）
+pass  # 作り替え前の小問の検算（2026-10-24 に作り替えたので無効化）
 
 # ---- 大問11
 lf = lambda x_: stats.norm(54, 4).logpdf(x_) - stats.norm(50, 2).logpdf(x_)
 r1 = optimize.brentq(lf, 30, 50); r2 = optimize.brentq(lf, 50, 60)
-E.choice("s28p11a", f"$x<{f(r1, 2)}$ または $x>{f(r2, 2)}$", f"scipy の対数密度の差の根 {r1:.4f}, {r2:.4f}")
-E.check("s28p11a", lf(30) > 0 and lf(70) > 0 and lf(50) < 0, "両側で不良の密度が大きい")
-table("s28p11a", abs(math.log(2) - 0.6931) < 5e-5, "ln2=0.6931")
+pass  # 作り替え前の小問の検算（2026-10-24 に作り替えたので無効化）
+pass  # 作り替え前の小問の検算（2026-10-24 に作り替えたので無効化）
+pass  # 作り替え前の小問の検算（2026-10-24 に作り替えたので無効化）
 Ci = np.array([0.0, 0.0]); pts_i = np.array([[-1.0, 0.5], [1.0, -0.5]])
 assert np.allclose(pts_i.mean(0), Ci)
 Gj = np.array([0.0, 3.0]); Gk = np.array([6.0, 1.0])
 d2 = lambda a, b: float(np.sum((a - b) ** 2))
-E.check("s28p11b", d2(Gk, Ci) == 37 and d2(Gk, Gj) == 40 and d2(Ci, Gj) == 9, "座標で与えた平方距離が実現できる（ユークリッド距離になる）")
+pass  # 作り替え前の小問の検算（2026-10-24 に作り替えたので無効化）
 newc = np.vstack([pts_i, Gj]).mean(0)
-E.choice("s28p11b", f"${f(d2(Gk, newc), 2)}$", "座標から新しい重心までの平方距離")
+pass  # 作り替え前の小問の検算（2026-10-24 に作り替えたので無効化）
 lam = np.array([0.9, 0.8, 0.6]); z = np.array([1.2, 0.5, -0.4])
 Sig = np.outer(lam, lam) + np.diag(1 - lam ** 2)
 fr = lam @ np.linalg.solve(Sig, z)
-E.choice("s28p11c", f"${f(fr, 3)}$", f"numpy で λ'Σ^-1 z = {fr:.5f}")
-E.check("s28p11c", np.allclose(np.diag(Sig), 1), "Σ が相関行列（対角 1）")
+pass  # 作り替え前の小問の検算（2026-10-24 に作り替えたので無効化）
+pass  # 作り替え前の小問の検算（2026-10-24 に作り替えたので無効化）
 
 # ---- 大問12
 lam_, mu_ = 10.0, 60 / 4.5
@@ -224,5 +224,78 @@ k = np.arange(0, 2000)
 pi = (1 - rho) * rho ** k
 Lq = np.sum(np.maximum(k - 1, 0) * pi)
 E.num("s28p12a", rnd(Lq, 2), f"定常分布から Σ(k−1)π_k = {Lq:.6f}")
+
+# ---- 2026-10-24 夕方に作り替えた小問の検算（generator とは別の方法）
+# 1(b) スルツキー：ポアソンのもとで Z_W のシミュレーション分布と値
+# n が大きいと Z_W の分布が N(0,1) に近づく（スルツキー）。合計はポアソン分布なので和を直接発生させる
+for n_big, tol_ in ((40, None), (4000, 0.006)):
+    Xb1 = rng.poisson(0.4 * n_big, 400_000) / n_big
+    Zw_sim = (Xb1 - 0.4) / np.sqrt(np.maximum(Xb1, 1e-12) / n_big)
+    if tol_:
+        E.check("s28p01b", abs(np.mean(Zw_sim > 1.645) - 0.05) < tol_ and abs(np.std(Zw_sim) - 1) < 0.02, f"n={n_big} で H0 のもとの棄却率 {np.mean(Zw_sim > 1.645):.4f}、標準偏差 {np.std(Zw_sim):.4f}")
+    else:
+        rate40 = np.mean(Zw_sim > 1.645)
+E.check("s28p01b", 0.012 < rate40 < 0.035, f"n=40 では棄却率 {rate40:.4f}（解説の「約 2%」）")
+zw = (0.6 - 0.4) / math.sqrt(0.6 / 40)
+E.choice("s28p01b", f"$Z_W={f(zw, 2)}$。中心極限定理で", f"Z_W={zw:.4f}")
+# 4(a) 必要枚数：検出力を scipy の正規分布で計算して最小の n を探す
+sd4 = np.std([1.2, 0.8, -0.3, 1.5, 0.9, 0.4, 1.1, -0.2, 0.7, 1.0], ddof=1)
+pw = lambda n_: stats.norm.sf(stats.norm.isf(0.05) - math.sqrt(n_) * 0.40 / sd4)
+n4 = next(k for k in range(2, 200) if pw(k) >= 0.90)
+E.num("s28p04a", n4, f"検出力 {pw(n4 - 1):.4f}（n−1）・{pw(n4):.4f}（n）")
+# 5(b) フィッシャーの正確検定
+fe = stats.fisher_exact([[0, 8], [4, 4]], alternative="less")
+E.num("s28p05b", rnd(fe.pvalue, 3), f"scipy fisher_exact p={fe.pvalue:.5f}")
+E.check("s28p05b", abs(stats.fisher_exact([[0, 8], [4, 4]]).pvalue - 0.0769) < 5e-4, "両側 p 値 0.0769（解説の値）")
+# 7(b) 当てはまりの悪さ：9 条件・20 枚のデータを作り、条件平均への当てはめで純粋誤差を分解
+lv = [(a_, b_) for a_ in (-1, 0, 1) for b_ in (-1, 0, 1)]
+reps = [3, 2, 2, 3, 2, 2, 2, 2, 2]
+X7 = np.array([[1, a_, b_] for (a_, b_), k_ in zip(lv, reps) for _ in range(k_)], float)
+grp = np.repeat(np.arange(9), reps)
+y7 = X7 @ [60, 14, 9.5] + 0.8 * X7[:, 1] ** 2 + rng.normal(0, 1.3, 20)
+res7 = y7 - X7 @ np.linalg.lstsq(X7, y7, rcond=None)[0]
+gm = np.array([y7[grp == g_].mean() for g_ in range(9)])
+spe7 = np.sum((y7 - gm[grp]) ** 2); sse7 = np.sum(res7 ** 2)
+E.check("s28p07b", len(y7) == 20 and sse7 >= spe7, f"作ったデータで SSE={sse7:.3f} ≥ SS_PE={spe7:.3f}（純粋誤差は残差の一部）")
+F7 = ((30.0 - 18.0) / (9 - 3)) / (18.0 / (20 - 9))
+E.choice("s28p07b", f"$F={f(F7, 2)}$（自由度6と11）で{f(stats.f.isf(0.05, 6, 11), 2)}を下回る", f"F={F7:.4f}, p={stats.f.sf(F7, 6, 11):.4f}")
+for (d1, d2, shown) in ((6, 11, 3.09), (8, 11, 2.95), (6, 17, 2.70)):
+    E.check("s28p07b", abs(stats.f.isf(0.05, d1, d2) - shown) < 5e-3, f"F_0.05({d1},{d2})={shown}")
+# 8(c) ZIP：乱数で 0 の割合と分散
+zi = np.where(rng.random(400_000) < 0.20, 0, rng.poisson(2.0, 400_000))
+p0_ = 0.20 + 0.80 * math.exp(-2); v_ = 0.80 * 2 * (1 + 0.20 * 2)
+E.check("s28p08c", abs(np.mean(zi == 0) - p0_) < 0.003 and abs(zi.var() - v_) < 0.03, f"シミュレーション P0={np.mean(zi == 0):.4f}, V={zi.var():.4f}")
+E.choice("s28p08c", f"$P(Y=0)={f(p0_, 3)}$、$V[Y]={f(v_, 2)}$", "式の値")
+E.check("s28p08c", all(abs(math.exp(a_) - b_) < 5e-5 for a_, b_ in ((-2, 0.1353), (-1.6, 0.2019))), "問題文の e の値")
+# 9(a) 2×2：条件ごとの平均がそろうデータを作り、statsmodels を使わず交互作用の平方和を回帰で求める
+cells = {(0, 0): 96.0, (0, 1): 100.0, (1, 0): 104.0, (1, 1): 112.0}
+Xa, ya = [], []
+for (a_, b_), m_ in cells.items():
+    e9 = rng.normal(0, 1, 4); e9 -= e9.mean()
+    for e_ in e9:
+        Xa.append([1, a_, b_, a_ * b_]); ya.append(m_ + e_)
+Xa, ya = np.array(Xa, float), np.array(ya)
+rss = lambda X_: np.sum((ya - X_ @ np.linalg.lstsq(X_, ya, rcond=None)[0]) ** 2)
+ssab = rss(Xa[:, :3]) - rss(Xa)
+E.choice("s28p09a", f"平方和 {f(ssab, 1)}、$F={f(ssab / 8.0, 2)}$", f"回帰の残差平方和の差 {ssab:.4f}")
+E.check("s28p09a", abs(stats.f.isf(0.05, 1, 12) - 4.75) < 5e-3, "F_0.05(1,12)")
+# 10(a) ネイマン配分：配分を求めて分散の式に直接代入
+Wh = np.array([0.2, 0.3, 0.5]); sh = np.array([4.0, 6.0, 5.0])
+nh_ = 100 * Wh * sh / np.sum(Wh * sh)
+E.num("s28p10a", rnd(math.sqrt(np.sum(Wh ** 2 * sh ** 2 / nh_)), 3), f"配分 {np.round(nh_, 2)} を Σ W²s²/n_h に代入")
+# 11(a) 感度・特異度
+sens = lambda c_: stats.norm.sf(c_, 54, 2); spec = lambda c_: stats.norm.cdf(c_, 50, 2)
+E.choice("s28p11a", f"$({f(sens(52), 4)},\\ {f(spec(52), 4)})$ から $({f(sens(53), 4)},\\ {f(spec(53), 4)})$", "scipy の正規分布")
+# 11(b) EM の M ステップ：負担率を重みにした最尤推定を数値最適化で
+xx = np.array([1, 2, 3, 7, 8.]); rr_ = np.array([.95, .9, .8, .1, .05])
+mu_opt = optimize.minimize_scalar(lambda m_: np.sum(rr_ * (xx - m_) ** 2)).x
+E.choice("s28p11b", f"$\\pi_1={f(rr_.mean(), 2)}$、$\\mu_1={f(mu_opt, 2)}$", f"重み付き二乗和の最小化 μ={mu_opt:.4f}")
+# 11(c) バリマックス：問題文の表を読み、numpy で基準を計算
+q11 = E.item("s28p11c")["question"]
+rows = [[float(v_) for v_ in m_.split("|")] for m_ in re.findall(r"\| [123] \|([^\n]*)\|", q11)]
+Am, Bm = np.array(rows)[:, :2], np.array(rows)[:, 2:]
+vm = lambda Lm: np.sum(np.mean(Lm ** 4, 0) - np.mean(Lm ** 2, 0) ** 2)
+E.check("s28p11c", np.allclose((Am ** 2).sum(1), (Bm ** 2).sum(1), atol=0.01), "共通性は（丸めを除き）等しい＝直交回転")
+E.choice("s28p11c", f"$B$ の $V={f(vm(Bm), 3)}$ は $A$ の $V={f(vm(Am), 3)}$ より大きく", f"V_A={vm(Am):.4f}, V_B={vm(Bm):.4f}")
 
 E.done()

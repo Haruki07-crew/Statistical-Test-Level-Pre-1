@@ -385,10 +385,150 @@ def p12():
     }
 
 
-def values():
+def _values():
     return {"s28p01": p01(), "s28p02": p02(), "s28p03": p03(), "s28p04": p04(), "s28p05": p05(),
             "s28p06": p06(), "s28p07": p07(), "s28p08": p08(), "s28p09": p09(), "s28p10": p10(),
             "s28p11": p11(), "s28p12": p12()}
+
+
+# ---- 2026-10-24 夕方：同じ型の監査で作り替えた小問の値（名前に接頭辞を付けて、ほかの小問の値とぶつからないようにする）
+def n01b():
+    n, tot, l0 = 40, 24, 0.4
+    xb = tot / n
+    zw = (xb - l0) / sqrt(xb / n)
+    zs = (xb - l0) / sqrt(l0 / n)
+    assert zw < 1.645 < zs
+    return {"n": n, "tot": tot, "xb": s(xb, 1), "l0": s(l0, 1), "d": s(xb - l0, 1), "sew": s(sqrt(xb / n), 5),
+            "zw": s(zw, 2), "zw4": s(zw, 4), "zs": s(zs, 2), "df": n - 1}
+
+
+def n04a():
+    v = (8.13 - 7.1 ** 2 / 10) / 9
+    sd = sqrt(v)
+    dl = 0.40
+    k = (1.645 + 1.282) * sd / dl
+    n = math.ceil(k * k)
+    assert n - 1 < k * k <= n
+    return {"dl": s(dl, 2), "v": s(v, 4), "sd": s(sd, 4), "k": s(k, 4), "n2": s(k * k, 2), "n": n,
+            "w2": math.ceil(((1.96 + 1.282) * sd / dl) ** 2), "wg": math.ceil(2 * k * k), "wn": math.ceil(k)}
+
+
+def n05b():
+    from math import comb
+    m, a, b = 8, 0, 4
+    N, k = 2 * m, a + b
+    pr = [comb(k, x) * comb(N - k, m - x) / comb(N, m) for x in range(k + 1)]
+    p = sum(pr[: a + 1])
+    p2 = sum(q for q in pr if q <= pr[a] + 1e-12)
+    return {"m": m, "a": a, "b": b, "N": N, "k": k, "ok": N - k, "den": comb(N, m), "num": comb(N - k, m),
+            "p": r(p, 3), "p_s": s(p, 3), "p4": s(p, 4), "p2": s(p2, 4)}
+
+
+def n07b():
+    c, sse, spe = 9, 30.0, 18.0
+    slof = sse - spe
+    F = (slof / (c - 3)) / (spe / (20 - c))
+    f611, f811, f617 = 3.09, 2.95, 2.70
+    assert F < f611
+    return {"c": c, "sse": s(sse, 1), "spe": s(spe, 1), "slof": s(slof, 1), "mlof": s(slof / 6, 3), "mpe": s(spe / 11, 4),
+            "F": s(F, 2), "F4": s(F, 4), "f611": s(f611, 2), "f811": s(f811, 2), "f617": s(f617, 2),
+            "w1": s((sse / 17) / (spe / 11), 2), "w3": s((slof / 6) / (sse / 17), 2)}
+
+
+def n08c():
+    pi, mu, e2, e16 = 0.20, 2.0, 0.1353, 0.2019
+    p0 = pi + (1 - pi) * e2
+    m = (1 - pi) * mu
+    v = (1 - pi) * mu * (1 + pi * mu)
+    return {"pi": s(pi, 2), "mu": s(mu, 1), "q": s(1 - pi, 2), "p0": s(p0, 3), "p04": s(p0, 4), "m": s(m, 2), "v": s(v, 2),
+            "w0": s((1 - pi) * e2, 3), "pois": s(e16, 3), "e2": e2, "e16": e16}
+
+
+def n09():
+    r_, mse = 4, 8.0
+    m = {(1, 1): 96.0, (1, 2): 100.0, (2, 1): 104.0, (2, 2): 112.0}
+    L = m[2, 2] - m[2, 1] - m[1, 2] + m[1, 1]
+    LA = m[2, 1] + m[2, 2] - m[1, 1] - m[1, 2]
+    ss = r_ * L * L / 4
+    fc = 4.75
+    out = {"r": r_, "N": 4 * r_, "mse": s(mse, 1), "dfe": 4 * (r_ - 1), "fc": fc, "L": s(L, 1), "LA": s(LA, 1),
+           "dA1": s(m[1, 2] - m[1, 1], 1), "dA2": s(m[2, 2] - m[2, 1], 1), "ss": s(ss, 1), "F": s(ss / mse, 2)}
+    for (i, j), v in m.items():
+        out[f"m{i}{j}"] = s(v, 1)
+    w = {"w1": L * L / 4, "w2": r_ * L * L, "w3": r_ * L * L / 2, "wA": r_ * LA * LA / 4}
+    for k_, v in w.items():
+        out[k_] = s(v, 1); out[k_ + "F"] = s(v / mse, 2)
+    assert ss / mse < fc and w["w2"] / mse > fc and w["wA"] / mse > fc and w["w1"] / mse < fc and w["w3"] / mse < fc
+    return out
+
+
+def n10a():
+    W, sd = [0.2, 0.3, 0.5], [4.0, 6.0, 5.0]
+    a = [w * x for w, x in zip(W, sd)]
+    sw = sum(a)
+    se = sw / 10
+    vp = sum(w * x * x for w, x in zip(W, sd)) / 100
+    out = {"sw": s(sw, 1), "v": s(sw * sw / 100, 4), "se": r(se, 3), "se_s": s(se, 3), "se4": s(se, 4),
+           "vp": s(vp, 4), "sep": s(sqrt(vp), 3)}
+    for i in range(3):
+        out[f"a{i + 1}"] = s(a[i], 1); out[f"n{i + 1}"] = s(100 * a[i] / sw, 1)
+    return out
+
+
+def n11a():
+    m0, m1, sd, c1, c2 = 50, 54, 2, 52, 53
+    ph = {0.5: 0.6915, 1.0: 0.8413, 1.5: 0.9332}
+    s1 = ph[(c1 - m0) / sd]
+    se2, sp2 = ph[(m1 - c2) / sd], ph[(c2 - m0) / sd]
+    assert ph[(m1 - c1) / sd] == s1
+    return {"m0": m0, "m1": m1, "sd": sd, "c1": c1, "c2": c2, "s1": s(s1, 4), "s2": s(se2, 4), "p2": s(sp2, 4),
+            "q1": s(1 - s1, 4), "q2": s(1 - se2, 4), "r2": s(1 - sp2, 4)}
+
+
+def n11b():
+    x = [1.0, 2.0, 3.0, 7.0, 8.0]
+    rr = [0.95, 0.90, 0.80, 0.10, 0.05]
+    sr = sum(rr); srx = sum(a * b for a, b in zip(rr, x))
+    hard = [v for v, q in zip(x, rr) if q > 0.5]
+    out = {"x": "(" + ",\\ ".join(s(v, 1) for v in x) + ")", "r": "(" + ",\\ ".join(s(v, 2) for v in rr) + ")",
+           "sr": s(sr, 2), "srx": s(srx, 2), "pi": s(sr / 5, 2), "mu": s(srx / sr, 2), "mu4": s(srx / sr, 4),
+           "w1": s(srx / 5, 2), "w2p": s(len(hard) / 5, 2), "w2m": s(sum(hard) / len(hard), 2), "w3": s(sr, 2), "w4": s(sum(x) / 5, 2)}
+    assert len({out["mu"], out["w1"], out["w2m"], out["w4"]}) == 4
+    return out
+
+
+def n11c():
+    B = [[0.85, 0.10], [0.80, 0.20], [0.10, 0.75]]
+    th = math.radians(30)
+    A = [[r(b0 * math.cos(th) + b1 * math.sin(th), 2), r(-b0 * math.sin(th) + b1 * math.cos(th), 2)] for b0, b1 in B]
+    def crit(L, sq=True):
+        tot = 0.0; parts = []
+        for k in range(2):
+            col = [row[k] ** 2 for row in L]
+            f4 = sum(v * v for v in col) / 3; m2 = sum(col) / 3
+            parts.append((f4, m2)); tot += f4 - (m2 * m2 if sq else 0)
+        return tot, parts
+    va, pa = crit(A); vb, pb = crit(B)
+    assert vb > va
+    out = {"va": s(va, 3), "vb": s(vb, 3), "va4": s(va, 4), "vb4": s(vb, 4),
+           "w2a": s(crit(A, False)[0], 3), "w2b": s(crit(B, False)[0], 3)}
+    for nm, L, P in (("a", A, pa), ("b", B, pb)):
+        for i in range(3):
+            for k in range(2):
+                out[f"{nm}{i + 1}{k + 1}"] = s(L[i][k], 2); out[f"s{nm}{i + 1}{k + 1}"] = s(L[i][k] ** 2, 4)
+        for k in range(2):
+            out[f"f{nm}{k + 1}"] = s(P[k][0], 4); out[f"m{nm}{k + 1}"] = s(P[k][1], 4)
+    return out
+
+
+def values():
+    v = _values()
+    pre = lambda p_, d: {p_ + k: x for k, x in d.items()}
+    v["s28p01"].update(pre("n1_", n01b())); v["s28p04"].update(pre("n4_", n04a())); v["s28p05"].update(pre("n5_", n05b()))
+    v["s28p07"].update(pre("n7_", n07b())); v["s28p08"].update(pre("n8_", n08c())); v["s28p09"] = pre("n9_", n09())
+    v["s28p10"].update(pre("n10_", n10a()))
+    v["s28p11"].update(pre("na_", n11a())); v["s28p11"].update(pre("nb_", n11b())); v["s28p11"].update(pre("nc_", n11c()))
+    return v
 
 
 if __name__ == "__main__":
