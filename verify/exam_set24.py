@@ -71,101 +71,7 @@ dd = (tt <= cens).sum(1)
 lh = dd / obs.sum(1)
 E.check("s24p01b", abs(np.var(np.log(lh)) * dd.mean() - 1) < 0.05, f"シミュレーションで V[log λ̂]·d ≈ {np.var(np.log(lh)) * dd.mean():.3f}")
 
-# ---- 大問2
-B = 1_000_000
-cost = np.array([0.5, 0.3, 0.2]) * B
-clicks = cost / np.array([80, 40, 160])
-E.choice("s24p02a", f"${f(B / clicks.sum(), 1)}$", "総費用÷総クリック数を直接計算")
-# (b) 費用制約のもとで分散を数値最小化
-N = np.array([40000, 10000])
-S = np.array([12, 20])
-c = np.array([100, 900])
-W = N / N.sum()
-C = 540000
-obj = lambda n2: (W[0] ** 2 * S[0] ** 2 / ((C - c[1] * n2) / c[0]) + W[1] ** 2 * S[1] ** 2 / n2)
-res = optimize.minimize_scalar(obj, bounds=(1, C / c[1] - 1), method="bounded", options={"xatol": 1e-8})
-E.num("s24p02b", round(res.x), f"分散を数値最小化した n2={res.x:.3f}")
-n2s = np.arange(300, 370)
-best = n2s[np.argmin([obj(k) for k in n2s])]
-E.check("s24p02b", best == 333, f"整数の総当たりでも n2={best}")
-
-# ---- 大問3
-phi = {0.8: 0.7881, 1.2: 0.8849, 1.6: 0.9452, 2.4: 0.9918, 0.6: 0.7257, 0.72: 0.7642}
-E.check("s24p03a", all(abs(stats.norm.cdf(k) - v) < 6e-5 for k, v in phi.items()), "Φ の表の値")
-Wv = rng.normal(10, 2.5, 1_000_000)
-Yv = (0.5 * Wv + 1) ** 2
-E.check("s24p03a", abs((Yv > 64).mean() - stats.norm.sf(1.6)) < 0.001, f"逆変換したシミュレーション {(Yv > 64).mean():.4f}")
-E.choice("s24p03a", f"${f(stats.norm.sf((2 * (8 - 1) - 10) / 2.5), 4)}$", "scipy norm.sf")
-sig = 1.2
-Ylog = np.exp(rng.normal(0.7, sig, 1_000_000))   # μ は任意（0.7）
-frac = (Ylog > Ylog.mean()).mean()
-E.check("s24p03b", abs(frac - stats.norm.sf(sig / 2)) < 0.002, f"シミュレーションで平均を上回る割合 {frac:.4f}")
-E.choice("s24p03b", f"${f(stats.lognorm(sig, scale=math.exp(-2.0)).sf(stats.lognorm(sig, scale=math.exp(-2.0)).mean()), 4)}$",
-         "scipy lognorm の平均と生存関数（μ=-2 でも同じ）")
-
-# ---- 大問4
-mx, my, sx, sy, rho, n = 50.0, 1.5, 10.0, 0.4, 0.8, 25
-a_, b_ = sp.symbols("a b", positive=True)
-g = b_ / a_
-grad = sp.Matrix([sp.diff(g, a_), sp.diff(g, b_)]).subs({a_: mx, b_: my})
-Sig = sp.Matrix([[sx ** 2, rho * sx * sy], [rho * sx * sy, sy ** 2]]) / n
-se_r = float(sp.sqrt((grad.T * Sig * grad)[0]))
-E.num("s24p04a", rnd(se_r * 100, 3), f"sympy の勾配ベクトルで SE={se_r * 100:.5f}")
-cov = [[sx ** 2, rho * sx * sy], [rho * sx * sy, sy ** 2]]
-XY = rng.multivariate_normal([mx, my], cov, size=(100_000, n))
-Rh = XY[:, :, 1].mean(1) / XY[:, :, 0].mean(1) * 100
-E.check("s24p04a", abs(Rh.std() - 0.0963) < 0.002, f"シミュレーションの SD {Rh.std():.4f}")
-pm = stats.binom(20, 0.1).pmf(range(6))
-E.check("s24p04b", all(f(pm[k], 4) in str(E.item("s24p04b")["question"]) for k in range(6)), "二項確率の表の値")
-pv = stats.binomtest(5, 20, 0.1, alternative="greater").pvalue
-E.choice("s24p04b", f"${f(pv, 3)}$で、有意水準5%で棄却するが1%", f"scipy binomtest p={pv:.5f}")
-E.check("s24p04b", 0.01 < pv < 0.05, "5% で有意・1% で有意でない")
-
-# ---- 大問5
-v1, v2 = 30 ** 2 / 12, 12 ** 2 / 10
-nu = (v1 + v2) ** 2 / (v1 ** 2 / 11 + v2 ** 2 / 9)
-lo = 32 - stats.t.ppf(0.975, math.floor(nu)) * math.sqrt(v1 + v2)
-E.num("s24p05a", rnd(lo, 2), f"scipy t.ppf(0.975,{math.floor(nu)}) で下限 {lo:.4f}")
-E.check("s24p05a", all(abs(stats.t.ppf(0.975, k) - v) < 6e-4 for k, v in [(14, 2.145), (15, 2.131), (20, 2.086), (21, 2.080)]), "t 表の値")
-# 被覆率のシミュレーション（ウェルチ区間がほぼ 95%）
-A = rng.normal(0, 30, (60_000, 12))
-Bm = rng.normal(0, 12, (60_000, 10))
-va, vb = A.var(1, ddof=1) / 12, Bm.var(1, ddof=1) / 10
-nn = np.floor((va + vb) ** 2 / (va ** 2 / 11 + vb ** 2 / 9))
-hw = stats.t.ppf(0.975, nn) * np.sqrt(va + vb)
-cover = (np.abs(A.mean(1) - Bm.mean(1)) <= hw).mean()
-E.check("s24p05a", abs(cover - 0.95) < 0.006, f"ウェルチ区間の被覆率 {cover:.4f}")
-tc = stats.t.ppf(0.975, 14)
-tb = 5.4 / (4.2 / tc)
-pt = 2 * stats.t.sf(tb, 14)
-E.choice("s24p05b", f"\\approx{f(tb, 2)}$で、両側p値は0.01と0.02の間", f"t={tb:.4f}, p={pt:.4f}")
-E.check("s24p05b", 0.01 < pt < 0.02, "両側 p 値が 0.01〜0.02")
-E.check("s24p05b", all(abs(stats.t.isf(q, 14) - v) < 6e-4 for q, v in [(0.05, 1.761), (0.01, 2.624), (0.005, 2.977)]), "t 表の値")
-
-# ---- 大問6
-xs = np.array([3.2, 4.0, 5.5, 3.6, 8.1, 4.4, 6.0, 5.2])
-nll = lambda p: np.inf if (p[1] <= 0 or p[0] > xs.min()) else -stats.expon(loc=p[0], scale=p[1]).logpdf(xs).sum()
-grid = [(t, b) for t in np.linspace(2.5, 3.2, 71) for b in np.linspace(1.0, 3.0, 201)]
-tb_best = min(grid, key=nll)
-E.check("s24p06a", abs(tb_best[0] - 3.2) < 1e-9 and abs(tb_best[1] - 1.8) < 0.011, f"格子で最大化した (θ,β)={tb_best}")
-E.choice("s24p06a", f"=({f(tb_best[0], 1)},\\{f(tb_best[1], 1)})$", "格子探索の最尤推定値")
-E.check("s24p06a", abs(stats.expon.fit(xs)[0] - 3.2) < 1e-9 and abs(stats.expon.fit(xs)[1] - 1.8) < 1e-9, "scipy expon.fit と一致")
-x = stats.expon(loc=3.2, scale=1.8).ppf(0.75)
-E.choice("s24p06b", f"${f(x, 2)}$", "scipy expon.ppf(0.75)")
-E.check("s24p06b", abs(math.log(0.25) + 1.3863) < 5e-5 and abs(math.log(0.75) + 0.2877) < 5e-5, "対数の値")
-
 # ---- 大問7
-k = 6
-Ek = sum(Fraction(k, k - j) for j in range(k))
-E.num("s24p07a", float(Ek), f"分数の和 {Ek}")
-cnt = []
-for _ in range(100_000):
-    seen, m = set(), 0
-    while len(seen) < k:
-        seen.add(int(rng.integers(k)))
-        m += 1
-    cnt.append(m)
-E.check("s24p07a", abs(np.mean(cnt) - float(Ek)) < 0.06, f"シミュレーション平均 {np.mean(cnt):.3f}")
 s_ = sp.symbols("s")
 lt = 48
 GK = sp.Rational(6, 10) * s_ + sp.Rational(3, 10) * s_ ** 2 + sp.Rational(1, 10) * s_ ** 3
@@ -178,135 +84,16 @@ Nn = rng.poisson(lt, 200_000)
 tot = np.array([rng.choice([1, 2, 3], p=[0.6, 0.3, 0.1], size=q).sum() for q in Nn[:40000]])
 E.check("s24p07b", abs(tot.std() - sdS) < 0.1, f"シミュレーション sd {tot.std():.3f}")
 
-# ---- 大問8：要約統計量を満たすデータを作って numpy で当てはめる
-n = 12
-x = rng.normal(size=n)
-x = (x - x.mean()) / np.sqrt(((x - x.mean()) ** 2).sum()) * np.sqrt(20) + 3
-X = np.column_stack([np.ones(n), x])
-e = rng.normal(size=n)
-e = e - X @ np.linalg.lstsq(X, e, rcond=None)[0]
-e = e / np.sqrt(e @ e) * np.sqrt(40)
-y = 2 + 1.5 * x + e
-bh = np.linalg.lstsq(X, y, rcond=None)[0]
-s2 = ((y - X @ bh) ** 2).sum() / (n - 2)
-x0 = np.array([1, 5.0])
-sem = np.sqrt(s2 * x0 @ np.linalg.inv(X.T @ X) @ x0)
-t10 = stats.t.ppf(0.975, 10)
-E.check("s24p08a", abs(bh[0] - 2) < 1e-9 and abs(bh[1] - 1.5) < 1e-9 and abs(s2 - 4) < 1e-9, "作ったデータの当てはめが問題文と一致")
-E.choice("s24p08a", f"({f(x0 @ bh - t10 * sem, 2)},\\{f(x0 @ bh + t10 * sem, 2)})", "行列計算と正確な t 点で区間")
-E.check("s24p08a", abs(t10 - 2.228) < 5e-4 and abs(stats.t.ppf(0.975, 11) - 2.201) < 5e-4, "t 表の値")
-# (b) 1 点除いて当てはめ直す定義と公式の一致（乱数データ）を確かめてから、表の値で計算
-H = X @ np.linalg.inv(X.T @ X) @ X.T
-i = 3
-bi = np.linalg.lstsq(np.delete(X, i, 0), np.delete(y, i), rcond=None)[0]
-cook_def = ((X @ bh - X @ bi) ** 2).sum() / (2 * s2)
-ei, hi = (y - X @ bh)[i], H[i, i]
-E.check("s24p08b", abs(cook_def - ei ** 2 * hi / (2 * s2 * (1 - hi) ** 2)) < 1e-10, "当てはめ直しの定義と公式が一致")
-D = {kk: ee ** 2 * hh / (2 * 4.0 * (1 - hh) ** 2) for kk, (ee, hh) in {"A": (3.6, 0.096), "B": (-1.5, 0.533), "C": (2.4, 0.283)}.items()}
-E.check("s24p08b", max(D, key=D.get) == "B" and D["B"] > 4 / 12 and D["C"] > 4 / 12 and D["A"] < 4 / 12, f"D={D}")
-E.choice("s24p08b", f"約{f(D['B'], 2)}）で、目安$4/n$を超えるのはBとC", "B が最大・B と C が超える")
-
-# ---- 大問9：直交計画を作り、目的関数を係数ごとに細かい格子で最小化
-b = np.array([2.4, -0.6, 1.1, 0.3, -1.8, 0.9])
-Q, _ = np.linalg.qr(rng.normal(size=(30, 6)))
-yv = Q @ b + (np.eye(30) - Q @ Q.T) @ rng.normal(size=30)
-E.check("s24p09a", np.allclose(Q.T @ yv, b), "X'y=b となるデータ")
-grid = np.linspace(-3, 3, 600001)
-est = []
-for j in range(6):
-    vals = (b[j] - grid) ** 2 + 1.2 * np.abs(grid) + 0.5 * grid ** 2
-    est.append(grid[np.argmin(vals)])
-est = np.array(est)
-full = lambda be: ((yv - Q @ be) ** 2).sum() + 1.2 * np.abs(be).sum() + 0.5 * (be ** 2).sum()
-E.check("s24p09a", all(full(est) <= full(est + d) + 1e-9 for d in rng.normal(0, 0.01, (200, 6))), "全体の目的関数でも局所的に最小")
-nz = int((np.abs(est) > 1e-4).sum())
-E.choice("s24p09a", f"0でない係数は{nz}個、$\\hat\\beta_1={f(est[0], 2)}$", f"格子最小化 {np.round(est, 4)}")
-
 # ---- 大問10
 tab = np.array([[30, 70], [20, 180]])
-v = np.repeat([1, 1, 0, 0], tab.ravel())
+vid = np.repeat([1, 1, 0, 0], tab.ravel())
 bz = np.repeat([1, 0, 1, 0], tab.ravel())
-ph = np.corrcoef(v, bz)[0, 1]
-E.choice("s24p10a", f"${f(ph, 3)}$", "0-1 データを展開した相関係数")
-chi = stats.chi2_contingency(tab, correction=False)[0]
-E.check("s24p10a", abs(chi / 300 - ph ** 2) < 1e-12, "χ²/n = φ²")
 ll0 = stats.bernoulli(50 / 300).logpmf(bz).sum()
 E.choice("s24p10b", f"${f(1 - (-112.0) / ll0, 3)}$", f"scipy の対数尤度 log L0={ll0:.4f}")
 E.check("s24p10b", abs(math.log(1 / 6) + 1.7918) < 5e-5 and abs(math.log(5 / 6) + 0.1823) < 5e-5, "対数の値")
 # 切片だけのロジスティック回帰を数値最大化しても同じ
 opt = optimize.minimize_scalar(lambda a: -(bz * a - np.log1p(np.exp(a))).sum())
 E.check("s24p10b", abs(-opt.fun - ll0) < 1e-6, "切片のみロジスティック回帰の最大対数尤度と一致")
-
-# ---- 大問11
-hum = [2, 4, 6, 8, 11, 19]
-bot = [13, 15, 17, 20, 24, 29]
-ks = stats.ks_2samp(hum, bot, method="exact")
-E.check("s24p11a", abs(ks.statistic - 5 / 6) < 1e-12 and abs(ks.pvalue - 0.0260) < 5e-5, f"scipy ks_2samp D={ks.statistic:.4f} p={ks.pvalue:.4f}")
-cntD = {}
-for cmb in itertools.combinations(range(12), 6):
-    sset = set(cmb)
-    fa = fb = Dm = 0
-    for ii in range(12):
-        if ii in sset:
-            fa += 1
-        else:
-            fb += 1
-        Dm = max(Dm, abs(fa - fb))
-    cntD[Dm] = cntD.get(Dm, 0) + 1
-tail = lambda d: sum(v for kk, v in cntD.items() if kk >= d) / 924
-E.check("s24p11a", [f(tail(d), 4) for d in (6, 5, 4, 3)] == ["0.0022", "0.0260", "0.1429", "0.4740"], "924 通りの総当たりで P(D≥d)")
-grid_x = np.arange(0, 31) + 0.5
-Fh = np.array([(np.array(hum) <= t).mean() for t in grid_x])
-Fb = np.array([(np.array(bot) <= t).mean() for t in grid_x])
-E.check("s24p11a", (Fh >= Fb).all(), "一般利用者の経験分布関数がつねに上（ボットは大きい側）")
-E.choice("s24p11a", "$D=5/6$で、p値は0.0260なので有意水準5%で棄却する", "正解の記述")
-fdiff = lambda z: stats.norm.pdf(z, 3, 2) - stats.norm.pdf(z, 0, 1)
-r1 = optimize.brentq(fdiff, 0, 3)
-r2 = optimize.brentq(fdiff, -6, -1)
-zz = np.linspace(-8, 8, 16001)
-botreg = fdiff(zz) > 0
-E.check("s24p11b", ((zz > r1) | (zz < r2) == botreg)[np.abs(zz - r1) > 1e-3][np.abs(zz[np.abs(zz - r1) > 1e-3] - r2) > 1e-3].all(), "密度の比較でボット領域が2根の外側")
-E.choice("s24p11b", f"$z>{f(r1, 2)}$または$z<{f(r2, 2)}$", f"brentq の根 {r1:.4f}, {r2:.4f}")
-
-# ---- 大問12
-V = np.column_stack([np.ones(3) / np.sqrt(3), np.array([1, 0, -1]) / np.sqrt(2), np.array([1, -2, 1]) / np.sqrt(6)])
-Sg = V @ np.diag([4.0, 1.0, 0.25]) @ V.T
-xv = np.array([1.5, 0.5, 2.5])
-d2 = xv @ np.linalg.solve(Sg, xv)
-E.num("s24p12a", rnd(d2, 2), f"Σ を組み立てて x'Σ^-1 x={d2:.5f}")
-E.check("s24p12a", np.allclose(V.T @ V, np.eye(3)) and np.allclose(np.linalg.eigvalsh(Sg), [0.25, 1, 4]), "固有ベクトルが正規直交で固有値が一致")
-Rfull = np.eye(4)
-Cx = np.array([[0.5, 0.3], [0.2, 0.4]])
-Rfull[:2, 2:] = Cx
-Rfull[2:, :2] = Cx.T
-E.check("s24p12b", np.linalg.eigvalsh(Rfull).min() > 0, "4 変数の相関行列が正定値")
-Mm = np.linalg.inv(Rfull[:2, :2]) @ Rfull[:2, 2:] @ np.linalg.inv(Rfull[2:, 2:]) @ Rfull[2:, :2]
-rho1 = math.sqrt(max(np.linalg.eigvals(Mm).real))
-E.choice("s24p12b", f"${f(rho1, 3)}$", f"R_xx^-1 R_xy R_yy^-1 R_yx の固有値 ρ1={rho1:.4f}")
-Z = rng.multivariate_normal(np.zeros(4), Rfull, size=200_000)
-from numpy.linalg import svd  # noqa: E402
-Zs = (Z - Z.mean(0)) / Z.std(0)
-Xs, Ys = Zs[:, :2], Zs[:, 2:]
-Lx = np.linalg.cholesky(np.cov(Xs.T))
-Ly = np.linalg.cholesky(np.cov(Ys.T))
-Kmat = np.linalg.inv(Lx) @ np.cov(Xs.T, Ys.T)[:2, 2:] @ np.linalg.inv(Ly).T
-E.check("s24p12b", abs(svd(Kmat)[1][0] - rho1) < 0.005, f"シミュレーションの第1正準相関 {svd(Kmat)[1][0]:.4f}")
-
-# ---- 大問13：±1 の列で ABC の符号を作り、日の区分と効果の列の直交性を確かめる
-runs = list(itertools.product([-1, 1], repeat=3))
-name = lambda r_: "".join(ch for ch, v_ in zip("abc", r_) if v_ == 1) or "(1)"
-abc = {name(r_): r_[0] * r_[1] * r_[2] for r_ in runs}
-day1 = sorted(nm for nm, sg in abc.items() if sg == abc["(1)"])
-E.check("s24p13a", day1 == sorted(["(1)", "ab", "ac", "bc"]), f"(1) と同じ ABC 符号の組 {day1}")
-blk = np.array([1 if abc[name(r_)] == abc["(1)"] else -1 for r_ in runs])
-cols = {}
-for kk in range(1, 4):
-    for comb in itertools.combinations(range(3), kk):
-        cols["".join("ABC"[j] for j in comb)] = np.array([np.prod([r_[j] for j in comb]) for r_ in runs])
-conf = [kk for kk, col in cols.items() if abs(col @ blk) == 8]
-orth = [kk for kk, col in cols.items() if col @ blk == 0]
-E.check("s24p13a", conf == ["ABC"] and len(orth) == 6, f"日と交絡する効果 {conf}、直交する効果 {orth}")
-E.choice("s24p13a", "\\{(1),\\ab,\\ac,\\bc\\}$、日と交絡するのはABC", "正解の組")
 
 # ---- 大問14：構造方程式のシミュレーション
 Nn = 2_000_000
@@ -320,5 +107,178 @@ Ydo = 0.3 * (Xc + 1) + 0.5 * Zc + eY
 E.check("s24p14a", abs(slope - 0.708 / 1.36) < 0.003, f"単回帰の傾き {slope:.4f}")
 E.check("s24p14a", abs(coef[1] - 0.3) < 0.003 and abs((Ydo - Yc).mean() - 0.3) < 1e-9, f"重回帰の係数 {coef[1]:.4f}、介入による変化 0.3")
 E.choice("s24p14a", f"約{f(slope, 2)}で、$Z$も説明変数に加えた重回帰の$X$の係数0.3が因果効果", "シミュレーションの傾き")
+
+# ---- 作り替えた小問・検算を書き直した小問（2026-10-24）
+# 大問2 (a) 混合分布のシミュレーションと全分散の公式
+promo = rng.random(2_000_000) < 0.3
+orders = np.where(promo, rng.normal(50, 10, promo.size), rng.normal(20, 5, promo.size))
+v2a = 0.3 * 100 + 0.7 * 25 + 0.3 * 0.7 * (50 - 20) ** 2
+E.choice("s24p02a", f"${f(math.sqrt(v2a), 2)}$", "全分散（平均の差の 2 乗 × p(1−p) の形）")
+E.check("s24p02a", abs(orders.std() - math.sqrt(v2a)) < 0.03, f"シミュレーションの標準偏差 {orders.std():.3f}")
+# (b) 回答者 800 人分のウェイトを並べて直接計算
+w2b = np.repeat([50.0, 200.0], [400, 400])
+deff = len(w2b) * (w2b ** 2).sum() / w2b.sum() ** 2
+E.num("s24p02b", round(len(w2b) / deff), f"ウェイトの配列から deff={deff:.4f}")
+E.check("s24p02b", abs(w2b.sum() ** 2 / (w2b ** 2).sum() - len(w2b) / deff) < 1e-9, "有効標本サイズ (Σw)²/Σw² と一致")
+
+# 大問3 (a) scipy で log 比の分布、シミュレーション
+for zz_, pv_ in ((0.35, 0.6368), (0.49, 0.6879), (0.69, 0.7549)):
+    E.check("s24p03a", abs(stats.norm.cdf(zz_) - pv_) < 5e-5, f"Φ({zz_}) の表の値")
+y1, y2 = np.exp(rng.normal(0, 1, 2_000_000)), np.exp(rng.normal(0, 1, 2_000_000))
+p3a = stats.norm.sf(math.log(2) / math.sqrt(2))
+E.check("s24p03a", abs(np.mean(y1 >= 2 * y2) - p3a) < 0.002, f"シミュレーション {np.mean(y1 >= 2 * y2):.4f}、正確な値 {p3a:.4f}")
+E.choice("s24p03a", f"${f(1 - 0.6879, 3)}$", "z=0.49 で表を使った値")
+# (b) 相関のある 2 変量正規でマハラノビス距離の 2 乗の分布
+Sg = np.array([[1.0, 0.7], [0.7, 2.0]])
+Xm = rng.multivariate_normal([0, 0], Sg, 1_000_000)
+D2 = np.einsum("ij,jk,ik->i", Xm, np.linalg.inv(Sg), Xm)
+E.check("s24p03b", abs(np.mean(D2 <= 5.99) - 0.95) < 0.002 and abs(np.mean(D2 <= 3.84) - stats.chi2.cdf(3.84, 2)) < 0.002,
+        f"シミュレーション：D²≤5.99 の割合 {np.mean(D2 <= 5.99):.4f}、D²≤3.84 の割合 {np.mean(D2 <= 3.84):.4f}")
+E.check("s24p03b", abs(math.exp(-1.92) - 0.1466) < 5e-5 and abs(stats.chi2.isf(0.05, 2) - 5.99) < 0.005, "e^{-1.92} と χ²(2) の点")
+E.choice("s24p03b", f"$c=5.99$。$c=3.84$の楕円に入るのは約{f(stats.chi2.cdf(3.84, 2), 3)}", "scipy chi2(2)")
+
+# 大問4 (a) 長い期間のシミュレーションで比の和と比の平均
+days = 2_000_000
+big_ = rng.random(days) < 0.5
+Iv = np.where(big_, 9000, 1000)
+Sv = rng.binomial(Iv, np.where(big_, 0.01, 0.05))
+E.num("s24p04a", rnd(Sv.sum() / Iv.sum(), 3), f"200 万日のシミュレーションの比の和 {Sv.sum() / Iv.sum():.5f}")
+E.check("s24p04a", abs((Sv / Iv).mean() - 0.03) < 0.0005, f"比の平均は {(Sv / Iv).mean():.4f}（解説の 0.03）")
+# (b) scipy の chisquare
+obs4 = np.array([14, 18, 22, 25, 24, 19, 18])
+cs4 = stats.chisquare(obs4)
+E.check("s24p04b", abs(stats.chi2.isf(0.05, 6) - 12.59) < 0.005 and abs(stats.chi2.isf(0.05, 7) - 14.07) < 0.005, "χ² の点")
+E.choice("s24p04b", f"統計量は{f(cs4.statistic, 2)}、自由度6で12.59を下回る", f"scipy chisquare（p 値 {cs4.pvalue:.3f}）")
+
+# 大問5 (a) 配分を総当たりして半幅を最小化
+hw5 = {na: 1.96 * math.sqrt(3600 / na + 900 / (180 - na)) for na in range(1, 180)}
+best5 = min(hw5, key=hw5.get)
+E.check("s24p05a", best5 == 120, f"総当たりで最小の n_A={best5}")
+E.num("s24p05a", rnd(hw5[best5], 2), "総当たりの最小の半幅")
+# (b) scipy の ttest_ind_from_stats（等分散／ウェルチ）と、プールした検定の第 1 種の誤りのシミュレーション
+tp5 = stats.ttest_ind_from_stats(20, 30, 10, 0, 12, 30, equal_var=True)
+tw5 = stats.ttest_ind_from_stats(20, 30, 10, 0, 12, 30, equal_var=False)
+E.check("s24p05b", tp5.pvalue < 0.05 < tw5.pvalue, f"プール p={tp5.pvalue:.4f}、ウェルチ p={tw5.pvalue:.4f}")
+E.check("s24p05b", abs(stats.t.ppf(0.975, 38) - 2.024) < 5e-4 and abs(stats.t.ppf(0.975, 10) - 2.228) < 5e-4, "t の点")
+a5 = rng.normal(0, 30, (100_000, 10))
+b5 = rng.normal(0, 12, (100_000, 30))
+sp5 = np.sqrt((9 * a5.var(1, ddof=1) + 29 * b5.var(1, ddof=1)) / 38 * (1 / 10 + 1 / 30))
+rej5 = np.mean(np.abs(a5.mean(1) - b5.mean(1)) / sp5 > stats.t.ppf(0.975, 38))
+E.check("s24p05b", rej5 > 0.1, f"等平均のもとでプールした t 検定が棄却する割合 {rej5:.3f}（名目 0.05）")
+E.choice("s24p05b", f"プールした$t={f(20 / math.sqrt((9 * 900 + 29 * 144) / 38 * (1 / 10 + 1 / 30)), 2)}$は5%で有意、ウェルチの$t={f(tw5.statistic, 2)}$は有意でない", "scipy の t 統計量")
+
+# 大問6 (a) T(T−1)/n² の不偏性を正確な和で、分散の比較をシミュレーションで
+lam6, n6 = 3.0, 10
+Tk = np.arange(0, 200)
+pT = stats.poisson.pmf(Tk, n6 * lam6)
+E.check("s24p06a", abs((Tk * (Tk - 1) / n6 ** 2 * pT).sum() - lam6 ** 2) < 1e-9 and abs(((Tk / n6) ** 2 * pT).sum() - lam6 ** 2 - lam6 / n6) < 1e-9,
+        "E[T(T−1)/n²]=λ²、E[X̄²]=λ²+λ/n を正確な和で確認")
+X6 = rng.poisson(lam6, (200_000, n6))
+u1 = X6.sum(1) * (X6.sum(1) - 1) / n6 ** 2
+u2 = (X6 * (X6 - 1)).mean(1)
+E.check("s24p06a", abs(u2.mean() - 9) < 0.03 and u1.var() < u2.var(), f"どちらも不偏で、分散は T(T−1)/n² {u1.var():.3f} < 平均 {u2.var():.3f}")
+xs6 = np.array([2, 5, 1, 3, 4, 2, 6, 3, 2, 2])
+E.choice("s24p06a", f"T(T-1)/n^2={f(xs6.sum() * (xs6.sum() - 1) / 100, 2)}$が一様最小分散不偏推定量", "データから計算")
+# (b) パーセンタイル法：表の 2.5% 点と 97.5% 点（実際のブートストラップで手順も確認）
+E.choice("s24p06b", "$(41.0,\\58.5)$", "パーセンタイル法の定義")
+samp6 = rng.poisson(48, 40)
+boot = np.median(rng.choice(samp6, (2000, 40)), axis=1)
+E.check("s24p06b", np.quantile(boot, 0.025) <= np.median(samp6) <= np.quantile(boot, 0.975), "乱数データのブートストラップで、パーセンタイル区間が標本中央値を含む（手順の確認）")
+
+# 大問7 (a) シミュレーションと正確な値
+draw7 = rng.integers(0, 6, (400_000, 10))
+ndist = np.array([len(set(r_)) for r_ in draw7[:100_000]])
+E.num("s24p07a", rnd(6 * (1 - 0.1615), 3), "6(1−(5/6)^10)（問題文の値で）")
+E.check("s24p07a", abs(ndist.mean() - 6 * (1 - (5 / 6) ** 10)) < 0.01 and abs((5 / 6) ** 10 - 0.1615) < 5e-5, f"シミュレーション {ndist.mean():.4f}")
+
+# 大問8 (a) 要約統計量を満たすデータを作って numpy で傾きの区間
+n8 = 12
+x8 = rng.normal(size=n8)
+x8 = (x8 - x8.mean()) / np.sqrt(((x8 - x8.mean()) ** 2).sum()) * np.sqrt(20) + 3
+X8 = np.column_stack([np.ones(n8), x8])
+e8 = rng.normal(size=n8)
+e8 = e8 - X8 @ np.linalg.lstsq(X8, e8, rcond=None)[0]
+e8 = e8 / np.sqrt(e8 @ e8) * np.sqrt(40)
+y8 = 2 + 1.5 * x8 + e8
+bh8 = np.linalg.lstsq(X8, y8, rcond=None)[0]
+s28 = ((y8 - X8 @ bh8) ** 2).sum() / (n8 - 2)
+se8 = math.sqrt(s28 * np.linalg.inv(X8.T @ X8)[1, 1])
+t10 = stats.t.ppf(0.975, 10)
+E.check("s24p08a", abs(bh8[1] - 1.5) < 1e-9 and abs(s28 - 4) < 1e-9 and abs(t10 - 2.228) < 5e-4, "作ったデータの当てはめが問題文と一致")
+E.choice("s24p08a", f"({f(1.5 - t10 * se8, 2)},\\{f(1.5 + t10 * se8, 2)})", "行列計算と正確な t 点で区間")
+# (b) ブルーシュ・ペーガン：補助回帰の nR² と、帰無仮説のもとでの分布のシミュレーション
+E.choice("s24p08b", f"{12}\\times0.42={f(12 * 0.42, 2)}$で、自由度1の3.84を上回る", "nR² と自由度 1")
+bps = []
+for _ in range(20000):
+    yy8 = 2 + 1.5 * x8 + rng.normal(0, 2, n8)
+    ee = yy8 - X8 @ np.linalg.lstsq(X8, yy8, rcond=None)[0]
+    g = ee ** 2
+    gh = X8 @ np.linalg.lstsq(X8, g, rcond=None)[0]
+    bps.append(n8 * (1 - ((g - gh) ** 2).sum() / ((g - g.mean()) ** 2).sum()))
+E.check("s24p08b", np.mean(np.array(bps) > 5.04) < 0.06, f"等分散のもとで nR²>5.04 となる割合 {np.mean(np.array(bps) > 5.04):.4f}（小さい）")
+
+# 大問9 直交計画で C_p を全 64 通りの部分集合で計算
+b9 = np.array([2.1, -0.9, 1.5, 0.3, -1.8, 0.6])
+rss_full = 50.0   # 任意（C_p の比較には差だけが効く）
+best9 = min(itertools.chain.from_iterable(itertools.combinations(range(6), k) for k in range(7)),
+            key=lambda S_: rss_full + (b9 ** 2).sum() - (b9[list(S_)] ** 2).sum() + 2 * len(S_))
+E.check("s24p09a", tuple(best9) == (0, 2, 4) and [j for j in range(6) if abs(b9[j]) > 1.96] == [0], f"C_p 最小の組 {[j + 1 for j in best9]}")
+E.choice("s24p09a", "$C_p$：$x_1,x_3,x_5$、$t$検定：$x_1$", "全部分集合の C_p")
+
+# 大問10 (a) リスク比とオッズ比、列を固定した抽出のシミュレーション
+E.choice("s24p10a", f"リスク比{f((30 / 100) / (20 / 200), 2)}、オッズ比{f(30 * 180 / (70 * 20), 2)}。列の合計を固定した抽出では、オッズ比は同じ意味で推定できるが、リスク比は推定できない", "定義どおり")
+# 拡散 50・非拡散 250 を母集団から別々に抽出しても、オッズ比は同じ値に近づき、見かけの「拡散する割合」は抽出数で決まる
+pop_v = np.repeat([1, 1, 0, 0], [3000, 7000, 2000, 18000])
+pop_s = np.repeat([1, 0, 1, 0], [3000, 7000, 2000, 18000])
+ors, rrs = [], []
+for _ in range(2000):
+    cs_ = np.concatenate([rng.choice(pop_v[pop_s == 1], 500), rng.choice(pop_v[pop_s == 0], 500)])
+    ss_ = np.repeat([1, 0], [500, 500])
+    a_, b_ = ((cs_ == 1) & (ss_ == 1)).sum(), ((cs_ == 1) & (ss_ == 0)).sum()
+    c_, d_ = ((cs_ == 0) & (ss_ == 1)).sum(), ((cs_ == 0) & (ss_ == 0)).sum()
+    ors.append(np.log(a_ * d_ / (b_ * c_)))
+    rrs.append((a_ / (a_ + b_)) / (c_ / (c_ + d_)))
+E.check("s24p10a", abs(math.exp(np.mean(ors)) - 30 * 180 / (70 * 20)) < 0.1 and abs(np.median(rrs) - 3.0) > 0.5,
+        f"列固定の抽出で OR≈{math.exp(np.mean(ors)):.3f}（母集団 3.857）、見かけのリスク比 {np.median(rrs):.3f}（母集団 3.00 と違う）")
+
+# 大問11 (a) scipy の kendalltau と総当たり
+kt = stats.kendalltau([1, 2, 3, 4, 5, 6, 7], [2, 1, 4, 3, 6, 7, 5])
+E.choice("s24p11a", f"一致対17、不一致対4で、$\\tau={f(kt.statistic, 3)}$", "scipy kendalltau")
+E.check("s24p11a", f(stats.spearmanr([1, 2, 3, 4, 5, 6, 7], [2, 1, 4, 3, 6, 7, 5])[0], 3) == "0.821", "スピアマン 0.821（解説）")
+# (b) 期待コストを numpy で
+tp11 = np.array([0.95, 0.88, 0.75, 0.50])
+fp11 = np.array([0.30, 0.15, 0.05, 0.01])
+cost11 = 0.10 * (1 - tp11) * 5 + 0.90 * fp11 * 1
+E.choice("s24p11b", f"$T_{int(np.argmin(cost11)) + 1}$：期待コストが約{f(cost11.min(), 3)}で最小", "numpy で期待コスト")
+E.check("s24p11b", int(np.argmax(tp11 - fp11)) == 1 and int(np.argmin(0.1 * (1 - tp11) + 0.9 * fp11)) == 3, "ユーデン指数は T2、誤判定率は T4 が最良（誤答の根拠）")
+
+# 大問12 (a) ジャカード係数（scipy の距離）
+A12 = np.array([1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0], bool)
+B12 = np.array([1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0], bool)
+from scipy.spatial.distance import jaccard, hamming  # noqa: E402
+E.num("s24p12a", rnd(1 - jaccard(A12, B12), 3), "scipy の jaccard 距離から")
+E.check("s24p12a", abs((1 - hamming(A12, B12)) - 0.75) < 1e-12, "単純一致係数 0.75（解説）")
+# (b) 二重中心化した行列の固有値
+D12 = np.array([[0, 2, 5], [2, 0, 2], [5, 2, 0]], float)
+J12 = np.eye(3) - 1 / 3
+B12m = -0.5 * J12 @ (D12 ** 2) @ J12
+ev12 = np.sort(np.linalg.eigvalsh(B12m))[::-1]
+E.check("s24p12b", np.allclose(ev12, [12.5, 0, -1.5]) and abs(B12m[1, 1] + 1) < 1e-12 and abs(B12m[0, 2] + 6.5) < 1e-12, f"固有値 {np.round(ev12, 6)}、b_QQ={B12m[1, 1]}")
+E.choice("s24p12b", "負の固有値があり、この非類似度はユークリッド空間の点の距離としては正確に表せない", "固有値の符号")
+
+# 大問13 データを作って分散分析し、平方和と η²
+from itertools import product  # noqa: E402
+SS13 = {"A": 48, "B": 12, "C": 3, "AB": 9, "AC": 1, "BC": 2, "ABC": 1, "E": 24}
+E.check("s24p13a", sum(SS13.values()) == 100, "平方和の合計")
+E.choice("s24p13a", f"\\eta^2={f(48 / 100, 3)}$、偏$\\eta^2={f(48 / 72, 3)}$、$F={f(48 / 3, 1)}", "定義どおり")
+# 2^3×2 回のデータで、偏 η² = F·1/(F·1+8) が成り立つことを確認
+runs = np.array(list(product([-1, 1], repeat=3)) * 2, float)
+y13 = 0.5 + 0.8 * runs[:, 0] + 0.3 * runs[:, 1] + rng.normal(0, 0.4, 16)
+Xd = np.column_stack([np.ones(16), runs, runs[:, 0] * runs[:, 1], runs[:, 0] * runs[:, 2], runs[:, 1] * runs[:, 2], runs.prod(1)])
+coef13 = np.linalg.lstsq(Xd, y13, rcond=None)[0]
+ssA = 16 * coef13[1] ** 2
+ssE = ((y13 - Xd @ coef13) ** 2).sum()
+F13 = ssA / (ssE / 8)
+E.check("s24p13a", abs(ssA / (ssA + ssE) - F13 / (F13 + 8)) < 1e-12, "乱数データで 偏η² = F/(F+8)")
 
 E.done()
