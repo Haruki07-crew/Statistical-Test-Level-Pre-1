@@ -131,15 +131,16 @@ E.choice("s05p04b", f"${f(eff_info, 3)}$", "情報量の比（0/1 データ ÷ �
 E.check("s05p04b", abs(eff_sim - eff_info) < 0.05, f"シミュレーションの分散比 {eff_sim:.3f}")
 distinct_rounded("s05p04b")
 
-# ---- 大問5：バートレット検定（不偏分散がちょうど 4, 9, 14 のデータを作り scipy で）
-samples = []
-for v in (4.0, 9.0, 14.0):
-    z = rng.standard_normal(11)
-    z = (z - z.mean()) / z.std(ddof=1)
-    samples.append(10 + math.sqrt(v) * z)
-bt = stats.bartlett(*samples).statistic
-E.num("s05p05a", rnd(bt, 2), "scipy.stats.bartlett")
-E.check("s05p05a", all(abs(math.log(a) - b) < 5e-5 for a, b in ((4, 1.3863), (9, 2.1972), (14, 2.6391))), "示した対数の値")
+# ---- 大問5：2 群の相関係数の比較（正確な artanh と、2 変量正規のシミュレーションで帰無分布を確認）
+z_stat = (math.atanh(0.5) - math.atanh(0.3)) / math.sqrt(1 / 100 + 1 / 80)
+E.num("s05p05a", rnd(z_stat, 2), "math.atanh で z 変換して標準化")
+E.check("s05p05a", abs(math.atanh(0.5) - 0.5493) < 5e-5 and abs(math.atanh(0.3) - 0.3095) < 5e-5, "示した z 変換の値")
+zz = []
+for _ in range(20000):
+    a1 = rng.multivariate_normal([0, 0], [[1, 0.4], [0.4, 1]], 103)
+    a2 = rng.multivariate_normal([0, 0], [[1, 0.4], [0.4, 1]], 83)
+    zz.append((math.atanh(np.corrcoef(a1.T)[0, 1]) - math.atanh(np.corrcoef(a2.T)[0, 1])) / math.sqrt(1 / 100 + 1 / 80))
+E.check("s05p05a", abs(np.std(zz) - 1) < 0.03, f"帰無仮説のもとで統計量の標準偏差 {np.std(zz):.3f}≈1")
 
 # ---- 大問6：用量反応
 tab = np.array([[10, 16, 22], [30, 24, 18]])
@@ -183,19 +184,13 @@ E.check("s05p08a", abs(c1[3] - c2[3]) < 1e-9 and np.allclose(X1 @ c1, X2 @ c2), 
 E.check("s05p08a", np.linalg.matrix_rank(Xall) == 4, "3つのダミー+切片は階数落ち（全ダミーの記述は誤り）")
 rn = np.linalg.lstsq(Xnum, yy, rcond=None)[0]
 E.check("s05p08a", not np.allclose(Xnum @ rn, X1 @ c1), "0,1,2 の数値化は当てはめが変わる（数値化の記述は誤り）")
-x = np.array([1, 2, 3, 4, 5.0])
-y = np.array([3, 4, 8, 7, 13.0])
-b_all = np.polyfit(x, y, 1)
-b4 = np.polyfit(x[:4], y[:4], 1)[0]
-E.num("s05p08b", rnd(b4, 2), "患者5を除いて numpy で当てはめ直した傾き")
-E.check("s05p08b", np.allclose(b_all, [2.3, 0.1]), "問題文の直線 0.1+2.3x")
-E.check("s05p08c", abs(stats.norm.cdf(1) - 0.8413) < 5e-5 and abs(stats.norm.pdf(1) - 0.2420) < 5e-5, "Φ(1), φ(1) の値")
+E.check("s05p08b", abs(stats.norm.cdf(1) - 0.8413) < 5e-5 and abs(stats.norm.pdf(1) - 0.2420) < 5e-5, "Φ(1), φ(1) の値")
 Ey = (integrate.quad(lambda v: 1.0 * stats.norm.pdf(v, 2, 1), -np.inf, 1.0)[0]
       + integrate.quad(lambda v: v * stats.norm.pdf(v, 2, 1), 1.0, np.inf)[0])
-E.choice("s05p08c", f"${f(Ey, 3)}$", "E[max(Y*,L)] を数値積分")
+E.choice("s05p08b", f"${f(Ey, 3)}$", "E[max(Y*,L)] を数値積分")
 ys = np.maximum(rng.normal(2, 1, 2_000_000), 1.0)
-E.check("s05p08c", abs(ys.mean() - Ey) < 0.003, f"シミュレーション {ys.mean():.4f}")
-distinct_rounded("s05p08c")
+E.check("s05p08b", abs(ys.mean() - Ey) < 0.003, f"シミュレーション {ys.mean():.4f}")
+distinct_rounded("s05p08b")
 
 
 # ---- 大問9：DAG（線形ガウス SEM の偏相関で条件付き独立を判定）
@@ -260,6 +255,10 @@ obs, obs_v = 240.0, 60.0
 post = (prior_m / prior_v + obs / obs_v) / (1 / prior_v + 1 / obs_v)
 E.num("s05p12a", rnd(post, 1), "正規事前×正規尤度の事後平均として")
 
+e_ = np.array([1, 2, 1, -1, -2, -1, 1, -1.0])
+E.num("s05p12b", rnd(np.sum(np.diff(e_) ** 2) / np.sum(e_ ** 2), 2), "numpy の diff で DW 比")
+E.check("s05p12b", abs(e_.sum()) < 1e-12, "残差の和が 0（切片ありの回帰と整合）")
+
 # ---- 大問13：臨床研究
 m0 = stats.binom.pmf(5, 10, 0.2)
 m1 = integrate.quad(lambda p: stats.binom.pmf(5, 10, p), 0, 1)[0]
@@ -269,22 +268,12 @@ E.check("s05p13a", sp.integrate(ps_ ** 5 * (1 - ps_) ** 5, (ps_, 0, 1)) == sp.Ra
 distinct_rounded("s05p13a")
 
 
-def aic(ll, k):
-    return -2 * ll + 2 * k
-
-
-def aicc(ll, k, n):
-    return aic(ll, k) + 2 * k * (k + 1) / (n - k - 1)
-
-
-A_, B_ = (-40.0, 3), (-36.2, 6)
-st = [aic(*B_) < aic(*A_) and aicc(*A_, 20) < aicc(*B_, 20),    # 0 正しい
-      2 * 3 * 4 / 16 == 2 * 6 * 7 / 13,                        # 1 補正項が k によらない？
-      aicc(*B_, 1000) - aic(*B_) > aicc(*B_, 20) - aic(*B_),    # 2 n が大きいほど差が大きい？
-      False,                                                   # 3 大きいほどよい（定義上誤り）
-      aicc(*B_, 20) < aicc(*A_, 20)]                           # 4 B の方が小さい？
-E.check("s05p13b", st == [True, False, False, False, False], f"記述の真偽 {st}（正しいのは選択肢0だけ）")
-E.check("s05p13b", E.item("s05p13b")["answer"] == 0 and abs(aicc(*B_, 20) - aicc(*A_, 20) - 3.36) < 0.005, "差 3.36 の確認")
+kl = integrate.quad(lambda x_: stats.norm.pdf(x_, 130, 15) * (stats.norm.logpdf(x_, 130, 15) - stats.norm.logpdf(x_, 125, 12)), -np.inf, np.inf)[0]
+E.choice("s05p13b", f"${f(kl, 3)}$", "log p − log q を p で数値積分")
+xs_ = rng.normal(130, 15, 2_000_000)
+E.check("s05p13b", abs(np.mean(stats.norm.logpdf(xs_, 130, 15) - stats.norm.logpdf(xs_, 125, 12)) - kl) < 0.003, "モンテカルロ積分")
+E.check("s05p13b", abs(math.log(0.8) + 0.2231) < 5e-5, "log 0.8 の値")
+distinct_rounded("s05p13b")
 pv = [0.035, 0.002, 0.21, 0.019, 0.047, 0.009, 0.031]
 ps = np.sort(pv)
 m = len(pv)

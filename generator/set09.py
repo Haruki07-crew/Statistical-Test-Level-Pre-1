@@ -164,11 +164,11 @@ def p05():
         "lower": M + n - m,
         "th1": s(th1, 1), "th2": s(th2, 1), "g1": s(g1, 1), "g2": s(g2, 1), "eta": s(eta, 1),
         "a1": s(a1, 1), "a2": s(a2, 1), "e13": s(ex[1.3], 4), "em03": s(ex[-0.3], 4), "em13": s(ex[-1.3], 4), "e03": s(ex[0.3], 4),
-        "F1": s(F1, 4), "F2": s(F2, 4), "pm": r(pm, 3), "pm4": s(pm, 4), "d1": s(1 + ex[-a1], 4), "d2": s(1 + ex[-a2], 4),
+        "F1": s(F1, 4), "F2": s(F2, 4), "pm": r(pm, 3), "pm3": s(pm, 3), "pm4": s(pm, 4), "d1": s(1 + ex[-a1], 4), "d2": s(1 + ex[-a2], 4),
         "w_F2": s(F2, 3), "w_hi": s(1 - F2, 3), "w_lo": s(F1, 3),
         "p2e": pe[2], "p3e": pe[3], "p4e": pe[4], "ph": ph, "qh": qh,
         "Gp": s(Gp, 4), "gp1": s(2 * pe[2] * qh, 4), "gp2": s(3 * pe[3] * qh ** 2, 4), "gp3": s(4 * pe[4] * qh ** 3, 4),
-        "P1": s(p1, 3), "P1f": s(p1, 5), "w_nop": s(Gp, 3), "w_G0": s(G0, 3), "w_q": s(Gp * qh, 3), "w_P2": s(p2, 3),
+        "P1": s(p1, 3), "P1f": s(p1, 5), "w_nop": s(Gp, 3), "w_G0": s(G0, 3), "w_non": s(sum(v * ph * qh ** (k_ - 1) for k_, v in pe.items()), 3), "w_P2": s(p2, 3),
         "G0f": s(G0, 5),
     }
 

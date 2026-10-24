@@ -323,42 +323,38 @@ problems:
           比の向きを逆にすると $«eff_inv»$。効率は 1 以下で、$\lambda\to0$ で 1 に近づく（まれな事象なら 0 か 1 件以上かでほぼ情報が尽きる）。
 
   - id: s05p05
-    title: 検査機関の精度管理
+    title: BMI と血圧の関係の男女差
     context: |
-      3 つの検査機関に同じ管理試料を送り、それぞれ «n» 回ずつ独立に測定してもらった。各機関の測定値は正規分布に従うとし、不偏分散は次のとおりだった。
-
-      | 機関 | 1 | 2 | 3 |
-      |---|---|---|---|
-      | 不偏分散 $s_i^2$ | «v1» | «v2» | «v3» |
+      ある健診で、男性 «n1» 人と女性 «n2» 人について BMI と収縮期血圧の標本相関係数を求めたところ、男性 $r_1=«r1»$、女性 $r_2=«r2»$ だった。
+      男女それぞれで（BMI, 血圧）は 2 変量正規分布に従い、男女の標本は独立とする。
     items:
       - id: s05p05a
         chapter: 11
-        terms: [bartlett-test, chi-squared-distribution, pooled-variance]
-        topic: 3つの検査機関が同じ試料を測った値のばらつきが等しいかをバートレット検定の統計量で調べる
-        level: 応用
+        terms: [fisher-z-transformation, test-correlation-coefficient, covariance-and-correlation]
+        topic: 男女2群で求めたBMIと血圧の相関係数の差をフィッシャーのz変換による2標本の検定統計量で調べる
+        level: 標準
         definition: false
         type: numeric
         question: |
-          3 機関の母分散が等しいかをバートレット検定で調べる。統計量
-          $$B=\frac{(N-k)\log s_p^2-\sum_{i=1}^{k}(n_i-1)\log s_i^2}{1+\dfrac{1}{3(k-1)}\left(\sum_{i=1}^{k}\dfrac{1}{n_i-1}-\dfrac{1}{N-k}\right)}$$
-          （$k$ は群の数、$N$ は全測定数、$s_p^2$ はプールした分散、$\log$ は自然対数）の値を求めよ。
-          必要なら $\log 4=«l4»$、$\log 9=«l9»$、$\log 14=«l14»$ を使え。
-        answer: «B»
+          「男女の母相関係数は等しい」という帰無仮説を、フィッシャーの $z$ 変換 $z=\dfrac12\log\dfrac{1+r}{1-r}$ を使って検定する。
+          検定統計量（帰無仮説のもとで近似的に標準正規分布に従うもの）の値を求めよ。
+          必要なら $\dfrac12\log\dfrac{1+0.5}{1-0.5}=«z1»$、$\dfrac12\log\dfrac{1+0.3}{1-0.3}=«z2»$ を使え。
+        answer: «z»
         tolerance: 0.01
         answer_format: 小数第2位まで（小数第3位を四捨五入）で答えよ。±0.01 の差まで正解とする。
         explanation: |
-          **方針** 各群の自由度は $n_i-1=«nu»$、全体の誤差自由度は $N-k=«dfp»$。プールした分散を作り、分子（対数の差）と分母（補正係数）を別々に計算する。
+          **方針** 標本の大きさ $n$ の相関係数を $z$ 変換した値は、近似的に平均 $\frac12\log\frac{1+\rho}{1-\rho}$、分散 $\dfrac{1}{n-3}$ の正規分布に従い、分散が $\rho$ によらない。
+          独立な 2 群の差の分散は、それぞれの分散の和になる。
 
-          **途中式** $s_p^2=\dfrac{«nu»\times(«v1»+«v2»+«v3»)}{«dfp»}=«sp2»$。分子は
-          $$«dfp»\times\log«sp2»-«nu»\times(«l4»+«l9»+«l14»)=«Mt1»-«Mt2»=«M»$$
-          分母は
-          $$1+\frac{1}{3\times2}\left(\frac{3}{«nu»}-\frac{1}{«dfp»}\right)=1+\frac{«Cin»}{6}=«C»$$
-          $$B=\frac{«M»}{«C»}=«B4»\cdots$$
+          **途中式**
+          $$z_1-z_2=«z1»-«z2»=«dz»$$
+          $$\sqrt{\frac{1}{«n1»-3}+\frac{1}{«n2»-3}}=\sqrt{\frac{1}{«d1»}+\frac{1}{«d2»}}=\sqrt{«v»}=«se»$$
+          $$Z=\frac{«dz»}{«se»}=«z4»\cdots$$
 
-          **答え** $«B»$（自由度 $k-1=2$ のカイ二乗分布の上側 5% 点 «crit» より小さいので、母分散が異なるとはいえない）
+          **答え** $«z»$（両側 5% の棄却限界 1.96 より小さいので、男女で相関が異なるとはいえない）
 
-          **間違えやすい点** 分母の補正係数を忘れると $«M2»$ になる（補正は 1 より大きいので、統計量は少し小さくなる）。
-          対数の前の係数は自由度 $n_i-1$ で、$n_i$ ではない。バートレット検定は正規性からのずれに弱いので、正規性が疑わしいときはルビーン検定などを使う。
+          **間違えやすい点** 分散は $1/(n-3)$ で、$1/n$ や $1/(n-1)$ ではない（$1/n$ とすると $«z_n»$）。
+          相関係数の差 $r_1-r_2$ をそのまま使うと、相関係数の分布は $\rho$ によって形と分散が変わるため、正しい標準誤差が作れない（$«z_raw»$ のような値になる）。
 
   - id: s05p06
     title: 新薬の用量反応試験
@@ -563,40 +559,6 @@ problems:
           基準を変えてもモデルの当てはめ値は同じで、年齢の係数も変わらない（ダミーの係数の解釈だけが変わる）。
 
       - id: s05p08b
-        chapter: 17
-        terms: [dfbetas, leverage, outlier-and-influential-point]
-        topic: 重症度の最も高い患者1人を除いたときの回帰の傾きの変化を残差とてこ比から求める（DFBETA）
-        level: 標準
-        definition: false
-        type: numeric
-        question: |
-          5 人の患者の重症度スコア $x$ と入院日数 $y$ に直線 $y=a+bx$ を最小二乗法で当てはめたところ、$\hat y=«aa»+«bb»x$ となった。
-
-          | $x$ | «x0» | «x1» | «x2» | «x3» | «x4» |
-          |---|---|---|---|---|---|
-          | $y$ | «y0» | «y1» | «y2» | «y3» | «y4» |
-          | 残差 $e_i$ | «e0» | «e1» | «e2» | «e3» | «e4» |
-
-          重症度 $x=«x4»$ の患者を除いて、残りの 4 人で直線を当てはめ直したときの傾き $\hat b_{(5)}$ を求めよ。
-        answer: «b_new»
-        tolerance: 0.01
-        answer_format: 小数第2位まで（小数第3位を四捨五入）で答えよ。±0.01 の差まで正解とする。
-        explanation: |
-          **方針** 単回帰で $i$ 番目を除いたときの傾きの変化（DFBETA）は、当てはめ直さなくても
-          $$\hat b-\hat b_{(i)}=\frac{(x_i-\bar x)\,e_i}{S_{xx}(1-h_{ii})},\qquad h_{ii}=\frac1n+\frac{(x_i-\bar x)^2}{S_{xx}}$$
-          で求まる。
-
-          **途中式** $\bar x=«xb»$、$S_{xx}=«sxx»$。$x=«x4»$ の患者は $x_i-\bar x=«dxi»$、$e_i=«ei»$、$h_{ii}=\frac15+\frac{«dxi»^2}{«sxx»}=«hi»$。
-          $$\hat b-\hat b_{(5)}=\frac{«dxi»\times«ei»}{«sxx»\times(1-«hi»)}=\frac{2.8}{4}=«dfb»$$
-          $$\hat b_{(5)}=«bb»-«dfb»=«b_new_s»$$
-          （確かめ：残り 4 人 $(1,«y0»),(2,«y1»),(3,«y2»),(4,«y3»)$ で当てはめ直すと、$\bar x=2.5$、$S_{xx}=5$、$S_{xy}=8$ より傾きは $8/5=1.6$。）
-
-          **答え** $«b_new_s»$
-
-          **間違えやすい点** てこ比による割り算 $1/(1-h_{ii})$ を忘れると変化量が $0.28$ となり、$«b_noh»$ と答えてしまう。端の点はてこ比が大きく、1 人で傾きを大きく動かす。
-          この変化量を、その点を除いた標準誤差で割ったものが DFBETAS で、影響の大きい観測を見つける目安に使う。
-
-      - id: s05p08c
         chapter: 18
         terms: [tobit-model, censored-data, normal-distribution]
         topic: 検出限界未満の値を限界値として記録した検査値の期待値をトービットモデル（左側打ち切りの正規分布）で求める
@@ -732,7 +694,7 @@ problems:
         chapter: 21
         terms: [two-stage-sampling, cluster-sampling, simple-random-sampling]
         topic: 40病院から4病院を選び各病院で20人を調べる二段抽出で県内の褥瘡のある入院患者の総数を推定する
-        level: 基本
+        level: 標準
         definition: false
         type: numeric
         question: |
@@ -850,7 +812,7 @@ problems:
           ストレスは平方根をとった値で評価する（とらないと $«st_nosq»$）。
 
   - id: s05p12
-    title: インフルエンザ定点報告の平滑化
+    title: インフルエンザ定点報告の時系列分析
     context: |
       ある保健所は、週ごとのインフルエンザ定点報告数 $y_t$ を、ゆっくり変わる真の流行水準 $\mu_t$ と観測のばらつきに分けて捉えるため、局所水準モデル（状態空間モデル）
       $$y_t=\mu_t+\varepsilon_t,\quad\varepsilon_t\sim N(0,\ «h»),\qquad\mu_t=\mu_{t-1}+\eta_t,\quad\eta_t\sim N(0,\ «q»)$$
@@ -883,6 +845,36 @@ problems:
 
           **間違えやすい点** 予測の段階で水準の変動 $\eta_t$ の分散 «q» を足し忘れると、ゲインが $«K_noq»$ となり $«m_noq»$ になる。
           ゲインの分子と分母を取り違えて観測誤差の分散 «h» を分子にすると $«m_inv»$ になる。観測のばらつきが大きいほど、新しい観測を割り引いて使う。
+
+      - id: s05p12b
+        chapter: 17
+        terms: [durbin-watson-statistic, serial-correlation, residual]
+        topic: 週ごとの報告数を気温で回帰した8週分の残差からダービン・ワトソン比を計算し1次の自己相関を見積もる
+        level: 基本
+        definition: false
+        type: numeric
+        question: |
+          別の分析として、8 週分の報告数を平均気温に回帰（切片あり、最小二乗法）したところ、残差 $e_t$ は次のとおりだった。
+
+          | 週 $t$ | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+          |---|---|---|---|---|---|---|---|---|
+          | $e_t$ | «e0» | «e1» | «e2» | «e3» | «e4» | «e5» | «e6» | «e7» |
+
+          ダービン・ワトソン比 $d=\dfrac{\sum_{t=2}^{8}(e_t-e_{t-1})^2}{\sum_{t=1}^{8}e_t^2}$ を求めよ。
+        answer: «dw»
+        tolerance: 0.01
+        answer_format: 小数第2位まで（小数第3位を四捨五入）で答えよ。±0.01 の差まで正解とする。
+        explanation: |
+          **方針** 隣り合う残差の差の 2 乗和（7 項）を、残差の 2 乗和（8 項）で割る。
+
+          **途中式** 差 $e_t-e_{t-1}$（$t=2,\ldots,8$）は $«g1»,\ «g2»,\ «g3»,\ «g4»,\ «g5»,\ «g6»,\ «g7»$ なので、2 乗和は $«dnum»$。
+          残差の 2 乗和は $«dden»$。
+          $$d=\frac{«dnum»}{«dden»}=«dw4»\cdots$$
+
+          **答え** $«dw»$（$d\approx2(1-\hat\rho)$ より 1 次の自己相関はおよそ $1-d/2=«rho»$ で、正の系列相関がうかがえる）
+
+          **間違えやすい点** 分子は差の 2 乗和で、和の範囲は $t=2$ から（項は 1 つ少ない）。分子と分母をそれぞれの項数で割って平均どうしの比にすると $«dw_n1»$ となり、定義と違う。
+          $d$ は 0〜4 の値をとり、2 に近いと系列相関なし、2 より小さいと正の系列相関を示す。正の系列相関があると、通常の標準誤差は小さく出すぎる。
 
   - id: s05p13
     title: 臨床研究の統計解析
@@ -931,41 +923,41 @@ problems:
 
       - id: s05p13b
         chapter: 30
-        terms: [aicc, aic, overfitting]
-        topic: 症例数20の小標本でAICと補正したAICcの選ぶモデルが分かれることを計算で確かめる
-        level: 標準
+        terms: [kullback-leibler-divergence, expected-log-likelihood, normal-distribution]
+        topic: 真の血圧分布と当てはめた正規モデルのずれを2つの正規分布のカルバック・ライブラー情報量で測る
+        level: 応用
         definition: false
         type: choice
         question: |
-          ある希少疾患の患者 «N» 人のデータに、パラメータ数（回帰係数と分散を含む）が «kA» のモデル A と «kB» のモデル B を最尤法で当てはめた。
-          最大対数尤度は A が «lA»、B が «lB» だった。$\mathrm{AIC}=-2\ell+2k$、$\mathrm{AICc}=\mathrm{AIC}+\dfrac{2k(k+1)}{n-k-1}$（$\ell$ は最大対数尤度、$k$ はパラメータ数、$n$ は標本の大きさ）とする。正しい記述はどれか。
+          ある集団の収縮期血圧の真の分布を $p=N(«mp»,\ «spp»^2)$ とし、別の集団のデータから作ったモデル $q=N(«mq»,\ «sq»^2)$ でこれを予測する。
+          カルバック・ライブラー情報量 $D(p\,\|\,q)=E_p\!\left[\log\dfrac{p(X)}{q(X)}\right]$（$X\sim p$ で期待値をとる）に最も近い値はどれか。
+          必要なら $\log 0.8=«lg»$ を使え。
         choices:
-          - AIC は B を選ぶが、AICc は A を選ぶ。
-          - AICc の補正項はパラメータ数によらず同じなので、AIC と AICc は必ず同じモデルを選ぶ。
-          - 標本の大きさ $n$ が大きくなるほど、AICc と AIC の差は大きくなる。
-          - AIC も AICc も、値が大きいモデルほど予測がよいと判断する。
-          - AICc で比べると、B は A より «gap» だけ小さい。
-        answer: 0
+          - "$«kl_rev»$"
+          - "$«kl»$"
+          - "$«kl_nolog»$"
+          - "$«kl_sign»$"
+          - "$«kl_nohalf»$"
+        answer: 1
         distractors:
+          - p と q を入れ替えて D(q||p) を計算した
           - 正解
-          - 補正項 2k(k+1)/(n-k-1) は k が大きいほど大きい
-          - n→∞ で補正項は 0 に近づき AICc は AIC に近づく
-          - 小さいほどよい（-2ℓ は当てはまりの悪さ）
-          - 差の向きを取り違えた（AICc は B の方が大きい）
+          - 標準偏差の比の対数の項を落とした
+          - 対数の項の符号を逆にした
+          - 最後の -1/2 を忘れた
         explanation: |
-          **方針** 2 つのモデルの AIC と AICc を計算して比べる。どちらも小さいほどよい。
+          **方針** 正規密度の対数の差 $\log p(x)-\log q(x)$ を書き、$X\sim p$ で期待値をとる。$E_p[(X-\mu_q)^2]=\sigma_p^2+(\mu_p-\mu_q)^2$ を使う。
 
           **途中式**
-          $$\mathrm{AIC}_A=«m2A»+2\times«kA»=«aicA»,\qquad\mathrm{AIC}_B=«m2B»+2\times«kB»=«aicB»$$
-          よって AIC は B を選ぶ。補正項は
-          $$A:\ \frac{«nmA»}{«denA»}=«corA»,\qquad B:\ \frac{«nmB»}{«denB»}=«corB»$$
-          $$\mathrm{AICc}_A=«aiccA»,\qquad\mathrm{AICc}_B=«aiccB»$$
-          AICc は A を選ぶ（B の方が «gap» 大きい）。
+          $$\log\frac{p(x)}{q(x)}=\log\frac{\sigma_q}{\sigma_p}-\frac{(x-\mu_p)^2}{2\sigma_p^2}+\frac{(x-\mu_q)^2}{2\sigma_q^2}$$
+          期待値をとると
+          $$D(p\,\|\,q)=\log\frac{\sigma_q}{\sigma_p}+\frac{\sigma_p^2+(\mu_p-\mu_q)^2}{2\sigma_q^2}-\frac12$$
+          $$=\log\frac{«sq»}{«spp»}+\frac{«sp2»+«dm2»}{«sq2x2»}-0.5=«lg»+«frac»-0.5=«kl4»$$
 
-          **答え** 「AIC は B を選ぶが、AICc は A を選ぶ」
+          **答え** $«kl»$
 
-          **間違えやすい点** AICc の補正項は $k$ が大きく $n$ が小さいほど大きく、標本が小さいときに AIC がパラメータの多いモデルを選びすぎる傾向を補正する。$n\to\infty$ では補正項が 0 に近づき AIC と一致する。
-          $k$ には回帰係数だけでなく分散など推定したすべてのパラメータを数える。
+          **間違えやすい点** カルバック・ライブラー情報量は対称ではなく、$D(q\,\|\,p)=«kl_rev»$ とは一致しない。AIC は、この $D(p\,\|\,q)$ のうちモデルに依存する部分（期待対数尤度）を推定して比べる量である。
+          第 1 項 $\log(\sigma_q/\sigma_p)$ は $\log 0.8<0$ で負になる。$-\frac12$ を忘れると $p=q$ のときに 0 にならない。
 
       - id: s05p13c
         chapter: 10

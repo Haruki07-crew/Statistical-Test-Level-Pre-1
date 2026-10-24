@@ -284,24 +284,15 @@ def p10():
     }
 
 def p11():
-    means = [52.0, 45.5, 43.0]
-    rr, mse, a = 8, 36, 3
-    N = a * rr
-    dfe = N - a
-    gm = sum(means) / a
-    ssa = rr * sum((m - gm) ** 2 for m in means)
-    sse = mse * dfe
-    sst = ssa + sse
-    eta2 = ssa / sst
-    om2 = (ssa - (a - 1) * mse) / (sst + mse)
+    a, rr, msa, mse = 6, 5, 95, 15
+    sa = (msa - mse) / rr
+    icc = sa / (sa + mse)
+    sa_a = (msa - mse) / a
     return {
-        "mA": s(means[0], 1), "mB": s(means[1], 1), "mC": s(means[2], 1), "rr": rr, "N": N, "mse": mse, "dfe": dfe,
-        "a1": a - 1, "gm": s(gm, 4), "ssa": s(ssa, 2), "sse": s(sse, 0), "sst": s(sst, 2), "msa": s(ssa / (a - 1), 2),
-        "F": s(ssa / (a - 1) / mse, 2), "num": s(ssa - (a - 1) * mse, 2), "den": s(sst + mse, 2), "amse": (a - 1) * mse,
-        "om2": s(om2, 3), "om2_4": s(om2, 4), "eta2": s(eta2, 3), "w_nomse": s((ssa - (a - 1) * mse) / sst, 3),
-        "w_ratio": s(ssa / sse, 3), "w_noa": s((ssa - mse) / (sst + mse), 3),
-        "dev1": s(means[0] - gm, 4), "dev2": s(means[1] - gm, 4), "dev3": s(means[2] - gm, 4),
-        "sqsum": s(sum((m - gm) ** 2 for m in means), 4),
+        "a": a, "rr": rr, "msa": msa, "mse": mse, "dfa": a - 1, "dfe": a * (rr - 1), "diff": msa - mse,
+        "sa": s(sa, 0), "tot": s(sa + mse, 0), "icc": s(icc, 3), "icc4": s(icc, 4),
+        "w_nor": s((msa - mse) / msa, 3), "w_nosub": s((msa / rr) / (msa / rr + mse), 3), "msar": s(msa / rr, 0),
+        "w_a": s(sa_a / (sa_a + mse), 3), "w_err": s(mse / (sa + mse), 3), "F": s(msa / mse, 2),
     }
 
 def p12():
@@ -369,13 +360,15 @@ def p12():
 
 
 def p13():
-    th = 0.6
-    prev_f, obs = 120, 130
-    err = obs - prev_f
-    f1 = obs - th * err
-    return {"th": th, "al": s(1 - th, 1), "pf": prev_f, "obs": obs, "err": err, "f1": s(f1, 0),
-            "w_al": s(obs - (1 - th) * err, 0), "w_sign": s(obs + th * err, 0), "w_rw": s(obs, 0), "w_old": s(prev_f, 0),
-            "thr": s(th * err, 0), "alr": s((1 - th) * err, 0)}
+    n = 60
+    rk = [0.25, -0.18, 0.12]
+    terms = [x ** 2 / (n - k) for k, x in enumerate(rk, 1)]
+    Q = n * (n + 2) * sum(terms)
+    bp = n * sum(x ** 2 for x in rk)
+    return {"n": n, "r1": rk[0], "r2": rk[1], "r3": rk[2], "nn2": n * (n + 2),
+            "q1": s(terms[0], 7), "q2": s(terms[1], 7), "q3": s(terms[2], 7), "qs": s(sum(terms), 7),
+            "r1s": s(rk[0] ** 2, 4), "r2s": s(rk[1] ** 2, 4), "r3s": s(rk[2] ** 2, 4),
+            "Q": s(Q, 2), "bp": s(bp, 2), "noN": s(sum(x ** 2 for x in rk), 2), "c2": 5.991, "c3": 7.815}
 
 def p14():
     a, b = 5, 5
