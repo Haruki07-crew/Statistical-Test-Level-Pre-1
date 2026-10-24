@@ -151,7 +151,7 @@ def p10():
 
 def p11():
     # (a) 釣り合い型不完備ブロック計画
-    t, k, b = 7, 3, 7
+    t, k, b = 6, 3, 10
     rr = b * k // t
     lam = rr * (k - 1) // (t - 1)
     E = Fraction(lam * t, rr * k)

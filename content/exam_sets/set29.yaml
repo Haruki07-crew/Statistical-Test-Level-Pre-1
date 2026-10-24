@@ -576,12 +576,12 @@ problems:
       - id: s29p11a
         chapter: 20
         terms: [incomplete-block-design, randomized-block-design, fisher-three-principles]
-        topic: 7種類の献立を1人3種類ずつ試す釣り合い型不完備ブロック計画で各献立の反復数と同じ人で出会う回数から効率因子を求める
+        topic: 6種類の献立を10人に3種類ずつ試す釣り合い型不完備ブロック計画で各献立の反復数と同じ人で出会う回数から効率因子を求める
         level: 標準
         definition: false
         type: numeric
         question: |
-          7 種類の献立（処理）を比べるため、7 人（ブロック）にそれぞれ 3 種類ずつ試してもらう釣り合い型不完備ブロック計画を使う（どの 2 つの献立も、同じ回数だけ同じ人のもとで試される）。
+          6 種類の献立（処理）を比べるため、10 人（ブロック）にそれぞれ 3 種類ずつ試してもらう釣り合い型不完備ブロック計画を使う（どの 2 つの献立も、同じ回数だけ同じ人のもとで試される）。
           各献立の反復数を $r$、2 つの献立が同じ人で試される回数を $\lambda$ とするとき、完全なブロック計画に対する効率因子 $E=\dfrac{\lambda t}{rk}$（$t$ は処理数、$k$ はブロックの大きさ）を求めよ。
         answer: «E»
         tolerance: 0.001
@@ -590,9 +590,9 @@ problems:
           **方針** 試行の総数から $bk=tr$、同じブロックに入る組の数から $\lambda(t-1)=r(k-1)$ が成り立つ。
 
           **途中式**
-          - $r=bk/t=7\times3/7=«r»$
-          - $\lambda=r(k-1)/(t-1)=«r»\times2/6=«lam»$
-          - $E=\dfrac{«lam»\times7}{«r»\times3}=«E4»$
+          - $r=bk/t=10\times3/6=«r»$
+          - $\lambda=r(k-1)/(t-1)=«r»\times2/5=«lam»$
+          - $E=\dfrac{«lam»\times6}{«r»\times3}=«E4»$
 
           **答え** $«E_s»$
 

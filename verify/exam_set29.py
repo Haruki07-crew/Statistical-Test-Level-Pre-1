@@ -153,12 +153,12 @@ E.check("s29p10c", np.allclose(gam.var(0) * 59, 1 / lam10, rtol=0.05), f"係数�
 E.choice("s29p10c", f"すべて入れると{f((1 / lam10).sum(), 2)}、第3主成分を除くと{f((1 / lam10[:2]).sum(), 2)}。除くと分散は大きく減るが", "1/λ の和")
 
 # ---- 大問11
-# (a) 7 処理・ブロックの大きさ 3 の BIBD（ファノ平面）を作って r と λ を数える
-blocks = [(0, 1, 3), (1, 2, 4), (2, 3, 5), (3, 4, 6), (4, 5, 0), (5, 6, 1), (6, 0, 2)]
-r_ = [sum(t in b for b in blocks) for t in range(7)]
-lam_ = {sum(i in b and j in b for b in blocks) for i, j in itertools.combinations(range(7), 2)}
-E.check("s29p11a", set(r_) == {3} and lam_ == {1}, f"反復数 {set(r_)}、出会う回数 {lam_}")
-E.num("s29p11a", rnd(1 * 7 / (3 * 3), 3), "λt/(rk)")
+# (a) 6 処理・ブロックの大きさ 3・10 ブロックの BIBD を作って r と λ を数える
+blocks = [(0, 1, 2), (0, 1, 3), (0, 2, 4), (0, 3, 5), (0, 4, 5), (1, 2, 5), (1, 3, 4), (1, 4, 5), (2, 3, 4), (2, 3, 5)]
+r_ = [sum(t in b for b in blocks) for t in range(6)]
+lam_ = {sum(i in b and j in b for b in blocks) for i, j in itertools.combinations(range(6), 2)}
+E.check("s29p11a", set(r_) == {5} and lam_ == {2}, f"反復数 {set(r_)}、出会う回数 {lam_}")
+E.num("s29p11a", rnd(2 * 6 / (5 * 3), 3), "λt/(rk)")
 # (b) 層別の総数
 E.num("s29p11b", round(3000 * 6 / 100 + 4000 * 12 / 100 + 2000 * 40 / 200), "Σ N_h p_h")
 
