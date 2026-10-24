@@ -47,7 +47,6 @@ standard-normal-distribution: 分布表で上側確率を読み、対称性を�
 bivariate-normal-distribution: 出題はまれ。相関係数が 0 なら独立になる、という性質だけ知っておけば十分。
 chebyshev-inequality: 分布の形によらず、平均から標準偏差の k 倍以上離れる確率は 1/k² 以下、という使い方を押さえる。
 weak-law-of-large-numbers: 標本の大きさを大きくすると標本平均が母平均に近づく、という意味を押さえる。証明は読み飛ばしてよい。
-central-limit-theorem: 母集団の分布によらず、標本平均（や合計）の分布が正規分布で近似できることと、その平均・標準偏差を押さえる。
 normal-approximation-binomial-poisson: 二項分布 B(n, p) を平均 np・分散 np(1－p) の正規分布で、ポアソン分布を平均・分散 λ の正規分布で近似する計算を押さえる。
 continuity-correction: 「k 以上」を k－0.5 から、「k 以下」を k＋0.5 までとして標準化する修正を押さえる。
 chi-squared-distribution: 標準正規分布の2乗和の分布で、期待値は自由度、分散は自由度の2倍。母分散の推定・検定とカイ二乗検定で使う。分布表の読み方が重要。

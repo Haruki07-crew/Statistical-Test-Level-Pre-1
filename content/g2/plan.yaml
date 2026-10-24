@@ -381,7 +381,6 @@ chapters:
     title: 中心極限定理
     importance: A
     status: verified
-    from: pre1
   - id: normal-approximation-binomial-poisson
     title: 二項分布・ポアソン分布の正規近似
     importance: A
