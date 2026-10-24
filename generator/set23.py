@@ -1,6 +1,7 @@
 """模擬試験 第23回（set23）の数値。values() が {大問id: {名前: 値}} を返す。
 
 題材：建設・土木・インフラ点検・防災。
+2026-10-24 夕方：公開済みのセットと同じ型が 21 問あったため、p02a・p05・p11a 以外を作り直した。
 問題文に示した数表の値（Φ・t・χ² の点、ln・e^x・10^x の値）は、ここでも同じ丸めた値を使って答えを計算する。
 """
 import math
@@ -19,21 +20,6 @@ def s(x, d):
     """四捨五入した文字列（末尾の 0 も残す）。"""
     q = Decimal(1).scaleb(-d)
     return str(Decimal(repr(float(x))).quantize(q, rounding=ROUND_HALF_UP))
-
-
-def p01():
-    # ブリッジ型の道路網：区間1 S-A, 2 S-B, 3 A-B, 4 A-T, 5 B-T
-    p1, p2, p3, p4, p5 = 0.9, 0.8, 0.7, 0.8, 0.9
-    up = (1 - (1 - p1) * (1 - p2)) * (1 - (1 - p4) * (1 - p5))
-    down = 1 - (1 - p1 * p4) * (1 - p2 * p5)
-    ans = p3 * up + (1 - p3) * down
-    return {
-        "p1": p1, "p2": p2, "p3": p3, "p4": p4, "p5": p5, "q3": s(1 - p3, 1),
-        "u1": s(1 - (1 - p1) * (1 - p2), 2), "u2": s(1 - (1 - p4) * (1 - p5), 2), "up": s(up, 4),
-        "a14": s(p1 * p4, 2), "a25": s(p2 * p5, 2), "b14": s(1 - p1 * p4, 2), "b25": s(1 - p2 * p5, 2), "down": s(down, 4),
-        "t_up": s(p3 * up, 5), "t_down": s(r((1 - p3) * down, 5), 5), "ans": r(ans, 3), "ans5": s(ans, 5),
-        "w_up": s(up, 3), "w_down": s(down, 3),
-    }
 
 
 def p02():
@@ -69,31 +55,6 @@ def p02():
     }
 
 
-def p03():
-    n, sh2 = 25, 60.5
-    th = sh2 / (2 * n)
-    se = th / sqrt(n)
-    return {"n": n, "sh2": sh2, "twon": 2 * n, "th": s(th, 2), "rootn": s(sqrt(n), 0), "se": r(se, 2), "se4": s(se, 4),
-            "w_n": s(th / n, 4), "w_sqrt2": s(th / sqrt(2 * n), 4), "w_sig": s(sqrt(th) / sqrt(n), 4),
-            "info": s(n / th ** 2, 4), "sig": s(sqrt(th), 2)}
-
-
-def p04():
-    # (a) 一様分布の積 D=XY
-    d, lnd = 0.2, -1.6094
-    cdf = d - d * lnd
-    ans = 1 - cdf
-    # (b) 最弱リンクの寸法効果
-    m, k = 10, 10
-    t1, t05, t2 = 0.7943, 0.8913, 0.3162   # 10^{-0.1}, 10^{-0.05}, 10^{-0.5}
-    return {
-        "d": d, "lnd": lnd, "dlnd": s(-d * lnd, 5), "cdf": s(cdf, 5), "ans": s(ans, 3), "ans5": s(ans, 5),
-        "c_cdf": s(cdf, 3), "c_indep": s((1 - d) ** 2, 3), "c_part": s(1 + d * lnd, 3), "c_unif": s(1 - d, 3),
-        "m": m, "k": k, "t1": s(t1, 4), "t05": s(t05, 4), "t2": s(t2, 4),
-        "ratio": s(t1, 3), "w05": s(t05, 3), "w2": s(t2, 3), "w_inv": s(1 / k, 3), "w_one": s(1, 3),
-    }
-
-
 def p05():
     # (a) 正規分布の尺度混合の尖度
     w, s1, s2 = 0.9, 1, 3
@@ -113,135 +74,6 @@ def p05():
         "ar2": s((g1 / g0) ** 2, 3), "ar3": s((g1 / g0) ** 3, 3),
         "b1": s(g1 / 16, 3), "b2": s(g2 / 16, 3), "h1": s(2 / g0, 3),
     }
-
-
-def p06():
-    x = [33.1, 31.4, 34.6, 29.2, 32.8, 35.3]
-    n = len(x)
-    mean = sum(x) / n
-    sd = sqrt(sum((v - mean) ** 2 for v in x) / (n - 1))
-    mean_s, sd_s = r(mean, 3), r(sd, 3)
-    t = 2.571   # t_{0.025}(5)
-    fac = sqrt(1 + 1 / n)
-    lo = mean_s - t * sd_s * fac
-    lo_ci = mean_s - t * sd_s / sqrt(n)
-    lo_z = mean_s - 1.960 * sd_s * fac
-    lo_t1 = mean_s - 2.015 * sd_s * fac
-    # (b) 符号付き順位検定（正確な片側 p 値）
-    from itertools import combinations
-    d = [round(v - 30, 1) for v in x]
-    order = sorted(range(n), key=lambda i: abs(d[i]))
-    rank = {i: k + 1 for k, i in enumerate(order)}
-    wplus = sum(rank[i] for i in range(n) if d[i] > 0)
-    cnt = sum(1 for k in range(n + 1) for c in combinations(range(1, n + 1), k) if sum(c) >= wplus)
-    eq = sum(1 for k in range(n + 1) for c in combinations(range(1, n + 1), k) if sum(c) == wplus)
-    ge19 = sum(1 for k in range(n + 1) for c in combinations(range(1, n + 1), k) if sum(c) >= wplus - 1)
-    pos = sum(1 for v in d if v > 0)
-    sign_p = sum(math.comb(n, k) for k in range(pos, n + 1)) / 2 ** n
-    out = {
-        "n": n, "n1": n - 1, "sum": s(sum(x), 1), "mean": s(mean_s, 3), "sd": s(sd_s, 3), "t": t, "t1": 2.015,
-        "fac": s(fac, 4), "half": s(t * sd_s * fac, 4), "lo": r(lo, 2), "lo4": s(lo, 4),
-        "lo_ci": s(lo_ci, 2), "lo_z": s(lo_z, 2), "lo_t1": s(lo_t1, 2), "ss": s(sd_s ** 2 * (n - 1), 3),
-        "wplus": wplus, "cnt": cnt, "tot": 2 ** n, "p": s(cnt / 2 ** n, 3), "p5": s(cnt / 2 ** n, 5),
-        "p_eq": s(eq / 2 ** n, 3), "p_two": s(2 * cnt / 2 ** n, 3), "p_ge19": s(ge19 / 2 ** n, 3), "wm1": wplus - 1,
-        "p_sign": s(sign_p, 3), "pos": pos, "sign_cnt": sum(math.comb(n, k) for k in range(pos, n + 1)),
-        "nrank": n * (n + 1) // 2,
-    }
-    for i, v in enumerate(x):
-        out[f"x{i + 1}"] = v
-        out[f"d{i + 1}"] = s(d[i], 1)
-        out[f"k{i + 1}"] = rank[i]
-    return out
-
-
-def p07():
-    # (b) 二項検定の正確な片側 p 値
-    n, x, p0 = 20, 3, 0.05
-    q20, q19, q18 = 0.3585, 0.3774, 0.3972
-    P0 = q20
-    P1 = n * p0 * q19
-    P2 = math.comb(n, 2) * p0 ** 2 * q18
-    pv = 1 - P0 - P1 - P2
-    return {"n": n, "x": x, "p0": p0, "q20": q20, "q19": q19, "q18": q18, "c2": math.comb(n, 2),
-            "P0": s(P0, 4), "P1": s(P1, 4), "P2": s(P2, 5), "sumP": s(P0 + P1 + P2, 5), "pv": r(pv, 3), "pv5": s(pv, 5),
-            "np0": s(n * p0, 0), "p02": s(p0 ** 2, 4), "w_le2": s(P0 + P1 + P2, 3)}
-
-
-def p08():
-    th0, th1, n = 40, 20, 5
-    df = 2 * n
-    q05 = 3.940          # χ²_{10} の下側 5% 点
-    q05_5 = 1.145        # χ²_{5} の下側 5% 点
-    F788, F197, F5_229 = 0.3594, 0.0034, 0.1923
-    c = th0 * q05 / 2
-    x = 2 * c / th1
-    assert abs(x - 7.88) < 1e-9
-    assert abs(q05 * th1 / th0 - 1.97) < 1e-9
-    c5 = th0 * q05_5 / 2
-    assert abs(2 * c5 / th1 - 2.29) < 1e-9
-    return {"th0": th0, "th1": th1, "n": n, "df": df, "q05": s(q05, 3), "q05_5": s(q05_5, 3),
-            "F788": s(F788, 4), "F197": s(F197, 4), "F5": s(F5_229, 4), "c": s(c, 1), "x": s(x, 2),
-            "ans": s(F788, 3), "w_comp": s(1 - F788, 3), "w_inv": s(F197, 3), "w_df": s(F5_229, 3), "alpha": "0.050",
-            "c5": s(c5, 1), "x197": s(q05 * th1 / th0, 2), "x229": s(2 * c5 / th1, 2)}
-
-
-def p09():
-    from fractions import Fraction as Fr
-    P = [[Fr(7, 10), Fr(25, 100), Fr(5, 100)], [Fr(0), Fr(6, 10), Fr(4, 10)], [Fr(6, 10), Fr(0), Fr(4, 10)]]
-    p = lambda i, j: P[i][j]
-    # 3年目に初めて状態3（経路で列挙）
-    paths = {"113": p(0, 0) * p(0, 0) * p(0, 2), "123": p(0, 0) * p(0, 1) * p(1, 2), "223": p(0, 1) * p(1, 1) * p(1, 2)}
-    f3 = sum(paths.values())
-    f1 = p(0, 2)
-    f2 = p(0, 0) * p(0, 2) + p(0, 1) * p(1, 2)
-
-    def mul(A, B):
-        return [[sum(A[i][k] * B[k][j] for k in range(3)) for j in range(3)] for i in range(3)]
-    P3 = mul(mul(P, P), P)[0][2]
-    return {"p11": s(p(0, 0), 2), "p12": s(p(0, 1), 2), "p13": s(p(0, 2), 2), "p22": s(p(1, 1), 2), "p23": s(p(1, 2), 2),
-            "p31": s(p(2, 0), 2), "p33": s(p(2, 2), 2),
-            "a113": s(paths["113"], 4), "a123": s(paths["123"], 4), "a223": s(paths["223"], 4),
-            "f3": s(f3, 4), "f1": s(f1, 4), "f2": s(f2, 4), "cum": s(f1 + f2 + f3, 4), "P3": s(P3, 4),
-            "only123": s(paths["123"] + paths["223"], 4), "extra": s(P3 - f3, 4)}
-
-
-def p10():
-    n, xbar, sxx, s2 = 12, 30, 2000, 1.44
-    sd = sqrt(s2)
-    x0 = 40
-    t10, t11, t05 = 2.228, 2.201, 1.812
-    a = 1 / n + (x0 - xbar) ** 2 / sxx
-    hw = t10 * sd * sqrt(a)
-    # (b) クックの距離
-    pp = 2
-    br = {"A": (3.0, 0.08), "B": (1.2, 0.45), "C": (2.0, 0.20)}
-    D = {k: e * e * h / (pp * s2 * (1 - h) ** 2) for k, (e, h) in br.items()}
-    Dw = {k: e * e * h / (pp * s2 * (1 - h)) for k, (e, h) in br.items()}
-    best = max(D, key=D.get)
-    assert best == "B"
-    # (c) ニューラルネットワーク
-    kin, kh = 5, 8
-    out = {
-        "n": n, "xbar": xbar, "sxx": sxx, "s2": s2, "sd": s(sd, 1), "x0": x0, "dx2": (x0 - xbar) ** 2, "df": n - 2,
-        "t10": t10, "t11": t11, "t05": t05, "inv_n": s(1 / n, 4), "lev": s((x0 - xbar) ** 2 / sxx, 4), "a": s(a, 4),
-        "ra": s(sqrt(a), 4), "hw": s(hw, 3), "hw4": s(hw, 4), "pw": s(t10 * sd * sqrt(1 + a), 3), "pa": s(1 + a, 4),
-        "w_t11": s(t11 * sd * sqrt(a), 3), "w_t05": s(t05 * sd * sqrt(a), 3), "w_non": s(t10 * sd * sqrt((x0 - xbar) ** 2 / sxx), 3),
-        "pp": pp, "ps2": s(pp * s2, 2),
-        "kin": kin, "kh": kh, "w1": kin * kh, "b1": kh, "w2": kh, "b2": 1,
-        "nn": kin * kh + kh + kh + 1, "nn_nob": kin * kh + kh, "nn_ob": kin * kh + kh + 1, "nn_nob2": kin * kh + kh + kh,
-        "nn_first": kin * kh,
-    }
-    for k, (e, h) in br.items():
-        out[f"e{k}"] = s(e, 1)
-        out[f"h{k}"] = s(h, 2)
-        out[f"D{k}"] = s(D[k], 2)
-        out[f"Dw{k}"] = s(Dw[k], 2)
-        out[f"num{k}"] = s(e * e * h, 3)
-        out[f"den{k}"] = s(pp * s2 * (1 - h) ** 2, 4)
-        out[f"om{k}"] = s(1 - h, 2)
-        out[f"r2{k}"] = s(e * e / (s2 * (1 - h)), 3)
-        out[f"noh{k}"] = s(e * e / (pp * s2), 2)
-    return out
 
 
 def p11():
@@ -291,95 +123,219 @@ def p11():
                 "mu_no": s(e_no, 2), "sd_no": s(sqrt(phi) * e_no, 2), "eb1": "1.50"})
     return out
 
+def p01():
+    m = 12
+    k = 60 - m
+    ans = 1 - (k / 60) ** 2
+    return {"m": m, "k": k, "k2": s((k / 60) ** 2, 4), "ans": r(ans, 3), "ans_s": s(ans, 3), "w_lin": s(2 * m / 60, 3)}
+
+
+def p02b():
+    rho = 0.5
+    ok = 0.25 + math.asin(rho) / (2 * math.pi)
+    return {"rho": s(rho, 1), "ok": s(ok, 3), "ind": "0.250", "lin": s(0.25 + rho / 4, 3),
+            "no2": s(0.25 + math.asin(rho) / math.pi, 3), "half": "0.500"}
+
+
+def p03():
+    xb, v, mn, mx = 0.40, 0.12, -0.15, 0.95
+    hw = sqrt(3 * v)
+    out = {"xb": s(xb, 2), "v": s(v, 2), "mn": s(mn, 2), "mx": s(mx, 2), "wd": s(2 * hw, 2), "hw": s(hw, 2),
+           "ok_a": s(xb - hw, 2), "ok_b": s(xb + hw, 2)}
+    for k_, h in (("w1", sqrt(v)), ("w2", sqrt(12 * v)), ("w3", sqrt(v / 3))):
+        out[k_ + "_a"] = s(xb - h, 2); out[k_ + "_b"] = s(xb + h, 2)
+    assert xb - hw < mn and mx < xb + hw
+    return out
+
+
+def p04():
+    l, el = 2, 7.389
+    ans = 1 / (1 + el)
+    # (b) 指数分布の 90% 点の推定
+    th, n = 2.0, 400
+    ln10 = 2.3026
+    q = th * ln10
+    fq = (1 / th) * 0.1
+    se1 = sqrt(0.9 * 0.1 / (n * fq ** 2))
+    se2 = ln10 * th / sqrt(n)
+    return {"l": l, "el": el, "ans": r(ans, 3), "ans_s": s(ans, 3), "ans4": s(ans, 4), "w_inv": s(1 / el, 3),
+            "th": s(th, 1), "n": n, "q": s(q, 3), "fq": s(fq, 2), "rn": s(sqrt(n), 0),
+            "se1": s(se1, 3), "se1_4": s(se1, 4), "se2": s(se2, 3), "se2_4": s(se2, 4), "are": s((se2 / se1) ** 2, 2),
+            "w1": s(sqrt(0.09 / (n * (1 / th) ** 2)), 3), "w2": s(th / sqrt(n), 3), "w3": s(sqrt(0.9 / (n * fq ** 2)), 3)}
+
+
+def p06():
+    n, sd, df = 6, 2.4, 5
+    t1, t2, t3, rn = 2.571, 2.912, 3.534, 2.449
+    hw = t3 * sd / rn
+    A, B = [30.1, 31.4, 32.0], [32.5, 33.0, 34.6, 35.2]
+    d = sorted(r(b - a, 1) for a in A for b in B)
+    hl = (d[5] + d[6]) / 2
+    med = lambda v: sorted(v)[len(v) // 2] if len(v) % 2 else (sorted(v)[len(v) // 2 - 1] + sorted(v)[len(v) // 2]) / 2
+    out = {"n": n, "s": s(sd, 1), "df": df, "t1": t1, "t2": t2, "t3": t3, "rn": rn, "hw": r(hw, 2), "hw_s": s(hw, 2), "hw4": s(hw, 4),
+           "w1": s(t1 * sd / rn, 2), "w2": s(t2 * sd / rn, 2),
+           "a": "、".join(s(v, 1) for v in A), "b": "、".join(s(v, 1) for v in B),
+           "dlist": ",\\ ".join(s(v, 1) for v in d), "d6": s(d[5], 1), "d7": s(d[6], 1), "ok": s(hl, 2),
+           "w_med": s(med(B) - med(A), 2), "w_mean": s(sum(B) / 4 - sum(A) / 3, 2), "w_lo": s(d[5], 2), "w_hi": s(d[6], 2)}
+    assert len({out["ok"], out["w_med"], out["w_mean"], out["w_lo"], out["w_hi"]}) == 5
+    return out
+
+
+def p07():
+    Y = [[52, 55, 50], [58, 60, None], [49, 53, 47], [56, 59, 54]]
+    a, b = 4, 3
+    T = sum(v for v in Y[1] if v is not None)
+    B = sum(row[2] for row in Y if row[2] is not None)
+    G = sum(v for row in Y for v in row if v is not None)
+    xh = (a * T + b * B - G) / ((a - 1) * (b - 1))
+    out = {"T": T, "B": B, "G": G, "num": a * T + b * B - G, "xh": r(xh, 2), "xh_s": s(xh, 2), "xh4": s(xh, 4),
+           "w_swap": s((b * T + a * B - G) / ((a - 1) * (b - 1)), 2), "w_row": s(T / 2, 2)}
+    for i, row in enumerate(Y):
+        for j, v in enumerate(row):
+            if v is not None:
+                out[f"y{i + 1}{j + 1}"] = v
+    # (b) 正規分布への適合度
+    O = [3, 27, 30, 28, 12]; E = [10.0, 23.0, 34.0, 23.0, 10.0]
+    X = sum((o - e) ** 2 / e for o, e in zip(O, E))
+    assert 5.991 < X < 7.815
+    out.update({f"o{i + 1}": O[i] for i in range(5)}); out.update({f"e{i + 1}": s(E[i], 1) for i in range(5)})
+    out.update({"X": s(X, 2), "X4": s(X, 4), "w_abs": s(sum(abs(o - e) for o, e in zip(O, E)), 2),
+                "terms": "+".join(f"\\frac{{({o}-{s(e, 1)})^2}}{{{s(e, 1)}}}" for o, e in zip(O, E))})
+    return out
+
+
+def p08():
+    return {}
+
+
+def p09():
+    C = [[60, 15, 5], [0, 40, 10], [0, 0, 20]]
+    q = [0.5, 0.3, 0.2]
+    rs = [sum(rw) for rw in C]
+    P = [[c / r_ for c in rw] for rw, r_ in zip(C, rs)]
+    nxt = [sum(q[i] * P[i][j] for i in range(3)) for j in range(3)]
+    two = [sum(nxt[i] * P[i][j] for i in range(3)) for j in range(3)]
+    out = {"q1": s(q[0], 1), "q2": s(q[1], 1), "q3": s(q[2], 1), "q3c": s(q[2], 3), "r1": rs[0], "r2": rs[1], "r3": rs[2],
+           "p13": s(P[0][2], 4), "p23": s(P[1][2], 1), "ok": s(nxt[2], 3), "ok4": s(nxt[2], 5),
+           "w_pool": s(sum(rw[2] for rw in C) / sum(rs), 3), "w_noabs": s(q[0] * P[0][2] + q[1] * P[1][2], 3), "w_2step": s(two[2], 3)}
+    for i in range(3):
+        for j in range(3):
+            out[f"c{i + 1}{j + 1}"] = C[i][j]
+    assert len({out["ok"], out["w_pool"], out["w_noabs"], out["w_2step"], out["q3c"]}) == 5
+    return out
+
+
+def p10():
+    x = [1, 2, 3, 4, 5, 6]; y = [2.1, 4.3, 5.8, 8.4, 9.9, 12.3]
+    n = len(x)
+    sxx = sum(v * v for v in x); sxy = sum(a * b for a, b in zip(x, y)); syy = sum(v * v for v in y)
+    b = sxy / sxx; rss = syy - b * sxy; s2 = rss / (n - 1); se = sqrt(s2 / sxx)
+    out = {"n": n, "sxx": sxx, "sxy": s(sxy, 1), "syy": s(syy, 2), "b5": s(b, 5), "rss": s(rss, 4), "s2": s(s2, 5),
+           "se": r(se, 4), "se_s": s(se, 4), "se5": s(se, 5), "w_n2": s(sqrt(rss / (n - 2) / sxx), 4)}
+    # (b) ダービン・ワトソン比
+    e = [1.2, 0.9, 1.1, 0.3, -0.4, -1.0, -0.8, -1.3]
+    dif = [e[t] - e[t - 1] for t in range(1, 8)]
+    num = sum(d * d for d in dif); den = sum(v * v for v in e)
+    r1 = sum(e[t] * e[t - 1] for t in range(1, 8)) / den
+    out.update({"elist": ",\\ ".join(s(v, 1) for v in e), "dlist": ",\\ ".join(s(d, 1) for d in dif), "num": s(num, 2), "den": s(den, 2),
+                "dw": s(num / den, 2), "dw4": s(num / den, 4), "r1": s(r1, 3), "apx": s(2 * (1 - r1), 3),
+                "w_inv": s(den / num, 2), "w_noSq": s(sum(abs(d) for d in dif) / den, 2)})
+    # (c) 非線形回帰
+    t = [7, 14, 28]; yy = [22, 31, 38]
+    ex = {0.7: 0.4966, 1.4: 0.2466, 2.8: 0.0608, 1.05: 0.3499, 2.1: 0.1225, 4.2: 0.0150}
+    res = {}
+    for th in (0.10, 0.15):
+        g = [1 - ex[round(th * tt, 2)] for tt in t]
+        a_ = sum(u * v for u, v in zip(yy, g)) / sum(v * v for v in g)
+        res[th] = (g, a_, sum((u - a_ * v) ** 2 for u, v in zip(yy, g)))
+    best = min(res, key=lambda k_: res[k_][2])
+    assert best == 0.10
+    ga, ta, ra = res[0.10]; gb, tb, rb = res[0.15]
+    out.update({"t1": t[0], "t2": t[1], "t3": t[2], "y1": yy[0], "y2": yy[1], "y3": yy[2], "a": "0.10", "b": "0.15",
+                "ga1": s(ga[0], 4), "ga2": s(ga[1], 4), "ga3": s(ga[2], 4), "gb1": s(gb[0], 4), "gb2": s(gb[1], 4), "gb3": s(gb[2], 4),
+                "ta": s(ta, 2), "tb": s(tb, 2), "ra": s(ra, 2), "rb": s(rb, 2), "ok": s(ta, 1), "wb": s(tb, 1),
+                "w_ratio": s(sum(u / v for u, v in zip(yy, ga)) / 3, 1), "w_last": s(yy[2] / ga[2], 1)})
+    assert len({out["ok"], out["wb"], out["w_ratio"], out["w_last"]}) == 4
+    return out
+
+
+def p11b():
+    xs = [0.10, 0.15, 0.20, 0.30, 0.40, 0.45, 0.55, 0.70]
+    ys = [0, 0, 0, 0, 1, 1, 1, 1]
+    m1 = sum(x for x, y in zip(xs, ys) if y) / 4; m0 = sum(x for x, y in zip(xs, ys) if not y) / 4
+    return {"xs": " | ".join(s(v, 2) for v in xs), "sep": "---|" * len(xs), "ys": " | ".join(map(str, ys)), "d": s(m1 - m0, 4)}
+
 
 def p12():
-    N = (600, 300, 100)
-    S = (2, 3, 8)
-    c = (4, 9, 16)
-    n = 120
-    w = [Ni * Si / sqrt(ci) for Ni, Si, ci in zip(N, S, c)]
-    nh = n * w[2] / sum(w)
-    ney = [Ni * Si for Ni, Si in zip(N, S)]
-    wc = [Ni * Si / ci for Ni, Si, ci in zip(N, S, c)]
-    # (b) ジェフリーズ事前分布
-    m, y = r(nh, 0), 4
-    a, b = y + 0.5, m - y + 0.5
-    return {
-        "N1": N[0], "N2": N[1], "N3": N[2], "S1": S[0], "S2": S[1], "S3": S[2], "c1": c[0], "c2": c[1], "c3": c[2], "n": n,
-        "rc1": int(sqrt(c[0])), "rc2": int(sqrt(c[1])), "rc3": int(sqrt(c[2])),
-        "w1": s(w[0], 0), "w2": s(w[1], 0), "w3": s(w[2], 0), "wsum": s(sum(w), 0), "nh_raw": s(nh, 2), "nh": r(nh, 0),
-        "ney_raw": s(n * ney[2] / sum(ney), 2), "ney": r(n * ney[2] / sum(ney), 0), "neysum": sum(ney), "ney3": ney[2],
-        "prop": s(n * N[2] / sum(N), 0), "wc_raw": s(n * wc[2] / sum(wc), 2), "wc": r(n * wc[2] / sum(wc), 0),
-        "m": m, "y": y, "a": s(a, 1), "b": s(b, 1), "ab": s(a + b, 0), "post": s(a / (a + b), 3), "post4": s(a / (a + b), 4),
-        "mle": s(y / m, 3), "unif": s((y + 1) / (m + 2), 3), "mode": s((a - 1) / (a + b - 2), 3), "w15": s((y + 1.5) / (m + 3), 3),
-        "my": m - y,
-    }
+    N, n, yb, sd = 400, 25, 120.0, 40.0
+    f = n / N
+    inner = sqrt((1 - f) * sd * sd / n)
+    se = N * inner
+    out = {"N": N, "n": n, "yb": s(yb, 1), "s": s(sd, 1), "tot": s(N * yb, 0), "f": s(f, 4), "inner": s(inner, 4),
+           "se1": s(se, 1), "se": r(se, 0), "se_s": s(se, 0), "w_nofpc": s(N * sd / sqrt(n), 0)}
+    # (b) 正規・正規モデル
+    m0, t0, sig, nn, xb, c = 30.0, 4.0, 6.0, 9, 34.0, 32.0
+    pp, pd = 1 / t0 ** 2, nn / sig ** 2
+    ppost = pp + pd
+    mpost = (pp * m0 + pd * xb) / ppost
+    sdp = sqrt(1 / ppost)
+    z = (c - mpost) / sdp
+    ph = {0.5: 0.6915, 0.6: 0.7257, 0.67: 0.7486, 1.0: 0.8413}
+    zr = r(-z, 2)
+    ok = ph[zr]
+    out.update({"m0": s(m0, 1), "t0": s(t0, 1), "sig": s(sig, 1), "nn": nn, "xb": s(xb, 1), "c": s(c, 1),
+                "pp": s(pp, 4), "pd": s(pd, 2), "ppost": s(ppost, 4), "vpost": s(1 / ppost, 1), "sdpost": s(sdp, 4),
+                "mpost": s(mpost, 1), "z": s(z, 2), "ok": s(ok, 3), "ok4": s(ok, 4), "se_d": s(sig / sqrt(nn), 1),
+                "w_prior": s(1 - ph[0.5], 3), "w_data": s(ph[1.0], 3), "w_sd": s(ph[r((mpost - c) / (sig / sqrt(nn)), 1)], 3),
+                "w_comp": s(1 - ok, 3)})
+    assert zr == 0.67
+    return out
 
 
 def p13():
-    # (a) 分散の異なる2群の判別（2次判別）
-    mu1, s1, mu2, s2 = 3.0, 0.5, 2.0, 1.0
-    ln2 = 0.6931
-    # 2(x-3)^2 - 0.5(x-2)^2 = ln2 → 1.5x^2 - 10x + 16 - ln2 = 0
-    A = 1 / (2 * s1 ** 2) - 1 / (2 * s2 ** 2)
-    B = -2 * mu1 / (2 * s1 ** 2) + 2 * mu2 / (2 * s2 ** 2)
-    C = mu1 ** 2 / (2 * s1 ** 2) - mu2 ** 2 / (2 * s2 ** 2) - ln2
-    disc = B * B - 4 * A * C
-    lo, hi = (-B - sqrt(disc)) / (2 * A), (-B + sqrt(disc)) / (2 * A)
-    C0 = C + ln2
-    d0 = B * B - 4 * A * C0
-    lo0, hi0 = (-B - sqrt(d0)) / (2 * A), (-B + sqrt(d0)) / (2 * A)
-    # σ を σ² の代わりに使った誤り
-    A2 = 1 / (2 * s1) - 1 / (2 * s2)
-    B2 = -2 * mu1 / (2 * s1) + 2 * mu2 / (2 * s2)
-    C2 = mu1 ** 2 / (2 * s1) - mu2 ** 2 / (2 * s2) - ln2
-    d2 = B2 * B2 - 4 * A2 * C2
-    lo2, hi2 = (-B2 - sqrt(d2)) / (2 * A2), (-B2 + sqrt(d2)) / (2 * A2)
-    # (b) ゼロ切断ポアソン
-    lam, em = 0.8, 0.4493
-    zt = lam / (1 - em)
-    return {
-        "mu1": s(mu1, 1), "s1": s(s1, 1), "mu2": s(mu2, 1), "s2": s(s2, 1), "v1": s(s1 ** 2, 2), "v2": s(s2 ** 2, 1),
-        "ln2": ln2, "A": s(A, 1), "B": s(-B, 0), "C0": s(C0, 0), "C": s(C, 4), "disc": s(disc, 4), "rd": s(sqrt(disc), 4),
-        "lo": s(lo, 2), "hi": s(hi, 2), "lo4": s(lo, 4), "hi4": s(hi, 4), "mid": s((mu1 + mu2) / 2, 2),
-        "lo0": s(lo0, 2), "hi0": s(hi0, 2), "lo2": s(lo2, 2), "hi2": s(hi2, 2), "twoA": s(2 * A, 0),
-        "lam": lam, "em": em, "one_em": s(1 - em, 4), "zt": s(zt, 3), "zt4": s(zt, 4),
-        "w_lam1": s(lam + 1, 3), "w_mul": s(lam * (1 - em), 3), "w_div": s(lam / em, 3), "w_lam": s(lam, 3),
-    }
+    xs = [1.0, 1.6, 2.1, 2.75, 3.15, 3.65, 4.4, 5.2]
+    lab = list("HHHDHDDD")
+    def loo(k):
+        wrong = []
+        for i in range(8):
+            ds = sorted((abs(xs[j] - xs[i]), j) for j in range(8) if j != i)
+            assert ds[k - 1][0] + 1e-9 < ds[k][0]
+            votes = [lab[j] for _, j in ds[:k]]
+            pred = max(set(votes), key=votes.count)
+            if pred != lab[i]:
+                wrong.append(i)
+        return wrong
+    w1, w3 = loo(1), loo(3)
+    nm = lambda idx: "、".join(f"$x={s(xs[i], 2)}$（{lab[i]}）" for i in idx)
+    out = {"xs": " | ".join(s(v, 2) for v in xs), "sep": "---|" * 8, "labs": " | ".join(lab),
+           "n1": len(w1), "n3": len(w3), "e1": s(len(w1) / 8, 3), "e3": s(len(w3) / 8, 3), "list1": nm(w1), "list3": nm(w3),
+           "w3": s(3 / 8, 3), "w1": s(2 / 8, 3)}
+    assert (len(w1), len(w3)) == (3, 2)
+    # (b) クーポン収集
+    ok = 4 * (1 + 1 / 2 + 1 / 3 + 1 / 4)
+    out.update({"ok": s(ok, 2), "ok4": s(ok, 4), "w_ln": s(4 * math.log(4), 2), "w_n2": "16.00", "w_drop": s(ok - 4, 2)})
+    return out
 
 
 def p14():
-    r12, r13, r23 = 0.72, 0.63, 0.56
-    l3sq = r13 * r23 / r12
-    l3 = sqrt(l3sq)
-    l2sq = r12 * r23 / r13
-    l1sq = r12 * r13 / r23
-    avg = (r13 + r23) / 2
-    # (b) シルエット係数
-    own = (1.2, 1.8)
-    cb = (2.6, 3.0, 3.4)
-    cc = (2.2, 3.6)
-    a = sum(own) / len(own)
-    mb, mc = sum(cb) / len(cb), sum(cc) / len(cc)
-    b = min(mb, mc)
-    sil = (b - a) / max(a, b)
-    return {
-        "r12": r12, "r13": r13, "r23": r23, "num": s(r13 * r23, 4), "l3sq": s(l3sq, 2), "l3": s(l3, 2), "psi3": s(1 - l3sq, 2),
-        "l1sq": s(l1sq, 2), "l2sq": s(l2sq, 2), "l1": s(sqrt(l1sq), 2), "l2": s(sqrt(l2sq), 2),
-        "w_l": s(l3sq, 2), "w_psi_l": s(1 - l3, 2), "w_avg": s(avg, 3), "w_avgpsi": s(1 - avg ** 2, 3),
-        "w_wrong": s(sqrt(l2sq), 2), "w_wrongpsi": s(1 - l2sq, 2),
-        "o1": own[0], "o2": own[1], "b1": cb[0], "b2": cb[1], "b3": cb[2], "c1": cc[0], "c2": cc[1],
-        "a": s(a, 2), "mb": s(mb, 2), "mc": s(mc, 2), "bb": s(b, 2), "sil": r(sil, 2), "sil4": s(sil, 4),
-        "w_min": s((min(cb + cc) - a) / max(a, min(cb + cc)), 4), "w_mb": s((mb - a) / mb, 4),
-    }
+    ok = 1 + 2 + 4 + 2
+    cy = 1.8
+    single = 1 + cy * cy
+    ward = (2 * single + 2 * single - 4) / 3
+    assert cy * cy < 4 < single
+    return {"ok": ok, "w_edges": 4, "w_noroot": ok - 1, "w_full": 2 * (1 + 2 + 4 + 2), "cy": s(cy, 1),
+            "ok2": s(cy * cy, 2), "w_single": s(single, 2), "w_ward": s(ward, 2)}
 
 
 def values():
-    return {"s23p01": p01(), "s23p02": p02(), "s23p03": p03(), "s23p04": p04(), "s23p05": p05(),
-            "s23p06": p06(), "s23p07": p07(), "s23p08": p08(), "s23p09": p09(), "s23p10": p10(),
-            "s23p11": p11(), "s23p12": p12(), "s23p13": p13(), "s23p14": p14()}
+    v = {"s23p01": p01(), "s23p02": p02(), "s23p03": p03(), "s23p04": p04(), "s23p05": p05(),
+         "s23p06": p06(), "s23p07": p07(), "s23p08": p08(), "s23p09": p09(), "s23p10": p10(),
+         "s23p11": p11(), "s23p12": p12(), "s23p13": p13(), "s23p14": p14()}
+    v["s23p02"].update({"nb_" + k: x for k, x in p02b().items()})
+    v["s23p11"].update({"nl_" + k: x for k, x in p11b().items()})
+    return v
 
 
 if __name__ == "__main__":
-    for k, v in values().items():
-        print(k, v)
+    import pprint
+    pprint.pprint(values())
