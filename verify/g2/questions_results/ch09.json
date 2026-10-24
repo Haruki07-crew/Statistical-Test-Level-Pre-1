@@ -15,12 +15,28 @@
   "hash": "ec719bfd411cc457",
   "ok": true
  },
+ "q09-normal-distribution-g2": {
+  "hash": "a927d71d335a86b2",
+  "ok": true
+ },
+ "q09-normal-distribution-g3": {
+  "hash": "127e0b09fadbea5d",
+  "ok": true
+ },
  "q09-poisson-distribution-g1": {
   "hash": "499a0fc89b4146fb",
   "ok": true
  },
  "q09-standard-normal-distribution-g1": {
   "hash": "6e7470668c1227d8",
+  "ok": true
+ },
+ "q09-standard-normal-distribution-g2": {
+  "hash": "b634a9d675d92026",
+  "ok": true
+ },
+ "q09-standard-normal-distribution-g3": {
+  "hash": "8163122a289131ea",
   "ok": true
  }
 }

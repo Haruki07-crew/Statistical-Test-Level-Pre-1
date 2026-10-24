@@ -42,8 +42,6 @@ hypergeometric-distribution: 戻さずに取り出すときの確率を組合せ
 negative-binomial-distribution: 出題はまれ。幾何分布を「r 回成功するまで」に広げたものと知っておけば十分。
 uniform-distribution: 区間 [a, b] の一様分布の期待値（a＋b）/2 と分散（b－a）²/12 を押さえる。
 exponential-distribution: 待ち時間の分布で、P(X＞t) が指数関数で表されること、平均とレートが逆数の関係にあること、無記憶性を押さえる。
-normal-distribution: 標準化して分布表で確率を求める計算が中心。密度関数の式やモーメント母関数は覚えなくてよい。
-standard-normal-distribution: 分布表で上側確率を読み、対称性を使って区間の確率を求められるようにする。
 bivariate-normal-distribution: 出題はまれ。相関係数が 0 なら独立になる、という性質だけ知っておけば十分。
 chebyshev-inequality: 分布の形によらず、平均から標準偏差の k 倍以上離れる確率は 1/k² 以下、という使い方を押さえる。
 weak-law-of-large-numbers: 標本の大きさを大きくすると標本平均が母平均に近づく、という意味を押さえる。証明は読み飛ばしてよい。

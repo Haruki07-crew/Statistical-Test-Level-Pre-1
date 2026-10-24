@@ -55,6 +55,39 @@ questions:
     explanation: |
       $(182-170)/6=2$ なので、$P(X>182)=P(Z>2)=0.0228$ です。
 
+  - id: q09-normal-distribution-g2
+    term: normal-distribution
+    level: 基本
+    type: choice
+    question: |
+      確率変数 $X$ が $N(50,\ 10^2)$ にしたがうとき、$Y=2X+5$ がしたがう分布はどれか。
+    choices:
+      - $N(105,\ 20^2)$
+      - $N(105,\ 10^2)$
+      - $N(100,\ 20^2)$
+      - $N(105,\ 25^2)$
+    answer: 0
+    hint: |
+      正規分布を 1 次変換しても正規分布。平均は $2\times 50+5$、標準偏差は $|2|\times 10$。
+    explanation: |
+      $aX+b$ は $N(a\mu+b,\ a^2\sigma^2)$ にしたがうので、平均 $2\times 50+5=105$、分散 $2^2\times 10^2=20^2$ です。
+      足した定数 5 は散らばりに影響しません。標準偏差に 5 を足したり、平均の計算で 5 を忘れたりしないようにします。
+
+  - id: q09-normal-distribution-g3
+    term: normal-distribution
+    level: 標準
+    type: numeric
+    question: |
+      工程 A で作る部品の長さは $N(30,\ 0.6^2)$、工程 B で作る部品の長さは $N(29,\ 0.8^2)$（mm）にしたがい、互いに独立である。A と B から 1 個ずつ選んだとき、A のほうが短い確率を求めよ。ただし $P(Z>1)=0.1587$ とする。
+    answer: 0.1587
+    tolerance: 0.0001
+    hint: |
+      差 $A-B$ も正規分布にしたがう。平均は $30-29$、分散は $0.6^2+0.8^2$。
+    explanation: |
+      $A-B\sim N(1,\ 0.6^2+0.8^2)=N(1,\ 1^2)$ です。A のほうが短いのは $A-B<0$ のときなので
+      $P(A-B<0)=P(Z<(0-1)/1)=P(Z<-1)=P(Z>1)=0.1587$ です。
+      差の分散も足し算です（$0.36-0.64$ のように引くと負になってしまいます）。
+
   # ---------- 標準正規分布（共通の用語・2級の問題） ----------
   - id: q09-standard-normal-distribution-g1
     term: standard-normal-distribution
@@ -68,6 +101,34 @@ questions:
       左右対称なので、両側の裾は同じ 0.025。
     explanation: |
       $1-2\times 0.025=0.95$ です。95% 信頼区間や両側 5% の検定で使う値です。
+
+  - id: q09-standard-normal-distribution-g2
+    term: standard-normal-distribution
+    level: 基本
+    type: numeric
+    question: |
+      標準正規分布にしたがう $Z$ について、$P(-1<Z<2)$ を求めよ。ただし $P(Z>1)=0.1587$、$P(Z>2)=0.0228$ とする。
+    answer: 0.8185
+    tolerance: 0.0001
+    hint: |
+      全体 1 から、左の裾 $P(Z<-1)$ と右の裾 $P(Z>2)$ を引く。
+    explanation: |
+      対称性から $P(Z<-1)=P(Z>1)=0.1587$ です。よって $P(-1<Z<2)=1-0.1587-0.0228=0.8185$ です。
+      $0.1587-0.0228$ のように上側確率どうしを引くと、$P(1<Z<2)$ を求めたことになります。
+
+  - id: q09-standard-normal-distribution-g3
+    term: standard-normal-distribution
+    level: 標準
+    type: numeric
+    question: |
+      ある試験の得点は $N(500,\ 100^2)$ にしたがう。上位 2.5% に入るための得点の境目（何点以上か）を求めよ。ただし標準正規分布の上側 2.5% 点を 1.96 とする。
+    answer: 696
+    tolerance: 0.01
+    hint: |
+      境目は $\mu+z_{0.025}\,\sigma$。
+    explanation: |
+      $500+1.96\times 100=696$ 点です。
+      「上位 2.5%」は片側なので上側 2.5% 点 1.96 を使います。上位 5% なら 1.645 を使って 664.5 点になります。
 
   # ---------- 指数分布（共通の用語・2級の問題） ----------
   - id: q09-exponential-distribution-g1

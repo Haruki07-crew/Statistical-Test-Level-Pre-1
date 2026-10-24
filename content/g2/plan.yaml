@@ -349,12 +349,10 @@ chapters:
     title: 正規分布
     importance: A
     status: verified
-    from: pre1
   - id: standard-normal-distribution
     title: 標準正規分布
     importance: A
     status: verified
-    from: pre1
   - id: bivariate-normal-distribution
     title: 2変量正規分布
     importance: C
