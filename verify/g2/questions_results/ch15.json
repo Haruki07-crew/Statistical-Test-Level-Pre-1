@@ -19,6 +19,18 @@
   "hash": "eb382d7fd594ff5d",
   "ok": true
  },
+ "q15-one-way-anova-g2": {
+  "hash": "722d2d9d5c0a9819",
+  "ok": true
+ },
+ "q15-sum-of-squares-decomposition-g1": {
+  "hash": "c5a7e7fda2114e76",
+  "ok": true
+ },
+ "q15-sum-of-squares-decomposition-g2": {
+  "hash": "a6a0ad46db8d1b37",
+  "ok": true
+ },
  "q15-treatment-and-control-1": {
   "hash": "0bd168327798670f",
   "ok": true

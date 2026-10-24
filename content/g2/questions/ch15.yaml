@@ -117,3 +117,44 @@ questions:
       自由度は群間 $5-1$、群内 $35-5$。
     explanation: |
       群間の平均平方 $40/4=10$、群内の平均平方 $90/30=3$、$F=10/3\approx 3.33$ です。
+
+  - id: q15-one-way-anova-g2
+    term: one-way-anova
+    level: 標準
+    type: truefalse
+    question: |
+      2 つの群だけで一元配置分散分析を行うと、F 比は、母分散が等しいと仮定した 2 標本 t 検定の t 統計量の 2 乗に等しくなる。
+    answer: true
+    hint: |
+      2 群なら群間の自由度は 1。$F(1,\ \nu)$ と $t(\nu)$ の関係。
+    explanation: |
+      正しい記述です。例えば A：3, 5, 4, 6, 7 と B：7, 8, 6, 9, 10 では、$F=9.0$、$t=-3.0$ で $t^2=F$ です。2 つの検定は同じ結論になります。
+
+  # ---------- 平方和の分解（2級向けに書き直した用語） ----------
+  - id: q15-sum-of-squares-decomposition-g1
+    term: sum-of-squares-decomposition
+    level: 標準
+    type: numeric
+    question: |
+      3 つの群（各 5 個）の平均は 20、24、25 だった。群間の平方和を求めよ。
+    answer: 70
+    tolerance: 0.001
+    hint: |
+      全体の平均を求め、各群について「群の大きさ ×（群の平均 − 全体の平均）²」を足す。
+    explanation: |
+      全体の平均は $(20+24+25)/3=23$（各群の大きさが等しいので単純な平均でよい）。群間の平方和は $5\{(20-23)^2+(24-23)^2+(25-23)^2\}=5\times 14=70$ です。
+      群の大きさ 5 を掛け忘れると 14 になります。
+
+  - id: q15-sum-of-squares-decomposition-g2
+    term: sum-of-squares-decomposition
+    level: 基本
+    type: truefalse
+    question: |
+      一元配置分散分析では、全体の平均平方は、群間の平均平方と群内の平均平方の和に等しい。
+    answer: false
+    hint: |
+      足し算で分解できるのは平方和と自由度。
+    explanation: |
+      誤りです。足し算で分解できるのは平方和（$S_T=S_A+S_E$）と自由度（$N-1=(k-1)+(N-k)$）で、平均平方（平方和 ÷ 自由度）は足し算になりません。
+      例えば 3 群・各 3 個で $S_T=60$、$S_A=54$、$S_E=6$ なら、平均平方は $60/8=7.5$、$54/2=27$、$6/6=1$ で、$27+1\ne 7.5$ です。
+

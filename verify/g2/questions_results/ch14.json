@@ -3,6 +3,10 @@
   "hash": "a2fbc1c7ed1b9ebc",
   "ok": true
  },
+ "q14-adjusted-r-squared-g2": {
+  "hash": "4a9561b98c0bcd8a",
+  "ok": true
+ },
  "q14-multiple-regression-model-g1": {
   "hash": "19c6848b97857331",
   "ok": true
@@ -17,6 +21,10 @@
  },
  "q14-regression-coefficient-t-test-g1": {
   "hash": "9f817c31efecec0d",
+  "ok": true
+ },
+ "q14-regression-coefficient-t-test-g2": {
+  "hash": "ff9f15bdec09164d",
   "ok": true
  },
  "q14-regression-output-1": {

@@ -212,6 +212,27 @@ check(T, "期待度数 23.33・26.67・χ²=9.375・自由度 2・5.991 と 9.21
 z2 = (40 / 50 - 30 / 50) / sqrt(.7 * .3 * (1 / 50 + 1 / 50))
 check(T, "2×2 表の χ² は比率の差の z の 2 乗", close(stats.chi2_contingency([[40, 10], [30, 20]], correction=False).statistic, z2 ** 2, 1e-9), z2 ** 2)
 
+T = "regression-coefficient-t-test"
+check(T, "SE=4/√64=0.5・t=4.0・t0.025(10)=2.228・区間 (0.886, 3.114)・F=t²=16・両側 p≈0.0025", close(4 / 8, .5, 1e-12) and close(2 / .5, 4, 1e-12) and close(stats.t.isf(.025, 10), 2.228) and close(2 - 2.228 * .5, .886, 1e-9) and close(2 + 2.228 * .5, 3.114, 1e-9) and close(2 * stats.t.sf(4, 10), .0025, 1e-4) and close(stats.t.sf(4, 10), .0013, 1e-4), 2 * stats.t.sf(4, 10))
+xs_ = rng.normal(0, 1, 12); ys_ = 1 + 2 * xs_ + rng.normal(0, 1, 12); lr = stats.linregress(xs_, ys_); res_ = ys_ - lr.intercept - lr.slope * xs_
+fr = (((lr.intercept + lr.slope * xs_ - ys_.mean()) ** 2).sum() / 1) / ((res_ ** 2).sum() / 10)
+check(T, "単回帰では t² = F（乱数データ）", close((lr.slope / lr.stderr) ** 2, fr, 1e-9), None)
+T = "adjusted-r-squared"
+r_ = np.random.default_rng(2025); n_ = 30; acc = {q_: [[], []] for q_ in range(1, 11)}
+for _ in range(4000):
+    X_ = r_.normal(size=(n_, 10)); y_ = 1 + 0.6 * X_[:, 0] + 0.5 * X_[:, 1] + r_.normal(size=n_); sst = ((y_ - y_.mean()) ** 2).sum()
+    for q_ in range(1, 11):
+        A_ = np.c_[np.ones(n_), X_[:, :q_]]; b_ = np.linalg.lstsq(A_, y_, rcond=None)[0]; r2 = 1 - ((y_ - A_ @ b_) ** 2).sum() / sst
+        acc[q_][0].append(r2); acc[q_][1].append(1 - (1 - r2) * (n_ - 1) / (n_ - q_ - 1))
+check(T, "図の値（同じ乱数の種で 4000 回のシミュレーションを再計算）", np.allclose([round(np.mean(acc[q_][0]), 3) for q_ in range(1, 11)], [0.236, 0.406, 0.428, 0.45, 0.472, 0.494, 0.516, 0.538, 0.56, 0.582]) and np.allclose([round(np.mean(acc[q_][1]), 3) for q_ in range(1, 11)], [0.209, 0.362, 0.362, 0.362, 0.362, 0.362, 0.362, 0.361, 0.362, 0.361]), None)
+check(T, "例 0.570・0.559", close(1 - .4 * 29 / 27, .570, 5e-4) and close(1 - .38 * 29 / 25, .559, 5e-4), None)
+T = "one-way-anova"
+ga = np.array([3, 5, 4, 6, 7.]); gb = np.array([7, 8, 6, 9, 10.])
+check(T, "2 群：S_A=22.5・S_E=20・F=9.0・t=−3.0・F(2,12) の 5% 点 3.885・1−0.95³≈0.14", close(5 * ((5 - 6.5) ** 2 + (8 - 6.5) ** 2), 22.5, 1e-12) and close(((ga - 5) ** 2).sum() + ((gb - 8) ** 2).sum(), 20, 1e-12) and close(stats.f_oneway(ga, gb).statistic, 9, 1e-9) and close(stats.ttest_ind(ga, gb).statistic, -3, 1e-9) and close(stats.f.isf(.05, 2, 12), 3.885) and close(1 - .95 ** 3, .14, 0.005), None)
+T = "sum-of-squares-decomposition"
+g3 = [np.array([1, 2, 3.]), np.array([4, 5, 6.]), np.array([7, 8, 9.])]
+check(T, "S_T=60・S_A=54・S_E=6・90%・F=27", ((np.concatenate(g3) - 5) ** 2).sum() == 60 and sum(3 * (x.mean() - 5) ** 2 for x in g3) == 54 and sum(((x - x.mean()) ** 2).sum() for x in g3) == 6 and close(54 / 60, .9, 1e-12) and close(stats.f_oneway(*g3).statistic, 27, 1e-9), None)
+
 ng = results.count(False)
 print(f"書き直した共通の用語の検算: OK {len(results) - ng} / NG {ng}")
 sys.exit(1 if ng else 0)

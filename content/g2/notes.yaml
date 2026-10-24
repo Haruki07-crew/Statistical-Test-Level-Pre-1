@@ -56,14 +56,10 @@ two-sample-proportion-test: 2群を合わせた比率で標準誤差を作る z 
 pearson-chi-square-statistic: （観測度数－期待度数）² ÷ 期待度数 の合計を計算できるようにする。
 expected-frequency: 独立性の検定では 行の合計 × 列の合計 ÷ 総数、適合度検定では 総数 × 確率 で求めることを押さえる。
 test-correlation-coefficient: t ＝ r√(n－2) ÷ √(1－r²) を自由度 n－2 の t 分布で検定する手順を押さえる。
-regression-coefficient-t-test: 出力の t 値（推定値 ÷ 標準誤差）と p 値から有意かどうかを判断できるようにする。
-adjusted-r-squared: 1－（1－R²）（n－1）/（n－p－1）の計算と、説明変数の数の違うモデルの比較に使うことを押さえる。
 overall-f-test-regression: 決定係数から F を求める式と、「すべての係数が 0」の検定であることを押さえる。
 multicollinearity: 説明変数どうしの相関が強いと係数の標準誤差が大きくなり、符号や有意性が不安定になることを押さえる。VIF は知っておく程度でよい。
 dummy-variable: 質的変数を 0 と 1 で表し、係数を基準のカテゴリとの差として読むこと、カテゴリの数－1 個のダミーを使うことを押さえる。
 confidence-and-prediction-interval-regression: 予測区間は信頼区間より広く、どちらも x が平均から離れるほど広くなる、という性質を押さえる。
-one-way-anova: 分散分析表（平方和・自由度・平均平方・F 比）を埋めて判断する手順を確実にする。
-sum-of-squares-decomposition: 全体の平方和＝群間＋群内（誤差）と、自由度も同じように分解できることを押さえる。
 randomized-block-design: ブロックを作ってその中で処理を比べる目的と、誤差の自由度が（処理の数－1）×（ブロックの数－1）になることを押さえる。
 main-effect-and-interaction: 組合せごとの平均の表から、一方の効果がもう一方の水準で変わる（交互作用）ことを読み取れるようにする。
 two-way-anova-with-replication: 出題はまれ。交互作用を検定するには繰り返しが必要、ということを知っておけば十分。

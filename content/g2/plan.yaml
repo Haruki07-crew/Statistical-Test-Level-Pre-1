@@ -594,12 +594,10 @@ chapters:
     title: 回帰係数のt検定
     importance: A
     status: verified
-    from: pre1
   - id: adjusted-r-squared
     title: 自由度調整済み決定係数
     importance: A
     status: verified
-    from: pre1
   - id: overall-f-test-regression
     title: 回帰全体のF検定
     importance: B
@@ -635,12 +633,10 @@ chapters:
     title: 一元配置分散分析
     importance: A
     status: verified
-    from: pre1
   - id: sum-of-squares-decomposition
     title: 平方和の分解
     importance: A
     status: verified
-    from: pre1
   - id: randomized-block-design
     title: 乱塊法
     importance: B
