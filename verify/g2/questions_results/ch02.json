@@ -1,0 +1,94 @@
+{
+ "q02-box-plot-1": {
+  "hash": "3145e7444f9e711b",
+  "ok": true
+ },
+ "q02-box-plot-2": {
+  "hash": "6ee03ccbae277fbe",
+  "ok": true
+ },
+ "q02-box-plot-3": {
+  "hash": "93414d74cab42eef",
+  "ok": true
+ },
+ "q02-box-plot-4": {
+  "hash": "892c343d47dd8231",
+  "ok": true
+ },
+ "q02-lorenz-curve-gini-1": {
+  "hash": "b47d39f7a5f50304",
+  "ok": true
+ },
+ "q02-lorenz-curve-gini-2": {
+  "hash": "9c5b4f557f0f63a5",
+  "ok": true
+ },
+ "q02-lorenz-curve-gini-3": {
+  "hash": "65a26d17acf5f664",
+  "ok": true
+ },
+ "q02-lorenz-curve-gini-4": {
+  "hash": "260afdb4bdc91d2b",
+  "ok": true
+ },
+ "q02-mean-median-mode-1": {
+  "hash": "a4b785c21a46e2ac",
+  "ok": true
+ },
+ "q02-mean-median-mode-2": {
+  "hash": "f9f8330428e8027a",
+  "ok": true
+ },
+ "q02-mean-median-mode-3": {
+  "hash": "b7a2ec66bbd454b7",
+  "ok": true
+ },
+ "q02-mean-median-mode-4": {
+  "hash": "9fddb615ac748901",
+  "ok": true
+ },
+ "q02-quartiles-iqr-1": {
+  "hash": "ddbcb85dd82503e4",
+  "ok": true
+ },
+ "q02-quartiles-iqr-2": {
+  "hash": "eea49ef019bacebe",
+  "ok": true
+ },
+ "q02-quartiles-iqr-3": {
+  "hash": "d61c31db572ef775",
+  "ok": true
+ },
+ "q02-sample-variance-sd-1": {
+  "hash": "69ce9c3020971d7e",
+  "ok": true
+ },
+ "q02-sample-variance-sd-2": {
+  "hash": "a090f585306e3d68",
+  "ok": true
+ },
+ "q02-sample-variance-sd-3": {
+  "hash": "2049d58ba7c94552",
+  "ok": true
+ },
+ "q02-sample-variance-sd-4": {
+  "hash": "48087ea38bad16f3",
+  "ok": true
+ },
+ "q02-standard-score-1": {
+  "hash": "e74610cd933ef6c3",
+  "ok": true
+ },
+ "q02-standard-score-2": {
+  "hash": "eb9896963cf3759d",
+  "ok": true
+ },
+ "q02-standard-score-3": {
+  "hash": "72d4edea732a0a2c",
+  "ok": true
+ },
+ "q02-standard-score-4": {
+  "hash": "273f82d0bbe2efda",
+  "ok": true
+ }
+}

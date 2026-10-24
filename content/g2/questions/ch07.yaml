@@ -1,0 +1,106 @@
+chapter: 7
+questions:
+  # ---------- 順列と組合せ (B) ----------
+  - id: q07-counting-1
+    term: counting
+    level: 基本
+    type: numeric
+    question: |
+      6 人の中から代表を 2 人選ぶ方法は何通りか（2 人の役割は区別しない）。
+    answer: 15
+    tolerance: 0.01
+    hint: |
+      組合せ $\binom{6}{2}$。
+    explanation: |
+      $$\binom{6}{2}=\frac{6\times 5}{2\times 1}=15 \text{ 通り}$$
+      役割を区別する（代表と副代表）なら ${}_6\mathrm{P}_2=30$ 通りです。
+
+  - id: q07-counting-2
+    term: counting
+    level: 標準
+    type: numeric
+    question: |
+      当たり 3 本・はずれ 7 本のくじから、同時に 2 本引く。2 本とも当たりである確率を小数第 3 位まで求めよ。
+    answer: 0.067
+    tolerance: 0.001
+    hint: |
+      引き方の総数は $\binom{10}{2}$、2 本とも当たりの引き方は $\binom{3}{2}$。
+    explanation: |
+      $$\frac{\binom{3}{2}}{\binom{10}{2}}=\frac{3}{45}=\frac{1}{15}\approx 0.067$$
+      1 本ずつ引くと考えても $\frac{3}{10}\times\frac{2}{9}=\frac{1}{15}$ で同じです。
+
+  - id: q07-counting-3
+    term: counting
+    level: 基本
+    type: choice
+    question: |
+      8 人の中から委員長と副委員長を 1 人ずつ選ぶ方法は何通りか。
+    choices:
+      - '28'
+      - '56'
+      - '64'
+      - '16'
+    answer: 1
+    hint: |
+      役割が違うので、順番を区別して選ぶ。
+    explanation: |
+      委員長の選び方が 8 通り、残り 7 人から副委員長を選ぶので ${}_8\mathrm{P}_2=8\times 7=56$ 通りです。
+      28 は役割を区別しない組合せ $\binom{8}{2}$、64 は同じ人が両方を兼ねることを許した数です。
+
+  # ---------- 事象と確率 (A) ----------
+  - id: q07-events-and-probability-1
+    term: events-and-probability
+    level: 基本
+    type: numeric
+    question: |
+      $P(A)=0.5$、$P(B)=0.4$、$P(A\cap B)=0.2$ のとき、$P(A\cup B)$ を求めよ。
+    answer: 0.7
+    tolerance: 0.001
+    hint: |
+      加法定理。重なりを 1 回引く。
+    explanation: |
+      $$P(A\cup B)=0.5+0.4-0.2=0.7$$
+
+  - id: q07-events-and-probability-2
+    term: events-and-probability
+    level: 標準
+    type: truefalse
+    question: |
+      確率が正である 2 つの事象 $A, B$ が排反ならば、$A$ と $B$ は独立である。
+    answer: false
+    hint: |
+      排反なら $P(A\cap B)=0$。独立なら $P(A\cap B)=P(A)P(B)$。
+    explanation: |
+      排反だと $P(A\cap B)=0$ ですが、$P(A)P(B)>0$ なので $P(A\cap B)\neq P(A)P(B)$ となり、独立ではありません。
+      一方が起きると他方は決して起こらないので、むしろ強く関係しています。
+
+  - id: q07-events-and-probability-3
+    term: events-and-probability
+    level: 標準
+    type: numeric
+    question: |
+      公正な硬貨を 4 回投げるとき、少なくとも 1 回表が出る確率を求めよ（小数第 4 位まで）。
+    answer: 0.9375
+    tolerance: 0.0001
+    hint: |
+      余事象は「4 回とも裏」。
+    explanation: |
+      $$1-\left(\frac12\right)^4=1-\frac{1}{16}=\frac{15}{16}=0.9375$$
+
+  - id: q07-events-and-probability-4
+    term: events-and-probability
+    level: 標準
+    type: choice
+    question: |
+      ある調査で、スマートフォンを使う人は 80%、パソコンを使う人は 50%、両方を使う人は 40% だった。どちらも使わない人の割合はどれか。
+    choices:
+      - 10%
+      - 30%
+      - 40%
+      - 0%
+    answer: 0
+    hint: |
+      まず「少なくとも一方を使う人」の割合を加法定理で求める。
+    explanation: |
+      少なくとも一方を使う人は $0.8+0.5-0.4=0.9$ なので、どちらも使わない人は $1-0.9=0.1$（10%）です。
+      重なりを引き忘れると $0.8+0.5=1.3$ となり 100% を超えてしまいます。

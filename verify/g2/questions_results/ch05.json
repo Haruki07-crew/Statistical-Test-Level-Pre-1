@@ -1,0 +1,58 @@
+{
+ "q05-growth-rate-1": {
+  "hash": "80948ff1fefe4b0d",
+  "ok": true
+ },
+ "q05-growth-rate-2": {
+  "hash": "2070fceac0894762",
+  "ok": true
+ },
+ "q05-growth-rate-3": {
+  "hash": "837cf9c6ab3f5dcd",
+  "ok": true
+ },
+ "q05-growth-rate-4": {
+  "hash": "6085a06aaafe1433",
+  "ok": true
+ },
+ "q05-index-number-1": {
+  "hash": "a30824a786d3c1b7",
+  "ok": true
+ },
+ "q05-index-number-2": {
+  "hash": "6504b191c522385b",
+  "ok": true
+ },
+ "q05-index-number-3": {
+  "hash": "f2c13afe02c2288e",
+  "ok": true
+ },
+ "q05-moving-average-1": {
+  "hash": "9bc16d56acc2cfa0",
+  "ok": true
+ },
+ "q05-moving-average-2": {
+  "hash": "b6343ab39ce8e6ff",
+  "ok": true
+ },
+ "q05-price-index-1": {
+  "hash": "da6f1f49a65b8318",
+  "ok": true
+ },
+ "q05-price-index-2": {
+  "hash": "f0a5dd5cafa94584",
+  "ok": true
+ },
+ "q05-price-index-3": {
+  "hash": "496ea2dbe220a9fa",
+  "ok": true
+ },
+ "q05-time-series-components-1": {
+  "hash": "323f5791b08c039a",
+  "ok": true
+ },
+ "q05-time-series-components-2": {
+  "hash": "27e69ba7eba91439",
+  "ok": true
+ }
+}

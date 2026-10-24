@@ -1,0 +1,73 @@
+chapter: 14
+questions:
+  # ---------- 回帰分析の出力の読み方 (A) ----------
+  - id: q14-regression-output-1
+    term: regression-output
+    level: 基本
+    type: numeric
+    question: |
+      回帰分析の出力で、ある説明変数の係数の推定値が 0.36、標準誤差が 0.12 だった。この係数の t 値を求めよ。
+    answer: 3
+    tolerance: 0.001
+    hint: |
+      t 値 ＝ 推定値 ÷ 標準誤差。
+    explanation: |
+      $$t=\frac{0.36}{0.12}=3$$
+      自由度が十分大きければ、|t| が 2 程度を超えると有意水準 5% で有意になります。
+
+  - id: q14-regression-output-2
+    term: regression-output
+    level: 標準
+    type: choice
+    question: |
+      重回帰分析の出力で、説明変数 A、B、C の係数の p 値はそれぞれ 0.003、0.210、0.048 だった。有意水準 5% で係数が 0 でないといえる説明変数はどれか。
+    choices:
+      - A と C
+      - A だけ
+      - A、B、C のすべて
+      - B だけ
+    answer: 0
+    hint: |
+      p 値が 0.05 より小さいものを選ぶ。
+    explanation: |
+      p 値が 0.05 未満なのは A（0.003）と C（0.048）なので、この 2 つです。
+      B（0.210）は有意ではありませんが、それは「関係がないと証明された」ことを意味しません。
+
+  - id: q14-regression-output-3
+    term: regression-output
+    level: 標準
+    type: numeric
+    question: |
+      データ 25 個、説明変数 3 個の重回帰分析で、決定係数が 0.60 だった。自由度調整済み決定係数を小数第 3 位まで求めよ。
+    answer: 0.543
+    tolerance: 0.001
+    hint: |
+      $1-(1-R^2)\dfrac{n-1}{n-p-1}$。
+    explanation: |
+      $$1-(1-0.60)\times\frac{24}{21}=1-0.4\times 1.1429\approx 0.543$$
+
+  - id: q14-regression-output-4
+    term: regression-output
+    level: 標準
+    type: truefalse
+    question: |
+      重回帰分析では、係数の推定値の絶対値が大きい説明変数ほど、目的変数への影響が大きいといえる。
+    answer: false
+    hint: |
+      身長を cm で測るか m で測るかで、係数はどう変わるか。
+    explanation: |
+      係数の大きさは説明変数の単位に依存します（cm を m に変えると係数は 100 倍）。
+      影響の大きさを比べるには、t 値や、変数を標準化してから求めた係数（標準化偏回帰係数）を使います。
+
+  - id: q14-regression-output-5
+    term: regression-output
+    level: 基本
+    type: numeric
+    question: |
+      回帰分析の結果、$\hat y = 1.5 + 0.8x_1 - 0.3x_2$ が得られた。$x_1=10,\ x_2=4$ のときの予測値を求めよ。
+    answer: 8.3
+    tolerance: 0.001
+    hint: |
+      係数に値を代入する。
+    explanation: |
+      $$1.5+0.8\times 10-0.3\times 4=1.5+8-1.2=8.3$$

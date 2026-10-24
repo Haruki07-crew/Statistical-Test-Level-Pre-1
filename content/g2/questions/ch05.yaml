@@ -1,0 +1,223 @@
+chapter: 5
+questions:
+  # ---------- 時系列の変動 (A) ----------
+  - id: q05-time-series-components-1
+    term: time-series-components
+    level: 基本
+    type: choice
+    question: |
+      月ごとの売上データで、季節による変動の影響を除いて「売上が増えているか」を判断したい。最も適切な比べ方はどれか。
+    choices:
+      - 前月比を見る
+      - 前年同月比を見る
+      - 1 月からの累積の売上を見る
+      - 2 か月移動平均を見る
+    answer: 1
+    hint: |
+      同じ季節どうしを比べる方法はどれか。
+    explanation: |
+      前年同月比は同じ月どうしを比べるので、季節変動が打ち消されます。
+      前月比は季節変動の影響をそのまま受けます。移動平均で季節変動を消すには、周期と同じ 12 か月の項数が必要です。
+
+  - id: q05-time-series-components-2
+    term: time-series-components
+    level: 標準
+    type: truefalse
+    question: |
+      月次データに 12 か月の中心化移動平均をとると、1 年周期の季節変動はならされ、主にトレンドと循環変動が残る。
+    answer: true
+    hint: |
+      1 周期分の季節変動を足し合わせると、どうなるか。
+    explanation: |
+      1 年分（12 か月）を平均すると季節の上下が打ち消し合うので、季節変動がならされます。
+      不規則変動も小さくなり、トレンドと循環変動が主に残ります。
+
+  # ---------- 成長率と平均成長率 (A) ----------
+  - id: q05-growth-rate-1
+    term: growth-rate
+    level: 標準
+    type: numeric
+    question: |
+      ある会社の売上は、2 年間で 100 億円から 121 億円になった。年平均成長率（%）を求めよ。
+    answer: 10
+    tolerance: 0.05
+    hint: |
+      $(1+\bar g)^2 = 121/100$。
+    explanation: |
+      $$\bar g=\sqrt{\frac{121}{100}}-1=1.1-1=0.10$$
+      で、年平均 10% です。2 年間の増加率 21% を 2 で割った 10.5% は誤りです。
+
+  - id: q05-growth-rate-2
+    term: growth-rate
+    level: 応用
+    type: numeric
+    question: |
+      ある指標が、1 年目に 44% 増加し、2 年目に 19% 減少した。この 2 年間の年平均成長率（%）を求めよ。
+    answer: 8
+    tolerance: 0.05
+    hint: |
+      $(1+\bar g)^2=(1+0.44)(1-0.19)$。
+    explanation: |
+      $(1.44)(0.81)=1.1664$ なので、$\bar g=\sqrt{1.1664}-1=1.08-1=0.08$、つまり 8% です。
+      成長率の算術平均 $(44-19)/2=12.5\%$ は、平均の成長を大きく見積もります。
+
+  - id: q05-growth-rate-3
+    term: growth-rate
+    level: 標準
+    type: choice
+    question: |
+      ある会社の売上は、部門 A が 120、部門 B が 80（合計 200）から、翌年は A が 132、B が 98（合計 230）になった。全体の成長率 15% に対する部門 B の寄与度はどれか。
+    choices:
+      - 9 ポイント
+      - 22.5%
+      - 18 ポイント
+      - 6 ポイント
+    answer: 0
+    hint: |
+      寄与度 ＝ 部門の増加分 ÷ 全体の前年の値。
+    explanation: |
+      B の増加分は 18 なので、寄与度は $18/200=0.09$、つまり 9 ポイントです（A は $12/200=6$ ポイントで、合計 15）。
+      22.5% は B 自身の成長率（$18/80$）、18 は増加分そのものです。
+
+  - id: q05-growth-rate-4
+    term: growth-rate
+    level: 基本
+    type: truefalse
+    question: |
+      ある値が 10% 増加したあと 10% 減少すると、元の値に戻る。
+    answer: false
+    hint: |
+      $1.1\times 0.9$ を計算する。
+    explanation: |
+      $1.1\times 0.9=0.99$ なので、元の値より 1% 小さくなります。
+      成長率は掛け算で積み重なるので、そのまま足し引きできません。
+
+  # ---------- 指数化と指数 (A) ----------
+  - id: q05-index-number-1
+    term: index-number
+    level: 基本
+    type: numeric
+    question: |
+      2020 年を 100 とする売上の指数が、2023 年は 125、2024 年は 120 だった。2023 年から 2024 年への売上の変化率（%）を求めよ。
+    answer: -4
+    tolerance: 0.05
+    hint: |
+      指数の比が売上の比になる。
+    explanation: |
+      $$\frac{120}{125}-1=-0.04$$
+      で −4% です。指数の差 5 ポイントを「5% 減」とするのは誤りです。
+
+  - id: q05-index-number-2
+    term: index-number
+    level: 標準
+    type: numeric
+    question: |
+      2020 年を 100 とする指数で、2022 年が 110、2024 年が 132 だった。基準を 2022 年（＝100）に付け替えたときの 2024 年の指数を求めよ。
+    answer: 120
+    tolerance: 0.05
+    hint: |
+      すべての指数を 2022 年の指数で割って 100 を掛ける。
+    explanation: |
+      $$\frac{132}{110}\times 100=120$$
+      基準を付け替えても、2022 年から 2024 年への変化率（20%）は変わりません。
+
+  - id: q05-index-number-3
+    term: index-number
+    level: 基本
+    type: choice
+    question: |
+      ある指数が 120 から 114 に変化した。この変化の表し方として正しいものはどれか。
+    choices:
+      - 6% の低下
+      - 6 ポイントの低下で、変化率は −5%
+      - 5 ポイントの低下
+      - 114% の低下
+    answer: 1
+    hint: |
+      指数の差は「ポイント」、比の変化は「%」。
+    explanation: |
+      差は $120-114=6$ ポイント、変化率は $114/120-1=-0.05$（−5%）です。
+      ポイントと % を取り違えないようにします。
+
+  # ---------- 物価指数 (B) ----------
+  - id: q05-price-index-1
+    term: price-index
+    level: 標準
+    type: numeric
+    question: |
+      2 品目の価格と基準時の購入量は次のとおりである。ラスパイレス価格指数（基準時＝100）を小数第 1 位まで求めよ。
+
+      | 品目 | 基準時の価格 | 基準時の数量 | 比較時の価格 |
+      |---|---|---|---|
+      | X | 100 | 4 | 120 |
+      | Y | 50 | 10 | 50 |
+    answer: 108.9
+    tolerance: 0.05
+    hint: |
+      基準時の数量のかごを、比較時の価格と基準時の価格で買ったときの費用の比。
+    explanation: |
+      $$\frac{120\times 4+50\times 10}{100\times 4+50\times 10}\times 100=\frac{980}{900}\times 100\approx 108.9$$
+      X の価格比 1.2 と Y の価格比 1.0 を、基準時の支出の割合（X が $400/900$、Y が $500/900$）で重み付けした平均とも一致します。
+
+  - id: q05-price-index-2
+    term: price-index
+    level: 基本
+    type: choice
+    question: |
+      パーシェ価格指数で、品目ごとの価格に掛ける数量として使うものはどれか。
+    choices:
+      - 基準時の数量
+      - 比較時の数量
+      - 基準時と比較時の数量の平均
+      - 数量は使わず、価格比の単純平均をとる
+    answer: 1
+    hint: |
+      ラスパイレス指数とパーシェ指数の違いは、どの時点のかごを使うか。
+    explanation: |
+      パーシェ指数は比較時の数量 $q_1$ を使い、$\sum p_1q_1/\sum p_0q_1$ で計算します。
+      基準時の数量を使うのはラスパイレス指数です。
+
+  - id: q05-price-index-3
+    term: price-index
+    level: 標準
+    type: numeric
+    question: |
+      ある年の名目の所得が 550 万円、そのときの物価指数（基準年＝100）が 110 だった。基準年の物価で測った実質の所得（万円）を求めよ。
+    answer: 500
+    tolerance: 0.05
+    hint: |
+      実質値 ＝ 名目値 ÷（物価指数 / 100）。
+    explanation: |
+      $$\frac{550}{110/100}=500 \text{ 万円}$$
+      名目の所得が増えても、物価がそれ以上に上がっていれば実質の所得は減ります。
+
+  # ---------- 移動平均 (A) ----------
+  - id: q05-moving-average-1
+    term: moving-average
+    level: 基本
+    type: numeric
+    question: |
+      時系列 12, 15, 18, 13, 16 について、3 時点目を中心とする 3 項移動平均を小数第 2 位まで求めよ。
+    answer: 15.33
+    tolerance: 0.01
+    hint: |
+      2・3・4 時点目の値の平均。
+    explanation: |
+      $$\frac{15+18+13}{3}=\frac{46}{3}\approx 15.33$$
+
+  - id: q05-moving-average-2
+    term: moving-average
+    level: 標準
+    type: choice
+    question: |
+      四半期データの 4 項中心化移動平均は、5 つの連続する値の重み付き平均として表せる。その重みとして正しいものはどれか。
+    choices:
+      - 5 つすべて 1/4
+      - 両端が 1/8、中の 3 つが 1/4
+      - 両端が 1/4、中の 3 つが 1/8
+      - 真ん中だけが 1/2、残りが 1/8
+    answer: 1
+    hint: |
+      隣り合う 2 つの 4 項平均を、さらに平均する。
+    explanation: |
+      $\frac12\left(\frac{y_{t-2}+y_{t-1}+y_t+y_{t+1}}{4}+\frac{y_{t-1}+y_t+y_{t+1}+y_{t+2}}{4}\right)$ を整理すると、両端の重みが $1/8$、中の 3 つが $1/4$ になります（重みの合計は 1）。

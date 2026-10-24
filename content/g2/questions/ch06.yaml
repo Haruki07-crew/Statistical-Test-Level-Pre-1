@@ -1,0 +1,96 @@
+chapter: 6
+questions:
+  # ---------- 観察研究と実験研究 (A) ----------
+  - id: q06-observational-vs-experimental-1
+    term: observational-vs-experimental
+    level: 基本
+    type: choice
+    question: |
+      喫煙の習慣がある人とない人を集め、10 年後に肺の病気になった人の割合を比べた。この研究の種類として最も適切なものはどれか。
+    choices:
+      - 観察研究
+      - ランダム化比較試験
+      - 全数調査
+      - 研究者が処理を割り付けた実験研究
+    answer: 0
+    hint: |
+      喫煙するかどうかを決めたのは誰か。
+    explanation: |
+      喫煙の有無は対象者自身が選んだもので、研究者は割り付けていないので観察研究です。
+      喫煙者と非喫煙者では年齢や生活習慣などが違う可能性があり、その影響（交絡）に注意して解釈します。
+
+  - id: q06-observational-vs-experimental-2
+    term: observational-vs-experimental
+    level: 標準
+    type: truefalse
+    question: |
+      観察研究でも、対象者の人数を十分に多くすれば、交絡の影響はなくなる。
+    answer: false
+    hint: |
+      人数を増やして小さくなるのは、偶然のぶれか、偏りか。
+    explanation: |
+      人数を増やすと偶然のぶれは小さくなりますが、比べる群の条件の違い（交絡）による偏りは残ります。
+      交絡を防ぐには無作為な割り付けが必要で、観察研究では交絡因子を測って調整するしかありません。
+
+  - id: q06-observational-vs-experimental-3
+    term: observational-vs-experimental
+    level: 標準
+    type: choice
+    question: |
+      「アイスクリームの売上が多い日ほど、水難事故の件数が多い」という関係が観察された。この関係を生み出している可能性が最も高い交絡因子はどれか。
+    choices:
+      - 気温（季節）
+      - アイスクリームの価格
+      - 水難事故の報道
+      - 店舗の数
+    answer: 0
+    hint: |
+      両方を同時に増やす要因は何か。
+    explanation: |
+      気温が高い日はアイスクリームがよく売れ、水辺に行く人も増えるので、両方が増えます。
+      アイスクリームが事故の原因になっているわけではなく、気温という共通の要因による擬似相関です。
+
+  # ---------- 母集団と標本 (A) ----------
+  - id: q06-population-and-sample-1
+    term: population-and-sample
+    level: 基本
+    type: choice
+    question: |
+      ある工場で今日生産した 5000 個の部品から 50 個を無作為に抜き取り、重さを測って全体の平均の重さを推測した。この調査の母集団はどれか。
+    choices:
+      - 今日生産した 5000 個の部品
+      - 抜き取った 50 個の部品
+      - 50 個の重さの平均
+      - 部品を作る機械
+    answer: 0
+    hint: |
+      推測したい対象の全体はどれか。
+    explanation: |
+      推測したいのは今日生産した部品全体の平均の重さなので、母集団は 5000 個の部品です。
+      抜き取った 50 個は標本、その平均は統計量です。
+
+  - id: q06-population-and-sample-2
+    term: population-and-sample
+    level: 標準
+    type: truefalse
+    question: |
+      標本調査では、標本の大きさを十分大きくすれば、標本の選び方に偏りがあっても母集団を正しく推測できる。
+    answer: false
+    hint: |
+      インターネットで自発的に回答した人を 1 万人集めた場合を考える。
+    explanation: |
+      標本を大きくすると偶然のぶれ（標本誤差）は小さくなりますが、選び方の偏りは消えません。
+      自発的な回答など偏った選び方では、何万人集めても母集団の推測を誤ることがあります。
+
+  - id: q06-population-and-sample-3
+    term: population-and-sample
+    level: 標準
+    type: numeric
+    question: |
+      ある標本調査で、標本の大きさ 400 のとき、標本比率の標準誤差はおよそ 0.02 だった。標準誤差をおよそ 0.01 にするには、標本の大きさをいくらにすればよいか。
+    answer: 1600
+    tolerance: 0.5
+    hint: |
+      標準誤差は $1/\sqrt n$ に比例する。
+    explanation: |
+      標準誤差を半分にするには、$\sqrt n$ を 2 倍、つまり $n$ を 4 倍にする必要があるので、$400\times 4=1600$ です。

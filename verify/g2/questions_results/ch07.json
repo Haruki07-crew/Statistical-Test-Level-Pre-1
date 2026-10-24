@@ -1,0 +1,30 @@
+{
+ "q07-counting-1": {
+  "hash": "206108523c3a8ca8",
+  "ok": true
+ },
+ "q07-counting-2": {
+  "hash": "13cacdc5e9724f92",
+  "ok": true
+ },
+ "q07-counting-3": {
+  "hash": "8d9279b707da2564",
+  "ok": true
+ },
+ "q07-events-and-probability-1": {
+  "hash": "2767cbfd2108eaae",
+  "ok": true
+ },
+ "q07-events-and-probability-2": {
+  "hash": "54b31b1be56dc448",
+  "ok": true
+ },
+ "q07-events-and-probability-3": {
+  "hash": "558f02bebe623e59",
+  "ok": true
+ },
+ "q07-events-and-probability-4": {
+  "hash": "d1f701e5cf3d9003",
+  "ok": true
+ }
+}

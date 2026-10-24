@@ -91,16 +91,24 @@ def render_inline(text):
     return m.group(1) if m and "<p>" not in m.group(1) else h
 
 
-def load_questions(plan_ids):
-    """検算に通り、内容が検算時から変わっていない問題だけを返す。戻り値：(問題の一覧, 章ごとの {全問, 公開})"""
+def load_questions(plan_ids, shared=()):
+    """検算に通り、内容が検算時から変わっていない問題だけを返す。戻り値：(問題の一覧, 章ごとの {全問, 公開})
+    2級では、準1級と共通の用語（shared）について、準1級の問題のうち level が「基本」のものも使う（キーは "準1級"）。"""
     sys.path.insert(0, str(ROOT / "verify"))
     from qcheck import qhash
     out, stat = [], {}
-    for p in sorted((CONTENT / "questions").glob("ch*.yaml")):
+    sources = [(p, VERIFY, None) for p in sorted((CONTENT / "questions").glob("ch*.yaml"))]
+    if shared:
+        sources += [(p, paths("pre1")["verify"], "準1級") for p in sorted((PRE1_CONTENT / "questions").glob("ch*.yaml"))]
+    for p, vdir, src in sources:
         data = yaml.safe_load(p.read_text(encoding="utf-8")) or {}
-        res_path = VERIFY / "questions_results" / f"{p.stem}.json"
+        res_path = vdir / "questions_results" / f"{p.stem}.json"
         res = json.loads(res_path.read_text(encoding="utf-8")) if res_path.exists() else {}
         qs = data.get("questions") or []
+        if src:
+            qs = [q for q in qs if q["term"] in shared and q["level"] == "基本"]
+            if not qs:
+                continue
         pub = 0
         for q in qs:
             r = res.get(q["id"])
@@ -121,7 +129,9 @@ def load_questions(plan_ids):
                 item["a"] = render_inline(q["answer"])
                 item["steps"] = [render_inline(x) for x in q["steps"]]
             out.append(item)
-        stat[data.get("chapter")] = (len(qs), pub)
+        key = src or data.get("chapter")
+        a0, b0 = stat.get(key, (0, 0))
+        stat[key] = (a0 + len(qs), b0 + pub)
     return out, stat
 
 
@@ -289,7 +299,7 @@ def main():
                       for t in ch.get("terms") or []],
         })
     plan_ids = {t["id"] for ch in chapters for t in ch["terms"]}
-    questions, qstat = load_questions(plan_ids)
+    questions, qstat = load_questions(plan_ids, set(shared))
     exams, estat = load_exams(plan_ids)
     data = {"chapters": chapters, "terms": terms, "questions": questions, "exams": exams, "roadmap": load_roadmap(plan_ids),
             "formulas": render_formulas({t["title"]: t["id"] for ch in chapters for t in ch["terms"] if t["id"] in terms}),
@@ -320,7 +330,7 @@ def main():
         print(f"{ch['no']:>2} | {n:>4} | {w:>4} | {v:>6} | {ch['title']}")
     print(f"合計: 予定 {tot[0]} / 作成 {tot[1]} / 検算済 {tot[2]} / 未作成 {tot[0] - tot[1]}")
     qa = sum(v[0] for v in qstat.values())
-    print("問題（公開／全問）: " + "  ".join(f"第{k}章 {v[1]}/{v[0]}" for k, v in sorted(qstat.items())))
+    print("問題（公開／全問）: " + "  ".join((f"第{k}章" if isinstance(k, int) else f"{k}の基本問題（共通の用語）") + f" {v[1]}/{v[0]}" for k, v in sorted(qstat.items(), key=lambda kv: (isinstance(kv[0], str), kv[0]))))
     print(f"問題 合計: 公開 {len(questions)} / 全問 {qa}（検算に通っていない問題は公開しない）")
     print("模擬試験（小問 / 検算OK / 見直しOK / 自動検査エラー）: " + ("  ".join(f"set{k:02d} {v[0]}/{v[1]}/{v[2]}/{v[3]}" for k, v in sorted(estat.items())) or "なし"))
     print(f"模擬試験 公開: {len(exams)} セット（3段階の確認に通ったセットだけ）")

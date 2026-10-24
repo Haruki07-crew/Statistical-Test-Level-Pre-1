@@ -1,0 +1,26 @@
+{
+ "q06-observational-vs-experimental-1": {
+  "hash": "02d9d59e78035b70",
+  "ok": true
+ },
+ "q06-observational-vs-experimental-2": {
+  "hash": "efe66227f1dcdd07",
+  "ok": true
+ },
+ "q06-observational-vs-experimental-3": {
+  "hash": "6de8f4fec5fb20ac",
+  "ok": true
+ },
+ "q06-population-and-sample-1": {
+  "hash": "a28602810f3d2946",
+  "ok": true
+ },
+ "q06-population-and-sample-2": {
+  "hash": "09e974021e0698a5",
+  "ok": true
+ },
+ "q06-population-and-sample-3": {
+  "hash": "dcda454383f18324",
+  "ok": true
+ }
+}

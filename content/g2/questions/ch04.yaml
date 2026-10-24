@@ -1,0 +1,61 @@
+chapter: 4
+questions:
+  # ---------- 単回帰と回帰直線 (A) ----------
+  - id: q04-simple-regression-1
+    term: simple-regression
+    level: 基本
+    type: numeric
+    question: |
+      $x$ の平均が 10、$y$ の平均が 50 のデータに、最小二乗法で回帰直線 $\hat y = a + bx$ を当てはめたところ、傾きは $b=2.5$ だった。切片 $a$ を求めよ。
+    answer: 25
+    tolerance: 0.01
+    hint: |
+      回帰直線は平均の点 $(\bar x,\bar y)$ を通る。
+    explanation: |
+      $a=\bar y-b\bar x=50-2.5\times 10=25$ です。
+
+  - id: q04-simple-regression-2
+    term: simple-regression
+    level: 標準
+    type: numeric
+    question: |
+      $x$ と $y$ の相関係数が 0.8、$x$ の標準偏差が 5、$y$ の標準偏差が 10 である。$y$ を $x$ で説明する回帰直線の傾きを求めよ。
+    answer: 1.6
+    tolerance: 0.001
+    hint: |
+      傾き ＝ 相関係数 × $y$ の標準偏差 ÷ $x$ の標準偏差。
+    explanation: |
+      $$b=r\,\frac{s_y}{s_x}=0.8\times\frac{10}{5}=1.6$$
+      相関係数（0.8）をそのまま傾きとするのは誤りです。
+
+  - id: q04-simple-regression-3
+    term: simple-regression
+    level: 標準
+    type: choice
+    question: |
+      5 組のデータ $(x,y)=(2,5),(4,7),(6,6),(8,10),(10,12)$ に最小二乗法で当てはめた回帰直線はどれか。
+    choices:
+      - $\hat y = 2.9 + 0.85x$
+      - $\hat y = 0.85 + 2.9x$
+      - $\hat y = 3.5 + 0.75x$
+      - $\hat y = 2.48 + 0.92x$
+    answer: 0
+    hint: |
+      $\bar x=6,\ \bar y=8$。$S_{xx}=\sum(x-\bar x)^2$、$S_{xy}=\sum(x-\bar x)(y-\bar y)$ を計算する。
+    explanation: |
+      偏差は $x$：−4, −2, 0, 2, 4、$y$：−3, −1, −2, 2, 4。
+      $S_{xx}=40$、$S_{xy}=12+2+0+4+16=34$ なので、$b=34/40=0.85$、$a=8-0.85\times 6=2.9$ です。
+      $3.5+0.75x$ も平均の点を通りますが傾きが違います。0.92 は相関係数を傾きと取り違えた値です。
+
+  - id: q04-simple-regression-4
+    term: simple-regression
+    level: 基本
+    type: truefalse
+    question: |
+      最小二乗法で求めた回帰直線は、必ず平均の点 $(\bar x,\bar y)$ を通る。
+    answer: true
+    hint: |
+      切片の式 $a=\bar y-b\bar x$ を変形する。
+    explanation: |
+      $a=\bar y-b\bar x$ より $\bar y=a+b\bar x$ なので、回帰直線は点 $(\bar x,\bar y)$ を通ります。
+      このため残差の合計は 0 になります。

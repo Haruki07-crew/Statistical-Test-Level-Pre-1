@@ -1,0 +1,30 @@
+{
+ "q15-anova-table-1": {
+  "hash": "25ac7b5a127eb85a",
+  "ok": true
+ },
+ "q15-anova-table-2": {
+  "hash": "8b54551924caa6e4",
+  "ok": true
+ },
+ "q15-anova-table-3": {
+  "hash": "fcbadae69853eb8f",
+  "ok": true
+ },
+ "q15-anova-table-4": {
+  "hash": "d974c87433be7eb9",
+  "ok": true
+ },
+ "q15-treatment-and-control-1": {
+  "hash": "0bd168327798670f",
+  "ok": true
+ },
+ "q15-treatment-and-control-2": {
+  "hash": "5864d3bd1a6f3081",
+  "ok": true
+ },
+ "q15-treatment-and-control-3": {
+  "hash": "603b645f8d7927d4",
+  "ok": true
+ }
+}

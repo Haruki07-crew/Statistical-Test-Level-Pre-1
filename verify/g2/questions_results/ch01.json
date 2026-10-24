@@ -1,0 +1,86 @@
+{
+ "q01-bar-pie-band-chart-1": {
+  "hash": "77341073f771d6ea",
+  "ok": true
+ },
+ "q01-bar-pie-band-chart-2": {
+  "hash": "b22da15da001bcd2",
+  "ok": true
+ },
+ "q01-bar-pie-band-chart-3": {
+  "hash": "689df2815afd67f4",
+  "ok": true
+ },
+ "q01-cumulative-frequency-1": {
+  "hash": "2d0f556a00fc4641",
+  "ok": true
+ },
+ "q01-cumulative-frequency-2": {
+  "hash": "bb94101a7a6bc51c",
+  "ok": true
+ },
+ "q01-cumulative-frequency-3": {
+  "hash": "ef1fa347f09967ab",
+  "ok": true
+ },
+ "q01-data-types-1": {
+  "hash": "1efd47801a37b0c6",
+  "ok": true
+ },
+ "q01-data-types-2": {
+  "hash": "a894dff3bf43805d",
+  "ok": true
+ },
+ "q01-data-types-3": {
+  "hash": "3d404e63b6b3da00",
+  "ok": true
+ },
+ "q01-distribution-shape-1": {
+  "hash": "da9def04f02d4081",
+  "ok": true
+ },
+ "q01-distribution-shape-2": {
+  "hash": "8f05b4627181c095",
+  "ok": true
+ },
+ "q01-distribution-shape-3": {
+  "hash": "fbcad826d1f276c1",
+  "ok": true
+ },
+ "q01-frequency-distribution-histogram-1": {
+  "hash": "87bc3c536ea9de66",
+  "ok": true
+ },
+ "q01-frequency-distribution-histogram-2": {
+  "hash": "0111a3fc0dd3c1de",
+  "ok": true
+ },
+ "q01-frequency-distribution-histogram-3": {
+  "hash": "497d3405e5f9b2cb",
+  "ok": true
+ },
+ "q01-official-statistics-1": {
+  "hash": "a851feaff9567ae1",
+  "ok": true
+ },
+ "q01-official-statistics-2": {
+  "hash": "6c4a35eb078f0163",
+  "ok": true
+ },
+ "q01-scales-of-measurement-1": {
+  "hash": "a41e29208570ded9",
+  "ok": true
+ },
+ "q01-scales-of-measurement-2": {
+  "hash": "25fce2c8f91411e0",
+  "ok": true
+ },
+ "q01-stem-and-leaf-plot-1": {
+  "hash": "b19eb638aa8a004b",
+  "ok": true
+ },
+ "q01-stem-and-leaf-plot-2": {
+  "hash": "64cbb192c24a63e8",
+  "ok": true
+ }
+}

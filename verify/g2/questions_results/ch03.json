@@ -1,0 +1,34 @@
+{
+ "q03-cross-tabulation-1": {
+  "hash": "1106a7142fb77530",
+  "ok": true
+ },
+ "q03-cross-tabulation-2": {
+  "hash": "ea10d6065069876e",
+  "ok": true
+ },
+ "q03-cross-tabulation-3": {
+  "hash": "5914f379d0c86d78",
+  "ok": true
+ },
+ "q03-scatter-plot-1": {
+  "hash": "f308e7afa14ef2c9",
+  "ok": true
+ },
+ "q03-scatter-plot-2": {
+  "hash": "35d36e2143bb90bf",
+  "ok": true
+ },
+ "q03-scatter-plot-3": {
+  "hash": "dbc655d87d82702c",
+  "ok": true
+ },
+ "q03-stratified-scatter-1": {
+  "hash": "17e21d198b0811e2",
+  "ok": true
+ },
+ "q03-stratified-scatter-2": {
+  "hash": "0cf83093787f72fa",
+  "ok": true
+ }
+}

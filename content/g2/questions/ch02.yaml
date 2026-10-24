@@ -1,0 +1,359 @@
+chapter: 2
+questions:
+  # ---------- 平均値・中央値・最頻値 (A) ----------
+  - id: q02-mean-median-mode-1
+    term: mean-median-mode
+    level: 基本
+    type: numeric
+    question: |
+      7 人の 1 日の歩数（千歩）が 3, 7, 8, 8, 9, 12, 16 だった。平均値を求めよ（単位：千歩）。
+    answer: 9
+    tolerance: 0.01
+    hint: |
+      合計を個数で割る。
+    explanation: |
+      合計は $3+7+8+8+9+12+16=63$ なので、平均値は $63/7=9$ 千歩です。
+      ちなみに中央値は 4 番目の 8、最頻値も 8 です。16 のような大きな値があると、平均値は中央値より大きくなります。
+
+  - id: q02-mean-median-mode-2
+    term: mean-median-mode
+    level: 基本
+    type: choice
+    question: |
+      6 個のデータ 2, 3, 5, 6, 9, 11 の中央値はどれか。
+    choices:
+      - '5'
+      - '5.5'
+      - '6'
+      - '7'
+    answer: 1
+    hint: |
+      個数が偶数のときは、真ん中の 2 つの値の平均。
+    explanation: |
+      6 個なので 3 番目（5）と 4 番目（6）の平均 $(5+6)/2=5.5$ が中央値です。
+      6 は平均値（$36/6$）、5 は 3 番目の値だけを取った誤りです。
+
+  - id: q02-mean-median-mode-3
+    term: mean-median-mode
+    level: 標準
+    type: truefalse
+    question: |
+      データの中の最大値 1 つだけを、非常に大きな値に書き換えると、中央値は平均値より大きく変化する。
+    answer: false
+    hint: |
+      中央値は順番で決まる。最大値を大きくしても真ん中の値は変わるか。
+    explanation: |
+      最大値をさらに大きくしても順番は変わらないので、中央値は変わりません。
+      一方、平均値は合計が増える分だけ大きくなります。中央値は外れ値に強い（頑健な）代表値です。
+
+  - id: q02-mean-median-mode-4
+    term: mean-median-mode
+    level: 応用
+    type: numeric
+    question: |
+      10 人のテストの平均点は 60 点だった。このうち 30 点だった 1 人を除いた 9 人の平均点を求めよ。小数第 2 位まで答えよ。
+    answer: 63.33
+    tolerance: 0.01
+    hint: |
+      平均 × 人数 ＝ 合計 から、10 人の合計点を出す。
+    explanation: |
+      10 人の合計は $60\times 10=600$ 点。30 点を除くと $570$ 点で、9 人の平均は
+      $$\frac{570}{9}\approx 63.33 \text{ 点}$$
+      平均より低い値を除くと平均は上がります。
+
+  # ---------- データの分散と標準偏差 (A) ----------
+  - id: q02-sample-variance-sd-1
+    term: sample-variance-sd
+    level: 基本
+    type: numeric
+    question: |
+      データ 4, 6, 8, 10, 12 の分散を求めよ。ただし分散は偏差平方和を $n-1$ で割ったものとする。
+    answer: 10
+    tolerance: 0.01
+    hint: |
+      平均は 8。偏差は −4, −2, 0, 2, 4。
+    explanation: |
+      偏差平方和は $16+4+0+4+16=40$ なので、分散は $40/(5-1)=10$ です。
+      $n=5$ で割ると 8 になります。問題文の定義を確認します。
+
+  - id: q02-sample-variance-sd-2
+    term: sample-variance-sd
+    level: 標準
+    type: choice
+    question: |
+      標準偏差が 3 のデータがある。すべての値を 2 倍して 5 を足したデータの標準偏差はいくらか。
+    choices:
+      - '3'
+      - '6'
+      - '11'
+      - '12'
+    answer: 1
+    hint: |
+      定数を足しても散らばりは変わらない。$b$ 倍すると標準偏差は $|b|$ 倍。
+    explanation: |
+      $y=2x+5$ では、5 を足しても散らばりは変わらず、2 倍で標準偏差は 2 倍になるので $2\times 3=6$ です。
+      11 は値と同じように変換した誤り、12 は分散の倍率（$2^2=4$ 倍）を標準偏差に使った誤りです。
+
+  - id: q02-sample-variance-sd-3
+    term: sample-variance-sd
+    level: 標準
+    type: numeric
+    question: |
+      10 個のデータについて、$\sum x_i = 50$、$\sum x_i^2 = 290$ だった。分散（$n-1$ で割る）を小数第 2 位まで求めよ。
+    answer: 4.44
+    tolerance: 0.01
+    hint: |
+      偏差平方和は $\sum x_i^2 - n\bar x^{\,2}$。
+    explanation: |
+      平均は $\bar x=5$。偏差平方和は $290-10\times 5^2=40$ なので、分散は $40/9\approx 4.44$ です。
+
+  - id: q02-sample-variance-sd-4
+    term: sample-variance-sd
+    level: 基本
+    type: truefalse
+    question: |
+      標準偏差は元のデータと同じ単位を持つが、分散の単位は元の単位の 2 乗になる。
+    answer: true
+    hint: |
+      分散は偏差の 2 乗の平均。
+    explanation: |
+      分散は偏差（元の単位）を 2 乗して平均したものなので、単位は 2 乗（cm² など）になります。
+      平方根をとった標準偏差は元の単位に戻るので、平均と並べて使えます。
+
+  # ---------- 四分位数と四分位範囲 (A) ----------
+  - id: q02-quartiles-iqr-1
+    term: quartiles-iqr
+    level: 基本
+    type: numeric
+    question: |
+      8 個のデータ 1, 3, 4, 6, 7, 9, 10, 12 の四分位範囲を求めよ。ただし、第 1・第 3 四分位数は、中央値で分けた下半分・上半分の中央値とする。
+    answer: 6
+    tolerance: 0.01
+    hint: |
+      下半分は 1, 3, 4, 6、上半分は 7, 9, 10, 12。
+    explanation: |
+      第 1 四分位数は $(3+4)/2=3.5$、第 3 四分位数は $(9+10)/2=9.5$ なので、四分位範囲は $9.5-3.5=6$ です。
+
+  - id: q02-quartiles-iqr-2
+    term: quartiles-iqr
+    level: 標準
+    type: choice
+    question: |
+      あるデータの最大値を、入力の誤りで 10 倍の値にしてしまった。次の指標のうち、値が最も大きく変わるものはどれか。
+    choices:
+      - 範囲
+      - 四分位範囲
+      - 中央値
+      - 第 1 四分位数
+    answer: 0
+    hint: |
+      最大値を直接使う指標はどれか。
+    explanation: |
+      範囲は 最大値 − 最小値 なので、最大値の変化がそのまま効きます。
+      四分位範囲・中央値・第 1 四分位数は順番で決まる真ん中あたりの値を使うので、（データが少なすぎなければ）変わりません。
+
+  - id: q02-quartiles-iqr-3
+    term: quartiles-iqr
+    level: 基本
+    type: truefalse
+    question: |
+      第 1 四分位数から第 3 四分位数までの区間には、データのおよそ半分が含まれる。
+    answer: true
+    hint: |
+      第 1 四分位数は下から 25%、第 3 四分位数は下から 75% の位置。
+    explanation: |
+      25% の位置から 75% の位置までなので、およそ 50% のデータが含まれます。
+      この区間の幅が四分位範囲で、箱ひげ図の箱にあたります。
+
+  # ---------- 箱ひげ図と外れ値 (A) ----------
+  - id: q02-box-plot-1
+    term: box-plot
+    level: 標準
+    type: numeric
+    question: |
+      あるデータの第 1 四分位数は 20、第 3 四分位数は 30 だった。「第 3 四分位数 ＋ 1.5 × 四分位範囲」より大きい値を外れ値とするとき、上側の外れ値の基準の値を求めよ。
+    answer: 45
+    tolerance: 0.01
+    hint: |
+      四分位範囲は 30 − 20。
+    explanation: |
+      四分位範囲は $30-20=10$ なので、基準は $30+1.5\times 10=45$ です。
+      45 より大きい値は外れ値として点で描き、ひげは 45 以下の最大の値まで伸ばします。
+
+  - id: q02-box-plot-2
+    term: box-plot
+    level: 標準
+    type: choice
+    question: |
+      ある箱ひげ図では、中央値の線が箱の左寄りにあり、右のひげが左のひげよりずっと長かった。このデータの分布の形として最も適切なものはどれか。
+    choices:
+      - 右に裾が長い
+      - 左に裾が長い
+      - 左右対称
+      - 山が 2 つある
+    answer: 0
+    hint: |
+      大きい値の側（右）が広く伸びている。
+    explanation: |
+      右（大きい値の側）のひげが長く、中央値より右の半分のデータが広く散らばっているので、右に裾が長い分布です。
+      箱ひげ図からは山がいくつあるかはわからないので、「山が 2 つ」は判断できません。
+
+  - id: q02-box-plot-3
+    term: box-plot
+    level: 基本
+    type: choice
+    question: |
+      外れ値を点で示す形の箱ひげ図（平均は書き加えていない）から読み取れないものはどれか。
+    choices:
+      - 中央値
+      - 四分位範囲
+      - 最大値
+      - 平均値
+    answer: 3
+    hint: |
+      箱ひげ図は 5 数要約（と外れ値）を表す。
+    explanation: |
+      箱ひげ図は最小値・第 1 四分位数・中央値・第 3 四分位数・最大値（外れ値の点を含む）を表すので、中央値・四分位範囲・最大値は読めます。
+      平均値は、書き加えていなければ読み取れません。
+
+  - id: q02-box-plot-4
+    term: box-plot
+    level: 標準
+    type: truefalse
+    question: |
+      2 つの群の箱ひげ図を並べたとき、箱が長いほうの群がデータの個数も多い。
+    answer: false
+    hint: |
+      箱の長さは何を表しているか。
+    explanation: |
+      箱の長さは四分位範囲（真ん中の半分のデータの散らばり）を表し、データの個数とは関係ありません。
+      個数は箱ひげ図からはわからないので、必要なら別に示します。
+
+  # ---------- 標準化と標準得点 (A) ----------
+  - id: q02-standard-score-1
+    term: standard-score
+    level: 基本
+    type: numeric
+    question: |
+      平均 52 点、標準偏差 8 点のテストで 64 点を取った。標準得点（z 得点）を求めよ。
+    answer: 1.5
+    tolerance: 0.001
+    hint: |
+      （得点 − 平均）÷ 標準偏差。
+    explanation: |
+      $$z=\frac{64-52}{8}=1.5$$
+      平均より標準偏差 1.5 個分上にあります。偏差値に直すと $50+10\times 1.5=65$ です。
+
+  - id: q02-standard-score-2
+    term: standard-score
+    level: 基本
+    type: numeric
+    question: |
+      標準得点が $-0.8$ の人の偏差値を求めよ。
+    answer: 42
+    tolerance: 0.01
+    hint: |
+      偏差値 ＝ 50 ＋ 10 × 標準得点。
+    explanation: |
+      $50+10\times(-0.8)=42$ です。標準得点が負なら、偏差値は 50 より小さくなります。
+
+  - id: q02-standard-score-3
+    term: standard-score
+    level: 標準
+    type: choice
+    question: |
+      A さんの 3 科目の成績と、受験者全体の平均・標準偏差は次のとおりだった。受験者の中での位置が最も上（標準得点が最も大きい）なのはどの科目か。
+
+      | 科目 | A さんの点 | 平均 | 標準偏差 |
+      |---|---|---|---|
+      | 数学 | 70 | 60 | 5 |
+      | 英語 | 80 | 70 | 10 |
+      | 国語 | 75 | 65 | 8 |
+    choices:
+      - 数学
+      - 英語
+      - 国語
+      - 3 科目とも同じ
+    answer: 0
+    hint: |
+      どの科目も平均より 10 点高い。標準偏差で割って比べる。
+    explanation: |
+      標準得点は 数学 $10/5=2$、英語 $10/10=1$、国語 $10/8=1.25$ なので、数学が最も上です。
+      平均との差（どれも 10 点）だけでは比べられず、散らばりの大きさを考える必要があります。
+
+  - id: q02-standard-score-4
+    term: standard-score
+    level: 標準
+    type: truefalse
+    question: |
+      データを標準化（平均を引いて標準偏差で割る）すると、分布の形は正規分布になる。
+    answer: false
+    hint: |
+      標準化は 1 次変換（平行移動と拡大・縮小）である。
+    explanation: |
+      標準化は目盛りを付け替えるだけなので、平均 0・標準偏差 1 にはなりますが、分布の形（歪みや峰の数）は変わりません。
+      右に裾が長いデータは、標準化しても右に裾が長いままです。
+
+  # ---------- ローレンツ曲線とジニ係数 (A) ----------
+  - id: q02-lorenz-curve-gini-1
+    term: lorenz-curve-gini
+    level: 標準
+    type: numeric
+    question: |
+      4 人の所得（万円）が 10, 20, 30, 40 である。ローレンツ曲線の下の面積を台形の和で求め、ジニ係数を計算せよ。
+    answer: 0.25
+    tolerance: 0.001
+    hint: |
+      合計は 100。少ない順の累積割合は 0.1, 0.3, 0.6, 1.0。台形の幅は 0.25。
+    explanation: |
+      曲線の下の面積は
+      $$0.25\times\frac{(0+0.1)+(0.1+0.3)+(0.3+0.6)+(0.6+1.0)}{2} = 0.125\times 3.0 = 0.375$$
+      ジニ係数は $1-2\times 0.375=0.25$ です。
+
+  - id: q02-lorenz-curve-gini-2
+    term: lorenz-curve-gini
+    level: 基本
+    type: choice
+    question: |
+      全員の所得がまったく同じとき、ジニ係数の値はどれか。
+    choices:
+      - '0'
+      - '0.5'
+      - '1'
+      - '−1'
+    answer: 0
+    hint: |
+      このときローレンツ曲線は完全平等線と一致する。
+    explanation: |
+      完全平等ならローレンツ曲線は対角線（完全平等線）に重なり、間の面積が 0 なのでジニ係数は 0 です。
+      格差が大きいほど 1 に近づき、負の値にはなりません。
+
+  - id: q02-lorenz-curve-gini-3
+    term: lorenz-curve-gini
+    level: 基本
+    type: truefalse
+    question: |
+      ローレンツ曲線は、所得の多い人から順に並べて、人数と所得の累積割合を結んで描く。
+    answer: false
+    hint: |
+      曲線は完全平等線の上か下か。
+    explanation: |
+      ローレンツ曲線は所得の「少ない」人から順に並べて累積します。こうすると曲線は完全平等線の下にあり、下に凸の形になります。
+
+  - id: q02-lorenz-curve-gini-4
+    term: lorenz-curve-gini
+    level: 標準
+    type: choice
+    question: |
+      ある地域では、所得の多い上位 20% の世帯が、所得の合計の 50% を占めている。このことを表すローレンツ曲線上の点はどれか（横軸：世帯の累積割合、縦軸：所得の累積割合）。
+    choices:
+      - (0.8, 0.5)
+      - (0.2, 0.5)
+      - (0.8, 0.2)
+      - (0.5, 0.8)
+    answer: 0
+    hint: |
+      ローレンツ曲線は少ない順に累積する。上位 20% を除いた下位 80% の世帯は、所得の何 % を持つか。
+    explanation: |
+      下位 80% の世帯が所得の $100\%-50\%=50\%$ を持つので、点 (0.8, 0.5) を通ります。
+      (0.2, 0.5) は「多い順」に累積した場合の点で、ローレンツ曲線の描き方と逆です。
