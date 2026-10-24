@@ -47,36 +47,23 @@ def p01():
     fq, fp = two_of_three_fail(q), two_of_three_fail(p)
     ans = c * fq + (1 - c) * fp
     pbar = c * q + (1 - c) * p
-    # (b) フィッシャーの線形判別
-    mN, mF = (1.0, 2.0), (3.0, 5.0)
-    S = ((2.0, 1.0), (1.0, 3.0))
-    x = (4.2, 2.0)
-    det = S[0][0] * S[1][1] - S[0][1] ** 2
-    d = (mF[0] - mN[0], mF[1] - mN[1])
-    inv = ((S[1][1] / det, -S[0][1] / det), (-S[0][1] / det, S[0][0] / det))
-    cst = lambda w: w[0] * (mN[0] + mF[0]) / 2 + w[1] * (mN[1] + mF[1]) / 2
-    lin = lambda w: (w[0] * x[0] + w[1] * x[1]) - cst(w)
-    w_ok = (inv[0][0] * d[0] + inv[0][1] * d[1], inv[1][0] * d[0] + inv[1][1] * d[1])
-    w_d = d
-    w_sign = ((S[1][1] * d[0] + S[0][1] * d[1]) / det, (S[0][1] * d[0] + S[0][0] * d[1]) / det)
-    w_diag = (d[0] / S[0][0], d[1] / S[1][1])
-    h = {k: lin(w) for k, w in {"ok": w_ok, "d": w_d, "sign": w_sign, "diag": w_diag}.items()}
-    assert h["ok"] > 0 and h["d"] < 0 and h["sign"] > 0 and h["diag"] > 0
-    wf = lambda w: f"({s(w[0], 1)},\\ {s(w[1], 1)})"
+    # (b) 分散の異なる 2 群の 2 次判別（平均は等しい）
+    sN, sF, piF = 1.0, 3.0, 0.1
+    piN = 1 - piF
+    ln3 = 1.0986
+    k = 1 / sN ** 2 - 1 / sF ** 2
+    lnr = 3 * ln3                     # ln(piN*sF/(piF*sN)) = ln 27
+    cth = lambda L, two=2: sqrt(two * L / k)
+    cc = cth(lnr)
     return {
         "c": c, "q": q, "p": p, "c1": s(1 - c, 2),
         "q2": s(q ** 2, 2), "q1": s(1 - q, 1), "q3": s(q ** 3, 3), "fq": s(fq, 3),
         "p2": s(p ** 2, 4), "p1": s(1 - p, 2), "p3": s(p ** 3, 6), "fp": s(fp, 6),
         "t1": s(c * fq, 4), "t2": s((1 - c) * fp, 7), "ans7": s(ans, 7), "ans": r(ans, 4), "ans_s": s(ans, 4),
         "w_noice": s(fp, 4), "pbar": s(pbar, 3), "w_bar": s(two_of_three_fail(pbar), 4), "w_ice": s(c * fq, 4),
-        "mN1": s(mN[0], 1), "mN2": s(mN[1], 1), "mF1": s(mF[0], 1), "mF2": s(mF[1], 1),
-        "s11": s(S[0][0], 0), "s12": s(S[0][1], 0), "s22": s(S[1][1], 0), "det": s(det, 0),
-        "x1": s(x[0], 1), "x2": s(x[1], 1), "d1": s(d[0], 0), "d2": s(d[1], 0),
-        "wok": wf(w_ok), "wd": wf(w_d), "wsign": wf(w_sign), "wdiag": wf(w_diag),
-        "w1": s(w_ok[0], 1), "w2": s(w_ok[1], 1), "m1": s((mN[0] + mF[0]) / 2, 1), "m2": s((mN[1] + mF[1]) / 2, 1),
-        "cok": s(cst(w_ok), 2), "wx": s(w_ok[0] * x[0] + w_ok[1] * x[1], 2),
-        "h_ok": sg(h["ok"], 2), "h_d": sg(h["d"], 2), "h_sign": sg(h["sign"], 2), "h_diag": sg(h["diag"], 2),
-        "c_d": s(cst(w_d), 2), "wx_d": s(w_d[0] * x[0] + w_d[1] * x[1], 2),
+        "sF": s(sF, 0), "piF": piF, "piN": s(piN, 1), "ln3": ln3, "k": "\\frac{8}{9}", "lnr": s(lnr, 4),
+        "c2": s(cth(lnr) ** 2, 4), "c_ok": s(cc, 2), "c_noprior": s(cth(ln3), 2), "c_nosig": s(cth(2 * ln3), 2),
+        "c_two": s(cth(lnr, 1), 2), "c_var": s(cth(4 * ln3), 2),
     }
 
 
@@ -359,16 +346,12 @@ def p12():
 
 
 def p13():
-    c, phi = 0.02, 0.6
-    y0, y1 = 2.10, 2.25
-    d = y1 - y0
-    d1 = c + phi * d
-    d2 = c + phi * d1
-    f2 = y1 + d1 + d2
+    n, r1, r2 = 100, 0.55, 0.40
+    phi22 = (r2 - r1 ** 2) / (1 - r1 ** 2)
     return {
-        "c": c, "phi": phi, "y0": s(y0, 2), "y1": s(y1, 2), "d": s(d, 2), "d1": s(d1, 2), "d2": s(d2, 3),
-        "f2": r(f2, 3), "f2s": s(f2, 3), "w_last": s(y1 + d2, 3), "w_phi2": s(y1 + c + phi ** 2 * d, 3), "w_lin": s(y1 + 2 * d, 3),
-        "mu": s(c / (1 - phi), 2),
+        "n": n, "r1": s(r1, 2), "r2": s(r2, 2), "r1sq": s(r1 ** 2, 4), "num": s(r2 - r1 ** 2, 4), "den": s(1 - r1 ** 2, 4),
+        "phi22": r(phi22, 3), "phi22_s": s(phi22, 3), "phi22_5": s(phi22, 5), "bound": s(2 / sqrt(n), 2),
+        "w_num": s(r2 - r1 ** 2, 3), "w_r2": s(r2, 3), "w_ratio": s(r2 / r1, 3),
     }
 
 

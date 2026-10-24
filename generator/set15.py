@@ -69,7 +69,7 @@ def p02():
     out = {f"t{x}{y}": s(v, 2) for (x, y), v in tab.items()}
     out.update({"px0": s(px[0], 2), "px1": s(px[1], 2), "px2": s(px[2], 2), "pr1": s(pr1, 2), "pr0": s(1 - pr1, 2),
                 "cond": s(cond, 3), "prod": s(prod, 2), "c_rev": s(tab[(2, 1)] / pr1, 2), "ex": s(ex, 2),
-                "c0": s(cond_x0 := tab[(0, 1)] / px[0], 2)})
+                "c0": s(cond_x0 := tab[(0, 1)] / px[0], 2), "w_avg": s((0 + 1 + 2) / 3, 2)})
     return out
 
 
@@ -161,7 +161,7 @@ def p06():
 
 def p07():
     # (a) 2 病棟の感染率の差の z 検定
-    xA, nA, xB, nB = 14, 200, 4, 160
+    xA, nA, xB, nB = 20, 200, 4, 100
     pA, pB = xA / nA, xB / nB
     pp = (xA + xB) / (nA + nB)
     inv = 1 / nA + 1 / nB
@@ -170,7 +170,8 @@ def p07():
     se1 = sqrt(pA * (1 - pA) / nA + pB * (1 - pB) / nB)
     z1 = (pA - pB) / se1
     zbad = (pA - pB) / sqrt(pp * (1 - pp) / (nA + nB))
-    assert z < 1.96 < z1 and z > 1.645
+    # 丸めや途中の桁数で結論が変わらないよう、境界 1.96 から両側に十分離す
+    assert 1.645 + 0.1 < z < 1.96 - 0.1 and z1 > 1.96 + 0.1
     # (b) 経験ベイズ
     y = [12, 15, 9, 14, 10]
     sig2 = 4.0
@@ -290,18 +291,45 @@ def p12():
 
 
 def p13():
-    da = [2.0, 3.0, 4.0]
-    dbb = [5.0, 7.0]
-    dc = [4.0, 6.0, 5.0]
-    a = sum(da) / len(da)
-    mb, mc = sum(dbb) / len(dbb), sum(dc) / len(dc)
-    b = min(mb, mc)
-    sil = (b - a) / max(a, b)
-    a_self = sum(da) / (len(da) + 1)
-    return {"a1": s(da[0], 1), "a2": s(da[1], 1), "a3": s(da[2], 1), "b1": s(dbb[0], 1), "b2": s(dbb[1], 1),
-            "c1": s(dc[0], 1), "c2": s(dc[1], 1), "c3": s(dc[2], 1), "a": s(a, 1), "mb": s(mb, 1), "mc": s(mc, 1),
-            "b": s(b, 1), "sil": s(sil, 3), "c_far": s((mb - a) / max(a, mb), 3), "c_self": s((b - a_self) / max(a_self, b), 3),
-            "c_diva": s((b - a) / a, 3), "c_min": s((min(dc + dbb) - a) / max(a, min(dc + dbb)), 3), "aself": s(a_self, 2)}
+    # 5 人の患者の距離行列に最短距離法と最長距離法を適用し、2 クラスターに切った分け方を比べる（連鎖効果）
+    names = ["A", "B", "C", "D", "E"]
+    pos = [0.0, 2.0, 4.2, 6.6, 9.3]          # 1 次元に並ぶ配置から距離行列を作る（問題文には距離だけを示す）
+    dist = {(i, j): round(abs(pos[i] - pos[j]), 1) for i in range(5) for j in range(5)}
+
+    def cluster(link, k, first_min=False):
+        cl = [frozenset([i]) for i in range(5)]
+        hist = []
+        step = 0
+        while len(cl) > k:
+            best = None
+            for x in range(len(cl)):
+                for y in range(x + 1, len(cl)):
+                    ds = [dist[(i, j)] for i in cl[x] for j in cl[y]]
+                    use_min = link == "single" or (first_min and step == 1)
+                    dd = min(ds) if use_min else max(ds)
+                    if best is None or dd < best[0] - 1e-12:
+                        best = (dd, x, y)
+            dd, x, y = best
+            hist.append((dd, "".join(names[i] for i in sorted(cl[x] | cl[y]))))
+            cl = [c for n_, c in enumerate(cl) if n_ not in (x, y)] + [cl[x] | cl[y]]
+            step += 1
+        return sorted("".join(names[i] for i in sorted(c)) for c in cl), hist
+
+    def part(p):
+        return "、".join("\\{" + ",".join(c) + "\\}" for c in sorted(p, key=lambda c: (-len(c) if False else 0, c)))
+    sp, sh = cluster("single", 2)
+    cp, ch = cluster("complete", 2)
+    wp, _ = cluster("complete", 2, first_min=True)
+    assert sp == ["ABCD", "E"] and cp == ["AB", "CDE"] and wp == ["ABC", "DE"]
+    out = {f"d{names[i]}{names[j]}": s(dist[(i, j)], 1) for i in range(5) for j in range(i + 1, 5)}
+    out.update({"single": part(sp), "complete": part(cp), "wrong": part(wp),
+                "sh1": s(sh[0][0], 1), "sh2": s(sh[1][0], 1), "sh3": s(sh[2][0], 1),
+                "ch1": s(ch[0][0], 1), "ch2": s(ch[1][0], 1), "ch3": s(ch[2][0], 1),
+                "ab_c": s(max(dist[(0, 2)], dist[(1, 2)]), 1), "ab_d": s(max(dist[(0, 3)], dist[(1, 3)]), 1),
+                "ab_e": s(max(dist[(0, 4)], dist[(1, 4)]), 1), "cd_e": s(max(dist[(2, 4)], dist[(3, 4)]), 1),
+                "ab_cd": s(max(dist[(i, j)] for i in (0, 1) for j in (2, 3)), 1),
+                "s_e": s(min(dist[(i, 4)] for i in range(4)), 1)})
+    return out
 
 
 def p14():
@@ -345,7 +373,7 @@ def p04_extra():
 def p07b():
     x, n = 2, 60
     a, b = x + 0.5, n - x + 0.5
-    return {"x": x, "n": n, "a": s(a, 1), "b": s(b, 1), "ab": s(a + b, 0), "jm": r(a / (a + b), 4), "jm5": s(a / (a + b), 5),
+    return {"x": x, "n": n, "a": s(a, 1), "b": s(b, 1), "ab": s(a + b, 0), "jm": r(a / (a + b), 4), "jm5": s(a / (a + b), 5), "jm4": s(a / (a + b), 4),
             "w_unif": s((x + 1) / (n + 2), 4), "w_mle": s(x / n, 4), "w_half": s((x + 0.5) / (n + 0.5), 4)}
 
 

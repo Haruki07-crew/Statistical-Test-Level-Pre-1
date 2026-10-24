@@ -27,11 +27,21 @@ def ans_idx(iid):
     return E.item(iid)["answer"]
 
 
-# ---- 大問1：120 通りの並べ方を総当たり
-perms = list(permutations(range(5)))
-der = sum(all(p[i] != i for i in range(5)) for p in perms)
-E.num("s21p01a", f(der / len(perms), 4), f"総当たりで {der}/{len(perms)}")
-E.check("s21p01a", f(np.exp(-1), 4) != f(der / 120, 4) and abs(0.8 ** 5 - der / 120) > 0.001, "近似値 e^-1 や独立の近似は正解と区別できる")
+# ---- 大問1：ポリアの壺を列挙（玉に番号を付けて全通りを数える）と sympy の分数で
+from fractions import Fraction as Fr
+num = den = Fr(0)
+for c1, p1 in (("R", Fr(3, 5)), ("W", Fr(2, 5))):
+    box = {"R": 3, "W": 2}
+    box[c1] += 2
+    p2 = Fr(box["R"], sum(box.values()))
+    den += p1 * p2
+    if c1 == "R":
+        num += p1 * p2
+E.num("s21p01a", f(float(num / den), 4), f"分数で {num / den}")
+u = rng.random((2, 1_000_000))
+first_r = u[0] < 0.6
+second_r = np.where(first_r, u[1] < 5 / 7, u[1] < 3 / 7)
+E.check("s21p01a", abs(first_r[second_r].mean() - 5 / 7) < 0.003, f"シミュレーション {first_r[second_r].mean():.4f}")
 
 # ---- 大問2
 n, T = 40, 28
@@ -55,11 +65,10 @@ E.check("s21p02b", "T_n/n" in E.item("s21p02b")["choices"][ans_idx("s21p02b")] a
         "正解の選択肢は T_n/n の一致性の記述（他の4つは上のシミュレーションと反例で誤り）")
 
 # ---- 大問3
-for x, v in [(0.25, 0.7788), (0.5, 0.6065), (0.75, 0.4724), (1.5, 0.2231)]:
-    E.check("s21p03a", abs(np.exp(-x) - v) < 5e-5, f"e^-{x} = {v}")
-W = np.minimum.reduce([rng.exponential(20, 1_000_000), rng.exponential(30, 1_000_000), rng.exponential(60, 1_000_000)])
-E.check("s21p03a", abs((W > 15).mean() - 0.2231) < 0.002, f"シミュレーション P(W>15)={(W > 15).mean():.4f}")
-E.choice("s21p03a", f"${f(stats.expon(scale=20).sf(15) * stats.expon(scale=30).sf(15) * stats.expon(scale=60).sf(15), 3)}$", "scipy の生存関数の積")
+Mx = np.maximum.reduce([rng.exponential(20, 2_000_000), rng.exponential(30, 2_000_000), rng.exponential(60, 2_000_000)])
+emax_int = integrate.quad(lambda t: 1 - stats.expon(scale=20).cdf(t) * stats.expon(scale=30).cdf(t) * stats.expon(scale=60).cdf(t), 0, np.inf)[0]
+E.choice("s21p03a", f"${f(emax_int, 0)}$ 分", f"生存関数の数値積分 {emax_int:.4f}")
+E.check("s21p03a", abs(Mx.mean() - emax_int) < 0.2, f"シミュレーションの平均 {Mx.mean():.3f}")
 dens = lambda x: (4 - x)
 Zc = integrate.quad(dens, 0, 4)[0]
 med = optimize.brentq(lambda m: integrate.quad(dens, 0, m)[0] / Zc - 0.5, 0, 4)
@@ -69,16 +78,15 @@ xs = 4 - 4 * np.sqrt(1 - U)  # 逆関数法：F(x)=1-(1-x/4)^2
 E.check("s21p03b", abs(np.median(xs) - med) < 0.01, f"逆関数法で発生させた標本の中央値 {np.median(xs):.4f}")
 
 # ---- 大問4
-lam1, lam2 = 6, 5
-ks = np.arange(0, 200)
-kl = np.sum(stats.poisson.pmf(ks, lam1) * (stats.poisson.logpmf(ks, lam1) - stats.poisson.logpmf(ks, lam2)))
-E.num("s21p04a", f(kl, 3), f"確率関数の和で KL={kl:.5f}")
-E.check("s21p04a", abs(np.log(1.2) - 0.1823) < 5e-5, "log1.2=0.1823")
-klr = np.sum(stats.poisson.pmf(ks, lam2) * (stats.poisson.logpmf(ks, lam2) - stats.poisson.logpmf(ks, lam1)))
-E.check("s21p04a", f(klr, 3) != f(kl, 3), f"逆向き {klr:.4f} は別の値")
-# (b) 2×2 表のカイ二乗（連続修正なし）の平方根と一致
-chi = stats.chi2_contingency([[50, 200], [25, 225]], correction=False)[0]
-E.num("s21p04b", f(np.sqrt(chi), 2), "連続修正なしのカイ二乗統計量の平方根")
+from scipy.special import softmax
+ll = np.array([-210.4, -206.9, -206.3]); kk = np.array([1, 2, 3])
+aic = -2 * ll + 2 * kk
+wts = softmax(-aic / 2)
+E.num("s21p04a", f(wts.max(), 3), f"softmax(−AIC/2) の最大 {wts}")
+E.check("s21p04a", int(np.argmin(aic)) == 1 and abs(np.exp(-2.5) - 0.0821) < 5e-5 and abs(np.exp(-0.4) - 0.6703) < 5e-5, "AIC 最小は M2、e の値")
+zc = (35 - 0.5 - stats.binom.mean(250, 0.1)) / stats.binom.std(250, 0.1)
+E.num("s21p04b", f(zc, 2), f"scipy の二項分布の平均・標準偏差で {zc:.4f}")
+E.check("s21p04b", stats.binom.sf(34, 250, 0.1) < 0.05 and zc > 1.645, f"正確な片側 p 値 {stats.binom.sf(34, 250, 0.1):.4f} も 5% 未満で結論が一致")
 # (c) 系統抽出：開始番号ごとの標本を列挙して包含確率と2次の包含確率
 N, k = 12000, 40
 samples = [set(range(r, N, k)) for r in range(k)]
@@ -93,43 +101,35 @@ E.check("s21p04c", pair_same == 1 / 40 and pair_diff == 0, "2 冊が同時に選
 E.check("s21p04c", "1/«k»" not in E.item("s21p04c")["choices"][ans_idx("s21p04c")] and "$1/40$" in E.item("s21p04c")["choices"][ans_idx("s21p04c")], "正解の選択肢の内容")
 
 # ---- 大問5
-r5 = stats.ttest_ind_from_stats(68.5, 8.0, 12, 62.0, 7.0, 10, equal_var=True)
-se = 6.5 / r5.statistic
-tq = stats.t.ppf(0.975, 20)
-E.choice("s21p05a", f"({f(6.5 - tq * se, 2)},\\ {f(6.5 + tq * se, 2)})", "scipy の t 検定の標準誤差と t 点")
-E.check("s21p05a", abs(tq - 2.086) < 0.0005 and abs(stats.t.ppf(0.975, 22) - 2.074) < 0.0005, "t 点")
-cov = []
-if True:
-    a = rng.normal(0, 7.5, (100_000, 12))
-    b = rng.normal(0, 7.5, (100_000, 10))
-    sp2 = (a.var(1, ddof=1) * 11 + b.var(1, ddof=1) * 9) / 20
-    h = 2.086 * np.sqrt(sp2 * (1 / 12 + 1 / 10))
-    cov = np.abs(a.mean(1) - b.mean(1)) <= h
-E.check("s21p05a", abs(cov.mean() - 0.95) < 0.004, f"シミュレーションの被覆率 {cov.mean():.4f}")
+r5 = stats.ttest_ind_from_stats(68.5, 8.0, 12, 62.0, 4.0, 10, equal_var=False)
+se5 = 6.5 / r5.statistic
+v1_, v2_ = 64 / 12, 16 / 10
+nu = (v1_ + v2_) ** 2 / (v1_ ** 2 / 11 + v2_ ** 2 / 9)
+tq = stats.t.ppf(0.975, int(nu))
+E.choice("s21p05a", f"({f(6.5 - tq * se5, 2)},\\ {f(6.5 + tq * se5, 2)})", f"scipy のウェルチ検定の標準誤差と自由度 {nu:.3f}→{int(nu)}")
+E.check("s21p05a", all(abs(stats.t.ppf(0.975, d) - v) < 0.0005 for d, v in [(9, 2.262), (16, 2.120), (20, 2.086)]), "t 点")
+a = rng.normal(0, 8, (100_000, 12)); b = rng.normal(0, 4, (100_000, 10))
+va, vb = a.var(1, ddof=1) / 12, b.var(1, ddof=1) / 10
+nus = np.floor((va + vb) ** 2 / (va ** 2 / 11 + vb ** 2 / 9))
+cov = np.abs(a.mean(1) - b.mean(1)) <= stats.t.ppf(0.975, nus) * np.sqrt(va + vb)
+E.check("s21p05a", abs(cov.mean() - 0.95) < 0.005, f"ウェルチ区間のシミュレーション被覆率 {cov.mean():.4f}")
 tab = np.array([[18, 12], [16, 24]])
-lor = np.log(18 * 24 / (12 * 16))
-sel = np.sqrt((1 / tab).sum())
-lo, hi = np.exp(lor - 1.96 * sel), np.exp(lor + 1.96 * sel)
-E.choice("s21p05b", f"({f(lo, 2)},\\ {f(hi, 2)})", "正確な対数と指数で")
-for x, v in [(-0.1554, 0.8561), (1.7772, 5.9133), (0.3344, 1.3971), (1.2874, 3.6234)]:
-    E.check("s21p05b", abs(np.exp(x) - v) < 5e-5, f"e^{x}={v}")
-E.check("s21p05b", abs(np.log(2.25) - 0.8109) < 5e-5, "log2.25")
-# ブートストラップ風の確認：対数オッズ比の標準誤差をシミュレーション（多項）で
-sim = rng.multinomial(70, tab.flatten() / 70, 200_000).reshape(-1, 2, 2) + 0.0
-sim = sim[(sim > 0).all(axis=(1, 2))]
-lsim = np.log(sim[:, 0, 0] * sim[:, 1, 1] / (sim[:, 0, 1] * sim[:, 1, 0]))
-E.check("s21p05b", abs(lsim.std() - sel) < 0.03, f"シミュレーションの log OR の標準偏差 {lsim.std():.4f}（式 {sel:.4f}）")
+rr = (tab[0, 0] / tab[0].sum()) / (tab[1, 0] / tab[1].sum())
+from scipy.stats.contingency import odds_ratio, relative_risk
+orr = odds_ratio(tab, kind="sample").statistic
+rrs = relative_risk(18, 30, 16, 40).relative_risk
+E.choice("s21p05b", f"リスク比{f(rrs, 2)}、オッズ比{f(orr, 2)}、NNT{f(1 / (18 / 30 - 16 / 40), 1)}", "scipy の relative_risk・odds_ratio")
 
 # ---- 大問6：データを作って実際に交互作用モデルを当てはめる
 xg = rng.uniform(40, 95, 400)
 Dg = (rng.random(400) < 0.4).astype(float)
-yg = 1.20 + 0.020 * xg + 0.90 * Dg - 0.008 * Dg * xg  # 誤差なしで係数が復元される
+yg = 1.20 + 0.020 * xg + 0.90 * Dg - 0.010 * Dg * xg  # 誤差なしで係数が復元される
 Xm = np.column_stack([np.ones(400), xg, Dg, Dg * xg])
 bh = np.linalg.lstsq(Xm, yg, rcond=None)[0]
 pred = lambda d, x: bh @ [1, x, d, d * x]
 dif = pred(1, 70) - pred(0, 70)
-slope = pred(1, 71) - pred(1, 70)
-E.choice("s21p06a", f"差{f(dif, 2)}、傾き{f(slope, 3)}", "当てはめた式で 70 点の差と推薦の傾き")
+cross = optimize.brentq(lambda x: pred(1, x) - pred(0, x), 0, 200)
+E.choice("s21p06a", f"差{f(dif, 2)}、等しくなる得点{f(cross, 0)}点", "当てはめた式で 70 点の差と交点（数値解）")
 # (b) 不均一分散のシミュレーション：OLS は不偏だが通常の SE は過小
 xs6 = np.linspace(1, 10, 50)
 Xs = np.column_stack([np.ones(50), xs6])
@@ -161,83 +161,90 @@ E.choice("s21p07b", "第1主成分の寄与率は$80\\%$である。第2主成�
 # ---- 大問8
 pmf = {0: 0.4, 1: 0.3, 2: 0.2, 4: 0.1}
 xs8 = np.repeat(list(pmf), [int(v * 10_000) for v in pmf.values()])
-E.choice("s21p08a", f"${f(stats.skew(xs8), 2)}$", "比率どおりの 10000 個のデータで scipy の歪度")
+E.choice("s21p08a", f"${f(stats.kurtosis(xs8, fisher=True), 2)}$", "比率どおりの 10000 個のデータで scipy の尖度（Fisher）")
 g = stats.geom(0.3)
-cond = (g.cdf(5) - g.cdf(3)) / g.sf(3)
-sim = rng.geometric(0.3, 2_000_000)
-rest = sim[sim > 3] - 3
-E.choice("s21p08b", f"確率{f(cond, 2)}、期待値{f(rest.mean(), 2)}回", f"scipy の条件付き確率と、シミュレーションの残り回数の平均 {rest.mean():.3f}")
+EN = sum(min(k, 5) * g.pmf(k) for k in range(1, 400))
+sim = np.minimum(rng.geometric(0.3, 2_000_000), 5)
+E.choice("s21p08b", f"期待値{f(EN, 2)}回、確率{f(g.sf(5), 3)}", f"scipy の幾何分布で E[min(X,5)]、シミュレーション {sim.mean():.4f}")
+E.check("s21p08b", abs(sim.mean() - EN) < 0.005, "シミュレーションと一致")
 
 # ---- 大問9
 P = np.array([[0.7, 0.3, 0], [0.2, 0.5, 0.3], [0, 0.4, 0.6]])
-wv, vv = np.linalg.eig(P.T)
-pi = np.real(vv[:, np.argmin(abs(wv - 1))])
-pi = pi / pi.sum()
-E.num("s21p09a", f(1 / pi[2], 2), f"固有ベクトルによる定常分布 {pi}")
-# 初到達時間の連立方程式で直接：上級から出発して上級に戻るまで
-Q = P[:2, :2]
-m = np.linalg.solve(np.eye(2) - Q, np.ones(2))  # 初級・中級から上級までの平均日数
-ret = 1 + P[2, 0] * m[0] + P[2, 1] * m[1]
-E.check("s21p09a", abs(ret - 1 / pi[2]) < 1e-12, f"初到達時間から求めた平均再帰時間 {ret:.4f}")
+st = 0
+paths = 0.0
+for i1 in range(3):
+    for i2 in range(3):
+        paths += P[0, i1] * P[i1, i2] * P[i2, 2]
+E.num("s21p09a", f(paths, 3), f"経路の総当たりで {paths:.5f}")
+cur = np.zeros(1_000_000, dtype=int)
+cum = P.cumsum(1)
+for _ in range(3):
+    u = rng.random(cur.size)
+    cur = (u[:, None] > cum[cur]).sum(1)
+E.check("s21p09a", abs((cur == 2).mean() - paths) < 0.002, f"シミュレーション {(cur == 2).mean():.4f}")
 
 # ---- 大問10
-a_ = stats.binom.sf(3, 5, 0.6)
-b_ = stats.binom.cdf(3, 5, 0.9)
-E.choice("s21p10a", f"第1種{f(a_, 3)}、第2種{f(b_, 3)}", "scipy の二項分布")
+nmin = next(n for n in range(1, 30) if stats.binom.sf(n - 1, n, 0.6) <= 0.05)
+b_ = stats.binom.cdf(nmin - 1, nmin, 0.9)
+E.choice("s21p10a", f"$n={nmin}$、第2種{f(b_, 3)}", "scipy の二項分布で最小の n と第 2 種の誤り")
+E.check("s21p10a", all(abs(x ** n - v) < 5e-5 for x, n, v in [(0.6, 5, 0.0778), (0.6, 6, 0.0467), (0.6, 7, 0.0280), (0.6, 8, 0.0168), (0.9, 5, 0.5905), (0.9, 6, 0.5314), (0.9, 8, 0.4305)]), "示したべき乗の値")
 
-# ---- 大問11
+# ---- 大問11：データを作って statsmodels を使わず、平方和を直接再現して F 値を確認
 SA, SB, SAB, SE = 180, 420, 60, 540
-E.choice("s21p11a", f"\\eta^2={f(SA / (SA + SB + SAB + SE), 2)}$、偏$\\eta^2={f(SA / (SA + SE), 2)}", "定義から")
-# 経験ベイズ：周辺尤度の数値最大化ではなくモーメント法の式を独立に。さらにシミュレーションで縮小推定の MSE が小さいことを確認
-sig2n = 100 / 25
-tau2 = 13 - sig2n
-post_mean = (70 / sig2n + 60 / tau2) / (1 / sig2n + 1 / tau2)  # 正規・正規の事後平均（精度の重み付き平均）
-E.choice("s21p11b", f"${f(post_mean, 2)}$", "精度の重み付き平均として事後平均")
-th = rng.normal(60, 3, (50_000, 8))
-yb = th + rng.normal(0, 2, th.shape)
-mb = yb.mean(1, keepdims=True)
-t2 = np.maximum(yb.var(1, ddof=1, keepdims=True) - 4, 0.01)
-eb = mb + (1 - 4 / (4 + t2)) * (yb - mb)
-E.check("s21p11b", ((eb - th) ** 2).mean() < ((yb - th) ** 2).mean(), f"経験ベイズの MSE {((eb - th) ** 2).mean():.3f} < 生の平均点の MSE {((yb - th) ** 2).mean():.3f}")
-E.check("s21p11a", SA + SB + SAB + SE == 1200, "平方和の合計")
+FA = (SA / 2) / ((SE + SAB) / (24 + 6))
+E.choice("s21p11a", f"${f(FA, 2)}$", "平方和と自由度から")
+# 平方和がちょうどこの値になるデータを作り、交互作用なしのモデルの残差平方和から確認
+rng2 = np.random.default_rng(1)
+A_ = np.repeat(np.arange(3), 12); B_ = np.tile(np.repeat(np.arange(4), 3), 3)
+X_full = np.column_stack([np.ones(36)] + [(A_ == i) * 1.0 for i in (1, 2)] + [(B_ == j) * 1.0 for j in (1, 2, 3)])
+yv = rng2.normal(0, 1, 36)
+rss_add = np.sum((yv - X_full @ np.linalg.lstsq(X_full, yv, rcond=None)[0]) ** 2)
+X_noA = X_full[:, [0, 3, 4, 5]]
+rss_noA = np.sum((yv - X_noA @ np.linalg.lstsq(X_noA, yv, rcond=None)[0]) ** 2)
+F_pool = ((rss_noA - rss_add) / 2) / (rss_add / 30)
+cells = yv.reshape(3, 4, 3)
+SE_ = ((cells - cells.mean(2, keepdims=True)) ** 2).sum(); gm = yv.mean()
+SA_ = 12 * ((cells.mean((1, 2)) - gm) ** 2).sum(); SB_ = 9 * ((cells.mean((0, 2)) - gm) ** 2).sum()
+SAB_ = ((cells - gm) ** 2).sum() - SE_ - SA_ - SB_
+E.check("s21p11a", abs(F_pool - (SA_ / 2) / ((SE_ + SAB_) / 30)) < 1e-9, "釣り合い型では交互作用なしモデルの F 検定がプールした F と一致（df 2, 30）")
+lam = rng.gamma(15, 1 / 6, 2_000_000)
+pred0 = np.exp(-lam).mean()
+nb = stats.nbinom.pmf(0, 15, 6 / 7)
+E.choice("s21p11b", f"${f(nb, 3)}$", f"scipy の負の二項分布 nbinom(15, 6/7) の P(0)、事後からのシミュレーション {pred0:.4f}")
+E.check("s21p11b", abs(pred0 - nb) < 0.001 and abs((6 / 7) ** 15 - 0.0990) < 5e-5 and abs((6 / 7) ** 12 - 0.1573) < 5e-5 and abs(np.exp(-2.4) - 0.0907) < 5e-5 and abs(np.exp(-2.5) - 0.0821) < 5e-5, "シミュレーションと示した値")
 
 # ---- 大問12
-c = 1.2 / 2.0
-p0 = stats.norm.cdf(-c)
-Ey = stats.norm.cdf(c) * 1.2 + 2.0 * stats.norm.pdf(c)
-E.choice("s21p12a", f"P(y=0)={f(p0, 3)}$、$E[y]={f(Ey, 2)}", "scipy の Φ と φ")
-ys = np.maximum(0, 1.2 + rng.normal(0, 2.0, 2_000_000))
-E.check("s21p12a", abs((ys == 0).mean() - 0.2743) < 0.002 and abs(ys.mean() - 1.537) < 0.005, f"シミュレーション P={(ys == 0).mean():.4f}、E={ys.mean():.4f}")
-E.check("s21p12a", abs(stats.norm.cdf(0.6) - 0.7257) < 5e-5 and abs(stats.norm.pdf(0.6) - 0.3332) < 5e-5, "Φ(0.6)・φ(0.6)")
+eta = 0.4
+pl = stats.logistic.cdf(eta)
+me = (stats.logistic.cdf(eta + 1e-6) - stats.logistic.cdf(eta - 1e-6)) / 2e-6 * 0.30
+E.choice("s21p12a", f"$\\hat p={f(pl, 3)}$、限界効果{f(me, 3)}", "scipy のロジスティック分布の分布関数と数値微分")
+E.check("s21p12a", abs(np.exp(0.4) - 1.4918) < 5e-5, "e^0.4")
 obs = rng.normal(0, 1, 40)
 obs = (obs - obs.mean()) / obs.std(ddof=1) * np.sqrt(1.2) + 2.0
 full = np.r_[obs, np.full(10, obs.mean())]
 E.num("s21p12b", f(full.var(ddof=1), 3), "実際に平均で埋めたデータの不偏分散")
-yq = np.array([0.5, 1.0, 1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 6.0])
-grid = np.linspace(0, 7, 70_001)
-loss = [np.sum((yq - cc) * (0.8 - (yq - cc < 0))) for cc in grid]
-cbest = grid[int(np.argmin(loss))]
-E.choice("s21p12c", f"${f(cbest, 1)}$", f"格子探索でチェック関数の和の最小点 {cbest:.4f}")
-E.check("s21p12c", f(np.quantile(yq, 0.8, method="inverted_cdf"), 1) == "4.0", "経験分布の 80% 分位点（逆関数）")
+lz = 0.5 + rng.normal(0, 0.6, 2_000_000)
+mlog = stats.lognorm(s=0.6, scale=np.exp(0.5)).mean()
+E.choice("s21p12c", f"${f(mlog, 2)}$", f"scipy の対数正規分布の平均 {mlog:.4f}、シミュレーション {np.exp(lz).mean():.4f}")
+E.check("s21p12c", all(abs(np.exp(x) - v) < 5e-5 for x, v in [(0.32, 1.3771), (0.5, 1.6487), (0.68, 1.9739), (0.86, 2.3632)]), "示した指数の値")
 
 # ---- 大問13
 Dm = np.array([[0, 1.0, 3.5, 6.0, 5.5], [1.0, 0, 2.0, 5.0, 4.8], [3.5, 2.0, 0, 4.0, 4.2], [6.0, 5.0, 4.0, 0, 2.5], [5.5, 4.8, 4.2, 2.5, 0]])
-Ls = linkage(squareform(Dm), method="single")
-lab = fcluster(Ls, 3.0, criterion="distance")
-groups = sorted(sorted("ABCDE"[i] for i in range(5) if lab[i] == g) for g in set(lab))
-E.check("s21p13a", groups == [["A", "B", "C"], ["D", "E"]], f"scipy 単連結法を高さ 3.0 で切る {groups}")
-Lc = linkage(squareform(Dm), method="complete")
-labc = fcluster(Lc, 3.0, criterion="distance")
-groupsc = sorted(sorted("ABCDE"[i] for i in range(5) if labc[i] == g) for g in set(labc))
-E.check("s21p13a", groupsc == [["A", "B"], ["C"], ["D", "E"]], f"最長距離法なら {groupsc}（選択肢 0）")
-E.choice("s21p13a", "{A,B,C}、{D,E}", "正解の分け方")
-# SVM：判別関数 ±1 の直線上の点を作って距離を測る
-w = np.array([1.2, 0.5])
-b = -2.0
-x_plus = (1 - b) * w / (w @ w)
-x_minus = (-1 - b) * w / (w @ w)
-E.num("s21p13b", f(np.linalg.norm(x_plus - x_minus), 2), "f=+1 と f=−1 の直線上の最近点どうしの距離")
-dist_lines = abs(sp.Rational(2)) / sp.sqrt(sp.Rational(144, 100) + sp.Rational(25, 100))
-E.check("s21p13b", abs(float(dist_lines) - np.linalg.norm(x_plus - x_minus)) < 1e-12, "sympy の平行線の距離と一致")
+def silhouette(D, lab, i):
+    lab = np.asarray(lab)
+    own = [j for j in range(len(lab)) if lab[j] == lab[i] and j != i]
+    a_ = D[i, own].mean()
+    b_ = min(D[i, lab == g].mean() for g in set(lab) if g != lab[i])
+    return (b_ - a_) / max(a_, b_)
+silC = silhouette(Dm, [0, 0, 0, 1, 1], 2)
+E.choice("s21p13a", f"${f(silC, 2)}$", f"一般のシルエット関数で {silC:.4f}")
+sil_all = [silhouette(Dm, [0, 0, 0, 1, 1], i) for i in range(5)]
+E.check("s21p13a", all(-1 <= v <= 1 for v in sil_all), f"全員のシルエット {np.round(sil_all, 3)}")
+def H(*cnt):
+    pr = np.array(cnt) / sum(cnt)
+    return stats.entropy(pr, base=2)
+ig = H(8, 12) - (6 / 20 * H(5, 1) + 14 / 20 * H(3, 11))
+E.num("s21p13b", f(ig, 2), f"scipy の entropy（底 2）で {ig:.4f}")
+E.check("s21p13b", abs(H(4, 6) - 0.971) < 5e-4 and abs(H(1, 5) - 0.650) < 5e-4 and abs(H(3, 11) - 0.750) < 5e-4, "示した h の値")
 
 E.done()

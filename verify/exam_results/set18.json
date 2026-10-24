@@ -1,7 +1,7 @@
 {
  "s18p01a": {
   "ok": true,
-  "hash": "eedbf4a0e13edf8e"
+  "hash": "1a520b7a2779d710"
  },
  "s18p01b": {
   "ok": true,
@@ -13,23 +13,19 @@
  },
  "s18p02a": {
   "ok": true,
-  "hash": "6269e45d6f38bc1a"
+  "hash": "5252dcb5d61043ac"
  },
  "s18p02b": {
   "ok": true,
-  "hash": "0069c0ad792e0ea9"
+  "hash": "3580d028afd5f98b"
  },
  "s18p03a": {
   "ok": true,
-  "hash": "993c70765d488f84"
+  "hash": "cad87aacd2651bbb"
  },
  "s18p03b": {
   "ok": true,
-  "hash": "3aeda275ea906f09"
- },
- "s18p03c": {
-  "ok": true,
-  "hash": "3efed592aa0b3198"
+  "hash": "44d25d02842b879d"
  },
  "s18p04a": {
   "ok": true,
@@ -45,35 +41,39 @@
  },
  "s18p05b": {
   "ok": true,
-  "hash": "c55e70953921cb94"
+  "hash": "de10fa0e7dfedac0"
  },
  "s18p06a": {
   "ok": true,
-  "hash": "d6c19864d4af2ebb"
+  "hash": "496542fdbdf133e4"
  },
  "s18p06b": {
   "ok": true,
-  "hash": "33f6151584deb8af"
- },
- "s18p06c": {
-  "ok": true,
-  "hash": "14bfa36d854ce8e4"
+  "hash": "3dd217e4a5149b57"
  },
  "s18p07a": {
   "ok": true,
-  "hash": "a61fc69ee343f134"
+  "hash": "3818cdb5ada51010"
+ },
+ "s18p07b": {
+  "ok": true,
+  "hash": "21ccff2d2731a004"
  },
  "s18p08a": {
   "ok": true,
-  "hash": "8192d5b0b53b03ed"
+  "hash": "8793fde5bc8c146a"
+ },
+ "s18p08b": {
+  "ok": true,
+  "hash": "a6132f16443132a3"
  },
  "s18p09a": {
   "ok": true,
-  "hash": "5ad5a70635845ac1"
+  "hash": "a44cbfd970a6194d"
  },
  "s18p10a": {
   "ok": true,
-  "hash": "86a818404b49c68a"
+  "hash": "10a3de1aff0fe4b5"
  },
  "s18p10b": {
   "ok": true,
@@ -85,18 +85,18 @@
  },
  "s18p11a": {
   "ok": true,
-  "hash": "c857d7f4015f68d6"
+  "hash": "d3ed6074577ec167"
  },
  "s18p11b": {
   "ok": true,
-  "hash": "b2909e8538fec820"
+  "hash": "fbebb4f00376873e"
  },
  "s18p12a": {
   "ok": true,
-  "hash": "5c9cd415db2be203"
+  "hash": "176c006715eeb7c3"
  },
  "s18p12b": {
   "ok": true,
-  "hash": "c244d40afd5a82bf"
+  "hash": "890e40b37620a42d"
  }
 }

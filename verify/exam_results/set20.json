@@ -29,15 +29,19 @@
  },
  "s20p05a": {
   "ok": true,
-  "hash": "aee39edf0c58a3b9"
+  "hash": "cbe11a2202bd3ef4"
  },
  "s20p05b": {
   "ok": true,
-  "hash": "377bb3ea8c96e4ee"
+  "hash": "cbea66ad63e677cf"
+ },
+ "s20p05c": {
+  "ok": true,
+  "hash": "6b0f8c41d60a9caa"
  },
  "s20p06a": {
   "ok": true,
-  "hash": "1217b5f781fafe77"
+  "hash": "a945d19155363053"
  },
  "s20p06b": {
   "ok": true,
@@ -45,15 +49,11 @@
  },
  "s20p07a": {
   "ok": true,
-  "hash": "879be245d34305d9"
- },
- "s20p07b": {
-  "ok": true,
-  "hash": "3e54fc89271adc59"
+  "hash": "24b95d3514629dfb"
  },
  "s20p08a": {
   "ok": true,
-  "hash": "760d76d77b2663fb"
+  "hash": "007da1fca08896f5"
  },
  "s20p09a": {
   "ok": true,
@@ -65,7 +65,7 @@
  },
  "s20p09c": {
   "ok": true,
-  "hash": "07408f66c015ab69"
+  "hash": "8edbc2738134e5ed"
  },
  "s20p10a": {
   "ok": true,
@@ -73,19 +73,19 @@
  },
  "s20p10b": {
   "ok": true,
-  "hash": "9d297e2af490a151"
+  "hash": "2ae2a7915fc3c0d5"
  },
  "s20p11a": {
   "ok": true,
-  "hash": "7e73d54055fa3ab2"
+  "hash": "a111ae46b0e7858b"
  },
  "s20p11b": {
   "ok": true,
-  "hash": "c4c33dbe2139f463"
+  "hash": "a0eae01abee8e7a3"
  },
  "s20p12a": {
   "ok": true,
-  "hash": "9d8ea4d0438be496"
+  "hash": "2df4d4ea7e82cdb5"
  },
  "s20p12b": {
   "ok": true,
