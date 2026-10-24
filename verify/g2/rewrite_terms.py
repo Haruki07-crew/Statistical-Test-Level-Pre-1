@@ -325,6 +325,26 @@ T = "residual-plot"
 xq = np.arange(1, 8.); bq, aq = np.polyfit(xq, xq ** 2, 1)
 check(T, "y=x²：ŷ=−12+8x・残差 5, 0, −3, −4, −3, 0, 5・決定係数≈0.96", close(aq, -12, 1e-9) and close(bq, 8, 1e-9) and np.allclose(xq ** 2 - aq - bq * xq, [5, 0, -3, -4, -3, 0, 5]) and close(np.corrcoef(xq, xq ** 2)[0, 1] ** 2, .96, 0.005), None)
 
+import itertools
+T = "stratified-sampling"
+SA, SB = [2, 3, 4, 5], [10, 11, 12, 13]
+srs_ = [np.mean(c) for c in itertools.combinations(SA + SB, 4)]; st_ = [(np.mean(x) + np.mean(y)) / 2 for x in itertools.combinations(SA, 2) for y in itertools.combinations(SB, 2)]
+check(T, "母平均 7.5・単純無作為 70 通り 分散≈2.46・層化 36 通り 分散≈0.21・どちらも不偏", len(srs_) == 70 and len(st_) == 36 and close(np.mean(srs_), 7.5, 1e-12) and close(np.mean(st_), 7.5, 1e-12) and close(np.var(srs_), 2.464, 5e-4) and close(np.var(st_), .208, 5e-4), (np.var(srs_), np.var(st_)))
+T = "systematic-sampling"
+sal = [50, 48, 52, 55, 70, 95, 90] * 4
+s7 = [np.mean(sal[r::7]) for r in range(7)]; s4 = [np.mean(sal[r::4]) for r in range(4)]
+check(T, "平均≈65.7・間隔 7：推定 48〜95・分散≈333・単純無作為 4 日≈74・間隔 4：いつも 65.7", close(np.mean(sal), 65.7, 0.05) and min(s7) == 48 and max(s7) == 95 and close(np.var(s7), 333, 0.5) and close(np.var(sal) / 4 * 24 / 27, 74, 0.5) and np.allclose(s4, np.mean(sal)), (np.var(s7), np.var(sal) / 4 * 24 / 27))
+T = "cluster-sampling"
+CL = [[1, 2, 2, 3, 2], [4, 5, 4, 5, 7], [6, 7, 8, 7, 7], [9, 10, 11, 10, 10]]; allc = sum(CL, [])
+clv = [np.mean(sum([CL[i] for i in c], [])) for c in itertools.combinations(range(4), 2)]
+check(T, "組の平均 2・5・7・10・全体 6・単純無作為 10 人 分散≈0.48・集落 2 組 6 通り 分散≈2.83", [np.mean(c) for c in CL] == [2, 5, 7, 10] and np.mean(allc) == 6 and close(np.var(allc) / 10 * 10 / 19, .479, 5e-4) and len(clv) == 6 and close(np.var(clv), 2.833, 5e-4), np.var(clv))
+T = "two-stage-sampling"
+f42 = [np.mean(sum([list(p_) for p_ in picks], [])) for picks in itertools.product(*[list(itertools.combinations(c, 2)) for c in CL])]
+t24 = [np.mean(list(p1) + list(p2)) for c2 in itertools.combinations(range(4), 2) for p1 in itertools.combinations(CL[c2[0]], 4) for p2 in itertools.combinations(CL[c2[1]], 4)]
+check(T, "8 人：4 組×2 人≈0.056・単純無作為≈0.718・2 組×4 人≈2.852・確率 50/1000×20/400=0.0025", close(np.var(f42), .056, 5e-4) and close(np.var(allc) / 8 * 12 / 19, .718, 5e-4) and close(np.var(t24), 2.852, 5e-4) and close(np.mean(f42), 6, 1e-12) and close(np.mean(t24), 6, 1e-12) and close(50 / 1000 * 20 / 400, .0025, 1e-12), (np.var(f42), np.var(t24)))
+T = "law-of-total-probability"
+check(T, "例1 0.018+0.032=0.05・B である確率 0.64・例2 0.062・図 P(不良|B)=1−0.92", close(.6 * .03 + .4 * .08, .05, 1e-12) and close(.032 / .05, .64, 1e-12) and close(.4 * .1 + .5 * .04 + .1 * .02, .062, 1e-12) and close(1 - .92, .08, 1e-12), None)
+
 ng = results.count(False)
 print(f"書き直した共通の用語の検算: OK {len(results) - ng} / NG {ng}")
 sys.exit(1 if ng else 0)

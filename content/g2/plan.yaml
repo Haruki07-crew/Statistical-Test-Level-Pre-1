@@ -194,22 +194,18 @@ chapters:
     title: 系統抽出法
     importance: B
     status: verified
-    from: pre1
   - id: stratified-sampling
     title: 層化抽出法
     importance: B
     status: verified
-    from: pre1
   - id: cluster-sampling
     title: 集落抽出法
     importance: B
     status: verified
-    from: pre1
   - id: two-stage-sampling
     title: 二段抽出法
     importance: B
     status: verified
-    from: pre1
   - id: sampling-and-nonsampling-error
     title: 標本誤差と非標本誤差
     importance: A
@@ -246,7 +242,6 @@ chapters:
     title: 全確率の公式
     importance: B
     status: verified
-    from: pre1
   - id: bayes-theorem
     title: ベイズの定理
     importance: A

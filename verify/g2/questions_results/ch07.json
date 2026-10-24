@@ -54,5 +54,9 @@
  "q07-independence-of-events-g2": {
   "hash": "6d64700ed4507003",
   "ok": true
+ },
+ "q07-law-of-total-probability-g1": {
+  "hash": "afc2251d44adc8e5",
+  "ok": true
  }
 }
