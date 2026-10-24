@@ -187,6 +187,15 @@ E.check("s02p08b", abs(d_sim - 2 * (1 - r1)) < 0.15, f"d≈2(1-r1) の近似（�
 d = 58.8 / 70
 E.choice("s02p08b", f"$d={d:.2f}<d_L$ なので正の系列相関があると判断し、1次の自己相関はおよそ ${1 - d / 2:.2f}$", "d と 1-d/2")
 E.check("s02p08b", d < 1.39, "d < d_L")
+# 問題文の d_L・d_U（n=40、切片を除く説明変数 2）を、ダービン・ワトソンの上下限分布の 5% 点のシミュレーションで求め直す
+# DW 行列の固有値 ν_j=2(1-cos(πj/n))、切片を含むパラメータ数 k=3 で
+# d_L=Σ_{i=1}^{n-k} ν_i ξ_i^2/Σξ_i^2、d_U=Σ_{i=1}^{n-k} ν_{i+k-1} ξ_i^2/Σξ_i^2（許容誤差 0.005）
+ndw, kdw = 40, 3
+nu = np.sort(2 * (1 - np.cos(np.pi * np.arange(ndw) / ndw)))
+xi2 = rng.standard_normal((400000, ndw - kdw)) ** 2
+dL_sim = np.quantile(xi2 @ nu[1:ndw - kdw + 1] / xi2.sum(1), 0.05)
+dU_sim = np.quantile(xi2 @ nu[kdw:ndw] / xi2.sum(1), 0.05)
+E.check("s02p08b", abs(dL_sim - 1.39) < 0.005 and abs(dU_sim - 1.60) < 0.005, f"上下限分布の 5% 点 d_L={dL_sim:.3f}、d_U={dU_sim:.3f}")
 
 # ---- s02p08c: sympy で変換式を展開し、シミュレーションでも推定を確かめる
 b0, b1, b2, rho, x1t, x1s, x2t, x2s = sp.symbols("b0 b1 b2 rho x1t x1s x2t x2s")
@@ -252,6 +261,7 @@ Sg = np.linalg.inv(Om)
 cond_cov = Sg[np.ix_([0, 2], [0, 2])] - np.outer(Sg[[0, 2], 1], Sg[1, [0, 2]]) / Sg[1, 1]
 pcor = cond_cov[0, 1] / np.sqrt(cond_cov[0, 0] * cond_cov[1, 1])
 E.num("s02p11b", rd(pcor, 3), "条件付き共分散行列からの偏相関")
+E.check("s02p11b", np.all(np.linalg.eigvalsh(Om) > 0), "精度行列が正定値（分散共分散行列の逆行列として成り立つ）")
 
 # ---- s02p11c: 標準化残差行列の特異値分解
 tab = np.array([[60, 30, 30], [20, 30, 30]], float)

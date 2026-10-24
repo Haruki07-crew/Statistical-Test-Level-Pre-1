@@ -113,7 +113,7 @@ def p04():
     lo = (pb - pa) - 1.96 * se
     v = {"n": n, "xa": xa, "xb": xb, "pa": s(pa, 3), "pb": s(pb, 3), "d": s(pb - pa, 3),
          "vsum": s(pa * (1 - pa) + pb * (1 - pb), 4),
-         "se": s(se, 5), "me": s(1.96 * se, 5), "lo": s(lo, 5),
+         "se": s(se, 7), "me": s(1.96 * se, 5), "lo": s(lo, 5),
          "lo_pt": r(100 * lo, 2), "hi_pt": s(100 * (pb - pa + 1.96 * se), 2)}
     # (b) 検出力（真の値で標準誤差を計算、反対側の棄却域は無視）
     zc = 1.96

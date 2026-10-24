@@ -39,6 +39,9 @@ def p01():
     jA, jB = wA * pA, wB * pB
     tot = jA + jB
     post = jA / tot
+    bA, bB = wA * pA ** 2, wB * pB ** 2
+    both = bA + bB
+    cond = both / tot
     corr = ve / var
     return dict(
         wA=wA, wB=wB, mA=int(mA), mB=int(mB), sA=int(sA), sB=int(sB), c=int(c),
@@ -51,6 +54,8 @@ def p01():
         post=f(post, 3), post4=f(post, 4),
         d_lik=f(pA, 3), d_prior=f(wA, 3), d_joint=f(jA, 3), d_postB=f(1 - post, 3),
         corr=round(corr, 3), corr4=f(corr, 4), d_corr_ev=f(ve / ev, 3),
+        pA2=f(pA ** 2, 5), pB2=f(pB ** 2, 5), bA=f(bA, 5), bB=f(bB, 5), both5=f(both, 5),
+        cond=f(cond, 3), cond4=f(cond, 4), d_ind=f(tot, 3), d_both=f(both, 3), d_sq=f(tot ** 2, 3),
     )
 
 
@@ -110,6 +115,18 @@ def p03():
     E_ge4 = n - (E0 + E1 + E2 + E3)
     chi5 = sum((o - x) ** 2 / x for o, x in zip([obs[k] for k in range(5)], [E0, E1, E2, E3, E_ge4]))
     terms = [(o - x) ** 2 / x for o, x in zip(O, Ec)]
+    # 2つの交差点の比較（条件付き二項による検定）
+    tA, tB, xB = n, 90, 99
+    N2 = tot + xB
+    p0 = Fr(tA, tA + tB)
+    EA = N2 * p0
+    VA = N2 * p0 * (1 - p0)
+    zc = (tot - EA) / math.sqrt(VA)
+    z_half = (tot - N2 / 2) / math.sqrt(N2 / 4)
+    z_np = (tot - EA) / math.sqrt(EA)
+    pswap = Fr(tB, tA + tB)
+    z_swap = (tot - N2 * pswap) / math.sqrt(N2 * pswap * (1 - pswap))
+    z_noN = (tot / tA - xB / tB) / math.sqrt(tot / tA + xB / tB)
     # ポアソン回帰
     b0, b1, T = -1.90, -0.45, 8
     e235, e190, e145 = (round(math.exp(-v), 4) for v in (2.35, 1.90, 1.45))
@@ -124,6 +141,9 @@ def p03():
         b0=f(b0, 2), b1=f(b1, 2), T=T, eta=f(b0 + b1, 2), e235=f(e235, 4), e190=f(e190, 4), e145=f(e145, 4), ln8=f(ln8, 3),
         mu=f(T * e235, 3), d_nooff=f(e235, 3), d_nolane=f(T * e190, 3), d_sign=f(T * e145, 3), d_log=f(ln8 * e235, 3),
         rr=f(round(math.exp(b1), 3), 3),
+        tB=tB, xB=xB, N2=N2, p0f=f"\\frac{{{p0.numerator}}}{{{p0.denominator}}}", p0d=f(float(p0), 4),
+        EA=f(float(EA), 2), VA=f(float(VA), 2), sdA=f(math.sqrt(VA), 3), zc=f(zc, 2), d_half=f(z_half, 2),
+        d_np=f(z_np, 2), d_swap=f(z_swap, 2), d_noN=f(z_noN, 2), rB=f(xB / tB, 1), tAB=tA + tB,
     )
 
 
@@ -172,7 +192,16 @@ def p05():
     m = len(d)
     EW = m * (m + 1) / 4
     VW = m * (m + 1) * (2 * m + 1) / 24
+    nb, p0, p1 = 15, 0.5, 0.7
+    ks = [10, 11, 12, 13]
+    t0 = {k: round(float(stats.binom.sf(k - 1, nb, p0)), 4) for k in ks}
+    t1 = {k: round(float(stats.binom.sf(k - 1, nb, p1)), 4) for k in ks}
+    c = min(k for k in ks if t0[k] <= 0.05)
+    tab = {f"s0_{k}": f(t0[k], 4) for k in ks}
+    tab.update({f"s1_{k}": f(t1[k], 4) for k in ks})
     return dict(
+        **tab, nb=nb, c=c, size=f(t0[c], 4), pow=f(t1[c], 3), pow4=f(t1[c], 4), c1=c - 1, d_pow1=f(t1[c - 1], 3),
+        d_beta=f(1 - t1[c], 3), c2=c + 1, d_pow2=f(t1[c + 1], 3), d_size=f(t0[c], 3), size_c1=f(t0[c - 1], 4),
         sigma=sigma, delta=delta, za=f(za, 3), zb=f(zb, 3), za2=f(za2, 3), zsum=f(za + zb, 3),
         need=f(need, 2), n_ans=math.ceil(need), n_floor=round(need), need2=f(need2, 2), n2=math.ceil(need2),
         need_sd=f((za + zb) * sigma / delta, 3),
@@ -192,12 +221,16 @@ def p06():
     piR = 1 / (Fr(8, 5) + Fr(22, 15) + 1)
     piS, piC = Fr(8, 5) * piR, Fr(22, 15) * piR
     two = sum(P[0][k] * P[k][2] for k in range(3))
+    paths = [P[0][k] * P[k][2] for k in range(3)]
     colmean = sum(P[k][2] for k in range(3)) / 3
     fr = lambda q: f"\\frac{{{q.numerator}}}{{{q.denominator}}}"
     return dict(
         piS=f(float(piS), 3), piC=f(float(piC), 3), piR=f(float(piR), 3),
         piR_frac=fr(piR), piS_frac=fr(piS), piC_frac=fr(piC),
         d_col=f(float(colmean), 3), d_self=f(float(P[2][2]), 3), d_unif=f(1 / 3, 3), d_two=f(float(two), 3),
+        pSS=f(float(paths[0]), 2), pSC=f(float(paths[1]), 2), pSR=f(float(paths[2]), 2), two2=f(float(two), 2),
+        cC=f(float(paths[1] / two), 3), cC4=f(float(paths[1] / two), 4), d_pathS=f(float(paths[0] / two), 3),
+        d_joint=f(float(paths[1]), 3), d_trans=f(float(P[0][1]), 3),
     )
 
 
@@ -208,7 +241,11 @@ def p07():
     r, h = 2.4, 0.28
     D = r ** 2 / (p + 1) * h / (1 - h)
     b1, b2, g = 1.8, 0.05, -4.0
+    xm, Sxx, xi = 10.0, 250.0, 22.0
+    lev = 1 / n + (xi - xm) ** 2 / Sxx
     return dict(
+        xm=f(xm, 1), Sxx=f(Sxx, 1), xi=f(xi, 1), dev2=f((xi - xm) ** 2, 1), inv_n=f(1 / n, 4), frac=f((xi - xm) ** 2 / Sxx, 4),
+        lev=round(lev, 3), lev4=f(lev, 4), thr=f(2 * 2 / n, 3), avg=f(2 / n, 3), d_noinv=f((xi - xm) ** 2 / Sxx, 3),
         n=n, p=p, R2=f(R2, 2), adj=f(adj, 3),
         d_np=f(1 - (1 - R2) * (n - 1) / (n - p), 3), d_n=f(1 - (1 - R2) * n / (n - p - 1), 3),
         d_r2=f(R2, 3), d_inv=f(1 - (1 - R2) * (n - p - 1) / (n - 1), 3),
@@ -289,33 +326,15 @@ def p10():
 
 
 def p11():
-    """大雨の判別（マハラノビス距離と誤判別率）"""
-    m1 = np.array([85.0, 6.0])
-    m2 = np.array([70.0, 2.0])
-    Sig = np.array([[100.0, 12.0], [12.0, 4.0]])
-    d = m1 - m2
-    det = Sig[0, 0] * Sig[1, 1] - Sig[0, 1] ** 2
-    D2 = float(d @ np.linalg.inv(Sig) @ d)
-    D2_diag = float(d[0] ** 2 / Sig[0, 0] + d[1] ** 2 / Sig[1, 1])
-    D2_sign = float((Sig[1, 1] * d[0] ** 2 + 2 * Sig[0, 1] * d[0] * d[1] + Sig[0, 0] * d[1] ** 2) / det)
-    up = lambda z: round(1 - phi(z), 4)
-    zc = round(math.sqrt(D2) / 2, 2)
-    zd = round(math.sqrt(D2_diag) / 2, 2)
-    zs = round(math.sqrt(D2_sign) / 2, 2)
-    zf = round(math.sqrt(D2), 2)
-    zh = round(D2 / 2, 2)
-    table = sorted({zc, zd, zs, zf, zh})
-    return dict(
-        x1a=f(m1[0], 0), x2a=f(m1[1], 0), x1b=f(m2[0], 0), x2b=f(m2[1], 0),
-        s11=f(Sig[0, 0], 0), s12=f(Sig[0, 1], 0), s22=f(Sig[1, 1], 0), det=f(det, 0),
-        d1=f(d[0], 0), d2=f(d[1], 0),
-        num=f(Sig[1, 1] * d[0] ** 2 - 2 * Sig[0, 1] * d[0] * d[1] + Sig[0, 0] * d[1] ** 2, 0),
-        q1=f(Sig[1, 1] * d[0] ** 2, 0), q2=f(2 * Sig[0, 1] * d[0] * d[1], 0), q3=f(Sig[0, 0] * d[1] ** 2, 0),
-        D2=f(D2, 2), D2_4=f(D2, 4), D=f(math.sqrt(D2), 4), zc=f(zc, 2), err=f(up(zc), 3), err4=f(up(zc), 4),
-        D2_diag=f(D2_diag, 2), err_diag=f(up(zd), 3), D2_sign=f(D2_sign, 2), err_sign=f(up(zs), 3),
-        err_full=f(up(zf), 3), err_half=f(up(zh), 3),
-        zrow=" | ".join(f(z, 2) for z in table), prow=" | ".join(f(up(z), 4) for z in table),
-    )
+    """大雨警報の混同行列（適合率・再現率・F値）"""
+    TP, FP, FN, TN = 18, 12, 6, 329
+    prec = TP / (TP + FP)
+    rec = TP / (TP + FN)
+    F1 = 2 * prec * rec / (prec + rec)
+    return dict(TP=TP, FP=FP, FN=FN, TN=TN, N=TP + FP + FN + TN, PP=TP + FP, AP=TP + FN, AN=FP + TN, PN=FN + TN,
+                prec=f(prec, 3), rec=f(rec, 3), F1=f(F1, 3), F14=f(F1, 4), d_am=f((prec + rec) / 2, 3),
+                acc=f((TP + TN) / (TP + FP + FN + TN), 3), d_prod=f(prec * rec, 3), spec=f(TN / (FP + TN), 3),
+                psum=f(prec + rec, 3), pprod2=f(2 * prec * rec, 3))
 
 
 def p12():
@@ -361,19 +380,16 @@ def p13():
 
 
 def p14():
-    """講習前後の合否（マクネマー検定）"""
-    a, b, c, d = 35, 6, 19, 20
-    n = a + b + c + d
-    r1, r2 = a + b, c + d
-    c1, c2 = a + c, b + d
-    exp = [r1 * c1 / n, r1 * c2 / n, r2 * c1 / n, r2 * c2 / n]
-    chi_ind = sum((x - y) ** 2 / y for x, y in zip([a, b, c, d], exp))
-    return dict(
-        a=a, b=b, c=c, d=d, n=n, bc=b + c, diff2=(c - b) ** 2,
-        chi=f((c - b) ** 2 / (b + c), 2), chi_cc=f((abs(c - b) - 1) ** 2 / (b + c), 2), chi_n=f((c - b) ** 2 / n, 2),
-        z=f(abs(c - b) / math.sqrt(b + c), 2), chi_ind=f(chi_ind, 2),
-        pre=r1, post=c1, r2=r2, c2=c2,
-    )
+    """自転車講習の受講と合格（シンプソンのパラドックス）"""
+    S = {"1": (18, 20, 56, 70), "2": (42, 80, 9, 20)}   # 受講の合格者・人数, 未受講の合格者・人数
+    out = {}
+    for k, (a, na, b, nb) in S.items():
+        out.update({f"ta{k}": a, f"na{k}": na, f"tb{k}": b, f"nb{k}": nb, f"ra{k}": f(a / na, 3), f"rb{k}": f(b / nb, 3)})
+    A = sum(v[0] for v in S.values()); NA = sum(v[1] for v in S.values())
+    B = sum(v[2] for v in S.values()); NB = sum(v[3] for v in S.values())
+    out.update(TA=A, NA=NA, TB=B, NB=NB, RA=f(A / NA, 3), RB=f(B / NB, 3),
+               sa1=f(S["1"][1] / NA, 2), sa2=f(S["2"][1] / NA, 2), sb1=f(S["1"][3] / NB, 3), sb2=f(S["2"][3] / NB, 3))
+    return out
 
 
 def values():
