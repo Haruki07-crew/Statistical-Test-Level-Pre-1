@@ -40,6 +40,21 @@ for (const w of [375, 1280]) {
   await page.goto(base + '/g2/#exam'); await page.waitForSelector('.screen-h');
   ok((await page.textContent('.article')).includes('35問・90分'), `${w}px 模擬試験の説明が35問・90分`);
   await page.screenshot({ path: `${OUT}/exam-${w}.png` });
+  // 模擬試験：第1回を本番モードで開き、35問すべてに正解を選んで採点すると100点になること
+  if (data.exams.length && w === 1280) {
+    const ex = data.exams[0];
+    await page.click('.ex-set a'); await page.click('[data-ex-start="r"]'); await sleep(300);
+    ok((await page.$$('.ex-g')).length === ex.items.length, `模擬試験の問題番号が ${ex.items.length} 個`);
+    for (let i = 0; i < ex.items.length; i++) {
+      await page.click(`.ex-g[data-ex-go="${i}"]`);
+      await page.click(`.ex-opt[data-ex-opt="${ex.items[i].a}"]`);
+    }
+    page.once('dialog', (d) => d.accept());
+    await page.click('[data-ex-finish]'); await sleep(700);
+    const sc = await page.evaluate(() => document.querySelector('.ex-score b')?.textContent);
+    ok(/^100/.test(sc || ''), `全問正解で ${sc}`);
+    await page.screenshot({ path: `${OUT}/exam-result-${w}.png`, fullPage: true });
+  }
   await page.goto(base + '/g2/#quiz'); await page.waitForSelector('.screen-h');
   await page.goto(base + '/g2/#roadmap'); await sleep(300);
   await page.goto(base + '/g2/#all'); await sleep(300);
