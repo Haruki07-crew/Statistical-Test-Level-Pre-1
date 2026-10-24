@@ -501,7 +501,7 @@
     wrap.appendChild(tbl);
     a.el.appendChild(wrap);
     function show(i) {
-      Array.prototype.forEach.call(tbl.querySelectorAll('tbody tr'), function (tr) { tr.classList.toggle('sel', Number(tr.dataset.i) === i); });
+      Array.prototype.forEach.call(tbl.querySelectorAll('tbody tr'), function (tr) { tr.classList.toggle('jm-sel', Number(tr.dataset.i) === i); });
       a.info.textContent = 'P(' + cn + ' | ' + rn + '=' + rl[i] + ') = ' + T[i].map(function (v, j) { return cl[j] + ': ' + a.fmt(v / rs[i]); }).join('，') + '（行の値 ÷ 行の合計 ' + a.fmt(rs[i]) + '）';
     }
     tbl.addEventListener('click', function (e) { var tr = e.target.closest('tbody tr'); if (tr) show(Number(tr.dataset.i)); });

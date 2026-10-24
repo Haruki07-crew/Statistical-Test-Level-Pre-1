@@ -340,7 +340,8 @@ input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius
 .jm-table th, .jm-table td { border: 1px solid var(--line); padding: 6px 10px; text-align: center; min-width: 3.6em; }
 .jm-table th { background: var(--surface-2); font-family: var(--font); font-weight: 700; }
 .jm-table .marg { background: var(--accent-soft); font-weight: 500; }
-.jm-table tr.sel td:not(.marg) { outline: 2px solid var(--chart-2); outline-offset: -2px; }
+/* 選んだ行（class は jm-sel。汎用の .sel（選択欄の並び）と名前がぶつかって行が flex になっていたため分けた） */
+.jm-table tr.jm-sel td:not(.marg) { outline: 2px solid var(--chart-2); outline-offset: -2px; }
 .jm-table tbody tr { cursor: pointer; }
 
 /* ===== 関連・前後 ===== */
@@ -1609,7 +1610,7 @@ window.MathJax = {
     wrap.appendChild(tbl);
     a.el.appendChild(wrap);
     function show(i) {
-      Array.prototype.forEach.call(tbl.querySelectorAll('tbody tr'), function (tr) { tr.classList.toggle('sel', Number(tr.dataset.i) === i); });
+      Array.prototype.forEach.call(tbl.querySelectorAll('tbody tr'), function (tr) { tr.classList.toggle('jm-sel', Number(tr.dataset.i) === i); });
       a.info.textContent = 'P(' + cn + ' | ' + rn + '=' + rl[i] + ') = ' + T[i].map(function (v, j) { return cl[j] + ': ' + a.fmt(v / rs[i]); }).join('，') + '（行の値 ÷ 行の合計 ' + a.fmt(rs[i]) + '）';
     }
     tbl.addEventListener('click', function (e) { var tr = e.target.closest('tbody tr'); if (tr) show(Number(tr.dataset.i)); });
