@@ -84,12 +84,25 @@ def p04():
     wbest = 1 / sum(w)
     # 過分散パラメータを数え忘れた場合（M3 を 2 個とする）
     aic_w = [aic[0], aic[1], -2 * ll[2] + 4]
+    # (b) 期待度数の小さい階級を併合する適合度検定
+    n_g = 60
+    pr = [0.40, 0.30, 0.15, 0.10, 0.05]
+    ob = [18, 20, 10, 7, 5]
+    ex = [n_g * q for q in pr]
+    X0 = sum((o - e) ** 2 / e for o, e in zip(ob, ex))
+    ob4, ex4 = ob[:3] + [ob[3] + ob[4]], ex[:3] + [ex[3] + ex[4]]
+    X = sum((o - e) ** 2 / e for o, e in zip(ob4, ex4))
+    assert sum(ob) == n_g and ex[4] < 5 and min(ex4) >= 5 and X < 7.815
+    gf = {"n": n_g, "X": s(X, 2), "X4": s(X, 4), "X0": s(X0, 2), "o45": ob4[3], "e45": s(ex4[3], 0)}
+    for i in range(5):
+        gf[f"p{i + 1}"] = s(pr[i], 2); gf[f"o{i + 1}"] = ob[i]; gf[f"e{i + 1}"] = s(ex[i], 0)
     # (b) 1 標本の比率の検定（連続修正つき）
     n, x, p0 = 250, 35, 0.10
     mu = n * p0
     sd = sqrt(n * p0 * (1 - p0))
     z = (x - 0.5 - mu) / sd
     return {
+        **{"gf_" + k_: v_ for k_, v_ in gf.items()},
         "ll1": s(ll[0], 1), "ll2": s(ll[1], 1), "ll3": s(ll[2], 1), "k1": k[0], "k2": k[1], "k3": k[2],
         "a1": s(aic[0], 1), "a2": s(aic[1], 1), "a3": s(aic[2], 1),
         "dl1": s(dl[0], 1), "dl3": s(dl[2], 1), "e1": s(ev[5.0], 4), "e3": s(ev[0.8], 4),

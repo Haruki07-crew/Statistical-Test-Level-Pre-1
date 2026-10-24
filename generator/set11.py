@@ -237,6 +237,13 @@ def p06():
     for i in range(m):
         out[f"th{i + 1}"] = s(th[i], 4)
     out.update({"lr_" + k_: v_ for k_, v_ in lr.items()})
+    # (a) 一様分布の上端のピボット区間（c は問題文の値）
+    n8, M = 8, 12.0
+    c, c2, c7 = 0.6877, 0.6306, 0.6518
+    assert abs(0.05 ** (1 / 8) - c) < 5e-5 and abs(0.025 ** (1 / 8) - c2) < 5e-5 and abs(0.05 ** (1 / 7) - c7) < 5e-5
+    un = {"n": n8, "M": s(M, 1), "c": c, "c2": c2, "c7": c7, "U": r(M / c, 2), "U_s": s(M / c, 2), "U4": s(M / c, 4),
+          "w2": s(M / c2, 2), "w7": s(M / c7, 2), "w95": s(M / 0.95 ** (1 / 8), 2)}
+    out.update({"un_" + k_: v_ for k_, v_ in un.items()})
     return out
 
 
@@ -334,22 +341,14 @@ def p09():
 
 
 def p10():
-    """評価者を変量効果とした一元配置：級内相関"""
-    a, n = 5, 4
-    SSA, SSE = 104, 108
-    dfa, dfe = a - 1, a * (n - 1)
-    MSA, MSE = SSA / dfa, SSE / dfe
-    sa2 = (MSA - MSE) / n
-    icc = sa2 / (sa2 + MSE)
-    F = MSA / MSE
-    return {
-        "a": a, "nr": n, "SSA": SSA, "SSE": SSE, "SST": SSA + SSE, "dfa": dfa, "dfe": dfe, "dft": a * n - 1,
-        "MSA": s(MSA, 1), "MSE": s(MSE, 1), "dMS": s(MSA - MSE, 1), "sa2": s(sa2, 2), "tot": s(sa2 + MSE, 2),
-        "icc": s(icc, 3), "icc4": s(icc, 4), "F": s(F, 4),
-        "w_a": s(((MSA - MSE) / a) / ((MSA - MSE) / a + MSE), 3), "w_eta": s(SSA / (SSA + SSE), 3),
-        "w_non": s((MSA - MSE) / (MSA - MSE + MSE), 3), "w_msa": s((MSA / n) / (MSA / n + MSE), 3),
-        "sa2_a": s((MSA - MSE) / a, 2),
-    }
+    """L8 直交表への割り付け（答えの列は成分表示の積から）"""
+    comp = ["a", "b", "ab", "c", "ac", "bc", "abc"]
+    mul = lambda u, v: "".join(sorted(set(u) ^ set(v)))
+    col = {k: comp.index(k) + 1 for k in comp}
+    used = {col["a"], col["b"], col["c"], col[mul("a", "b")], col[mul("a", "c")], col[mul("b", "c")]}
+    free = [c for c in range(1, 8) if c not in used]
+    assert free == [7]
+    return {"free": free[0]}
 
 
 def p11():
@@ -448,35 +447,21 @@ def p13():
 
 
 def p14():
-    """研修時間と得点の回帰：てこ比を使った1つ抜き交差検証"""
-    x = [2, 4, 5, 6, 8, 11]
-    y = [54, 61, 58, 66, 67, 70]
-    n = len(x)
-    xb = sum(x) / n
-    yb = sum(y) / n
-    sxx = sum((a - xb) ** 2 for a in x)
-    sxy = sum((a - xb) * (b - yb) for a, b in zip(x, y))
-    b1 = sxy / sxx
-    b0 = yb - b1 * xb
-    e = [r(b - (b0 + b1 * a), 3) for a, b in zip(x, y)]
-    h = [r(1 / n + (a - xb) ** 2 / sxx, 3) for a in x]
-    loo = [r(ei / (1 - hi), 3) for ei, hi in zip(e, h)]   # 解説に示す丸めた値
-    sq = [r(v ** 2, 3) for v in loo]
-    cv = sum(sq) / n
-    mse = sum(v ** 2 for v in e) / n
-    out = {"n": n, "xb": s(xb, 0), "sxx": s(sxx, 0), "b0": s(b0, 3), "b1": s(b1, 2),
-           "cv": r(cv, 1), "cv_s": s(cv, 1), "cv4": s(cv, 4), "sumsq": s(sum(sq), 3),
-           "mse": s(mse, 2), "w_mse": s(mse, 1), "w_np": s(sum(v ** 2 for v in e) / (n - 2), 2),
-           "w_lin": s(sum(ei ** 2 / (1 - hi) for ei, hi in zip(e, h)) / n, 2),
-           "w_plus": s(sum((ei / (1 + hi)) ** 2 for ei, hi in zip(e, h)) / n, 2)}
-    for i in range(n):
-        out[f"x{i + 1}"] = x[i]
-        out[f"y{i + 1}"] = y[i]
-        out[f"e{i + 1}"] = s(e[i], 3)
-        out[f"h{i + 1}"] = s(h[i], 3)
-        out[f"o{i + 1}"] = s(1 - h[i], 3)
-        out[f"l{i + 1}"] = s(loo[i], 3)
-        out[f"l{i + 1}sq"] = s(sq[i], 3)
+    """マローズの Cp によるモデル選択"""
+    n = 30
+    p = {"A": 3, "B": 4, "C": 5, "F": 6}
+    rss = {"A": 32.0, "B": 27.5, "C": 25.8, "F": 24.0}
+    s2 = rss["F"] / (n - p["F"])
+    cp = {k: rss[k] / s2 - n + 2 * p[k] for k in p}
+    best = min(cp, key=cp.get)
+    s2n = rss["F"] / n
+    cpn = {k: rss[k] / s2n - n + 2 * p[k] for k in p}
+    cpi = {k: rss[k] / s2 - n + 2 * (p[k] - 1) for k in p}
+    near = min((k for k in p if k != "F"), key=lambda k: abs(cp[k] - p[k]))
+    assert best == "B" and min(cpn, key=cpn.get) == "F" and min(cpi, key=cpi.get) == "B" and near == "C"
+    out = {"n": n, "s2": s(s2, 1), "tA": 2 * p["A"], "w_cF": s(cpn["F"], 1), "w_cB": s(cpi["B"], 1)}
+    for k in p:
+        out[f"p{k}"] = p[k]; out[f"r{k}"] = s(rss[k], 1); out[f"c{k}"] = s(cp[k], 1)
     return out
 
 

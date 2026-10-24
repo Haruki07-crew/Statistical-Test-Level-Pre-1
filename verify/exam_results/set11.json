@@ -41,11 +41,11 @@
  },
  "s11p06a": {
   "ok": true,
-  "hash": "b42080b5486c047d"
+  "hash": "f1120b65cd91253c"
  },
  "s11p06b": {
   "ok": true,
-  "hash": "b4f701ea0ec2a95a"
+  "hash": "f8dafcd2a8c00383"
  },
  "s11p07a": {
   "ok": true,
@@ -65,7 +65,7 @@
  },
  "s11p09a": {
   "ok": true,
-  "hash": "aec54f69492b2d7b"
+  "hash": "2a10b85c5f9a4d3e"
  },
  "s11p09b": {
   "ok": true,
@@ -73,7 +73,7 @@
  },
  "s11p10a": {
   "ok": true,
-  "hash": "434326b13f33b283"
+  "hash": "6da3ca2872286ca9"
  },
  "s11p11a": {
   "ok": true,
@@ -97,6 +97,6 @@
  },
  "s11p14a": {
   "ok": true,
-  "hash": "cc89555c8f8736b7"
+  "hash": "1c669f8d53116971"
  }
 }

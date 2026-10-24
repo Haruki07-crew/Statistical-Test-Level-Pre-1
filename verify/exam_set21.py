@@ -84,9 +84,15 @@ aic = -2 * ll + 2 * kk
 wts = softmax(-aic / 2)
 E.num("s21p04a", f(wts.max(), 3), f"softmax(−AIC/2) の最大 {wts}")
 E.check("s21p04a", int(np.argmin(aic)) == 1 and abs(np.exp(-2.5) - 0.0821) < 5e-5 and abs(np.exp(-0.4) - 0.6703) < 5e-5, "AIC 最小は M2、e の値")
-zc = (35 - 0.5 - stats.binom.mean(250, 0.1)) / stats.binom.std(250, 0.1)
-E.num("s21p04b", f(zc, 2), f"scipy の二項分布の平均・標準偏差で {zc:.4f}")
-E.check("s21p04b", stats.binom.sf(34, 250, 0.1) < 0.05 and zc > 1.645, f"正確な片側 p 値 {stats.binom.sf(34, 250, 0.1):.4f} も 5% 未満で結論が一致")
+# (b) 併合した階級で scipy の chisquare
+q4 = E.item("s21p04b")["question"]
+pr_ = [float(x) for x in re.search(r"\| 過去の割合 \|([^\n]*)\|", q4).group(1).split("|")]
+ob_ = [int(x) for x in re.search(r"\| 今回の人数 \|([^\n]*)\|", q4).group(1).split("|")]
+ex_ = np.array(pr_) * sum(ob_)
+merge = lambda a_: np.r_[a_[:3], a_[3] + a_[4]]
+cs = stats.chisquare(merge(np.array(ob_)), merge(ex_))
+E.check("s21p04b", ex_[4] < 5 and merge(ex_).min() >= 5 and abs(sum(pr_) - 1) < 1e-12, f"期待度数 {ex_}、併合後 {merge(ex_)}")
+E.choice("s21p04b", f"統計量 {f(cs.statistic, 2)}、自由度 {len(merge(ex_)) - 1}", f"scipy chisquare X²={cs.statistic:.4f}, p={cs.pvalue:.4f}")
 # (c) 系統抽出：開始番号ごとの標本を列挙して包含確率と2次の包含確率
 N, k = 12000, 40
 samples = [set(range(r, N, k)) for r in range(k)]
