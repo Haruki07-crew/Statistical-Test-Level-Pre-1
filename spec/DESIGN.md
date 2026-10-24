@@ -470,9 +470,10 @@ validate.py は、エラー（ビルドを止める）と警告（報告だけ�
 - **級の切り替え**：スクリプトは環境変数 `JD_LEVEL`（`pre1`＝準1級・既定、`g2`＝2級）で置き場所を切り替える（`scripts/level.py`）。2級は `content/g2/`・`verify/g2/`・`docs/g2/`。`scripts/build.py` は両方の級を作り、`docs/sw.js` は両方のページを保存する（版は両方のページのハッシュ）。
 - **級ごとの設定**：`content/g2/site.yaml`（名前・見出し・説明文・部の分け方・学習の順番・模擬試験の説明・記録のキー）を `DATA.site` として渡す。準1級は省略された項目に app.js の既定値を使うので、表示は今までと同じ。両方のホームに、もう一方の級へのリンクを出す。2級は見出しの色（`--accent`）を青系にして見分けやすくした（`:root[data-level="g2"]`）。
 - **学習記録**：localStorage のキーを級ごとに分ける（準1級 `jd-`、2級 `jd2-`）。テーマ（`jd-theme`）だけは共通。
-- **用語**：出題範囲表の大項目に沿った 15 章・136 語（`content/g2/plan.yaml`）。2級向けに書いた 32 語は `content/g2/chNN/`。ほかの 104 語は準1級の解説を共通で使い（plan の `from: pre1`。build.py が準1級のファイルを読み、章と重要度を2級のものに置き換え、関連用語を2級にあるものだけに絞る）、用語ページに「準1級と共通」の注意書きと、用語ごとの「2級で押さえること」（`content/g2/notes.yaml`）を出す。2級の用語の本文の字数の目安は準1級の 8 割（validate.py）。
-- **問題演習**：2級向けの 32 語の問題（`content/g2/questions/`、検算は `verify/g2/questions_ch*.py`）と、共通の用語について準1級の問題のうち level が「基本」で検算済みのもの。
-- **模擬試験**：35 問・90 分・すべて5肢選択（`content/g2/exam_sets/`）。分野の配分・難易度・定義問題の上限は `scripts/exam_lib.py` の `LEVEL == "g2"` の設定。数値は問題ファイルに直接書き、`verify/g2/exam_setNN.py` で別の方法で検算する。見直しの記録は `verify/g2/exam_review/setNN.md`。正解をいったん①に置いて書き、`scripts/rebalance_choices.py` で①〜⑤に 7 問ずつならす。画面のセットの枠は `site.yaml` の `exam.sets`（10）。
+- **用語**：出題範囲表の大項目に沿った 15 章・136 語（`content/g2/plan.yaml`）。最初は 32 語だけを2級向けに書き、ほかの 104 語は準1級の解説を共通で使っていた（plan の `from: pre1`。build.py が準1級のファイルを読み、章と重要度を2級のものに置き換え、関連用語を2級にあるものだけに絞り、「準1級と共通」の注意書きと `content/g2/notes.yaml` の「2級で押さえること」を出す）。2026-10-25 に 104 語すべてを2級向けに書き直したので、いまは 136 語とも `content/g2/chNN/` にあり、`from: pre1` の用語はない（仕組みは残してある）。書き直した用語の本文の数値・図の値は `verify/g2/rewrite_terms.py` で検算する。2級の用語の本文の字数の目安は準1級の 8 割（validate.py）。
+- **問題演習**：2級の問題（`content/g2/questions/`、検算は `verify/g2/questions_ch*.py`）。2026-10-25 時点で 352 問。重要度 A の用語は 3 問以上、B は 2 問、C は 1 問。共通の用語があるときは、準1級の問題のうち level が「基本」で検算済みのものも出す（いまは共通の用語がないので出ない）。
+- **模擬試験**：35 問・90 分・すべて5肢選択（`content/g2/exam_sets/`）。分野の配分・難易度・定義問題の上限は `scripts/exam_lib.py` の `LEVEL == "g2"` の設定。数値は問題ファイルに直接書き、`verify/g2/exam_setNN.py` で別の方法で検算する。見直しの記録は `verify/g2/exam_review/setNN.md`。正解をいったん①に置いて書き、`scripts/rebalance_choices.py` で①〜⑤に 7 問ずつならす。画面のセットの枠は `site.yaml` の `exam.sets`（15）。新しいセットを作るときは、全セットの論点（topic）と照合して、数値替えや同じ要点の繰り返しを作り直す（見直し記録に書く）。
 - **ロードマップ**：`scripts/make_roadmap_g2.py` が `content/g2/roadmap.yaml` を作る（136 語・4 段階）。
 - **公式まとめ**：`content/g2/formulas.md`（検算は `verify/g2/formulas.py`）。
-- **検査**：`JD_LEVEL=g2 .venv/bin/python scripts/validate.py`（build.py が自動で実行）、画面は `verify/g2_smoke.mjs`（2級のホーム・用語・模擬試験の採点・記録のキー・準1級との行き来）。
+- **検査**：`JD_LEVEL=g2 .venv/bin/python scripts/validate.py`（build.py が自動で実行）、画面は `verify/g2_smoke.mjs`（2級のホーム・用語・模擬試験の採点・記録のキー・準1級との行き来。共通の用語が 1 つもないときは、注意書きの確認を飛ばす）。
+- **図の追加・修正（2026-10-25）**：`power-curve` に左片側（`alt: less`）を追加した。同時確率の表の図（`joint-marginal`）で選んだ行の class を `jm-sel` に変えた（汎用の `.sel { display: flex }` とぶつかって行が崩れていたため。両方の級）。表の数字がスマホで途中で折り返さないよう、`.table-wrap` のセルは `overflow-wrap: normal` にした。
