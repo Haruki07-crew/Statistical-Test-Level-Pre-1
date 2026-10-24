@@ -134,6 +134,7 @@ def p05():
         "delta": delta, "sig": s(sig, 2), "shift": s(shift, 2), "za": s(za, 2), "pw": s(pw, 3), "pw4": s(pw, 4),
         "ph054": phi[0.54], "ph086": phi[0.86], "ph134": phi[1.34], "ph250": phi[2.50],
         "w_one": s(phi[zb_], 3), "w_beta": s(1 - pw, 3), "w_nosqrt": s(1 - phi[-zs], 3), "w_nocrit": s(phi[zn], 3), "zs": s(zs, 2),
+        **p05a(S),
         "n": n, "xb": s(xb, 2), "sd": s(sd, 2), "s2": s(s2, 2), "df": n - 1, "S": s(S, 1), "sqn": s(sqrt(n), 0),
         "t15": t15, "t16": t16, "z": s(z, 2), "se": s(sd / sqrt(n), 2), "half": s(half, 4), "lo": r(lo, 3), "lo_s": s(lo, 3),
         "lo5": s(lo, 4), "hi_s": s(xb + half, 3),
@@ -147,6 +148,15 @@ def p05():
         "dfb": k - 1, "dfw": k * m - k, "msb": s(ssb / (k - 1), 4), "msw": s(ssw / (k * m - k), 2),
         "Fl": s(Fl, 2), "F212": F212, "w_nodf": s(ssb / (ssw / (k * m - k)), 2), "w_ss": s(ssb / ssw, 2), "w_inv": s(1 / Fl, 2),
     }
+
+
+def p05a(S):
+    """(a) σ の 95% 片側信頼上限。カイ二乗分布の点は問題文の値。"""
+    c15l, c15ll, c15u, c16l = 7.261, 6.262, 25.00, 7.962
+    U2 = S / c15l
+    return {"c15l": c15l, "c15ll": c15ll, "c15u": s(c15u, 2), "c16l": c16l, "U2": s(U2, 4), "U2s": s(U2, 3),
+            "U": r(sqrt(U2), 3), "U_s": s(sqrt(U2), 3), "U5": s(sqrt(U2), 4),
+            "w_up": s(sqrt(S / c15u), 3), "w_two": s(sqrt(S / c15ll), 3), "w_16": s(sqrt(S / c16l), 3)}
 
 
 def p06():
@@ -167,8 +177,20 @@ def p06():
         "ch2": s(ch[2], 1), "ch3": s(ch[3], 1), "ch4": s(ch[4], 1), "bw4": s(bw[4], 1), "chk3": s(chk[3], 1),
         "r12": r12, "r13": r13, "r23": r23, "l1sq": s(l1sq, 2), "l2sq": s(l2sq, 2), "l3sq": s(l3sq, 2),
         "l1": s(sqrt(l1sq), 1), "l2": s(sqrt(l2sq), 1), "l3": s(sqrt(l3sq), 1),
-        "u2": s(1 - l2sq, 2), "w_1ml": s(1 - sqrt(l2sq), 2), "w_1mr": s(1 - r12, 2), "num2": s(r12 * r23, 4),
+        **p06b(),
     }
+
+
+def p06b():
+    """(b) 精度行列から無向グラフ。周辺共分散と偏相関は解説に使う。"""
+    K = [[1.5, -0.6, 0, 0], [-0.6, 2.0, -0.5, -0.4], [0, -0.5, 1.8, -0.7], [0, -0.4, -0.7, 1.6]]
+    import numpy as np
+    Ka = np.array(K)
+    assert np.all(np.linalg.eigvalsh(Ka) > 0)
+    Sg = np.linalg.inv(Ka)
+    fm = lambda v: ("-" if v < 0 else "") + s(abs(v), 1)
+    mat = "\\begin{pmatrix}" + "\\\\".join("&".join(fm(v) if v else "0" for v in row) for row in K) + "\\end{pmatrix}"
+    return {"Kmat": mat, "s13": s(Sg[0, 2], 3), "pc23": s(-K[1][2] / sqrt(K[1][1] * K[2][2]), 3)}
 
 
 def p07():
@@ -243,9 +265,16 @@ def p09():
 
 
 def p10():
-    lam0, months, tot = 5, 12, 78
-    mu0 = lam0 * months
-    zz = (tot - mu0) / sqrt(mu0)
+    xs = [3, 5, 9, 13, 4, 6, 10, 1, 8, 7, 3, 9]
+    c11, c11b, c12 = 19.68, 21.92, 21.03
+    xbar_ = sum(xs) / len(xs)
+    ss_ = sum(v * v for v in xs) - len(xs) * xbar_ ** 2
+    D = ss_ / xbar_
+    assert c11 < D < c12 < c11b
+    disp = {"xrow": " | ".join(map(str, xs)), "sx2": sum(v * v for v in xs), "xbar": s(xbar_, 1), "xbar2": s(xbar_ ** 2, 2),
+            "ss": s(ss_, 0), "D": s(D, 2), "D4": s(D, 4), "c11": c11, "c11b": c11b, "c12": c12,
+            "s2": s(ss_ / 11, 2), "idx": s(ss_ / 11 / xbar_, 2)}
+    lam0, months, tot = 5, 12, sum(xs)
     nI, yI = 100, 30
     p0 = 0.5
     step = (yI - nI * p0) / (nI * p0 * (1 - p0))
@@ -255,8 +284,7 @@ def p10():
     e1, em1, eem = 2.718, 0.3679, 0.6922      # e^1, e^-1, e^-0.3679
     pr = 1 - eem
     return {
-        "lam0": lam0, "months": months, "tot": tot, "mu0": mu0, "sq": s(sqrt(mu0), 3), "z": s(zz, 2), "z4": s(zz, 4),
-        "mbar": s(tot / months, 1), "w_mon": s((tot / months - lam0) / sqrt(lam0), 2), "w_var": s((tot - mu0) / mu0, 2),
+        **disp, "tot": tot,
         "nI": nI, "yI": yI, "nyI": nI - yI, "sres": s(yI - nI * p0, 0), "sw": s(nI * p0 * (1 - p0), 0), "beta1": s(step, 3),
         "mleI": s(mle, 3), "w_now": s((yI - nI * p0) / nI, 3), "w_sign": s(-step, 3), "w_p": s((yI - nI * p0) / (nI * p0), 3),
         "p1I": s(1 / (1 + math.exp(-step)), 3),
@@ -326,11 +354,13 @@ def p12():
 
 
 def p13():
-    n, r_, s2 = 30, 20, 2.0
-    v = (r_ - 1) * s2 / (n - 1)
-    return {"n": n, "r": r_, "miss": n - r_, "s2": s(s2, 1), "rm1": r_ - 1, "nm1": n - 1, "ss": s((r_ - 1) * s2, 1),
-            "v": r(v, 2), "v_s": s(v, 2), "v4": s(v, 4), "ratio": s((r_ - 1) / (n - 1), 4),
-            "w_n": s(r_ * s2 / n, 2), "w_sd": s(sqrt(v), 2)}
+    n, r_, xa, xo, yo, b = 30, 20, 5.0, 5.6, 5.2, 0.90
+    xm = (n * xa - r_ * xo) / (n - r_)
+    ym = yo + b * (xm - xo)
+    m = (r_ * yo + (n - r_) * ym) / n
+    assert abs(m - (yo + b * (xa - xo))) < 1e-12
+    return {"n": n, "r": r_, "miss": n - r_, "xa": s(xa, 1), "xo": s(xo, 1), "yo": s(yo, 1), "b": s(b, 2),
+            "xm": s(xm, 1), "ym": s(ym, 2), "m": r(m, 2), "m_s": s(m, 2), "m4": s(m, 4)}
 
 
 def values():

@@ -120,15 +120,15 @@ gum = stats.gumbel_r(loc=10 + 3 * math.log(365), scale=3).ppf(0.98)
 E.check("s20p04a", rnd(gum, 1) == E.item("s20p04a")["answer"], f"scipy gumbel_r の 98% 点 {gum:.4f}")
 
 # ---- 大問5
-table("s20p05a", stats.t.ppf(0.975, 15), 2.131, 3, "t(15)")
-table("s20p05a", stats.t.ppf(0.975, 16), 2.120, 3, "t(16)")
-lo = stats.t.interval(0.95, 15, loc=94.35, scale=0.8 / 4)[0]
-E.num("s20p05a", rnd(94.35 - 2.131 * 0.8 / 4, 3), "示した t 点で下限")
-E.check("s20p05a", abs(lo - E.item("s20p05a")["answer"]) <= 0.0005, f"scipy t.interval の下限 {lo:.5f}")
+# (a) σ の片側信頼上限：scipy のカイ二乗の点と、被覆率のシミュレーション
+for q_, df_, shown in ((0.05, 15, 7.261), (0.025, 15, 6.262), (0.95, 15, 25.00), (0.05, 16, 7.962)):
+    table("s20p05a", stats.chi2.ppf(q_, df_), shown, 3 if shown < 20 else 2, f"χ²({df_}) の {q_} 点")
+U_ = math.sqrt(9.6 / stats.chi2.ppf(0.05, 15))
+E.num("s20p05a", rnd(U_, 3), f"scipy の下側 5% 点で U={U_:.5f}")
 Xs = rng.normal(0, 1, (200_000, 16))
-xb_, sdv = Xs.mean(1), Xs.std(1, ddof=1)
-cov = np.mean(np.abs(xb_) <= 2.131 * sdv / 4)
-E.check("s20p05a", abs(cov - 0.95) < 0.003, f"信頼区間の被覆率 {cov:.4f}")
+Ss = ((Xs - Xs.mean(1, keepdims=True)) ** 2).sum(1)
+cov = np.mean(1.0 <= np.sqrt(Ss / stats.chi2.ppf(0.05, 15)))
+E.check("s20p05a", abs(cov - 0.95) < 0.003, f"σ≤U となる割合 {cov:.4f}")
 c, n = sp.symbols("c"), 16
 mse = c ** 2 * 2 * (n - 1) + (c * (n - 1) - 1) ** 2
 cs = sp.solve(sp.diff(mse, c), c)[0]
@@ -159,15 +159,26 @@ pts = rng.normal(size=(20, 2)); lab = np.repeat([0, 1, 2, 3], 5)
 Tss = ((pts - pts.mean(0)) ** 2).sum(); Wss = sum(((pts[lab == g] - pts[lab == g].mean(0)) ** 2).sum() for g in range(4))
 Bss = sum(5 * ((pts[lab == g].mean(0) - pts.mean(0)) ** 2).sum() for g in range(4))
 E.check("s20p06a", abs(Tss - Wss - Bss) < 1e-9, "全平方和 = 群内 + 群間（B_k = 全体 − W_k）")
-l = sp.symbols("l1:4", positive=True)
-sol = sp.solve([l[0] * l[1] - sp.Rational(56, 100), l[0] * l[2] - sp.Rational(48, 100), l[1] * l[2] - sp.Rational(42, 100)], l, dict=True)[0]
-E.choice("s20p06b", f"${f(1 - float(sol[l[1]]) ** 2, 2)}$", f"sympy で負荷量を解く {sol}")
-# 1因子モデルの相関行列を作ってシミュレーション
-L = np.array([0.8, 0.7, 0.6])
-F = rng.standard_normal(300_000)
-Xf = np.outer(F, L) + rng.standard_normal((300_000, 3)) * np.sqrt(1 - L ** 2)
-Rm = np.corrcoef(Xf.T)
-E.check("s20p06b", abs(Rm[0, 1] - 0.56) < 0.01 and abs(Rm[1, 2] - 0.42) < 0.01, "負荷量 (0.8,0.7,0.6) の1因子モデルが相関を再現")
+# (b) 問題文の精度行列を読み取り、条件付き共分散を直接計算して各記述を確かめる
+qtxt = E.item("s20p06b")["question"]
+rows = re.search(r"begin\{pmatrix\}(.*?)\\end\{pmatrix\}", qtxt).group(1).split("\\\\")
+Kq = np.array([[float(x) for x in r_.split("&")] for r_ in rows])
+Sg = np.linalg.inv(Kq)
+def ccov(i, j, given):
+    A = [i, j]; B = list(given)
+    if not B:
+        return Sg[np.ix_(A, A)][0, 1]
+    C = Sg[np.ix_(A, A)] - Sg[np.ix_(A, B)] @ np.linalg.solve(Sg[np.ix_(B, B)], Sg[np.ix_(B, A)])
+    return C[0, 1]
+z0 = lambda v: abs(v) < 1e-10
+E.check("s20p06b", not z0(ccov(0, 2, [])), f"選択肢0は誤り：σ13={ccov(0, 2, []):.4f}")
+E.check("s20p06b", z0(ccov(0, 2, [1])) and not z0(ccov(0, 2, [3])), f"選択肢1は正しい：x2 を与えると {ccov(0, 2, [1]):.2e}、x4 だけだと {ccov(0, 2, [3]):.4f}")
+E.check("s20p06b", not z0(ccov(2, 3, [0, 1])), "選択肢2は誤り")
+E.check("s20p06b", not z0(ccov(0, 3, [2])), "選択肢3は誤り")
+E.check("s20p06b", not z0(ccov(1, 3, [2])), "選択肢4は誤り")
+E.check("s20p06b", np.all(np.linalg.eigvalsh(Kq) > 0) and np.allclose(Kq, Kq.T), "精度行列は正定値で対称")
+E.check("s20p06b", E.item("s20p06b")["answer"] == 1, "正解の番号")
+E.check("s20p06b", f"{Sg[0, 2]:.3f}" in E.item("s20p06b")["explanation"], "解説の σ13 の値")
 
 # ---- 大問7
 # MA(1) の偏自己相関：statsmodels を使わずに自己相関から再帰で計算し、シミュレーションでも確認
@@ -228,9 +239,18 @@ npar = W1.size + c1.size + w2.size + 1
 E.choice("s20p09c", f"$\\hat y={f(yhat, 2)}$、パラメータ {npar} 個", f"行列計算で ŷ={yhat:.4f}, パラメータ {npar}")
 
 # ---- 大問10
-zz = (78 - 60) / math.sqrt(60)
-E.choice("s20p10a", f"$z={f(zz, 2)}$で1.645を超える", f"z={zz:.4f}")
-E.check("s20p10a", stats.poisson(60).sf(77) < 0.05, f"正確なポアソンの片側 p 値 {stats.poisson(60).sf(77):.4f} も 5% 未満")
+# (a) 問題文の表から件数を読み取り、numpy の分散で D を作る。棄却点は scipy
+q10 = E.item("s20p10a")["question"]
+xs10 = np.array([int(v) for v in re.search(r"\| 件数 \|(.*)\|", q10).group(1).split("|")])
+D10 = xs10.var(ddof=1) * (len(xs10) - 1) / xs10.mean()
+for shown, q_, df_ in ((19.68, 0.05, 11), (21.92, 0.025, 11), (21.03, 0.05, 12)):
+    table("s20p10a", stats.chi2.isf(q_, df_), shown, 2, f"χ²({df_}) の上側 {q_} 点")
+E.check("s20p10a", len(xs10) == 12 and xs10.sum() == 78 and (xs10 ** 2).sum() == 640, "表の件数の合計 78・2 乗和 640")
+E.choice("s20p10a", f"$D={f(D10, 2)}$が自由度11の上側5%点{f(stats.chi2.isf(0.05, 11), 2)}を超えるので棄却", f"D={D10:.4f}, p={stats.chi2.sf(D10, 11):.4f}")
+E.check("s20p10a", stats.chi2.sf(D10, 11) < 0.05 < stats.chi2.sf(D10, 12) and stats.chi2.sf(D10, 11) > 0.025, "自由度 12 や両側 2.5% では結論が逆（誤答の確認）")
+pois = rng.poisson(6.5, (200_000, 12))
+Dsim = pois.var(1, ddof=1) * 11 / np.maximum(pois.mean(1), 1e-9)
+E.check("s20p10a", abs(np.mean(Dsim > stats.chi2.isf(0.05, 11)) - 0.05) < 0.01, f"ポアソンのもとで D>19.68 の割合 {np.mean(Dsim > stats.chi2.isf(0.05, 11)):.4f}")
 # IRLS：重み付き最小二乗（作業変数）として 1 回解く
 yb = np.r_[np.ones(30), np.zeros(70)]; Xb = np.ones((100, 1)); beta = np.zeros(1)
 pb = 1 / (1 + np.exp(-Xb @ beta)); Wd = pb * (1 - pb)
@@ -279,9 +299,15 @@ coefT = np.linalg.lstsq(T[:, None], Y, rcond=None)[0][0]
 E.check("s20p12c", abs(coefT + 0.38) < 0.01, f"調整しないと {coefT:.4f}（誤答 −0.38 の確認）")
 
 # ---- 大問13
-obs = rng.normal(4.2, math.sqrt(2.0), 20)
-obs = 4.2 + (obs - obs.mean()) / obs.std(ddof=1) * math.sqrt(2.0)
-full = np.concatenate([obs, np.full(10, obs.mean())])
-E.num("s20p13a", rnd(full.var(ddof=1), 2), f"実際に代入して不偏分散 {full.var(ddof=1):.5f}")
+# 要約値を満たすデータを実際に作り、numpy の polyfit で回帰代入する
+xo_ = rng.normal(5.6, 1.2, 20); xo_ += 5.6 - xo_.mean()
+xm_ = rng.normal(3.8, 1.0, 10); xm_ += 3.8 - xm_.mean()
+e_ = rng.normal(0, 0.8, 20)
+e_ -= np.polyval(np.polyfit(xo_, e_, 1), xo_)        # x と 1 に直交する残差
+yo_ = 5.2 + 0.9 * (xo_ - 5.6) + e_
+bb, aa = np.polyfit(xo_, yo_, 1)
+E.check("s20p13a", abs(bb - 0.9) < 1e-9 and abs(yo_.mean() - 5.2) < 1e-9 and abs(np.r_[xo_, xm_].mean() - 5.0) < 1e-9, "作ったデータが問題文の要約値と一致")
+yfull = np.r_[yo_, aa + bb * xm_]
+E.num("s20p13a", rnd(yfull.mean(), 2), f"回帰代入した 30 日の平均 {yfull.mean():.5f}")
 
 E.done()

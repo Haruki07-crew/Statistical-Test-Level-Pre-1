@@ -29,7 +29,7 @@
  },
  "s20p05a": {
   "ok": true,
-  "hash": "cbe11a2202bd3ef4"
+  "hash": "109225c4d7a2d9ce"
  },
  "s20p05b": {
   "ok": true,
@@ -45,7 +45,7 @@
  },
  "s20p06b": {
   "ok": true,
-  "hash": "c7a7371a20f53a85"
+  "hash": "581e73a657bcd67d"
  },
  "s20p07a": {
   "ok": true,
@@ -65,11 +65,11 @@
  },
  "s20p09c": {
   "ok": true,
-  "hash": "c23b2169bd903dcf"
+  "hash": "d6c43bd54ed96ef1"
  },
  "s20p10a": {
   "ok": true,
-  "hash": "34b526a116ab2209"
+  "hash": "12e70c22353169b6"
  },
  "s20p10b": {
   "ok": true,
@@ -89,7 +89,7 @@
  },
  "s20p12b": {
   "ok": true,
-  "hash": "c57a79d592e15f1c"
+  "hash": "da04238f9eca893d"
  },
  "s20p12c": {
   "ok": true,
@@ -97,6 +97,6 @@
  },
  "s20p13a": {
   "ok": true,
-  "hash": "d78619de61fe1d95"
+  "hash": "b5296528a4a52eb4"
  }
 }
