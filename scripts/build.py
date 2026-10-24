@@ -275,6 +275,8 @@ def main():
                 shared[t["id"]] = (ch["no"], t["importance"])
                 files += sorted(PRE1_CONTENT.glob(f"ch*/{t['id']}.md"))[:1]
     plan_all = {t["id"] for ch in plan["chapters"] for t in ch.get("terms") or []}
+    # 2級：共通の用語に付ける「2級で押さえること」（content/g2/notes.yaml）
+    notes = yaml.safe_load((CONTENT / "notes.yaml").read_text(encoding="utf-8")) if (CONTENT / "notes.yaml").exists() else {}
     terms = {}
     for p in files:
         fm, body = split_front(p.read_text(encoding="utf-8"))
@@ -290,6 +292,8 @@ def main():
         }
         if fm["id"] in shared:
             terms[fm["id"]]["shared"] = 1
+            if notes.get(fm["id"]):
+                terms[fm["id"]]["note2"] = html.escape(str(notes[fm["id"]]))
     chapters = []
     for ch in plan["chapters"]:
         chapters.append({

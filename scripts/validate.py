@@ -433,6 +433,21 @@ def main():
                 print(f"[WARN]  plan.yaml: {tid} はファイルがありますが status が planned です")
                 total_warn += 1
 
+    # 2級：共通の用語の注記（content/g2/notes.yaml）は、from: pre1 の用語だけに付ける
+    if not args.only and not args.chapter and (CONTENT / "notes.yaml").exists():
+        notes = yaml.safe_load((CONTENT / "notes.yaml").read_text(encoding="utf-8")) or {}
+        shared_ids = {tid for tid, occ in plan_terms.items() if occ[0][1].get("from") == "pre1"}
+        for tid in sorted(set(notes) - shared_ids):
+            print(f"[ERROR] notes.yaml: {tid} は準1級と共通の用語ではありません")
+            total_err += 1
+        for tid in sorted(shared_ids - set(notes)):
+            print(f"[WARN]  notes.yaml: 共通の用語 {tid} に注記がありません")
+            total_warn += 1
+        for tid, v in notes.items():
+            if "$" in str(v) or len(str(v)) > 120:
+                print(f"[ERROR] notes.yaml: {tid} の注記は $ を使わず 120 字以内にする")
+                total_err += 1
+
     if not args.only:
         e, w, nf, nq = check_questions(plan_terms, args.chapter)
         print(f"問題ファイル {nf} 件 / 問題 {nq} 問 / エラー {e} 件 / 警告 {w} 件")

@@ -3553,7 +3553,7 @@ window.MathJax = {
       (meta.length ? '<p class="term-meta">' + meta.join('　・　') + '</p>' : '') +
       '<div class="term-actions"><button type="button" class="memo-toggle"></button><button type="button" class="memo-toggle bm-toggle"></button>' +
       (p.status === 'verified' ? '<span class="pending-tag" style="border-style:solid" title="数値をPythonで検算済み">検算済み</span>' : '') + '</div>';
-    if (t.shared) h += '<p class="see-note">この解説は準1級の辞典と共通です。準1級向けの発展的な内容（行列・漸近理論など）も含むので、2級では「一言でいうと」「定義・数式」「具体例」「試験のポイント」を中心に読み、難しい部分は読み飛ばしてかまいません。</p>';
+    if (t.shared) h += '<p class="see-note">この解説は準1級の辞典と共通で、準1級向けの発展的な内容も含みます。' + (t.note2 ? '<b>2級で押さえること：</b>' + t.note2 : '2級では「一言でいうと」「定義・数式」「具体例」「試験のポイント」を中心に読み、難しい部分は読み飛ばしてかまいません。') + '</p>';
     if (p.see && PLAN[p.see]) h += '<p class="see-note">この内容は「<button type="button" class="f-link" data-go="' + p.see + '">' + esc(PLAN[p.see].title) + '</button>」でまとめて解説しています。このページは補足です。</p>';
     var secs = [];
     t.html.replace(/data-sec="(\w+)"/g, function (_, k) { secs.push(k); return _; });
