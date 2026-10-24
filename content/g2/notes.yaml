@@ -40,11 +40,7 @@ exponential-distribution: 待ち時間の分布で、P(X＞t) が指数関数で
 bivariate-normal-distribution: 出題はまれ。相関係数が 0 なら独立になる、という性質だけ知っておけば十分。
 chebyshev-inequality: 分布の形によらず、平均から標準偏差の k 倍以上離れる確率は 1/k² 以下、という使い方を押さえる。
 weak-law-of-large-numbers: 標本の大きさを大きくすると標本平均が母平均に近づく、という意味を押さえる。証明は読み飛ばしてよい。
-normal-approximation-binomial-poisson: 二項分布 B(n, p) を平均 np・分散 np(1－p) の正規分布で、ポアソン分布を平均・分散 λ の正規分布で近似する計算を押さえる。
 continuity-correction: 「k 以上」を k－0.5 から、「k 以下」を k＋0.5 までとして標準化する修正を押さえる。
-chi-squared-distribution: 標準正規分布の2乗和の分布で、期待値は自由度、分散は自由度の2倍。母分散の推定・検定とカイ二乗検定で使う。分布表の読み方が重要。
-t-distribution: 母分散が未知のときの平均の推測に使う分布。自由度が小さいほど裾が重く、大きいと標準正規分布に近づく。分布表の読み方が重要。
-f-distribution: 2つの分散の比の分布。自由度の順番と、下側の点を上側の点の逆数で求める方法を押さえる。
 point-estimation: 推定量（式）と推定値（数値）の区別、標本平均・標本比率・不偏分散で母数を推定することを押さえる。
 unbiased-estimator: 期待値が母数に等しい推定量のこと。不偏分散が n－1 で割る理由として押さえる。
 consistent-estimator: 標本を大きくすると母数に近づく推定量のこと。不偏性との違いを押さえる。

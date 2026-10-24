@@ -307,6 +307,8 @@ mjx-container { max-width: 100%; }
 .table-wrap { overflow-x: auto; margin: 1em 0; border: 1px solid var(--line); border-radius: 8px; }
 .body table { border-collapse: collapse; width: 100%; font-size: .9rem; line-height: 1.6; }
 .body th, .body td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+/* 表の中では数字を途中で折り返さない（.body の overflow-wrap: anywhere を打ち消す）。幅が足りなければ .table-wrap の中で横にスクロールする */
+.table-wrap th, .table-wrap td { overflow-wrap: normal; }
 .body th { background: var(--surface-2); font-weight: 700; white-space: nowrap; }
 .body tr:last-child td { border-bottom: 0; }
 .body code { font-family: var(--mono); font-size: .9em; background: var(--surface-2); padding: 1px 4px; border-radius: 4px; }

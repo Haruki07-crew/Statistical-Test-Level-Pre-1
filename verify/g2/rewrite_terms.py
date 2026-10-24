@@ -84,6 +84,29 @@ check(T, "単回帰の傾き = b2 + b1 × d（最小二乗法で 20 通りのデ
 r_ = np.random.default_rng(7); x2 = r_.integers(0, 6, 100000).astype(float); x1 = 10 + 4 * x2 + r_.normal(0, 3, 100000); y_ = 30 + 1.5 * x1 - 5 * x2 + r_.normal(0, 4, 100000)
 check(T, "具体例の形のデータで単回帰の傾き ≈ +1（正）", close(np.polyfit(x2, y_, 1)[0], 1.0, 0.05), np.polyfit(x2, y_, 1)[0])
 
+T = "normal-approximation-binomial-poisson"
+b48 = stats.binom(48, .25)
+check(T, "例1 平均 12・SD 3・(17.5−12)/3≈1.83・P=0.0336・正確 ≈0.037・修正なし 0.0228", close(b48.mean(), 12, 1e-12) and close(b48.std(), 3, 1e-12) and close((17.5 - 12) / 3, 1.83, 0.005) and close(stats.norm.sf(1.83), 0.0336, 5e-5) and close(b48.sf(17), 0.037, 5e-4) and close(stats.norm.sf(2), 0.0228, 5e-5), b48.sf(17))
+p64 = stats.poisson(64)
+check(T, "例2 SD 8・(79.5−64)/8≈1.94・P=0.0262・正確 ≈0.030", close((79.5 - 64) / 8, 1.94, 0.005) and close(stats.norm.sf(1.94), 0.0262, 5e-5) and close(p64.sf(79), 0.030, 5e-4), p64.sf(79))
+check(T, "np=0.5 の B(50,0.01) は正規近似が不正確（P(0) 正確 0.605 と近似の差が大きい）", abs(stats.binom(50, .01).pmf(0) - (stats.norm(0.5, sqrt(50 * .01 * .99)).cdf(0.5))) > 0.05, stats.binom(50, .01).pmf(0))
+T = "t-distribution"
+check(T, "表 t0.025：5→2.571・9→2.262・15→2.131・20→2.086・30→2.042・60→2.000", all(close(stats.t.isf(.025, d), v) for d, v in ((5, 2.571), (9, 2.262), (15, 2.131), (20, 2.086), (30, 2.042), (60, 2.000))), None)
+check(T, "例1 50±2.262×4/√10=50±2.86 → (47.14, 52.86)・1.96 なら (47.52, 52.48)", close(2.262 * 4 / sqrt(10), 2.86, 0.005) and close(50 - 2.262 * 4 / sqrt(10), 47.14, 0.005) and close(50 + 1.96 * 4 / sqrt(10), 52.48, 0.005), None)
+check(T, "例2 自由度 9 で P(|T|>1.96)≈0.082", close(2 * stats.t.sf(1.96, 9), 0.082, 5e-4), 2 * stats.t.sf(1.96, 9))
+T = "chi-squared-distribution"
+z = rng.normal(0, 1, (400000, 4)); w = (z ** 2).sum(1)
+check(T, "平均 k・分散 2k（k=4 のシミュレーション）", close(w.mean(), 4, 0.02) and close(w.var(), 8, 0.08), (w.mean(), w.var()))
+check(T, "例1 自由度 9：16.92・19.02・2.700・10.02 と 6.30", close(stats.chi2.isf(.05, 9), 16.92, 0.005) and close(stats.chi2.isf(.025, 9), 19.02, 0.005) and close(stats.chi2.isf(.975, 9), 2.700) and close(19.02 - 9, 10.02, 1e-9) and close(9 - 2.7, 6.30, 1e-9), None)
+s16 = rng.normal(0, 1, (200000, 16)).var(1, ddof=1)
+check(T, "例2 自由度 15 の 5% 点 25.00・25/15≈1.67・シミュレーション", close(stats.chi2.isf(.05, 15), 25.00, 0.005) and close(25 / 15, 1.67, 0.005) and close(np.mean(s16 > 25 / 15), 0.05, 0.003), np.mean(s16 > 25 / 15))
+check(T, "例3 (72/19.02, 72/2.700)≈(3.79, 26.67)", close(72 / 19.02, 3.79, 0.005) and close(72 / 2.700, 26.67, 0.005), None)
+T = "f-distribution"
+check(T, "例1 F=2.5 < F0.025(9,11)=3.588", close(30 / 12, 2.5, 1e-12) and close(stats.f.isf(.025, 9, 11), 3.588) and 2.5 < 3.588, None)
+check(T, "例2 F0.025(11,9)=3.912・1/3.912≈0.256=F0.975(9,11)", close(stats.f.isf(.025, 11, 9), 3.912) and close(1 / 3.912, 0.256, 5e-4) and close(stats.f.isf(.975, 9, 11), 0.256, 5e-4), None)
+check(T, "例3 F0.05(3,16)=3.239", close(stats.f.isf(.05, 3, 16), 3.239), None)
+check(T, "t² と F(1,10)：2.228²≈4.96", close(stats.f.isf(.05, 1, 10), stats.t.isf(.025, 10) ** 2, 1e-9) and close(2.228 ** 2, 4.96, 0.005), None)
+
 ng = results.count(False)
 print(f"書き直した共通の用語の検算: OK {len(results) - ng} / NG {ng}")
 sys.exit(1 if ng else 0)

@@ -378,7 +378,6 @@ chapters:
     title: 二項分布・ポアソン分布の正規近似
     importance: A
     status: verified
-    from: pre1
   - id: continuity-correction
     title: 連続修正
     importance: B
@@ -388,17 +387,14 @@ chapters:
     title: カイ二乗分布
     importance: A
     status: verified
-    from: pre1
   - id: t-distribution
     title: t分布
     importance: A
     status: verified
-    from: pre1
   - id: f-distribution
     title: F分布
     importance: A
     status: verified
-    from: pre1
   - id: statistical-tables
     title: 分布表の読み方（上側確率点）
     importance: A

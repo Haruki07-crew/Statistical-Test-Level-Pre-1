@@ -15,8 +15,36 @@
   "hash": "3b661ad8d38a61fe",
   "ok": true
  },
+ "q10-chi-squared-distribution-g2": {
+  "hash": "8721a343c25d9c59",
+  "ok": true
+ },
+ "q10-chi-squared-distribution-g3": {
+  "hash": "e3a5fdbbb8daf199",
+  "ok": true
+ },
+ "q10-f-distribution-g1": {
+  "hash": "182653b371ee556b",
+  "ok": true
+ },
+ "q10-f-distribution-g2": {
+  "hash": "75affbefad044ff9",
+  "ok": true
+ },
+ "q10-f-distribution-g3": {
+  "hash": "378f4e0ef08b014e",
+  "ok": true
+ },
  "q10-normal-approximation-binomial-poisson-g1": {
   "hash": "fbf771b705e55e71",
+  "ok": true
+ },
+ "q10-normal-approximation-binomial-poisson-g2": {
+  "hash": "6ac8bdc7c2dde16c",
+  "ok": true
+ },
+ "q10-normal-approximation-binomial-poisson-g3": {
+  "hash": "d9eaba97fd55bf75",
   "ok": true
  },
  "q10-sampling-distribution-of-mean-1": {
@@ -53,6 +81,14 @@
  },
  "q10-t-distribution-g1": {
   "hash": "93ba67bcb2004216",
+  "ok": true
+ },
+ "q10-t-distribution-g2": {
+  "hash": "9d61edf564b40c4b",
+  "ok": true
+ },
+ "q10-t-distribution-g3": {
+  "hash": "02730f941e5ec52e",
   "ok": true
  }
 }
