@@ -236,7 +236,8 @@ def check_file(path, plan_terms, customs, all_aliases):
     plain = re.sub(r"\$\$.*?\$\$", "", body, flags=re.S)
     plain = re.sub(r"\$[^$\n]*\$", "", plain)
     n = len(re.sub(r"\s", "", plain))
-    lo = {"A": 1500, "B": 1000, "C": 500}.get(fm.get("importance"), 0)
+    # 2級は1語あたりの内容が準1級より軽いので、目安を2割下げる（DECISIONS.md 2026-10-24）
+    lo = ({"A": 1200, "B": 800, "C": 400} if CONTENT != PRE1_CONTENT else {"A": 1500, "B": 1000, "C": 500}).get(fm.get("importance"), 0)
     if n < lo:
         warn(f"本文が短めです（{n}字）")
     return errors, warnings, fm

@@ -2716,6 +2716,72 @@ window.MathJax = {
     options: opts(a, c, { legend: true, xmin: mn, xmax: mx, ymax: top, xTitle: p.stat === 'median' ? '標本中央値' : '標本平均' }) });
     a.info.textContent = '元の値 ' + a.fmt(t0) + '　ブートストラップ標準誤差 ' + a.fmt(sd(bs)) + '　95%パーセンタイル区間 [' + a.fmt(lo) + ', ' + a.fmt(hi) + ']（B = ' + B + '）';
   });
+
+  // ---------- 2級：データの記述 ----------
+  // 四分位数：中央値で下半分・上半分に分け（個数が奇数なら中央値を除く）、それぞれの中央値を Q1・Q3 とする
+  function medianSorted(s) { var n = s.length, h = Math.floor(n / 2); return n % 2 ? s[h] : (s[h - 1] + s[h]) / 2; }
+  function fiveNum(v) {
+    var s = sorted(v), n = s.length, h = Math.floor(n / 2), lo = s.slice(0, h), hi = s.slice(n % 2 ? h + 1 : h);
+    var q1 = medianSorted(lo), q3 = medianSorted(hi), iqr = q3 - q1, f1 = q1 - 1.5 * iqr, f3 = q3 + 1.5 * iqr;
+    var inn = s.filter(function (x) { return x >= f1 && x <= f3; });
+    return { min: s[0], q1: q1, med: medianSorted(s), q3: q3, max: s[n - 1], wlo: inn[0], whi: inn[inn.length - 1], out: s.filter(function (x) { return x < f1 || x > f3; }), mean: mean(s) };
+  }
+  Charts._fiveNum = fiveNum;
+  // box-plot: { groups: [{ label, data: [...] }], xlabel, mean: 1 で平均を × で示す } 箱ひげ図（ひげは 1.5×IQR の内側の最も外の値まで、外は外れ値の点）
+  reg('box-plot', function (a, p, c) {
+    var G = p.groups || [], pal = [c.c1, c.c2, c.c3, c.muted], ds = [], all = [], info = [];
+    G.forEach(function (g, i) {
+      var f = fiveNum((g.data || []).map(Number)), y = G.length - i, h = 0.28, col = pal[i % 4];
+      all = all.concat(g.data.map(Number));
+      ds.push(a.lineDs(g.label || '', [{ x: f.q1, y: y - h }, { x: f.q3, y: y - h }, { x: f.q3, y: y + h }, { x: f.q1, y: y + h }, { x: f.q1, y: y - h }, { x: NaN, y: NaN },
+        { x: f.med, y: y - h }, { x: f.med, y: y + h }, { x: NaN, y: NaN }, { x: f.wlo, y: y }, { x: f.q1, y: y }, { x: NaN, y: NaN }, { x: f.q3, y: y }, { x: f.whi, y: y },
+        { x: NaN, y: NaN }, { x: f.wlo, y: y - h / 2 }, { x: f.wlo, y: y + h / 2 }, { x: NaN, y: NaN }, { x: f.whi, y: y - h / 2 }, { x: f.whi, y: y + h / 2 }], col, { fill: false }));
+      if (f.out.length) ds.push(a.lineDs('外れ値', f.out.map(function (x) { return { x: x, y: y }; }), col, { showLine: false, pointRadius: 4, pointStyle: 'circle', backgroundColor: 'transparent' }));
+      if (p.mean) ds.push(a.lineDs('平均', [{ x: f.mean, y: y }], col, { showLine: false, pointRadius: 6, pointStyle: 'crossRot' }));
+      info.push((g.label ? g.label + '：' : '') + '最小 ' + a.fmt(f.min) + '・Q1 ' + a.fmt(f.q1) + '・中央値 ' + a.fmt(f.med) + '・Q3 ' + a.fmt(f.q3) + '・最大 ' + a.fmt(f.max) + (f.out.length ? '（外れ値 ' + f.out.map(function (x) { return a.fmt(x); }).join(', ') + '）' : ''));
+    });
+    var mn = Math.min.apply(null, all), mx = Math.max.apply(null, all), pad = (mx - mn) * 0.08 || 1;
+    var lo = mn - pad, hi = mx + pad;
+    if (mx - mn > 5) { lo = Math.floor(lo); hi = Math.ceil(hi); }  // 目盛りの端を切りのよい値に
+    var o = opts(a, c, { legend: false, xmin: lo, xmax: hi, ymin: 0.4, ymax: G.length + 0.6, xTitle: p.xlabel });
+    o.scales.y.ticks = Object.assign({}, o.scales.y.ticks, { stepSize: 1, callback: function (v) { var g = G[G.length - v]; return g && Math.abs(v - Math.round(v)) < 1e-9 ? (g.label || '') : ''; } });
+    o.scales.y.grid = { display: false };
+    o.interaction = { mode: 'nearest', intersect: true };
+    a.chart('', { data: { datasets: ds }, options: o });
+    a.info.textContent = info.join('　／　');
+  });
+  // lorenz-curve: { values: [...]（1人あたりの量）, weights: [...]（人数、省略時は1） } ローレンツ曲線とジニ係数
+  reg('lorenz-curve', function (a, p, c) {
+    var v = (p.values || []).map(Number), w = (p.weights || v.map(function () { return 1; })).map(Number);
+    var idx = v.map(function (_, i) { return i; }).sort(function (i, j) { return v[i] - v[j]; });
+    var W = 0, T = 0; idx.forEach(function (i) { W += w[i]; T += w[i] * v[i]; });
+    var pts0 = [{ x: 0, y: 0 }], cw = 0, ct = 0, area = 0;
+    idx.forEach(function (i) {
+      var x0 = cw / W, y0 = ct / T; cw += w[i]; ct += w[i] * v[i];
+      var x1 = cw / W, y1 = ct / T; area += (x1 - x0) * (y0 + y1) / 2; pts0.push({ x: x1, y: y1 });
+    });
+    var gini = 1 - 2 * area;
+    a.chart('', { data: { datasets: [a.lineDs('完全平等線', [{ x: 0, y: 0 }, { x: 1, y: 1 }], c.muted, { borderDash: [6, 4], borderWidth: 1.5 }),
+      a.lineDs('ローレンツ曲線', pts0, c.c1, { pointRadius: 3, fill: { target: 0 }, backgroundColor: c.fill })] },
+    options: opts(a, c, { legend: true, xmin: 0, xmax: 1, ymax: 1, xTitle: '人数の累積割合', yTitle: '量の累積割合' }) });
+    a.info.textContent = 'ジニ係数 = 1 − 2 ×（曲線の下の面積）= ' + a.fmt(gini, 3) + '（0 なら完全に平等、1 に近いほど不平等）';
+  });
+  // moving-average: { y: [...], x: [...]（省略時は 1,2,…）, k（項数）, xlabel, ylabel } 中心化移動平均（k が偶数なら 2×k の中心化移動平均）
+  reg('moving-average', function (a, p, c) {
+    var y = (p.y || []).map(Number), n = y.length, x = (p.x || y.map(function (_, i) { return i + 1; })).map(Number), k = Math.max(1, Math.round(num(p.k, 3)));
+    var ma = y.map(function (_, t) {
+      var h = Math.floor(k / 2), s = 0, i;
+      if (t - h < 0 || t + h >= n) return null;
+      if (k % 2) { for (i = t - h; i <= t + h; i++) s += y[i]; return s / k; }
+      for (i = t - h; i <= t + h; i++) s += (i === t - h || i === t + h ? 0.5 : 1) * y[i];
+      return s / k;
+    });
+    a.chart('', { data: { datasets: [a.lineDs('元の系列', pts(x, y), c.muted, { pointRadius: 2, borderWidth: 1.5 }),
+      a.lineDs(k + '項移動平均', pts(x, ma), c.c1, { borderWidth: 2.5 })] },
+    options: opts(a, c, { legend: true, ymin: p.ymin != null ? p.ymin : null, xTitle: p.xlabel, yTitle: p.ylabel }) });
+    a.info.textContent = k % 2 ? k + ' 項の値の平均を、真ん中の時点に置きます（両端の ' + Math.floor(k / 2) + ' 時点は計算できません）。'
+      : k + ' 項は偶数なので、隣り合う 2 つの ' + k + ' 項平均をさらに平均した「中心化移動平均」です（両端の値には 1/2 の重み）。';
+  });
 })(typeof globalThis !== 'undefined' ? globalThis : this);
 
 /* 画面・検索・ルーティング・問題演習・学習記録 */

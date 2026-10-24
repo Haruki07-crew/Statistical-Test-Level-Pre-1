@@ -59,3 +59,11 @@
 | credible-hpd | 等裾の信用区間と HPD 区間の比較 | dist: beta\|gamma, a, b（beta）または shape, rate（gamma）, level(0.95) |
 | box-muller | 一様乱数と、ボックス・ミュラー変換後の正規乱数の散布図 | n(1000) |
 | gibbs-path | 2変量正規分布でのギブスサンプリングの軌跡 | rho(0.8), iters(30), init(2) |
+
+（2級で追加）
+
+| id | 用途 | params（既定値） |
+|---|---|---|
+| box-plot | 箱ひげ図（四分位数は中央値で分けた下半分・上半分の中央値。ひげは 1.5×IQR の内側の最も外の値まで、外は外れ値の点） | groups: [{label, data: [...]}], xlabel, mean: 1 で平均を × で表示 |
+| lorenz-curve | ローレンツ曲線とジニ係数 | values: [...]（1人あたりの量）, weights: [...]（人数、省略時は1） |
+| moving-average | 元の系列と中心化移動平均（k が偶数なら 2×k の中心化） | y: [...], x: [...], k(3), xlabel, ylabel |

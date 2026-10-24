@@ -1,9 +1,9 @@
-/* オフラインでも開けるようにする service worker（build.py が 853164a4d7cd を index.html のハッシュに差し替える）
+/* オフラインでも開けるようにする service worker（build.py が 1a7c65b76906 を index.html のハッシュに差し替える）
    ・キャッシュ名に版を付け、新しい版が入ったら古いキャッシュを消してすぐ切り替える
    ・ページはネット優先（HTTP キャッシュも確かめ直す）。つながらなければ保存した版を出す
    ・MathJax（本体と最初に読み込む拡張）と Chart.js も保存し、オフラインでも数式とグラフを描けるようにする
    ・準1級（./）と2級（./g2/）の2つのページを、それぞれのパスで保存する */
-var CACHE = 'jun1-dict-853164a4d7cd';
+var CACHE = 'jun1-dict-1a7c65b76906';
 var CORE = ['./', './index.html', './manifest.json', './icon.svg', './icon-192.png', './g2/', './g2/index.html', './g2/manifest.json'];
 var CDN = [
   'https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js',

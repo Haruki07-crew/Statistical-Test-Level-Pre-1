@@ -6,58 +6,58 @@ chapters:
   - id: data-types
     title: 質的変数と量的変数
     importance: A
-    status: planned
+    status: verified
   - id: scales-of-measurement
     title: 尺度水準（名義・順序・間隔・比例）
     importance: B
-    status: planned
+    status: verified
   - id: bar-pie-band-chart
     title: 棒グラフ・円グラフ・帯グラフ
     importance: B
-    status: planned
+    status: verified
   - id: frequency-distribution-histogram
     title: 度数分布表とヒストグラム
     importance: A
-    status: planned
+    status: verified
   - id: cumulative-frequency
     title: 累積度数と累積相対度数
     importance: A
-    status: planned
+    status: verified
   - id: stem-and-leaf-plot
     title: 幹葉図
     importance: B
-    status: planned
+    status: verified
   - id: distribution-shape
     title: 分布の形（歪み・峰の数）
     importance: A
-    status: planned
+    status: verified
   - id: official-statistics
     title: 公的統計とデータの出所
     importance: C
-    status: planned
+    status: verified
 - 'no': 2
   title: 1変数データの要約
   terms:
   - id: mean-median-mode
     title: 平均値・中央値・最頻値
     importance: A
-    status: planned
+    status: verified
   - id: sample-variance-sd
     title: データの分散と標準偏差
     importance: A
-    status: planned
+    status: verified
   - id: quartiles-iqr
     title: 四分位数と四分位範囲
     importance: A
-    status: planned
+    status: verified
   - id: box-plot
     title: 箱ひげ図と外れ値
     importance: A
-    status: planned
+    status: verified
   - id: standard-score
     title: 標準化と標準得点（z得点・偏差値）
     importance: A
-    status: planned
+    status: verified
   - id: coefficient-of-variation
     title: 変動係数
     importance: B
@@ -66,7 +66,7 @@ chapters:
   - id: lorenz-curve-gini
     title: ローレンツ曲線とジニ係数
     importance: A
-    status: planned
+    status: verified
   - id: skewness-kurtosis
     title: 歪度と尖度
     importance: B
