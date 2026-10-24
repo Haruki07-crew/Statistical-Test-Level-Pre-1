@@ -46,7 +46,7 @@ def p01():
         "N": N, "k": k, "pairs": pairs, "lam": s(lam, 2), "e019": s(ex[0.19], 4), "e020": s(ex[0.20], 4),
         "e038": s(ex[0.38], 4), "e002": s(ex[0.02], 4),
         "o_kn": opts[0], "o_ok": opts[1], "o_sq": opts[2], "o_union": opts[3], "o_noh": opts[4],
-        "n": n, "kq": kq, "t": t, "qt": s(1 - t, 1), "q3": s(terms[0], 5), "q4": s(terms[1], 5), "q5": s(terms[2], 5),
+        "n": n, "kq": kq, "t": t, "q3": s(terms[0], 5), "q4": s(terms[1], 5), "q5": s(terms[2], 5),
         "quo": r(q, 3), "quo_s": s(q, 3), "quo5": s(q, 5), "w_one": s(1 - (1 - t) ** n, 3), "w_all": s(t ** n, 3),
         "w_eq": s(terms[0], 3), "w_ge4": s(1 - sum(comb(n, j) * t ** j * (1 - t) ** (n - j) for j in range(0, 4)), 3),
     }
@@ -91,7 +91,7 @@ def p03():
     v0 = s1 ** 2 * s2 ** 2 / (s1 ** 2 + s2 ** 2)
     return {
         "s1": s(s1, 0), "s2": s(s2, 0), "rho": rho, "v1": s(s1 ** 2, 0), "v2": s(s2 ** 2, 0), "cov": s(cov, 0),
-        "den": s(den, 0), "w": s(w, 4), "w_frac": f"\\frac{{{s(s2 ** 2 - cov, 0)}}}{{{s(den, 0)}}}",
+        "den": s(den, 0), "w_frac": f"\\frac{{{s(s2 ** 2 - cov, 0)}}}{{{s(den, 0)}}}",
         "vnum": s(s1 ** 2 * s2 ** 2 - cov ** 2, 0), "vmin": r(vmin, 2), "vmin4": s(vmin, 4), "vmin_s": s(vmin, 2),
         "w0": s(w0, 2), "v0": s(v0, 2), "v_half": s((s1 ** 2 + s2 ** 2 + 2 * cov) / 4, 2),
         "p1v1": s(s1 ** 2 * s2 ** 2, 0), "cov2": s(cov ** 2, 0), "w1": s(1 - w, 4),
@@ -99,11 +99,20 @@ def p03():
 
 
 def p04():
-    # (a) ベリー・エッシーンの上界
-    p, n, C = 0.1, 400, 0.4748
-    rho3 = p * (1 - p) * ((1 - p) ** 2 + p ** 2)
-    sd = sqrt(p * (1 - p))
-    be = C * rho3 / (sd ** 3 * sqrt(n))
+    # (a) 指数分布の標本分散の正規近似（V[(X−μ)²]=μ4−σ⁴）
+    k4, n, pct = 9, 200, 20
+    phi = {0.85: 0.8023, 0.94: 0.8264, 1.00: 0.8413, 2.00: 0.9772}
+    d = pct / 100
+    sdr = sqrt((k4 - 1) / n)
+    z = d / sdr
+    assert abs(z - 1.00) < 1e-12
+    z_nosub = round(d / sqrt(k4 / n), 2)       # μ4 から σ⁴ を引き忘れ
+    z_exc = round(d / sqrt((k4 + 3 - 1) / n), 2)  # 9 を超過尖度と読んだ
+    z_norm = d / sqrt(2 / n)                   # 正規母集団
+    assert (z_nosub, z_exc, z_norm) == (0.94, 0.85, 2.0)
+    aopts = {"o_ok": 2 * phi[1.00] - 1, "o_exc": 2 * phi[0.85] - 1, "o_nosub": 2 * phi[0.94] - 1,
+             "o_one": phi[1.00], "o_norm": 2 * phi[2.00] - 1}
+    distinct(*[s(v, 3) for v in aopts.values()])
     # (b) 2 種類のデータを合わせた最尤推定
     x, tA, m, tsum = 18, 6, 5, 2.5
     mle = (x + m) / (tA + tsum)
@@ -115,29 +124,18 @@ def p04():
     cov = {k: 1 - 2 * cdf(k - 1) / 2 ** nn for k in range(1, 6)}
     assert cov[2] >= 0.95 > cov[3]
     return {
-        "p": p, "q": s(1 - p, 1), "n": n, "C": C, "rho3": s(rho3, 4), "sd": s(sd, 1), "sd3": s(sd ** 3, 3), "rn": s(sqrt(n), 0),
-        "inner": s((1 - p) ** 2 + p ** 2, 2), "pq": s(p * (1 - p), 2), "be": r(be, 3), "be_s": s(be, 3), "be5": s(be, 5),
-        "w_var": s(C * rho3 / (sd ** 2 * sqrt(n)), 3), "w_n": s(C * rho3 / (sd ** 3 * n), 4),
+        "k4": k4, "k4m1": k4 - 1, "n": n, "pct": pct, "lo": s(1 - d, 1), "hi": s(1 + d, 1), "d": s(d, 1),
+        "phi085": s(phi[0.85], 4), "phi094": s(phi[0.94], 4), "phi100": s(phi[1.00], 4), "phi200": s(phi[2.00], 4),
+        "sdr": s(sdr, 1), "z": s(z, 0), "z_s": s(z, 2), "p_ok4": s(aopts["o_ok"], 4), "sdn": s(sqrt(2 / n), 1),
+        "sd_nosub": s(sqrt(k4 / n), 4), **{k: s(v, 3) for k, v in aopts.items()},
         "x": x, "tA": tA, "m": m, "tsum": tsum, "xm": x + m, "tt": s(tA + tsum, 1),
         "b_int": bopts[0], "b_avg": bopts[1], "b_ok": bopts[2], "b_cnt": bopts[3], "b_wrong": bopts[4], "mle4": s(mle, 4),
         "nn": nn, "c0": cdf(0), "c1": cdf(1), "c2": cdf(2), "pow": 2 ** nn,
-        "cov1": s(cov[1], 4), "cov2": s(cov[2], 4), "cov3": s(cov[3], 4), "cov4": s(cov[4], 4), "cov5": s(cov[5], 4),
+        "cov1": s(cov[1], 4), "cov2": s(cov[2], 4), "cov3": s(cov[3], 4),
     }
 
 
 def p05():
-    # (a) バートレット検定
-    ni, s2 = 11, [4.0, 9.0, 16.0]
-    k = len(s2)
-    N = ni * k
-    sp2 = sum(s2) / k
-    ln = {4.0: 1.3863, 9.0: 2.1972, 16.0: 2.7726, "sp": 2.2687}
-    num = (N - k) * ln["sp"] - (ni - 1) * sum(ln[v] for v in s2)
-    Cc = 1 + (1 / (3 * (k - 1))) * (k / (ni - 1) - 1 / (N - k))
-    B = num / Cc
-    num_n = N * ln["sp"] - ni * sum(ln[v] for v in s2)
-    opts = [s(B / 2.302585, 2), s(B, 2), s(num, 2), s(num_n, 2), s(5.99, 2)]
-    distinct(*opts)
     # (b) 並べ替え検定（0.1 秒単位の整数で扱う）
     old, new = [124, 118, 131], [109, 115, 120]
     allv = old + new
@@ -154,31 +152,13 @@ def p05():
     distinct(*popts)
     f1 = lambda v: s(v / 10, 1)
     return {
-        "ni": ni, "k": k, "N": N, "df": ni - 1, "Nk": N - k, "s21": s(s2[0], 0), "s22": s(s2[1], 0), "s23": s(s2[2], 0),
-        "sp2": s(sp2, 4), "ln4": s(ln[4.0], 4), "ln9": s(ln[9.0], 4), "ln16": s(ln[16.0], 4), "lnsp": s(ln["sp"], 4),
-        "lsum": s(sum(ln[v] for v in s2), 4), "t1": s((N - k) * ln["sp"], 3), "t2": s((ni - 1) * sum(ln[v] for v in s2), 3),
-        "num": s(num, 3), "C": s(Cc, 4), "B4": s(B, 4),
-        "o_log": opts[0], "o_ok": opts[1], "o_noc": opts[2], "o_n": opts[3], "o_crit": opts[4], "chi": 5.99,
         "o1": f1(old[0]), "o2": f1(old[1]), "o3": f1(old[2]), "n1": f1(new[0]), "n2": f1(new[1]), "n3": f1(new[2]),
-        "osum": f1(obs), "nsum": f1(sum(new)), "dbar": s((obs - sum(new)) / 30, 3), "tot": tot, "cge": cnt_ge,
+        "osum": f1(obs), "tot": tot, "cge": cnt_ge,
         "p_gt": popts[0], "p_ok": popts[1], "p_extra": popts[2], "p_two": popts[3], "p_perm": popts[4],
     }
 
 
 def p06():
-    # (b) 1 点を除いたときの傾きの変化（DFBETA）
-    x = [1, 2, 3, 4, 5, 6]
-    e = [0.1, 0.2, -0.1, -0.2, -0.6, 0.6]
-    b1 = 0.50
-    n = len(x)
-    xb = sum(x) / n
-    xc = [xi - xb for xi in x]
-    assert abs(sum(e)) < 1e-12 and abs(sum(a * b for a, b in zip(xc, e))) < 1e-12
-    Sxx = sum(v * v for v in xc)
-    i = 5
-    h = 1 / n + xc[i] ** 2 / Sxx
-    dfb = xc[i] * e[i] / (Sxx * (1 - h))
-    b1d = b1 - dfb
     # (c) リッジ回帰の有効自由度
     d2, lam = [9, 4, 1], 2
     df = sum(v / (v + lam) for v in d2)
@@ -186,11 +166,6 @@ def p06():
              s(len(d2) / (1 + lam), 2), s(len(d2), 2)]
     distinct(*copts)
     return {
-        "x_row": " | ".join(str(v) for v in x), "e_row": " | ".join(s(v, 1) for v in e), "nx": n, "xb": s(xb, 1),
-        "b1": s(b1, 2), "Sxx": s(Sxx, 1), "xci": s(xc[i], 1), "ei": s(e[i], 1), "xci2": s(xc[i] ** 2, 2),
-        "h": s(h, 4), "h_frac": "\\frac{1}{6}+\\frac{6.25}{17.5}", "omh": s(1 - h, 4), "dfb": s(dfb, 4), "dfb_num": s(xc[i] * e[i], 2),
-        "dfb_den": s(Sxx * (1 - h), 4), "b1d": r(b1d, 2), "b1d_s": s(b1d, 2),
-        "w_noh": s(b1 - xc[i] * e[i] / Sxx, 2), "w_sign": s(b1 + dfb, 2),
         "d1": d2[0], "d2": d2[1], "d3": d2[2], "lam": lam, "f1": s(d2[0] / (d2[0] + lam), 4), "f2": s(d2[1] / (d2[1] + lam), 4),
         "f3": s(d2[2] / (d2[2] + lam), 4), "df4": s(df, 4),
         "c_comp": copts[0], "c_sv": copts[1], "c_ok": copts[2], "c_eq": copts[3], "c_ols": copts[4],
@@ -198,19 +173,6 @@ def p06():
 
 
 def p07():
-    # (a) 系統抽出の分散
-    pattern = [10, 20, 30, 40]
-    pop = pattern * 3
-    N, kint = len(pop), 4
-    n = N // kint
-    Y = sum(pop) / N
-    means = [sum(pop[st::kint]) / n for st in range(kint)]
-    vsys = sum((m - Y) ** 2 for m in means) / kint
-    S2 = sum((y - Y) ** 2 for y in pop) / (N - 1)
-    sig2 = sum((y - Y) ** 2 for y in pop) / N
-    vsrs = (1 - n / N) * S2 / n
-    opts = [s(vsrs, 1), s(sig2 / n, 1), s(vsys, 1), s(S2 / n, 1), s(0.0, 1)]
-    distinct(*opts)
     # (b) 補対数対数リンク
     b0, b1 = -2.0, 0.5
     ev = {-2.0: 0.1353, -1.5: 0.2231, "a": 0.8735, "b": 0.8000}
@@ -220,9 +182,6 @@ def p07():
     bopts = [s(p_old, 3), s(lg, 3), s(p_new, 3), s(ev[-1.5], 3), s(ev["b"], 3)]
     distinct(*bopts)
     return {
-        "pop_row": " | ".join(str(v) for v in pop), "N": N, "kint": kint, "n": n, "Y": s(Y, 0),
-        "means": "、".join(s(m, 0) for m in means), "vsys": s(vsys, 1), "S2": s(S2, 2), "sig2": s(sig2, 0), "vsrs": s(vsrs, 2),
-        "o_srs": opts[0], "o_sig": opts[1], "o_ok": opts[2], "o_S2": opts[3], "o_zero": opts[4],
         "b0": s(b0, 1), "b1": s(b1, 1), "lin": s(b0 + b1, 1), "e20": s(ev[-2.0], 4), "e15": s(ev[-1.5], 4),
         "ea": s(ev["a"], 4), "eb": s(ev["b"], 4), "lg": s(lg, 4),
         "c_old": bopts[0], "c_lg": bopts[1], "c_ok": bopts[2], "c_inner": bopts[3], "c_comp": bopts[4],
@@ -241,21 +200,34 @@ def p08():
     ate = pz * d_hi + (1 - pz) * d_lo
     e1 = pz1 * y[(1, 1)] + (1 - pz1) * y[(1, 0)]
     e0 = pz0 * y[(0, 1)] + (1 - pz0) * y[(0, 0)]
-    # (b) 2^3 要因実験
-    yy = {"1": 120, "a": 96, "b": 112, "ab": 80, "c": 110, "ac": 90, "bc": 104, "abc": 70}
-    hiB = ((yy["ab"] - yy["b"]) + (yy["abc"] - yy["bc"])) / 2
-    loB = ((yy["a"] - yy["1"]) + (yy["ac"] - yy["c"])) / 2
-    ab = (hiB - loB) / 2
-    contrast = yy["1"] - yy["a"] - yy["b"] + yy["ab"] + yy["c"] - yy["ac"] - yy["bc"] + yy["abc"]
-    assert abs(contrast / 4 - ab) < 1e-12
+    # (b) 2^3 要因実験を 2 日（ブロック）に分ける交絡法
+    runs = ["(1)", "a", "b", "ab", "c", "ac", "bc", "abc"]
+    # 効果 eff の符号は、eff に含まれる因子のうち低水準のものの数が偶数なら +（標準的な ± の積）
+    sign = lambda run, eff: (-1) ** sum(ch not in run for ch in eff.lower())
+    effects = ["A", "B", "C", "AB", "AC", "BC", "ABC"]
+
+    def confounded(day1):
+        """1 日目の 4 条件の中で符号がすべて同じ効果（日と完全に交絡）と、符号が 2 対 2 でない効果。"""
+        full = [e for e in effects if abs(sum(sign(r_, e) for r_ in day1)) == 4]
+        part = [e for e in effects if abs(sum(sign(r_, e) for r_ in day1)) == 2]
+        return full, part
+    ok = [r_ for r_ in runs if sign(r_, "ABC") == -1]
+    assert ok == ["(1)", "ab", "ac", "bc"] and confounded(ok) == (["ABC"], [])
+    assert confounded(["(1)", "a", "b", "ab"]) == (["C"], [])
+    assert confounded(["(1)", "ab", "c", "abc"]) == (["AB"], [])
+    assert confounded(["(1)", "a", "b", "c"]) == ([], ["A", "B", "C", "ABC"])
+    fmt = lambda rs: "\\{" + ",\\ ".join(rs) + "\\}"
+    ks = [f"1 日目 ${fmt(['(1)', 'a', 'b', 'ab'])}$、交絡する効果は C",
+          f"1 日目 ${fmt(['(1)', 'ab', 'c', 'abc'])}$、交絡する効果は AB",
+          f"1 日目 ${fmt(['(1)', 'a', 'b', 'c'])}$、交絡する効果は ABC",
+          f"1 日目 ${fmt(ok)}$、交絡する効果はない（日のずれは誤差に含まれる）",
+          f"1 日目 ${fmt(ok)}$、交絡する効果は ABC"]
+    distinct(*ks)
     return {"pz1": pz1, "qz1": s(1 - pz1, 1), "pz": pz, "qz": s(1 - pz, 1), "px": px, "pz0": s(pz0, 1),
             "y11": s(y[(1, 1)], 1), "y01": s(y[(0, 1)], 1), "y10": s(y[(1, 0)], 1), "y00": s(y[(0, 0)], 1),
             "dhi": s(d_hi, 1), "dlo": s(d_lo, 1), "att": r(att, 2), "att_s": s(att, 2), "ate": s(ate, 2),
             "e1": s(e1, 2), "e0": s(e0, 2), "naive": s(e1 - e0, 2),
-            **{f"y{k}": v for k, v in yy.items()}, "hiB": s(hiB, 1), "loB": s(loB, 1), "ab": r(ab, 1), "ab_s": s(ab, 1),
-            "contrast": contrast, "ab8": s(contrast / 8, 2), "ss": s(contrast ** 2 / 8, 1),
-            "dA_hi1": yy["ab"] - yy["b"], "dA_hi2": yy["abc"] - yy["bc"], "dA_lo1": yy["a"] - yy["1"], "dA_lo2": yy["ac"] - yy["c"]}
-
+            **{f"k{i}": v for i, v in enumerate(ks)}}
 
 def p09():
     # (a) 線形 SVM
@@ -290,21 +262,8 @@ def p10():
     pc = (rRT - rRC * rCT) / sqrt((1 - rRC ** 2) * (1 - rCT ** 2))
     opts = [s(0.0, 2), s(pc, 2), s(fit, 2), s(rRT, 2), s((rRC + rCT) / 2, 2)]
     distinct(*opts)
-    # (b) ARIMA(0,1,1) の予測（指数平滑）
-    th = -0.6
-    alpha = 1 + th
-    f = 100.0
-    xs = [104, 110, 107]
-    fc = [f]
-    for x in xs:
-        f = alpha * x + (1 - alpha) * f
-        fc.append(f)
     return {"rRC": rRC, "rCT": rCT, "rRT": rRT, "fit": s(fit, 2), "pc": s(pc, 4),
-            "o_zero": opts[0], "o_pc": opts[1], "o_ok": opts[2], "o_obs": opts[3], "o_avg": opts[4],
-            "th": th, "mth": s(-th, 1), "alpha": s(alpha, 1), "x1": xs[0], "x2": xs[1], "x3": xs[2], "f1": s(fc[0], 0),
-            "f2": s(fc[1], 2), "f3": s(fc[2], 2), "f4": r(fc[3], 2), "f4s": s(fc[3], 2), "f43": s(fc[3], 3),
-            "e1": s(xs[0] - fc[0], 2), "e2": s(xs[1] - fc[1], 2), "e3": s(xs[2] - fc[2], 2),
-            "w_naive": s(xs[2], 2), "w_alpha": s(0.6 * xs[2] + 0.4 * fc[2], 2)}
+            "o_zero": opts[0], "o_pc": opts[1], "o_ok": opts[2], "o_obs": opts[3], "o_avg": opts[4]}
 
 
 def p11():
@@ -387,7 +346,7 @@ def x06():
     K = m4 / m2 ** 2
     jb = n / 6 * (S ** 2 + (K - 3) ** 2 / 4)
     return {"jn": n, "m2": m2, "m3": m3, "m4": m4, "m215": s(m2 ** 1.5, 3), "m22": s(m2 ** 2, 4), "S": s(S, 1), "K": s(K, 1),
-            "S2": s(S ** 2, 2), "K3": s(K - 3, 1), "K32": s((K - 3) ** 2 / 4, 2), "jb": r(jb, 2), "jb_s": s(jb, 2),
+            "S2": s(S ** 2, 2), "K32": s((K - 3) ** 2 / 4, 2), "jb": r(jb, 2), "jb_s": s(jb, 2),
             "jb_k": s(n / 6 * (S ** 2 + K ** 2 / 4), 2), "jb_nod": s(n / 6 * (S ** 2 + (K - 3) ** 2), 2), "chi2": 5.99}
 
 

@@ -183,16 +183,24 @@ E.check("s10p07b", abs(stats.chi2.isf(0.05, 2) - 5.991) < 5e-4 and abs(stats.chi
 E.choice("s10p07b", f"${f(48 * 0.21, 2)}$で5.991を超えるので、誤差の分散が一定という仮説を棄却する", "正解の文")
 
 # ---- 大問8
-# (a) r=-0.48 となるデータを作り、scipy の回帰の傾きの t 値と比べる
-z1, z2 = rng.normal(size=(2, 22))
-z1 = (z1 - z1.mean()) / z1.std()
-z2 = z2 - z2.mean() - (z2 @ z1) / (z1 @ z1) * z1
-z2 /= z2.std()
-yy = -0.48 * z1 + np.sqrt(1 - 0.48 ** 2) * z2
-lr = stats.linregress(z1, yy)
-E.check("s10p08a", abs(lr.rvalue + 0.48) < 1e-12, "r=-0.48 のデータを作れた")
-E.choice("s10p08a", f"${f(lr.slope / lr.stderr, 2)}$", "回帰の傾きの t 値（無相関検定と同値）")
-E.check("s10p08a", abs(stats.t.ppf(0.975, 20) - 2.086) < 5e-4, "t_{0.025}(20)")
+# (a) 相関行列が指定どおりの 22 点のデータを作り、Y を X と W に重回帰した X の係数の t 値（偏相関の t 検定と同値）を求める
+Rm = np.array([[1, -0.48, 0.50], [-0.48, 1, -0.60], [0.50, -0.60, 1]])
+E.check("s10p08a", np.linalg.eigvalsh(Rm).min() > 0, "相関行列が正定値（ありうる相関の組）")
+Zr = rng.normal(size=(22, 3)); Zr -= Zr.mean(0)
+Zr = Zr @ np.linalg.inv(np.linalg.cholesky(np.cov(Zr.T, bias=True))).T
+Zr = Zr @ np.linalg.cholesky(Rm).T
+xv, yv8, wv8 = Zr[:, 0], Zr[:, 1], Zr[:, 2]
+E.check("s10p08a", np.allclose(np.corrcoef(Zr.T), Rm), "作ったデータの相関行列が問題文と一致")
+Xm = np.column_stack([np.ones(22), xv, wv8])
+bm, *_ = np.linalg.lstsq(Xm, yv8, rcond=None)
+em = yv8 - Xm @ bm
+covm = em @ em / (22 - 3) * np.linalg.inv(Xm.T @ Xm)
+t_part = bm[1] / np.sqrt(covm[1, 1])
+ex = xv - np.polyval(np.polyfit(wv8, xv, 1), wv8); ey = yv8 - np.polyval(np.polyfit(wv8, yv8, 1), wv8)
+E.check("s10p08a", abs(np.corrcoef(ex, ey)[0, 1] - (-0.18 / np.sqrt(0.48))) < 1e-10, f"残差どうしの相関（偏相関）{np.corrcoef(ex, ey)[0, 1]:.4f}")
+E.choice("s10p08a", f"${f(t_part, 2)}$", f"重回帰の係数の t 値 {t_part:.4f}")
+E.check("s10p08a", abs(stats.t.ppf(0.975, 19) - 2.093) < 5e-4 and abs(stats.t.ppf(0.975, 20) - 2.086) < 5e-4, "t_{0.025}(19), t_{0.025}(20)")
+E.check("s10p08a", 2 * stats.t.sf(abs(t_part), 19) > 0.05, "両側 5% で棄却しない")
 # (b) 構造モデルからデータを発生させて 2 段階最小二乗法
 nsim = 2_000_000
 Z = rng.normal(0, np.sqrt(0.5), nsim)
@@ -232,8 +240,21 @@ PM = {t: sum(v for (u, t2, m), v in jt.items() if t2 == t and m == 1) / sum(v fo
 PY = {(m, t): sum(v * py_mu[(m, u)] for (u, t2, m2), v in jt.items() if t2 == t and m2 == m) / sum(v for (u, t2, m2), v in jt.items() if t2 == t and m2 == m) for m in (0, 1) for t in (0, 1)}
 fd = frontdoor(PT, PM, PY)
 E.check("s10p09b", abs((fd[1] - fd[0]) - (truth[1] - truth[0])) < 1e-12, "隠れた交絡のある構造モデルでフロントドア式が真の効果に一致")
-fdv = frontdoor(Fr(2, 5), {1: Fr(7, 10), 0: Fr(1, 5)}, {(1, 1): Fr(7, 10), (1, 0): Fr(1, 2), (0, 1): Fr(3, 10), (0, 0): Fr(1, 5)})
+# 問題文の観測確率そのものが、隠れた U をもつ構造モデル（U→T, U→Y, T→M→Y、U は M に影響しない）から作れることを確かめる
+pt_obs = Fr(3, 10)
+pu_t = {1: Fr(9, 10), 0: Fr(1, 10)}                     # P(U=1|T=t)
+pm_obs = {1: Fr(4, 5), 0: Fr(3, 10)}
+gy = {(1, 1): Fr(85, 100), (1, 0): Fr(35, 100), (0, 1): Fr(3125, 10000), (0, 0): Fr(1875, 10000)}   # P(Y=1|M=m,U=u)
+pY_obs = {(1, 1): Fr(8, 10), (1, 0): Fr(4, 10), (0, 1): Fr(3, 10), (0, 0): Fr(2, 10)}               # (m, t)
+rep = {(m, t): pu_t[t] * gy[(m, 1)] + (1 - pu_t[t]) * gy[(m, 0)] for m in (0, 1) for t in (0, 1)}
+E.check("s10p09b", rep == pY_obs and all(0 <= v <= 1 for v in gy.values()), "観測確率の表を再現する構造モデルが存在する（表は矛盾しない）")
+pU = pt_obs * pu_t[1] + (1 - pt_obs) * pu_t[0]
+truth2 = {t: sum((pU if u else 1 - pU) * (pm_obs[t] if m else 1 - pm_obs[t]) * gy[(m, u)] for u in (0, 1) for m in (0, 1)) for t in (0, 1)}
+fdv = frontdoor(pt_obs, pm_obs, pY_obs)
+E.check("s10p09b", truth2[1] - truth2[0] == fdv[1] - fdv[0], f"構造モデルで介入した真の効果 {truth2[1] - truth2[0]} とフロントドア式が一致")
 E.choice("s10p09b", f"${f(float(fdv[1] - fdv[0]), 3)}$", f"分数で計算した効果 {fdv[1] - fdv[0]}")
+vals9 = sorted(v[0] for v in nums("s10p09b"))
+E.check("s10p09b", min(np.diff(vals9)) >= 0.02, f"選択肢どうしの差がすべて 0.02 以上 {vals9}")
 
 # ---- 大問10
 d = stats.norm.cdf(-0.3) - stats.norm.cdf(-0.6)
@@ -266,7 +287,8 @@ L0 = np.array([[0.58, 0.56], [0.44, 0.58], [-0.37, 0.66]])
 T = np.array([[0.8, -0.6], [0.6, 0.8]])
 Lr = L0 @ T
 E.check("s10p12b", np.allclose(T @ T.T, np.eye(2)) and np.allclose((Lr ** 2).sum(1), (L0 ** 2).sum(1)), "直交回転で共通性が不変")
-E.choice("s10p12b", f"${f((Lr[:, 0] ** 2).sum(), 2)}$", "行列積で回転後の第1因子の寄与")
+E.choice("s10p12b", f"${f((Lr[:, 0] ** 2).sum(), 2)}$", "行列積で回転後の第1因子の 3 項目の 2 乗和")
+E.check("s10p12b", ((8 - 2) ** 2 - (8 + 2)) / 2 > 0, "8 項目・2 因子モデルの自由度が正（識別できる）")
 # (c) 割合どおりの 100 人の人工データにダミー変数回帰を当てはめる
 rows = []
 for st, ps in [(0, 60), (1, 40)]:

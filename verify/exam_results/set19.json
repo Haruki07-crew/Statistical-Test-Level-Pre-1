@@ -1,19 +1,23 @@
 {
  "s19p01a": {
   "ok": true,
-  "hash": "be88e8ded5fcaf4b"
+  "hash": "ef97f6c081cea7cc"
  },
  "s19p01b": {
   "ok": true,
-  "hash": "f820345f603d8df1"
+  "hash": "de0e1bbd7c535528"
  },
  "s19p02a": {
   "ok": true,
-  "hash": "838ac092eaa640cd"
+  "hash": "42d88994162b0335"
  },
  "s19p02b": {
   "ok": true,
-  "hash": "c8e054299fe351a1"
+  "hash": "d4a4712cda395ad4"
+ },
+ "s19p02c": {
+  "ok": true,
+  "hash": "ecf1c48d88b5447e"
  },
  "s19p03a": {
   "ok": true,
@@ -25,78 +29,74 @@
  },
  "s19p04a": {
   "ok": true,
-  "hash": "5b36c5e613467b04"
+  "hash": "4b276f0f3ee0753f"
  },
  "s19p04b": {
   "ok": true,
-  "hash": "bf2b59b940e3b5e8"
+  "hash": "75ec7434be7b79b8"
  },
  "s19p04c": {
   "ok": true,
-  "hash": "e96762720db28fa7"
+  "hash": "317c0b883045829e"
  },
  "s19p05a": {
   "ok": true,
-  "hash": "c972c1c10035347a"
- },
- "s19p05b": {
-  "ok": true,
-  "hash": "77c35398f712b37f"
- },
- "s19p05c": {
-  "ok": true,
-  "hash": "28cd8cba1ccd095d"
+  "hash": "251a2fa2735a8c82"
  },
  "s19p06a": {
   "ok": true,
-  "hash": "6cdad3fb0ba1f997"
+  "hash": "1e1100ac3f251f46"
  },
  "s19p06b": {
   "ok": true,
-  "hash": "fdda9cd3d5970bc0"
+  "hash": "a9078ec90352282b"
  },
  "s19p07a": {
   "ok": true,
-  "hash": "67cc0067a9a3b984"
+  "hash": "7325f12e25946553"
+ },
+ "s19p07b": {
+  "ok": true,
+  "hash": "07d65d37ab2f65e0"
+ },
+ "s19p07c": {
+  "ok": true,
+  "hash": "1115b947daf1477c"
  },
  "s19p08a": {
   "ok": true,
-  "hash": "463021658dc73443"
+  "hash": "f76c843357dd8e52"
  },
  "s19p08b": {
   "ok": true,
-  "hash": "534bc693b746cded"
+  "hash": "249640c6e610e126"
  },
  "s19p09a": {
   "ok": true,
-  "hash": "be99129f5c87ab59"
+  "hash": "c8e8dee1cbf9767c"
  },
  "s19p09b": {
   "ok": true,
-  "hash": "8357c38b3e487deb"
+  "hash": "bf02626a099248fb"
  },
  "s19p10a": {
   "ok": true,
-  "hash": "d35a8072214eface"
+  "hash": "3d11cb50c778d897"
  },
  "s19p11a": {
   "ok": true,
-  "hash": "55f487eadcff286d"
- },
- "s19p11b": {
-  "ok": true,
-  "hash": "89d4342f6489a9c7"
+  "hash": "8d2814694239eccb"
  },
  "s19p12a": {
   "ok": true,
-  "hash": "fb1165c8a21756f8"
+  "hash": "7eea93a2594b684f"
  },
  "s19p13a": {
   "ok": true,
-  "hash": "587bbc56bbbbc44a"
+  "hash": "cc39f08b1c5e128c"
  },
- "s19p13b": {
+ "s19p14a": {
   "ok": true,
-  "hash": "8ef28caf345848fd"
+  "hash": "959348f020f7dfac"
  }
 }

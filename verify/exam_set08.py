@@ -112,16 +112,20 @@ vsim = (X @ np.array([res.x, 1 - res.x])).var()
 E.check("s08p03a", abs(vsim - res.fun) < 0.05, f"シミュレーションの分散 {vsim:.4f}")
 
 # ---- 大問4
-# (a) scipy でベルヌーイの 3 次絶対中心モーメント
-xv = np.array([0, 1])
-pv = np.array([0.9, 0.1])
-rho3 = (np.abs(xv - 0.1) ** 3 * pv).sum()
-sd = stats.bernoulli(0.1).std()
-E.num("s08p04a", rnd(0.4748 * rho3 / (sd ** 3 * np.sqrt(400)), 3), "定義から E|X−p|^3 と σ を計算")
-Sn = stats.binom(400, 0.1)
-ks = np.arange(0, 401)
-gap = max(np.max(np.abs(Sn.cdf(ks) - stats.norm.cdf((ks - 40) / 6))), np.max(np.abs(Sn.cdf(ks - 1) - stats.norm.cdf((ks - 40) / 6))))
-E.check("s08p04a", gap <= 0.0649, f"実際の最大のずれ {gap:.4f} は上界以下")
+# (a) sympy で指数分布の 4 次中心モーメントを積分し、scipy の正規分布関数で近似確率を計算
+xx, th = sp.symbols("x theta", positive=True)
+dens = sp.exp(-xx / th) / th
+mu4 = sp.simplify(sp.integrate((xx - th) ** 4 * dens, (xx, 0, sp.oo)))
+E.check("s08p04a", sp.simplify(mu4 - 9 * th ** 4) == 0, f"指数分布の μ4 = {mu4}（σ²=θ²）")
+sd_rel = np.sqrt(float((mu4 - th ** 4) / th ** 4) / 200)
+papprox = stats.norm.cdf(0.2 / sd_rel) - stats.norm.cdf(-0.2 / sd_rel)
+nearest("s08p04a", papprox)
+E.choice("s08p04a", f"${f(papprox, 3)}$", f"正規近似 P = {papprox:.5f}")
+# 大きな n のシミュレーションで √n(S²−σ²)/σ² の分散が μ4/σ⁴−1=8 に近いこと（n=2000、5000 回）
+Xe = rng.exponential(1.0, size=(5000, 2000))
+v_s2 = (2000 * Xe.var(axis=1, ddof=1)).var() / 2000
+E.check("s08p04a", abs(v_s2 - 8) < 0.6, f"シミュレーションの n·V[S²]/σ⁴ = {v_s2:.3f}（理論 8、許容 ±0.6）")
+table_ok("s08p04a", [(stats.norm.cdf(z), v) for z, v in [(0.85, 0.8023), (0.94, 0.8264), (1.0, 0.8413), (2.0, 0.9772)]], 5e-5, "Φ の値")
 # (b) 対数尤度を数値で最大化
 nll = lambda l: -(stats.poisson(6 * l).logpmf(18) + stats.expon(scale=1 / l).logpdf(np.full(5, 0.5)).sum())
 lh = optimize.minimize_scalar(nll, bounds=(0.1, 10), method="bounded", options={"xatol": 1e-10}).x
@@ -222,15 +226,34 @@ Y1 = Y0 + np.where(Z, -0.6, -0.2)
 att = (Y1 - Y0)[Xt].mean()
 E.check("s08p08a", abs(Z[Xt].mean() - 0.7) < 0.003, f"作った母集団で P(Z=高|X=1) = {Z[Xt].mean():.4f}")
 E.num("s08p08a", rnd(att, 2), f"潜在結果から直接 ATT = {att:.4f}")
-# (b) ±1 コードの回帰で交互作用係数
-runs = {"1": 120, "a": 96, "b": 112, "ab": 80, "c": 110, "ac": 90, "bc": 104, "abc": 70}
-rows, y9 = [], []
-for key, val in runs.items():
-    a_, b_, c_ = [1 if ch in key else -1 for ch in "abc"]
-    rows.append([1, a_, b_, c_, a_ * b_, a_ * c_, b_ * c_, a_ * b_ * c_])
-    y9.append(val)
-coef = np.linalg.solve(np.array(rows, float), np.array(y9, float))
-E.num("s08p08b", 2 * coef[4], "飽和モデルの回帰係数 ×2")
+# (b) 日のずれを入れた応答時間を作り、各分け方で 7 つの効果の推定値が日のずれで変わるかを最小二乗で確かめる
+runs8 = ["(1)", "a", "b", "ab", "c", "ac", "bc", "abc"]
+Xd = np.array([[1 if ch in r8 else -1 for ch in "abc"] for r8 in runs8], float)
+cols = {"A": Xd[:, 0], "B": Xd[:, 1], "C": Xd[:, 2], "AB": Xd[:, 0] * Xd[:, 1], "AC": Xd[:, 0] * Xd[:, 2],
+        "BC": Xd[:, 1] * Xd[:, 2], "ABC": Xd[:, 0] * Xd[:, 1] * Xd[:, 2]}
+Mfull = np.column_stack([np.ones(8)] + list(cols.values()))
+ybase = rng.normal(100, 10, 8)
+
+
+def affected(day1):
+    shift = np.array([15.0 if r8 in day1 else 0.0 for r8 in runs8])
+    e0 = np.linalg.solve(Mfull, ybase)[1:]
+    e1 = np.linalg.solve(Mfull, ybase + shift)[1:]
+    return [k for k, a, b in zip(cols, e0, e1) if abs(a - b) > 1e-9]
+
+
+cands = {0: (["(1)", "a", "b", "ab"], "C"), 1: (["(1)", "ab", "c", "abc"], "AB"), 2: (["(1)", "a", "b", "c"], "ABC"),
+         3: (["(1)", "ab", "ac", "bc"], None), 4: (["(1)", "ab", "ac", "bc"], "ABC")}
+good = []
+for idx, (day1, claim) in cands.items():
+    aff = affected(day1)
+    ok_ = aff == ([claim] if claim else []) and all(e not in aff for e in ["A", "B", "C", "AB", "AC", "BC"])
+    if ok_:
+        good.append(idx)
+    print(f"    分け方 {idx}: 日のずれで変わる効果 {aff}")
+E.check("s08p08b", good == [E.item("s08p08b")["answer"]], f"目的に合い主張も正しい選択肢 {good}")
+E.check("s08p08b", all(f"{{{','.join(r8 for r8 in d1)}}}" in re.sub(r"[\\\s]", "", E.item("s08p08b")["choices"][k])
+                        for k, (d1, _) in cands.items()), "選択肢の 4 条件が検算の分け方と一致")
 
 # ---- 大問9
 # (a) 2 本の直線の距離を点の射影で直接計算

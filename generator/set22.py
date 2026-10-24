@@ -196,40 +196,25 @@ def p06():
     FB = lambda x: sum(1 for v in B if v <= x) / len(B)
     D = max(abs(FA(x) - FB(x)) for x in pts)
     DB = max(abs(FA(x) - FB(x)) for x in B)
-    # (b) ルビーン検定（平均からの絶対偏差の一元配置分散分析）
-    g = {"X": [10, 12, 14, 16], "Y": [8, 12, 16, 20], "Z": [5, 11, 17, 23]}
-    k, ni = 3, 4
-    N = k * ni
-    m = {key: sum(v) / ni for key, v in g.items()}
-    zz = {key: [abs(x - m[key]) for x in v] for key, v in g.items()}
-    zm = {key: sum(v) / ni for key, v in zz.items()}
-    zg = sum(zm.values()) / k
-    ssb = ni * sum((zm[key] - zg) ** 2 for key in g)
-    ssw = sum((x - zm[key]) ** 2 for key in g for x in zz[key])
-    F = (ssb / (k - 1)) / (ssw / (N - k))
-    # 誤答：2乗偏差、分母の自由度 N-1、F の逆数、分散比
-    z2 = {key: [(x - m[key]) ** 2 for x in v] for key, v in g.items()}
-    z2m = {key: sum(v) / ni for key, v in z2.items()}
-    z2g = sum(z2m.values()) / k
-    ssb2 = ni * sum((z2m[key] - z2g) ** 2 for key in g)
-    ssw2 = sum((x - z2m[key]) ** 2 for key in g for x in z2[key])
-    F2 = (ssb2 / (k - 1)) / (ssw2 / (N - k))
-    Fdf = (ssb / (k - 1)) / (ssw / (N - 1))
-    var = {key: sum((x - m[key]) ** 2 for x in v) / (ni - 1) for key, v in g.items()}
-    vr = max(var.values()) / min(var.values())
-    zs = lambda key: ", ".join(s(x, 0) for x in zz[key])
+    # (b) 1 標本 t 検定の検出力（正規近似）
+    nt, sig, dl = 16, 8.0, 5.0
+    tc, tc2, zc = 1.753, 2.131, 1.645
+    phi = {0.37: 0.6443, 0.75: 0.7734, 0.86: 0.8051, 1.13: 0.8708}
+    lamb = dl * sqrt(nt) / sig
+    z_ok = r(lamb - tc, 2)
+    pw = phi[z_ok]
+    pw_z = phi[r(lamb - zc, 2)]
+    pw_2 = phi[r(lamb - tc2, 2)]
+    z_nosqrt = r(tc - dl / sig, 2)
+    pw_ns = 1 - phi[z_nosqrt]
     return {
         "A1": A[0], "A2": A[1], "A3": A[2], "A4": A[3], "A5": A[4],
         "B1": B[0], "B2": B[1], "B3": B[2], "B4": B[3], "B5": B[4],
         "D": s(D, 1), "DB": s(DB, 1),
-        "gX": ", ".join(str(x) for x in g["X"]), "gY": ", ".join(str(x) for x in g["Y"]), "gZ": ", ".join(str(x) for x in g["Z"]),
-        "mX": s(m["X"], 0), "mY": s(m["Y"], 0), "mZ": s(m["Z"], 0), "zX": zs("X"), "zY": zs("Y"), "zZ": zs("Z"),
-        "zmX": s(zm["X"], 0), "zmY": s(zm["Y"], 0), "zmZ": s(zm["Z"], 0), "zg": s(zg, 0),
-        "ssb": s(ssb, 0), "ssw": s(ssw, 0), "dfb": k - 1, "dfw": N - k, "msb": s(ssb / (k - 1), 0), "msw": s(ssw / (N - k), 4),
-        "F": s(F, 2), "F4": s(F, 4), "F2": s(F2, 2), "Fdf": s(Fdf, 2), "Finv": s(1 / F, 2), "vr": s(vr, 2),
-        "vX": s(var["X"], 2), "vZ": s(var["Z"], 1), "f29": "4.26", "f33": "9.28", "f211": "3.98",
-        "sswX": s(sum((x - zm["X"]) ** 2 for x in zz["X"]), 0), "sswY": s(sum((x - zm["Y"]) ** 2 for x in zz["Y"]), 0),
-        "sswZ": s(sum((x - zm["Z"]) ** 2 for x in zz["Z"]), 0),
+        "nt": nt, "sig": s(sig, 0), "dl": s(dl, 0), "sqn": s(sqrt(nt), 0), "lamb": s(lamb, 1), "tc": s(tc, 3),
+        "tc2": s(tc2, 3), "zc": s(zc, 3), "zok_raw": s(lamb - tc, 3), "zok": s(z_ok, 2), "pw": s(pw, 3), "pw_z": s(pw_z, 3),
+        "pw_2": s(pw_2, 3), "pw_ns": s(pw_ns, 3), "pw_c": s(1 - pw, 3), "dfn": nt - 1, "dls": s(dl / sig, 3),
+        "p037": "0.6443", "p075": "0.7734", "p086": "0.8051", "p113": "0.8708", "z2raw": s(lamb - tc2, 3), "zzraw": s(lamb - zc, 3),
     }
 
 
@@ -343,10 +328,13 @@ def p11():
     V0 = sum(sum(v ** 2 for v in col) / p - (sum(col) / p) ** 2 for col in sq0)
     nosub = 2 * m41
     lin = 2 * (sum(l[0] ** 2 for l in L) / p - (sum(l[0] for l in L) / p) ** 2)
-    # (c) 多重対応分析の総イナーシャ
-    Jq = [3, 3, 4, 2]
-    Q = len(Jq)
-    J = sum(Jq)
+    # (c) 組の中で無相関な 2 変数ずつの正準相関
+    R12 = ((0.5, 0.2), (0.1, 0.4))
+    P = [[sum(R12[i][k] * R12[j][k] for k in range(2)) for j in range(2)] for i in range(2)]
+    tr = P[0][0] + P[1][1]
+    det = P[0][0] * P[1][1] - P[0][1] * P[1][0]
+    ev1 = tr / 2 + sqrt(tr ** 2 / 4 - det)
+    ev2 = tr / 2 - sqrt(tr ** 2 / 4 - det)
     return {
         "z1": s(z[0], 1), "z2": s(z[1], 1), "z3": s(z[2], 1), "rr": s(rr, 1), "ev1": s(1 + 2 * rr, 1),
         "sz": s(sz, 1), "score": s(score, 4), "recon": s(recon, 1), "e1": s(res[0], 1), "e2": s(res[1], 1),
@@ -357,34 +345,38 @@ def p11():
         "sq1": "0.64, 0.49, 0.01, 0.04", "m21": s(m21, 3), "m41": s(m41, 5), "m21sq": s(m21 ** 2, 6),
         "v1": s(v1, 6), "Vrot": s(Vrot, 3), "Vrot6": s(Vrot, 6), "V0": s(V0, 3), "v1s": s(v1, 3),
         "nosub": s(nosub, 3), "lin": s(lin, 3), "pv": p,
-        "Q": Q, "J1": Jq[0], "J2": Jq[1], "J3": Jq[2], "J4": Jq[3], "J": J,
-        "inertia": r((J - Q) / Q, 2), "inertia_s": s((J - Q) / Q, 2), "dims": J - Q,
-        "w_JQ": s(J / Q, 2), "w_JQ1": s((J - Q) / (Q - 1), 2),
+        "c11": s(R12[0][0], 1), "c12": s(R12[0][1], 1), "c21": s(R12[1][0], 1), "c22": s(R12[1][1], 1),
+        "P11": s(P[0][0], 2), "P12": s(P[0][1], 2), "P22": s(P[1][1], 2), "tr": s(tr, 2), "det": s(det, 4),
+        "half": s(tr / 2, 2), "disc": s(tr ** 2 / 4 - det, 4), "sqd": s(sqrt(tr ** 2 / 4 - det), 5),
+        "cev1": s(ev1, 5), "cev2": s(ev2, 5), "cc1": r(sqrt(ev1), 2), "cc1_s": s(sqrt(ev1), 2), "cc1_4": s(sqrt(ev1), 4),
+        "cc2": s(sqrt(ev2), 2), "ev1s": s(ev1, 2),
     }
 
 
 def p12():
-    rho, se = 0.92, 0.035
-    tau = (rho - 1) / se
-    return {"rho": s(rho, 2), "se": s(se, 3), "gam": s(rho - 1, 2), "tau": s(tau, 2), "tratio": s(rho / se, 2),
-            "df5": "−2.89", "z5": "−1.65", "tau3": s(tau, 3)}
+    mu, th = 50.0, 0.6
+    xs = [53.0, 47.0, 54.0]
+    e, eps = 0.0, []
+    for x in xs:
+        e = x - mu - th * e
+        eps.append(e)
+    f1 = mu + th * eps[-1]
+    f2 = mu
+    naive = mu + th * (xs[-1] - mu)
+    return {"mu": s(mu, 0), "th": s(th, 1), "x1": s(xs[0], 0), "x2": s(xs[1], 0), "x3": s(xs[2], 0),
+            "e1": s(eps[0], 1), "e2": s(eps[1], 1), "e3": s(eps[2], 2), "the1": s(th * eps[0], 1), "the2": s(th * eps[1], 2),
+            "f1": s(f1, 2), "f2": s(f2, 2), "naive": s(naive, 2), "ar2": s(mu + th * (f1 - mu), 2),
+            "nai2": s(mu + th * (naive - mu), 2), "wrong": s(mu + th * eps[1], 2), "the3": s(th * eps[2], 3),
+            "v1": "1", "v2": s(1 + th ** 2, 2)}
 
 
 def p13():
-    k, nn = 4, 6
-    N = k * nn
-    ssa, sse = 120.0, 280.0
-    sst = ssa + sse
-    mse = sse / (N - k)
-    eta = ssa / sst
-    omega = (ssa - (k - 1) * mse) / (sst + mse)
-    return {
-        "k": k, "nn": nn, "N": N, "ssa": s(ssa, 0), "sse": s(sse, 0), "sst": s(sst, 0), "dfa": k - 1, "dfe": N - k,
-        "mse": s(mse, 0), "eta": s(eta, 3), "omega": s(omega, 3), "omega4": s(omega, 4),
-        "num": s(ssa - (k - 1) * mse, 0), "den": s(sst + mse, 0), "kmse": s((k - 1) * mse, 0),
-        "eta_e": s(ssa / sse, 3), "om_k": s((ssa - k * mse) / (sst + mse), 3), "om_nom": s((ssa - (k - 1) * mse) / sst, 3),
-        "F": s((ssa / (k - 1)) / mse, 2),
-    }
+    runs = ["(1)", "a", "b", "ab", "c", "ac", "bc", "abc"]
+    sign = lambda run, f: 1 if (f in run) else -1
+    blk = {run: sign(run, "a") * sign(run, "b") * sign(run, "c") for run in runs}
+    plus = [r_ for r_ in runs if blk[r_] > 0]
+    minus = [r_ for r_ in runs if blk[r_] < 0]
+    return {"plus": ", ".join(plus), "minus": ", ".join(minus), "nplus": len(plus)}
 
 
 def values():

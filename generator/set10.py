@@ -212,14 +212,22 @@ def p07():
 
 def p08():
     rr, n = -0.48, 22
-    r2 = rr ** 2
-    t = rr * sqrt(n - 2) / sqrt(1 - r2)
+    # (a) 減便率 W を除いた偏相関係数と、自由度 n-3 の t 統計量
+    rxw, ryw = 0.50, -0.60
+    pnum = rr - rxw * ryw
+    pden = (1 - rxw ** 2) * (1 - ryw ** 2)
+    pr = pnum / sqrt(pden)
+    t = pr * sqrt(n - 3) / sqrt(1 - pr ** 2)
+    pr_nosq = pnum / pden
     vx, cxy, czx, czy, vz = 1.60, -1.20, 0.80, -2.40, 0.50
     return {
-        "r": rr, "n": n, "df": n - 2, "r2": s(r2, 4), "one_r2": s(1 - r2, 4), "sq1r2": s(sqrt(1 - r2), 4),
-        "sqdf": s(sqrt(n - 2), 4), "t": s(t, 2), "t4": s(t, 4), "tc": 2.086,
-        "w_nosq": s(rr * sqrt(n - 2), 2), "w_n1": s(rr * sqrt(n - 1) / sqrt(1 - r2), 2),
-        "w_n3": s(rr * sqrt(n - 3) / sqrt(1 - r2), 2), "w_1r2": s(rr * sqrt(n - 2) / (1 - r2), 2),
+        "r": rr, "n": n, "rxz": s(rxw, 2), "ryz": s(ryw, 2), "rxz2": s(rxw ** 2, 2), "ryz2": s(ryw ** 2, 2),
+        "pnum": s(pnum, 2), "pden": s(pden, 4), "sqpden": s(sqrt(pden), 4), "pr4": s(pr, 4),
+        "pr2": s(pr ** 2, 4), "one_pr2": s(1 - pr ** 2, 4), "sq1pr2": s(sqrt(1 - pr ** 2), 4),
+        "df3": n - 3, "sqdf3": s(sqrt(n - 3), 4), "t": s(t, 2), "t4": s(t, 4), "tc19": 2.093, "tc": 2.086,
+        "w_nosq": s(pr * sqrt(n - 3), 2), "w_df": s(pr * sqrt(n - 2) / sqrt(1 - pr ** 2), 2),
+        "w_den": s(pr_nosq * sqrt(n - 3) / sqrt(1 - pr_nosq ** 2), 2),
+        "w_raw": s(rr * sqrt(n - 2) / sqrt(1 - rr ** 2), 2),
         "vx": s(vx, 2), "cxy": s(cxy, 2), "czx": s(czx, 2), "czy": s(czy, 2), "vz": s(vz, 2),
         "iv": s(czy / czx, 2), "ols": s(cxy / vx, 2), "w_vx": s(czy / vx, 2), "w_vz": s(czy / vz, 2),
         "w_inv": s(czx / czy, 2), "fs": s(czx / vz, 2), "rf": s(czy / vz, 2),
@@ -233,10 +241,11 @@ def p09():
     out = {"Nh": N, "n": n, "Xbar": Xbar, "xbar": xbar, "ybar": ybar, "b": b, "dx": Xbar - xbar,
            "adj": s(b * (Xbar - xbar), 0), "yreg": r(yreg, 0), "yrat": s(ybar * Xbar / xbar, 1),
            "w_sign": s(ybar - b * (Xbar - xbar), 0)}
-    # (b) フロントドア調整
-    pT = 0.4
-    pM = {1: 0.7, 0: 0.2}
-    pY = {(1, 1): 0.7, (1, 0): 0.5, (0, 1): 0.3, (0, 0): 0.2}   # (m, t)
+    # (b) フロントドア調整。観測確率は、隠れた U を含む構造モデル
+    # P(U=1|T=1)=0.9, P(U=1|T=0)=0.1, P(Y=1|M=1,U)=(0.35, 0.85), P(Y=1|M=0,U)=(0.1875, 0.3125) から作れる（verify で確認）
+    pT = 0.3
+    pM = {1: 0.8, 0: 0.3}
+    pY = {(1, 1): 0.8, (1, 0): 0.4, (0, 1): 0.3, (0, 0): 0.2}   # (m, t)
     inner = {m: pY[(m, 1)] * pT + pY[(m, 0)] * (1 - pT) for m in (0, 1)}
     do = {t: pM[t] * inner[1] + (1 - pM[t]) * inner[0] for t in (0, 1)}
     ace = do[1] - do[0]
@@ -245,8 +254,8 @@ def p09():
     ace_eq = (pM[1] - pM[0]) * (inner_eq[1] - inner_eq[0])
     inner_sw = {m: pY[(m, 1)] * (1 - pT) + pY[(m, 0)] * pT for m in (0, 1)}
     ace_sw = (pM[1] - pM[0]) * (inner_sw[1] - inner_sw[0])
-    ace_own = (pM[1] - pM[0]) * (pY[(1, 1)] - pY[(0, 1)]) * 0 + (pM[1] * pY[(1, 1)] + (1 - pM[1]) * pY[(0, 1)]) \
-        - (pM[0] * pY[(1, 1)] + (1 - pM[0]) * pY[(0, 1)])
+    # 内側の和をとらず、T=1 の行 P(Y|m,T=1) だけを使った
+    ace_own = (pM[1] - pM[0]) * (pY[(1, 1)] - pY[(0, 1)])
     out.update({
         "pT": pT, "pT0": s(1 - pT, 1), "pM1": pM[1], "pM0": pM[0],
         "y11": pY[(1, 1)], "y10": pY[(1, 0)], "y01": pY[(0, 1)], "y00": pY[(0, 0)],
@@ -325,6 +334,7 @@ def p12():
     out["comm"] = s(sum(a * a + b * b for a, b in L), 2)
     out["comm4"] = s(sum(a * a + b * b for a, b in L), 4)
     out["prop"] = s(contr / 3, 2)
+    out["nosq"] = s(sum(ra for ra, _ in rot), 2)
     for i, (a, b) in enumerate(L, 1):
         out[f"l{i}1sq"] = s(a * a, 4)
     # (c) 数量化I類（カテゴリースコア）

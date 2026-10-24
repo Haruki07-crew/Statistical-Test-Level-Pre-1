@@ -59,31 +59,18 @@ def p01():
 
 
 def p02():
-    # (a) 区分的に一定のハザード（1/月）
-    h1, h2, h3 = 0.06, 0.02, 0.01
-    H_1_12 = h2 * 3 + h3 * 8
-    e = {0.14: 0.8694, 0.20: 0.8187, 0.12: 0.8869}
-    ans = 1 - e[round(H_1_12, 2)]
-    # (b) カプラン・マイヤーとグリーンウッドの公式
-    rows = [(2, 10, 1), (4, 8, 2), (7, 5, 1)]   # (時刻, リスク集合, 死亡数)
-    S = 1.0
-    gw = 0.0
-    parts = []
-    for t, n, dd in rows:
-        S *= (n - dd) / n
-        gw += dd / (n * (n - dd))
-        parts.append(dd / (n * (n - dd)))
-    var = S ** 2 * gw
-    return {
-        "h1": s(h1, 2), "h2": s(h2, 2), "h3": s(h3, 2), "H": s(H_1_12, 2), "H3": s(h2 * 3, 2), "H8": s(h3 * 8, 2),
-        "e14": s(e[0.14], 4), "e20": s(e[0.20], 4), "e12": s(e[0.12], 4),
-        "ans": r(ans, 3), "ans4": s(ans, 4), "w_unc": s(1 - e[0.20], 4), "w_surv": s(e[0.14], 4),
-        "w_flat": s(1 - e[0.12], 4), "H0_12": s(h1 + h2 * 3 + h3 * 8, 2),
-        "S1": s(9 / 10, 3), "S2": s(9 / 10 * 6 / 8, 3), "S3": s(S, 3),
-        "g1": s(parts[0], 6), "g2": s(parts[1], 6), "g3": s(parts[2], 6), "gsum": s(gw, 6),
-        "S2sq": s(S ** 2, 4), "var": s(var, 6), "se": r(sqrt(var), 3), "se5": s(sqrt(var), 5),
-        "w_bin": s(sqrt(S * (1 - S) / 10), 3), "w_nosq": s(sqrt(S * gw), 3),
-    }
+    # (a) 年齢区分 X と HbA1c の欠測 R の同時確率表
+    tab = {(0, 0): 0.20, (0, 1): 0.05, (1, 0): 0.25, (1, 1): 0.15, (2, 0): 0.15, (2, 1): 0.20}
+    px = {x: tab[(x, 0)] + tab[(x, 1)] for x in range(3)}
+    pr1 = sum(tab[(x, 1)] for x in range(3))
+    cond = tab[(2, 1)] / px[2]
+    prod = px[2] * pr1
+    ex = sum(x * px[x] for x in range(3))
+    out = {f"t{x}{y}": s(v, 2) for (x, y), v in tab.items()}
+    out.update({"px0": s(px[0], 2), "px1": s(px[1], 2), "px2": s(px[2], 2), "pr1": s(pr1, 2), "pr0": s(1 - pr1, 2),
+                "cond": s(cond, 3), "prod": s(prod, 2), "c_rev": s(tab[(2, 1)] / pr1, 2), "ex": s(ex, 2),
+                "c0": s(cond_x0 := tab[(0, 1)] / px[0], 2)})
+    return out
 
 
 def p03():
@@ -162,13 +149,14 @@ def p05():
 
 
 def p06():
-    p = 0.05
-    l5, l95 = -0.6931, -0.0513
-    k = l5 / l95
-    kk = math.ceil(k)
-    return {"p": s(p, 2), "q": s(1 - p, 2), "l5": s(l5, 4), "l95": s(l95, 4), "kraw": s(k, 2),
-            "ans": kk, "q13": s((1 - p) ** (kk - 1), 4), "q14": s((1 - p) ** kk, 4), "km1": kk - 1,
-            "done": 20, "w_sub": kk - 20 if kk > 20 else 0, "w_tot": kk + 20}
+    p = [0.05, 0.10, 0.20, 0.30, 0.35]
+    v = sum(q * (1 - q) for q in p)
+    pb = sum(p) / len(p)
+    out = {f"p{i + 1}": s(q, 2) for i, q in enumerate(p)}
+    out.update({"n": len(p), "terms": " + ".join(s(q * (1 - q), 4) for q in p), "ans": r(v, 3), "ans4": s(v, 4),
+                "mean": s(sum(p), 2), "pb": s(pb, 2), "w_bin": s(len(p) * pb * (1 - pb), 3),
+                "w_sum": s(sum(q * q for q in p), 4)})
+    return out
 
 
 def p07():
@@ -221,73 +209,62 @@ def p08():
 
 
 def p09():
-    # (a) 二元配置の効果量
-    SA, SB, SAB, SE = 48.0, 6.0, 4.0, 42.0
-    ST = SA + SB + SAB + SE
-    dfA, dfE = 2, 18
-    mse = SE / dfE
-    peta = SA / (SA + SE)
-    # (b) ヨンクヒール・タプストラ検定
-    g = [[1, 3, 4, 7], [2, 6, 8, 9], [5, 10, 11, 12]]
-
-    def U(x, y):
-        return sum(1 for a in x for b in y if a < b)
-    u12, u13, u23 = U(g[0], g[1]), U(g[0], g[2]), U(g[1], g[2])
-    J = u12 + u13 + u23
-    ns = [len(v) for v in g]
-    N = sum(ns)
-    EJ = (N * N - sum(n * n for n in ns)) / 4
-    VJ = (N * N * (2 * N + 3) - sum(n * n * (2 * n + 3) for n in ns)) / 72
-    z = (J - EJ) / sqrt(VJ)
-    out = {
-        "SA": s(SA, 1), "SB": s(SB, 1), "SAB": s(SAB, 1), "SE": s(SE, 1), "ST": s(ST, 1),
-        "dfA": dfA, "dfB": 1, "dfAB": 2, "dfE": dfE, "dfT": 23, "mse": s(mse, 3),
-        "peta": s(peta, 3), "c_eta": s(SA / ST, 3), "c_omega": s((SA - dfA * mse) / (ST + mse), 3),
-        "c_noE": s(SA / (SA + SB + SAB), 3), "c_F": s((SA / dfA) / mse, 2), "SAE": s(SA + SE, 1),
-        "u12": u12, "u13": u13, "u23": u23, "J": J, "N": N, "EJ": s(EJ, 0), "VJ": s(VJ, 3),
-        "sdJ": s(sqrt(VJ), 4), "z": r(z, 2), "z4": s(z, 4), "N2": N * N, "sumn2": sum(n * n for n in ns),
-        "vnum": N * N * (2 * N + 3) - sum(n * n * (2 * n + 3) for n in ns), "w_noc": s((J - EJ) / VJ, 2), "JmE": s(J - EJ, 0), "twoN3": 2 * N + 3,
-        "vsub": sum(n * n * (2 * n + 3) for n in ns),
-    }
-    for i, grp in enumerate(g):
-        for j, v in enumerate(grp):
-            out[f"g{i + 1}{j + 1}"] = v
+    # (b) 符号付き順位検定の正確な p 値
+    d = [12, 3, -6, 15, 8, 10]
+    order = sorted(range(len(d)), key=lambda i: abs(d[i]))
+    rank = [0] * len(d)
+    for rk, i in enumerate(order, 1):
+        rank[i] = rk
+    wp = sum(rk for rk, v in zip(rank, d) if v > 0)
+    n = len(d)
+    from itertools import product
+    cnt = sum(1 for signs in product([0, 1], repeat=n) if sum(rk for rk, sg in zip(range(1, n + 1), signs) if sg) >= wp)
+    p = cnt / 2 ** n
+    out = {f"d{i + 1}": d[i] for i in range(n)}
+    out.update({f"r{i + 1}": rank[i] for i in range(n)})
+    out.update({"n": n, "wp": wp, "wm": n * (n + 1) // 2 - wp, "tot": n * (n + 1) // 2, "cnt": cnt, "N": 2 ** n,
+                "p": r(p, 3), "p6": s(p, 6), "w_two": s(2 * p, 4)})
     return out
 
 
 def p10():
-    # (a) 1 次スプライン
-    b0, b1, b2, kn = 120.0, -0.50, -0.80, 65
-    x = 80
-    yhat = b0 + b1 * x + b2 * (x - kn)
-    # (b) DFBETAS
+    # (a) DFBETAS
     bb, bi, si, s_all, sxx, n = -0.90, -0.84, 8.0, 8.5, 4000, 40
     den = si / sqrt(sxx)
     dfb = (bb - bi) / den
-    # (c) AIC と AICc
-    mods = [("L", 300.0, 3), ("S", 295.6, 4), ("Q", 291.0, 6)]
-    aic = {m: v + 2 * k for m, v, k in mods}
-    aicc = {m: v + 2 * k + 2 * k * (k + 1) / (n - k - 1) for m, v, k in mods}
-    assert min(aic, key=aic.get) == "Q" and min(aicc, key=aicc.get) == "S"
-    out = {
-        "b0": s(b0, 1), "b1": s(b1, 2), "b2": s(b2, 2), "kn": kn, "x": x, "xk": x - kn,
-        "t1": s(b1 * x, 1), "t2": s(b2 * (x - kn), 1), "yhat": s(yhat, 1), "slope2": s(b1 + b2, 2),
-        "c_nos": s(b0 + b1 * x, 1), "c_x": s(b0 + b1 * x + b2 * x, 1), "c_rep": s(b0 + b1 * kn + b2 * (x - kn), 1),
-        "c_sign": s(b0 + b1 * x - b2 * (x - kn), 1),
+    # (b) エラスティックネット（直交計画）
+    b = [2.0, -0.6, 0.3]
+    l1, l2 = 0.5, 1.0
+
+    def soft(v, t):
+        return math.copysign(max(abs(v) - t, 0.0), v)
+
+    def fmt(v):
+        return "(" + ",\\ ".join(s(x + 0.0, 2) if abs(x) > 1e-12 else "0.00" for x in v) + ")"
+    en = [soft(v, l1) / (1 + l2) for v in b]
+    lasso = [soft(v, l1) for v in b]
+    ridge = [v / (1 + l2) for v in b]
+    r_then = [soft(v / (1 + l2), l1) for v in b]
+    nozero = [(1 if v > 0 else -1) * (abs(v) - l1) / (1 + l2) for v in b]
+    # (c) 偏りと分散
+    s2 = 9.0
+    A = (2.0, 1.0)
+    B = (0.5, 4.5)
+    epe = lambda m: s2 + m[0] ** 2 + m[1]
+    return {
         "bb": s(bb, 2), "bi": s(bi, 2), "si": s(si, 1), "sa": s(s_all, 1), "sxx": sxx, "n": n,
         "sq": s(sqrt(sxx), 3), "den": s(den, 5), "db": s(bb - bi, 2), "dfb": s(dfb, 3),
         "c_sall": s((bb - bi) / (s_all / sqrt(sxx)), 3), "c_pos": s(-dfb, 3), "c_raw": s(bb - bi, 3),
         "c_nosq": s((bb - bi) / (si / sxx), 1), "cut": s(2 / sqrt(n), 3),
+        "b1": s(b[0], 1), "b2": s(b[1], 1), "b3": s(b[2], 1), "l1": s(l1, 1), "l2": s(l2, 1), "opl": s(1 + l2, 1),
+        "en": fmt(en), "lasso": fmt(lasso), "ridge": fmt(ridge), "rthen": fmt(r_then), "nozero": fmt(nozero),
+        "st1": s(soft(b[0], l1), 1), "st2": s(soft(b[1], l1), 1), "st3": s(soft(b[2], l1), 1),
+        "s2": s(s2, 0), "bA": s(A[0], 1), "vA": s(A[1], 1), "bB": s(B[0], 1), "vB": s(B[1], 1),
+        "bA2": s(A[0] ** 2, 2), "bB2": s(B[0] ** 2, 2), "eA": s(epe(A), 2), "eB": s(epe(B), 2),
+        "e_nosqB": s(s2 + B[0] + B[1], 2), "e_nosqA": s(s2 + A[0] + A[1], 2),
+        "e_nos2B": s(B[0] ** 2 + B[1], 2), "e_nos2A": s(A[0] ** 2 + A[1], 2), "e_rawA": s(A[0] + A[1], 2),
+        "e_rawB": s(B[0] + B[1], 2), "e_novB": s(s2 + B[0] ** 2, 2), "e_novA": s(s2 + A[0] ** 2, 2),
     }
-    for m, v, k in mods:
-        out[f"{m}l"] = s(v, 1)
-        out[f"{m}k"] = k
-        out[f"{m}aic"] = s(aic[m], 1)
-        out[f"{m}pen"] = s(2 * k * (k + 1) / (n - k - 1), 3)
-        out[f"{m}aicc"] = s(aicc[m], 2)
-        out[f"{m}den"] = n - k - 1
-        out[f"{m}num"] = 2 * k * (k + 1)
-    return out
 
 
 def p11():
@@ -299,66 +276,82 @@ def p11():
 
 
 def p12():
-    Nf, nf = 40, 4
-    M = [50, 80, 30, 60]
-    x = [6, 4, 7, 5]
-    m = 10
-    yi = [Mi * xi / m for Mi, xi in zip(M, x)]
-    tot = Nf / nf * sum(yi)
-    return {"Nf": Nf, "nf": nf, "m": m, "M1": M[0], "M2": M[1], "M3": M[2], "M4": M[3],
-            "x1": x[0], "x2": x[1], "x3": x[2], "x4": x[3],
-            "y1": s(yi[0], 0), "y2": s(yi[1], 0), "y3": s(yi[2], 0), "y4": s(yi[3], 0), "ysum": s(sum(yi), 0),
-            "fac": s(Nf / nf, 0), "ans": r(tot, 0),
-            "w_ign": s(Nf / nf * sum(x), 0), "w_noN": s(sum(yi), 0),
-            "w_avg": s(Nf * (sum(M) / nf) * (sum(x) / (nf * m)), 0),
-            "Mbar": s(sum(M) / nf, 0), "pbar": s(sum(x) / (nf * m), 3),
-            "p1": s(x[0] / m, 1), "p2": s(x[1] / m, 1), "p3": s(x[2] / m, 1), "p4": s(x[3] / m, 1)}
+    N = [3000, 1000]
+    S = [10, 12]
+    c = [1, 4]
+    n = 200
+    w = [a * b / sqrt(cc) for a, b, cc in zip(N, S, c)]
+    n2 = n * w[1] / sum(w)
+    ney = n * N[1] * S[1] / sum(a * b for a, b in zip(N, S))
+    return {"N1": N[0], "N2": N[1], "S1": S[0], "S2": S[1], "c1": c[0], "c2": c[1], "n": n,
+            "w1": s(w[0], 0), "w2": s(w[1], 0), "wsum": s(sum(w), 0), "n2raw": s(n2, 2), "ans": r(n2, 0),
+            "ney": s(ney, 1), "prop": s(n * N[1] / sum(N), 0), "w_c": s(n * N[1] * S[1] / c[1] / (N[0] * S[0] / c[0] + N[1] * S[1] / c[1]), 1),
+            "sc2": s(sqrt(c[1]), 0)}
 
 
 def p13():
-    pi1, mu1, sd1 = 0.7, 5.6, 0.4
-    pi2, mu2, sd2 = 0.3, 7.2, 0.8
-    x = 6.4
-    phi = {1.0: 0.2420, 2.0: 0.0540}
-    z1, z2 = abs(x - mu1) / sd1, abs(x - mu2) / sd2
-    f1, f2 = phi[round(z1, 1)] / sd1, phi[round(z2, 1)] / sd2
-    w1, w2 = pi1 * f1, pi2 * f2
-    g2 = w2 / (w1 + w2)
-    return {"pi1": s(pi1, 1), "mu1": s(mu1, 1), "sd1": s(sd1, 1), "pi2": s(pi2, 1), "mu2": s(mu2, 1),
-            "sd2": s(sd2, 1), "x": s(x, 1), "z1": s(z1, 1), "z2": s(z2, 1), "phi1": s(phi[1.0], 4), "phi2": s(phi[2.0], 4),
-            "f1": s(f1, 4), "f2": s(f2, 4), "w1": s(w1, 5), "w2": s(w2, 5), "wsum": s(w1 + w2, 5),
-            "ans": s(g2, 3), "ans4": s(g2, 4), "c_comp": s(1 - g2, 3),
-            "c_nosd": s(pi2 * phi[1.0] / (pi2 * phi[1.0] + pi1 * phi[2.0]), 3),
-            "c_nopi": s(f2 / (f1 + f2), 3), "c_none": s(phi[1.0] / (phi[1.0] + phi[2.0]), 3)}
+    da = [2.0, 3.0, 4.0]
+    dbb = [5.0, 7.0]
+    dc = [4.0, 6.0, 5.0]
+    a = sum(da) / len(da)
+    mb, mc = sum(dbb) / len(dbb), sum(dc) / len(dc)
+    b = min(mb, mc)
+    sil = (b - a) / max(a, b)
+    a_self = sum(da) / (len(da) + 1)
+    return {"a1": s(da[0], 1), "a2": s(da[1], 1), "a3": s(da[2], 1), "b1": s(dbb[0], 1), "b2": s(dbb[1], 1),
+            "c1": s(dc[0], 1), "c2": s(dc[1], 1), "c3": s(dc[2], 1), "a": s(a, 1), "mb": s(mb, 1), "mc": s(mc, 1),
+            "b": s(b, 1), "sil": s(sil, 3), "c_far": s((mb - a) / max(a, mb), 3), "c_self": s((b - a_self) / max(a_self, b), 3),
+            "c_diva": s((b - a) / a, 3), "c_min": s((min(dc + dbb) - a) / max(a, min(dc + dbb)), 3), "aself": s(a_self, 2)}
 
 
 def p14():
-    l1, l2, ph = 0.50, 0.30, 0.40
-    h = l1 ** 2 + l2 ** 2 + 2 * l1 * l2 * ph
-    # (b) クラスカルのストレス
-    d = [1.0, 1.4, 1.2, 2.1, 3.2, 2.8]
-    dh = [1.0, 1.3, 1.3, 2.1, 3.0, 3.0]
-    num = sum((a - b) ** 2 for a, b in zip(d, dh))
-    den = sum(a * a for a in d)
-    st = sqrt(num / den)
-    out = {"l1": s(l1, 2), "l2": s(l2, 2), "ph": s(ph, 2), "l1s": s(l1 ** 2, 2), "l2s": s(l2 ** 2, 2),
-           "cross": s(2 * l1 * l2 * ph, 2), "h": s(h, 3), "c_orth": s(l1 ** 2 + l2 ** 2, 3),
-           "c_ph2": s(l1 ** 2 + l2 ** 2 + 2 * l1 * l2 * ph ** 2, 3), "c_u": s(1 - h, 3),
-           "c_one": s((l1 + l2) ** 2, 3),
-           "num": s(num, 2), "den": s(den, 2), "ratio": s(num / den, 6), "st": s(st, 3), "st4": s(st, 4),
-           "c_nosqrt": s(num / den, 4), "c_num": s(num, 3), "c_rms": s(sqrt(num / len(d)), 3),
-           "c_rt": s(sqrt(num), 3),
-           "sq": " + ".join(s((a - b) ** 2, 2) for a, b in zip(d, dh)),
-           "dsq": " + ".join(s(a * a, 2) for a in d)}
-    for i in range(6):
-        out[f"d{i + 1}"] = s(d[i], 1)
-        out[f"h{i + 1}"] = s(dh[i], 1)
+    lam = [0.8, 0.7, 0.6]
+    x = [1.2, 0.4, -0.6]
+    psi = [1 - l * l for l in lam]
+    num = sum(l * v / p for l, v, p in zip(lam, x, psi))
+    den = sum(l * l / p for l, p in zip(lam, psi))
+    bart = num / den
+    thom = num / (1 + den)
+    unw = sum(l * v for l, v in zip(lam, x)) / sum(l * l for l in lam)
+    # (b) 正準相関
+    R12 = [[0.5, 0.3], [0.2, 0.4]]
+    M = [[sum(R12[i][k] * R12[j][k] for k in range(2)) for j in range(2)] for i in range(2)]
+    tr = M[0][0] + M[1][1]
+    det = M[0][0] * M[1][1] - M[0][1] * M[1][0]
+    disc = tr * tr - 4 * det
+    lam1 = (tr + sqrt(disc)) / 2
+    out = {f"l{i + 1}": s(lam[i], 1) for i in range(3)}
+    out.update({f"x{i + 1}": s(x[i], 1) for i in range(3)})
+    out.update({f"psi{i + 1}": s(psi[i], 2) for i in range(3)})
+    out.update({f"u{i + 1}": s(lam[i] * x[i] / psi[i], 4) for i in range(3)})
+    out.update({f"v{i + 1}": s(lam[i] ** 2 / psi[i], 4) for i in range(3)})
+    out.update({"num": s(num, 4), "den": s(den, 4), "bart": s(bart, 3), "bart4": s(bart, 4), "thom": s(thom, 3),
+                "unw": s(unw, 3), "lx": s(sum(l * v for l, v in zip(lam, x)), 3), "mx": s(sum(x) / 3, 3), "den1": s(1 + den, 4),
+                "r11": s(R12[0][0], 1), "r12": s(R12[0][1], 1), "r21": s(R12[1][0], 1), "r22": s(R12[1][1], 1),
+                "m11": s(M[0][0], 2), "m12": s(M[0][1], 2), "m22": s(M[1][1], 2), "tr": s(tr, 2), "det": s(det, 4),
+                "disc": s(disc, 4), "sqd": s(sqrt(disc), 5), "lam1": s(lam1, 5), "rho": r(sqrt(lam1), 3), "rho4": s(sqrt(lam1), 4),
+                "w_lam": s(lam1, 3), "w_max": s(0.5, 1)})
     return out
 
 
+def p04_extra():
+    t, df = -3.2, 27
+    pr = t / sqrt(t * t + df)
+    return {"tH": s(t, 1), "dfr": df, "n30": 30, "t2": s(t * t, 2), "t2df": s(t * t + df, 2), "rt": s(sqrt(t * t + df), 4),
+            "pr": s(pr, 3), "pr4": s(pr, 4), "c_df29": s(t / sqrt(t * t + 29), 3), "c_nosq": s(t / sqrt(abs(t) + df), 3),
+            "c_r2": s(t * t / (t * t + df), 3), "c_nodf": s(t / sqrt(df), 3)}
+
+
+def p07b():
+    x, n = 2, 60
+    a, b = x + 0.5, n - x + 0.5
+    return {"x": x, "n": n, "a": s(a, 1), "b": s(b, 1), "ab": s(a + b, 0), "jm": r(a / (a + b), 4), "jm5": s(a / (a + b), 5),
+            "w_unif": s((x + 1) / (n + 2), 4), "w_mle": s(x / n, 4), "w_half": s((x + 0.5) / (n + 0.5), 4)}
+
+
 def values():
-    return {"s15p01": p01(), "s15p02": p02(), "s15p03": p03(), "s15p04": p04(), "s15p05": p05(),
-            "s15p06": p06(), "s15p07": p07(), "s15p08": p08(), "s15p09": p09(), "s15p10": p10(),
+    return {"s15p01": p01(), "s15p02": p02(), "s15p03": p03(), "s15p04": {**p04(), **p04_extra()}, "s15p05": p05(),
+            "s15p06": p06(), "s15p07": {**p07(), **p07b()}, "s15p08": p08(), "s15p09": p09(), "s15p10": p10(),
             "s15p11": p11(), "s15p12": p12(), "s15p13": p13(), "s15p14": p14()}
 
 

@@ -1,27 +1,27 @@
 {
  "s20p01a": {
   "ok": true,
-  "hash": "774d2ba4a3c5208e"
+  "hash": "2072e666ffbbbf19"
  },
  "s20p01b": {
   "ok": true,
-  "hash": "86874e0e051322d1"
+  "hash": "ba1402b9c099d18e"
  },
  "s20p02a": {
   "ok": true,
-  "hash": "57139a9d702c62e9"
+  "hash": "29b8e1ad940e0687"
  },
  "s20p02b": {
   "ok": true,
-  "hash": "77a7d74be824e014"
+  "hash": "39235acbc894005a"
  },
  "s20p03a": {
   "ok": true,
-  "hash": "89e3bf61d8530ae0"
+  "hash": "653b017970123836"
  },
  "s20p03b": {
   "ok": true,
-  "hash": "6b49a20ed18314dc"
+  "hash": "924d34b3a7551c86"
  },
  "s20p04a": {
   "ok": true,
@@ -29,74 +29,74 @@
  },
  "s20p05a": {
   "ok": true,
-  "hash": "51fb6594c8a94c8a"
+  "hash": "aee39edf0c58a3b9"
  },
  "s20p05b": {
   "ok": true,
-  "hash": "8c5299dbef674494"
+  "hash": "377bb3ea8c96e4ee"
  },
  "s20p06a": {
   "ok": true,
-  "hash": "ace5decc1201de83"
+  "hash": "1217b5f781fafe77"
  },
  "s20p06b": {
   "ok": true,
-  "hash": "90f9deea915b6988"
- },
- "s20p06c": {
-  "ok": true,
-  "hash": "cc17e24d6f7ca579"
+  "hash": "c7a7371a20f53a85"
  },
  "s20p07a": {
   "ok": true,
-  "hash": "401f121e40fda666"
+  "hash": "879be245d34305d9"
+ },
+ "s20p07b": {
+  "ok": true,
+  "hash": "3e54fc89271adc59"
  },
  "s20p08a": {
   "ok": true,
-  "hash": "98369666358250d1"
- },
- "s20p08b": {
-  "ok": true,
-  "hash": "55b7fa182fd1db1a"
+  "hash": "760d76d77b2663fb"
  },
  "s20p09a": {
   "ok": true,
-  "hash": "ea38348a2096f715"
+  "hash": "40ceae123a80ab46"
+ },
+ "s20p09b": {
+  "ok": true,
+  "hash": "139b46764330a2b3"
+ },
+ "s20p09c": {
+  "ok": true,
+  "hash": "07408f66c015ab69"
  },
  "s20p10a": {
   "ok": true,
-  "hash": "7a0da65cd8880ce5"
+  "hash": "34b526a116ab2209"
  },
  "s20p10b": {
   "ok": true,
-  "hash": "74183ff5ca38d4ed"
- },
- "s20p10c": {
-  "ok": true,
-  "hash": "51215a8067a9abb9"
+  "hash": "9d297e2af490a151"
  },
  "s20p11a": {
   "ok": true,
-  "hash": "165ccece325f590e"
+  "hash": "7e73d54055fa3ab2"
+ },
+ "s20p11b": {
+  "ok": true,
+  "hash": "c4c33dbe2139f463"
  },
  "s20p12a": {
   "ok": true,
-  "hash": "5a8b90ad74453672"
+  "hash": "9d8ea4d0438be496"
+ },
+ "s20p12b": {
+  "ok": true,
+  "hash": "c57a79d592e15f1c"
+ },
+ "s20p12c": {
+  "ok": true,
+  "hash": "410db5745180045c"
  },
  "s20p13a": {
   "ok": true,
-  "hash": "c94d32ed203cfba7"
- },
- "s20p13b": {
-  "ok": true,
-  "hash": "632172530e336d03"
- },
- "s20p13c": {
-  "ok": true,
-  "hash": "3faeee03e7010db0"
- },
- "s20p14a": {
-  "ok": true,
-  "hash": "7e85668c6f08efe0"
+  "hash": "d78619de61fe1d95"
  }
 }

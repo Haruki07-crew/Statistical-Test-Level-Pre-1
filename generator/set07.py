@@ -37,6 +37,13 @@ def p01():
     var = m2 - m1 ** 2
     cb = [s(var, 2), s(m2, 2), s(k * th ** 2, 2), s(w1 * k * th ** 2, 2), s(m2 - m1, 2)]
     distinct(*cb)
+    # (b') P(S>x0)：混合（0 と Gamma(k=2, 尺度 th)）の上側確率
+    x0, emx = 8, 0.1353          # e^{-2}（問題文の値）
+    ex = x0 // th
+    g_sf = emx * (1 + ex)
+    t_ok = w1 * g_sf
+    tc = [s(g_sf, 4), s(w1 * emx, 4), s(t_ok, 4), s(w0 * g_sf, 4), s(1 - t_ok, 4)]
+    distinct(*tc)
     # (c) 中心極限定理による保険料
     n, z = 2500, 2.326
     sdv = sqrt(var)
@@ -53,19 +60,33 @@ def p01():
         "load": s(z * sdv / sqrt(n), 4), "prem": r(prem, 2), "prem4": s(prem, 4),
         "w_var": s(m1 + z * var / sqrt(n), 2), "w_1645": s(m1 + 1.645 * sdv / sqrt(n), 2),
         "w_n": s(m1 + z * sdv / n, 2), "tot_sd": s(sdv * sqrt(n), 2), "tot_mean": s(m1 * n, 0),
+        "x0": x0, "ex": ex, "ex1": ex + 1, "emx": s(emx, 4), "g_sf": s(g_sf, 4), "t_ok4": s(t_ok, 5),
+        "t_noW": tc[0], "t_exp": tc[1], "t_ok": tc[2], "t_w08": tc[3], "t_cdf": tc[4],
     }
 
 
 def p02():
-    # (b) パレート分布（θ=1, α=3）の 99% VaR と期待ショートフォール
     alpha, theta = 3, 1
-    cube = 4.642  # 100^(1/3)（問題文の値）
-    var99 = theta * cube
-    es = alpha / (alpha - 1) * var99
+    # (a) 2件の幾何平均が gthr を超える確率：log X ~ Exp(α)、和 ~ Gamma(2, レート α)
+    gthr, ln2 = 2, 0.6931            # log 2（問題文の値）
+    sthr = 2 * ln2                   # 2 log 2
+    ls = alpha * sthr
+    e64 = 2.0 ** -6                  # e^{-6 log 2}
+    gp = e64 * (1 + ls)
+    gc = [s(e64, 4), s(gthr ** -alpha, 4), s(gp, 4), s(e64 * ls, 4), s(1 - gp, 4)]
+    distinct(*gc)
+    # (b) 平均・分散・変動係数
     mean = alpha * theta / (alpha - 1)
-    return {"alpha": alpha, "theta": theta, "cube": s(cube, 3), "var99": s(var99, 3),
-            "es": r(es, 2), "es4": s(es, 4), "fac": s(alpha / (alpha - 1), 1), "mean": s(mean, 1),
-            "w_mem": s(var99 + mean, 2), "a1": alpha - 1}
+    ex2 = alpha * theta ** 2 / (alpha - 2)
+    vx = ex2 - mean ** 2
+    cv = sqrt(vx) / mean
+    cvc = [s(sqrt(ex2) / mean, 3), s(vx / mean, 3), s(cv, 3)]
+    distinct(*cvc)
+    return {"alpha": alpha, "theta": theta, "gthr": gthr, "ln2": s(ln2, 4), "s_thr": s(sthr, 4), "ls": s(ls, 4),
+            "e64": s(e64, 6), "gp_exp": gc[0], "gp_one": gc[1], "gp_ok": gc[2], "gp_no1": gc[3], "gp_cdf": gc[4],
+            "gp_ok4": s(gp, 5),
+            "mean": s(mean, 1), "ex2": s(ex2, 2), "vx": s(vx, 2), "sdx": s(sqrt(vx), 4), "cv": cvc[2], "cv4": s(cv, 4),
+            "cv_ex2": cvc[0], "cv_vm": cvc[1]}
 
 
 def p03():
@@ -123,11 +144,13 @@ def p02_od():
     se_lin = se * phi
     phin = X2 / n
     se_n = se * sqrt(phin)
-    assert 1.96 < zc < 2.576 and z0 > 2.576
+    sediv = se / sqrt(phi)
+    assert 1.96 < zc < 2.576 and z0 > 2.576 and b / sediv > 2.576
     return {"od_n": n, "od_k": k, "od_X2": s(X2, 1), "od_b": s(b, 2), "od_se": s(se, 3), "od_df": df,
             "od_phi": s(phi, 2), "od_sqphi": s(sqrt(phi), 4), "od_sec": s(sec, 3), "od_z0": s(z0, 2), "od_zc": s(zc, 2),
             "od_selin": s(se_lin, 3), "od_zlin": s(b / se_lin, 2), "od_phin": s(phin, 3), "od_sen": s(se_n, 3),
-            "od_zn": s(b / se_n, 2), "od_sec4": s(sec, 4)}
+            "od_zn": s(b / se_n, 2), "od_sec4": s(sec, 4),
+            "od_sediv": s(sediv, 3), "od_zdiv": s(b / sediv, 2)}
 
 
 def p04():
@@ -145,6 +168,16 @@ def p04():
     G = 2 * half
     Ex = [[30, 170], [30, 170]]
     X2 = sum((O[i][j] - Ex[i][j]) ** 2 / Ex[i][j] for i in range(2) for j in range(2))
+    # (b) 母比率の z 検定（帰無仮説の比率で標準誤差、連続修正なし）
+    pn, px, p0 = 200, 40, 0.15
+    phat = px / pn
+    pv = p0 * (1 - p0) / pn
+    pz = (phat - p0) / sqrt(pv)
+    assert 1.645 < pz < 2.326
+    pdict = {"pn": pn, "px": px, "p0": s(p0, 2), "q0": s(1 - p0, 2), "p0pct": 15, "phat": s(phat, 2), "pv": s(pv, 6),
+             "pse": s(sqrt(pv), 5), "pz": r(pz, 2), "pz4": s(pz, 4), "np0": s(pn * p0, 0),
+             "pz_wald": s((phat - p0) / sqrt(phat * (1 - phat) / pn), 2),
+             "pz_cc": s((px - 0.5 - pn * p0) / sqrt(pn * p0 * (1 - p0)), 2)}
     # (c) 3元分割表の対数線形モデルの期待度数
     t = {("M", "S", "D"): 12, ("M", "S", "N"): 48, ("M", "L", "D"): 3, ("M", "L", "N"): 37,
          ("V", "S", "D"): 10, ("V", "S", "N"): 70, ("V", "L", "D"): 2, ("V", "L", "N"): 18}
@@ -167,6 +200,7 @@ def p04():
          "nAB": nAB, "nAC": nAC, "nA": nA, "nB": nB, "nC": nC, "tt": tt}
     for kk, v in t.items():
         d["t" + "".join(kk)] = v
+    d.update(pdict)
     return d
 
 
@@ -254,6 +288,21 @@ def p07():
     # (a) 対数価格のダミー係数
     b = 0.18
     eb, emb, tb = 1.1972, 0.8353, 1.5136   # e^0.18, e^-0.18, 10^0.18
+    # (a') 係数の 95% 信頼区間を価格の % 差に変換
+    bse, dfr, tq = 0.05, 56, 2.003
+    ev = {0.08: 1.0833, 0.13: 1.1388, 0.18: 1.1972, 0.23: 1.2586, 0.28: 1.3231}   # 問題文の値
+    hw = tq * bse
+    lo, hi = b - hw, b + hw
+    assert r(lo, 2) == 0.08 and r(hi, 2) == 0.28
+    pa = lambda x: s((ev[x] - 1) * 100, 1)
+    ci = [(s(lo * 100, 1), s(hi * 100, 1)), (pa(0.13), pa(0.23)), (pa(0.08), pa(0.28)),
+          (s((ev[0.18] - 1 - hw) * 100, 1), s((ev[0.18] - 1 + hw) * 100, 1))]
+    distinct(*ci)
+    d7 = {"bse": s(bse, 2), "dfr": dfr, "tq": s(tq, 3), "e08": s(ev[0.08], 4), "e13": s(ev[0.13], 4), "e18": s(ev[0.18], 4),
+          "e23": s(ev[0.23], 4), "e28": s(ev[0.28], 4), "hw4": s(hw, 4), "lo4": s(lo, 4), "hi4": s(hi, 4),
+          "e08m": s(ev[0.08] - 1, 4), "e28m": s(ev[0.28] - 1, 4), "c_pt": pa(0.18),
+          "r_lo": ci[0][0], "r_hi": ci[0][1], "s_lo": ci[1][0], "s_hi": ci[1][1], "c_lo": ci[2][0], "c_hi": ci[2][1],
+          "p_lo": ci[3][0], "p_hi": ci[3][1], "r_lo2": s(lo, 2), "r_hi2": s(hi, 2)}
     # (b) ゴールドフェルド・クォント検定
     n, drop, ng, k = 60, 20, 20, 2
     sse_lo, sse_hi = 120.0, 312.0
@@ -272,7 +321,7 @@ def p07():
             "nn": nn, "kA": mods["A"][0], "kB": mods["B"][0], "lA": s(mods["A"][1], 1), "lB": s(mods["B"][1], 1),
             "aA": s(aic["A"], 1), "aB": s(aic["B"], 1), "ccA": s(aicc["A"], 2), "ccB": s(aicc["B"], 2),
             "corA": s(aicc["A"] - aic["A"], 2), "corB": s(aicc["B"] - aic["B"], 2),
-            "nk1A": nn - mods["A"][0] - 1, "nk1B": nn - mods["B"][0] - 1}
+            "nk1A": nn - mods["A"][0] - 1, "nk1B": nn - mods["B"][0] - 1, **d7}
 
 
 def p08():
@@ -286,20 +335,26 @@ def p08():
     eta = ssb / sst
     omega = (ssb - (k - 1) * mse) / (sst + mse)
     return {"k": k, "n": n, "N": N, "ssb": s(ssb, 0), "ssw": s(ssw, 0), "sst": s(sst, 0), "dfb": k - 1, "dfw": dfw,
-            "mse": s(mse, 1), "eta": s(eta, 3), "omega": r(omega, 3), "omega4": s(omega, 4),
+            "mse": s(mse, 1), "eta": s(eta, 3), "omega": r(omega, 3), "omega_s": s(omega, 3), "omega4": s(omega, 4),
             "omn": s(ssb - (k - 1) * mse, 1), "omd": s(sst + mse, 1), "km1mse": s((k - 1) * mse, 1),
             "w_noadd": s((ssb - (k - 1) * mse) / sst, 3)}
 
 
 def p09():
-    # 事後層化推定量
+    # 比例配分の層化抽出と単純無作為抽出の分散の比
     wp, wc = 0.8, 0.2
-    n, np_, nc = 50, 45, 5
-    yp, yc = 126.4, 912.5
-    ps = wp * yp + wc * yc
-    sm = (np_ * yp + nc * yc) / n
-    return {"wp": s(wp, 1), "wc": s(wc, 1), "n": n, "np_": np_, "nc": nc, "yp": s(yp, 1), "yc": s(yc, 1),
-            "tp": s(wp * yp, 2), "tc": s(wc * yc, 2), "ps": r(ps, 2), "ps_s": s(ps, 2), "sm": s(sm, 2), "fc": s(nc / n, 1)}
+    mp, sp_, mc, sc = 130, 80, 900, 600
+    n = 50
+    mall = wp * mp + wc * mc
+    wi1, wi2 = wp * sp_ ** 2, wc * sc ** 2
+    within = wi1 + wi2
+    bt1, bt2 = wp * (mp - mall) ** 2, wc * (mc - mall) ** 2
+    between = bt1 + bt2
+    ratio = within / (within + between)
+    return {"wp": s(wp, 1), "wc": s(wc, 1), "mp": mp, "sp": sp_, "mc": mc, "sc": sc, "n": n,
+            "n1": int(n * wp), "n2": int(n * wc), "mall": s(mall, 0),
+            "wi1": s(wi1, 0), "wi2": s(wi2, 0), "within": s(within, 0), "bt1": s(bt1, 1), "bt2": s(bt2, 1),
+            "between": s(between, 0), "total": s(within + between, 0), "ratio": r(ratio, 3), "ratio4": s(ratio, 4)}
 
 
 def p10():

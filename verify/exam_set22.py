@@ -138,28 +138,31 @@ A6 = np.array([18, 22, 26, 30, 41])
 B6 = np.array([24, 33, 36, 44, 48])
 ks = stats.ks_2samp(A6, B6).statistic
 E.choice("s22p06a", f"${f(ks, 1)}$", "scipy ks_2samp の統計量")
-v = [4.0, 9.0, 16.0]
-# 分散がちょうどその値になる正規データを作って scipy.bartlett に入れる
-groups = []
-for vv in v:
-    x = rng.normal(0, 1, 6)
-    x = (x - x.mean()) / x.std(ddof=1) * math.sqrt(vv)
-    groups.append(x)
-bt = stats.bartlett(*groups).statistic
-E.choice("s22p06b", f"統計量は${f(bt, 2)}$で、$5.99$", "scipy.stats.bartlett")
-E.check("s22p06b", abs(stats.chi2.ppf(0.95, 2) - 5.99) < 0.005 and abs(stats.chi2.ppf(0.95, 3) - 7.81) < 0.005, "χ² の点")
-E.check("s22p06b", all(abs(math.log(x) - y) < 5e-5 for x, y in [(4, 1.3863), (9, 2.1972), (16, 2.7726), (29 / 3, 2.2687)]), "示した対数")
+# (b) 非心 t 分布の正規近似。示した t・Φ の値を scipy で確認し、近似値を計算
+E.check("s22p06b", abs(stats.t.ppf(0.95, 15) - 1.753) < 5e-4 and abs(stats.t.ppf(0.975, 15) - 2.131) < 5e-4, "t の点")
+E.check("s22p06b", all(abs(stats.norm.cdf(z) - v) < 5e-5 for z, v in [(0.37, 0.6443), (0.75, 0.7734), (0.86, 0.8051), (1.13, 0.8708)]), "Φ の値")
+delta = 5 * math.sqrt(16) / 8
+E.choice("s22p06b", f"${f(stats.norm.cdf(round(delta - stats.t.ppf(0.95, 15), 2)), 3)}$", "scipy の t 点から近似検出力")
+exact = stats.nct.sf(stats.t.ppf(0.95, 15), 15, delta)
+E.check("s22p06b", abs(exact - 0.773) < 0.04, f"非心 t の正確な検出力 {exact:.3f} も近い（近似の妥当性）")
 
 # ---- 大問7
 xx = sp.symbols("x")
 sol = sp.solve(sp.Eq(2.0 + 0.5 * xx, 2.0 + 0.5 * xx + 1.5 - 0.30 * xx), xx)
 E.choice("s22p07a", f"${f(float(sol[0]), 1)}$", "sympy で 2 直線の交点")
-res = np.array([-1.1, -0.9, -0.8, -0.6, -0.4, -0.3, -0.1, 0.4, 1.3, 2.5])
-tq = stats.norm.ppf((np.arange(1, 11) - 0.5) / 10)
-E.check("s22p07b", abs(tq[-1] - 1.645) < 0.001 and abs(tq[0] + 1.645) < 0.001, "理論分位点 ±1.645")
-E.check("s22p07b", res[0] > tq[0] and res[-1] > tq[-1] and stats.skew(res) > 0, f"両端とも直線より上・標本歪度 {stats.skew(res):.2f}>0")
-E.check("s22p07b", E.item("s22p07b")["answer"] == 0 and "右に裾の長い" in E.item("s22p07b")["choices"][0], "正解は右に歪んだ分布の記述")
-E.check("s22p07b", abs(stats.norm.ppf(0.9) - 1.282) < 0.0005, "0.90 分位点 1.282")
+x7 = np.array([2, 4, 5, 8.0])
+y7 = np.array([1.0, 2.4, 2.5, 4.8])
+W = np.diag(1 / x7 ** 2)
+Xm = x7[:, None]
+b_wls = np.linalg.solve(Xm.T @ W @ Xm, Xm.T @ W @ y7)[0]
+E.choice("s22p07b", f"${f(b_wls, 3)}$", "行列で (X'WX)^{-1}X'Wy")
+# 分散が x² に比例するときの効率：シミュレーションで WLS の分散が最小
+sims = []
+for _ in range(20000):
+    yy = 0.55 * x7 + rng.normal(0, 0.1 * x7)
+    sims.append(((yy / x7).mean(), yy.sum() / x7.sum(), (x7 * yy).sum() / (x7 ** 2).sum()))
+sims = np.array(sims)
+E.check("s22p07b", sims[:, 0].var() < sims[:, 1].var() < sims[:, 2].var(), "シミュレーションで重み 1/x² の分散が最小")
 
 # ---- 大問8
 y = np.array([12, 8, 20, 10])
@@ -194,11 +197,15 @@ p2 = cnt[(1, 1)] / sum(v for (w, k), v in cnt.items() if k)
 E.choice("s22p09a", f"${f(p1, 3)}$と${f(p2, 3)}$", "同時確率の全列挙")
 
 # ---- 大問10
-yv = np.arange(10, 33, 2)
-means = [yv[i::3].mean() for i in range(3)]
-E.num("s22p10a", rnd(np.mean((np.array(means) - yv.mean()) ** 2), 2), "3通りの系統標本の全列挙")
-srs = [np.mean(c) for c in combinations(yv, 4)]
-E.check("s22p10a", abs(np.var(srs) - 8.6667) < 1e-3, f"単純無作為抽出の全組合せの分散 {np.var(srs):.4f}")
+M = np.array([20, 30, 25, 15, 10.0])
+aa = np.array([2, 3, 1, 2, 2.0])
+ph = aa.sum() / M.sum()
+V10 = (1 - 5 / 200) / (5 * M.mean() ** 2) * np.var(aa - ph * M, ddof=1)
+E.num("s22p10a", rnd(math.sqrt(V10), 4), "numpy の不偏分散で比推定の分散")
+# 線形化（テイラー展開）による別表現：Var(ȳ_a/ȳ_M) ≈ (1-f)/n · S²_{a-pM}/M̄² と一致
+sa2 = np.var(aa, ddof=1); sm2 = np.var(M, ddof=1); sam = np.cov(aa, M, ddof=1)[0, 1]
+V10b = (1 - 5 / 200) / 5 * (sa2 - 2 * ph * sam + ph ** 2 * sm2) / M.mean() ** 2
+E.check("s22p10a", abs(V10 - V10b) < 1e-12, "分散・共分散を使う線形化の式と一致")
 
 # ---- 大問11
 R = np.full((3, 3), 0.6) + 0.4 * np.eye(3)
@@ -207,54 +214,55 @@ v1 = V[:, -1]
 zv = np.array([1.2, 0.3, -0.6])
 E.choice("s22p11a", f"${f(np.sum((zv - (v1 @ zv) * v1) ** 2), 2)}$", "numpy の固有ベクトルで射影")
 E.check("s22p11a", abs(w[-1] - 2.2) < 1e-9, "最大固有値 2.2")
-Lp = np.array([0.7, 0.2])
-Phi = np.array([[1, 0.5], [0.5, 1]])
-h2 = Lp @ Phi @ Lp
-stc = Lp @ Phi
-E.choice("s22p11b", f"共通性${f(h2, 2)}$、因子構造$({f(stc[0], 2)},\\ {f(stc[1], 2)})$", "行列計算 ΛΦΛ'・ΛΦ")
-# シミュレーション：因子と誤差を発生させ、相関を確かめる
-F = rng.multivariate_normal([0, 0], Phi, 300000)
-xsim = F @ Lp + rng.normal(0, math.sqrt(1 - h2), 300000)
-E.check("s22p11b", abs(np.corrcoef(xsim, F[:, 0])[0, 1] - 0.8) < 0.01, "シミュレーションで Cor(x,f1)≈0.80")
-from scipy.optimize import isotonic_regression  # noqa: E402
-d = np.array([1.0, 1.6, 1.4, 2.2, 2.8, 3.0])
-dh = isotonic_regression(d).x
-E.num("s22p11c", rnd(math.sqrt(np.sum((d - dh) ** 2) / np.sum(d ** 2)), 3), "scipy の単調回帰（isotonic_regression）でストレス")
+Lr = np.array([[0.8, 0.1], [0.7, 0.2], [0.1, 0.8], [0.2, 0.7]])
+Vv = np.sum(np.var(Lr ** 2, axis=0))
+E.choice("s22p11b", f"${f(Vv, 3)}$", "numpy で列ごとの 2 乗の分散の和")
+th = np.pi / 4
+L0 = Lr @ np.array([[np.cos(th), -np.sin(th)], [np.sin(th), np.cos(th)]])
+E.check("s22p11b", np.allclose((L0 ** 2).sum(1), (Lr ** 2).sum(1)) and np.sum(np.var(L0 ** 2, axis=0)) < Vv, "回転で共通性不変・回転前の基準は小さい")
+# 回転角を全探索するとバリマックス基準は回転後の解（角度 0）で最大
+angs = np.linspace(-np.pi / 4, np.pi / 4, 721)
+vals = [np.sum(np.var((Lr @ np.array([[np.cos(t_), -np.sin(t_)], [np.sin(t_), np.cos(t_)]])) ** 2, axis=0)) for t_ in angs]
+E.check("s22p11b", abs(angs[int(np.argmax(vals))]) < 0.01, "角度の全探索で最大は与えた解")
+R12 = np.array([[0.5, 0.2], [0.1, 0.4]])
+Rfull = np.block([[np.eye(2), R12], [R12.T, np.eye(2)]])
+E.check("s22p11c", np.all(np.linalg.eigvalsh(Rfull) > 0), "4 変数の相関行列が正定値")
+cc = np.linalg.svd(R12, compute_uv=False)
+E.num("s22p11c", rnd(cc[0], 2), "特異値分解で第1正準相関")
+# 一般式 Rxx^-1 Rxy Ryy^-1 Ryx の固有値でも確認
+ev = np.sort(np.linalg.eigvals(R12 @ R12.T).real)[::-1]
+E.check("s22p11c", abs(math.sqrt(ev[0]) - cc[0]) < 1e-12, "固有値の平方根と一致")
 
-# ---- 大問12
-om = sp.symbols("omega")
-fsp = 1 / (1 - 2 * sp.Rational(3, 5) * sp.cos(om) + sp.Rational(9, 25))
-ratio = fsp.subs(om, 0) / fsp.subs(om, sp.pi)
-E.choice("s22p12a", f"比は${int(ratio)}$で、長い周期", "sympy でスペクトル比")
-# AR(1) を発生させてピリオドグラムで低周波が強いことを確認
-e = rng.normal(0, 1, 200000)
-xa = np.empty_like(e)
-xa[0] = e[0]
-for i in range(1, len(e)):
-    xa[i] = 0.6 * xa[i - 1] + e[i]
-E.check("s22p12a", abs(np.corrcoef(xa[1:], xa[:-1])[0, 1] - 0.6) < 0.01, "シミュレーションの自己相関 0.6")
+# ---- 大問12：MA(1) をシミュレーションし、ε_3 を条件にした x_4 の条件付き平均を確認する代わりに、
+# sympy で誤差を連立方程式から解き、予測式を求める
+e1, e2, e3 = sp.symbols("e1 e2 e3")
+sol = sp.solve([sp.Eq(53, 50 + e1), sp.Eq(47, 50 + e2 + sp.Rational(3, 5) * e1), sp.Eq(54, 50 + e3 + sp.Rational(3, 5) * e2)], [e1, e2, e3])
+x4 = 50 + sp.Rational(3, 5) * sol[e3]
+E.choice("s22p12a", f"$({f(float(x4), 2)},\\ 50.00)$", "sympy で誤差を解いて 1 期先・2 期先")
+# 2 期先の予測が平均になること：シミュレーションで x_{t+2} と過去の値が無相関
+eps = rng.normal(0, 1, 500001)
+xx = 50 + eps[1:] + 0.6 * eps[:-1]
+E.check("s22p12a", abs(np.corrcoef(xx[2:], xx[:-2])[0, 1]) < 0.01 and abs(np.corrcoef(xx[1:], xx[:-1])[0, 1] - 0.6 / 1.36) < 0.01,
+        "シミュレーションで ρ1=θ/(1+θ²)・ρ2=0")
 
-# ---- 大問13：分割区データを作って statsmodels なしで平方和を分解し、主区誤差で F を計算する仕組みを確認
-E.check("s22p13a", abs(stats.f.ppf(0.95, 2, 6) - 5.14) < 0.005 and abs(stats.f.ppf(0.95, 2, 9) - 4.26) < 0.005
-        and abs(stats.f.ppf(0.95, 2, 15) - 3.68) < 0.005, "F の点")
-dfE1 = (4 - 1) * (3 - 1)
-dfE2 = 24 - 1 - (3 + 2 + dfE1 + 1 + 2)
-E.check("s22p13a", dfE1 == 6 and dfE2 == 9, "自由度 6・9")
-E.choice("s22p13a", f"$F={f((36 / 2) / (24 / dfE1), 2)}$で$F_{{0.05}}(2,6)", "主区誤差で F")
-# 期待平均平方の確認：主区誤差のある模型で、A の効果 0 のとき E[MS_A] ≈ E[MS_E1] になることをシミュレーション
-msA, msE1, msE2 = [], [], []
-for _ in range(3000):
-    blk = rng.normal(0, 1, 4)[:, None, None]
-    wp = rng.normal(0, 1.5, (4, 3))[:, :, None]
-    eps = rng.normal(0, 1, (4, 3, 2))
-    yy = blk + wp + eps
-    g = yy.mean()
-    mb, ma = yy.mean((1, 2)), yy.mean((0, 2))
-    mab = yy.mean(2)
-    ssA = 8 * np.sum((ma - g) ** 2)
-    ssE1 = 2 * np.sum((mab - mb[:, None] - ma[None, :] + g) ** 2)
-    msA.append(ssA / 2)
-    msE1.append(ssE1 / 6)
-E.check("s22p13a", abs(np.mean(msA) / np.mean(msE1) - 1) < 0.05, f"A の効果 0 で E[MS_A]/E[MS_E1]={np.mean(msA) / np.mean(msE1):.3f}≈1")
+# ---- 大問13：8 処理の対比表を作り、各分け方でどの効果が日と交絡するかを全探索
+import itertools  # noqa: E402
+runs = list(itertools.product([-1, 1], repeat=3))
+name = lambda r_: "".join(c for c, v in zip("abc", r_) if v > 0) or "(1)"
+effects = {"A": (0,), "B": (1,), "C": (2,), "AB": (0, 1), "AC": (0, 2), "BC": (1, 2), "ABC": (0, 1, 2)}
+def confounded(day2):
+    out = []
+    for k_, idx in effects.items():
+        col = [np.prod([r_[i] for i in idx]) for r_ in runs]
+        blk = [1 if name(r_) in day2 else -1 for r_ in runs]
+        if abs(np.dot(col, blk)) == 8:
+            out.append(k_)
+    return out
+it = E.item("s22p13a")
+ok = []
+for i, c in enumerate(it["choices"]):
+    day2 = set(x.strip() for x in c.split("2 日目 {")[1].rstrip("}").split(","))
+    ok.append(confounded(day2))
+E.check("s22p13a", ok[it["answer"]] == ["ABC"] and all(o != ["ABC"] for i, o in enumerate(ok) if i != it["answer"]), f"交絡する効果 {ok}")
 
 E.done()
