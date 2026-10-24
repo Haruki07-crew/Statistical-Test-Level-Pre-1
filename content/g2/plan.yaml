@@ -500,7 +500,6 @@ chapters:
     title: プールした分散
     importance: B
     status: verified
-    from: pre1
   - id: welch-test
     title: ウェルチの検定
     importance: A
@@ -513,12 +512,10 @@ chapters:
     title: 等分散のF検定
     importance: B
     status: verified
-    from: pre1
   - id: two-sample-proportion-test
     title: 2標本の比率の差の検定
     importance: B
     status: verified
-    from: pre1
   - id: goodness-of-fit-test
     title: 適合度検定
     importance: A
@@ -599,12 +596,10 @@ chapters:
     title: 乱塊法
     importance: B
     status: verified
-    from: pre1
   - id: main-effect-and-interaction
     title: 主効果と交互作用
     importance: B
     status: verified
-    from: pre1
   - id: two-way-anova-with-replication
     title: 二元配置分散分析（繰り返しあり）
     importance: C

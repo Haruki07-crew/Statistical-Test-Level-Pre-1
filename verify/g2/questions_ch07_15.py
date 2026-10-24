@@ -150,5 +150,8 @@ q.check("q15-sum-of-squares-decomposition-g1", (20 + 24 + 25) / 3 == 23, "全体
 g3 = [np.array([1, 2, 3.]), np.array([4, 5, 6.]), np.array([7, 8, 9.])]; a3 = np.concatenate(g3)
 st3 = ((a3 - 5) ** 2).sum(); sa3 = sum(3 * (x.mean() - 5) ** 2 for x in g3); se3 = sum(((x - x.mean()) ** 2).sum() for x in g3)
 q.check("q15-sum-of-squares-decomposition-g2", st3 == 60 and sa3 == 54 and se3 == 6 and abs(st3 / 8 - (sa3 / 2 + se3 / 6)) > 1, "平均平方 7.5 ≠ 27 + 1（answer=false）")
+q.num("q15-randomized-block-design-g1", (4 - 1) * (6 - 1))
+q.check("q15-randomized-block-design-g1", 23 - 3 - 5 == 15 and 24 - 4 == 20, "全体 23 − 3 − 5")
+q.num("q15-main-effect-and-interaction-g1", (35 - 22) - (25 - 20))
 run(q)
 raise SystemExit(1 if ng else 0)

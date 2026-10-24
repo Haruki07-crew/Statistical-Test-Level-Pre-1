@@ -13,11 +13,6 @@ chebyshev-inequality: 分布の形によらず、平均から標準偏差の k �
 ci-variance-ratio: 出題はまれ。F 分布の2つの点を使うことだけ知っておけば十分。
 fisher-z-transformation: 相関係数を z 変換し、標準偏差 1/√(n－3) で区間を作って元に戻す手順を押さえる。
 finite-population-correction: 戻さずに抽出するとき、標本平均の分散に (N－n)/(N－1) を掛けることを押さえる。
-pooled-variance: （n₁－1）s₁²＋（n₂－1）s₂² を n₁＋n₂－2 で割る計算を押さえる。
-f-test-equal-variances: 不偏分散の比を F 分布（自由度の順に注意）の点と比べる手順を押さえる。
-two-sample-proportion-test: 2群を合わせた比率で標準誤差を作る z 検定を押さえる。
 test-correlation-coefficient: t ＝ r√(n－2) ÷ √(1－r²) を自由度 n－2 の t 分布で検定する手順を押さえる。
 confidence-and-prediction-interval-regression: 予測区間は信頼区間より広く、どちらも x が平均から離れるほど広くなる、という性質を押さえる。
-randomized-block-design: ブロックを作ってその中で処理を比べる目的と、誤差の自由度が（処理の数－1）×（ブロックの数－1）になることを押さえる。
-main-effect-and-interaction: 組合せごとの平均の表から、一方の効果がもう一方の水準で変わる（交互作用）ことを読み取れるようにする。
 two-way-anova-with-replication: 出題はまれ。交互作用を検定するには繰り返しが必要、ということを知っておけば十分。

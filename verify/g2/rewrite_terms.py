@@ -372,6 +372,18 @@ check(T, "母標準偏差 10：標本平均の SD 1（n=100）・0.1（n=10000�
 T = "required-sample-size"
 check(T, "母平均 9.8²=96.04 → 97・母比率 78.4²×0.25≈1536.6 → 1537・±5 で 385・図の値", close(9.8 ** 2, 96.04, 1e-9) and close(78.4 ** 2 * .25, 1536.64, 1e-6) and int(np.ceil((1.96 / .05) ** 2 * .25)) == 385 and [int(np.ceil((1.96 / (e / 100)) ** 2 * .25 - 1e-9)) for e in range(1, 11)] == [9604, 2401, 1068, 601, 385, 267, 196, 151, 119, 97], None)
 
+T = "f-test-equal-variances"
+check(T, "F=3.0・F0.025(12,10)=3.621・F0.05(12,10)=2.913・p≈0.046", close(36 / 12, 3, 1e-12) and close(stats.f.isf(.025, 12, 10), 3.621) and close(stats.f.isf(.05, 12, 10), 2.913) and close(stats.f.sf(3, 12, 10), .046, 5e-4), stats.f.sf(3, 12, 10))
+T = "pooled-variance"
+check(T, "(50+160)/15=14・単純な平均 13", close((5 * 10 + 10 * 16) / 15, 14, 1e-12) and (10 + 16) / 2 == 13, None)
+T = "two-sample-proportion-test"
+check(T, "p̂=0.25・SE≈0.0354・z≈2.83・両側 p≈0.005・χ²=8.0", close(150 / 600, .25, 1e-12) and close(sqrt(.25 * .75 * 2 / 300), .0354, 5e-5) and close(.1 / sqrt(.25 * .75 * 2 / 300), 2.83, 0.005) and close(2 * stats.norm.sf(2.828), .005, 5e-4) and close(stats.chi2_contingency([[90, 210], [60, 240]], correction=False).statistic, 8.0, 1e-9), None)
+T = "randomized-block-design"
+rb = np.array([[30, 34, 37], [36, 38, 43], [40, 44, 46.]]); gr = rb.mean(); STr = ((rb - gr) ** 2).sum(); SAr = 3 * ((rb.mean(0) - gr) ** 2).sum(); SBr = 3 * ((rb.mean(1) - gr) ** 2).sum(); SEr = STr - SAr - SBr
+check(T, "平均 35.3・38.7・42.0／33.7・39.0・43.3・S_A≈66.7・S_B≈140.7・S_E≈2.7・F≈50・6.944・一元配置 F≈1.40・5.143", np.allclose(rb.mean(0), [35.33, 38.67, 42.0], atol=0.005) and np.allclose(rb.mean(1), [33.67, 39.0, 43.33], atol=0.005) and close(SAr, 66.7, 0.05) and close(SBr, 140.7, 0.05) and close(SEr, 2.7, 0.05) and close((SAr / 2) / (SEr / 4), 50, 1e-6) and close(stats.f.isf(.05, 2, 4), 6.944) and close(stats.f_oneway(*rb.T).statistic, 1.40, 0.005) and close(stats.f.isf(.05, 2, 6), 5.143), None)
+T = "main-effect-and-interaction"
+check(T, "B2 の効果 6 と 18・交互作用の目安 12・肥料の主効果 12・品種の主効果 10", 56 - 50 == 6 and 72 - 54 == 18 and 18 - 6 == 12 and (6 + 18) / 2 == 12 and ((54 - 50) + (72 - 56)) / 2 == 10, None)
+
 ng = results.count(False)
 print(f"書き直した共通の用語の検算: OK {len(results) - ng} / NG {ng}")
 sys.exit(1 if ng else 0)

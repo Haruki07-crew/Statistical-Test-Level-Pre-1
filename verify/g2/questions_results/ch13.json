@@ -3,6 +3,10 @@
   "hash": "44ab69dc5057713e",
   "ok": true
  },
+ "q13-f-test-equal-variances-g1": {
+  "hash": "32d346f995c15af1",
+  "ok": true
+ },
  "q13-goodness-of-fit-test-g1": {
   "hash": "637fb86b2a8f17d4",
   "ok": true
@@ -33,6 +37,14 @@
  },
  "q13-pooled-variance-g1": {
   "hash": "b6e511d4d0827429",
+  "ok": true
+ },
+ "q13-pooled-variance-g2": {
+  "hash": "02e41251c52c6118",
+  "ok": true
+ },
+ "q13-two-sample-proportion-test-g1": {
+  "hash": "a6f360adbb7b217a",
   "ok": true
  },
  "q13-two-sample-t-test-g1": {
