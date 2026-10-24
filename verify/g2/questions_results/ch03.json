@@ -1,4 +1,8 @@
 {
+ "q03-correlation-matrix-g1": {
+  "hash": "b928e1d55843c253",
+  "ok": true
+ },
  "q03-covariance-and-correlation-g1": {
   "hash": "883efc5d0df0897c",
   "ok": true
@@ -17,6 +21,10 @@
  },
  "q03-cross-tabulation-3": {
   "hash": "5914f379d0c86d78",
+  "ok": true
+ },
+ "q03-partial-correlation-coefficient-g1": {
+  "hash": "04a148da4b1c3799",
   "ok": true
  },
  "q03-scatter-plot-1": {

@@ -261,6 +261,22 @@ check(T, "例2 3/10×2/9=6/90≈0.067", close(3 / 10 * 2 / 9, 6 / 90, 1e-12) and
 T = "independence-of-events"
 check(T, "A∩B={2,4}: 1/3=1/2×2/3（独立）・A∩C={4,6}: 1/3≠1/4・P(A|C)=2/3・図 P(B|Aᶜ)=2/3", close(2 / 6, .5 * 4 / 6, 1e-12) and abs(2 / 6 - .5 * .5) > .05 and close(2 / 3, 2 / 3, 0) and close(1 - 0.3333, 2 / 3, 1e-4) and close(0.6667, 2 / 3, 1e-4), None)
 
+T = "correlation-matrix"
+cm = {("国語", "社会"): .68, ("国語", "数学"): .21, ("国語", "理科"): .30, ("社会", "数学"): .25, ("社会", "理科"): .40, ("数学", "理科"): .74}
+check(T, "最大は数学と理科 0.74・次が国語と社会 0.68・最小は国語と数学 0.21・組の数 4×3/2=6", max(cm, key=cm.get) == ("数学", "理科") and sorted(cm.values())[-2] == .68 and min(cm, key=cm.get) == ("国語", "数学") and len(cm) == 4 * 3 // 2, None)
+T = "partial-correlation-coefficient"
+check(T, "例 (0.7−0.48)/√(0.64×0.36)=0.22/0.48≈0.46", close((0.7 - .48) / sqrt(.64 * .36), .46, 0.005) and close(sqrt(.2304), .48, 1e-12), None)
+zz_ = rng.normal(size=200000); xx_ = 0.8 * zz_ + 0.6 * rng.normal(size=200000); yy_ = 0.5 * xx_ + 0.7 * zz_ + rng.normal(size=200000)
+rxy, rxz, ryz = np.corrcoef(xx_, yy_)[0, 1], np.corrcoef(xx_, zz_)[0, 1], np.corrcoef(yy_, zz_)[0, 1]
+ex_ = xx_ - np.polyval(np.polyfit(zz_, xx_, 1), zz_); ey_ = yy_ - np.polyval(np.polyfit(zz_, yy_, 1), zz_)
+check(T, "偏相関係数 = z で回帰した残差どうしの相関", close((rxy - rxz * ryz) / sqrt((1 - rxz ** 2) * (1 - ryz ** 2)), np.corrcoef(ex_, ey_)[0, 1], 1e-9), None)
+T = "sum-of-random-variables"
+ds = [a_ + b_ for a_ in range(1, 7) for b_ in range(1, 7)]
+check(T, "例1 さいころ 2 個の和：期待値 7・分散 35/6≈5.83・P(7)=1/6", close(np.mean(ds), 7, 1e-12) and close(np.var(ds), 35 / 6, 1e-12) and close(ds.count(7) / 36, 1 / 6, 1e-12) and close(35 / 6, 5.83, 0.005), None)
+check(T, "例2 B(25,0.3) の分散 5.25", close(stats.binom(25, .3).var(), 5.25, 1e-12), None)
+T = "cumulative-distribution-function"
+check(T, "例1 F(3)=0.5・P(2<X≤5)=1/2・例2 0.512−0.125=0.387・中央値≈0.794", close(3 / 6, .5, 1e-12) and close(5 / 6 - 2 / 6, .5, 1e-12) and close(.8 ** 3 - .5 ** 3, .387, 1e-9) and close(.5 ** (1 / 3), .794, 5e-4), None)
+
 ng = results.count(False)
 print(f"書き直した共通の用語の検算: OK {len(results) - ng} / NG {ng}")
 sys.exit(1 if ng else 0)

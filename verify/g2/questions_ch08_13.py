@@ -31,6 +31,11 @@ q.check("q08-expectation-variance-properties-g3", abs(TA.std() - 5) < 0.02, f"�
 q.num("q08-probability-mass-and-density-function-g1", (1 - .1 - .4 - .2) + .2)
 q.check("q08-probability-mass-and-density-function-g2", chosen(q, "q08-probability-mass-and-density-function-g2").startswith("$P(a\\le X\\le b)$ は、$a$ から $b$ までの") and abs(integrate.quad(lambda x: 3 * x * x, 0, 1)[0] - 1) < 1e-12 and 3 * 1 ** 2 > 1, "面積が確率・f(1)=3>1 の密度がある")
 q.num("q08-probability-mass-and-density-function-g3", 1 - integrate.quad(lambda x: 3 * x * x, 0, .5)[0])
+q.num("q08-sum-of-random-variables-g1", stats.binom(50, .4).var())
+q.check("q08-sum-of-random-variables-g1", abs(np.var(rng.binomial(20, .4, 1_000_000) + rng.binomial(30, .4, 1_000_000)) - 12) < 0.06, "シミュレーション")
+uu = rng.random((1_000_000, 2)).sum(1)
+q.check("q08-sum-of-random-variables-g2", chosen(q, "q08-sum-of-random-variables-g2").startswith("平均 2 と平均 3 のポアソン分布の和") and abs(np.mean(uu < 0.5) - 0.125) < 0.002, f"一様分布 2 つの和は三角形（P(<0.5)={np.mean(uu < 0.5):.4f}、一様なら 0.25）")
+q.num("q08-cumulative-distribution-function-g1", 0.8 - 0.35)
 run(q)
 
 q = Q(9)

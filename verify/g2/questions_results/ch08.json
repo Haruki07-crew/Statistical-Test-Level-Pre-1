@@ -1,4 +1,8 @@
 {
+ "q08-cumulative-distribution-function-g1": {
+  "hash": "abe935edbbea8448",
+  "ok": true
+ },
  "q08-expectation-variance-properties-g1": {
   "hash": "0de3c822d75c20de",
   "ok": true
@@ -21,6 +25,14 @@
  },
  "q08-probability-mass-and-density-function-g3": {
   "hash": "7f11d0e4e23d04db",
+  "ok": true
+ },
+ "q08-sum-of-random-variables-g1": {
+  "hash": "71cc7cffa366cfa6",
+  "ok": true
+ },
+ "q08-sum-of-random-variables-g2": {
+  "hash": "44582e8dea7a0ab1",
   "ok": true
  }
 }

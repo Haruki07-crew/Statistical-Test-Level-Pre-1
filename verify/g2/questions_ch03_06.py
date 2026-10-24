@@ -41,6 +41,8 @@ rs = np.random.default_rng(31); size = rs.normal(0, 1, 5000); trucks = size + 0.
 rr = np.corrcoef(trucks, loss)[0, 1]; part = [np.corrcoef(trucks[m], loss[m])[0, 1] for m in (size < -0.5, np.abs(size) <= 0.5, size > 0.5)]
 q.check("q03-spurious-correlation-g1", rr > 0.7 and max(abs(np.array(part))) < 0.6 and chosen(q, "q03-spurious-correlation-g1").startswith("火事の規模が大きいほど"), f"規模が両方に影響すると r={rr:.2f}、規模で層別すると {np.round(part, 2)}")
 q.num("q03-spurious-correlation-g2", (0.5 - 0.6 * 0.5) / np.sqrt((1 - 0.36) * (1 - 0.25)))
+q.check("q03-correlation-matrix-g1", chosen(q, "q03-correlation-matrix-g1") == "来客数と雨量" and max([("来客数と気温", .45), ("来客数と雨量", -.82), ("気温と雨量", -.30)], key=lambda t: abs(t[1]))[0] == "来客数と雨量", "絶対値の最大は 0.82")
+q.num("q03-partial-correlation-coefficient-g1", (0.6 - 0.5 * 0.4) / np.sqrt(0.75 * 0.84))
 run(q)
 
 # ---------- 第4章 ----------

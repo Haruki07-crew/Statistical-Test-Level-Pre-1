@@ -205,3 +205,42 @@ questions:
     explanation: |
       分子は $0.5-0.6\times 0.5=0.2$、分母は $\sqrt{0.64\times 0.75}=\sqrt{0.48}\approx 0.693$ なので、$0.2/0.693\approx 0.29$ です。
       0.5 の相関の一部は $z$ を通じたものでしたが、$z$ の影響を除いても弱い正の相関が残ります。
+
+  # ---------- 相関係数行列（2級向けに書き直した用語） ----------
+  - id: q03-correlation-matrix-g1
+    term: correlation-matrix
+    level: 基本
+    type: choice
+    question: |
+      ある店舗のデータの相関係数行列の一部は次のとおりだった。直線的な関係が最も強い組はどれか。
+
+      | | 来客数 | 気温 | 雨量 |
+      |---|---|---|---|
+      | 来客数 | 1 | 0.45 | −0.82 |
+      | 気温 | 0.45 | 1 | −0.30 |
+      | 雨量 | −0.82 | −0.30 | 1 |
+    choices:
+      - 来客数と雨量
+      - 来客数と気温
+      - 気温と雨量
+      - 来客数と来客数
+    answer: 0
+    hint: |
+      関係の強さは相関係数の絶対値で比べる。対角は同じ変数どうし。
+    explanation: |
+      絶対値が最も大きいのは来客数と雨量の 0.82 で、雨が多いほど来客数が少ない強い負の関係です。
+      対角の 1 は同じ変数どうしの相関なので、組として比べる対象ではありません。
+
+  # ---------- 偏相関係数（2級向けに書き直した用語） ----------
+  - id: q03-partial-correlation-coefficient-g1
+    term: partial-correlation-coefficient
+    level: 標準
+    type: numeric
+    question: |
+      3 つの変数の相関係数が $r_{xy}=0.6$、$r_{xz}=0.5$、$r_{yz}=0.4$ だった。$z$ の影響を除いた $x$ と $y$ の偏相関係数を小数第 2 位まで求めよ。
+    answer: 0.50
+    tolerance: 0.005
+    hint: |
+      $r_{xy\cdot z}=\dfrac{r_{xy}-r_{xz}r_{yz}}{\sqrt{(1-r_{xz}^2)(1-r_{yz}^2)}}$。
+    explanation: |
+      分子は $0.6-0.5\times 0.4=0.4$、分母は $\sqrt{0.75\times 0.84}=\sqrt{0.63}\approx 0.794$ なので、$0.4/0.794\approx 0.50$ です。

@@ -92,7 +92,6 @@ chapters:
     title: 相関係数行列
     importance: B
     status: verified
-    from: pre1
   - id: stratified-scatter
     title: 層別の散布図
     importance: B
@@ -105,7 +104,6 @@ chapters:
     title: 偏相関係数
     importance: B
     status: verified
-    from: pre1
   - id: cross-tabulation
     title: 度数表と2元クロス表
     importance: A
@@ -269,7 +267,6 @@ chapters:
     title: 累積分布関数
     importance: B
     status: verified
-    from: pre1
   - id: expectation-variance-properties
     title: 期待値と分散の性質
     importance: A
@@ -288,7 +285,6 @@ chapters:
     title: 確率変数の和と再生性
     importance: B
     status: verified
-    from: pre1
 - 'no': 9
   title: 確率分布
   terms:
