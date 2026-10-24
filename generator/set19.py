@@ -114,20 +114,16 @@ def p03():
 
 
 def p04():
-    # (a) 費用を考えた最適配分
-    N1, S1, c1, N2, S2, c2, ntot = 8000, 40, 1, 500, 400, 16, 370
-    w1, w2 = N1 * S1 / sqrt(c1), N2 * S2 / sqrt(c2)
-    n2 = ntot * w2 / (w1 + w2)
-    ney2 = ntot * N2 * S2 / (N1 * S1 + N2 * S2)
-    prop2 = ntot * N2 / (N1 + N2)
-    cost2 = ntot * N2 * S2 / c2 / (N1 * S1 / c1 + N2 * S2 / c2)
+    # (a) 回帰推定量に必要な標本の大きさ
+    n0, rho = 400, 0.8
+    nreg = n0 * (1 - rho ** 2)
     # (b) 多重対応分析
     cats = [3, 4, 2]
     Q, J = len(cats), sum(cats)
     return {
-        "N1": N1, "S1": S1, "c1": c1, "N2": N2, "S2": S2, "c2": c2, "ntot": ntot, "sc2": int(sqrt(c2)),
-        "w1": int(w1), "w2": int(w2), "wsum": int(w1 + w2), "n2": r(n2, 0), "n1": ntot - r(n2, 0), "n2_s": s(n2, 1),
-        "w_ney": s(ney2, 1), "w_prop": s(prop2, 1), "w_cost": s(cost2, 1),
+        "n0": n0, "rho": rho, "rho2": s(rho ** 2, 2), "f": s(1 - rho ** 2, 2), "nreg": r(nreg, 0),
+        "w_1r": r(n0 * (1 - rho), 0), "w_r2": r(n0 * rho ** 2, 0), "w_sq": r(n0 * sqrt(1 - rho ** 2), 0),
+        "w_div": r(n0 / (1 - rho ** 2), 0),
         "Q": Q, "J": J, "c1q": cats[0], "c2q": cats[1], "c3q": cats[2], "in_ok": s((J - Q) / Q, 1), "dim_ok": J - Q,
         "in_jq": s(J / Q, 1), "in_nq": s(J - Q, 1), "in_j": s((J - Q) / J, 3), "dim_j1": J - 1,
     }
@@ -191,20 +187,16 @@ def p07():
         out[f"{k}b"] = s(v[1], 1)
         out[f"{k}y"] = v[2]
         out[f"{k}d"] = s(d2[k], 2)
-    # (b) エラスティックネット（直交計画）
-    b = [1.20, -0.50, 0.25]
-    l1, l2 = 0.6, 0.5
+    # (b) リッジ推定量の偏りと分散（直交計画）
+    beta, sig2 = 1.0, 0.25
+    lam_s = sig2 / beta ** 2
 
-    def soft(v, t):
-        return math.copysign(max(abs(v) - t, 0), v)
-
-    def tri(v):
-        return "(" + ",\\ ".join(s(x + 0.0, 3) for x in v) + ")"
-    en = [soft(v, l1 / 2) / (1 + l2) for v in b]
-    out.update({"b1": s(b[0], 2), "b2": s(b[1], 2), "b3": s(b[2], 2), "l1": l1, "l2": l2, "h1": s(l1 / 2, 1), "d1": s(1 + l2, 1),
-                "en": tri(en), "w_lasso": tri([soft(v, l1 / 2) for v in b]), "w_ridge": tri([v / (1 + l2) for v in b]),
-                "w_full": tri([soft(v, l1) / (1 + l2) for v in b]), "w_two": tri([soft(v, l1 / 2) / (1 + 2 * l2) for v in b]),
-                "s1": s(soft(b[0], l1 / 2), 2), "s2": s(soft(b[1], l1 / 2), 2), "en1": s(en[0], 3), "en2": s(en[1], 3)})
+    def mse(lm):
+        return (sig2 + lm ** 2 * beta ** 2) / (1 + lm) ** 2
+    out.update({"beta": s(beta, 1), "sig2": sig2, "lam": s(lam_s, 2), "mse": s(mse(lam_s), 3), "w_ols": s(sig2, 3),
+                "w_inv": s(beta ** 2 / sig2, 2), "mse_inv": s(mse(beta ** 2 / sig2), 3),
+                "w_var": s(sig2 / (1 + lam_s) ** 2, 3), "w_bias": s(lam_s ** 2 * beta ** 2 / (1 + lam_s) ** 2, 3),
+                "d15": s((1 + lam_s) ** 2, 4), "num": s(sig2 + lam_s ** 2 * beta ** 2, 4), "lb2": s(lam_s ** 2 * beta ** 2, 4)})
     # (c) ベイズ決定
     al, be, nn, y = 2, 48, 50, 4
     ap, bp = al + y, be + nn - y
@@ -256,27 +248,16 @@ def p08():
 
 
 def p09():
-    n1, m1, v1, n2, m2, v2 = 10, 5.20, 0.90, 15, 4.40, 0.30
-    a, b = v1 / n1, v2 / n2
-    se = sqrt(a + b)
-    nu = (a + b) ** 2 / (a ** 2 / (n1 - 1) + b ** 2 / (n2 - 1))
-    tt = {9: 2.262, 13: 2.160, 23: 2.069}
-    nuf = int(nu)
-    assert nuf == 13
-    diff = m1 - m2
+    x = 16
+    rt = sqrt(x)
+    h = 1.96 / 2
+    lo, hi = (rt - h) ** 2, (rt + h) ** 2
 
-    def iv(c, h):
-        return f"({s(c - h, 3)},\\ {s(c + h, 3)})"
-    sp2 = ((n1 - 1) * v1 + (n2 - 1) * v2) / (n1 + n2 - 2)
-    se_p = sqrt(sp2 * (1 / n1 + 1 / n2))
-    out = {
-        "n1": n1, "m1": s(m1, 2), "v1": s(v1, 2), "n2": n2, "m2": s(m2, 2), "v2": s(v2, 2), "a": s(a, 2), "b": s(b, 2),
-        "ab": s(a + b, 2), "se": s(se, 5), "a2": s(a ** 2 / (n1 - 1), 7), "b2": s(b ** 2 / (n2 - 1), 7),
-        "ab2": s((a + b) ** 2, 4), "nu": s(nu, 2), "nuf": nuf, "t9": s(tt[9], 3), "t13": s(tt[13], 3), "t23": s(tt[23], 3),
-        "diff": s(diff, 2), "half": s(tt[13] * se, 4),
-        "ci_ok": iv(diff, tt[13] * se), "ci_pool": iv(diff, tt[23] * se_p), "ci_23": iv(diff, tt[23] * se),
-        "ci_z": iv(diff, 1.96 * se), "ci_9": iv(diff, tt[9] * se),
-    }
+    def iv(a_, b_):
+        return f"({s(a_, 2)},\\ {s(b_, 2)})"
+    out = {"x": x, "rt": s(rt, 0), "h": s(h, 2), "rlo": s(rt - h, 2), "rhi": s(rt + h, 2),
+           "ci_ok": iv(lo, hi), "ci_wald": iv(x - 1.96 * rt, x + 1.96 * rt), "ci_no2": iv((rt - 1.96) ** 2, (rt + 1.96) ** 2),
+           "ci_raw": iv(rt - h, rt + h), "ci_exact": iv(9.145, 25.98), "c32": 18.29, "c34": 51.97}
     P = [[Fraction(90, 100), Fraction(6, 100), Fraction(4, 100)], [Fraction(5, 10), Fraction(4, 10), Fraction(1, 10)],
          [Fraction(6, 10), Fraction(0), Fraction(4, 10)]]
     names = ["nn", "nm", "ns", "mn", "mm", "ms", "sn", "sm", "ss"]
@@ -334,14 +315,17 @@ def p11():
 
 
 def p12():
-    l1, l2 = 2.004, 0.613
-    e11, e21 = 0.580, 0.559
-    a1, a2 = l1 * e11 ** 2, l2 * e21 ** 2
-    tot = a1 + a2
-    return {"l1": s(l1, 3), "l2": s(l2, 3), "e11": s(e11, 3), "e12": s(0.613, 3), "e13": s(0.536, 3),
-            "e21": s(e21, 3), "e22": s(0.179, 3), "e23": s(-0.810, 3), "e11sq": s(e11 ** 2, 4), "e21sq": s(e21 ** 2, 4),
-            "a1": s(a1, 4), "a2": s(a2, 4), "ans": r(tot, 3), "ans_s": s(tot, 3), "ans4": s(tot, 4),
-            "w_pc1": s(a1, 3), "w_e2": s(e11 ** 2 + e21 ** 2, 3), "w_noq": s(l1 * e11 + l2 * e21, 3)}
+    S = [[5.1, 3.1, 1.6], [3.1, 5.1, 1.6], [1.6, 1.6, 2.6]]
+    e = [Fraction(2, 3), Fraction(2, 3), Fraction(1, 3)]
+    Se = [sum(Fraction(str(S[i][j])) * e[j] for j in range(3)) for i in range(3)]
+    lam = Se[0] / e[0]
+    assert all(Se[i] == lam * e[i] for i in range(3))
+    tr = sum(S[i][i] for i in range(3))
+    out = {f"S{i}{j}": S[i][j] for i in range(3) for j in range(3)}
+    out.update({"Se0": s(Se[0] * 3, 0), "Se2": s(Se[2] * 3, 0), "lam": s(lam, 0), "tr": s(tr, 1), "ans": r(float(lam) / tr, 3),
+                "ans_s": s(float(lam) / tr, 3), "ans4": s(float(lam) / tr, 4), "w_raw": s(81 / tr, 2),
+                "w_sum": s(float(lam) / sum(sum(rw) for rw in S), 3), "w_diag": s(5.1 / tr, 3)})
+    return out
 
 
 def p13():

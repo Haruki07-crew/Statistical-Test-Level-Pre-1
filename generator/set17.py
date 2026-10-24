@@ -109,7 +109,7 @@ def p03():
     pp = (x1 + x2) / (n1 + n2)
     z_pool = (p1 - p2) / sqrt(pp * (1 - pp) * (1 / n1 + 1 / n2))
     return {
-        "rooms": rooms, "book": book, "q": s(q, 2), "pw": s(pw, 6), "nsmax": book - rooms - 1,
+        "rooms": rooms, "book": book, "q": s(q, 2), "q1": s(1 - q, 2), "pw": s(pw, 6), "nsmax": book - rooms - 1,
         "c2": c2, "t0": s(t0, 4), "t1": s(t1, 4), "t2": s(t2, 4), "tsum": s(t0 + t1 + t2, 4),
         "over": r(over, 3), "over_s": s(over, 3), "over4": s(over, 4),
         "over_le1": s(pw * (t0 + t1), 3), "only2": s(pw * t2, 3),
@@ -199,7 +199,7 @@ def p07():
         "n": n, "nobs": nobs, "nmis": n - nobs, "s2": s(s2, 1), "v_imp": r(v_imp, 2), "v_imp_s": s(v_imp, 2), "v_imp4": s(v_imp, 4),
         "ss": s((nobs - 1) * s2, 1), "nobs1": nobs - 1, "n1": n - 1, "ratio": s((nobs - 1) / (n - 1), 4),
         "v_nobs": s(nobs * s2 / n, 2),
-        "N": N, "m": m, "yb": s(yb, 1), "sd": s(sd, 1), "tot": s(N * yb, 0), "fpc": s(fpc, 2), "v_in": s(fpc * sd ** 2 / m, 3),
+        "N": N, "m": m, "yb": s(yb, 1), "sd": s(sd, 1), "sd2": s(sd ** 2, 1), "tot": s(N * yb, 0), "fpc": s(fpc, 2), "v_in": s(fpc * sd ** 2 / m, 3),
         "se_mean": s(se_mean, 4), "se_tot": s(se_tot, 0), "se_nofpc": s(N * sd / sqrt(m), 0), "se_m2": s(se_mean, 2),
         "se_fpcsd": s(N * sd / sqrt(m) * fpc, 0), "w_ns": s(N * sd / m, 0),
     }
@@ -212,7 +212,7 @@ def p08():
     t = (b + 1) / se
     return {
         "n": n, "k": k, "df": n - k - 1, "b": s(b, 2), "se": s(se, 2), "t49": s(t49, 3), "t": s(t, 2),
-        "t0": s(b / se, 2), "bp1": s(b + 1, 2), "pct": s(-b, 2),
+        "t0": s(b / se, 2), "tabs": s(abs(t), 2), "bp1": s(b + 1, 2), "pct": s(-b, 2),
     }
 
 

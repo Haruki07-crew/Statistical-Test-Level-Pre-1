@@ -1,0 +1,915 @@
+set: 28
+title: 模擬試験 第28回
+minutes: 90
+problems:
+  - id: s28p01
+    title: ウェーハの欠陥とチップ歩留まり
+    context: |
+      ある半導体工場では、ウェーハ上の致命欠陥が面積あたり一定の密度で互いに独立に散らばっているとみなし、
+      面積 $A$ (cm²) のチップに乗る欠陥の個数が平均 $\lambda=DA$ のポアソン分布に従うと考える（$D$ は欠陥密度、単位は個/cm²）。
+      チップは欠陥が 1 個もないときだけ良品になる。
+    items:
+      - id: s28p01a
+        chapter: 5
+        terms: [poisson-distribution, expected-value]
+        topic: 欠陥密度一定のポアソン歩留まりモデルでチップ面積の大きい品種のウェーハ1枚あたり良品チップ数の期待値を求める
+        level: 基本
+        definition: false
+        type: numeric
+        question: |
+          欠陥密度が $D=«D»$ 個/cm² のとき、チップ面積 «AB» cm² の品種 B はウェーハ 1 枚から «nB» 個のチップがとれる。
+          品種 B のウェーハ 1 枚あたりの良品チップ数の期待値を求めよ。必要なら $e^{-0.5}=«eA»$、$e^{-1.0}=«eB»$ を使え。
+        answer: «goodB»
+        tolerance: 0.1
+        answer_format: 小数第1位まで（小数第2位を四捨五入）で答えよ。±0.1 の差まで正解とする。
+        explanation: |
+          **方針** 1 個のチップが良品である確率は、ポアソン分布で欠陥が 0 個の確率 $P(X=0)=e^{-\lambda}$。各チップが良品かどうかの指示変数の和の期待値は、期待値の線形性から「チップ数 × 良品の確率」になる。
+
+          **途中式** 品種 B では $\lambda=DA=«D»\times«AB»=«lamB»$ なので、1 チップが良品の確率は $e^{-«lamB»}=«eB»$。
+          $$E[\text{良品チップ数}]=«nB»\times«eB»=«goodB3»$$
+
+          **答え** $«goodB_s»$ 個
+
+          **間違えやすい点** 面積 1.0 cm² の品種の良品確率 $e^{-0.5}=«eA»$ をそのまま使うと $«goodB_A»$ になる。面積が 2 倍になると欠陥の平均個数 $\lambda$ が 2 倍になり、良品確率は $e^{-0.5}$ の 2 乗に下がる（2 倍ではなく指数的に下がる）。
+          なお同じ欠陥密度で面積 «AA» cm² の品種 A（1 枚 «nA» 個）なら期待値は $«nA»\times«eA»=«goodA»$ 個で、大きなチップは個数でも歩留まりでも不利になる。
+
+      - id: s28p01b
+        chapter: 7
+        terms: [delta-method, standard-error, poisson-distribution]
+        topic: テストチップの欠陥数から推定したポアソン平均を使う歩留まり推定値exp(−λ)の標準誤差をデルタ法で求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          新しいプロセスで面積 1.0 cm² のテストチップ «n» 個を調べたところ、欠陥は合計 «T» 個だった。
+          1 チップあたりの欠陥数の平均 $\lambda$ を $\hat\lambda=\bar X=«T»/«n»$ で推定し、歩留まり $Y=e^{-\lambda}$ を $\hat Y=e^{-\hat\lambda}$ で推定する。
+          $\hat Y$ の標準誤差をデルタ法で推定した値に最も近いものはどれか。各チップの欠陥数は独立に平均 $\lambda$ のポアソン分布に従うとし、$e^{-0.6}=«e06»$ を使え。
+        choices:
+          - "$«var_y»$"
+          - "$«nosqrt»$"
+          - "$«se_y»$"
+          - "$«bin_se»$"
+          - "$«se_lam»$"
+        answer: 2
+        distractors:
+          - 標準誤差ではなく分散（微分係数の2乗×V[λ^]）を答えた
+          - V[λ^]=λ/n の平方根をとり忘れた
+          - 正解
+          - デルタ法を使わず、欠陥0個のチップの割合の二項分布の標準誤差 √(Y(1−Y)/n) を計算した
+          - λ^ の標準誤差をそのまま答え、微分係数 e^{−λ} を掛け忘れた
+        explanation: |
+          **方針** ポアソン分布の標本平均は $V[\bar X]=\lambda/n$。$g(\lambda)=e^{-\lambda}$ に対してデルタ法 $V[g(\hat\lambda)]\approx\{g'(\lambda)\}^2V[\hat\lambda]$ を使い、未知の $\lambda$ に推定値を代入する。
+
+          **途中式** $\hat\lambda=«T»/«n»=«lam»$、$\widehat{V}[\hat\lambda]=«lam»/«n»=«lamn»$、$\mathrm{SE}(\hat\lambda)=\sqrt{«lamn»}=«se_lam»$。
+          $g'(\lambda)=-e^{-\lambda}$ なので
+          $$\mathrm{SE}(\hat Y)\approx|g'(\hat\lambda)|\,\mathrm{SE}(\hat\lambda)=«e06»\times«se_lam»=«se_y5»\cdots$$
+
+          **答え** $«se_y»$
+
+          **間違えやすい点** 微分係数を掛け忘れると $«se_lam»$、平方根をとり忘れると $«e06»\times«lamn»=«nosqrt»$、標準誤差の 2 乗（分散）$«e06sq»\times«lamn»=«var_y»$ を答える誤りもある。
+          欠陥 0 個のチップの割合を二項分布で扱った $\sqrt{«e06»\times(1-«e06»)/«n»}=«bin_se»$ は別の推定量（0 個の割合）の標準誤差で、欠陥数をすべて使う $e^{-\bar X}$ より大きい。
+
+      - id: s28p01c
+        chapter: 2
+        terms: [conditional-probability-function, poisson-distribution]
+        topic: ウェーハごとに欠陥の平均がばらつくポアソン混合で同じウェーハの10チップの欠陥数合計の分散を全分散の公式で求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          実際には欠陥の平均はウェーハごとにばらつく。1 チップあたりの欠陥数の平均 $\Lambda$ はウェーハごとに異なる確率変数で、
+          $E[\Lambda]=«muL»$、標準偏差 $«sdL»$ とする。同じウェーハ上の «m» 個のチップの欠陥数は、$\Lambda$ を与えると互いに独立に平均 $\Lambda$ のポアソン分布に従う。
+          1 枚のウェーハから選んだ «m» 個のチップの欠陥数の合計 $S$ の分散 $V[S]$ はどれか。
+        choices:
+          - "$«vS_pois»$"
+          - "$«vS_m»$"
+          - "$«vS_only»$"
+          - "$«vS»$"
+          - "$«vS_sd»$"
+        answer: 3
+        distractors:
+          - Λ のばらつきを無視して平均 6.0 のポアソン分布の分散とした
+          - Λ のばらつきの寄与を m·V[Λ] と、チップごとに独立に変わるかのように数えた
+          - 条件付き分散の期待値 E[V[S|Λ]] を落とした
+          - 正解
+          - V[Λ] の代わりに標準偏差 0.3 を使った
+        explanation: |
+          **方針** 条件付き分布を使う全分散の公式 $V[S]=E\big[V[S\mid\Lambda]\big]+V\big[E[S\mid\Lambda]\big]$ を使う。$\Lambda$ を与えると $S$ は独立なポアソン分布の和なので、平均 $«m»\Lambda$ のポアソン分布に従う。
+
+          **途中式** $E[S\mid\Lambda]=V[S\mid\Lambda]=«m»\Lambda$。よって
+          $$E\big[V[S\mid\Lambda]\big]=«m»\times«muL»=«mmu»,\qquad V\big[E[S\mid\Lambda]\big]=«m»^2V[\Lambda]=«m2»\times«varL»=«m2v»$$
+          $$V[S]=«mmu»+«m2v»=«vS»$$
+
+          **答え** $«vS»$
+
+          **間違えやすい点** 同じウェーハの «m» チップは共通の $\Lambda$ をもつので、$\Lambda$ のばらつきは $«m»^2$ 倍で効く（チップどうしに正の共分散がある）。$«m»V[\Lambda]$ と数えると $«vS_m»$、ばらつきを無視すると $«vS_pois»$ になり、ウェーハ間変動を過小評価する。分散 $«varL»$ と標準偏差 $«sdL»$ の取り違えにも注意（$«vS_sd»$）。
+
+  - id: s28p02
+    title: ボンディングワイヤの熱サイクル寿命
+    context: |
+      パワー半導体モジュールのボンディングワイヤが断線するまでの熱サイクル数 $T$ は、分布関数
+      $$F(t)=1-\exp\left\{-\left(\frac{t}{\eta}\right)^m\right\}\quad(t\ge0)$$
+      のワイブル分布に従うとする。形状母数は $m=«m»$、尺度母数は $\eta=«eta»$ サイクルである。
+    items:
+      - id: s28p02a
+        chapter: 6
+        terms: [cumulative-distribution-function, survival-function]
+        topic: ワイブル分布に従う熱サイクル寿命で10%が故障するサイクル数（B10寿命）を分布関数から求める
+        level: 基本
+        definition: false
+        type: numeric
+        question: |
+          全体の 10% のワイヤが断線するまでのサイクル数（B10 寿命）$t_{10}$、すなわち $F(t_{10})=0.10$ を満たす $t_{10}$ を求めよ。
+          必要なら $\ln 0.9=«ln09»$ を使え。
+        answer: «b10»
+        tolerance: 0.4
+        answer_format: 整数で答えよ（小数第1位を四捨五入。許容範囲 ±0.4、すなわち整数が一致したときのみ正解）。
+        explanation: |
+          **方針** $F(t)=0.10$ を $t$ について解く。生存関数 $1-F(t)=\exp\{-(t/\eta)^m\}=0.90$ の対数をとる。
+
+          **途中式**
+          $$\left(\frac{t_{10}}{\eta}\right)^{«m»}=-\ln 0.9=«mln09»,\qquad t_{10}=«eta»\times\sqrt{«mln09»}=«eta»\times«rt»=«b10_s»$$
+
+          **答え** $«b10»$ サイクル
+
+          **間違えやすい点** 形状母数 $m=«m»$ の $1/m$ 乗（平方根）をとり忘れると $«b10_noroot»$ になる。
+          $F(t)=0.10$ ではなく生存確率 0.10 として $\ln 0.1$ を使うと 90% が断線する時点になってしまう。また尺度母数 $\eta$ は中央値ではなく「約 63.2% が故障する時点」で、中央値は $\eta\sqrt{\ln 2}\approx«b10_50»$ である。
+
+      - id: s28p02b
+        chapter: 32
+        terms: [inverse-transform-sampling, uniform-random-number]
+        topic: ワイブル分布の分布関数の逆関数で一様乱数から熱サイクル寿命の乱数を作る逆関数法
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          寿命のシミュレーションで、区間 $(0,1)$ の一様乱数 $U$ から逆関数法で $T$ の乱数を作る。
+          $F(t)=U$ を $t$ について解く方法で、$U=«u»$ が出たときに生成される値に最も近いものはどれか。
+          必要なら $\ln 0.25=«ln025»$、$\ln 0.75=«ln075»$ を使え。
+        choices:
+          - "$«t_in»$"
+          - "$«t_u»$"
+          - "$«t_ok»$"
+          - "$«t_nosq»$"
+          - "$«t_sq»$"
+        answer: 2
+        distractors:
+          - η を平方根の中に入れて √(η·(−ln(1−U))) とした
+          - F(t)=U ではなく生存関数 1−F(t)=U を解いた（−ln U を使った）
+          - 正解
+          - 1/m 乗（平方根）をとり忘れた
+          - 1/m 乗の代わりに m 乗した
+        explanation: |
+          **方針** 逆関数法では $T=F^{-1}(U)$ とすれば $T$ が分布関数 $F$ に従う。$1-\exp\{-(t/\eta)^m\}=u$ を $t$ について解く。
+
+          **途中式**
+          $$\exp\left\{-\left(\frac{t}{\eta}\right)^{«m»}\right\}=1-u\ \Longrightarrow\ t=\eta\{-\ln(1-u)\}^{1/«m»}$$
+          $u=«u»$ のとき $-\ln(1-«u»)=-\ln 0.25=«mln025»$ なので
+          $$t=«eta»\times\sqrt{«mln025»}=«eta»\times«rt025»\approx«t_ok»$$
+
+          **答え** $«t_ok»$
+
+          **間違えやすい点** $1-U$ も一様分布に従うので $\eta(-\ln U)^{1/m}$ でも同じ分布の乱数は作れるが、問題は「$F(t)=U$ を解く」方法を指定しているので、$-\ln 0.75$ を使った $«t_u»$ は誤り。平方根を忘れると $«t_nosq»$、2 乗すると $«t_sq»$ になる。
+
+  - id: s28p03
+    title: 成膜装置の排気系とパージ
+    context: |
+      ある成膜装置の真空排気系は、同じ型のポンプ 2 台を並列につないだ部分、制御器 1 台、同じ型のバルブ 2 個を並列につないだ部分を、この順に直列につないだものである。
+      並列部分は少なくとも 1 台（1 個）が働けば働き、直列につないだ 3 つの部分がすべて働けば排気系は働く。
+      ある期間に各機器が正常に働く確率はポンプ «pp»、制御器 «pc»、バルブ «pv» で、機器どうしの故障は独立とする。
+    items:
+      - id: s28p03a
+        chapter: 1
+        terms: [independence-of-events, inclusion-exclusion-principle]
+        topic: 並列冗長のポンプとバルブを制御器と直列につないだ排気系が働く確率を独立性から求める
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          この期間に排気系が働く確率に最も近いものはどれか。
+        choices:
+          - "$«R_series»$"
+          - "$«R_v1»$"
+          - "$«R_p1»$"
+          - "$«R_union»$"
+          - "$«R»$"
+        answer: 4
+        distractors:
+          - 並列部分も直列とみなし、5台すべてが働く確率を求めた
+          - バルブの並列冗長を忘れてバルブ1個とした
+          - ポンプの並列冗長を忘れてポンプ1台とした
+          - 各部分の故障確率を足して1から引いた（同時に故障する分を重複して引いた近似）
+          - 正解
+        explanation: |
+          **方針** 並列部分が働かないのは「全部が故障」のときだけなので、余事象で $1-(\text{故障確率})^2$。独立な部分を直列につないだ系が働く確率は、各部分が働く確率の積。
+
+          **途中式**
+          $$R_{\text{ポンプ}}=1-«qp»^2=«rp»,\quad R_{\text{制御器}}=«pc»,\quad R_{\text{バルブ}}=1-«qv»^2=«rv»$$
+          $$R=«rp»\times«pc»\times«rv»=«R»$$
+
+          **答え** $«R»$
+
+          **間違えやすい点** すべてを直列とみなすと $«pp»^2\times«pc»\times«pv»^2=«R_series»$。冗長化を片方だけ忘れると $«R_v1»$ や $«R_p1»$。
+          各部分の故障確率 $«qp»^2,\ 1-«pc»,\ «qv»^2$ を足して 1 から引く $«R_union»$ は、2 つ以上の部分が同時に故障する場合を重複して引いた近似で、正確な値ではない。
+
+      - id: s28p03b
+        chapter: 4
+        terms: [change-of-variables, uniform-distribution]
+        topic: 独立な一様分布に従う2回のパージの残留率の積の分布関数を変数変換で求め残留率が基準以下になる確率を出す
+        level: 応用
+        definition: false
+        type: choice
+        question: |
+          成膜前にチャンバー内のガスを 2 回パージする。1 回目・2 回目のパージで残るガスの割合 $R_1,\ R_2$ は独立に区間 $(0,\ «a»)$ の一様分布に従い、
+          2 回後に残る割合は積 $W=R_1R_2$ で表されるとする。$P(W\le «w0»)$ に最も近いものはどれか。必要なら $\ln 0.25=«ln_t»$ を使え。
+        choices:
+          - "$«P_sq»$"
+          - "$«P_t»$"
+          - "$«tlnt»$"
+          - "$«P_sqrt»$"
+          - "$«P»$"
+        answer: 4
+        distractors:
+          - R1 と R2 がどちらも 0.05 以下の確率（境界を両方に割り振った）と取り違えた
+          - 積 W も一様分布に従うと考えた
+          - 分布関数 w−w ln w の第1項を落とした
+          - 積の境界を平方根で両方に割り振り P(U ≦ √0.25) とした
+          - 正解
+        explanation: |
+          **方針** $U_i=R_i/«a»$ とおくと $U_1,U_2$ は独立に $(0,1)$ の一様分布に従い、$W=«a2»\,U_1U_2$。$Z=U_1U_2$ の密度を 2 変数の変数変換で求める。
+
+          **途中式** $Z=U_1U_2,\ V=U_1$ と変換すると $U_1=V,\ U_2=Z/V$、ヤコビアンは $|\partial(u_1,u_2)/\partial(z,v)|=1/v$。$0<z<v<1$ の範囲で同時密度は $1/v$ なので
+          $$f_Z(z)=\int_z^1\frac{1}{v}\,dv=-\ln z\quad(0<z<1),\qquad P(Z\le t)=\int_0^t(-\ln z)\,dz=t-t\ln t$$
+          $W\le «w0»$ は $Z\le «w0»/«a2»=«t»$ と同じなので
+          $$P(W\le «w0»)=«t»-«t»\times(«ln_t»)=«t»+«tlnt»=«P»$$
+
+          **答え** $«P»$
+
+          **間違えやすい点** 一様分布の積は一様分布ではなく、0 の近くに確率が集まる（密度 $-\ln z$ は $z\to0$ で無限大）。そのため $Z\le«t»$ の確率は $«t»$ より大きい。
+          「両方とも $\sqrt{«t»}$ 以下」の確率 $«P_t»$ や、片方だけ $«P_sqrt»$ のように境界を割り振る考え方は、$U_1$ が大きく $U_2$ が小さい組み合わせを落としている。
+
+  - id: s28p04
+    title: 2台の膜厚計の比較
+    context: |
+      同じウェーハ «n» 枚の酸化膜の厚さを、膜厚計 A と膜厚計 B で 1 回ずつ測った（単位 nm）。差は $d=A-B$ である。
+
+      | ウェーハ | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+      |---|---|---|---|---|---|---|---|---|---|---|
+      | A | «a0» | «a1» | «a2» | «a3» | «a4» | «a5» | «a6» | «a7» | «a8» | «a9» |
+      | B | «b0» | «b1» | «b2» | «b3» | «b4» | «b5» | «b6» | «b7» | «b8» | «b9» |
+      | $d$ | «d0» | «d1» | «d2» | «d3» | «d4» | «d5» | «d6» | «d7» | «d8» | «d9» |
+
+      差について $\sum d_i=«sd»$、$\sum d_i^2=«sd2»$ である。
+    items:
+      - id: s28p04a
+        chapter: 11
+        terms: [paired-t-test, t-statistic]
+        topic: 同じウェーハを2台の膜厚計で測った差から対応のあるt検定統計量を求める
+        level: 基本
+        definition: false
+        type: numeric
+        question: |
+          2 台の膜厚計の測定値に系統的な差があるかを、差 $d$ が正規分布に従うとして対応のある $t$ 検定で調べる。
+          帰無仮説「差の母平均は 0」のもとでの検定統計量 $t$ の値を求めよ。標準偏差は不偏分散（$n-1$ で割る）から求めること。
+        answer: «t»
+        tolerance: 0.01
+        answer_format: 小数第2位まで（小数第3位を四捨五入）で答えよ。±0.01 の差まで正解とする。
+        explanation: |
+          **方針** 同じウェーハを 2 台で測っているので、ウェーハごとの差 $d_i$ を 1 標本とみなして 1 標本 $t$ 検定を行う。$t=\bar d/(s_d/\sqrt n)$、自由度 $n-1$。
+
+          **途中式**
+          $$\bar d=\frac{«sd»}{«n»}=«mean»,\qquad \sum(d_i-\bar d)^2=«sd2»-\frac{«sd»^2}{«n»}=«ss»$$
+          $$s_d^2=\frac{«ss»}{«n1»}=«var»,\quad s_d=«sdv»,\quad \frac{s_d}{\sqrt{«n»}}=«sem»$$
+          $$t=\frac{«mean»}{«sem»}=«t3»\cdots$$
+
+          **答え** $«t_s»$（自由度 «n1» の $t$ 分布の両側 5% 点 2.262 を超えるので、系統的な差があると判断できる）
+
+          **間違えやすい点** A と B を独立な 2 群とみて 2 標本 $t$ 検定をすると、ウェーハ間の大きな厚さの違いが誤差に入り、差を見落とす。
+          偏差平方和を $n$ で割ると $t=«t_n»$ になり大きく出すぎる。
+
+      - id: s28p04b
+        chapter: 13
+        terms: [sign-test, binomial-distribution]
+        topic: 2台の膜厚計の差の符号だけを使う符号検定の正確な片側p値を二項分布から求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          正規性を仮定せず、差 $d$ の符号だけを使う符号検定で、対立仮説「A の方が大きく測りやすい（差の中央値が正）」を調べる。
+          二項分布による正確な片側 $p$ 値に最も近いものはどれか（差が 0 のウェーハはない）。
+        choices:
+          - "$«p9»$"
+          - "$«pe»$"
+          - "$«p»$"
+          - "$«p2»$"
+          - "$«pc»$"
+        answer: 2
+        distractors:
+          - 観測された 8 個を含めず、9 個以上の確率を求めた
+          - ちょうど 8 個になる確率だけを求めた
+          - 正解
+          - 両側 p 値（片側の 2 倍）を答えた
+          - 反対側の確率 P(X≦8)… ではなく P(X≦7) を答えた
+        explanation: |
+          **方針** 帰無仮説（差の中央値が 0）のもとで、正の差の個数 $X$ は $B(«n»,\ 1/2)$ に従う。片側 $p$ 値は、観測値以上に偏る確率 $P(X\ge «pos»)$。
+
+          **途中式** 表より正の差は «pos» 個、負の差は «neg» 個。
+          $$P(X\ge «pos»)=\frac{\binom{10}{8}+\binom{10}{9}+\binom{10}{10}}{2^{10}}=\frac{«c8»+«c9»+«c10»}{1024}=\frac{«csum»}{1024}=«p»$$
+
+          **答え** $«p»$（片側 5% では有意にならない。対応のある $t$ 検定より検出力が低いことがわかる）
+
+          **間違えやすい点** $p$ 値は「観測値と同じかそれ以上に極端」な確率なので、ちょうど 8 個の確率 $«pe»$ も足す必要があり、9 個以上だけ（$«p9»$）でも足りない。両側にすると $«p2»$。
+
+  - id: s28p05
+    title: コネクタの信頼性試験
+    context: |
+      車載用コネクタの信頼性を、2 種類の試験で評価している。
+    items:
+      - id: s28p05a
+        chapter: 9
+        terms: [clopper-pearson-interval, one-sided-confidence-limit, binomial-distribution]
+        topic: 試験した全数で故障が0個だったときの故障率の正確な95%片側信頼上限を二項分布から求め3/nの近似と比べる
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          （耐振動試験）無作為に選んだ «n» 個のコネクタに耐振動試験を行ったところ、接触不良は 1 個も起きなかった。
+          各コネクタが独立に確率 $p$ で接触不良を起こすとし、二項分布にもとづく正確な方法で $p$ の 95% 片側信頼上限を求める。最も近いものはどれか。
+          必要なら $\ln 0.05=«ln05»$、$\ln 0.025=«ln025»$、$e^{«x»}=«ex»$、$e^{«x2»}=«ex2»$ を使え。
+        choices:
+          - "$«pu_95»$"
+          - "$«pu_1n»$"
+          - "$«pu»$"
+          - "$«pu_r3»$"
+          - "$«pu_two»$"
+        answer: 2
+        distractors:
+          - (1−p)^n=0.95 と信頼係数と有意水準を取り違えた
+          - 1/n を上限とした
+          - 正解
+          - 3/n の近似（3の法則）を正確な値とした
+          - 両側95%区間の上側（片側2.5%）を使った
+        explanation: |
+          **方針** 故障 0 個が観測されたとき、正確な片側上限 $p_U$ は「故障 0 個となる確率が 5% になる $p$」、すなわち $(1-p_U)^n=0.05$ の解（クロッパー・ピアソンの方法の片側版）。
+
+          **途中式**
+          $$(1-p_U)^{«n»}=0.05\ \Longrightarrow\ 1-p_U=\exp\left(\frac{\ln0.05}{«n»}\right)=e^{«x»}=«ex»$$
+          $$p_U=1-«ex»=«pu»$$
+
+          **答え** $«pu»$
+
+          **間違えやすい点** $\ln(1-p)\approx-p$ とした近似 $p_U\approx 3/n=«pu_r3»$（3 の法則）は便利だが近似で、正確な値はわずかに小さい。
+          両側 95% 区間の上限（片側 2.5%）にすると $1-«ex2»=«pu_two»$。故障 0 個ではワルド区間は幅 0 になって使えないので、正確な方法を使う。
+
+      - id: s28p05b
+        chapter: 12
+        terms: [likelihood-ratio-test, exponential-distribution, chi-squared-distribution]
+        topic: 指数分布に従う寿命の平均が規格値に等しいかを尤度比検定統計量−2logΛで調べる
+        level: 応用
+        definition: false
+        type: numeric
+        question: |
+          （高温寿命試験）別の «m» 個のコネクタを故障するまで高温で動かした。寿命は独立に平均 $\theta$ の指数分布（密度 $\theta^{-1}e^{-x/\theta}$）に従うとし、
+          寿命の合計は «sumx» 時間だった。帰無仮説 $H_0:\theta=«theta0»$ を対立仮説 $H_1:\theta\ne«theta0»$ に対して尤度比検定で調べる。
+          尤度比 $\Lambda=L(«theta0»)/L(\hat\theta)$（$\hat\theta$ は最尤推定値）について、$-2\ln\Lambda$ の値を求めよ。必要なら $\ln 0.45=«ln_ratio»$ を使え。
+        answer: «lr»
+        tolerance: 0.01
+        answer_format: 小数第2位まで（小数第3位を四捨五入）で答えよ。±0.01 の差まで正解とする。
+        explanation: |
+          **方針** 尤度 $L(\theta)=\theta^{-m}\exp(-\sum x_i/\theta)$ の最尤推定値は $\hat\theta=\bar x$。$\Lambda$ に代入して整理すると
+          $$-2\ln\Lambda=2m\left\{\frac{\bar x}{\theta_0}-1-\ln\frac{\bar x}{\theta_0}\right\}$$
+
+          **途中式** $\bar x=«sumx»/«m»=«xbar»$、$\bar x/\theta_0=«ratio»$。
+          $$\ln\Lambda=-m\ln\theta_0-\frac{\sum x_i}{\theta_0}+m\ln\bar x+m=m\left(\ln\frac{\bar x}{\theta_0}-\frac{\bar x}{\theta_0}+1\right)$$
+          $$-2\ln\Lambda=2\times«m»\times\{«ratio»-1-(«ln_ratio»)\}=20\times«inner»=«lr_s»$$
+
+          **答え** $«lr_s»$（自由度 1 のカイ二乗分布の上側 5% 点 «chi1» を超えるので、有意水準 5% で $H_0$ を棄却する）
+
+          **間違えやすい点** 係数 2 を落とすと $«lr_m»$ となり、棄却点と比べると結論が逆になる。$\ln(\bar x/\theta_0)$ は負なので、引くと値が大きくなる点の符号に注意。
+          自由度は「$H_1$ で自由に動く母数の数 − $H_0$ で自由な母数の数」$=1-0=1$。
+
+  - id: s28p06
+    title: 露光装置のステージと重ね合わせ誤差
+    context: |
+      露光装置のステージの位置決め誤差と、ロットごとの重ね合わせ（オーバーレイ）誤差を管理している。
+    items:
+      - id: s28p06a
+        chapter: 8
+        terms: [unbiased-estimator, order-statistics, efficient-estimator]
+        topic: 一様分布の上端の2つの不偏推定量（標本平均の2倍と補正した最大値）の分散の比を順序統計量から求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          位置決め誤差の大きさ $X_1,\dots,X_n$（$n=«n»$）は独立に区間 $(0,\theta)$ の一様分布に従うとする。最大のずれ $\theta$ の不偏推定量として
+          $$T_1=2\bar X,\qquad T_2=\frac{n+1}{n}X_{(n)}\quad(X_{(n)}\text{ は最大値})$$
+          の 2 つを考える。$V[T_1]$ は $V[T_2]$ の何倍か。最も近いものを選べ。
+        choices:
+          - "$«r_one»$"
+          - "$«r_n»$"
+          - "$«r_n1»$"
+          - "$«ratio»$"
+          - "$«r_mle»$"
+        answer: 3
+        distractors:
+          - どちらも不偏なので分散も等しいと考えた
+          - 比を n/3 とした（V[X(n)] の分母の n+2 を n と取り違えた）
+          - 比を (n+1)/3 とした
+          - 正解
+          - T2 ではなく補正前の最大値 X(n) の分散と比べた
+        explanation: |
+          **方針** $V[X]=\theta^2/12$ から $V[T_1]$ を、最大値 $X_{(n)}$ の分布（密度 $n x^{n-1}/\theta^n$）から $V[X_{(n)}]$ を求めて比べる。
+
+          **途中式** $V[T_1]=4\cdot\dfrac{\theta^2}{12n}=\dfrac{\theta^2}{3n}=«v1»\theta^2$。
+          $E[X_{(n)}]=\dfrac{n}{n+1}\theta$、$E[X_{(n)}^2]=\dfrac{n}{n+2}\theta^2$ より $V[X_{(n)}]=\dfrac{n\theta^2}{(n+1)^2(n+2)}$。
+          $$V[T_2]=\left(\frac{n+1}{n}\right)^2V[X_{(n)}]=\frac{\theta^2}{n(n+2)}=«v2»\theta^2$$
+          $$\frac{V[T_1]}{V[T_2]}=\frac{n(n+2)}{3n}=\frac{n+2}{3}=\frac{«n2»}{3}=«ratio»$$
+
+          **答え** $«ratio»$ 倍
+
+          **間違えやすい点** 不偏推定量どうしでも分散は違う。$T_2$ の分散は $1/n^2$ の速さで小さくなり、$1/n$ の速さの $T_1$ よりずっと効率がよい（一様分布は台が母数に依存するので、クラメール・ラオの下限の前提が成り立たない）。
+          補正前の $X_{(n)}$ の分散と比べると $«r_mle»$ になるが、$X_{(n)}$ は偏りをもつので比べる相手が違う。
+
+      - id: s28p06b
+        chapter: 27
+        terms: [forecasting, arima-model]
+        topic: 単純指数平滑法でロットごとの重ね合わせ誤差の予測値を2回更新して次のロットの予測値を求める
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          ロットごとの重ね合わせ誤差（nm）を、平滑化定数 $\alpha=«alpha»$ の単純指数平滑法 $\hat y_{t+1}=\alpha y_t+(1-\alpha)\hat y_t$ で予測している。
+          ロット 1 の予測値は $\hat y_1=«f0»$ で、実測値はロット 1 が «y1»、ロット 2 が «y2» だった。ロット 3 の予測値 $\hat y_3$ はどれか。
+        choices:
+          - "$«y2»0$"
+          - "$«g2»$"
+          - "$«f2»$"
+          - "$«avg»$"
+          - "$«f1»$"
+        answer: 2
+        distractors:
+          - 最新の実測値をそのまま予測値にした（α=1 とした）
+          - α と 1−α を取り違えた
+          - 正解
+          - 初期予測値と2つの実測値を単純平均した
+          - 1回しか更新せずロット2の予測値を答えた
+        explanation: |
+          **方針** 実測値が出るたびに「新しい予測値 = α × 実測値 + (1−α) × 前回の予測値」で更新する。2 回更新する。
+
+          **途中式**
+          $$\hat y_2=«alpha»\times«y1»+«beta»\times«f0»=«f1a»+«f1b»=«f1»$$
+          $$\hat y_3=«alpha»\times«y2»+«beta»\times«f1»=«f2a»+«f2b»=«f2»$$
+
+          **答え** $«f2»$
+
+          **間違えやすい点** α を前回の予測値に掛けると $«g2»$ になる。1 回の更新で止めると $\hat y_2=«f1»$。
+          単純指数平滑の予測は、過去の実測値に $\alpha(1-\alpha)^j$ の重みをつけた平均で、ARIMA(0,1,1) モデルの 1 期先予測と一致する（MA 係数が $-(1-\alpha)$ にあたる）。
+
+  - id: s28p07
+    title: エッチングレートの回帰分析
+    context: |
+      ドライエッチングのエッチングレート $y$（nm/分）を、RF 電力の水準 $x_1$ とガス流量の水準 $x_2$（どちらも 1 段階を 1 とした符号化した値）で説明する重回帰モデル
+      $y=\beta_0+\beta_1x_1+\beta_2x_2+\varepsilon$（誤差は独立に $N(0,\sigma^2)$）を、«n» 枚のウェーハのデータに最小二乗法で当てはめた。
+    items:
+      - id: s28p07a
+        chapter: 16
+        terms: [regression-coefficient-t-test, multiple-regression-model]
+        topic: 2つの偏回帰係数が等しいかを係数の差の標準誤差を推定量の共分散から求めてt検定する
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          推定値は $\hat\beta_1=«b1»$、$\hat\beta_2=«b2»$、標準誤差は $«se1»$、$«se2»$、推定量の共分散の推定値は $\widehat{\mathrm{Cov}}(\hat\beta_1,\hat\beta_2)=«cov»$ だった。
+          「電力 1 段階の効果とガス流量 1 段階の効果が等しい」という帰無仮説 $H_0:\beta_1=\beta_2$ を調べる $t$ 統計量の値に最も近いものはどれか。
+        choices:
+          - "$«t_sum»$"
+          - "$«t_plus»$"
+          - "$«t_nocov»$"
+          - "$«t_once»$"
+          - "$«t»$"
+        answer: 4
+        distractors:
+          - 標準誤差を足し合わせて差の標準誤差とした
+          - 差の分散で共分散の符号を逆にして足した
+          - 2つの推定量を独立とみなし共分散を無視した
+          - 共分散を2倍せず1回だけ引いた
+          - 正解
+        explanation: |
+          **方針** $\hat\beta_1-\hat\beta_2$ の分散は $V[\hat\beta_1]+V[\hat\beta_2]-2\mathrm{Cov}(\hat\beta_1,\hat\beta_2)$。この推定値の平方根で差を割った統計量は、$H_0$ のもとで自由度 $n-k-1=«df»$ の $t$ 分布に従う。
+
+          **途中式**
+          $$\widehat V[\hat\beta_1-\hat\beta_2]=«v1»+«v2»-2\times«cov»=«vd»,\qquad \sqrt{«vd»}=«sdd»$$
+          $$t=\frac{«b1»-«b2»}{«sdd»}=\frac{«diff»}{«sdd»}=«t»$$
+
+          **答え** $«t»$（自由度 «df» の $t$ 分布の両側 5% 点 «tc» を超えるので、2 つの効果は等しいとはいえない）
+
+          **間違えやすい点** 推定量どうしは一般に相関する（ここでは相関係数 $«corr»$）。共分散を無視すると $«t_nocov»$ となり、有意でないと誤って判断してしまう。標準誤差の和 $«se1»+«se2»$ で割る（$«t_sum»$）のも誤り。
+
+      - id: s28p07b
+        chapter: 17
+        terms: [leverage, residual, cross-validation]
+        topic: 残差とてこ比から1枚を除いて当てはめ直したモデルによるそのウェーハの予測値（PRESS残差）を求める
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          7 枚目のウェーハは実測値 $y_7=«y7»$、当てはめ値 $\hat y_7=«yhat7»$、てこ比 $h_{77}=«h7»$ だった。
+          7 枚目を除いた残り «n» − 1 枚で同じモデルを当てはめ直したとき、そのモデルによる 7 枚目の予測値 $\hat y_{7(-7)}$ を求めよ。
+        answer: «pred»
+        tolerance: 0.01
+        answer_format: 小数第2位まで（小数第3位を四捨五入）で答えよ。±0.01 の差まで正解とする。
+        explanation: |
+          **方針** 最小二乗法では、1 点を除いて当てはめ直したときの予測残差（PRESS 残差）が $y_i-\hat y_{i(-i)}=\dfrac{e_i}{1-h_{ii}}$ と、当てはめ直さずに求まる。
+
+          **途中式** $e_7=«y7»-«yhat7»=«e7»$。
+          $$y_7-\hat y_{7(-7)}=\frac{«e7»}{1-«h7»}=\frac{«e7»}{«h1»}=«ep»$$
+          $$\hat y_{7(-7)}=«y7»-(«ep»)=«pred_s»$$
+
+          **答え** $«pred_s»$
+
+          **間違えやすい点** 自分を含めた当てはめ値 $«yhat7»$ は、その点に引き寄せられているので予測誤差を小さく見せる。$(1-h)$ を掛けてしまうと $«pred_h»$ になる（割るのが正しい）。
+          PRESS 残差の 2 乗和は 1 点除外の交差検証による予測誤差の評価に使う。
+
+      - id: s28p07c
+        chapter: 19
+        terms: [weighted-least-squares, iteratively-reweighted-least-squares, residual]
+        topic: フーバーのM推定を反復重み付き最小二乗で解くとき尺度で割った残差から大きな残差の点の重みを求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          外れ値の影響を抑えるため、フーバーの M 推定を反復重み付き最小二乗法で求める。各反復で、残差 $r_i$ を尺度の推定値 $s$ で割った $u_i=r_i/s$ に対して
+          $$w_i=\min\left(1,\ \frac{c}{|u_i|}\right),\qquad c=«kk»$$
+          を重みとして重み付き最小二乗を行う。ある反復で $s=«sig»$ のとき、残差 $r_i=«r»$ の点の重み $w_i$ に最も近いものはどれか。
+        choices:
+          - "$«w_sq»$"
+          - "$«w_raw»$"
+          - "$«w_bi»$"
+          - "$«w»$"
+          - "$«w_one»$"
+        answer: 3
+        distractors:
+          - 重みを2乗した
+          - 残差を尺度で割らずに c/|r| とした
+          - フーバーではなくテューキーの双加重（c=4.685）の重みを使った
+          - 正解
+          - 残差の大きさを見ずに重み1（通常の最小二乗）とした
+        explanation: |
+          **方針** フーバーの方法では、尺度で割った残差の絶対値が $c$ 以下の点は重み 1、$c$ を超える点は重み $c/|u|$ に下げる。まず残差を尺度で割る。
+
+          **途中式** $|u_i|=|«r»|/«sig»=«u»>«kk»$ なので
+          $$w_i=\frac{«kk»}{«u»}=«w4»\cdots$$
+
+          **答え** $«w»$
+
+          **間違えやすい点** 尺度で割らないと $«kk»/6.4=«w_raw»$ となり、データの単位で重みが変わってしまう。重み関数は $\psi(u)/u$ で、2 乗はしない（$«w_sq»$ は誤り）。
+          テューキーの双加重 $w=\{1-(u/4.685)^2\}^2$ なら $«w_bi»$ だが、これは別の推定法である。
+
+  - id: s28p08
+    title: 新しい洗浄工程の効果
+    context: |
+      ウェーハ洗浄工程に新しい薬液（新方式）を導入し、パーティクル起因の不良が減ったかを 3 つの方法で調べた。
+    items:
+      - id: s28p08a
+        chapter: 28
+        terms: [mantel-haenszel-test, three-way-table]
+        topic: 2つの製造ラインで層別した2×2表から洗浄方式と不良の関連をコクラン・マンテル・ヘンツェル検定統計量で調べる
+        level: 応用
+        definition: false
+        type: numeric
+        question: |
+          2 つのラインで、新方式と旧方式のウェーハを調べた結果は次の通りだった。
+
+          | ライン | 方式 | 不良 | 良 | 計 |
+          |---|---|---|---|---|
+          | 1 | 新 | «a1» | «b1» | «n11» |
+          | 1 | 旧 | «c1» | «d1» | «n21» |
+          | 2 | 新 | «a2» | «b2» | «n12» |
+          | 2 | 旧 | «c2» | «d2» | «n22» |
+
+          ラインで層別したうえで、方式と不良の関連を連続修正をしないコクラン・マンテル・ヘンツェル検定で調べる。ライン $k$ の「新・不良」の度数を $a_k$ とし、
+          各層の周辺度数を固定したときの $a_k$ の期待値と分散を $E_k,\ V_k$ として、統計量 $\left\{\sum_k(a_k-E_k)\right\}^2\big/\sum_kV_k$ の値を求めよ。
+        answer: «cmh»
+        tolerance: 0.01
+        answer_format: 小数第2位まで（小数第3位を四捨五入）で答えよ。±0.01 の差まで正解とする。
+        explanation: |
+          **方針** 各層の 2×2 表で周辺度数を固定すると $a_k$ は超幾何分布に従い、$E_k=\dfrac{n_{1k}m_{1k}}{N_k}$、$V_k=\dfrac{n_{1k}n_{2k}m_{1k}m_{2k}}{N_k^2(N_k-1)}$（$n$ は行の計、$m$ は列の計）。層ごとの「観測 − 期待」を足してから 2 乗する。
+
+          **途中式**
+          ライン 1：$n_1=«n11»,\ n_2=«n21»,\ m_1=«m11»,\ m_2=«m21»,\ N=«N1»$。
+          $$E_1=\frac{«n11»\times«m11»}{«N1»}=«E1»,\qquad V_1=\frac{«n11»\times«n21»\times«m11»\times«m21»}{«N1sq»\times«N1m1»}=«V1»$$
+          ライン 2：$n_1=«n12»,\ n_2=«n22»,\ m_1=«m12»,\ m_2=«m22»,\ N=«N2»$。
+          $$E_2=\frac{«n12»\times«m12»}{«N2»}=«E2»,\qquad V_2=\frac{«n12»\times«n22»\times«m12»\times«m22»}{«N2sq»\times«N2m1»}=«V2»$$
+          $$\sum(a_k-E_k)=(«a1»+«a2»)-(«E1»+«E2»)=«num»,\qquad \sum V_k=«vsum»$$
+          $$\chi^2_{\text{CMH}}=\frac{(«num»)^2}{«vsum»}=\frac{«num2»}{«vsum»}=«cmh_s»$$
+
+          **答え** $«cmh_s»$（自由度 1 のカイ二乗分布の上側 5% 点 «chi1» を超えるので、ラインの違いを調整しても新方式と不良には関連がある）
+
+          **間違えやすい点** 層ごとにカイ二乗統計量を出して足すのではなく、「観測 − 期待」を層をまたいで足してから 2 乗する。そのため、どの層でも同じ向きの差があると検出しやすい。
+          分散の分母は $N^2(N-1)$ で、$N^3$ とする（二項分布の近似）と少し違う値になる。
+
+      - id: s28p08b
+        chapter: 33
+        terms: [causal-effect]
+        topic: 新方式を導入したラインと導入しなかったラインの導入前後の不良率から差の差で導入の効果を求める
+        level: 基本
+        definition: false
+        type: choice
+        question: |
+          ライン A だけに新方式を導入し、ライン B は旧方式のままにした。導入前後 1 か月の不良率（%）は次の通りだった。
+
+          | | 導入前 | 導入後 |
+          |---|---|---|
+          | ライン A（導入） | «pa0» | «pa1» |
+          | ライン B（未導入） | «pb0» | «pb1» |
+
+          「新方式がなくても 2 つのラインの不良率は同じだけ変化した」（平行トレンド）と仮定するとき、ライン A での新方式導入の効果（不良率の変化、ポイント）の推定値はどれか。
+        choices:
+          - "$«dA}$"
+          - "$«did}$"
+          - "$«post}$"
+          - "$«did_rev}$"
+          - "$+«pre}$"
+        answer: 1
+        distractors:
+          - ライン A の導入前後の差だけを見て、同じ期間の全体的な変化を差し引かなかった
+          - 正解
+          - 導入後の2ラインの差だけを見て、導入前からあったライン間の差を考えなかった
+          - ライン B の変化を引かずに足した
+          - 導入前の2ラインの差（もともとの違い）を答えた
+        explanation: |
+          **方針** 差の差（difference-in-differences）法。平行トレンドの仮定のもとで、ライン A が新方式を入れなかった場合の変化はライン B の変化に等しいとみなし、A の変化から B の変化を引く。
+
+          **途中式**
+          $$\text{A の変化}=«pa1»-«pa0»=«dA»,\qquad \text{B の変化}=«pb1»-«pb0»=«dB»$$
+          $$\text{効果}=(«dA»)-(«dB»)=«did»$$
+
+          **答え** $«did}$ ポイント
+
+          **間違えやすい点** A の前後差 $«dA»$ には、季節や原料ロットなど両ラインに共通する変化も含まれる。導入後の A と B の差 $«post»$ には、導入前からあったライン間の差 $«pre»$ が混ざる。
+          平行トレンドの仮定が崩れていれば（もともと A の不良率が下がる傾向にあったなど）、差の差でも偏りが残る。
+
+      - id: s28p08c
+        chapter: 18
+        terms: [poisson-regression, generalized-linear-model]
+        topic: ウェーハのパーティクル数のポアソン回帰で新方式ダミーの係数と標準誤差から率比の95%信頼区間を求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          ウェーハ 1 枚あたりのパーティクル数 $Y$ に、対数リンクのポアソン回帰 $\log E[Y]=\beta_0+\beta_1x$（$x$ は新方式なら 1、旧方式なら 0）を当てはめたところ、
+          $\hat\beta_1=«beta»$、標準誤差 $«se»$ だった。パーティクル数の率比 $e^{\beta_1}$ の、ワルド型 95% 信頼区間（$\beta_1$ の尺度で作って変換する）に最も近いものはどれか。
+          必要なら $e^{-0.35}=«e_b»$、$e^{-0.5852}=«e_lo»$、$e^{-0.1148}=«e_hi»$、$e^{0.1148}=«e_plo»$、$e^{0.5852}=«e_phi»$ を使え。
+        choices:
+          - "$«ci_raw»$"
+          - "$«ci_lin»$"
+          - "$«ci_ok»$"
+          - "$«ci_inv»$"
+          - "$«ci_delta»$"
+        answer: 2
+        distractors:
+          - 係数の信頼区間を指数変換せずに答えた
+          - 率比 e^β の点推定値に係数の標準誤差をそのまま足し引きした
+          - 正解
+          - 符号を逆にして旧方式に対する新方式の率比ではなく逆数の区間を作った
+          - デルタ法で率比の標準誤差を e^β×SE とし、率比の尺度で対称な区間を作った
+        explanation: |
+          **方針** 係数 $\beta_1$ の 95% 信頼区間 $\hat\beta_1\pm1.96\,\mathrm{SE}$ を作り、両端を指数変換する。指数関数は単調なので信頼係数は保たれる。
+
+          **途中式**
+          $$«beta»\pm«z»\times«se»=«beta»\pm«zse»\ \Longrightarrow\ («lo»,\ «hi»)$$
+          $$\left(e^{«lo»},\ e^{«hi»}\right)=(«e_lo»,\ «e_hi»)$$
+
+          **答え** $«ci_ok»$（1 を含まないので、新方式でパーティクル数の平均が約 «red_lo»〜«red_hi»% 減ったといえる）
+
+          **間違えやすい点** 係数の区間 $«ci_raw»$ のままでは率比の区間ではない。率比の点推定値 $e^{«beta»}=«e_b»$ に $\pm1.96\times«se»$ をつける $«ci_lin»$ は尺度が違う。
+          デルタ法で率比の尺度に対称な区間 $«ci_delta»$ を作る方法もあるが、問題の指定（係数の尺度で作って変換）とは違い、変換した区間は点推定値に対して非対称になる。
+
+  - id: s28p09
+    title: エッチング装置3台の多重比較
+    context: |
+      3 台のエッチング装置で、それぞれ «n» 枚のウェーハを処理してエッチング量（nm）を測った。装置ごとの平均は
+      装置 1：«m1»、装置 2：«m2»、装置 3：«m3» で、一元配置分散分析の誤差平方和は «sse» だった。
+    items:
+      - id: s28p09a
+        chapter: 20
+        terms: [tukey-multiple-comparison, studentized-range-distribution, one-way-anova]
+        topic: 一元配置の誤差平均平方とスチューデント化された範囲の点からテューキー法の最小有意差を求め有意な装置の対を選ぶ
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          3 台のすべての対を、全体の有意水準 5% でテューキーの方法により比べる。2 つの平均の差の絶対値がこの値を超えたら有意と判定する値
+          （テューキーの最小有意差 HSD）に最も近いものはどれか。必要なら、スチューデント化された範囲の上側 5% 点 $q_{0.05}(3,\ «dfe»)=«q»$、
+          $t$ 分布の上側 2.5% 点 $t_{0.025}(«dfe»)=«tq»$ を使え。
+        choices:
+          - "$«lsd»$"
+          - "$«hsd»$"
+          - "$«hsd_nosqrt»$"
+          - "$«hsd_2»$"
+          - "$«hsd_non»$"
+        answer: 1
+        distractors:
+          - 多重性を考えない t による最小有意差（LSD）を使った
+          - 正解
+          - √(MSE/n) の平方根をとり忘れて q×MSE/n とした
+          - 2群の差の標準誤差 √(2MSE/n) に q を掛けた（q はすでに範囲の分布なので √2 は不要）
+          - MSE を n で割り忘れた
+        explanation: |
+          **方針** 各群 $n$ 個の釣り合った一元配置では、テューキーの HSD は $q_{0.05}(k,\ N-k)\sqrt{\mathrm{MSE}/n}$。
+
+          **途中式** 誤差自由度 $«N»-«k»=«dfe»$、$\mathrm{MSE}=«sse»/«dfe»=«mse»$。
+          $$\mathrm{HSD}=«q»\times\sqrt{\frac{«mse»}{«n»}}=«q»\times\sqrt{«msen»}=«q»\times«rt»=«hsd»$$
+          平均の差は $|1-2|=«d12»$、$|1-3|=«d13»$、$|2-3|=«d23»$ なので、有意になるのは装置 1 と装置 3 の対だけ。
+
+          **答え** $«hsd»$
+
+          **間違えやすい点** 多重性を考えず $t$ の最小有意差 $«tq»\times\sqrt{2\times«mse»/«n»}=«lsd»$ を使うと、1 と 2 の対まで有意と判定してしまう（全体の第 1 種の誤りが 5% を超える）。
+          $q$ は平均の範囲をそのまま標準化した分布なので、差の標準誤差 $\sqrt{2\mathrm{MSE}/n}$ に掛けると $«hsd_2»$ と大きくなりすぎる（$\sqrt2$ の分が二重）。
+
+  - id: s28p10
+    title: 出荷ロットの層別抜取
+    context: |
+      ある部品の出荷前検査で、製造日の異なる 3 つのロット（層）から比例配分で合計 «n» 個を単純無作為に抜き取り、端子のめっき厚（µm の 100 分の 1 を単位とする値）を測った。
+
+      | ロット | 1 | 2 | 3 |
+      |---|---|---|---|
+      | 個数 $N_h$ | «N0» | «N1» | «N2» |
+      | 抜取数 $n_h$ | «n0» | «n1» | «n2» |
+      | 標本標準偏差 $s_h$ | «s0» | «s1» | «s2» |
+
+      標本標準偏差は不偏分散の平方根である。
+    items:
+      - id: s28p10a
+        chapter: 21
+        terms: [stratified-sampling, proportional-allocation, standard-error]
+        topic: 比例配分の層別抽出で層ごとの標本標準偏差から全体の平均の推定量の標準誤差を求める
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          層別抽出による全体の平均の推定量 $\bar y_{st}=\sum_h W_h\bar y_h$（$W_h=N_h/N$）の標準誤差の推定値を求めよ。ただし有限母集団修正は無視する。
+        answer: «se»
+        tolerance: 0.001
+        answer_format: 小数第3位まで（小数第4位を四捨五入）で答えよ。±0.001 の差まで正解とする。
+        explanation: |
+          **方針** 層ごとに独立に単純無作為抽出しているので $V[\bar y_{st}]=\sum_hW_h^2\,s_h^2/n_h$。その平方根が標準誤差。
+
+          **途中式** $W_h=«W0»,\ «W1»,\ «W2»$。
+          $$\frac{«W0»^2\times«s20»}{«n0»}=«t0»,\quad \frac{«W1»^2\times«s21»}{«n1»}=«t1»,\quad \frac{«W2»^2\times«s22»}{«n2»}=«t2»$$
+          $$\widehat V[\bar y_{st}]=«t0»+«t1»+«t2»=«V»,\qquad \mathrm{SE}=\sqrt{«V»}=«se4»\cdots$$
+          （比例配分なので $\sum_hW_hs_h^2/n$ とも書け、$(«W0»\times«s20»+«W1»\times«s21»+«W2»\times«s22»)/«n»=«V»$ と同じになる。）
+
+          **答え** $«se_s»$
+
+          **間違えやすい点** $W_h$ を 2 乗せず 1 乗で掛けると $\sqrt{\sum W_hs_h^2/n_h}=«se_w1»$、$W_h$ を掛け忘れると $«se_now»$ になる。
+          標本標準偏差 $s_h$ を 2 乗し忘れないこと。
+
+  - id: s28p11
+    title: 検査装置のセンサーによる不良判別
+    context: |
+      ウェーハの最終検査で、センサーの計測値を使って不良品の判別やロットの分類を行っている。
+    items:
+      - id: s28p11a
+        chapter: 23
+        terms: [quadratic-discriminant-analysis, bayes-discriminant-rule]
+        topic: 分散が異なる1次元の2群正規分布で2次判別を行い不良と判別される範囲が両側に分かれることを境界の2次方程式から求める
+        level: 応用
+        definition: false
+        type: choice
+        question: |
+          ある 1 つのセンサー値 $x$ は、良品では $N(«m0»,\ «s0»^2)$、不良品では $N(«m1»,\ «s1»^2)$ に従う。事前確率は等しく、誤判別のコストも等しいとして、
+          密度の大きい方の群に判別する（2 次判別）。不良品と判別される $x$ の範囲として最も適切なものはどれか。必要なら $\ln2=«ln2»$ を使え。
+        choices:
+          - "$x>«mid»$"
+          - "$x>«xh»$"
+          - "$x<«yl»$ または $x>«yh»$"
+          - "$x<«xl»$ または $x>«xh»$"
+          - "$«xl»<x<«xh»$"
+        answer: 3
+        distractors:
+          - 分散が等しいとみなして2つの平均の中点を境界にした（線形判別）
+          - 2次方程式の大きい方の解だけをとり、左側の不良の領域を見落とした
+          - 正規密度の係数 1/σ の差（ln 2 の項）を落とした
+          - 正解
+          - 不等号の向きを逆にして良品の領域を答えた
+        explanation: |
+          **方針** 各群の対数密度 $-\ln\sigma-\dfrac{(x-\mu)^2}{2\sigma^2}$ を比べる。分散が違うと境界は $x$ の 2 次方程式になり、分散の大きい不良品の群は両側に広がる。
+
+          **途中式** 不良と判別する条件は
+          $$-\ln«s1»-\frac{(x-«m1»)^2}{2\times«v1»}>-\ln«s0»-\frac{(x-«m0»)^2}{2\times«v0»}\iff\frac{(x-«m0»)^2}{8}-\frac{(x-«m1»)^2}{32}>\ln2$$
+          両辺を 32 倍して整理すると $4(x-«m0»)^2-(x-«m1»)^2>32\ln2=«c32»$、すなわち
+          $$3x^2-292x+«c0»-«c32»=3x^2-292x+«c»>0$$
+          判別式 $292^2-12\times«c»=«disc»$、$\sqrt{«disc»}=«rdisc»$ より解は $x=(292\pm«rdisc»)/6=«xl»,\ «xh»$。2 次の係数が正なので、2 つの解の外側が不良の領域。
+
+          **答え** $x<«xl»$ または $x>«xh»$
+
+          **間違えやすい点** 分散を等しいとみなす線形判別の境界 $«mid»$ とは違い、大きい側だけでなく小さい側にも不良の領域ができる。
+          $\ln\sigma$ の項を落とすと、判別式 $«disc0»$ から $x<«yl»$ または $x>«yh»$ となる。
+
+      - id: s28p11b
+        chapter: 24
+        terms: [centroid-method, lance-williams-formula, hierarchical-clustering]
+        topic: 重心法で大きさの違うクラスターを併合したあとの別のクラスターとの平方距離をランス・ウィリアムズの更新式で求める
+        level: 標準
+        definition: false
+        type: choice
+        question: |
+          ロットを 2 つの特徴量で階層的にクラスタリングする。距離は平方ユークリッド距離、併合のしかたは重心法（クラスターの重心どうしの平方距離）とする。
+          途中の段階でクラスター $G_i$（ロット 2 個）、$G_j$（ロット 1 個）、$G_k$（ロット 1 個）の重心どうしの平方距離が
+          $d^2(G_k,G_i)=«dki»$、$d^2(G_k,G_j)=«dkj»$、$d^2(G_i,G_j)=«dij»$ であった。
+          $G_i$ と $G_j$ を併合したあとの、新しいクラスターと $G_k$ の平方距離はどれか。
+        choices:
+          - "$«dnew»$"
+          - "$«d_half»$"
+          - "$«d_min»$"
+          - "$«d_nob»$"
+          - "$«d_max»$"
+        answer: 0
+        distractors:
+          - 正解
+          - クラスターの大きさを無視して重みを1/2ずつにした（メディアン法）
+          - 最短距離法の更新（小さい方）を使った
+          - ランス・ウィリアムズの式の d²(Gi,Gj) の項を落とした
+          - 最長距離法の更新（大きい方）を使った
+        explanation: |
+          **方針** 重心法のランス・ウィリアムズの更新式（平方ユークリッド距離）
+          $$d^2(G_k,G_i\cup G_j)=\frac{n_i}{n_i+n_j}d^2_{ki}+\frac{n_j}{n_i+n_j}d^2_{kj}-\frac{n_in_j}{(n_i+n_j)^2}d^2_{ij}$$
+          を使う。新しい重心は大きさで重み付けした平均なので、重みは $n_i/(n_i+n_j)$ になる。
+
+          **途中式** $n_i=«ni»,\ n_j=«nj»$ より重みは $2/3,\ 1/3$、最後の係数は $2/9$。
+          $$\frac{2}{3}\times«dki»+\frac{1}{3}\times«dkj»-\frac{2}{9}\times«dij»=«t_i»+«t_j»+(«t_b»)=«dnew»$$
+
+          **答え** $«dnew»$
+
+          **間違えやすい点** 重みを 1/2 ずつにする（メディアン法）と $«d_half»$ になる。最後の項を落とすと $«d_nob»$ になり、新しい重心が $G_i$ と $G_j$ の間に来て $G_k$ に近づく分を反映できない。
+          重心は平均なので、平方距離（ユークリッド距離の 2 乗）で使う式である点にも注意。
+
+      - id: s28p11c
+        chapter: 25
+        terms: [factor-score, factor-analysis-model, factor-loading]
+        topic: 3つのセンサーの1因子モデルで負荷量と独自分散から回帰法（トムソン法）の因子得点を求める
+        level: 応用
+        definition: false
+        type: choice
+        question: |
+          3 つのセンサー値を標準化した $z=(z_1,z_2,z_3)^\top$ に 1 因子モデル $z=\lambda f+\varepsilon$（$V[f]=1$、独自分散 $\psi_i=1-\lambda_i^2$）を当てはめ、
+          負荷量 $\lambda=(«l1»,\ «l2»,\ «l3»)^\top$ を得た。あるウェーハの値は $z=(«z1»,\ «z2»,\ «z3»)^\top$ だった。
+          回帰法（トムソン法）の因子得点 $\hat f=\lambda^\top\Sigma^{-1}z$（$\Sigma=\lambda\lambda^\top+\Psi$）に最も近いものはどれか。
+          必要なら $\Sigma^{-1}\lambda=\dfrac{\Psi^{-1}\lambda}{1+\lambda^\top\Psi^{-1}\lambda}$ を使ってよい。
+        choices:
+          - "$«f_mean»$"
+          - "$«f_ls»$"
+          - "$«f_reg»$"
+          - "$«f_bart»$"
+          - "$«f_lz»$"
+        answer: 2
+        distractors:
+          - 3つの標準化値を単純平均した
+          - 独自分散を無視して λ'z/λ'λ とした
+          - 正解
+          - 分母の 1 を落としてバートレット法の因子得点を求めた
+          - 負荷量で重み付けした和 λ'z をそのまま因子得点とした
+        explanation: |
+          **方針** 与えられた式から $\hat f=\lambda^\top\Sigma^{-1}z=\dfrac{\lambda^\top\Psi^{-1}z}{1+\lambda^\top\Psi^{-1}\lambda}=\dfrac{\sum_i\lambda_iz_i/\psi_i}{1+\sum_i\lambda_i^2/\psi_i}$。独自分散の小さい（信頼できる）センサーほど重みが大きい。
+
+          **途中式** $\psi=(«p1»,\ «p2»,\ «p3»)$。
+          $$\sum\frac{\lambda_i^2}{\psi_i}=«q1»+«q2»+«q3»=«qs»,\qquad \sum\frac{\lambda_iz_i}{\psi_i}=«g1»+«g2»+(«g3»)=«gs»$$
+          $$\hat f=\frac{«gs»}{1+«qs»}=\frac{«gs»}{«qs1»}=«f_reg4»\cdots$$
+
+          **答え** $«f_reg»$
+
+          **間違えやすい点** 分母の 1 を落とすとバートレット法の得点 $«f_bart»$ になる。回帰法は $E[f\mid z]$ にあたり、0 の方向に縮んだ値になる。
+          独自分散を無視した $«f_ls»$ や、単純平均 $«f_mean»$ は、センサーごとの精度の違いを反映しない。
+
+  - id: s28p12
+    title: 計測装置の待ち行列
+    context: |
+      膜厚の計測装置 1 台に、ウェーハが 1 時間あたり平均 «lam» 枚のポアソン過程で到着する。計測時間は平均 «ms» 分の指数分布に従い、
+      先着順に 1 枚ずつ計測する（待ち場所の大きさに制限はない M/M/1 待ち行列）。
+    items:
+      - id: s28p12a
+        chapter: 15
+        terms: [mm1-queue, littles-law, traffic-intensity]
+        topic: M/M/1の計測装置で平均滞在時間から計測を待っているウェーハの平均枚数をリトルの公式で求める
+        level: 標準
+        definition: false
+        type: numeric
+        question: |
+          定常状態で、計測中のものを除き、計測を待っているウェーハの平均枚数 $L_q$ を求めよ。
+        answer: «Lq»
+        tolerance: 0.01
+        answer_format: 小数第2位まで（小数第3位を四捨五入）で答えよ。±0.01 の差まで正解とする。
+        explanation: |
+          **方針** 到着率 $\lambda$、処理率 $\mu$ の M/M/1 では、利用率 $\rho=\lambda/\mu<1$ のとき平均滞在時間は $W=1/(\mu-\lambda)$。
+          待ち時間は $W_q=W-1/\mu$、待ち行列の長さはリトルの公式 $L_q=\lambda W_q$ で求める。
+
+          **途中式** 単位を「時間」にそろえる。$\mu=60/«ms»=«mu»$ 枚/時、$\rho=«lam»/«mu»=«rho»$。
+          $$W=\frac{1}{\mu-\lambda}=«Wh}\ \text{時間}=«W»\ \text{分},\qquad W_q=«W»-«ms»=«Wq»\ \text{分}=«Wqh»\ \text{時間}$$
+          $$L_q=\lambda W_q=«lam»\times«Wqh»=«Lq_s»$$
+          （公式 $L_q=\rho^2/(1-\rho)=«Lq_f»$ とも一致する。）
+
+          **答え** $«Lq_s»$ 枚
+
+          **間違えやすい点** 系内の平均枚数 $L=\rho/(1-\rho)=«L»$ は計測中の 1 枚分（平均 $\rho$）を含む。
+          リトルの公式で $\lambda$（枚/時）と $W_q$（分）の単位をそろえないと $«Lq_min»$ のような値になる。

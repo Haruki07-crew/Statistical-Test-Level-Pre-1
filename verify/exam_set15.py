@@ -68,7 +68,7 @@ px, pr = T.sum(axis=1), T.sum(axis=0)
 E.check("s15p02a", abs(T.sum() - 1) < 1e-12, "表の確率の和が 1")
 E.check("s15p02a", not np.allclose(T, np.outer(px, pr)), "独立ではない（積と一致しないセルがある）")
 E.choice("s15p02a", f"$P(R=1)={f(pr[1], 2)}$、$P(R=1\\midX=2)={f(T[2, 1] / px[2], 3)}$で両者が異なるので", "条件付き確率")
-E.check("s15p02a", f((px * np.arange(3)).sum(), 2) != "1.00", "E[X]=1.00 の選択肢は誤り")
+E.check("s15p02a", f((px * np.arange(3)).sum(), 2) != f(np.mean([0, 1, 2]), 2), "値の単純平均の選択肢は誤り")
 # (b) 仕組みの分類：(イ) は欠測が観測変数（年齢）だけに依存することをシミュレーションで確認
 age = rng.integers(0, 3, 300_000)
 hb = rng.normal(7 + 0.0 * age, 1)
@@ -146,10 +146,12 @@ E.num("s15p06a", rnd(sum(k * k * v for k, v in dist.items()) - m1 ** 2, 3), "32 
 
 # ---- 大問7
 # (a) 帰無仮説のもとでの z（プール）
-p = 18 / 360
-zz = (14 / 200 - 4 / 160) / math.sqrt(p * (1 - p) * (1 / 200 + 1 / 160))
+p = 24 / 300
+zz = (20 / 200 - 4 / 100) / math.sqrt(p * (1 - p) * (1 / 200 + 1 / 100))
+zu = (20 / 200 - 4 / 100) / math.sqrt(0.1 * 0.9 / 200 + 0.04 * 0.96 / 100)
+E.check("s15p07a", 1.645 + 0.1 < zz < 1.96 - 0.1 and zu > 1.96 + 0.1, f"結論が丸めに左右されない（プール {zz:.4f}、非プール {zu:.4f}）")
 E.choice("s15p07a", f"$z={f(zz, 2)}$で1.96を超えないので、帰無仮説を棄却しない", "プールした z")
-chi2, pv, _, _ = stats.chi2_contingency(np.array([[14, 186], [4, 156]]), correction=False)
+chi2, pv, _, _ = stats.chi2_contingency(np.array([[20, 180], [4, 96]]), correction=False)
 E.check("s15p07a", abs(chi2 - zz ** 2) < 1e-9 and pv > 0.05, f"連続修正なしの χ² = z² ({chi2:.4f}, p={pv:.4f})")
 # (b) ジェフリーズ：フィッシャー情報量の平方根を事前密度として数値積分
 prior = lambda q: math.sqrt(60 / (q * (1 - q)))
@@ -207,6 +209,10 @@ est = [minimize_scalar(lambda t: 0.5 * (t - b_) ** 2 + 0.5 * abs(t) + 0.5 * 1.0 
                        options={"xatol": 1e-10}).x for b_ in bh]
 txt = "(" + ",\\".join(f(v + 0.0, 2) if abs(v) > 1e-6 else "0.00" for v in est) + ")"
 E.choice("s15p10b", txt, f"数値最小化 {np.round(est, 5)}")
+obj = lambda bv: sum(0.5 * (t_ - b_) ** 2 + 0.5 * abs(t_) + 0.5 * t_ * t_ for t_, b_ in zip(bv, bh))
+vals = [obj([float(x) for x in re.findall(r"-?\d+\.\d+", c)]) for c in E.item("s15p10b")["choices"]]
+E.check("s15p10b", int(np.argmin(vals)) == E.item("s15p10b")["answer"] and sorted(vals)[1] - min(vals) > 1e-3,
+        f"選択肢のうち目的関数が最小なのは正解だけ {np.round(vals, 4)}")
 # (c) シミュレーションで期待二乗予測誤差の分解を確認
 y0 = rng.normal(0, 3, 1_000_000)
 predA = rng.normal(2.0, 1.0, 1_000_000)
@@ -237,12 +243,24 @@ ratio = res.x[1] / res.x.sum()
 E.check("s15p12a", abs(ratio - 6000 / 36000) < 1e-3, f"費用制約の最適解の割合 {ratio:.5f}")
 E.num("s15p12a", rnd(200 * ratio, 0), "n=200 に換算")
 
-# ---- 大問13：距離行列からシルエット係数を一般的な定義で計算
-dA, dB, dC = [2.0, 3.0, 4.0], [5.0, 7.0], [4.0, 6.0, 5.0]
-a_ = np.mean(dA)
-b_ = min(np.mean(dB), np.mean(dC))
-E.choice("s15p13a", f"${f((b_ - a_) / max(a_, b_), 3)}$", "定義どおり")
-distinct("s15p13a", 3)
+# ---- 大問13：問題文の距離行列を読み取り、scipy の階層的クラスタリングで 2 クラスターに切る
+from scipy.cluster.hierarchy import fcluster, linkage  # noqa: E402
+from scipy.spatial.distance import squareform  # noqa: E402
+Dm = np.array([[0, 2.0, 4.2, 6.6, 9.3], [2.0, 0, 2.2, 4.6, 7.3], [4.2, 2.2, 0, 2.4, 5.1],
+               [6.6, 4.6, 2.4, 0, 2.7], [9.3, 7.3, 5.1, 2.7, 0]])
+
+
+def parts(method):
+    lab = fcluster(linkage(squareform(Dm), method=method), 2, criterion="maxclust")
+    groups = sorted("".join("ABCDE"[i] for i in range(5) if lab[i] == g) for g in set(lab))
+    return " と ".join("$\\{" + ",".join(g_) + "\\}$" for g_ in groups)
+
+
+rows = [ln for ln in E.items["s15p13a"][0]["context"].splitlines() if re.match(r"\s*\| [A-E] \|", ln)]
+shown = np.array([[float(x) for x in ln.strip().strip("|").split("|")[1:]] for ln in rows])
+E.check("s15p13a", shown.shape == (5, 5) and np.allclose(shown, Dm), "問題文の距離行列が検算の行列と一致")
+E.choice("s15p13a", f"最短距離法：{parts('single')}、最長距離法：{parts('complete')}", "scipy の linkage")
+E.check("s15p13a", parts("single") != parts("complete"), "2 つの方法で分け方が異なる（連鎖効果）")
 
 # ---- 大問14
 # (a) 行列で一般化最小二乗（バートレット）を計算し、シミュレーションで不偏性を確認

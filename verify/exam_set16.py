@@ -42,16 +42,15 @@ E.num("s16p01a", rnd(tot, 4), "着氷と3センサーの全状態を総当たり
 ice = rng.random(2_000_000) < c
 fail = rng.random((2_000_000, 3)) < np.where(ice, q, p)[:, None]
 E.check("s16p01a", abs((fail.sum(1) >= 2).mean() - tot) < 0.0005, f"シミュレーション {(fail.sum(1) >= 2).mean():.5f}")
-# (b) マハラノビス距離の比較で判別（線形判別と同値）し、h の値を numpy の逆行列で計算
-mN, mF, S = np.array([1.0, 2.0]), np.array([3.0, 5.0]), np.array([[2.0, 1.0], [1.0, 3.0]])
-x = np.array([4.2, 2.0])
-Si = np.linalg.inv(S)
-dN, dF = (x - mN) @ Si @ (x - mN), (x - mF) @ Si @ (x - mF)
-w = Si @ (mF - mN)
-h = w @ x - w @ (mN + mF) / 2
-E.check("s16p01b", dF < dN and abs((dN - dF) / 2 - h) < 1e-12, f"マハラノビス距離² 正常 {dN:.3f}・故障 {dF:.3f}、(dN-dF)/2={h:.3f}")
-E.choice("s16p01b", f"$\\boldsymbol w=({f(w[0], 1)},\\ {f(w[1], 1)})$、$h=+{f(h, 2)}$で「故障」", "numpy の逆行列で係数と h")
-E.check("s16p01b", ((x - mN) ** 2).sum() < ((x - mF) ** 2).sum(), "ユークリッド距離では正常側（共分散を無視すると判定が変わる）")
+# (b) 事後確率が等しくなる点を数値的に解く
+post = lambda x: 0.1 * stats.norm.pdf(x, 0, 3) - 0.9 * stats.norm.pdf(x, 0, 1)
+cq = optimize.brentq(post, 0.5, 6)
+E.choice("s16p01b", f"${f(cq, 2)}$", f"π_F f_F = π_N f_N を brentq で解く c={cq:.5f}")
+E.check("s16p01b", post(cq + 0.1) > 0 > post(cq - 0.1) and abs(np.log(3) - 1.0986) < 5e-5, "外側で不具合の方が大きい、ln3 の値")
+lab = rng.random(2_000_000) < 0.1
+xs2 = np.where(lab, rng.normal(0, 3, 2_000_000), rng.normal(0, 1, 2_000_000))
+err = lambda c_: ((np.abs(xs2) > c_) != lab).mean()
+E.check("s16p01b", err(cq) < min(err(1.57), err(2.22), err(1.93), err(3.14)), f"誤判別率 c={cq:.2f}: {err(cq):.4f} が他の候補より小さい")
 
 # ---- 大問2
 ls, lm = 0.0012, 0.0008
@@ -223,18 +222,7 @@ E.check("s16p08b", v_2 < v_1 < v_ols and abs(wls(np.ones(60)).mean() - 6) < 0.01
 E.choice("s16p08b", "重み$1/\\hat y_i^2$の重み付き最小二乗法を使う（または目的変数を対数変換する）", "正しい記述")
 
 # ---- 大問9
-# (a) 構造モデルからデータを発生させ、潜在結果で ATT を直接求める
-n9 = 2_000_000
-Z = rng.random(n9) < 0.4
-X = rng.random(n9) < np.where(Z, 0.7, 0.3)
-u = rng.random(n9)
-Y1 = u < np.where(Z, 0.20, 0.08)
-Y0 = u < np.where(Z, 0.35, 0.12)
-att = (Y1[X].astype(float) - Y0[X]).mean()
-E.check("s16p09a", abs(att + 0.107) < 0.002, f"潜在結果のシミュレーションで ATT {att:.4f}")
-pz1x1 = 0.4 * 0.7 / (0.4 * 0.7 + 0.6 * 0.3)
-E.choice("s16p09a", f"${f(-0.15 * pz1x1 - 0.04 * (1 - pz1x1), 3)}$", "ベイズの定理で P(Z|X=1) を出して重み付け")
-# 調整集合 {Z} がバックドア基準を満たすことを d 分離で確認
+# (a) d 分離をモラル化で判定してバックドア基準を確かめる
 edges = [("Z", "X"), ("Z", "Y"), ("X", "M"), ("M", "Y"), ("X", "C"), ("Y", "C")]
 
 
@@ -275,8 +263,23 @@ def dsep(xn, yn, zs, es):
     return yn not in seen
 
 
-E.check("s16p09a", not ({"Z"} & desc("X")) and dsep("X", "Y", {"Z"}, [e_ for e_ in edges if e_[0] != "X"])
-        and not dsep("X", "Y", set(), [e_ for e_ in edges if e_[0] != "X"]), "{Z} はバックドア基準を満たし、空集合は満たさない")
+def backdoor(zs):
+    return not (zs & desc("X")) and dsep("X", "Y", zs, [e_ for e_ in edges if e_[0] != "X"])
+
+
+okb = [backdoor(z_) for z_ in [set(), {"Z", "M"}, {"Z", "C"}, {"M", "C"}, {"Z"}]]
+E.check("s16p09a", okb == [False, False, False, False, True], f"各選択肢のバックドア基準の判定 {okb}")
+# 線形構造方程式でデータを作り、{Z} で調整した回帰が総合効果を、他の集合は偏った値を返すことを確かめる
+n9 = 400_000
+Zs = rng.normal(size=n9)
+Xs = 0.8 * Zs + rng.normal(size=n9)
+Ms = 0.5 * Xs + rng.normal(size=n9)
+Ys = -0.6 * Ms + 0.7 * Zs + rng.normal(size=n9)
+Cs = Xs + Ys + rng.normal(size=n9)
+coef = lambda *cols: np.linalg.lstsq(np.c_[np.ones(n9), Xs, *cols], Ys, rcond=None)[0][1]
+E.check("s16p09a", abs(coef(Zs) + 0.3) < 0.01 and abs(coef() + 0.3) > 0.1 and abs(coef(Zs, Ms) + 0.3) > 0.1 and abs(coef(Zs, Cs) + 0.3) > 0.1,
+        f"総合効果 -0.3：{{Z}} {coef(Zs):.3f}、空 {coef():.3f}、{{Z,M}} {coef(Zs, Ms):.3f}、{{Z,C}} {coef(Zs, Cs):.3f}")
+E.choice("s16p09a", "$\\{Z\\}$", "正解の選択肢")
 # (b) 測定誤差のあるデータを作って重回帰し、補正した値が真の β に戻ること
 n9 = 1_000_000
 Zc = rng.normal(size=n9)
@@ -342,15 +345,18 @@ d2 = lambda u_, v_: float(((u_.mean(0) - v_.mean(0)) ** 2).sum())
 E.check("s16p12b", [round(d2(A_, B_), 9), round(d2(A_, C_), 9), round(d2(B_, C_), 9)] == [4, 18, 10], "作った点の重心間距離が表と一致")
 E.choice("s16p12b", f"${f(d2(np.vstack([A_, B_]), C_), 2)}$", "併合後の重心から直接計算")
 
-# ---- 大問13
-nsim = 2_000_000
-eps = rng.normal(0, 0.05, size=(nsim, 2))
-d1 = 0.02 + 0.6 * 0.15 + eps[:, 0]
-d2_ = 0.02 + 0.6 * d1 + eps[:, 1]
-E.check("s16p13a", abs((2.25 + d1 + d2_).mean() - 2.446) < 0.0005, f"シミュレーションの平均 {(2.25 + d1 + d2_).mean():.5f}")
-d1s = sp.Rational(2, 100) + sp.Rational(6, 10) * (sp.Rational(225, 100) - sp.Rational(210, 100))
-d2s = sp.Rational(2, 100) + sp.Rational(6, 10) * d1s
-E.num("s16p13a", rnd(float(sp.Rational(225, 100) + d1s + d2s), 3), f"sympy の有理数で厳密に {sp.Rational(225, 100) + d1s + d2s}")
+# ---- 大問13：AR(2) の当てはめ（ユール・ウォーカー方程式を行列で解く）と、AR(1) からのシミュレーションで偏自己相関の目安を確認
+r1, r2 = 0.55, 0.40
+sol = np.linalg.solve(np.array([[1, r1], [r1, 1]]), np.array([r1, r2]))
+E.num("s16p13a", rnd(sol[1], 3), f"ユール・ウォーカー方程式 AR(2) の係数 {sol}")
+ar = np.zeros((4000, 300))
+e_ = rng.normal(size=(4000, 300))
+for t_ in range(1, 300):
+    ar[:, t_] = 0.55 * ar[:, t_ - 1] + e_[:, t_]
+xx3 = ar[:, 200:] - ar[:, 200:].mean(1, keepdims=True)
+acf = lambda k: (xx3[:, k:] * xx3[:, :-k]).sum(1) / (xx3 ** 2).sum(1)
+pac = (acf(2) - acf(1) ** 2) / (1 - acf(1) ** 2)
+E.check("s16p13a", abs(pac.std() - 0.1) < 0.01 and (np.abs(pac) > 0.2).mean() < 0.06, f"AR(1) での φ22 の標準偏差 {pac.std():.4f} ≈ 1/√n、|φ22|>0.2 の割合 {(np.abs(pac) > 0.2).mean():.3f}")
 
 # ---- 大問14
 u_ = sp.symbols("u")

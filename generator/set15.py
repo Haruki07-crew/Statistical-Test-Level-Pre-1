@@ -316,7 +316,7 @@ def p13():
         return sorted("".join(names[i] for i in sorted(c)) for c in cl), hist
 
     def part(p):
-        return "、".join("\\{" + ",".join(c) + "\\}" for c in sorted(p, key=lambda c: (-len(c) if False else 0, c)))
+        return " と ".join("$\\{" + ",".join(c) + "\\}$" for c in sorted(p))
     sp, sh = cluster("single", 2)
     cp, ch = cluster("complete", 2)
     wp, _ = cluster("complete", 2, first_min=True)

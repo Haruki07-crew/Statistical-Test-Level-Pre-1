@@ -144,31 +144,33 @@ Ws = [rk[list(c)].sum() for c in combinations(range(9), 4)]
 E.check("s22p06a", abs(np.var(Ws) - Vt) < 1e-9, f"全 126 通りの並べ替えでの W の分散 {np.var(Ws):.4f}")
 z_mw = stats.mannwhitneyu(TA, TB, alternative="two-sided", method="asymptotic", use_continuity=False)
 E.check("s22p06a", abs(stats.norm.ppf(z_mw.pvalue / 2) - (Wt - 20) / math.sqrt(Vt)) < 1e-6, "scipy mannwhitneyu（補正つき正規近似）の p 値と一致")
-# (b) 非心 t 分布の正規近似。示した t・Φ の値を scipy で確認し、近似値を計算
-E.check("s22p06b", abs(stats.t.ppf(0.95, 15) - 1.753) < 5e-4 and abs(stats.t.ppf(0.975, 15) - 2.131) < 5e-4, "t の点")
-E.check("s22p06b", all(abs(stats.norm.cdf(z) - v) < 5e-5 for z, v in [(0.37, 0.6443), (0.75, 0.7734), (0.86, 0.8051), (1.13, 0.8708)]), "Φ の値")
-delta = 5 * math.sqrt(16) / 8
-E.choice("s22p06b", f"${f(stats.norm.cdf(round(delta - stats.t.ppf(0.95, 15), 2)), 3)}$", "scipy の t 点から近似検出力")
-exact = stats.nct.sf(stats.t.ppf(0.95, 15), 15, delta)
-E.check("s22p06b", abs(exact - 0.773) < 0.04, f"非心 t の正確な検出力 {exact:.3f} も近い（近似の妥当性）")
+# (b) 対応のある t：相関・標準偏差が指定どおりのデータを作り scipy.ttest_rel で計算
+z1 = rng.normal(size=16); z2 = rng.normal(size=16)
+Zm = np.c_[z1 - z1.mean(), z2 - z2.mean()]
+Lc = np.linalg.cholesky(np.cov(Zm.T))
+Zw = Zm @ np.linalg.inv(Lc).T                       # 標本共分散を単位行列に
+C = np.array([[64, 0.75 * 56], [0.75 * 56, 49.0]])
+Xd = Zw @ np.linalg.cholesky(C).T + np.array([62.0, 57.0])
+E.check("s22p06b", np.allclose(np.cov(Xd.T), C) and np.allclose(Xd.mean(0), [62, 57]), "作ったデータの平均・分散共分散")
+E.choice("s22p06b", f"${f(stats.ttest_rel(Xd[:, 0], Xd[:, 1]).statistic, 2)}$", "scipy ttest_rel")
 
 # ---- 大問7
 xx = sp.symbols("x")
 sol = sp.solve(sp.Eq(2.0 + 0.5 * xx, 2.0 + 0.5 * xx + 1.5 - 0.30 * xx), xx)
 E.choice("s22p07a", f"${f(float(sol[0]), 1)}$", "sympy で 2 直線の交点")
-x7 = np.array([2, 4, 5, 8.0])
-y7 = np.array([1.0, 2.4, 2.5, 4.8])
-W = np.diag(1 / x7 ** 2)
-Xm = x7[:, None]
-b_wls = np.linalg.solve(Xm.T @ W @ Xm, Xm.T @ W @ y7)[0]
-E.choice("s22p07b", f"${f(b_wls, 3)}$", "行列で (X'WX)^{-1}X'Wy")
-# 分散が x² に比例するときの効率：シミュレーションで WLS の分散が最小
-sims = []
-for _ in range(20000):
-    yy = 0.55 * x7 + rng.normal(0, 0.1 * x7)
-    sims.append(((yy / x7).mean(), yy.sum() / x7.sum(), (x7 * yy).sum() / (x7 ** 2).sum()))
-sims = np.array(sims)
-E.check("s22p07b", sims[:, 0].var() < sims[:, 1].var() < sims[:, 2].var(), "シミュレーションで重み 1/x² の分散が最小")
+# (b) FWL 定理：x2 と誤差を作り、指定の残差になるデータで重回帰係数と一致することを確かめる
+ex = np.array([-2, -1, 0, 1, 2.0]); ey = np.array([-1.6, -0.4, 0.2, 0.6, 1.2])
+x2 = np.array([3.0, 5.0, 4.0, 7.0, 6.0])
+H = np.c_[np.ones(5), x2]
+P = H @ np.linalg.pinv(H)
+M = np.eye(5) - P
+# M ex = ex, M ey = ey となるよう、x2 方向と切片に直交な成分に射影してからデータを作る
+ex2 = M @ ex; ey2 = M @ ey
+x1 = ex2 + 0.5 * x2 + 10; yv = ey2 + 0.3 * x2 + 1
+coef = np.linalg.lstsq(np.c_[np.ones(5), x1, x2], yv, rcond=None)[0]
+E.choice("s22p07b", f"${f(coef[1], 2)}$", "M で射影した残差から作ったデータの重回帰係数（FWL）")
+E.check("s22p07b", abs(coef[1] - (ex2 @ ey2) / (ex2 @ ex2)) < 1e-10, "射影後の残差の傾きと重回帰係数が一致")
+E.check("s22p07b", abs((ex @ ey) / (ex @ ex) - 0.66) < 1e-12, "与えた残差の傾き 0.66")
 
 # ---- 大問8
 y = np.array([12, 8, 20, 10])
@@ -233,14 +235,12 @@ E.check("s22p11b", np.allclose((L0 ** 2).sum(1), (Lr ** 2).sum(1)) and np.sum(np
 angs = np.linspace(-np.pi / 4, np.pi / 4, 721)
 vals = [np.sum(np.var((Lr @ np.array([[np.cos(t_), -np.sin(t_)], [np.sin(t_), np.cos(t_)]])) ** 2, axis=0)) for t_ in angs]
 E.check("s22p11b", abs(angs[int(np.argmax(vals))]) < 0.01, "角度の全探索で最大は与えた解")
-R12 = np.array([[0.5, 0.2], [0.1, 0.4]])
-Rfull = np.block([[np.eye(2), R12], [R12.T, np.eye(2)]])
-E.check("s22p11c", np.all(np.linalg.eigvalsh(Rfull) > 0), "4 変数の相関行列が正定値")
-cc = np.linalg.svd(R12, compute_uv=False)
-E.num("s22p11c", rnd(cc[0], 2), "特異値分解で第1正準相関")
-# 一般式 Rxx^-1 Rxy Ryy^-1 Ryx の固有値でも確認
-ev = np.sort(np.linalg.eigvals(R12 @ R12.T).real)[::-1]
-E.check("s22p11c", abs(math.sqrt(ev[0]) - cc[0]) < 1e-12, "固有値の平方根と一致")
+p_ = 6; q_ = 13
+dfm = len([(i, j) for i in range(p_) for j in range(p_) if i <= j]) - q_
+E.check("s22p11c", dfm == 8, "共分散行列の異なる要素を列挙して自由度 8")
+E.num("s22p11c", rnd(math.sqrt(max(20.0 - dfm, 0) / (dfm * 100)), 3), "RMSEA の定義式")
+# 非心カイ二乗による解釈：非心度 λ=χ²−df の推定から F0=λ/(n−1)、RMSEA=√(F0/df) と同じ
+E.check("s22p11c", abs(math.sqrt((20.0 - 8) / 100 / 8) - 0.1225) < 1e-4, "非心度による別表現と一致")
 
 # ---- 大問12：MA(1) をシミュレーションし、ε_3 を条件にした x_4 の条件付き平均を確認する代わりに、
 # sympy で誤差を連立方程式から解き、予測式を求める

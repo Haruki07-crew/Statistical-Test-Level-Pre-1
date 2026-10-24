@@ -122,7 +122,18 @@ def p05():
     ssb = m * sum((v - zg) ** 2 for v in zb)
     Fl = (ssb / (k - 1)) / (ssw / (k * m - k))
     F212 = 3.885
+    # (c) 母標準偏差既知の両側 z 検定の検出力
+    delta, sig = 0.5, 0.80
+    shift = delta / (sig / sqrt(n))
+    phi = {0.54: 0.7054, 0.86: 0.8051, 1.34: 0.9099, 2.50: 0.9938}
+    za, zb_ = r(shift - 1.96, 2), r(shift - 1.645, 2)
+    zs, zn = r(delta / sig - 1.96, 2), r(shift, 2)
+    assert za in phi and zb_ in phi and -zs in phi and zn in phi
+    pw = phi[za]
     return {
+        "delta": delta, "sig": s(sig, 2), "shift": s(shift, 2), "za": s(za, 2), "pw": s(pw, 3), "pw4": s(pw, 4),
+        "ph054": phi[0.54], "ph086": phi[0.86], "ph134": phi[1.34], "ph250": phi[2.50],
+        "w_one": s(phi[zb_], 3), "w_beta": s(1 - pw, 3), "w_nosqrt": s(1 - phi[-zs], 3), "w_nocrit": s(phi[zn], 3), "zs": s(zs, 2),
         "n": n, "xb": s(xb, 2), "sd": s(sd, 2), "s2": s(s2, 2), "df": n - 1, "S": s(S, 1), "sqn": s(sqrt(n), 0),
         "t15": t15, "t16": t16, "z": s(z, 2), "se": s(sd / sqrt(n), 2), "half": s(half, 4), "lo": r(lo, 3), "lo_s": s(lo, 3),
         "lo5": s(lo, 4), "hi_s": s(xb + half, 3),
@@ -191,7 +202,17 @@ def p09():
     h = 1 / n + q
     h_ind = 1 / n + dx1 ** 2 / S11 + dx2 ** 2 / S22
     h_sign = 1 / n + (S22 * dx1 ** 2 + 2 * S12 * dx1 * dx2 + S11 * dx2 ** 2) / det
-    # (c) エラスティックネット（Z'Z=I）
+    # (c) ニューラルネット
+    z1, z2 = 1.0, -0.5
+    W1 = [[0.8, 0.4], [-0.6, 0.3]]
+    c1 = [-0.1, 0.2]
+    w2, c2 = [1.5, 2.0], 0.3
+    a = [W1[i][0] * z1 + W1[i][1] * z2 + c1[i] for i in range(2)]
+    hdn = [max(v, 0.0) for v in a]
+    out = w2[0] * hdn[0] + w2[1] * hdn[1] + c2
+    out_lin = w2[0] * a[0] + w2[1] * a[1] + c2
+    npar = 2 * 2 + 2 + 2 + 1
+    # (旧) エラスティックネット（Z'Z=I）
     b = [0.9, -0.25, 0.4]
     l1, l2 = 0.6, 0.5
     def soft(v, t):
@@ -212,6 +233,10 @@ def p09():
         "q": s(q, 5), "inv_n": s(1 / n, 5), "h": s(h, 3), "h5": s(h, 5), "cut": s(2 * 3 / n, 1),
         "w_ind": s(h_ind, 3), "w_non": s(q, 3), "w_sign": s(h_sign, 3),
         "eb1": s(b[0], 1), "eb2": s(b[1], 2), "eb3": s(b[2], 1), "l1": l1, "l2": l2, "thr": s(l1 / 2, 1), "opl": s(1 + l2, 1),
+        "nz1": s(z1, 1), "nz2": s(z2, 1), "w11": W1[0][0], "w12": W1[0][1], "w21": W1[1][0], "w22": W1[1][1],
+        "c11b": c1[0], "c12b": c1[1], "v1": w2[0], "v2": w2[1], "c2": c2, "a1": s(a[0], 2), "a2": s(a[1], 2),
+        "h1": s(hdn[0], 2), "h2": s(hdn[1], 0), "out": s(out, 2), "out_lin": s(out_lin, 2), "out_nob": s(out - c2, 2),
+        "npar": npar, "np_nob": 2 * 2 + 2, "np_nohb": 2 * 2 + 2 + 1,
         "en": fmt(en), "la": fmt(la), "ri": fmt(ri), "nh": fmt(nh), "d2": fmt(d2),
         "en1": s(en[0], 3), "en3": s(en[2], 4), "ab1": s(abs(b[0]) - l1 / 2, 1), "ab3": s(abs(b[2]) - l1 / 2, 1),
     }
@@ -221,6 +246,10 @@ def p10():
     lam0, months, tot = 5, 12, 78
     mu0 = lam0 * months
     zz = (tot - mu0) / sqrt(mu0)
+    nI, yI = 100, 30
+    p0 = 0.5
+    step = (yI - nI * p0) / (nI * p0 * (1 - p0))
+    mle = math.log(yI / (nI - yI))
     b0, b1, x = -3.0, 0.5, 4
     eta = b0 + b1 * x
     e1, em1, eem = 2.718, 0.3679, 0.6922      # e^1, e^-1, e^-0.3679
@@ -228,6 +257,9 @@ def p10():
     return {
         "lam0": lam0, "months": months, "tot": tot, "mu0": mu0, "sq": s(sqrt(mu0), 3), "z": s(zz, 2), "z4": s(zz, 4),
         "mbar": s(tot / months, 1), "w_mon": s((tot / months - lam0) / sqrt(lam0), 2), "w_var": s((tot - mu0) / mu0, 2),
+        "nI": nI, "yI": yI, "nyI": nI - yI, "sres": s(yI - nI * p0, 0), "sw": s(nI * p0 * (1 - p0), 0), "beta1": s(step, 3),
+        "mleI": s(mle, 3), "w_now": s((yI - nI * p0) / nI, 3), "w_sign": s(-step, 3), "w_p": s((yI - nI * p0) / (nI * p0), 3),
+        "p1I": s(1 / (1 + math.exp(-step)), 3),
         "b0": s(b0, 1), "b1": s(b1, 1), "x": x, "eta": s(eta, 1), "e1": e1, "em1": em1, "eem": eem,
         "pr": s(pr, 3), "pr4": s(pr, 4), "w_logit": s(1 / (1 + e1), 3), "w_mean": s(em1, 3), "w_comp": s(eem, 3), "w_once": s(1 - em1, 3),
     }
@@ -261,6 +293,9 @@ def p11():
 
 
 def p12():
+    sN1, sN2, sn1, sn2, sy1, sy2 = 6000, 4000, 250, 250, 420.0, 250.0
+    w1_, w2_ = sN1 / sn1, sN2 / sn2
+    west = (sn1 * w1_ * sy1 + sn2 * w2_ * sy2) / (sn1 * w1_ + sn2 * w2_)
     N1, S1, c1, N2, S2, c2, n = 6000, 200, 9, 4000, 100, 1, 500
     a1 = N1 * S1 / sqrt(c1)
     a2 = N2 * S2 / sqrt(c2)
@@ -276,6 +311,9 @@ def p12():
     total = c + a * b
     naive = total + d * aXT
     return {
+        "sN1": sN1, "sN2": sN2, "sn1": sn1, "sn2": sn2, "sy1": s(sy1, 0), "sy2": s(sy2, 0), "sw1": s(w1_, 0), "sw2": s(w2_, 0),
+        "west": r(west, 1), "west_s": s(west, 1), "wsum": s(sn1 * w1_ + sn2 * w2_, 0), "wnum": s(sn1 * w1_ * sy1 + sn2 * w2_ * sy2, 0),
+        "w_unw": s((sy1 + sy2) / 2, 1), "w_inv": s((sn1 / w1_ * sy1 + sn2 / w2_ * sy2) / (sn1 / w1_ + sn2 / w2_), 1),
         "N1": N1, "S1": S1, "c1": c1, "N2": N2, "S2": S2, "c2": c2, "nn": n, "sc1": s(sqrt(c1), 0),
         "a1": s(a1, 0), "a2": s(a2, 0), "n1": r(n1, 0), "n1raw": s(n1, 1), "n2": r(n - n1, 0),
         "w_ney": s(ney, 0), "w_prop": s(prop, 0), "w_byc": s(byc, 0),

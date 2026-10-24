@@ -76,14 +76,15 @@ def p02():
     ans_a = 2 * (1 - phi[z])
     z_half = r(thr / sqrt(mm * (h / 2) ** 2 / 12), 2)       # 幅を 0.05 とした誤り
     assert z_half in phi
-    # (b) 混合正規の尖度
-    w1, w2, v1, v2 = 0.9, 0.1, 1.0, 4.0
-    m4 = 3 * (w1 * v1 ** 2 + w2 * v2 ** 2)
-    var = w1 * v1 + w2 * v2
-    kurt = m4 / var ** 2
-    k_var = m4 / var                                            # 分散で割った
-    m4_wrong = 3 * (w1 * v1 + w2 * v2)                          # σ⁴ の代わりに σ² を使った
-    k_m4w = m4_wrong / var ** 2
+    # (b) 偏りの異なる2台の天秤（全分散の公式）
+    w1, w2, b1, b2, sd1, sd2 = 0.6, 0.4, 30.0, -20.0, 20.0, 40.0
+    mean = w1 * b1 + w2 * b2
+    ev = w1 * sd1 ** 2 + w2 * sd2 ** 2
+    ve = w1 * w2 * (b1 - b2) ** 2
+    ve2 = w1 * (b1 - mean) ** 2 + w2 * (b2 - mean) ** 2
+    assert abs(ve - ve2) < 1e-9
+    tot = ev + ve
+    ex2 = w1 * (sd1 ** 2 + b1 ** 2) + w2 * (sd2 ** 2 + b2 ** 2)
     # (c) ジャック・ベラ
     n, sk, ku = 120, 0.30, 4.50
     jb = n / 6 * (sk ** 2 + (ku - 3) ** 2 / 4)
@@ -95,9 +96,12 @@ def p02():
         "z": s(z, 2), "phi050": s(phi[0.50], 4), "phi100": s(phi[1.00], 4), "phi250": s(phi[2.50], 4),
         "tail": s(1 - phi[z], 4), "ans_a": r(ans_a, 3), "ans_a_s": s(ans_a, 3),
         "one_side": s(1 - phi[z], 3), "w_half": s(2 * (1 - phi[z_half]), 3), "z_half": s(z_half, 2),
-        "w1": w1, "w2": w2, "v1": s(v1, 0), "v2": s(v2, 0), "sd2": s(sqrt(v2), 0),
-        "m4": s(m4, 2), "var": s(var, 1), "var2": s(var ** 2, 2), "kurt": s(kurt, 2), "kurt4": s(kurt, 4),
-        "k_ex": s(kurt - 3, 2), "k_var": s(k_var, 2), "k_m4w": s(k_m4w, 2), "m4w": s(m4_wrong, 1),
+        "w1": w1, "w2": w2, "b1": s(b1, 0), "b2": s(b2, 0), "sd1": s(sd1, 0), "sd2": s(sd2, 0),
+        "v1": s(sd1 ** 2, 0), "v2": s(sd2 ** 2, 0), "mean": s(mean, 0), "ev": s(ev, 0), "ve": s(ve, 0),
+        "bd": s(b1 - b2, 0), "bd2": s((b1 - b2) ** 2, 0), "dev1": s(b1 - mean, 0), "dev2": s(b2 - mean, 0),
+        "tot": s(tot, 0), "sdT": s(sqrt(tot), 1), "sdT4": s(sqrt(tot), 3),
+        "w_ev": s(sqrt(ev), 1), "w_ve": s(sqrt(ve), 1), "w_avg": s(w1 * sd1 + w2 * sd2, 1), "w_ex2": s(sqrt(ex2), 1),
+        "ex2": s(ex2, 0),
         "n": n, "sk": s(sk, 2), "ku": s(ku, 2), "n6": s(n / 6, 0), "sk2": s(sk ** 2, 2),
         "ku3": s((ku - 3) ** 2 / 4, 4), "ku3sq": s((ku - 3) ** 2, 2), "inner": s(jb_n6, 4),
         "jb": s(jb, 2), "jb_n6": s(jb_n6, 2), "jb_no4": s(jb_no4, 2), "jb_no3": s(jb_no3, 2),
@@ -164,10 +168,12 @@ def p05():
         assert r(x, 3) in etab, x
     E = lambda x: etab[r(x, 3)]
     raw_lo, raw_hi = orr - 1.96 * se_l, orr + 1.96 * se_l
-    # (c) ジェフリーズ事前分布
-    n0 = 20
-    a_post, b_post = 0.5, 0.5 + n0
-    mean = a_post / (a_post + b_post)
+    # (c) ガンマ・ポアソンの事後予測確率
+    al, be, days, ysum = 2, 4, 5, 3
+    ap, bp = al + ysum, be + days
+    pred0 = (bp / (bp + 1)) ** ap
+    e0556, e06 = 0.5735, 0.5488
+    assert abs(math.exp(-0.556) - e0556) < 1e-4 and r(ap / bp, 3) == 0.556 and abs(math.exp(-ysum / days) - e06) < 1e-4
     return {
         "nA": nA, "xA": xA, "nB": nB, "xB": xB, "pA": s(pA, 2), "pB": s(pB, 2), "diff": s(pA - pB, 2),
         "xs": xA + xB, "ns": nA + nB, "pp": s(pp, 5), "qq": s(1 - pp, 5), "inv": s(1 / nA + 1 / nB, 3),
@@ -181,9 +187,10 @@ def p05():
         "c90_lo": s(E(lo90), 2), "c90_hi": s(E(hi90), 2),
         "cac_lo": s(E(loac), 2), "cac_hi": s(E(hiac), 2),
         "nx_lo": s(lo, 2), "nx_hi": s(hi, 2), "raw_lo": s(raw_lo, 2), "raw_hi": s(raw_hi, 2),
-        "n0": n0, "ap": "0.5", "bp": s(b_post, 1), "pmean": s(mean, 3), "pmean4": s(mean, 4),
-        "w_unif": s(1 / (n0 + 2), 3), "w_mode": s((a_post - 1) / (a_post + b_post - 2), 3),
-        "w_swap": s(1 - mean, 3), "abm2": s(a_post + b_post - 2, 0), "ab": s(a_post + b_post, 0),
+        "al": al, "be": be, "pmean0": s(al / be, 1), "days": days, "ysum": ysum, "ap": ap, "bp": bp, "bp1": bp + 1,
+        "pmean": s(ap / bp, 4), "pratio": s(bp / (bp + 1), 1), "pred": s(pred0, 3), "pred5": s(pred0, 5),
+        "e0556": s(e0556, 4), "e06": s(e06, 4), "w_plug": s(e0556, 3), "w_mle": s(e06, 3),
+        "w_prior": s((be / (be + 1)) ** al, 3), "w_noup": s((be / (be + 1)) ** ap, 3),
     }
 
 
@@ -350,20 +357,27 @@ def p12():
 
 # ---------------------------------------------------------------- 大問13 微生物株のクラスタリング
 def p13():
-    dA = {"B": 2.0, "C": 3.0, "D": 5.0, "E": 7.0, "F": 4.5, "G": 6.5}
-    a_ = (dA["B"] + dA["C"]) / 2
-    bDE = (dA["D"] + dA["E"]) / 2
-    bFG = (dA["F"] + dA["G"]) / 2
-    b_ = min(bDE, bFG)
-    sil = (b_ - a_) / max(a_, b_)
-    near = min(dA["D"], dA["E"], dA["F"], dA["G"])
-    return {
-        **{f"d{k}": s(v, 1) for k, v in dA.items()},
-        "a": s(a_, 1), "bDE": s(bDE, 1), "bFG": s(bFG, 1), "b": s(b_, 1),
-        "sil": r(sil, 2), "sil4": s(sil, 4),
-        "w_near": s((near - a_) / near, 2), "w_far": s((bDE - a_) / bDE, 2),
-        "w_all": s((sum(dA[k] for k in "DEFG") / 4 - a_) / (sum(dA[k] for k in "DEFG") / 4), 2),
-    }
+    n, T = 30, 300.0
+    W = {2: 150.0, 3: 90.0, 4: 75.0, 5: 66.0}
+    ch = {k: ((T - w) / (k - 1)) / (w / (n - k)) for k, w in W.items()}
+    best = max(ch, key=ch.get)
+    assert best == 3
+    ch_n = {k: ((T - w) / (k - 1)) / (w / n) for k, w in W.items()}
+    ch_k = {k: ((T - w) / k) / (w / (n - k)) for k, w in W.items()}
+    bw = {k: (T - w) / w for k, w in W.items()}
+    assert max(ch_n, key=ch_n.get) == 3 and max(ch_k, key=ch_k.get) == 3 and max(bw, key=bw.get) == 5
+    out = {"n": n, "T": s(T, 0), "best": best}
+    for k, w in W.items():
+        out[f"W{k}"] = s(w, 0)
+        out[f"B{k}"] = s(T - w, 0)
+        out[f"bm{k}"] = s((T - w) / (k - 1), 2)
+        out[f"wm{k}"] = s(w / (n - k), 4)
+        out[f"ch{k}"] = s(ch[k], 2)
+        out[f"chr{k}"] = s(ch[k], 1)
+        out[f"nk{k}"] = n - k
+        out[f"bw{k}"] = s(bw[k], 2)
+    out.update({"w_n": s(ch_n[3], 1), "w_k": s(ch_k[3], 1), "w_bw": s(bw[5], 2)})
+    return out
 
 
 # ---------------------------------------------------------------- 大問14 錠剤の品質特性
@@ -372,23 +386,26 @@ def p14():
     num = r12 ** 2 + r13 ** 2 - 2 * r12 * r13 * r23
     den = 1 - r23 ** 2
     smc = num / den
-    # (b) 正準相関（各組内は無相関）
-    R = [[0.4, 0.3], [-0.2, 0.4]]
-    M = [[sum(R[i][k] * R[j][k] for k in range(2)) for j in range(2)] for i in range(2)]
-    tr = M[0][0] + M[1][1]
-    det = M[0][0] * M[1][1] - M[0][1] * M[1][0]
-    disc = (tr / 2) ** 2 - det
-    lam1 = tr / 2 + sqrt(disc)
-    lam2 = tr / 2 - sqrt(disc)
+    # (b) 正準相関の逐次検定（バートレットのカイ二乗近似）
+    N, p, q, c1, c2 = 60, 2, 2, 0.60, 0.20
+    ln = {0.64: -0.4463, 0.96: -0.0408, 0.4: -0.9163, 0.8: -0.2231}
+    for k, v in ln.items():
+        assert abs(math.log(k) - v) < 1e-4
+    fac = N - 1 - (p + q + 1) / 2
+    st1 = -fac * (ln[0.64] + ln[0.96])
+    st2 = -fac * ln[0.96]
+    st1_r = -fac * (ln[0.4] + ln[0.8])
+    st2_r = -fac * ln[0.8]
+    st1_n = -N * (ln[0.64] + ln[0.96])
+    assert st1 > 9.488 and st2 < 3.841 and st1_r > 9.488 and st2_r > 3.841
     return {
         "r12": r12, "r13": r13, "r23": r23, "num": s(num, 2), "den": s(den, 2), "smc": s(smc, 3), "smc4": s(smc, 4),
         "cross": s(2 * r12 * r13 * r23, 2), "sq": s(r12 ** 2 + r13 ** 2, 2),
         "w_sum": s(r12 ** 2 + r13 ** 2, 3), "w_max": s(r12 ** 2, 3), "w_num": s(num, 3), "w_uniq": s(1 - smc, 3),
-        "R11": R[0][0], "R12": R[0][1], "R21": R[1][0], "R22": R[1][1],
-        "M11": s(M[0][0], 2), "M12": s(M[0][1], 2), "M22": s(M[1][1], 2),
-        "tr": s(tr, 2), "det": s(det, 4), "half": s(tr / 2, 3), "disc": s(disc, 6), "sdisc": s(sqrt(disc), 5),
-        "lam1": s(lam1, 5), "lam2": s(lam2, 5), "rho1": s(sqrt(lam1), 3), "rho2": s(sqrt(lam2), 3),
-        "w_lam": s(lam1, 3), "w_max": s(0.4, 3), "w_tr": s(tr, 3), "w_sqtr": s(sqrt(tr), 3),
+        "N": N, "p": p, "q": q, "c1": s(c1, 2), "c2": s(c2, 2), "c1s": s(1 - c1 ** 2, 2), "c2s": s(1 - c2 ** 2, 2),
+        "l064": s(ln[0.64], 4), "l096": s(ln[0.96], 4), "l04": s(ln[0.4], 4), "l08": s(ln[0.8], 4),
+        "fac": s(fac, 1), "lsum": s(ln[0.64] + ln[0.96], 4), "st1": s(st1, 2), "st2": s(st2, 2),
+        "st1r": s(st1_r, 2), "st2r": s(st2_r, 2), "st1n": s(st1_n, 2), "df1": p * q, "df2": (p - 1) * (q - 1),
     }
 
 

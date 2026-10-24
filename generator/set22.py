@@ -225,17 +225,15 @@ def p06():
     # 中間順位を使わず、同じ値に小さい順位から A を先に割り当てた場合
     order = sorted([(v, 0) for v in TA] + [(v, 1) for v in TB])
     W_naive = sum(i + 1 for i, (v, g) in enumerate(order) if g == 0)
-    # (b) 1 標本 t 検定の検出力（正規近似）
-    nt, sig, dl = 16, 8.0, 5.0
-    tc, tc2, zc = 1.753, 2.131, 1.645
-    phi = {0.37: 0.6443, 0.75: 0.7734, 0.86: 0.8051, 1.13: 0.8708}
-    lamb = dl * sqrt(nt) / sig
-    z_ok = r(lamb - tc, 2)
-    pw = phi[z_ok]
-    pw_z = phi[r(lamb - zc, 2)]
-    pw_2 = phi[r(lamb - tc2, 2)]
-    z_nosqrt = r(tc - dl / sig, 2)
-    pw_ns = 1 - phi[z_nosqrt]
+    # (b) 対応のある t 統計量（標準偏差と相関から差の標準偏差を求める）
+    npd, mo, mn, so, sn, rc = 16, 62.0, 57.0, 8.0, 7.0, 0.75
+    vd = so ** 2 + sn ** 2 - 2 * rc * so * sn
+    sd_d = sqrt(vd)
+    t_pair = (mo - mn) / (sd_d / sqrt(npd))
+    t_unp = (mo - mn) / sqrt((so ** 2 + sn ** 2) / npd)
+    t_plus = (mo - mn) / (sqrt(so ** 2 + sn ** 2 + 2 * rc * so * sn) / sqrt(npd))
+    t_var = (mo - mn) / (vd / sqrt(npd))
+    t_nosq = (mo - mn) / sd_d
     return {
         "A1": A[0], "A2": A[1], "A3": A[2], "A4": A[3], "A5": A[4],
         "B1": B[0], "B2": B[1], "B3": B[2], "B4": B[3], "B5": B[4],
@@ -245,34 +243,32 @@ def p06():
         "NN1": NN * (NN - 1), "zt": s(zt, 2), "zt0": s((W - EW) / sqrt(VW0), 2), "zN": s((W - EW) / sqrt(n1 * n2 * NN / 12), 2),
         "zv": s((W - EW) / VW, 2), "znaive": s((W_naive - EW) / sqrt(VW0), 2), "Wnaive": W_naive, "sdW": s(sqrt(VW), 4),
         "dW": s(W - EW, 1), "n12": n1 * n2, "zt3": s(zt, 3),
-        "nt": nt, "sig": s(sig, 0), "dl": s(dl, 0), "sqn": s(sqrt(nt), 0), "lamb": s(lamb, 1), "tc": s(tc, 3),
-        "tc2": s(tc2, 3), "zc": s(zc, 3), "zok_raw": s(lamb - tc, 3), "zok": s(z_ok, 2), "pw": s(pw, 3), "pw_z": s(pw_z, 3),
-        "pw_2": s(pw_2, 3), "pw_ns": s(pw_ns, 3), "pw_c": s(1 - pw, 3), "dfn": nt - 1, "dls": s(dl / sig, 3),
-        "p037": "0.6443", "p075": "0.7734", "p086": "0.8051", "p113": "0.8708", "z2raw": s(lamb - tc2, 3), "zzraw": s(lamb - zc, 3),
+        "npd": npd, "mo": s(mo, 0), "mn": s(mn, 0), "so": s(so, 0), "sn": s(sn, 0), "rc": s(rc, 2), "dm": s(mo - mn, 0),
+        "so2": s(so ** 2, 0), "sn2": s(sn ** 2, 0), "cov": s(rc * so * sn, 0), "cov2": s(2 * rc * so * sn, 0), "vd": s(vd, 0),
+        "sdd": s(sd_d, 4), "sqn": s(sqrt(npd), 0), "sed": s(sd_d / sqrt(npd), 4), "tp": s(t_pair, 2), "tp4": s(t_pair, 4),
+        "tu": s(t_unp, 2), "tplus": s(t_plus, 2), "tvar": s(t_var, 2), "tnosq": s(t_nosq, 2), "dfp": npd - 1,
     }
 
 
 def p07():
     b0, b1, g, d = 2.0, 0.50, 1.5, -0.30
     xs = -g / d
-    # (b) 誤差の標準偏差が x に比例するときの原点を通る重み付き最小二乗
-    x = [2, 4, 5, 8]
-    y = [1.0, 2.4, 2.5, 4.8]
-    wls2 = sum(yi / xi for xi, yi in zip(x, y)) / len(x)
-    ols0 = sum(xi * yi for xi, yi in zip(x, y)) / sum(xi ** 2 for xi in x)
-    wls1 = sum(y) / sum(x)
-    wrongw = sum(xi ** 3 * yi for xi, yi in zip(x, y)) / sum(xi ** 4 for xi in x)
-    harm = 1 / (sum(xi / yi for xi, yi in zip(x, y)) / len(x))
+    # (b) 追加変数プロット
+    ex = [-2, -1, 0, 1, 2]
+    ey = [-1.6, -0.4, 0.2, 0.6, 1.2]
+    sxy = sum(a_ * b_ for a_, b_ in zip(ex, ey))
+    sxx = sum(a_ ** 2 for a_ in ex)
+    syy = sum(b_ ** 2 for b_ in ey)
+    bav = sxy / sxx
     return {
         "b0": s(b0, 1), "b1": s(b1, 2), "g": s(g, 1), "d": s(d, 2), "dabs": s(-d, 2),
         "slopeA": s(b1 + d, 2), "b0A": s(b0 + g, 1), "xs": s(xs, 1),
         "w1": s(g / b1, 1), "w2": s(g / (b1 + d), 1), "w3": s(-xs, 1),
         "x8": 8, "yA8": s(b0 + g + (b1 + d) * 8, 1), "yB8": s(b0 + b1 * 8, 1),
-        "x1": x[0], "x2": x[1], "x3": x[2], "x4": x[3], "y1": s(y[0], 1), "y2": s(y[1], 1), "y3": s(y[2], 1), "y4": s(y[3], 1),
-        "q1": s(y[0] / x[0], 2), "q2": s(y[1] / x[1], 2), "q3": s(y[2] / x[2], 2), "q4": s(y[3] / x[3], 2),
-        "wls2": s(wls2, 3), "ols0": s(ols0, 3), "wls1": s(wls1, 3), "wrongw": s(wrongw, 3), "harm": s(harm, 3),
-        "sxy": s(sum(xi * yi for xi, yi in zip(x, y)), 1), "sxx": sum(xi ** 2 for xi in x),
-        "sy": s(sum(y), 1), "sx": sum(x),
+        "ex": ", ".join(str(v) for v in ex), "ey": ", ".join(s(v, 1) for v in ey), "avsxy": s(sxy, 1), "avsxx": sxx,
+        "avsyy": s(syy, 2), "bav": s(bav, 2), "binv": s(sxy / syy, 2), "rav": s(sxy / sqrt(sxx * syy), 2),
+        "bcov": s(sxy / len(ex), 2), "bsimple": "0.90",
+        "p1": s(ex[0] * ey[0], 1), "p2": s(ex[1] * ey[1], 1), "p4": s(ex[3] * ey[3], 1), "p5": s(ex[4] * ey[4], 1),
     }
 
 
@@ -377,13 +373,14 @@ def p11():
     V0 = sum(sum(v ** 2 for v in col) / p - (sum(col) / p) ** 2 for col in sq0)
     nosub = 2 * m41
     lin = 2 * (sum(l[0] ** 2 for l in L) / p - (sum(l[0] for l in L) / p) ** 2)
-    # (c) 組の中で無相関な 2 変数ずつの正準相関
-    R12 = ((0.5, 0.2), (0.1, 0.4))
-    P = [[sum(R12[i][k] * R12[j][k] for k in range(2)) for j in range(2)] for i in range(2)]
-    tr = P[0][0] + P[1][1]
-    det = P[0][0] * P[1][1] - P[0][1] * P[1][0]
-    ev1 = tr / 2 + sqrt(tr ** 2 / 4 - det)
-    ev2 = tr / 2 - sqrt(tr ** 2 / 4 - det)
+    # (c) 構造方程式モデルの自由度と RMSEA
+    pobs, qfree, chi, nobs = 6, 13, 20.0, 101
+    mom = pobs * (pobs + 1) // 2
+    dfm = mom - qfree
+    rmsea = sqrt(max(chi - dfm, 0) / (dfm * (nobs - 1)))
+    df_w = pobs * (pobs - 1) // 2 - qfree
+    rm_w = sqrt(max(chi - df_w, 0) / (df_w * (nobs - 1)))
+    rm_nosub = sqrt(chi / (dfm * (nobs - 1)))
     return {
         "z1": s(z[0], 1), "z2": s(z[1], 1), "z3": s(z[2], 1), "rr": s(rr, 1), "ev1": s(1 + 2 * rr, 1),
         "sz": s(sz, 1), "score": s(score, 4), "recon": s(recon, 1), "e1": s(res[0], 1), "e2": s(res[1], 1),
@@ -394,11 +391,10 @@ def p11():
         "sq1": "0.64, 0.49, 0.01, 0.04", "m21": s(m21, 3), "m41": s(m41, 5), "m21sq": s(m21 ** 2, 6),
         "v1": s(v1, 6), "Vrot": s(Vrot, 3), "Vrot6": s(Vrot, 6), "V0": s(V0, 3), "v1s": s(v1, 3),
         "nosub": s(nosub, 3), "lin": s(lin, 3), "pv": p,
-        "c11": s(R12[0][0], 1), "c12": s(R12[0][1], 1), "c21": s(R12[1][0], 1), "c22": s(R12[1][1], 1),
-        "P11": s(P[0][0], 2), "P12": s(P[0][1], 2), "P22": s(P[1][1], 2), "tr": s(tr, 2), "det": s(det, 4),
-        "half": s(tr / 2, 2), "disc": s(tr ** 2 / 4 - det, 4), "sqd": s(sqrt(tr ** 2 / 4 - det), 5),
-        "cev1": s(ev1, 5), "cev2": s(ev2, 5), "cc1": r(sqrt(ev1), 2), "cc1_s": s(sqrt(ev1), 2), "cc1_4": s(sqrt(ev1), 4),
-        "cc2": s(sqrt(ev2), 2), "ev1s": s(ev1, 2),
+        "pobs": pobs, "qfree": qfree, "chi": s(chi, 1), "nobs": nobs, "mom": mom, "dfm": dfm, "n1": nobs - 1,
+        "rnum": s(chi - dfm, 1), "rden": dfm * (nobs - 1), "rratio": s((chi - dfm) / (dfm * (nobs - 1)), 4),
+        "rmsea": r(rmsea, 3), "rmsea_s": s(rmsea, 3), "rmsea4": s(rmsea, 4), "dfw": df_w, "rm_w": s(rm_w, 3),
+        "rm_nosub": s(rm_nosub, 3),
     }
 
 
