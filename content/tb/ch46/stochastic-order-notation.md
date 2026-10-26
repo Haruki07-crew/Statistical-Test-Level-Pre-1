@@ -74,7 +74,12 @@ $X_i\sim\mathrm{Exp}(1)$ の標本平均 $\bar X_n$（$n\bar X_n$ はガンマ�
 
 **例2：分散の推定で $n$ と $n-1$ のどちらで割るか**
 
-$\frac1n\sum(X_i-\bar X)^2=\frac1n\sum(X_i-\mu)^2-(\bar X-\mu)^2$ で、最後の項は $O_p(n^{-1/2})^2=O_p(1/n)$ です。$n$ で割るか $n-1$ で割るかの差も $O(1/n)\times O_p(1)=O_p(1/n)$ です。どちらも $\sqrt n$ 倍すると $o_p(1)$ なので、2 つの推定量は同じ漸近正規分布 $\sqrt n(\hat\sigma^2-\sigma^2)\xrightarrow{d}N(0,\mu_4-\sigma^4)$ に従います（$\mu_4=E[(X-\mu)^4]$）。
+
+$$
+\frac1n\sum(X_i-\bar X)^2=\frac1n\sum(X_i-\mu)^2-(\bar X-\mu)^2
+$$
+
+で、最後の項は $O_p(n^{-1/2})^2=O_p(1/n)$ です。$n$ で割るか $n-1$ で割るかの差も $O(1/n)\times O_p(1)=O_p(1/n)$ です。どちらも $\sqrt n$ 倍すると $o_p(1)$ なので、2 つの推定量は同じ漸近正規分布 $\sqrt n(\hat\sigma^2-\sigma^2)\xrightarrow{d}N(0,\mu_4-\sigma^4)$ に従います（$\mu_4=E[(X-\mu)^4]$）。
 
 ## 現場での使われ方
 
