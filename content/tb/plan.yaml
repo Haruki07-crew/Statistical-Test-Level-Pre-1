@@ -2819,19 +2819,19 @@ chapters:
   - id: lehmann-scheffe-theorem
     title: レーマン・シェフェの定理
     importance: A
-    status: planned
+    status: verified
   - id: basu-theorem
     title: バスの定理と補助統計量
     importance: B
-    status: planned
+    status: verified
   - id: m-estimator
     title: M 推定量と Z 推定量
     importance: A
-    status: planned
+    status: verified
   - id: sandwich-variance-estimator
     title: サンドイッチ分散推定量
     importance: A
-    status: planned
+    status: verified
 - 'no': 48
   title: 統計的決定理論
   lead: 推定を「損失を小さくする決定」として捉え、許容性・ミニマックス・ベイズ推定量で推定量を比べます。スタインの現象は、高次元統計と縮小推定の出発点です。
@@ -2839,19 +2839,19 @@ chapters:
   - id: loss-function-and-risk
     title: 損失関数とリスク関数
     importance: A
-    status: planned
+    status: verified
   - id: admissibility
     title: 許容性
     importance: A
-    status: planned
+    status: verified
   - id: minimax-estimator
     title: ミニマックス推定量
     importance: A
-    status: planned
+    status: verified
   - id: james-stein-estimator
     title: ジェームズ・スタイン推定量
     importance: A
-    status: planned
+    status: verified
 - 'no': 49
   title: ノンパラメトリック推定と頑健統計
   lead: 分布の形を決めずに密度や回帰関数を推定する方法と、外れ値に強い推定の理論です。バンド幅の選び方と影響関数が中心です。
