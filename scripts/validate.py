@@ -18,10 +18,13 @@ import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from level import CONTENT, PRE1_CONTENT  # noqa: E402  級ごとの置き場所（JD_LEVEL）
+from level import CONTENT, LEVEL, PRE1_CONTENT, paths  # noqa: E402  級ごとの置き場所（JD_LEVEL）
 
 HEADINGS = ["一言でいうと", "定義・数式", "数式の読み解き", "具体例", "現場での使われ方",
             "グラフ・イメージ", "試験のポイント", "よくある間違い"]
+if LEVEL == "tb":  # 教科書は試験向けではないので「学習のポイント」にする（DECISIONS.md 2026-10-26）
+    HEADINGS = [("学習のポイント" if h == "試験のポイント" else h) for h in HEADINGS]
+MAX_CHAPTER = 33 if LEVEL != "tb" else 80
 REQUIRED = ["id", "title", "reading", "en", "chapter", "importance", "related"]
 ID_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 CHART_TYPES = {"pmf", "pdf", "cdf", "pdf-cdf", "survival-hazard", "scatter", "custom"}
@@ -190,8 +193,8 @@ def check_file(path, plan_terms, customs, all_aliases):
                 warn(f"title が plan.yaml（{pt.get('title')}）と違います")
     if fm.get("importance") not in ("A", "B", "C"):
         err(f"importance は A/B/C: {fm.get('importance')}")
-    if not isinstance(fm.get("chapter"), int) or not 1 <= fm.get("chapter", 0) <= 33:
-        err("chapter は1〜33の整数")
+    if not isinstance(fm.get("chapter"), int) or not 1 <= fm.get("chapter", 0) <= MAX_CHAPTER:
+        err(f"chapter は1〜{MAX_CHAPTER}の整数")
     rd = fm.get("reading") or ""
     if rd and not re.fullmatch(r"[ぁ-ゟー・a-zA-Z0-9０-９ 　\-]+", str(rd)):
         warn(f"reading はひらがなで書いてください: {rd}")
@@ -237,7 +240,8 @@ def check_file(path, plan_terms, customs, all_aliases):
     plain = re.sub(r"\$[^$\n]*\$", "", plain)
     n = len(re.sub(r"\s", "", plain))
     # 2級は1語あたりの内容が準1級より軽いので、目安を2割下げる（DECISIONS.md 2026-10-24）
-    lo = ({"A": 1200, "B": 800, "C": 400} if CONTENT != PRE1_CONTENT else {"A": 1500, "B": 1000, "C": 500}).get(fm.get("importance"), 0)
+    # 教科書（大学院の内容）は準1級と同じ目安
+    lo = ({"A": 1200, "B": 800, "C": 400} if LEVEL == "g2" else {"A": 1500, "B": 1000, "C": 500}).get(fm.get("importance"), 0)
     if n < lo:
         warn(f"本文が短めです（{n}字）")
     return errors, warnings, fm
@@ -376,9 +380,11 @@ def main():
     customs = custom_chart_ids()
     files = sorted(CONTENT.glob("ch*/*.md"))
 
-    # 別名の表（全ファイルから。title も別名との衝突対象に入れる）
+    # 別名の表（全ファイルから。title も別名との衝突対象に入れる）。ほかの級の解説を共通で使う用語（from）も含める
     all_aliases = {}
-    for p in files:
+    shared_files = [f for tid, occ in plan_terms.items() if occ[0][1].get("from") in ("pre1", "g2")
+                    for f in sorted(paths(occ[0][1]["from"])["content"].glob(f"ch*/{tid}.md"))[:1]]
+    for p in shared_files + files:
         fm_text, _ = split_front(p.read_text(encoding="utf-8"))
         try:
             fm = yaml.safe_load(fm_text) if fm_text else None
@@ -418,12 +424,17 @@ def main():
         existing = {p.stem for p in files}
         for tid, occ in plan_terms.items():
             st = occ[0][1].get("status")
-            if occ[0][1].get("from") == "pre1":  # 準1級の解説を共通で使う用語（2級）。ファイルは準1級の側で検査する
-                if not list(PRE1_CONTENT.glob(f"ch*/{tid}.md")):
-                    print(f"[ERROR] plan.yaml: {tid} は from: pre1 ですが準1級に解説がありません")
+            src = occ[0][1].get("from")
+            if src is not None:  # ほかの級の解説を共通で使う用語（2級・教科書）。ファイルは元の級の側で検査する
+                if src not in ("pre1", "g2") or src == LEVEL:
+                    print(f"[ERROR] plan.yaml: {tid} の from は pre1 か g2（この級以外）: {src}")
+                    total_err += 1
+                    continue
+                if not list(paths(src)["content"].glob(f"ch*/{tid}.md")):
+                    print(f"[ERROR] plan.yaml: {tid} は from: {src} ですが元の級に解説がありません")
                     total_err += 1
                 if tid in existing:
-                    print(f"[ERROR] plan.yaml: {tid} は from: pre1 ですが、この級にもファイルがあります（どちらかにする）")
+                    print(f"[ERROR] plan.yaml: {tid} は from: {src} ですが、この級にもファイルがあります（どちらかにする）")
                     total_err += 1
                 continue
             if st in ("written", "verified") and tid not in existing:

@@ -2,9 +2,9 @@
    ・キャッシュ名に版を付け、新しい版が入ったら古いキャッシュを消してすぐ切り替える
    ・ページはネット優先（HTTP キャッシュも確かめ直す）。つながらなければ保存した版を出す
    ・MathJax（本体と最初に読み込む拡張）と Chart.js も保存し、オフラインでも数式とグラフを描けるようにする
-   ・準1級（./）と2級（./g2/）の2つのページを、それぞれのパスで保存する */
+   ・準1級（./）・2級（./g2/）・教科書（./tb/）のページを、それぞれのパスで保存する */
 var CACHE = 'jun1-dict-{{VERSION}}';
-var CORE = ['./', './index.html', './manifest.json', './icon.svg', './icon-192.png', './g2/', './g2/index.html', './g2/manifest.json'];
+var CORE = ['./', './index.html', './manifest.json', './icon.svg', './icon-192.png', './g2/', './g2/index.html', './g2/manifest.json', './tb/', './tb/index.html', './tb/manifest.json'];
 var CDN = [
   'https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js',
   'https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/input/tex/extensions/boldsymbol.js',
@@ -28,7 +28,7 @@ self.addEventListener('fetch', function (e) {
   var url = new URL(req.url);
   var same = url.origin === self.location.origin;
   if (same && (req.mode === 'navigate' || /\/(index\.html)?$/.test(url.pathname))) {
-    var page = /\/g2\/(index\.html)?$/.test(url.pathname) ? './g2/index.html' : './index.html';
+    var lv = /\/(g2|tb)\/(index\.html)?$/.exec(url.pathname), page = lv ? './' + lv[1] + '/index.html' : './index.html';
     e.respondWith(fetch(req.url, { cache: 'no-cache', credentials: 'same-origin' }).then(function (res) {
       if (res && res.ok) { var copy = res.clone(); caches.open(CACHE).then(function (c) { c.put(page, copy); }); }
       return res;

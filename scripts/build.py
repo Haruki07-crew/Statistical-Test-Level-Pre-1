@@ -1,7 +1,7 @@
-"""content/ から docs/index.html（準1級）と docs/g2/index.html（2級）を生成する。
+"""content/ から docs/index.html（準1級）・docs/g2/index.html（2級）・docs/tb/index.html（統計学の教科書）を生成する。
 
-使い方: .venv/bin/python scripts/build.py            # 両方の級
-        JD_LEVEL=g2 .venv/bin/python scripts/build.py # 2級だけ（service worker は更新しない）
+使い方: .venv/bin/python scripts/build.py            # すべて
+        JD_LEVEL=g2 .venv/bin/python scripts/build.py # 2級だけ（service worker は更新しない。教科書は JD_LEVEL=tb）
 級ごとに先に validate.py を実行し、エラーがあれば止める。
 """
 import os
@@ -24,7 +24,7 @@ DOCS = ROOT / "docs"
 SECTION_KEYS = {
     "一言でいうと": "summary", "定義・数式": "definition", "数式の読み解き": "reading",
     "具体例": "example", "現場での使われ方": "field", "グラフ・イメージ": "chart",
-    "試験のポイント": "exam", "よくある間違い": "mistake",
+    "試験のポイント": "exam", "学習のポイント": "exam", "よくある間違い": "mistake",
 }
 
 
@@ -91,29 +91,33 @@ def render_inline(text):
     return m.group(1) if m and "<p>" not in m.group(1) else h
 
 
-def load_questions(plan_ids, shared=()):
+def load_questions(plan_ids, shared=None, levels=("基本",)):
     """検算に通り、内容が検算時から変わっていない問題だけを返す。戻り値：(問題の一覧, 章ごとの {全問, 公開})
-    2級では、準1級と共通の用語（shared）について、準1級の問題のうち level が「基本」のものも使う（キーは "準1級"）。"""
+    ほかの級と共通の用語（shared：{用語: 元の級}）については、元の級の問題のうち level が levels のものも使う
+    （2級は準1級の「基本」だけ、教科書はすべて。キーは元の級の名前）。"""
     sys.path.insert(0, str(ROOT / "verify"))
     from qcheck import qhash
     out, stat = [], {}
-    sources = [(p, VERIFY, None) for p in sorted((CONTENT / "questions").glob("ch*.yaml"))]
-    if shared:
-        sources += [(p, paths("pre1")["verify"], "準1級") for p in sorted((PRE1_CONTENT / "questions").glob("ch*.yaml"))]
-    for p, vdir, src in sources:
+    shared = shared or {}
+    sources = [(p, VERIFY, None, None) for p in sorted((CONTENT / "questions").glob("ch*.yaml"))]
+    for lv in sorted(set(shared.values())):
+        sources += [(p, paths(lv)["verify"], LEVEL_NAMES[lv], lv) for p in sorted((paths(lv)["content"] / "questions").glob("ch*.yaml"))]
+    seen = set()
+    for p, vdir, src, lv in sources:
         data = yaml.safe_load(p.read_text(encoding="utf-8")) or {}
         res_path = vdir / "questions_results" / f"{p.stem}.json"
         res = json.loads(res_path.read_text(encoding="utf-8")) if res_path.exists() else {}
         qs = data.get("questions") or []
         if src:
-            qs = [q for q in qs if q["term"] in shared and q["level"] == "基本"]
+            qs = [q for q in qs if shared.get(q["term"]) == lv and q["level"] in levels]
             if not qs:
                 continue
         pub = 0
         for q in qs:
             r = res.get(q["id"])
-            if not r or not r.get("ok") or r.get("hash") != qhash(q) or q["term"] not in plan_ids:
+            if not r or not r.get("ok") or r.get("hash") != qhash(q) or q["term"] not in plan_ids or q["id"] in seen:
                 continue
+            seen.add(q["id"])
             pub += 1
             item = {"id": q["id"], "term": q["term"], "lv": q["level"], "type": q["type"],
                     "q": render_body(q["question"]), "h": render_body(q["hint"]), "e": render_body(q["explanation"])}
@@ -135,12 +139,17 @@ def load_questions(plan_ids, shared=()):
     return out, stat
 
 
+LEVEL_NAMES = {"pre1": "準1級", "g2": "2級", "tb": "教科書"}
+
+
 def load_exams(plan_ids):
     """模擬試験：自動検査・検算・見直しの3段階すべてに通った（ハッシュが一致する）小問だけでできたセットを返す。
     戻り値: (公開するセットの一覧, {セット番号: (小問数, 検算OK, 見直しOK, 自動検査エラー数)})"""
     sys.path.insert(0, str(ROOT / "scripts"))
     import exam_lib as L
     out, stat = [], {}
+    if LEVEL == "tb":  # 教科書には模擬試験がない
+        return out, stat
     for path in L.set_files():
         try:
             data, missing = L.load_set(path)
@@ -223,7 +232,7 @@ def write_pwa(index_bytes):
 
 
 def write_manifest(site):
-    """2級のページの manifest（アイコンは docs/ のものを使う）。"""
+    """2級・教科書のページの manifest（アイコンは docs/ のものを使う）。"""
     m = json.loads((SRC / "pwa" / "manifest.json").read_text(encoding="utf-8"))
     m.update({"name": site["full"], "short_name": site["short"], "description": site["desc"], "theme_color": site["theme"]})
     for ic in m["icons"]:
@@ -245,11 +254,12 @@ SITE_PRE1 = {
     "level": "pre1", "name": "準1級 用語辞典", "full": "統計検定準1級 用語辞典", "short": "準1級辞典",
     "desc": "統計検定準1級の用語を『統計学実践ワークブック』の章立てに沿って解説する辞典", "theme": "#1d6b66",
     "asset": "", "kp": "jd-", "other": {"label": "2級", "href": "g2/"},
+    "others": [{"label": "2級の辞典", "href": "g2/"}, {"label": "統計学の教科書", "href": "tb/"}],
 }
 
 
 def load_site():
-    """級ごとの表示の設定。準1級は既定値（画面の文言は app.js の既定のまま）、2級は content/g2/site.yaml。"""
+    """級ごとの表示の設定。準1級は既定値（画面の文言は app.js の既定のまま）、2級・教科書は content/<級>/site.yaml。"""
     if LEVEL == "pre1":
         return dict(SITE_PRE1)
     return yaml.safe_load((CONTENT / "site.yaml").read_text(encoding="utf-8"))
@@ -267,13 +277,14 @@ def main():
     plan = yaml.safe_load((CONTENT / "plan.yaml").read_text(encoding="utf-8"))
     site = load_site()
     files = sorted(CONTENT.glob("ch*/*.md"))
-    # 2級：準1級の解説を共通で使う用語（plan の from: pre1）。章は2級の章に置き換え、関連用語は2級にあるものだけ残す
-    shared = {}
+    # ほかの級の解説を共通で使う用語（plan の from: pre1 / g2）。章はこの級の章に置き換え、関連用語はこの級にあるものだけ残す
+    shared, src_of = {}, {}
     for ch in plan["chapters"]:
         for t in ch.get("terms") or []:
-            if t.get("from") == "pre1":
+            if t.get("from") in ("pre1", "g2"):
                 shared[t["id"]] = (ch["no"], t["importance"])
-                files += sorted(PRE1_CONTENT.glob(f"ch*/{t['id']}.md"))[:1]
+                src_of[t["id"]] = t["from"]
+                files += sorted(paths(t["from"])["content"].glob(f"ch*/{t['id']}.md"))[:1]
     plan_all = {t["id"] for ch in plan["chapters"] for t in ch.get("terms") or []}
     # 2級：共通の用語に付ける「2級で押さえること」（content/g2/notes.yaml）
     notes = yaml.safe_load((CONTENT / "notes.yaml").read_text(encoding="utf-8")) if (CONTENT / "notes.yaml").exists() else {}
@@ -291,23 +302,24 @@ def main():
             "html": render_body(body),  # 検索用の本文テキストはファイルサイズ節約のため app.js で html から作る
         }
         if fm["id"] in shared:
-            terms[fm["id"]]["shared"] = 1
+            terms[fm["id"]]["shared"] = 1 if LEVEL == "g2" else src_of[fm["id"]]
             if notes.get(fm["id"]):
                 terms[fm["id"]]["note2"] = html.escape(str(notes[fm["id"]]))
     chapters = []
     for ch in plan["chapters"]:
         chapters.append({
-            "no": ch["no"], "title": ch["title"],
+            "no": ch["no"], "title": ch["title"], **({"lead": ch["lead"]} if ch.get("lead") else {}),
             "terms": [dict({"id": t["id"], "title": t["title"], "importance": t["importance"], "status": t["status"]},
                            **({"see": t["see"]} if t.get("see") else {}))
                       for t in ch.get("terms") or []],
         })
     plan_ids = {t["id"] for ch in chapters for t in ch["terms"]}
-    questions, qstat = load_questions(plan_ids, set(shared))
+    questions, qstat = load_questions(plan_ids, src_of, tuple(site.get("shared_q_levels") or ("基本",)))
     exams, estat = load_exams(plan_ids)
     data = {"chapters": chapters, "terms": terms, "questions": questions, "exams": exams, "roadmap": load_roadmap(plan_ids),
             "formulas": render_formulas({t["title"]: t["id"] for ch in chapters for t in ch["terms"] if t["id"] in terms}),
-            "site": {k: site[k] for k in ("level", "name", "kicker", "lead", "kp", "other", "parts", "steps", "exam") if site.get(k) is not None}}
+            "site": {k: site[k] for k in ("level", "name", "kicker", "lead", "kp", "other", "others", "parts", "steps", "exam",
+                                          "textbook", "h1", "shared_note", "tips") if site.get(k) is not None}}
     data_json = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
 
     tpl = (SRC / "template.html").read_text(encoding="utf-8")
@@ -334,7 +346,7 @@ def main():
         print(f"{ch['no']:>2} | {n:>4} | {w:>4} | {v:>6} | {ch['title']}")
     print(f"合計: 予定 {tot[0]} / 作成 {tot[1]} / 検算済 {tot[2]} / 未作成 {tot[0] - tot[1]}")
     qa = sum(v[0] for v in qstat.values())
-    print("問題（公開／全問）: " + "  ".join((f"第{k}章" if isinstance(k, int) else f"{k}の基本問題（共通の用語）") + f" {v[1]}/{v[0]}" for k, v in sorted(qstat.items(), key=lambda kv: (isinstance(kv[0], str), kv[0]))))
+    print("問題（公開／全問）: " + "  ".join((f"第{k}章" if isinstance(k, int) else f"{k}の問題（共通の用語）") + f" {v[1]}/{v[0]}" for k, v in sorted(qstat.items(), key=lambda kv: (isinstance(kv[0], str), kv[0]))))
     print(f"問題 合計: 公開 {len(questions)} / 全問 {qa}（検算に通っていない問題は公開しない）")
     print("模擬試験（小問 / 検算OK / 見直しOK / 自動検査エラー）: " + ("  ".join(f"set{k:02d} {v[0]}/{v[1]}/{v[2]}/{v[3]}" for k, v in sorted(estat.items())) or "なし"))
     print(f"模擬試験 公開: {len(exams)} セット（3段階の確認に通ったセットだけ）")
@@ -343,15 +355,17 @@ def main():
 
 
 def build_all():
-    """準1級を作り、2級は別のプロセスで作ってから、両方のページを保存する service worker を書く。"""
+    """準1級を作り、2級と教科書は別のプロセスで作ってから、すべてのページを保存する service worker を書く。"""
     main()
-    if not paths("g2")["content"].joinpath("plan.yaml").exists():
-        write_pwa(OUT.read_bytes())
-        return
-    r = subprocess.run([sys.executable, __file__], env=dict(os.environ, JD_LEVEL="g2"), text=True)
-    if r.returncode:
-        sys.exit(r.returncode)
-    write_pwa(OUT.read_bytes() + paths("g2")["out"].read_bytes())
+    pages = OUT.read_bytes()
+    for lv in ("g2", "tb"):
+        if not paths(lv)["content"].joinpath("plan.yaml").exists():
+            continue
+        r = subprocess.run([sys.executable, __file__], env=dict(os.environ, JD_LEVEL=lv), text=True)
+        if r.returncode:
+            sys.exit(r.returncode)
+        pages += paths(lv)["out"].read_bytes()
+    write_pwa(pages)
 
 
 if __name__ == "__main__":

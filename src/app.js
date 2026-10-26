@@ -14,7 +14,7 @@
     ['実験計画と標本調査', 20, 21], ['多変量解析', 22, 26], ['時系列・分割表・不完全データ', 27, 29],
     ['モデル選択・ベイズ・シミュレーション', 30, 32], ['統計的因果推論', 33, 33]
   ];
-  var SEC_LABELS = { summary: '一言', definition: '定義', reading: '読み解き', example: '具体例', field: '現場', chart: 'グラフ', exam: '試験', mistake: '間違い', questions: '問題', note: 'メモ' };
+  var SEC_LABELS = { summary: '一言', definition: '定義', reading: '読み解き', example: '具体例', field: '現場', chart: 'グラフ', exam: SITE.textbook ? '要点' : '試験', mistake: '間違い', questions: '問題', note: 'メモ' };
   var TYPE_LABELS = { choice: '4択', numeric: '数値', truefalse: '正誤', derivation: '導出' };
   var DAY = 86400000;
   var INTERVALS = [1, 3, 7, 14, 30];   // 正解が続いた回数ごとの、次に出すまでの日数
@@ -417,6 +417,7 @@
       '<span class="ch-mark" aria-hidden="true">&#x25B6;&#xFE0E;</span><span class="ch-no">' + pad2(n) + '</span><span>' + esc(ch.title) + '</span>' +
       '<span class="ch-count" title="作成済み／予定">' + c.written + '/' + c.total + '</span></button>';
     if (open) {
+      if (ch.lead) h += '<p class="ch-lead">' + esc(ch.lead) + '</p>';
       var ids = ch.terms.map(function (t) { return t.id; }).filter(visible);
       h += ids.length ? '<ul id="list-ch' + pad2(n) + '-ul">' + ids.map(function (id) { return rowHtml(id); }).join('') + '</ul>'
         : '<div class="empty" id="list-ch' + pad2(n) + '-ul">表示する用語がありません。</div>';
@@ -606,7 +607,8 @@
     var fresh = !DB.recent.length && !Object.keys(DB.ans).length && !Object.keys(DB.memo).length;
     var ex = examDays();
     var h = '<div class="article home">' +
-      '<header class="home-hero"><p class="home-kicker">' + esc(SITE.kicker || '統計検定準1級') + (SITE.other ? ' <a class="lvl-link" href="' + SITE.other.href + '">' + esc(SITE.other.label) + 'の辞典へ →</a>' : '') + '</p><h1>用語辞典と問題集</h1>' +
+      '<header class="home-hero"><p class="home-kicker">' + esc(SITE.kicker || '統計検定準1級') + (SITE.others ? SITE.others.map(function (o) { return ' <a class="lvl-link" href="' + o.href + '">' + esc(o.label) + 'へ →</a>'; }).join('')
+        : SITE.other ? ' <a class="lvl-link" href="' + SITE.other.href + '">' + esc(SITE.other.label) + 'の辞典へ →</a>' : '') + '</p><h1>' + esc(SITE.h1 || '用語辞典と問題集') + '</h1>' +
       '<p class="home-lead">' + (SITE.lead ? esc(SITE.lead).replace('{terms}', ORDER.length).replace('{qs}', QS.length) : '『統計学実践ワークブック』（増補版）の全33章に沿って、' + ORDER.length + ' 語の解説と ' + QS.length + ' 問の問題をまとめています。読む・解く・復習するを、毎日少しずつ。') + '</p></header>';
     // 今日の状況
     h += '<div class="home-stats">' +
@@ -628,7 +630,7 @@
       '</ol></section>';
     // 模擬試験とロードマップ
     var lastEx = DB.mock.hist[DB.mock.hist.length - 1], rmn = rmNext(1)[0];
-    h += '<section class="home-sec"><h2 class="home-h">本番に向けて</h2><div class="ex-modes">' +
+    if (!SITE.textbook) h += '<section class="home-sec"><h2 class="home-h">本番に向けて</h2><div class="ex-modes">' +
       '<a class="ex-mode" href="#exam"><b>模擬試験（' + EXN + '問・90分）</b><span>' + (DB.mock.cur ? '第' + DB.mock.cur.s + '回の途中です。続きから解けます。' : lastEx ? '前回：第' + lastEx.s + '回 ' + lastEx.sc + '点' + (lastEx.sc >= 60 ? '（合格ライン突破）' : '') : '本番と同じ形式で実力を測ります。公開中 ' + EXAMS.length + ' セット。') + '</span></a>' +
       '<a class="ex-mode" href="#roadmap"><b>学習ロードマップ</b><span>' + (RMAP ? '出題されやすさで優先度を付けた4段階の学習順。' + (rmn ? '次は「' + esc(PLAN[rmn.id].title) + '」。' : '') : '準備中です。') + '</span></a>' +
       '</div></section>';
@@ -648,13 +650,13 @@
     });
     h += '</ol></section>';
     // 勉強のコツ
-    h += '<section class="home-sec"><h2 class="home-h">勉強のコツ</h2><ul class="tips">' +
+    h += '<section class="home-sec"><h2 class="home-h">勉強のコツ</h2><ul class="tips">' + (SITE.tips ? SITE.tips.map(function (x) { return '<li>' + x + '</li>'; }).join('') :
       '<li><b>用語ページは上から順に。</b>「一言でいうと」で全体像をつかみ、「定義・数式」「数式の読み解き」で式の意味を確かめ、「具体例」の数値は自分でも電卓で計算します。</li>' +
       '<li><b>読んだらすぐ解く。</b>ページの最後の「この用語の問題」を解き、間違えたら「よくある間違い」を読み直します。</li>' +
       '<li><b>公式は導けるように。</b>「公式まとめ」で一覧し、期待値・分散・母関数は導出問題で手を動かして確かめます。</li>' +
       '<li><b>毎日少しずつ。</b>復習は 1→3→7→14→30 日と間隔が空くので、毎日「今日の復習」を片付けるのがいちばん効きます。</li>' +
       '<li><b>試験が近づいたら。</b>問題演習の「模擬試験モード」（1問3分）で時間を計り、「苦手」の範囲を集中して解きます。</li>' +
-      '<li><b>試験の形式・日程・出題範囲</b>は <a href="https://www.toukei-kentei.jp/" target="_blank" rel="noopener">統計検定の公式サイト</a> で最新の情報を確認してください（2027年から出題範囲表が改訂され、「統計的因果推論」が加わります）。</li>' +
+      '<li><b>試験の形式・日程・出題範囲</b>は <a href="https://www.toukei-kentei.jp/" target="_blank" rel="noopener">統計検定の公式サイト</a> で最新の情報を確認してください（2027年から出題範囲表が改訂され、「統計的因果推論」が加わります）。</li>') +
       '</ul></section>';
     // 使い方
     h += '<section class="home-sec"><h2 class="home-h">使い方</h2><div class="howto">' +
@@ -747,7 +749,8 @@
       (meta.length ? '<p class="term-meta">' + meta.join('　・　') + '</p>' : '') +
       '<div class="term-actions"><button type="button" class="memo-toggle"></button><button type="button" class="memo-toggle bm-toggle"></button>' +
       (p.status === 'verified' ? '<span class="pending-tag" style="border-style:solid" title="数値をPythonで検算済み">検算済み</span>' : '') + '</div>';
-    if (t.shared) h += '<p class="see-note">この解説は準1級の辞典と共通で、準1級向けの発展的な内容も含みます。' + (t.note2 ? '<b>2級で押さえること：</b>' + t.note2 : '2級では「一言でいうと」「定義・数式」「具体例」「試験のポイント」を中心に読み、難しい部分は読み飛ばしてかまいません。') + '</p>';
+    if (t.shared && SITE.shared_note) h += '<p class="see-note">' + esc(SITE.shared_note[t.shared] || '') + '</p>';
+    else if (t.shared) h += '<p class="see-note">この解説は準1級の辞典と共通で、準1級向けの発展的な内容も含みます。' + (t.note2 ? '<b>2級で押さえること：</b>' + t.note2 : '2級では「一言でいうと」「定義・数式」「具体例」「試験のポイント」を中心に読み、難しい部分は読み飛ばしてかまいません。') + '</p>';
     if (p.see && PLAN[p.see]) h += '<p class="see-note">この内容は「<button type="button" class="f-link" data-go="' + p.see + '">' + esc(PLAN[p.see].title) + '</button>」でまとめて解説しています。このページは補足です。</p>';
     var secs = [];
     t.html.replace(/data-sec="(\w+)"/g, function (_, k) { secs.push(k); return _; });
@@ -2005,7 +2008,7 @@
     window.addEventListener('load', function () {
       // sw.js 自体は HTTP キャッシュを使わずに確かめ、開くたびに新しい版がないか見る
       try {
-        navigator.serviceWorker.register(SITE.level === 'g2' ? '../sw.js' : 'sw.js', { updateViaCache: 'none' }).then(function (reg) { try { reg.update(); } catch (e) { /* 無視 */ } }).catch(function () { /* 使えなくても続ける */ });
+        navigator.serviceWorker.register(SITE.level && SITE.level !== 'pre1' ? '../sw.js' : 'sw.js', { updateViaCache: 'none' }).then(function (reg) { try { reg.update(); } catch (e) { /* 無視 */ } }).catch(function () { /* 使えなくても続ける */ });
       } catch (e) { /* 無視 */ }
     });
   }

@@ -1,0 +1,3002 @@
+# 統計学の教科書（学部1年〜修士2年）の用語計画。scripts/make_plan_tb.py が作る（直接書き換えない）。
+# from: g2 / pre1 は2級・準1級の解説を共通で使う用語。from のない用語は content/tb/chNN/ に教科書のために書いた解説。
+chapters:
+- 'no': 1
+  title: データの種類とグラフ
+  lead: データを集めたら最初にすることは、種類を見分けて図にすることです。度数分布・ヒストグラム・幹葉図で分布の形をつかみます。前提は中学・高校の数学だけです。
+  terms:
+  - id: data-types
+    title: 質的変数と量的変数
+    importance: A
+    status: verified
+    from: g2
+  - id: scales-of-measurement
+    title: 尺度水準（名義・順序・間隔・比例）
+    importance: B
+    status: verified
+    from: g2
+  - id: bar-pie-band-chart
+    title: 棒グラフ・円グラフ・帯グラフ
+    importance: B
+    status: verified
+    from: g2
+  - id: frequency-distribution-histogram
+    title: 度数分布表とヒストグラム
+    importance: A
+    status: verified
+    from: g2
+  - id: cumulative-frequency
+    title: 累積度数と累積相対度数
+    importance: A
+    status: verified
+    from: g2
+  - id: stem-and-leaf-plot
+    title: 幹葉図
+    importance: B
+    status: verified
+    from: g2
+  - id: distribution-shape
+    title: 分布の形（歪み・峰の数）
+    importance: A
+    status: verified
+    from: g2
+  - id: official-statistics
+    title: 公的統計とデータの出所
+    importance: C
+    status: verified
+    from: g2
+- 'no': 2
+  title: 1変数データの要約
+  lead: 平均・中央値・分散・四分位数で分布を数値にまとめ、箱ひげ図や標準化で比べます。以後のすべての章で使う道具です。
+  terms:
+  - id: mean-median-mode
+    title: 平均値・中央値・最頻値
+    importance: A
+    status: verified
+    from: g2
+  - id: sample-variance-sd
+    title: データの分散と標準偏差
+    importance: A
+    status: verified
+    from: g2
+  - id: quartiles-iqr
+    title: 四分位数と四分位範囲
+    importance: A
+    status: verified
+    from: g2
+  - id: box-plot
+    title: 箱ひげ図と外れ値
+    importance: A
+    status: verified
+    from: g2
+  - id: standard-score
+    title: 標準化と標準得点（z得点・偏差値）
+    importance: A
+    status: verified
+    from: g2
+  - id: coefficient-of-variation
+    title: 変動係数
+    importance: B
+    status: verified
+    from: g2
+  - id: lorenz-curve-gini
+    title: ローレンツ曲線とジニ係数
+    importance: A
+    status: verified
+    from: g2
+  - id: skewness-kurtosis
+    title: 歪度と尖度
+    importance: B
+    status: verified
+    from: g2
+  - id: weighted-geometric-harmonic-mean
+    title: 加重平均・幾何平均・調和平均
+    importance: B
+    status: verified
+    from: g2
+- 'no': 3
+  title: 2変数データの記述
+  lead: 散布図・相関係数・クロス表で2つの変数の関係を見ます。相関と因果の違い、層別やシンプソンのパラドックスもここで扱います。
+  terms:
+  - id: scatter-plot
+    title: 散布図
+    importance: A
+    status: verified
+    from: g2
+  - id: covariance-and-correlation
+    title: 共分散と相関係数
+    importance: A
+    status: verified
+    from: g2
+  - id: correlation-matrix
+    title: 相関係数行列
+    importance: B
+    status: verified
+    from: g2
+  - id: stratified-scatter
+    title: 層別の散布図
+    importance: B
+    status: verified
+    from: g2
+  - id: spurious-correlation
+    title: 擬似相関
+    importance: A
+    status: verified
+    from: g2
+  - id: partial-correlation-coefficient
+    title: 偏相関係数
+    importance: B
+    status: verified
+    from: g2
+  - id: cross-tabulation
+    title: 度数表と2元クロス表
+    importance: A
+    status: verified
+    from: g2
+  - id: simpsons-paradox
+    title: シンプソンのパラドックス
+    importance: B
+    status: verified
+    from: g2
+- 'no': 4
+  title: 単回帰と予測
+  lead: 最小二乗法で直線を当てはめ、決定係数と残差で当てはまりを確かめます。学部3年の重回帰分析（第25章）の入口です。
+  terms:
+  - id: simple-regression
+    title: 単回帰と回帰直線
+    importance: A
+    status: verified
+    from: g2
+  - id: least-squares-method
+    title: 最小二乗法
+    importance: A
+    status: verified
+    from: g2
+  - id: coefficient-of-determination
+    title: 決定係数
+    importance: A
+    status: verified
+    from: g2
+  - id: residual
+    title: 残差
+    importance: A
+    status: verified
+    from: g2
+  - id: residual-plot
+    title: 残差プロット
+    importance: B
+    status: verified
+    from: g2
+  - id: log-transformation
+    title: 対数変換
+    importance: B
+    status: verified
+    from: g2
+- 'no': 5
+  title: 時系列データ
+  lead: 成長率・指数・移動平均で時間とともに変わるデータを読みます。本格的な時系列モデルは第38章と第51章で扱います。
+  terms:
+  - id: time-series-components
+    title: 時系列の変動（トレンド・季節変動・不規則変動）
+    importance: A
+    status: verified
+    from: g2
+  - id: growth-rate
+    title: 成長率と平均成長率
+    importance: A
+    status: verified
+    from: g2
+  - id: index-number
+    title: 指数化と指数
+    importance: A
+    status: verified
+    from: g2
+  - id: price-index
+    title: 物価指数（ラスパイレス・パーシェ）
+    importance: B
+    status: verified
+    from: g2
+  - id: moving-average
+    title: 移動平均
+    importance: A
+    status: verified
+    from: g2
+  - id: autocovariance-autocorrelation
+    title: 自己共分散・自己相関
+    importance: B
+    status: verified
+    from: g2
+  - id: correlogram
+    title: コレログラム
+    importance: B
+    status: verified
+    from: g2
+  - id: seasonal-adjustment
+    title: 季節調整
+    importance: C
+    status: verified
+    from: g2
+- 'no': 6
+  title: データの集め方
+  lead: 観察研究と実験研究の違い、標本抽出の方法、誤差の種類を学びます。どんな分析も、データの集め方を超えた結論は出せません。
+  terms:
+  - id: observational-vs-experimental
+    title: 観察研究と実験研究
+    importance: A
+    status: verified
+    from: g2
+  - id: population-and-sample
+    title: 母集団と標本・全数調査と標本調査
+    importance: A
+    status: verified
+    from: g2
+  - id: simple-random-sampling
+    title: 単純無作為抽出
+    importance: A
+    status: verified
+    from: g2
+  - id: systematic-sampling
+    title: 系統抽出法
+    importance: B
+    status: verified
+    from: g2
+  - id: stratified-sampling
+    title: 層化抽出法
+    importance: B
+    status: verified
+    from: g2
+  - id: cluster-sampling
+    title: 集落抽出法
+    importance: B
+    status: verified
+    from: g2
+  - id: two-stage-sampling
+    title: 二段抽出法
+    importance: B
+    status: verified
+    from: g2
+  - id: sampling-and-nonsampling-error
+    title: 標本誤差と非標本誤差
+    importance: A
+    status: verified
+    from: g2
+  - id: nonresponse-bias
+    title: 無回答バイアス
+    importance: C
+    status: verified
+    from: g2
+  - id: fisher-three-principles
+    title: フィッシャーの3原則
+    importance: A
+    status: verified
+    from: g2
+- 'no': 7
+  title: 確率
+  lead: 数え上げ、事象と確率、条件付き確率、ベイズの定理です。推測統計の言葉になる部分なので、例で手を動かして慣れます。
+  terms:
+  - id: counting
+    title: 順列と組合せ
+    importance: B
+    status: verified
+    from: g2
+  - id: events-and-probability
+    title: 事象と確率（加法定理）
+    importance: A
+    status: verified
+    from: g2
+  - id: conditional-probability
+    title: 条件付き確率と乗法定理
+    importance: A
+    status: verified
+    from: g2
+  - id: independence-of-events
+    title: 事象の独立
+    importance: A
+    status: verified
+    from: g2
+  - id: law-of-total-probability
+    title: 全確率の公式
+    importance: B
+    status: verified
+    from: g2
+  - id: bayes-theorem
+    title: ベイズの定理
+    importance: A
+    status: verified
+    from: g2
+- 'no': 8
+  title: 確率変数と期待値
+  lead: 確率変数と分布、期待値と分散の性質、同時分布と和の分布です。第7章の確率を、数値で表す変数に広げます。
+  terms:
+  - id: probability-mass-and-density-function
+    title: 確率関数と確率密度関数
+    importance: A
+    status: verified
+    from: g2
+  - id: cumulative-distribution-function
+    title: 累積分布関数
+    importance: B
+    status: verified
+    from: g2
+  - id: expectation-variance-properties
+    title: 期待値と分散の性質
+    importance: A
+    status: verified
+    from: g2
+  - id: joint-probability-function
+    title: 同時確率関数
+    importance: B
+    status: verified
+    from: g2
+  - id: marginal-distribution
+    title: 周辺分布
+    importance: C
+    status: verified
+    from: g2
+  - id: sum-of-random-variables
+    title: 確率変数の和と再生性
+    importance: B
+    status: verified
+    from: g2
+- 'no': 9
+  title: 確率分布
+  lead: 二項・ポアソン・幾何・指数・正規などの代表的な分布と、その使い分けです。前提は第7・8章です。
+  terms:
+  - id: bernoulli-distribution
+    title: ベルヌーイ試行・ベルヌーイ分布
+    importance: A
+    status: verified
+    from: g2
+  - id: binomial-distribution
+    title: 二項分布
+    importance: A
+    status: verified
+    from: g2
+  - id: poisson-distribution
+    title: ポアソン分布
+    importance: A
+    status: verified
+    from: g2
+  - id: geometric-distribution
+    title: 幾何分布と無記憶性
+    importance: B
+    status: verified
+    from: g2
+  - id: hypergeometric-distribution
+    title: 超幾何分布
+    importance: B
+    status: verified
+    from: g2
+  - id: negative-binomial-distribution
+    title: 負の二項分布
+    importance: C
+    status: verified
+    from: g2
+  - id: uniform-distribution
+    title: 一様分布
+    importance: B
+    status: verified
+    from: g2
+  - id: exponential-distribution
+    title: 指数分布
+    importance: A
+    status: verified
+    from: g2
+  - id: normal-distribution
+    title: 正規分布
+    importance: A
+    status: verified
+    from: g2
+  - id: standard-normal-distribution
+    title: 標準正規分布
+    importance: A
+    status: verified
+    from: g2
+  - id: bivariate-normal-distribution
+    title: 2変量正規分布
+    importance: C
+    status: verified
+    from: g2
+- 'no': 10
+  title: 標本分布
+  lead: 標本平均がどう散らばるかを、大数の法則と中心極限定理で理解します。カイ二乗・t・F 分布と分布表の読み方もここで学びます。
+  terms:
+  - id: sampling-distribution-of-mean
+    title: 標本平均の分布
+    importance: A
+    status: verified
+    from: g2
+  - id: chebyshev-inequality
+    title: チェビシェフの不等式
+    importance: B
+    status: verified
+    from: g2
+  - id: weak-law-of-large-numbers
+    title: 大数の弱法則
+    importance: A
+    status: verified
+    from: g2
+  - id: central-limit-theorem
+    title: 中心極限定理
+    importance: A
+    status: verified
+    from: g2
+  - id: normal-approximation-binomial-poisson
+    title: 二項分布・ポアソン分布の正規近似
+    importance: A
+    status: verified
+    from: g2
+  - id: continuity-correction
+    title: 連続修正
+    importance: B
+    status: verified
+    from: g2
+  - id: chi-squared-distribution
+    title: カイ二乗分布
+    importance: A
+    status: verified
+    from: g2
+  - id: t-distribution
+    title: t分布
+    importance: A
+    status: verified
+    from: g2
+  - id: f-distribution
+    title: F分布
+    importance: A
+    status: verified
+    from: g2
+  - id: statistical-tables
+    title: 分布表の読み方（上側確率点）
+    importance: A
+    status: verified
+    from: g2
+- 'no': 11
+  title: 推定
+  lead: 点推定と区間推定の考え方、平均・比率・分散の信頼区間、必要な標本の大きさです。前提は第10章です。
+  terms:
+  - id: point-estimation
+    title: 点推定と推定量
+    importance: A
+    status: verified
+    from: g2
+  - id: unbiased-estimator
+    title: 不偏推定量
+    importance: A
+    status: verified
+    from: g2
+  - id: consistent-estimator
+    title: 一致推定量
+    importance: B
+    status: verified
+    from: g2
+  - id: standard-error
+    title: 標準誤差
+    importance: A
+    status: verified
+    from: g2
+  - id: confidence-interval
+    title: 信頼区間
+    importance: A
+    status: verified
+    from: g2
+  - id: confidence-coefficient
+    title: 信頼係数
+    importance: B
+    status: verified
+    from: g2
+  - id: ci-mean-known-variance
+    title: 母平均の区間推定（分散既知）
+    importance: A
+    status: verified
+    from: g2
+  - id: ci-mean-unknown-variance
+    title: 母平均の区間推定（分散未知）
+    importance: A
+    status: verified
+    from: g2
+  - id: ci-variance
+    title: 母分散の区間推定
+    importance: B
+    status: verified
+    from: g2
+  - id: ci-proportion
+    title: 母比率の区間推定
+    importance: A
+    status: verified
+    from: g2
+  - id: ci-two-sample-mean-difference
+    title: 2標本の母平均の差の区間推定
+    importance: B
+    status: verified
+    from: g2
+  - id: ci-variance-ratio
+    title: 母分散比の区間推定
+    importance: C
+    status: verified
+    from: g2
+  - id: ci-two-sample-proportion
+    title: 2標本の母比率の差の区間推定
+    importance: B
+    status: verified
+    from: g2
+  - id: required-sample-size
+    title: 必要な標本の大きさ
+    importance: B
+    status: verified
+    from: g2
+  - id: fisher-z-transformation
+    title: フィッシャーのz変換
+    importance: C
+    status: verified
+    from: g2
+  - id: finite-population-correction
+    title: 有限母集団修正
+    importance: C
+    status: verified
+    from: g2
+- 'no': 12
+  title: 仮説検定の考え方と1標本の検定
+  lead: 帰無仮説・p値・2種類の過誤・検出力という検定の骨組みを、1標本の検定で身につけます。
+  terms:
+  - id: null-and-alternative-hypothesis
+    title: 帰無仮説と対立仮説
+    importance: A
+    status: verified
+    from: g2
+  - id: significance-level
+    title: 有意水準
+    importance: A
+    status: verified
+    from: g2
+  - id: p-value
+    title: p値
+    importance: A
+    status: verified
+    from: g2
+  - id: rejection-region
+    title: 棄却域
+    importance: B
+    status: verified
+    from: g2
+  - id: type-i-and-ii-errors
+    title: 第1種の過誤・第2種の過誤
+    importance: A
+    status: verified
+    from: g2
+  - id: power-function
+    title: 検出力・検出力関数
+    importance: B
+    status: verified
+    from: g2
+  - id: one-sided-two-sided-test
+    title: 片側検定と両側検定
+    importance: A
+    status: verified
+    from: g2
+  - id: z-test-known-variance
+    title: 母平均の検定（分散既知）
+    importance: A
+    status: verified
+    from: g2
+  - id: one-sample-t-test
+    title: 1標本t検定
+    importance: A
+    status: verified
+    from: g2
+  - id: chi-square-test-variance
+    title: 母分散のカイ二乗検定
+    importance: B
+    status: verified
+    from: g2
+  - id: proportion-test
+    title: 母比率の検定
+    importance: A
+    status: verified
+    from: g2
+  - id: confidence-interval-test-duality
+    title: 信頼区間と検定の対応
+    importance: B
+    status: verified
+    from: g2
+- 'no': 13
+  title: 2標本の検定とカイ二乗検定
+  lead: 2群の平均・分散・比率の比較と、適合度・独立性のカイ二乗検定です。どの場面でどの検定を使うかを整理します。
+  terms:
+  - id: two-sample-t-test
+    title: 2標本t検定
+    importance: A
+    status: verified
+    from: g2
+  - id: pooled-variance
+    title: プールした分散
+    importance: B
+    status: verified
+    from: g2
+  - id: welch-test
+    title: ウェルチの検定
+    importance: A
+    status: verified
+    from: g2
+  - id: paired-t-test
+    title: 対応のあるt検定
+    importance: A
+    status: verified
+    from: g2
+  - id: f-test-equal-variances
+    title: 等分散のF検定
+    importance: B
+    status: verified
+    from: g2
+  - id: two-sample-proportion-test
+    title: 2標本の比率の差の検定
+    importance: B
+    status: verified
+    from: g2
+  - id: goodness-of-fit-test
+    title: 適合度検定
+    importance: A
+    status: verified
+    from: g2
+  - id: pearson-chi-square-statistic
+    title: ピアソンのカイ二乗統計量
+    importance: B
+    status: verified
+    from: g2
+  - id: expected-frequency
+    title: 期待度数
+    importance: B
+    status: verified
+    from: g2
+  - id: independence-test
+    title: 独立性の検定
+    importance: A
+    status: verified
+    from: g2
+  - id: test-correlation-coefficient
+    title: 母相関係数の検定
+    importance: C
+    status: verified
+    from: g2
+- 'no': 14
+  title: 回帰分析
+  lead: 重回帰の出力（係数・t値・p値・決定係数）を読む練習です。理論は学部3年の第25・26章で行列を使って学び直します。
+  terms:
+  - id: regression-output
+    title: 回帰分析の出力の読み方
+    importance: A
+    status: verified
+    from: g2
+  - id: multiple-regression-model
+    title: 重回帰モデル
+    importance: A
+    status: verified
+    from: g2
+  - id: regression-coefficient-t-test
+    title: 回帰係数のt検定
+    importance: A
+    status: verified
+    from: g2
+  - id: adjusted-r-squared
+    title: 自由度調整済み決定係数
+    importance: A
+    status: verified
+    from: g2
+  - id: overall-f-test-regression
+    title: 回帰全体のF検定
+    importance: B
+    status: verified
+    from: g2
+  - id: multicollinearity
+    title: 多重共線性
+    importance: B
+    status: verified
+    from: g2
+  - id: dummy-variable
+    title: ダミー変数
+    importance: B
+    status: verified
+    from: g2
+  - id: confidence-and-prediction-interval-regression
+    title: 回帰の信頼区間と予測区間
+    importance: C
+    status: verified
+    from: g2
+- 'no': 15
+  title: 実験計画と分散分析
+  lead: 処理と対照、フィッシャーの3原則、一元・二元配置の分散分析です。発展は第28章（実験計画法）です。
+  terms:
+  - id: treatment-and-control
+    title: 処理群と対照群
+    importance: A
+    status: verified
+    from: g2
+  - id: anova-table
+    title: 分散分析表の読み方
+    importance: A
+    status: verified
+    from: g2
+  - id: one-way-anova
+    title: 一元配置分散分析
+    importance: A
+    status: verified
+    from: g2
+  - id: sum-of-squares-decomposition
+    title: 平方和の分解
+    importance: A
+    status: verified
+    from: g2
+  - id: randomized-block-design
+    title: 乱塊法
+    importance: B
+    status: verified
+    from: g2
+  - id: main-effect-and-interaction
+    title: 主効果と交互作用
+    importance: B
+    status: verified
+    from: g2
+  - id: two-way-anova-with-replication
+    title: 二元配置分散分析（繰り返しあり）
+    importance: C
+    status: verified
+    from: g2
+- 'no': 16
+  title: 確率論の基礎と母関数
+  lead: 条件付き独立や包除原理、分布関数・ハザード関数、モーメント母関数・確率母関数・特性関数を学びます。前提は第7〜9章です。
+  terms:
+  - id: conditional-independence
+    title: 条件付き独立
+    importance: A
+    status: verified
+    from: pre1
+  - id: inclusion-exclusion-principle
+    title: 包除原理
+    importance: B
+    status: verified
+    from: pre1
+  - id: survival-function
+    title: 生存関数
+    importance: B
+    status: verified
+    from: pre1
+  - id: hazard-function
+    title: ハザード関数
+    importance: A
+    status: verified
+    from: pre1
+  - id: marginal-probability-function
+    title: 周辺確率関数
+    importance: B
+    status: verified
+    from: pre1
+  - id: conditional-probability-function
+    title: 条件付き確率関数
+    importance: A
+    status: verified
+    from: pre1
+  - id: joint-probability-density-function
+    title: 同時確率密度関数
+    importance: A
+    status: verified
+    from: pre1
+  - id: marginal-probability-density-function
+    title: 周辺確率密度関数
+    importance: B
+    status: verified
+    from: pre1
+  - id: conditional-probability-density-function
+    title: 条件付き確率密度関数
+    importance: A
+    status: verified
+    from: pre1
+  - id: moment-generating-function
+    title: モーメント母関数
+    importance: A
+    status: verified
+    from: pre1
+  - id: probability-generating-function
+    title: 確率母関数
+    importance: A
+    status: verified
+    from: pre1
+  - id: characteristic-function
+    title: 特性関数
+    importance: B
+    status: verified
+    from: pre1
+- 'no': 17
+  title: 分布の特性値と変数変換
+  lead: モーメント、条件付き期待値と条件付き分散、分散共分散行列、変数変換のヤコビアンです。推定論・回帰で何度も使う計算の型です。
+  terms:
+  - id: moments
+    title: モーメント
+    importance: A
+    status: verified
+    from: pre1
+  - id: quantile-function
+    title: 分位点関数
+    importance: B
+    status: verified
+    from: pre1
+  - id: conditional-expectation
+    title: 条件付き期待値
+    importance: A
+    status: verified
+    from: pre1
+  - id: conditional-variance
+    title: 条件付き分散
+    importance: A
+    status: verified
+    from: pre1
+  - id: mean-vector
+    title: 期待値ベクトル
+    importance: B
+    status: verified
+    from: pre1
+  - id: variance-covariance-matrix
+    title: 分散共分散行列
+    importance: A
+    status: verified
+    from: pre1
+  - id: change-of-variables
+    title: 変数変換とヤコビアン
+    importance: A
+    status: verified
+    from: pre1
+  - id: power-transformation
+    title: べき乗変換
+    importance: C
+    status: verified
+    from: pre1
+  - id: box-cox-transformation
+    title: Box-Cox変換
+    importance: A
+    status: verified
+    from: pre1
+  - id: logit-logistic-transformation
+    title: ロジット変換・ロジスティック変換
+    importance: A
+    status: verified
+    from: pre1
+  - id: probit-transformation
+    title: プロビット変換
+    importance: B
+    status: verified
+    from: pre1
+- 'no': 18
+  title: いろいろな確率分布
+  lead: 多項分布・ガンマ分布・ベータ分布・多変量正規分布・非心分布など、数理統計で使う分布を整理します。
+  terms:
+  - id: fisher-exact-test
+    title: フィッシャーの正確検定
+    importance: B
+    status: verified
+    from: pre1
+  - id: multinomial-distribution
+    title: 多項分布
+    importance: A
+    status: verified
+    from: pre1
+  - id: gamma-distribution
+    title: ガンマ分布
+    importance: A
+    status: verified
+    from: pre1
+  - id: beta-distribution
+    title: ベータ分布
+    importance: A
+    status: verified
+    from: pre1
+  - id: cauchy-distribution
+    title: コーシー分布
+    importance: B
+    status: verified
+    from: pre1
+  - id: lognormal-distribution
+    title: 対数正規分布
+    importance: B
+    status: verified
+    from: pre1
+  - id: multivariate-normal-distribution
+    title: 多変量正規分布
+    importance: A
+    status: verified
+    from: pre1
+  - id: normal-mixture-distribution
+    title: 混合正規分布
+    importance: B
+    status: verified
+    from: pre1
+  - id: noncentral-chi-squared-distribution
+    title: 非心カイ二乗分布
+    importance: B
+    status: verified
+    from: pre1
+  - id: t-statistic
+    title: t統計量
+    importance: A
+    status: verified
+    from: pre1
+  - id: noncentral-t-distribution
+    title: 非心t分布
+    importance: B
+    status: verified
+    from: pre1
+  - id: noncentral-f-distribution
+    title: 非心F分布
+    importance: B
+    status: verified
+    from: pre1
+- 'no': 19
+  title: 極限定理と漸近理論
+  lead: 確率収束・概収束・分布収束、スラツキーの定理、デルタ法です。大標本での推測はすべてこの章の道具で正当化されます。発展は第46章です。
+  terms:
+  - id: markov-inequality
+    title: マルコフの不等式
+    importance: B
+    status: verified
+    from: pre1
+  - id: convergence-in-probability
+    title: 確率収束
+    importance: A
+    status: verified
+    from: pre1
+  - id: almost-sure-convergence
+    title: 概収束
+    importance: A
+    status: verified
+    from: pre1
+  - id: convergence-in-distribution
+    title: 分布収束
+    importance: A
+    status: verified
+    from: pre1
+  - id: convergence-in-mean-square
+    title: 平均二乗収束
+    importance: C
+    status: verified
+    from: pre1
+  - id: strong-law-of-large-numbers
+    title: 大数の強法則
+    importance: B
+    status: verified
+    from: pre1
+  - id: slutsky-theorem
+    title: スラツキーの定理
+    importance: A
+    status: verified
+    from: pre1
+  - id: continuous-mapping-theorem
+    title: 連続写像定理
+    importance: A
+    status: verified
+    from: pre1
+  - id: delta-method
+    title: デルタ法
+    importance: A
+    status: verified
+    from: pre1
+  - id: law-of-small-numbers
+    title: 少数の法則
+    importance: B
+    status: verified
+    from: pre1
+  - id: berry-esseen-theorem
+    title: ベリー・エッセンの定理
+    importance: C
+    status: verified
+    from: pre1
+  - id: extreme-value-distribution
+    title: 極値分布
+    importance: B
+    status: verified
+    from: pre1
+- 'no': 20
+  title: 点推定の理論
+  lead: 最尤法、フィッシャー情報量、クラメール・ラオの不等式、十分統計量です。推定量の良さを比べる基準を学びます。発展は第47・48章です。
+  terms:
+  - id: efficient-estimator
+    title: 有効推定量
+    importance: A
+    status: verified
+    from: pre1
+  - id: mean-squared-error
+    title: 平均二乗誤差
+    importance: A
+    status: verified
+    from: pre1
+  - id: likelihood-function
+    title: 尤度関数・対数尤度
+    importance: A
+    status: verified
+    from: pre1
+  - id: maximum-likelihood-estimator
+    title: 最尤推定量
+    importance: A
+    status: verified
+    from: pre1
+  - id: score-function
+    title: スコア関数
+    importance: A
+    status: verified
+    from: pre1
+  - id: fisher-information
+    title: フィッシャー情報量
+    importance: A
+    status: verified
+    from: pre1
+  - id: cramer-rao-inequality
+    title: クラメール・ラオの不等式
+    importance: A
+    status: verified
+    from: pre1
+  - id: sufficient-statistic
+    title: 十分統計量
+    importance: A
+    status: verified
+    from: pre1
+  - id: factorization-theorem
+    title: ネイマンの分解定理
+    importance: A
+    status: verified
+    from: pre1
+  - id: method-of-moments
+    title: モーメント法
+    importance: A
+    status: verified
+    from: pre1
+  - id: asymptotic-normality-of-mle
+    title: 最尤推定量の漸近正規性
+    importance: A
+    status: verified
+    from: pre1
+  - id: invariance-of-mle
+    title: 最尤推定量の不変性
+    importance: B
+    status: verified
+    from: pre1
+  - id: rao-blackwell-theorem
+    title: ラオ・ブラックウェルの定理
+    importance: B
+    status: verified
+    from: pre1
+  - id: complete-statistic
+    title: 完備統計量
+    importance: C
+    status: verified
+    from: pre1
+  - id: exponential-family
+    title: 指数型分布族
+    importance: B
+    status: verified
+    from: pre1
+  - id: order-statistics
+    title: 順序統計量
+    importance: A
+    status: verified
+    from: pre1
+- 'no': 21
+  title: 区間推定の理論
+  lead: ピボットによる信頼区間の作り方、ワルド・ウィルソン・尤度に基づく区間、検定との双対性です。
+  terms:
+  - id: pivotal-quantity
+    title: ピボット量
+    importance: A
+    status: verified
+    from: pre1
+  - id: wald-confidence-interval
+    title: ワルド型信頼区間
+    importance: A
+    status: verified
+    from: pre1
+  - id: wilson-interval
+    title: ウィルソン区間（スコア区間）
+    importance: B
+    status: verified
+    from: pre1
+  - id: ci-paired-difference
+    title: 対応のある場合の区間推定
+    importance: B
+    status: verified
+    from: pre1
+  - id: clopper-pearson-interval
+    title: クロッパー・ピアソン区間
+    importance: C
+    status: verified
+    from: pre1
+  - id: likelihood-based-confidence-interval
+    title: 尤度に基づく信頼区間
+    importance: C
+    status: verified
+    from: pre1
+  - id: one-sided-confidence-limit
+    title: 片側信頼限界
+    importance: B
+    status: verified
+    from: pre1
+- 'no': 22
+  title: 検定の理論
+  lead: ネイマン・ピアソンの補題、一様最強力検定、尤度比検定とウィルクスの定理、ワルド検定・スコア検定、多重検定です。
+  terms:
+  - id: neyman-pearson-lemma
+    title: ネイマン・ピアソンの補題
+    importance: A
+    status: verified
+    from: pre1
+  - id: uniformly-most-powerful-test
+    title: 一様最強力検定
+    importance: A
+    status: verified
+    from: pre1
+  - id: monotone-likelihood-ratio
+    title: 単調尤度比
+    importance: B
+    status: verified
+    from: pre1
+  - id: likelihood-ratio-test
+    title: 尤度比検定
+    importance: A
+    status: verified
+    from: pre1
+  - id: wilks-theorem
+    title: ウィルクスの定理
+    importance: A
+    status: verified
+    from: pre1
+  - id: wald-test
+    title: ワルド検定
+    importance: A
+    status: verified
+    from: pre1
+  - id: score-test
+    title: スコア検定
+    importance: A
+    status: verified
+    from: pre1
+  - id: multiple-testing
+    title: 多重検定の問題
+    importance: A
+    status: verified
+    from: pre1
+  - id: bonferroni-correction
+    title: ボンフェローニ補正
+    importance: A
+    status: verified
+    from: pre1
+  - id: holm-method
+    title: ホルム法
+    importance: B
+    status: verified
+    from: pre1
+  - id: false-discovery-rate
+    title: 偽発見率
+    importance: B
+    status: verified
+    from: pre1
+  - id: randomized-test
+    title: 無作為化検定
+    importance: C
+    status: verified
+    from: pre1
+- 'no': 23
+  title: いろいろな検定
+  lead: 正規分布の検定の発展（検出力・正規性の検定・ホテリングの T²）と、一般の分布の検定（二項・ポアソン・G 統計量など）です。
+  terms:
+  - id: bartlett-test
+    title: バートレット検定
+    importance: C
+    status: verified
+    from: pre1
+  - id: power-of-t-test
+    title: t検定の検出力
+    importance: B
+    status: verified
+    from: pre1
+  - id: preliminary-test-problem
+    title: 予備検定の問題
+    importance: C
+    status: verified
+    from: pre1
+  - id: normality-test
+    title: 正規性の検定
+    importance: C
+    status: verified
+    from: pre1
+  - id: hotelling-t2
+    title: ホテリングのT二乗検定
+    importance: C
+    status: verified
+    from: pre1
+  - id: binomial-test
+    title: 二項検定
+    importance: A
+    status: verified
+    from: pre1
+  - id: poisson-parameter-test
+    title: ポアソン分布の母数の検定
+    importance: A
+    status: verified
+    from: pre1
+  - id: homogeneity-test
+    title: 同質性の検定
+    importance: B
+    status: verified
+    from: pre1
+  - id: g-statistic
+    title: 尤度比検定統計量（G統計量）
+    importance: A
+    status: verified
+    from: pre1
+  - id: degrees-of-freedom-gof
+    title: 適合度検定の自由度（推定母数の影響）
+    importance: A
+    status: verified
+    from: pre1
+  - id: chi-square-approximation-condition
+    title: カイ二乗近似の条件
+    importance: B
+    status: verified
+    from: pre1
+  - id: variance-stabilizing-transform
+    title: 分散安定化変換
+    importance: C
+    status: verified
+    from: pre1
+  - id: poisson-two-sample-test
+    title: 2標本ポアソン比較
+    importance: B
+    status: verified
+    from: pre1
+  - id: kolmogorov-smirnov-test
+    title: コルモゴロフ・スミルノフ検定
+    importance: C
+    status: verified
+    from: pre1
+  - id: dispersion-test
+    title: 分散検定（過分散の検定）
+    importance: C
+    status: verified
+    from: pre1
+- 'no': 24
+  title: ノンパラメトリック法
+  lead: 順位にもとづく検定、並べ替え検定、順位相関です。分布の形を仮定しにくいときの方法です。
+  terms:
+  - id: rank-and-ties
+    title: 順位と同順位（タイ）
+    importance: A
+    status: verified
+    from: pre1
+  - id: nonparametric-methods-overview
+    title: ノンパラメトリック法の特徴
+    importance: B
+    status: verified
+    from: pre1
+  - id: sign-test
+    title: 符号検定
+    importance: A
+    status: verified
+    from: pre1
+  - id: wilcoxon-signed-rank-test
+    title: ウィルコクソンの符号付き順位検定
+    importance: A
+    status: verified
+    from: pre1
+  - id: wilcoxon-rank-sum-test
+    title: ウィルコクソンの順位和検定
+    importance: A
+    status: verified
+    from: pre1
+  - id: kruskal-wallis-test
+    title: クラスカル・ウォリス検定
+    importance: A
+    status: verified
+    from: pre1
+  - id: friedman-test
+    title: フリードマン検定
+    importance: A
+    status: verified
+    from: pre1
+  - id: spearman-rank-correlation
+    title: スピアマンの順位相関係数
+    importance: A
+    status: verified
+    from: pre1
+  - id: kendall-rank-correlation
+    title: ケンドールの順位相関係数
+    importance: A
+    status: verified
+    from: pre1
+  - id: permutation-test
+    title: 並べ替え検定
+    importance: A
+    status: verified
+    from: pre1
+  - id: normal-approximation-rank-tests
+    title: 順位統計量の正規近似
+    importance: B
+    status: verified
+    from: pre1
+  - id: asymptotic-relative-efficiency
+    title: 漸近相対効率
+    importance: C
+    status: verified
+    from: pre1
+  - id: median-test
+    title: 中央値検定
+    importance: C
+    status: verified
+    from: pre1
+  - id: runs-test
+    title: ラン検定
+    importance: C
+    status: verified
+    from: pre1
+  - id: concordant-discordant-pairs
+    title: 一致対・不一致対
+    importance: B
+    status: verified
+    from: pre1
+  - id: jonckheere-terpstra-test
+    title: ヨンクヒール・タプストラ検定
+    importance: C
+    status: verified
+    from: pre1
+- 'no': 25
+  title: 重回帰分析
+  lead: 行列で書いた線形モデル、正規方程式、ハット行列、ガウス・マルコフの定理です。前提は線形代数（行列の積・逆行列）と第17章です。
+  terms:
+  - id: normal-equations
+    title: 正規方程式
+    importance: A
+    status: verified
+    from: pre1
+  - id: hat-matrix
+    title: ハット行列
+    importance: A
+    status: verified
+    from: pre1
+  - id: gauss-markov-theorem
+    title: ガウス・マルコフの定理
+    importance: A
+    status: verified
+    from: pre1
+  - id: standardized-partial-regression-coefficient
+    title: 標準化偏回帰係数
+    importance: B
+    status: verified
+    from: pre1
+  - id: variance-inflation-factor
+    title: 分散拡大要因
+    importance: A
+    status: verified
+    from: pre1
+  - id: interaction-term
+    title: 交互作用項
+    importance: B
+    status: verified
+    from: pre1
+  - id: partial-f-test
+    title: 部分F検定
+    importance: C
+    status: verified
+    from: pre1
+- 'no': 26
+  title: 回帰診断
+  lead: 残差・てこ比・クックの距離で外れ値と影響点を調べ、不均一分散や系列相関に対処します。
+  terms:
+  - id: standardized-residual
+    title: 標準化残差
+    importance: A
+    status: verified
+    from: pre1
+  - id: studentized-residual
+    title: スチューデント化残差
+    importance: A
+    status: verified
+    from: pre1
+  - id: leverage
+    title: てこ比
+    importance: A
+    status: verified
+    from: pre1
+  - id: cooks-distance
+    title: クックの距離
+    importance: A
+    status: verified
+    from: pre1
+  - id: dffits
+    title: DFFITS
+    importance: B
+    status: verified
+    from: pre1
+  - id: outlier-and-influential-point
+    title: 外れ値と影響点
+    importance: A
+    status: verified
+    from: pre1
+  - id: normal-qq-plot
+    title: 正規Q-Qプロット
+    importance: A
+    status: verified
+    from: pre1
+  - id: heteroscedasticity
+    title: 不均一分散
+    importance: A
+    status: verified
+    from: pre1
+  - id: serial-correlation
+    title: 系列相関
+    importance: A
+    status: verified
+    from: pre1
+  - id: durbin-watson-statistic
+    title: ダービン・ワトソン比
+    importance: A
+    status: verified
+    from: pre1
+  - id: breusch-pagan-test
+    title: ブルーシュ・ペイガン検定
+    importance: C
+    status: verified
+    from: pre1
+  - id: robust-standard-error
+    title: 頑健標準誤差
+    importance: C
+    status: verified
+    from: pre1
+- 'no': 27
+  title: 一般化線形モデル
+  lead: ロジスティック回帰・ポアソン回帰・リンク関数・逸脱度です。正規分布以外の応答を回帰の枠組みで扱います。
+  terms:
+  - id: logistic-regression
+    title: ロジスティック回帰
+    importance: A
+    status: verified
+    from: pre1
+  - id: odds-and-odds-ratio
+    title: オッズとオッズ比
+    importance: A
+    status: verified
+    from: pre1
+  - id: generalized-linear-model
+    title: 一般化線形モデル
+    importance: A
+    status: verified
+    from: pre1
+  - id: link-function
+    title: リンク関数
+    importance: A
+    status: verified
+    from: pre1
+  - id: exponential-dispersion-family
+    title: 指数分散型分布族
+    importance: B
+    status: verified
+    from: pre1
+  - id: probit-model
+    title: プロビットモデル
+    importance: B
+    status: verified
+    from: pre1
+  - id: poisson-regression
+    title: ポアソン回帰
+    importance: A
+    status: verified
+    from: pre1
+  - id: deviance
+    title: 逸脱度
+    importance: A
+    status: verified
+    from: pre1
+  - id: logistic-likelihood-estimation
+    title: ロジスティック回帰の最尤推定
+    importance: B
+    status: verified
+    from: pre1
+  - id: iteratively-reweighted-least-squares
+    title: 反復重み付き最小二乗法
+    importance: B
+    status: verified
+    from: pre1
+  - id: multinomial-logit-model
+    title: 多項ロジットモデル
+    importance: B
+    status: verified
+    from: pre1
+  - id: ordered-logit-model
+    title: 順序ロジットモデル
+    importance: B
+    status: verified
+    from: pre1
+  - id: tobit-model
+    title: トービットモデル
+    importance: C
+    status: verified
+    from: pre1
+  - id: overdispersion
+    title: 過分散
+    importance: B
+    status: verified
+    from: pre1
+  - id: offset-term
+    title: オフセット項
+    importance: C
+    status: verified
+    from: pre1
+- 'no': 28
+  title: 実験計画法
+  lead: 要因と交互作用、乱塊法・ラテン方格・直交表・分割法、多重比較です。前提は第15章です。
+  terms:
+  - id: two-way-anova-without-replication
+    title: 二元配置分散分析（繰り返しなし）
+    importance: A
+    status: verified
+    from: pre1
+  - id: fixed-and-random-effects
+    title: 母数模型と変量模型
+    importance: B
+    status: verified
+    from: pre1
+  - id: expected-mean-square
+    title: 期待平均平方
+    importance: B
+    status: verified
+    from: pre1
+  - id: latin-square-design
+    title: ラテン方格法
+    importance: A
+    status: verified
+    from: pre1
+  - id: orthogonal-array
+    title: 直交表
+    importance: A
+    status: verified
+    from: pre1
+  - id: factorial-design
+    title: 要因計画
+    importance: B
+    status: verified
+    from: pre1
+  - id: split-plot-design
+    title: 分割法
+    importance: B
+    status: verified
+    from: pre1
+  - id: confounding
+    title: 交絡
+    importance: B
+    status: verified
+    from: pre1
+  - id: tukey-multiple-comparison
+    title: テューキーの多重比較
+    importance: A
+    status: verified
+    from: pre1
+  - id: effect-size-eta-squared
+    title: 効果量と寄与率
+    importance: C
+    status: verified
+    from: pre1
+  - id: fractional-factorial-design
+    title: 一部実施要因計画
+    importance: B
+    status: verified
+    from: pre1
+  - id: incomplete-block-design
+    title: 釣合い型不完備ブロック計画
+    importance: C
+    status: verified
+    from: pre1
+- 'no': 29
+  title: 標本調査法
+  lead: ホルビッツ・トンプソン推定量、層化・集落・二段抽出、比推定・回帰推定です。前提は第6章です。
+  terms:
+  - id: horvitz-thompson-estimator
+    title: ホルビッツ・トンプソン推定量
+    importance: A
+    status: verified
+    from: pre1
+  - id: inclusion-probability
+    title: 包含確率
+    importance: A
+    status: verified
+    from: pre1
+  - id: proportional-allocation
+    title: 比例配分
+    importance: A
+    status: verified
+    from: pre1
+  - id: neyman-allocation
+    title: ネイマン配分
+    importance: A
+    status: verified
+    from: pre1
+  - id: ratio-estimation
+    title: 比推定
+    importance: A
+    status: verified
+    from: pre1
+  - id: regression-estimation
+    title: 回帰推定
+    importance: B
+    status: verified
+    from: pre1
+  - id: design-effect
+    title: 計画効果
+    importance: B
+    status: verified
+    from: pre1
+  - id: probability-proportional-to-size-sampling
+    title: 確率比例抽出法
+    importance: B
+    status: verified
+    from: pre1
+- 'no': 30
+  title: 回帰分析の発展
+  lead: 一般化最小二乗法、正則化（リッジ・ラッソ）、分位点回帰、操作変数法、変数選択です。発展は第52章です。
+  terms:
+  - id: weighted-least-squares
+    title: 加重最小二乗法
+    importance: A
+    status: verified
+    from: pre1
+  - id: generalized-least-squares
+    title: 一般化最小二乗法
+    importance: A
+    status: verified
+    from: pre1
+  - id: ridge-regression
+    title: リッジ回帰
+    importance: A
+    status: verified
+    from: pre1
+  - id: lasso
+    title: Lasso
+    importance: A
+    status: verified
+    from: pre1
+  - id: elastic-net
+    title: エラスティックネット
+    importance: C
+    status: verified
+    from: pre1
+  - id: regularization
+    title: 正則化
+    importance: A
+    status: verified
+    from: pre1
+  - id: nonlinear-regression
+    title: 非線形回帰
+    importance: B
+    status: verified
+    from: pre1
+  - id: polynomial-regression
+    title: 多項式回帰
+    importance: B
+    status: verified
+    from: pre1
+  - id: quantile-regression
+    title: 分位点回帰
+    importance: B
+    status: verified
+    from: pre1
+  - id: instrumental-variable-method
+    title: 操作変数法
+    importance: A
+    status: verified
+    from: pre1
+  - id: endogeneity
+    title: 内生性
+    importance: A
+    status: verified
+    from: pre1
+  - id: two-stage-least-squares
+    title: 二段階最小二乗法
+    importance: B
+    status: verified
+    from: pre1
+  - id: variable-selection
+    title: 変数選択
+    importance: A
+    status: verified
+    from: pre1
+  - id: omitted-variable-bias
+    title: 欠落変数バイアス
+    importance: B
+    status: verified
+    from: pre1
+  - id: principal-component-regression
+    title: 主成分回帰
+    importance: C
+    status: verified
+    from: pre1
+  - id: spline-regression
+    title: スプライン回帰
+    importance: C
+    status: verified
+    from: pre1
+  - id: neural-network-model
+    title: ニューラルネットワークモデル
+    importance: C
+    status: verified
+    from: pre1
+- 'no': 31
+  title: マルコフ連鎖
+  lead: 推移確率行列、定常分布、既約性・周期性・再帰性です。第43章の MCMC の理論的な土台になります。
+  terms:
+  - id: markov-chain
+    title: マルコフ連鎖
+    importance: A
+    status: verified
+    from: pre1
+  - id: transition-probability-matrix
+    title: 推移確率行列
+    importance: A
+    status: verified
+    from: pre1
+  - id: n-step-transition-probability
+    title: n段階推移確率
+    importance: A
+    status: verified
+    from: pre1
+  - id: chapman-kolmogorov-equation
+    title: チャップマン・コルモゴロフ方程式
+    importance: A
+    status: verified
+    from: pre1
+  - id: stationary-distribution
+    title: 定常分布
+    importance: A
+    status: verified
+    from: pre1
+  - id: irreducibility
+    title: 既約性
+    importance: A
+    status: verified
+    from: pre1
+  - id: communicating-class
+    title: 到達可能性と状態の類
+    importance: B
+    status: verified
+    from: pre1
+  - id: periodicity
+    title: 周期と非周期
+    importance: A
+    status: verified
+    from: pre1
+  - id: recurrence-and-transience
+    title: 再帰と過渡
+    importance: A
+    status: verified
+    from: pre1
+  - id: absorbing-state
+    title: 吸収状態
+    importance: A
+    status: verified
+    from: pre1
+  - id: ergodicity
+    title: エルゴード性
+    importance: A
+    status: verified
+    from: pre1
+  - id: detailed-balance
+    title: 詳細つり合い条件
+    importance: A
+    status: verified
+    from: pre1
+  - id: limiting-distribution
+    title: 極限分布
+    importance: B
+    status: verified
+    from: pre1
+  - id: absorption-probability
+    title: 吸収確率・平均吸収時間
+    importance: B
+    status: verified
+    from: pre1
+  - id: first-passage-time
+    title: 初到達時間・平均再帰時間
+    importance: B
+    status: verified
+    from: pre1
+  - id: continuous-time-markov-chain
+    title: 連続時間マルコフ連鎖
+    importance: C
+    status: verified
+    from: pre1
+- 'no': 32
+  title: 確率過程
+  lead: ポアソン過程、ランダムウォーク、ブラウン運動、出生死滅過程と待ち行列です。
+  terms:
+  - id: stochastic-process
+    title: 確率過程
+    importance: B
+    status: verified
+    from: pre1
+  - id: poisson-process
+    title: ポアソン過程
+    importance: A
+    status: verified
+    from: pre1
+  - id: interarrival-time
+    title: 到着時間間隔
+    importance: A
+    status: verified
+    from: pre1
+  - id: superposition-thinning-poisson
+    title: ポアソン過程の合成と間引き
+    importance: B
+    status: verified
+    from: pre1
+  - id: random-walk
+    title: ランダムウォーク
+    importance: A
+    status: verified
+    from: pre1
+  - id: gambler-ruin-problem
+    title: 破産問題
+    importance: A
+    status: verified
+    from: pre1
+  - id: brownian-motion
+    title: ブラウン運動
+    importance: A
+    status: verified
+    from: pre1
+  - id: martingale
+    title: マルチンゲール
+    importance: C
+    status: verified
+    from: pre1
+  - id: birth-death-process
+    title: 出生死滅過程
+    importance: A
+    status: verified
+    from: pre1
+  - id: mm1-queue
+    title: M/M/1待ち行列
+    importance: A
+    status: verified
+    from: pre1
+  - id: traffic-intensity
+    title: 利用率（トラフィック強度）
+    importance: A
+    status: verified
+    from: pre1
+  - id: littles-law
+    title: リトルの公式
+    importance: B
+    status: verified
+    from: pre1
+  - id: compound-poisson-process
+    title: 複合ポアソン過程
+    importance: C
+    status: verified
+    from: pre1
+  - id: independent-stationary-increments
+    title: 独立増分性・定常増分性
+    importance: B
+    status: verified
+    from: pre1
+  - id: mmc-queue
+    title: M/M/c待ち行列
+    importance: C
+    status: verified
+    from: pre1
+  - id: reflection-principle
+    title: 反射原理
+    importance: C
+    status: verified
+    from: pre1
+- 'no': 33
+  title: 主成分分析
+  lead: 分散共分散行列の固有値分解と特異値分解で、多くの変数を少数の合成変数にまとめます。
+  terms:
+  - id: principal-component-analysis
+    title: 主成分分析
+    importance: A
+    status: verified
+    from: pre1
+  - id: eigenvalue-and-eigenvector
+    title: 固有値と固有ベクトル
+    importance: A
+    status: verified
+    from: pre1
+  - id: contribution-ratio
+    title: 寄与率
+    importance: A
+    status: verified
+    from: pre1
+  - id: cumulative-contribution-ratio
+    title: 累積寄与率
+    importance: A
+    status: verified
+    from: pre1
+  - id: principal-component-loading
+    title: 主成分負荷量
+    importance: A
+    status: verified
+    from: pre1
+  - id: principal-component-score
+    title: 主成分得点
+    importance: A
+    status: verified
+    from: pre1
+  - id: pca-on-correlation-matrix
+    title: 相関行列からの主成分分析
+    importance: A
+    status: verified
+    from: pre1
+  - id: scree-plot
+    title: スクリープロット
+    importance: B
+    status: verified
+    from: pre1
+  - id: kaiser-criterion
+    title: カイザー基準
+    importance: B
+    status: verified
+    from: pre1
+  - id: singular-value-decomposition
+    title: 特異値分解
+    importance: B
+    status: verified
+    from: pre1
+  - id: lagrange-multiplier-pca
+    title: ラグランジュ乗数法による導出
+    importance: B
+    status: verified
+    from: pre1
+  - id: biplot
+    title: バイプロット
+    importance: C
+    status: verified
+    from: pre1
+  - id: low-rank-approximation
+    title: 低ランク近似
+    importance: C
+    status: verified
+    from: pre1
+- 'no': 34
+  title: 判別分析と分類
+  lead: 線形・二次判別、マハラノビス距離、ROC 曲線、サポートベクターマシンなどの分類法です。理論の発展は第53章です。
+  terms:
+  - id: linear-discriminant-analysis
+    title: 線形判別分析
+    importance: A
+    status: verified
+    from: pre1
+  - id: fisher-linear-discriminant-function
+    title: フィッシャーの線形判別関数
+    importance: A
+    status: verified
+    from: pre1
+  - id: mahalanobis-distance
+    title: マハラノビス距離
+    importance: A
+    status: verified
+    from: pre1
+  - id: quadratic-discriminant-analysis
+    title: 二次判別分析
+    importance: A
+    status: verified
+    from: pre1
+  - id: bayes-discriminant-rule
+    title: ベイズ判別ルール
+    importance: A
+    status: verified
+    from: pre1
+  - id: misclassification-rate
+    title: 誤判別率
+    importance: A
+    status: verified
+    from: pre1
+  - id: confusion-matrix
+    title: 混同行列
+    importance: A
+    status: verified
+    from: pre1
+  - id: sensitivity-and-specificity
+    title: 感度と特異度
+    importance: A
+    status: verified
+    from: pre1
+  - id: roc-curve-and-auc
+    title: ROC曲線とAUC
+    importance: A
+    status: verified
+    from: pre1
+  - id: precision-recall-f-measure
+    title: 適合率・再現率・F値
+    importance: B
+    status: verified
+    from: pre1
+  - id: k-nearest-neighbors
+    title: k近傍法
+    importance: B
+    status: verified
+    from: pre1
+  - id: support-vector-machine
+    title: サポートベクターマシン
+    importance: A
+    status: verified
+    from: pre1
+  - id: kernel-method
+    title: カーネル法
+    importance: C
+    status: verified
+    from: pre1
+  - id: decision-tree
+    title: 決定木
+    importance: C
+    status: verified
+    from: pre1
+  - id: naive-bayes-classifier
+    title: ナイーブベイズ分類器
+    importance: C
+    status: verified
+    from: pre1
+- 'no': 35
+  title: クラスター分析
+  lead: 階層的クラスタリングと k 平均法、距離と類似度の選び方です。
+  terms:
+  - id: hierarchical-clustering
+    title: 階層的クラスタリング
+    importance: A
+    status: verified
+    from: pre1
+  - id: dendrogram
+    title: デンドログラム
+    importance: A
+    status: verified
+    from: pre1
+  - id: single-linkage
+    title: 最短距離法
+    importance: A
+    status: verified
+    from: pre1
+  - id: complete-linkage
+    title: 最長距離法
+    importance: A
+    status: verified
+    from: pre1
+  - id: average-linkage
+    title: 群平均法
+    importance: A
+    status: verified
+    from: pre1
+  - id: ward-method
+    title: ウォード法
+    importance: A
+    status: verified
+    from: pre1
+  - id: centroid-method
+    title: 重心法
+    importance: B
+    status: verified
+    from: pre1
+  - id: lance-williams-formula
+    title: ランス・ウィリアムズの更新式
+    importance: B
+    status: verified
+    from: pre1
+  - id: k-means-method
+    title: k-means法
+    importance: A
+    status: verified
+    from: pre1
+  - id: distance-measures
+    title: 距離（ユークリッド・マンハッタン・ミンコフスキー）
+    importance: A
+    status: verified
+    from: pre1
+  - id: similarity-measures
+    title: 類似度
+    importance: B
+    status: verified
+    from: pre1
+  - id: number-of-clusters
+    title: クラスター数の決め方
+    importance: B
+    status: verified
+    from: pre1
+  - id: mixture-model-clustering
+    title: 混合モデルによるクラスタリング
+    importance: C
+    status: verified
+    from: pre1
+- 'no': 36
+  title: 因子分析とグラフィカルモデル
+  lead: 共通因子モデル、因子回転、精度行列と条件付き独立、有向非巡回グラフです。
+  terms:
+  - id: factor-analysis-model
+    title: 因子分析モデル
+    importance: A
+    status: verified
+    from: pre1
+  - id: common-factor-unique-factor
+    title: 共通因子と独自因子
+    importance: A
+    status: verified
+    from: pre1
+  - id: factor-loading
+    title: 因子負荷量
+    importance: A
+    status: verified
+    from: pre1
+  - id: communality
+    title: 共通性
+    importance: A
+    status: verified
+    from: pre1
+  - id: factor-rotation
+    title: 因子回転
+    importance: A
+    status: verified
+    from: pre1
+  - id: varimax-rotation
+    title: バリマックス回転
+    importance: B
+    status: verified
+    from: pre1
+  - id: promax-rotation
+    title: プロマックス回転
+    importance: B
+    status: verified
+    from: pre1
+  - id: number-of-factors
+    title: 因子数の決め方
+    importance: B
+    status: verified
+    from: pre1
+  - id: factor-score
+    title: 因子得点
+    importance: B
+    status: verified
+    from: pre1
+  - id: maximum-likelihood-factor-analysis
+    title: 因子分析の最尤法
+    importance: B
+    status: verified
+    from: pre1
+  - id: graphical-model
+    title: グラフィカルモデル
+    importance: A
+    status: verified
+    from: pre1
+  - id: undirected-graphical-model
+    title: 無向グラフィカルモデル
+    importance: A
+    status: verified
+    from: pre1
+  - id: precision-matrix
+    title: 精度行列
+    importance: A
+    status: verified
+    from: pre1
+  - id: covariance-selection
+    title: 共分散選択
+    importance: B
+    status: verified
+    from: pre1
+  - id: directed-acyclic-graph
+    title: 有向非巡回グラフ
+    importance: A
+    status: verified
+    from: pre1
+  - id: graphical-lasso
+    title: グラフィカルLasso
+    importance: C
+    status: verified
+    from: pre1
+- 'no': 37
+  title: その他の多変量解析
+  lead: 多次元尺度法、正準相関分析、対応分析、構造方程式モデリングです。
+  terms:
+  - id: multidimensional-scaling
+    title: 多次元尺度構成法
+    importance: A
+    status: verified
+    from: pre1
+  - id: nonmetric-mds
+    title: 非計量MDS
+    importance: C
+    status: verified
+    from: pre1
+  - id: canonical-correlation-analysis
+    title: 正準相関分析
+    importance: A
+    status: verified
+    from: pre1
+  - id: canonical-variate
+    title: 正準変量と正準相関係数
+    importance: A
+    status: verified
+    from: pre1
+  - id: correspondence-analysis
+    title: コレスポンデンス分析
+    importance: A
+    status: verified
+    from: pre1
+  - id: quantification-theory
+    title: 数量化理論
+    importance: A
+    status: verified
+    from: pre1
+  - id: quantification-type-1
+    title: 数量化I類
+    importance: B
+    status: verified
+    from: pre1
+  - id: quantification-type-3
+    title: 数量化III類
+    importance: B
+    status: verified
+    from: pre1
+  - id: structural-equation-modeling
+    title: 構造方程式モデリング
+    importance: A
+    status: verified
+    from: pre1
+  - id: path-analysis
+    title: パス解析
+    importance: A
+    status: verified
+    from: pre1
+  - id: independent-component-analysis
+    title: 独立成分分析
+    importance: C
+    status: verified
+    from: pre1
+- 'no': 38
+  title: 時系列解析
+  lead: 定常性、自己相関、AR・MA・ARIMA モデル、単位根です。発展は第51章（状態空間モデル・GARCH・VAR）です。
+  terms:
+  - id: time-series
+    title: 時系列データ
+    importance: B
+    status: verified
+    from: pre1
+  - id: weak-stationarity
+    title: 弱定常性
+    importance: A
+    status: verified
+    from: pre1
+  - id: strict-stationarity
+    title: 強定常性
+    importance: C
+    status: verified
+    from: pre1
+  - id: partial-autocorrelation
+    title: 偏自己相関
+    importance: A
+    status: verified
+    from: pre1
+  - id: white-noise
+    title: ホワイトノイズ
+    importance: A
+    status: verified
+    from: pre1
+  - id: ar-model
+    title: ARモデル
+    importance: A
+    status: verified
+    from: pre1
+  - id: ma-model
+    title: MAモデル
+    importance: A
+    status: verified
+    from: pre1
+  - id: arma-model
+    title: ARMAモデル
+    importance: A
+    status: verified
+    from: pre1
+  - id: arima-model
+    title: ARIMAモデル
+    importance: A
+    status: verified
+    from: pre1
+  - id: yule-walker-equations
+    title: ユール・ウォーカー方程式
+    importance: A
+    status: verified
+    from: pre1
+  - id: stationarity-condition
+    title: 定常条件
+    importance: A
+    status: verified
+    from: pre1
+  - id: invertibility
+    title: 反転可能性
+    importance: B
+    status: verified
+    from: pre1
+  - id: unit-root
+    title: 単位根
+    importance: A
+    status: verified
+    from: pre1
+  - id: spectrum
+    title: スペクトル
+    importance: B
+    status: verified
+    from: pre1
+  - id: forecasting
+    title: 予測
+    importance: B
+    status: verified
+    from: pre1
+  - id: state-space-model
+    title: 状態空間モデル
+    importance: B
+    status: verified
+    from: pre1
+- 'no': 39
+  title: 分割表の解析
+  lead: 相対危険とオッズ比、マクネマー検定、対数線形モデル、マンテル・ヘンツェル法です。
+  terms:
+  - id: contingency-table
+    title: 分割表
+    importance: A
+    status: verified
+    from: pre1
+  - id: two-by-two-table
+    title: 2×2分割表
+    importance: A
+    status: verified
+    from: pre1
+  - id: relative-risk
+    title: 相対リスク
+    importance: A
+    status: verified
+    from: pre1
+  - id: risk-difference
+    title: リスク差
+    importance: B
+    status: verified
+    from: pre1
+  - id: odds-ratio-interval
+    title: オッズ比の推定と区間推定
+    importance: A
+    status: verified
+    from: pre1
+  - id: sampling-schemes
+    title: 分割表の標本抽出モデル
+    importance: A
+    status: verified
+    from: pre1
+  - id: yates-correction
+    title: イェーツの連続修正
+    importance: A
+    status: verified
+    from: pre1
+  - id: mcnemar-test
+    title: マクネマー検定
+    importance: A
+    status: verified
+    from: pre1
+  - id: loglinear-model
+    title: 対数線形モデル
+    importance: A
+    status: verified
+    from: pre1
+  - id: hierarchical-loglinear-model
+    title: 階層モデル
+    importance: A
+    status: verified
+    from: pre1
+  - id: mantel-haenszel-test
+    title: マンテル・ヘンツェル検定
+    importance: A
+    status: verified
+    from: pre1
+  - id: mantel-haenszel-estimator
+    title: マンテル・ヘンツェル共通オッズ比推定量
+    importance: B
+    status: verified
+    from: pre1
+  - id: ordinal-contingency-table
+    title: 順序カテゴリの分割表
+    importance: C
+    status: verified
+    from: pre1
+  - id: three-way-table
+    title: 3元分割表
+    importance: B
+    status: verified
+    from: pre1
+  - id: residual-analysis-contingency
+    title: 分割表の残差分析
+    importance: B
+    status: verified
+    from: pre1
+  - id: phi-coefficient-and-association
+    title: ファイ係数とクラメールの連関係数
+    importance: B
+    status: verified
+    from: pre1
+  - id: cohort-and-case-control-study
+    title: コホート研究とケースコントロール研究
+    importance: B
+    status: verified
+    from: pre1
+- 'no': 40
+  title: 欠測データと生存時間解析
+  lead: 欠測のしくみ（MCAR・MAR・MNAR）と多重代入法、EM アルゴリズム、カプラン・マイヤー推定量、コックス比例ハザードモデルです。
+  terms:
+  - id: missing-data-mechanism
+    title: 欠測メカニズム
+    importance: A
+    status: verified
+    from: pre1
+  - id: mcar
+    title: 完全にランダムな欠測
+    importance: A
+    status: verified
+    from: pre1
+  - id: mar
+    title: ランダムな欠測
+    importance: A
+    status: verified
+    from: pre1
+  - id: mnar
+    title: 非ランダムな欠測
+    importance: A
+    status: verified
+    from: pre1
+  - id: complete-case-analysis
+    title: 完全ケース分析
+    importance: A
+    status: verified
+    from: pre1
+  - id: single-imputation
+    title: 単一代入法
+    importance: A
+    status: verified
+    from: pre1
+  - id: multiple-imputation
+    title: 多重代入法
+    importance: A
+    status: verified
+    from: pre1
+  - id: rubins-rules
+    title: ルービンの規則
+    importance: A
+    status: verified
+    from: pre1
+  - id: em-algorithm
+    title: EMアルゴリズム
+    importance: A
+    status: verified
+    from: pre1
+  - id: censored-data
+    title: 打ち切りデータ
+    importance: A
+    status: verified
+    from: pre1
+  - id: truncated-data
+    title: 切断データ
+    importance: B
+    status: verified
+    from: pre1
+  - id: kaplan-meier-estimator
+    title: カプラン・マイヤー推定量
+    importance: A
+    status: verified
+    from: pre1
+  - id: greenwood-formula
+    title: グリーンウッドの公式
+    importance: B
+    status: verified
+    from: pre1
+  - id: log-rank-test
+    title: ログランク検定
+    importance: A
+    status: verified
+    from: pre1
+  - id: cox-proportional-hazards-model
+    title: 比例ハザードモデル
+    importance: A
+    status: verified
+    from: pre1
+  - id: partial-likelihood
+    title: 部分尤度
+    importance: B
+    status: verified
+    from: pre1
+  - id: hazard-ratio
+    title: ハザード比
+    importance: B
+    status: verified
+    from: pre1
+  - id: nelson-aalen-estimator
+    title: ネルソン・アーレン推定量
+    importance: C
+    status: verified
+    from: pre1
+  - id: ignorability
+    title: 無視可能性
+    importance: C
+    status: verified
+    from: pre1
+- 'no': 41
+  title: モデル選択
+  lead: AIC・BIC、カルバック・ライブラー情報量、交差検証、偏りと分散のトレードオフです。
+  terms:
+  - id: model-selection
+    title: モデル選択
+    importance: B
+    status: verified
+    from: pre1
+  - id: aic
+    title: AIC
+    importance: A
+    status: verified
+    from: pre1
+  - id: bic
+    title: BIC
+    importance: A
+    status: verified
+    from: pre1
+  - id: kullback-leibler-divergence
+    title: カルバック・ライブラー情報量
+    importance: A
+    status: verified
+    from: pre1
+  - id: expected-log-likelihood
+    title: 平均対数尤度
+    importance: B
+    status: verified
+    from: pre1
+  - id: cross-validation
+    title: 交差検証法
+    importance: A
+    status: verified
+    from: pre1
+  - id: leave-one-out-cv
+    title: 一個抜き交差検証
+    importance: B
+    status: verified
+    from: pre1
+  - id: overfitting
+    title: 過学習
+    importance: A
+    status: verified
+    from: pre1
+  - id: bias-variance-tradeoff
+    title: バイアス・バリアンスのトレードオフ
+    importance: A
+    status: verified
+    from: pre1
+  - id: mallows-cp
+    title: マローズのCp
+    importance: A
+    status: verified
+    from: pre1
+  - id: generalization-error
+    title: 汎化誤差
+    importance: B
+    status: verified
+    from: pre1
+  - id: aicc
+    title: 補正AIC
+    importance: C
+    status: verified
+    from: pre1
+- 'no': 42
+  title: ベイズ統計
+  lead: 事前分布と事後分布、共役事前分布、信用区間、予測分布、階層ベイズです。発展は第54章です。
+  terms:
+  - id: prior-distribution
+    title: 事前分布
+    importance: A
+    status: verified
+    from: pre1
+  - id: posterior-distribution
+    title: 事後分布
+    importance: A
+    status: verified
+    from: pre1
+  - id: conjugate-prior
+    title: 共役事前分布
+    importance: A
+    status: verified
+    from: pre1
+  - id: beta-binomial-model
+    title: ベータ・二項モデル
+    importance: A
+    status: verified
+    from: pre1
+  - id: gamma-poisson-model
+    title: ガンマ・ポアソンモデル
+    importance: A
+    status: verified
+    from: pre1
+  - id: normal-normal-model
+    title: 正規・正規モデル
+    importance: A
+    status: verified
+    from: pre1
+  - id: noninformative-prior
+    title: 無情報事前分布
+    importance: B
+    status: verified
+    from: pre1
+  - id: jeffreys-prior
+    title: ジェフリーズの事前分布
+    importance: B
+    status: verified
+    from: pre1
+  - id: posterior-mean-map
+    title: 事後平均とMAP推定
+    importance: A
+    status: verified
+    from: pre1
+  - id: credible-interval
+    title: 信用区間
+    importance: A
+    status: verified
+    from: pre1
+  - id: predictive-distribution
+    title: 予測分布
+    importance: A
+    status: verified
+    from: pre1
+  - id: bayes-factor
+    title: ベイズファクター
+    importance: B
+    status: verified
+    from: pre1
+  - id: marginal-likelihood
+    title: 周辺尤度
+    importance: B
+    status: verified
+    from: pre1
+  - id: hierarchical-bayes-model
+    title: 階層ベイズモデル
+    importance: B
+    status: verified
+    from: pre1
+  - id: empirical-bayes
+    title: 経験ベイズ法
+    importance: C
+    status: verified
+    from: pre1
+  - id: bayes-decision-theory
+    title: ベイズ決定理論
+    importance: C
+    status: verified
+    from: pre1
+- 'no': 43
+  title: シミュレーションと計算統計
+  lead: 乱数の生成、モンテカルロ積分、重点サンプリング、MCMC、ブートストラップです。
+  terms:
+  - id: uniform-random-number
+    title: 一様乱数
+    importance: A
+    status: verified
+    from: pre1
+  - id: linear-congruential-generator
+    title: 線形合同法
+    importance: B
+    status: verified
+    from: pre1
+  - id: inverse-transform-sampling
+    title: 逆関数法
+    importance: A
+    status: verified
+    from: pre1
+  - id: rejection-sampling
+    title: 棄却法
+    importance: A
+    status: verified
+    from: pre1
+  - id: box-muller-method
+    title: ボックス・ミュラー法
+    importance: A
+    status: verified
+    from: pre1
+  - id: monte-carlo-integration
+    title: モンテカルロ積分
+    importance: A
+    status: verified
+    from: pre1
+  - id: importance-sampling
+    title: 重点サンプリング
+    importance: A
+    status: verified
+    from: pre1
+  - id: variance-reduction
+    title: 分散減少法
+    importance: C
+    status: verified
+    from: pre1
+  - id: mcmc
+    title: マルコフ連鎖モンテカルロ法
+    importance: A
+    status: verified
+    from: pre1
+  - id: metropolis-hastings
+    title: メトロポリス・ヘイスティングス法
+    importance: A
+    status: verified
+    from: pre1
+  - id: gibbs-sampling
+    title: ギブスサンプリング
+    importance: A
+    status: verified
+    from: pre1
+  - id: burn-in-convergence
+    title: バーンインと収束診断
+    importance: B
+    status: verified
+    from: pre1
+  - id: bootstrap
+    title: ブートストラップ法
+    importance: A
+    status: verified
+    from: pre1
+  - id: bootstrap-confidence-interval
+    title: ブートストラップ信頼区間
+    importance: B
+    status: verified
+    from: pre1
+  - id: jackknife
+    title: ジャックナイフ法
+    importance: A
+    status: verified
+    from: pre1
+- 'no': 44
+  title: 統計的因果推論の入口
+  lead: 因果効果、バックドア基準、d 分離です。潜在結果モデルにもとづく方法は第55章で扱います。
+  terms:
+  - id: causal-effect
+    title: 因果効果と潜在結果
+    importance: A
+    status: verified
+    from: pre1
+  - id: backdoor-criterion
+    title: バックドア基準
+    importance: A
+    status: verified
+    from: pre1
+  - id: d-separation
+    title: 有向分離（d分離）
+    importance: A
+    status: verified
+    from: pre1
+  - id: frontdoor-criterion
+    title: フロントドア基準
+    importance: B
+    status: verified
+    from: pre1
+- 'no': 45
+  title: 測度論的確率論
+  lead: 確率を「集合の大きさ（測度）」として定式化し直します。σ-加法族・ルベーグ積分・ラドン・ニコディム導関数は、大学院の数理統計の論文を読むための共通語です。前提は第16〜19章と、大学1・2年の解析学です。
+  terms:
+  - id: probability-space
+    title: 確率空間とσ-加法族
+    importance: A
+    status: planned
+  - id: lebesgue-integral-expectation
+    title: ルベーグ積分と期待値（収束定理）
+    importance: A
+    status: planned
+  - id: radon-nikodym-theorem
+    title: ラドン・ニコディムの定理と密度
+    importance: B
+    status: planned
+  - id: borel-cantelli-lemma
+    title: ボレル・カンテリの補題
+    importance: B
+    status: planned
+- 'no': 46
+  title: 漸近理論の発展
+  lead: 確率のオーダー記法、多変量の中心極限定理、独立でも同じ分布でもない和の中心極限定理、経験分布の一様収束を学びます。第19章の続きです。
+  terms:
+  - id: stochastic-order-notation
+    title: 確率のオーダー記法（O_p と o_p）
+    importance: A
+    status: planned
+  - id: multivariate-clt
+    title: 多変量中心極限定理とクラメール・ウォルドの方法
+    importance: A
+    status: planned
+  - id: lindeberg-feller-clt
+    title: リンデベルグ・フェラーの中心極限定理
+    importance: B
+    status: planned
+  - id: glivenko-cantelli-theorem
+    title: グリベンコ・カンテリの定理
+    importance: A
+    status: planned
+- 'no': 47
+  title: 推定の理論の発展
+  lead: 一様最小分散不偏推定量の一意性、補助統計量との独立性、そしてモデルが正しくないときにも使える M 推定とサンドイッチ分散です。第20章の続きです。
+  terms:
+  - id: lehmann-scheffe-theorem
+    title: レーマン・シェフェの定理
+    importance: A
+    status: planned
+  - id: basu-theorem
+    title: バスの定理と補助統計量
+    importance: B
+    status: planned
+  - id: m-estimator
+    title: M 推定量と Z 推定量
+    importance: A
+    status: planned
+  - id: sandwich-variance-estimator
+    title: サンドイッチ分散推定量
+    importance: A
+    status: planned
+- 'no': 48
+  title: 統計的決定理論
+  lead: 推定を「損失を小さくする決定」として捉え、許容性・ミニマックス・ベイズ推定量で推定量を比べます。スタインの現象は、高次元統計と縮小推定の出発点です。
+  terms:
+  - id: loss-function-and-risk
+    title: 損失関数とリスク関数
+    importance: A
+    status: planned
+  - id: admissibility
+    title: 許容性
+    importance: A
+    status: planned
+  - id: minimax-estimator
+    title: ミニマックス推定量
+    importance: A
+    status: planned
+  - id: james-stein-estimator
+    title: ジェームズ・スタイン推定量
+    importance: A
+    status: planned
+- 'no': 49
+  title: ノンパラメトリック推定と頑健統計
+  lead: 分布の形を決めずに密度や回帰関数を推定する方法と、外れ値に強い推定の理論です。バンド幅の選び方と影響関数が中心です。
+  terms:
+  - id: kernel-density-estimation
+    title: カーネル密度推定とバンド幅
+    importance: A
+    status: planned
+  - id: nadaraya-watson-estimator
+    title: カーネル回帰（ナダラヤ・ワトソン推定量と局所線形回帰）
+    importance: A
+    status: planned
+  - id: influence-function
+    title: 影響関数と破綻点
+    importance: A
+    status: planned
+  - id: huber-estimator
+    title: フーバーの M 推定量
+    importance: B
+    status: planned
+- 'no': 50
+  title: 線形混合モデルと相関のあるデータ
+  lead: 同じ人を繰り返し測る・学校ごとに集まるなど、観測どうしが独立でないデータのモデルです。変量効果・REML・GEE を学びます。前提は第25・27章です。
+  terms:
+  - id: linear-mixed-model
+    title: 線形混合モデル
+    importance: A
+    status: planned
+  - id: reml
+    title: 制限付き最尤法（REML）
+    importance: B
+    status: planned
+  - id: generalized-estimating-equations
+    title: 一般化推定方程式（GEE）
+    importance: A
+    status: planned
+- 'no': 51
+  title: 時系列と状態空間モデル
+  lead: 状態空間モデルとカルマンフィルタ、変動の大きさが変わる GARCH モデル、多変量の VAR モデルと共和分です。前提は第38章です。
+  terms:
+  - id: kalman-filter
+    title: カルマンフィルタ
+    importance: A
+    status: planned
+  - id: garch-model
+    title: ARCH・GARCH モデル
+    importance: A
+    status: planned
+  - id: var-model
+    title: ベクトル自己回帰（VAR）モデル
+    importance: A
+    status: planned
+  - id: cointegration
+    title: 共和分
+    importance: C
+    status: planned
+- 'no': 52
+  title: 高次元統計
+  lead: 変数の数 p が標本の大きさ n と同じか大きいときの統計です。集中不等式でばらつきを評価し、ラッソの誤差の理論を学びます。前提は第30・45・46章です。
+  terms:
+  - id: concentration-inequality
+    title: 集中不等式（ヘフディングの不等式）
+    importance: A
+    status: planned
+  - id: high-dimensional-regression
+    title: 高次元の回帰（p > n）
+    importance: A
+    status: planned
+  - id: lasso-theory
+    title: ラッソの理論（スパース性と誤差の上界）
+    importance: B
+    status: planned
+- 'no': 53
+  title: 統計的学習理論
+  lead: 予測の誤差を、学習に使ったデータでの誤差と「関数の集まりの複雑さ」で上から抑える理論です。前提は第41・52章です。
+  terms:
+  - id: empirical-risk-minimization
+    title: 経験リスク最小化と汎化誤差の上界
+    importance: A
+    status: planned
+  - id: vc-dimension
+    title: VC 次元
+    importance: B
+    status: planned
+- 'no': 54
+  title: ベイズ計算と発展的なベイズモデル
+  lead: MCMC 以外の近似（変分推論）、勾配を使う MCMC（ハミルトニアン・モンテカルロ）、関数の事前分布（ガウス過程）、ベイズのモデル評価（WAIC）です。前提は第42・43章です。
+  terms:
+  - id: variational-inference
+    title: 変分推論
+    importance: A
+    status: planned
+  - id: hamiltonian-monte-carlo
+    title: ハミルトニアン・モンテカルロ法
+    importance: B
+    status: planned
+  - id: gaussian-process-regression
+    title: ガウス過程回帰
+    importance: A
+    status: planned
+  - id: waic
+    title: WAIC（広く使える情報量規準）
+    importance: B
+    status: planned
+- 'no': 55
+  title: 因果推論の方法
+  lead: 潜在結果モデルで因果効果を定義し、傾向スコア・逆確率重み付け・二重頑健推定、差の差、回帰不連続デザインで推定します。前提は第44章です。
+  terms:
+  - id: potential-outcomes-framework
+    title: 潜在結果モデル（ルービンの因果モデル）
+    importance: A
+    status: planned
+  - id: propensity-score
+    title: 傾向スコア
+    importance: A
+    status: planned
+  - id: inverse-probability-weighting
+    title: 逆確率重み付け（IPW）推定量
+    importance: A
+    status: planned
+  - id: doubly-robust-estimator
+    title: 二重頑健推定量
+    importance: B
+    status: planned
+  - id: difference-in-differences
+    title: 差の差（DID）分析
+    importance: A
+    status: planned
+  - id: regression-discontinuity-design
+    title: 回帰不連続デザイン
+    importance: B
+    status: planned
+- 'no': 56
+  title: セミパラメトリック推論と予測の不確実性
+  lead: 関心のある母数以外を自由にしたモデルでの効率の限界、機械学習を使った推定（ダブル機械学習）、分布を仮定しない予測区間（コンフォーマル予測）です。
+  terms:
+  - id: semiparametric-efficiency
+    title: セミパラメトリック効率と効率的影響関数
+    importance: B
+    status: planned
+  - id: double-machine-learning
+    title: ダブル機械学習（交差適合）
+    importance: B
+    status: planned
+  - id: conformal-prediction
+    title: コンフォーマル予測
+    importance: A
+    status: planned
