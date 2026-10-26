@@ -2820,6 +2820,10 @@ chapters:
     title: 局所対立仮説と漸近検出力
     importance: B
     status: verified
+  - id: empirical-process
+    title: 経験過程とドンスカーの定理
+    importance: C
+    status: verified
 - 'no': 47
   title: 推定の理論の発展
   lead: 一様最小分散不偏推定量の一意性、補助統計量との独立性、そしてモデルが正しくないときにも使える M 推定とサンドイッチ分散です。第20章の続きです。
@@ -2882,7 +2886,7 @@ chapters:
     status: verified
 - 'no': 50
   title: 線形混合モデルと相関のあるデータ
-  lead: 同じ人を繰り返し測る・学校ごとに集まるなど、観測どうしが独立でないデータのモデルです。変量効果・REML・GEE を学びます。前提は第25・27章です。
+  lead: 同じ人を繰り返し測る・学校ごとに集まるなど、観測どうしが独立でないデータのモデルです。変量効果・REML・GEE・GLMM を学びます。前提は第25・27章です。
   terms:
   - id: linear-mixed-model
     title: 線形混合モデル
@@ -2895,6 +2899,10 @@ chapters:
   - id: generalized-estimating-equations
     title: 一般化推定方程式（GEE）
     importance: A
+    status: verified
+  - id: glmm
+    title: 一般化線形混合モデル（GLMM）
+    importance: B
     status: verified
 - 'no': 51
   title: 時系列と状態空間モデル

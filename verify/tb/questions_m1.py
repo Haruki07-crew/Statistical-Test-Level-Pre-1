@@ -88,6 +88,9 @@ q.check("q46-bootstrap-theory-1", abs((xb10[rng.integers(0, 10, (200000, 10))].m
 zz46 = stats.norm.isf(0.025)
 q.num("q46-local-alternatives-1", stats.norm.cdf(-zz46 + 3) + stats.norm.cdf(-zz46 - 3))
 q.check("q46-local-alternatives-1", abs(stats.ncx2.sf(zz46 ** 2, 1, 9) - (stats.norm.cdf(-zz46 + 3) + stats.norm.cdf(-zz46 - 3))) < 1e-10, "非心カイ二乗（非心度 9）と一致")
+q.num("q46-empirical-process-1", min(0.2, 0.7) - 0.2 * 0.7)
+uu46 = rng.random((200000, 1))
+q.check("q46-empirical-process-1", abs(np.cov((uu46[:, 0] <= 0.2), (uu46[:, 0] <= 0.7))[0, 1] - 0.06) < 0.002, "指示関数の共分散のシミュレーション")
 run(q)
 
 # ---------- 第47章 ----------
@@ -171,6 +174,9 @@ from gee_sim import marginal_truth  # noqa: E402
 q.concept("q50-generalized-estimating-equations-1", "推定方程式の期待値が作業相関によらず 0（第50章の GEE のシミュレーションで独立の作業相関でも被覆率 0.95 を確認済み）")
 mt = marginal_truth(1.0)
 q.check("q50-generalized-estimating-equations-2", abs(mt - 0.662) < 0.002 and mt < 0.8 and chosen(q, "q50-generalized-estimating-equations-2") == "GEE の係数の絶対値のほうが小さい", f"母集団平均 {mt:.3f} < 個体ごと 0.8")
+q.num("q50-glmm-1", 4 / (4 + np.pi ** 2 / 3))
+lat = rng.normal(0, 2, (200000, 1)) + stats.logistic.rvs(size=(200000, 2), random_state=rng)
+q.check("q50-glmm-1", abs(np.corrcoef(lat.T)[0, 1] - 0.549) < 0.005, "潜在変数（ランダム切片＋ロジスティック誤差）の相関のシミュレーション")
 run(q)
 
 # ---------- 第51章 ----------

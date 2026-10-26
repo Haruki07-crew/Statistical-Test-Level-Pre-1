@@ -118,4 +118,14 @@ check(T, "例2 h=2.5：漸近 0.705・0.514、n=100 のシミュレーション 
       close(pw(2.5), 0.705, 5e-4) and close(pw(2.5 * np.sqrt(2 / np.pi)), 0.514, 5e-4) and close(pt, 0.699, 5e-4) and close(sg, 0.539, 5e-4)
       and close(2 / np.pi, 0.637, 5e-4) and close(np.pi / 2, 1.57, 0.005), (pt, sg))
 check(T, "符号検定の実際の有意水準は 5% より大きい（|S−50| ≥ 10）", stats.binom.pmf(k[:101], 100, 0.5)[np.abs(k[:101] - 50) / 5 > 1.96].sum() > 0.05)
+T = "empirical-process"
+rng7 = np.random.default_rng(462)
+u = np.sort(rng7.random((20000, 500)), axis=1)
+ii = np.arange(1, 501)
+Dn = np.maximum((ii / 500 - u).max(1), (u - (ii - 1) / 500).max(1)) * np.sqrt(500)
+g5 = np.sqrt(500) * ((u <= 0.5).mean(1) - 0.5)
+c36 = np.cov(np.sqrt(500) * ((u <= 0.3).mean(1) - 0.3), np.sqrt(500) * ((u <= 0.6).mean(1) - 0.6))[0, 1]
+check(T, "例 95% 点 1.345・超える割合 4.7%・分散 0.250・共分散 0.119（理論 0.12）・コルモゴロフ 1.358",
+      close(np.quantile(Dn, 0.95), 1.345, 5e-4) and close((Dn > 1.358).mean(), 0.047, 5e-4) and close(g5.var(), 0.250, 5e-4) and close(c36, 0.119, 5e-4)
+      and close(stats.kstwobign.ppf(0.95), 1.358, 5e-4), (np.quantile(Dn, 0.95), (Dn > 1.358).mean(), g5.var(), c36))
 done("第46章（漸近理論の発展）")

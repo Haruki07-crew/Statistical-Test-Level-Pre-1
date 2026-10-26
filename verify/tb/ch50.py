@@ -85,4 +85,25 @@ check(T, "例 SD 1.0：母集団平均の効果 0.662・実際の SD 0.286・ふ
       and close(r1[2], 0.182, 5e-4) and close(r1[3], 0.285, 5e-4), r1)
 check(T, "母集団平均の効果は SD が大きいほど小さい（0.8 → 0.567）", all(np.diff([rows[s][0] for s in p["x"]]) < 0) and close(rows[0][0], 0.8, 1e-3))
 check(T, "本文の値", all(s in body(T) for s in ("0.662", "0.286", "0.182", "0.777", "0.285", "0.949")))
+T = "glmm"
+from scipy import integrate, stats  # noqa: E402
+expit = lambda z: 1 / (1 + np.exp(-z))
+
+
+def marg(s, b0=-0.5, b1=0.8):
+    if s == 0:
+        return b1
+    pp = [integrate.quad(lambda u: expit(b0 + b1 * t + u) * stats.norm.pdf(u, 0, s), -12 * s, 12 * s)[0] for t in (0, 1)]
+    return np.log(pp[1] / (1 - pp[1])) - np.log(pp[0] / (1 - pp[0]))
+
+
+p = chart(T)
+c = 16 * np.sqrt(3) / (15 * np.pi)
+check(T, "図：母集団平均の効果（数値積分）と近似式", allclose(p["series"][1]["y"], [marg(s) for s in p["x"]], 6e-5)
+      and allclose(p["series"][2]["y"], [0.8 / np.sqrt(1 + c * c * s * s) for s in p["x"]], 6e-5) and all(v == 0.8 for v in p["series"][0]["y"]))
+check(T, "例 σ=1：0.662（近似 0.690）・σ=2：0.485（0.518）・σ=3：0.368（0.395）・c≈0.588・c²≈0.346・級内相関 0.233",
+      allclose([marg(1), marg(2), marg(3)], [0.662, 0.485, 0.368], 6e-4) and allclose([0.8 / np.sqrt(1 + c * c * s * s) for s in (1, 2, 3)], [0.690, 0.518, 0.395], 6e-4)
+      and close(c, 0.588, 5e-4) and close(c * c, 0.346, 5e-4) and close(1 / (1 + np.pi ** 2 / 3), 0.233, 5e-4))
+from gee_sim import marginal_truth  # noqa: E402
+check(T, "GEE のページの例の母集団平均の効果（シミュレーション）と一致", close(marginal_truth(1.0), marg(1), 0.002))
 done("第50章（線形混合モデルと相関のあるデータ）")

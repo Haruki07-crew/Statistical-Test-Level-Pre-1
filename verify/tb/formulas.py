@@ -32,6 +32,11 @@ mm = rng.multinomial(n, [p1, p2, 0.25], 200000) / n
 check(S, "多項分布の差の分散 {p1+p2−(p1−p2)²}/n・共分散 −p1p2/n", close((mm[:, 0] - mm[:, 1]).var(), (p1 + p2 - (p1 - p2) ** 2) / n, 2e-5) and close(np.cov(mm[:, 0], mm[:, 1])[0, 1], -p1 * p2 / n, 5e-6))
 check(S, "DKW：2e^{−2nε²} は KS の正確な裾以上（n=100, ε=0.12）", 2 * np.exp(-2 * 100 * 0.0144) >= stats.kstwo(100).sf(0.12))
 
+check(S, "ブラウン橋の共分散 min(s,t)−st（指示関数の共分散）", close(np.cov(u[:200000] <= 0.25, u[:200000] <= 0.8)[0, 1], 0.25 - 0.2, 0.003))
+zz = stats.norm.isf(0.025)
+check(S, "局所対立仮説の漸近検出力 = 非心カイ二乗（h√I=1.7）", close(stats.norm.cdf(-zz + 1.7) + stats.norm.cdf(-zz - 1.7), stats.ncx2.sf(zz ** 2, 1, 1.7 ** 2), 1e-10))
+check(S, "最大値のブートストラップ 1−(1−1/n)^n → 1−e^{−1}", close(1 - (1 - 1 / 10 ** 6) ** (10 ** 6), 1 - np.exp(-1), 1e-6))
+
 S = "推定の理論・決定理論"
 lp = stats.laplace.rvs(size=(20000, 2000), random_state=rng)
 check(S, "中央値の漸近分散 1/(4f²)（ラプラスで 1、n=2000 のシミュレーション）", close(2000 * np.median(lp, 1).var(), 1.0, 0.06), 2000 * np.median(lp, 1).var())
@@ -74,6 +79,13 @@ uu = rng.normal(0, 2, (200000, 1)); yy = uu + rng.normal(0, 3, (200000, 5))
 check(S, "BLUP の縮小係数 = E[u|ȳ] の傾き（n=5, σu²=4, σ²=9）", close(np.cov(uu[:, 0], yy.mean(1))[0, 1] / yy.mean(1).var(), 20 / 29, 0.005))
 check(S, "デザイン効果 1+(m−1)ρ", close((uu[:, 0] + rng.normal(0, 3, (200000, 5)).mean(1)).var() / (13 / 5), 1 + 4 * 4 / 13, 0.02))
 
+from scipy.integrate import quad as _quad  # noqa: E402
+_ex = lambda z_: 1 / (1 + np.exp(-z_))
+_p = [_quad(lambda v: _ex(0.8 * t_ + v) * stats.norm.pdf(v, 0, 1.2), -15, 15)[0] for t_ in (0, 1)]
+_m = np.log(_p[1] / (1 - _p[1])) - np.log(_p[0] / (1 - _p[0]))
+_c = 16 * np.sqrt(3) / (15 * np.pi)
+check(S, "GLMM の近似 β/√(1+c²σ²) は正確な値より少し大きい（切片 0、σ=1.2 で 0〜6%）", 0 < (0.8 / np.sqrt(1 + _c ** 2 * 1.44)) / _m - 1 < 0.06, (_m, 0.8 / np.sqrt(1 + _c ** 2 * 1.44)))
+
 S = "時系列と状態空間モデル"
 q = 0.5
 P_ = 1.0
@@ -107,6 +119,10 @@ kl = np.log(np.sqrt(0.5) / s_) + (s_ ** 2 + (m_ - xo / 2) ** 2) / (2 * 0.5) - 0.
 check(S, "log p(x) = ELBO + KL（正規・正規モデル）", close(elbo + kl, logpx, 1e-10))
 yv1 = 1.5
 check(S, "ガウス過程の事後平均・分散（1 点、k=1、σn²=0.25）", close(yv1 / 1.25, 1.2, 1e-12) and close(1 - 1 / 1.25, 0.2, 1e-12))
+
+from scipy.special import digamma  # noqa: E402
+check(S, "ディリクレ過程 E[K] = Σα/(α+i) = α{ψ(α+n)−ψ(α)}（α=3, n=50）・n を 10 倍で約 α log 10 増える", close(sum(3 / (3 + i) for i in range(50)), 3 * (digamma(53) - digamma(3)), 1e-10)
+      and close(3 * (digamma(5003) - digamma(503)), 3 * np.log(10), 0.03))
 
 S = "因果推論と予測"
 from causal_sim import aipw, gen, ipw, outcome, ps  # noqa: E402

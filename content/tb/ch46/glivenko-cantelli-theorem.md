@@ -3,11 +3,11 @@ id: glivenko-cantelli-theorem
 title: グリベンコ・カンテリの定理
 reading: ぐりべんこ・かんてりのていり
 en: Glivenko-Cantelli theorem
-aliases: [経験分布関数の一様収束, 統計学の基本定理, DKW の不等式, Dvoretzky-Kiefer-Wolfowitz inequality, 経験過程]
+aliases: [経験分布関数の一様収束, 統計学の基本定理, DKW の不等式, Dvoretzky-Kiefer-Wolfowitz inequality]
 chapter: 46
 importance: A
 tags: [漸近理論, 経験分布関数, 一様収束, ノンパラメトリック, 信頼帯]
-related: [kolmogorov-smirnov-test, cumulative-distribution-function, strong-law-of-large-numbers, bootstrap, empirical-risk-minimization, concentration-inequality]
+related: [kolmogorov-smirnov-test, empirical-process, strong-law-of-large-numbers, bootstrap-theory, empirical-risk-minimization, concentration-inequality]
 charts:
   - type: custom
     id: line-data

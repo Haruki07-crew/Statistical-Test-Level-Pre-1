@@ -135,6 +135,8 @@ check(T, "例1 E[K]=5.19（log100+0.577≈5.18）・シミュレーション 5.1
       close(EK(1, 100), 5.19, 0.005) and close(np.log(100) + 0.5772, 5.18, 0.005) and close(np.mean(K), 5.17, 0.005) and close(EK(1, 1000), 7.49, 0.005), np.mean(K))
 same = [crp(1, 2) for _ in range(20000)]
 v1 = np.random.default_rng(5).beta(1, 1, 200000)
+from scipy.special import digamma  # noqa: E402
+check(T, "E[K] = α{ψ(α+n)−ψ(α)}（α=1, n=100）", close(EK(1, 100), digamma(101) - digamma(1), 1e-10))
 check(T, "例2 2 人が同じクラスター 1/(1+α)：α=1 で 0.5・α=5 で 0.17、w₁ の期待値も同じ", close(np.mean([len(c) == 1 for c in same]), 0.5, 0.01)
       and close(1 / 6, 0.17, 0.005) and close(v1.mean(), 0.5, 0.005) and close(np.random.default_rng(6).beta(1, 5, 200000).mean(), 1 / 6, 0.003))
 # 有限分割でディリクレ分布：棒折りで作った G の G(A) の期待値が G₀(A)、分散が G₀(A)(1−G₀(A))/(α+1)

@@ -24,9 +24,12 @@
 | 多変量デルタ法 | $\sqrt n\{g(\bar X_n)-g(\mu)\}\xrightarrow{d}N(0,\nabla g^\top\Sigma\nabla g)$ |
 | DKW の不等式 | $P(\sup_x\lvert F_n(x)-F(x)\rvert>\varepsilon)\le2e^{-2n\varepsilon^2}$ |
 | リアプノフ条件 | $\sum_iE\lvert X_{n,i}\rvert^{2+\delta}/s_n^{2+\delta}\to0$ |
+| ブラウン橋の共分散 | $\mathrm{Cov}(B(s),B(t))=\min(s,t)-st$（経験過程 $\sqrt n\{F_n(t)-t\}$ の極限） |
+| 局所対立仮説での漸近検出力 | $\theta_n=\theta_0+h/\sqrt n$ で $\Phi(-z_{\alpha/2}+h\sqrt I)+\Phi(-z_{\alpha/2}-h\sqrt I)$ |
 
 - 多項分布の共分散：$\mathrm{Cov}(\hat p_j,\hat p_k)=-p_jp_k/n$。同じ調査の 2 つの割合の差の分散は $\{p_1+p_2-(p_1-p_2)^2\}/n$。→ 多変量中心極限定理とクラメール・ウォルドの方法
 - DKW から、分布関数の一様な信頼帯 $F_n(x)\pm\sqrt{\log(2/\alpha)/(2n)}$。→ グリベンコ・カンテリの定理
+- ブートストラップの片側の被覆率の誤差は、パーセンタイル法で $O(n^{-1/2})$、ブートストラップ t 法で $O(n^{-1})$。最大値では $1-(1-1/n)^n\to1-e^{-1}$ の確率で元の最大値に一致し、失敗する。→ ブートストラップの理論（一致性と高次の精度）
 
 ## 推定の理論・決定理論
 
@@ -67,6 +70,7 @@
 | デザイン効果 | $1+(m-1)\rho$ |
 | 一元配置の分散成分 | REML $(MS_A-MS_E)/n$、ML $\{(1-1/a)MS_A-MS_E\}/n$ |
 | GEE の推定方程式 | $\sum_iD_i^\top V_i^{-1}(y_i-\mu_i)=0$（分散はサンドイッチ型） |
+| GLMM の母集団平均の効果（ロジット、近似） | $\beta/\sqrt{1+c^2\sigma^2}$、$c=16\sqrt3/(15\pi)\approx0.588$、潜在変数の級内相関 $\sigma^2/(\sigma^2+\pi^2/3)$ |
 
 - 線形混合モデルの BLUP は $\hat b=GZ^\top V^{-1}(y-X\hat\beta)$。→ 線形混合モデル
 
@@ -108,6 +112,7 @@
 | ハミルトニアン | $H(\theta,p)=U(\theta)+\frac12p^\top M^{-1}p$、採択確率 $\min\{1,e^{H-H^*}\}$ |
 | ガウス過程の事後平均・分散 | $k_*^\top(K+\sigma_n^2I)^{-1}y$、$k(x_*,x_*)-k_*^\top(K+\sigma_n^2I)^{-1}k_*$ |
 | WAIC | $-2\{\mathrm{lppd}-p_{\mathrm{WAIC}}\}$、$p_{\mathrm{WAIC}}=\sum_iV_{\theta\mid y}[\log p(y_i\mid\theta)]$ |
+| ディリクレ過程のクラスターの数 | $E[K_n]=\sum_{i=0}^{n-1}\frac{\alpha}{\alpha+i}=\alpha\{\psi(\alpha+n)-\psi(\alpha)\}$（$\alpha\log n$ 程度で増える）、棒折り $w_j=V_j\prod_{l<j}(1-V_l)$、$V_j\sim\mathrm{Beta}(1,\alpha)$ |
 
 - 相関 $\rho$ の 2 変量正規の事後分布の平均場近似の分散は $1-\rho^2$。→ 変分推論
 

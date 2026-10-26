@@ -48,7 +48,7 @@ $$
 \theta_{n+1}\mid\theta_1,\dots,\theta_n\ \sim\ \frac{\alpha}{\alpha+n}G_0+\frac1{\alpha+n}\sum_{i=1}^n\delta_{\theta_i}
 $$
 
-（確率 $\alpha/(\alpha+n)$ で新しい値、そうでなければ既にある値を、その人数に比例して選ぶ）。異なる値の数の期待値は $E[K_n]=\sum_{i=0}^{n-1}\frac{\alpha}{\alpha+i}\approx\alpha\log(1+n/\alpha)$ です。
+（確率 $\alpha/(\alpha+n)$ で新しい値、そうでなければ既にある値を、その人数に比例して選ぶ）。異なる値の数の期待値は $E[K_n]=\sum_{i=0}^{n-1}\frac{\alpha}{\alpha+i}=\alpha\{\psi(\alpha+n)-\psi(\alpha)\}$（$\psi$ はディガンマ関数）で、$n$ が大きいと $\alpha\log n$ 程度の速さで増えます。
 
 **ディリクレ過程混合モデル**：$G\sim\mathrm{DP}(\alpha,G_0)$、$\theta_i\mid G\sim G$、$y_i\mid\theta_i\sim f(y\mid\theta_i)$。同じ $\theta$ を共有するデータが 1 つのクラスターになります。
 

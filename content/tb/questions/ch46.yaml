@@ -137,3 +137,17 @@ questions:
       $\Phi(1.04)$ が主な項で、もう一方はほぼ 0 です。
     explanation: |
       $\Phi(1.04)+\Phi(-4.96)\approx0.851$ です。尤度比検定・スコア検定も、局所対立仮説のもとでは同じ漸近検出力になります。
+
+  # ---------- 経験過程 (C) ----------
+  - id: q46-empirical-process-1
+    term: empirical-process
+    level: 標準
+    type: numeric
+    question: |
+      一様分布の経験過程の極限であるブラウン橋 $B(t)$ について、$\mathrm{Cov}(B(0.2),B(0.7))$ を求めよ。
+    answer: 0.06
+    tolerance: 0.0001
+    hint: |
+      ブラウン橋の共分散は $\min(s,t)-st$ です。
+    explanation: |
+      $\min(0.2,0.7)-0.2\times0.7=0.2-0.14=0.06$ です。$\mathbf 1\{U\le0.2\}$ と $\mathbf 1\{U\le0.7\}$ の共分散と同じで、経験過程 $\sqrt n\{F_n(t)-t\}$ の共分散はどの $n$ でもこの値です。

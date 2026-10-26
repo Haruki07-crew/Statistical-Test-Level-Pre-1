@@ -7,6 +7,10 @@
   "hash": "452298a24c648abb",
   "ok": true
  },
+ "q50-glmm-1": {
+  "hash": "9fc62ab0ffd98512",
+  "ok": true
+ },
  "q50-linear-mixed-model-1": {
   "hash": "6f6a5a4bfb06351c",
   "ok": true
