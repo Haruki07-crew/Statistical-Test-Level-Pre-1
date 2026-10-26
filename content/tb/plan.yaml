@@ -2931,11 +2931,11 @@ chapters:
   - id: empirical-risk-minimization
     title: 経験リスク最小化と汎化誤差の上界
     importance: A
-    status: planned
+    status: verified
   - id: vc-dimension
     title: VC 次元
     importance: B
-    status: planned
+    status: verified
 - 'no': 54
   title: ベイズ計算と発展的なベイズモデル
   lead: MCMC 以外の近似（変分推論）、勾配を使う MCMC（ハミルトニアン・モンテカルロ）、関数の事前分布（ガウス過程）、ベイズのモデル評価（WAIC）です。前提は第42・43章です。
