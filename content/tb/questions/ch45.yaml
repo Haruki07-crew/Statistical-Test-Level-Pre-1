@@ -1,0 +1,107 @@
+chapter: 45
+questions:
+  # ---------- 確率空間とσ-加法族 (A) ----------
+  - id: q45-probability-space-1
+    term: probability-space
+    level: 標準
+    type: choice
+    question: |
+      $\Omega=\{1,2,3,4\}$ で、事象 $\{1\}$ と $\{2,3\}$ を含む最小の σ-加法族 $\sigma(\{1\},\{2,3\})$ の要素の個数はどれか。
+    choices:
+      - "4"
+      - "6"
+      - "8"
+      - "16"
+    answer: 2
+    hint: |
+      $\{1\},\ \{2,3\},\ \{4\}$ という 3 つの互いに素な集合の和で書ける集合を数えます。
+    explanation: |
+      補集合と和をとると、$\Omega$ は $\{1\},\{2,3\},\{4\}$ の 3 つに分割されます。σ-加法族の要素は、この 3 つのうちいくつかを選んだ和なので $2^3=8$ 個です（空集合と $\Omega$ を含む）。
+      $\{2\}$ のように分割の一部だけを含む集合は入りません。
+
+  - id: q45-probability-space-2
+    term: probability-space
+    level: 応用
+    type: numeric
+    question: |
+      表の確率 $p=0.3$ のコインを無限回投げる。初めて表が出るのが偶数回目である確率を求めよ（小数第 4 位まで）。
+    answer: 0.4118
+    tolerance: 0.0001
+    hint: |
+      「初めて表が $k$ 回目」の事象 $A_k$ は互いに素です。可算加法性で $k=2,4,6,\dots$ の確率を足します。
+    explanation: |
+      $P(A_k)=(1-p)^{k-1}p$ で、偶数の $k$ について足すと
+      $$\sum_{j\ge1}(1-p)^{2j-1}p=\frac{(1-p)p}{1-(1-p)^2}=\frac{1-p}{2-p}$$
+      $p=0.3$ なら $0.7/1.7\approx0.4118$ です。無限個の事象の和なので、有限加法性では計算できず、可算加法性が必要です。
+
+  # ---------- ルベーグ積分と期待値 (A) ----------
+  - id: q45-lebesgue-integral-expectation-1
+    term: lebesgue-integral-expectation
+    level: 標準
+    type: choice
+    question: |
+      $U\sim U(0,1)$ とし、$X_n=n^2\,\mathbf 1\{U\le 1/n\}$ とする。正しいものはどれか。
+    choices:
+      - '$X_n\to0$（ほとんど確実に）で、$E[X_n]\to0$'
+      - '$X_n\to0$（ほとんど確実に）だが、$E[X_n]=n\to\infty$'
+      - '$X_n$ は収束しないが、$E[X_n]\to0$'
+      - '優収束定理より $E[X_n]\to E[\lim X_n]$'
+    answer: 1
+    hint: |
+      $U>0$ を固定すると、$n$ が大きいとき $\mathbf 1\{U\le1/n\}$ はどうなるか。期待値は $n^2\times P(U\le1/n)$ です。
+    explanation: |
+      $U>0$ なら $n>1/U$ で $X_n=0$ なので、$X_n\to0$（ほとんど確実に）。一方 $E[X_n]=n^2\cdot\frac1n=n\to\infty$ です。
+      $X_n$ を抑える可積分な関数がないので、優収束定理は使えません。極限と期待値を交換できない例です。
+
+  - id: q45-lebesgue-integral-expectation-2
+    term: lebesgue-integral-expectation
+    level: 基本
+    type: numeric
+    question: |
+      非負の確率変数 $X$ が $P(X>t)=\dfrac{1}{(1+t)^3}\ (t\ge0)$ を満たす。裾の公式 $E[X]=\int_0^\infty P(X>t)\,dt$ を使って $E[X]$ を求めよ。
+    answer: 0.5
+    tolerance: 0.0001
+    hint: |
+      $\int_0^\infty(1+t)^{-3}dt$ を計算します。
+    explanation: |
+      $$E[X]=\int_0^\infty(1+t)^{-3}dt=\Big[-\frac12(1+t)^{-2}\Big]_0^\infty=\frac12$$
+      密度を求めて $\int x f(x)\,dx$ を計算しても同じ値ですが、裾の公式のほうが短く済みます。
+
+  # ---------- ラドン・ニコディムの定理 (B) ----------
+  - id: q45-radon-nikodym-theorem-1
+    term: radon-nikodym-theorem
+    level: 標準
+    type: choice
+    question: |
+      $P=\mathrm{Exp}(1)$（密度 $e^{-x}$）、$Q=\mathrm{Exp}(2)$（密度 $2e^{-2x}$）とする（$x>0$）。ラドン・ニコディム導関数 $dQ/dP$ はどれか。
+    choices:
+      - "$2e^{-x}$"
+      - "$\\frac12e^{x}$"
+      - "$2e^{-2x}$"
+      - "$e^{-x}$"
+    answer: 0
+    hint: |
+      どちらもルベーグ測度に対する密度を持つので、密度の比が導関数です。
+    explanation: |
+      $$\frac{dQ}{dP}(x)=\frac{2e^{-2x}}{e^{-x}}=2e^{-x}$$
+      確かめ：$E_P[2e^{-X}]=\int_0^\infty2e^{-x}e^{-x}dx=1$ で、全体の確率が 1 になります。
+
+  # ---------- ボレル・カンテリの補題 (B) ----------
+  - id: q45-borel-cantelli-lemma-1
+    term: borel-cantelli-lemma
+    level: 標準
+    type: choice
+    question: |
+      $U_1,U_2,\dots$ を独立な $U(0,1)$ とする。次のうち、事象が確率 1 で**無限回**起こるものはどれか。
+    choices:
+      - "$A_n=\\{U_n<1/n^2\\}$"
+      - "$A_n=\\{U_n<2^{-n}\\}$"
+      - "$A_n=\\{U_n<1/(n\\log n)\\}$（$n\\ge2$）"
+      - "$A_n=\\{U_1<1/n\\}$"
+    answer: 2
+    hint: |
+      確率の和が発散するかどうかと、事象が独立かどうかを確かめます。
+    explanation: |
+      $\sum1/n^2$ と $\sum2^{-n}$ は有限なので、第 1 補題から有限回しか起こりません。
+      $\sum1/(n\log n)$ は（ゆっくりですが）発散し、$A_n$ は独立なので、第 2 補題から確率 1 で無限回起こります。
+      最後の選択肢は和が発散しますが、同じ $U_1$ を使っていて独立でなく、$U_1>0$ なら有限回しか起こりません。

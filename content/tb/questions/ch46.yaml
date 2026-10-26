@@ -1,0 +1,111 @@
+chapter: 46
+questions:
+  # ---------- 確率のオーダー記法 (A) ----------
+  - id: q46-stochastic-order-notation-1
+    term: stochastic-order-notation
+    level: 標準
+    type: choice
+    question: |
+      $X_i$ を分散 $\sigma^2<\infty$ の独立同分布、$\bar X_n$ をその標本平均、$\mu=E[X_i]$ とする。$(\bar X_n-\mu)^2$ のオーダーとして正しいものはどれか。
+    choices:
+      - "$O_p(1)$ だが $o_p(1)$ ではない"
+      - "$O_p(n^{-1/2})$ で、$o_p(n^{-1/2})$ ではない"
+      - "$O_p(n^{-1})$"
+      - "$O_p(n^{-2})$"
+    answer: 2
+    hint: |
+      $\bar X_n-\mu=O_p(n^{-1/2})$ と、$O_p(a_n)O_p(b_n)=O_p(a_nb_n)$ を使います。
+    explanation: |
+      $\bar X_n-\mu=O_p(n^{-1/2})$ なので、2 乗は $O_p(n^{-1/2})\cdot O_p(n^{-1/2})=O_p(n^{-1})$ です。
+      実際 $n(\bar X_n-\mu)^2\xrightarrow{d}\sigma^2\chi^2_1$ なので、$n^{-1}$ より速くはなりません（$O_p(n^{-2})$ ではない）。分散の推定で $n$ と $n-1$ のどちらで割るかの違いが、この大きさの項です。
+
+  - id: q46-stochastic-order-notation-2
+    term: stochastic-order-notation
+    level: 標準
+    type: truefalse
+    question: |
+      $X_n=O_p(1)$ ならば、$X_n$ はある確率変数に分布収束する。
+    answer: false
+    hint: |
+      確率的に有界であることと、収束することは別のことです。
+    explanation: |
+      誤りです。たとえば $Z\sim N(0,1)$ として $X_n=(-1)^n(Z+3)$ は確率的に有界（$O_p(1)$）ですが、偶数番目と奇数番目で分布が $N(3,1)$ と $N(-3,1)$ を行き来し、分布収束しません。
+      逆に、分布収束する列は必ず $O_p(1)$ です。
+
+  # ---------- 多変量中心極限定理 (A) ----------
+  - id: q46-multivariate-clt-1
+    term: multivariate-clt
+    level: 標準
+    type: numeric
+    question: |
+      1 回の調査で $n=1600$ 人に 3 択の質問をした。選択肢 1 の支持率が $p_1=0.5$、選択肢 2 が $p_2=0.3$ のとき、$\hat p_1-\hat p_2$ の標準誤差を求めよ（小数第 4 位まで）。
+    answer: 0.0218
+    tolerance: 0.0001
+    hint: |
+      $\mathrm{Cov}(\hat p_1,\hat p_2)=-p_1p_2/n$ を入れて、差の分散を計算します。
+    explanation: |
+      $$V(\hat p_1-\hat p_2)=\frac{p_1(1-p_1)+p_2(1-p_2)+2p_1p_2}{n}=\frac{p_1+p_2-(p_1-p_2)^2}{n}=\frac{0.8-0.04}{1600}=0.000475$$
+      標準誤差は $\sqrt{0.000475}\approx0.0218$ です。独立とみなすと $\sqrt{(0.25+0.21)/1600}\approx0.0170$ と小さく出てしまいます。
+
+  - id: q46-multivariate-clt-2
+    term: multivariate-clt
+    level: 応用
+    type: derivation
+    question: |
+      $(X_i,Y_i)$ を独立同分布、$E[X]=\mu_X\ne0$、$E[Y]=\mu_Y$、分散 $\sigma_X^2,\sigma_Y^2$、共分散 $\sigma_{XY}$ とする。比 $R=\bar Y/\bar X$ について、$\sqrt n(R-\mu_Y/\mu_X)$ の漸近分散をデルタ法で求めよ。
+    steps:
+      - "多変量中心極限定理：$\\sqrt n\\big((\\bar X,\\bar Y)-(\\mu_X,\\mu_Y)\\big)\\xrightarrow{d}N(0,\\Sigma)$、$\\Sigma=\\begin{pmatrix}\\sigma_X^2&\\sigma_{XY}\\\\\\sigma_{XY}&\\sigma_Y^2\\end{pmatrix}$。"
+      - "$g(a,b)=b/a$ の勾配は $\\nabla g=(-b/a^2,\\ 1/a)$。$(\\mu_X,\\mu_Y)$ で $\\nabla g=(-\\rho_0/\\mu_X,\\ 1/\\mu_X)$（$\\rho_0=\\mu_Y/\\mu_X$）。"
+      - "漸近分散 $\\nabla g^\\top\\Sigma\\nabla g=\\frac1{\\mu_X^2}\\big(\\rho_0^2\\sigma_X^2-2\\rho_0\\sigma_{XY}+\\sigma_Y^2\\big)$。"
+    answer: "$\\dfrac{\\sigma_Y^2-2\\rho_0\\sigma_{XY}+\\rho_0^2\\sigma_X^2}{\\mu_X^2}$（$\\rho_0=\\mu_Y/\\mu_X$）"
+    hint: |
+      多変量デルタ法 $\nabla g^\top\Sigma\nabla g$ を、$g(a,b)=b/a$ で計算します。
+    explanation: |
+      比の推定量（クリック率・比推定など）の標準誤差の基本形です。$X$ と $Y$ の共分散が正なら、比の分散は小さくなります（分子と分母が一緒に動くため）。
+
+  # ---------- リンデベルグ・フェラー (B) ----------
+  - id: q46-lindeberg-feller-clt-1
+    term: lindeberg-feller-clt
+    level: 標準
+    type: choice
+    question: |
+      固定した説明変数 $x_i$ の単回帰で、誤差が独立同分布（正規とは限らない）とする。傾きの推定量が正規分布に近づく条件（ネーター条件）を満たさない計画はどれか。
+    choices:
+      - "$x_i=i$（$i=1,\\dots,n$）"
+      - "$x_i$ が 0 と 1 を交互にとる"
+      - "$x_i=2^i$（$i=1,\\dots,n$）"
+      - "$x_i=\\sqrt i$（$i=1,\\dots,n$）"
+    answer: 2
+    hint: |
+      $\max_i(x_i-\bar x)^2/\sum_i(x_i-\bar x)^2$ が 0 に向かうかを調べます。
+    explanation: |
+      $x_i=2^i$ では最後の点 $2^n$ が他のすべての合計より大きく、$\max_i(x_i-\bar x)^2/\sum(x_i-\bar x)^2$ は 0 に向かいません（1 点が推定を支配する）。
+      他の 3 つは比が $O(1/n)$ などで 0 に向かうので、リンデベルグ条件が成り立ちます。
+
+  # ---------- グリベンコ・カンテリの定理 (A) ----------
+  - id: q46-glivenko-cantelli-theorem-1
+    term: glivenko-cantelli-theorem
+    level: 基本
+    type: numeric
+    question: |
+      DKW の不等式 $P(\sup_x|F_n(x)-F(x)|>\varepsilon)\le2e^{-2n\varepsilon^2}$ を使い、確率 95% 以上ですべての $x$ について $|F_n(x)-F(x)|\le0.05$ を保証するのに必要な最小の $n$ を求めよ。
+    answer: 738
+    tolerance: 0.5
+    hint: |
+      $2e^{-2n(0.05)^2}\le0.05$ を $n$ について解きます。
+    explanation: |
+      $n\ge\dfrac{\log(2/0.05)}{2\times0.05^2}=\dfrac{\log40}{0.005}\approx737.8$ なので、最小は $n=738$ です。
+      分布の形によらず使える、分布関数全体の同時の精度の見積もりです。
+
+  - id: q46-glivenko-cantelli-theorem-2
+    term: glivenko-cantelli-theorem
+    level: 標準
+    type: truefalse
+    question: |
+      $F$ が連続なら、$D_n=\sup_x|F_n(x)-F(x)|$ の分布は $F$ によらない。
+    answer: true
+    hint: |
+      $U_i=F(X_i)$ がどんな分布に従うかを考えます。
+    explanation: |
+      正しいです。$F$ が連続なら $U_i=F(X_i)\sim U(0,1)$ で、$D_n$ は一様分布の標本の経験分布関数と $u$ の最大のずれと同じ分布になります。
+      そのためコルモゴロフ・スミルノフ検定は、分布によらない臨界値を使えます（パラメータを推定した場合は別）。

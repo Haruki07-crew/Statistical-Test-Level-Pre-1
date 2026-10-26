@@ -1,0 +1,34 @@
+{
+ "q48-admissibility-1": {
+  "hash": "fe333a4765367552",
+  "ok": true
+ },
+ "q48-admissibility-2": {
+  "hash": "bc8d8b3f273ec163",
+  "ok": true
+ },
+ "q48-james-stein-estimator-1": {
+  "hash": "9a69753c3a4538c5",
+  "ok": true
+ },
+ "q48-james-stein-estimator-2": {
+  "hash": "67120ef989333489",
+  "ok": true
+ },
+ "q48-loss-function-and-risk-1": {
+  "hash": "340fecd28f4b4fe2",
+  "ok": true
+ },
+ "q48-loss-function-and-risk-2": {
+  "hash": "aa248edc16e59d3b",
+  "ok": true
+ },
+ "q48-minimax-estimator-1": {
+  "hash": "f739b0cf04c20a6e",
+  "ok": true
+ },
+ "q48-minimax-estimator-2": {
+  "hash": "8fb8f53efdf809f7",
+  "ok": true
+ }
+}

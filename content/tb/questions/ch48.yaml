@@ -1,0 +1,118 @@
+chapter: 48
+questions:
+  # ---------- 損失関数とリスク関数 (A) ----------
+  - id: q48-loss-function-and-risk-1
+    term: loss-function-and-risk
+    level: 標準
+    type: numeric
+    question: |
+      $X\sim Bin(20,p)$ で、$p=0.3$ のとき推定量 $\delta=(X+1)/22$ のリスク（2 乗損失）を求めよ（小数第 5 位まで）。
+    answer: 0.00901
+    tolerance: 0.000005
+    hint: |
+      $\delta=(X+\alpha)/(n+\beta)$ のリスクは $\{np(1-p)+(\alpha-\beta p)^2\}/(n+\beta)^2$ です。
+    explanation: |
+      $$R=\frac{20\times0.3\times0.7+(1-2\times0.3)^2}{22^2}=\frac{4.2+0.16}{484}\approx0.00901$$
+      同じ $p$ での $X/20$ のリスク $0.3\times0.7/20=0.0105$ より小さくなります（$p$ が端に近いと逆転します）。
+
+  - id: q48-loss-function-and-risk-2
+    term: loss-function-and-risk
+    level: 標準
+    type: choice
+    question: |
+      事後分布が与えられたとき、絶対損失 $L(\theta,a)=|\theta-a|$ のもとでのベイズ規則（事後期待損失を最小にする $a$）はどれか。
+    choices:
+      - "事後平均"
+      - "事後中央値"
+      - "事後最頻値"
+      - "最尤推定値"
+    answer: 1
+    hint: |
+      $E|\theta-a|$ を $a$ で微分すると $P(\theta<a)-P(\theta>a)$ になります。
+    explanation: |
+      $\frac{d}{da}E[|\theta-a|\mid x]=P(\theta<a\mid x)-P(\theta>a\mid x)$ が 0 になるのは、$a$ が事後中央値のときです。2 乗損失なら事後平均、0-1 損失（の極限）なら事後最頻値です。
+
+  # ---------- 許容性 (A) ----------
+  - id: q48-admissibility-1
+    term: admissibility
+    level: 標準
+    type: numeric
+    question: |
+      $X_1,\dots,X_5\sim N(\mu,\sigma^2)$、$SS=\sum(X_i-\bar X)^2$ とする。$\sigma^2$ の推定量 $SS/d$ の平均二乗誤差（$\sigma^4$ で割った値）を最小にする $d$ を求めよ。
+    answer: 6
+    tolerance: 0.001
+    hint: |
+      $SS/\sigma^2\sim\chi^2_{n-1}$ で、$\mathrm{MSE}/\sigma^4=\{2(n-1)+(n-1-d)^2\}/d^2$ です。
+    explanation: |
+      $d$ で微分すると最小は $d=n+1=6$ です。このとき MSE/$\sigma^4$ は $2/6\approx0.333$ で、不偏分散（$d=4$）の $2/4=0.5$ より小さくなります。比が $\sigma^2$ によらないので、$SS/6$ は不偏分散に**すべての** $\sigma^2$ で優越し、2 乗損失のもとで不偏分散は非許容です。
+
+  - id: q48-admissibility-2
+    term: admissibility
+    level: 基本
+    type: truefalse
+    question: |
+      $\theta$ の値によらず、つねに定数 $\theta_0$ を推定値とする推定量 $\delta\equiv\theta_0$ は、2 乗損失のもとで許容的である。
+    answer: true
+    hint: |
+      $\theta=\theta_0$ のときのリスクを考えます。
+    explanation: |
+      正しいです。$\delta\equiv\theta_0$ のリスクは $\theta=\theta_0$ で 0 です。これに優越するには $\theta_0$ でもリスク 0、つまり（ほとんど確実に）$\theta_0$ を出す推定量でなければならず、それは同じ推定量です。許容性は「良い推定量」の十分条件ではなく、最低限の条件にすぎないことを示す例です。
+
+  # ---------- ミニマックス推定量 (A) ----------
+  - id: q48-minimax-estimator-1
+    term: minimax-estimator
+    level: 標準
+    type: numeric
+    question: |
+      $X\sim Bin(16,p)$ のとき、2 乗損失のミニマックス推定量 $(X+\sqrt n/2)/(n+\sqrt n)$ のリスク（一定値）を求めよ。
+    answer: 0.01
+    tolerance: 0.00001
+    hint: |
+      リスクは $1/\{4(\sqrt n+1)^2\}$ です。
+    explanation: |
+      $n=16$ なら推定量は $(X+2)/20$ で、リスクは $1/\{4\times5^2\}=0.01$ です。$X/16$ の最大リスク $0.25/16\approx0.0156$（$p=0.5$）より小さくなります。
+
+  - id: q48-minimax-estimator-2
+    term: minimax-estimator
+    level: 応用
+    type: choice
+    question: |
+      ミニマックス推定量を見つけるのに使える事実として正しいものはどれか。
+    choices:
+      - "リスクが一定のベイズ規則はミニマックスである"
+      - "最尤推定量はつねにミニマックスである"
+      - "不偏推定量の中で分散が最小のものはミニマックスである"
+      - "一様事前分布のベイズ規則はつねにミニマックスである"
+    answer: 0
+    hint: |
+      「最大リスク ≥ ベイズリスク ≥ ベイズ規則のベイズリスク」という不等式を考えます。
+    explanation: |
+      任意の $\delta$ について $\sup_\theta R(\theta,\delta)\ge r(\pi,\delta)\ge r(\pi,\delta_\pi)$ で、$\delta_\pi$ のリスクが一定値 $c$ なら右辺は $c=\sup_\theta R(\theta,\delta_\pi)$ です。よって $\delta_\pi$ はミニマックスです。二項分布では最も不利な事前分布は $\mathrm{Beta}(\sqrt n/2,\sqrt n/2)$ で、一様分布ではありません。
+
+  # ---------- ジェームズ・スタイン推定量 (A) ----------
+  - id: q48-james-stein-estimator-1
+    term: james-stein-estimator
+    level: 標準
+    type: numeric
+    question: |
+      $X\sim N_6(\theta,I)$ の観測値が $\|X\|^2=10$ だった。ジェームズ・スタイン推定量 $(1-(p-2)/\|X\|^2)X$ の縮小係数を求めよ。
+    answer: 0.6
+    tolerance: 0.0001
+    hint: |
+      $p=6$ です。
+    explanation: |
+      縮小係数は $1-(6-2)/10=0.6$ で、推定値は $0.6X$ です。$\|X\|^2$ が小さいほど（原点に近いほど）強く縮めます。
+
+  - id: q48-james-stein-estimator-2
+    term: james-stein-estimator
+    level: 応用
+    type: numeric
+    question: |
+      $X\sim N_{12}(0,I)$（真の $\theta=0$）のとき、ジェームズ・スタイン推定量のリスク $E\|\delta_{JS}-\theta\|^2$ を求めよ。
+    answer: 2
+    tolerance: 0.0001
+    hint: |
+      リスクは $p-(p-2)^2E[1/\|X\|^2]$、$\theta=0$ なら $\|X\|^2\sim\chi^2_p$ で $E[1/\chi^2_p]=1/(p-2)$ です。
+    explanation: |
+      $$R=p-(p-2)^2\cdot\frac1{p-2}=p-(p-2)=2$$
+      次元 $p$ によらず 2 で、$X$ のリスク $p=12$ の 6 分の 1 です。

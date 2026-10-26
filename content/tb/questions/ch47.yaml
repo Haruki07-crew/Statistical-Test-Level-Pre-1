@@ -1,0 +1,108 @@
+chapter: 47
+questions:
+  # ---------- レーマン・シェフェ (A) ----------
+  - id: q47-lehmann-scheffe-theorem-1
+    term: lehmann-scheffe-theorem
+    level: 標準
+    type: choice
+    question: |
+      $X_1,\dots,X_n\sim Po(\lambda)$（独立）とする。$\lambda^2$ の UMVUE はどれか（$T=\sum X_i$）。
+    choices:
+      - '$\bar X^2$'
+      - '$\dfrac{T(T-1)}{n^2}$'
+      - '$\dfrac{T^2}{n^2}-\dfrac{1}{n}$'
+      - '$\dfrac{T(T-1)}{n(n-1)}$'
+    answer: 1
+    hint: |
+      $T\sim Po(n\lambda)$ は完備十分統計量です。$E[T(T-1)]$ を計算します。
+    explanation: |
+      $T\sim Po(n\lambda)$ で、ポアソン分布の階乗モーメントは $E[T(T-1)]=(n\lambda)^2$。よって $T(T-1)/n^2$ は $\lambda^2$ の不偏推定量で、完備十分統計量 $T$ の関数なので、レーマン・シェフェの定理から UMVUE です。
+      $\bar X^2$ は $E[\bar X^2]=\lambda^2+\lambda/n$ で偏りがあります。
+
+  - id: q47-lehmann-scheffe-theorem-2
+    term: lehmann-scheffe-theorem
+    level: 標準
+    type: numeric
+    question: |
+      $X_1,\dots,X_{10}\sim U(0,\theta)$ の最大値が $X_{(10)}=8.8$ だった。$\theta$ の UMVUE の値を求めよ。
+    answer: 9.68
+    tolerance: 0.005
+    hint: |
+      $E[X_{(n)}]=\frac{n}{n+1}\theta$ です。
+    explanation: |
+      UMVUE は $\frac{n+1}{n}X_{(n)}=\frac{11}{10}\times8.8=9.68$ です。$X_{(n)}$ は完備十分統計量で、この関数は不偏なので UMVUE になります。
+
+  # ---------- バスの定理 (B) ----------
+  - id: q47-basu-theorem-1
+    term: basu-theorem
+    level: 標準
+    type: numeric
+    question: |
+      $X_1,\dots,X_4\sim\mathrm{Exp}$（平均 $\theta$）を独立とし、$S=\sum X_i$ とする。バスの定理を使って $E[X_1^2/S^2]$ を求めよ。
+    answer: 0.1
+    tolerance: 0.0001
+    hint: |
+      $X_1/S$ は補助統計量で、$S$ と独立です。$E[X_1^2]=E[(X_1/S)^2]E[S^2]$ を使います。
+    explanation: |
+      $E[X_1^2]=2\theta^2$、$S\sim\mathrm{Gamma}(4,\theta)$ より $E[S^2]=4\cdot5\,\theta^2=20\theta^2$。独立性から
+      $$E\Big[\frac{X_1^2}{S^2}\Big]=\frac{2\theta^2}{20\theta^2}=0.1$$
+      $X_1/S\sim\mathrm{Beta}(1,3)$ の 2 次モーメント $\frac{1\cdot2}{4\cdot5}=0.1$ とも一致します。
+
+  # ---------- M 推定量 (A) ----------
+  - id: q47-m-estimator-1
+    term: m-estimator
+    level: 標準
+    type: numeric
+    question: |
+      ラプラス分布（密度 $\frac12e^{-|x-\theta|}$）の位置 $\theta$ を、標本平均と標本中央値で推定する。中央値の漸近分散に対する平均の漸近分散の比（平均 ÷ 中央値）を求めよ。
+    answer: 2
+    tolerance: 0.0001
+    hint: |
+      平均は分散 $V[X]$、中央値は $1/(4f(\theta)^2)$ です。
+    explanation: |
+      ラプラス分布の分散は 2、中央値の漸近分散は $1/(4\times(1/2)^2)=1$ なので、比は 2 です。裾の重い分布では中央値のほうが 2 倍効率的です。
+
+  - id: q47-m-estimator-2
+    term: m-estimator
+    level: 応用
+    type: truefalse
+    question: |
+      モデルが正しくない場合でも、最尤推定量の漸近分散はフィッシャー情報量の逆行列 $I(\theta)^{-1}$（を $n$ で割ったもの）で正しく与えられる。
+    answer: false
+    hint: |
+      M 推定量の漸近分散 $A^{-1}BA^{-1}$ が $I^{-1}$ に簡単になるのは、どんなときですか。
+    explanation: |
+      誤りです。最尤推定量は $\psi=-$スコア の M 推定量で、漸近分散は一般に $A^{-1}BA^{-1}$ です。モデルが正しいときだけ情報量等式 $-A=B=I$ が成り立ち $I^{-1}$ になります。モデルが誤っているときは、サンドイッチ型の分散を使います。
+
+  # ---------- サンドイッチ分散推定量 (A) ----------
+  - id: q47-sandwich-variance-estimator-1
+    term: sandwich-variance-estimator
+    level: 応用
+    type: numeric
+    question: |
+      切片のない回帰 $y_i=\beta x_i+\varepsilon_i$ で、データが $(x,y)=(1,1),\ (2,3),\ (3,2)$ のとき、$\hat\beta$ のホワイト（HC0）型の分散推定値を求めよ（小数第 4 位まで）。
+    answer: 0.0550
+    tolerance: 0.0001
+    hint: |
+      $\hat\beta=\sum x_iy_i/\sum x_i^2$、残差 $e_i=y_i-\hat\beta x_i$、$\hat V=\sum x_i^2e_i^2/(\sum x_i^2)^2$ です。
+    explanation: |
+      $\sum x_i^2=14$、$\sum x_iy_i=13$ より $\hat\beta=13/14\approx0.9286$。残差は $e\approx(0.0714,\ 1.1429,\ -0.7857)$ で
+      $$\sum_ix_i^2e_i^2\approx0.0051+5.2245+5.5561=10.7857,\qquad\hat V_{HC0}=\frac{10.7857}{14^2}\approx0.0550$$
+      ふつうの分散推定 $s^2/\sum x_i^2$（$s^2=\sum e_i^2/(3-1)$）では $\approx0.0689$ で、データが少ないと 2 つはかなり違う値になります。
+
+  - id: q47-sandwich-variance-estimator-2
+    term: sandwich-variance-estimator
+    level: 標準
+    type: choice
+    question: |
+      回帰で不均一分散が疑われるとき、サンドイッチ型（ロバスト）標準誤差に切り替えると、何が変わるか。
+    choices:
+      - "回帰係数の推定値も標準誤差も変わる"
+      - "回帰係数の推定値は変わらず、標準誤差・t 値・p 値が変わる"
+      - "決定係数が変わる"
+      - "残差が変わる"
+    answer: 1
+    hint: |
+      サンドイッチ型は推定量の分散の推定方法だけを取り換えます。
+    explanation: |
+      係数は同じ最小二乗推定値のままで、分散の推定だけを $(X^\top X)^{-1}(\sum e_i^2x_ix_i^\top)(X^\top X)^{-1}$ に替えます。そのため標準誤差と、それを使う t 値・p 値・信頼区間が変わります。
