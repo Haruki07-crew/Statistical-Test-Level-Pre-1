@@ -2943,19 +2943,19 @@ chapters:
   - id: variational-inference
     title: 変分推論
     importance: A
-    status: planned
+    status: verified
   - id: hamiltonian-monte-carlo
     title: ハミルトニアン・モンテカルロ法
     importance: B
-    status: planned
+    status: verified
   - id: gaussian-process-regression
     title: ガウス過程回帰
     importance: A
-    status: planned
+    status: verified
   - id: waic
     title: WAIC（広く使える情報量規準）
     importance: B
-    status: planned
+    status: verified
 - 'no': 55
   title: 因果推論の方法
   lead: 潜在結果モデルで因果効果を定義し、傾向スコア・逆確率重み付け・二重頑健推定、差の差、回帰不連続デザインで推定します。前提は第44章です。

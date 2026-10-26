@@ -214,6 +214,9 @@ def check_file(path, plan_terms, customs, all_aliases):
         key = str(a)
         if key in all_aliases and all_aliases[key] != tid:
             err(f"別名 '{a}' が他の用語（{all_aliases[key]}）と重複しています")
+    # 題名がほかの用語（共通で使うほかの級の用語を含む）の別名と同じだと、検索で 2 つの用語に当たる
+    if fm.get("title") is not None and all_aliases.get(str(fm["title"]), tid) != tid:
+        warn(f"題名 '{fm['title']}' が他の用語（{all_aliases[str(fm['title'])]}）の別名と同じです")
     # 見出し
     heads = re.findall(r"^## (.+?)\s*$", body, flags=re.M)
     has_chart = "グラフ・イメージ" in heads
