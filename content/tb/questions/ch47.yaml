@@ -167,3 +167,17 @@ questions:
       $A$ は推定方程式の微分の期待値、$B$ は推定方程式の 2 乗の期待値です。
     explanation: |
       分散が一定なら $E[x^2\varepsilon^2]=\sigma^2E[x^2]$ となり、ふつうの $\sigma^2/\sum x_i^2$ に一致します。分散が $x$ とともに大きいと、$x$ の大きい観測の残差が重く効きます。
+
+  # ---------- 重要度 B の 2 問目 ----------
+  - id: q47-basu-theorem-2
+    term: basu-theorem
+    level: 応用
+    type: numeric
+    question: |
+      $X_1,\dots,X_8\sim N(1,4)$（独立）、$\bar X$ を標本平均、$S^2$ を不偏分散とする。バスの定理による独立性を使って $E[\bar X^2S^2]$ を求めよ。
+    answer: 6
+    tolerance: 0.0001
+    hint: |
+      独立なので $E[\bar X^2]E[S^2]$。$E[\bar X^2]=\mu^2+\sigma^2/n$。
+    explanation: |
+      $E[\bar X^2]=1+4/8=1.5$、$E[S^2]=4$ なので $1.5\times4=6$ です。独立性がないと、この積の期待値は簡単には分けられません。

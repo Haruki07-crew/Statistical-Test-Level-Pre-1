@@ -123,3 +123,30 @@ questions:
       重みの行列 $D_i^\top V_i^{-1}$ は $y$ によらない定数として扱えます。
     explanation: |
       期待値 0 の推定方程式の解は（正則条件のもとで）一致推定量になるので、作業相関を誤っても係数は一致性を保ちます。効率は作業相関が真に近いほど良くなります。
+
+  # ---------- 重要度 B の 2 問目 ----------
+  - id: q50-reml-2
+    term: reml
+    level: 基本
+    type: numeric
+    question: |
+      説明変数 3 個（切片を含む）の回帰を $n=12$ 個のデータに当てはめ、残差平方和が 45 だった。誤差分散の REML 推定値 $\mathrm{RSS}/(n-p)$ を求めよ。
+    answer: 5
+    tolerance: 0.0001
+    hint: |
+      $p=3$ です。ML なら $\mathrm{RSS}/n$ です。
+    explanation: |
+      REML は $45/9=5$、ML は $45/12=3.75$ です。ふつうの回帰では REML は不偏分散と同じで、係数を推定したことによる自由度の減少を考慮します。
+
+  - id: q50-glmm-2
+    term: glmm
+    level: 応用
+    type: numeric
+    question: |
+      ロジスティック混合モデルで個体ごとの処置効果が $\beta=1.2$、ランダム切片の SD が $\sigma=1.5$ のとき、母集団平均の効果の近似 $\beta/\sqrt{1+c^2\sigma^2}$（$c^2\approx0.346$）を求めよ（小数第 2 位まで）。
+    answer: 0.90
+    tolerance: 0.005
+    hint: |
+      $1+0.346\times2.25\approx1.778$ です。
+    explanation: |
+      $1.2/\sqrt{1.778}\approx0.90$ です。この近似は正確な値より少し大きめに出ることがあるので、必要なら数値積分で確かめます。

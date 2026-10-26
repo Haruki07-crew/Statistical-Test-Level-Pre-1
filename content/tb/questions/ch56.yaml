@@ -78,3 +78,30 @@ questions:
       新しいスコアの順位がどの値も同じ確率であることを使います。
     explanation: |
       $k/(n+1)<1-\alpha+1/(n+1)$ なので、被覆率は上からも抑えられます。予測モデルの良し悪しは関係なく、交換可能性だけで成り立つことがこの方法の強みです。
+
+  # ---------- 重要度 B の 2 問目 ----------
+  - id: q56-semiparametric-efficiency-2
+    term: semiparametric-efficiency
+    level: 応用
+    type: numeric
+    question: |
+      傾向スコアがどの人も $e(X)=0.2$、両群の結果の条件付き分散が 1、効果が一定のとき、平均処置効果の効率限界 $E[\sigma_1^2/e+\sigma_0^2/(1-e)+(\tau(X)-\tau)^2]$ を求めよ。
+    answer: 6.25
+    tolerance: 0.0001
+    hint: |
+      $1/0.2+1/0.8$ です。
+    explanation: |
+      $5+1.25=6.25$ です。処置を受ける人が少ない（20%）ので、半々の場合の限界 4 より大きくなります。これは処置群 $0.2n$ 人・対照群 $0.8n$ 人の平均の差の分散に $n$ を掛けた $n\{1/(0.2n)+1/(0.8n)\}$ と同じです。
+
+  - id: q56-double-machine-learning-2
+    term: double-machine-learning
+    level: 標準
+    type: numeric
+    question: |
+      ダブル機械学習で、4 人の残差が $\hat v=(0.5,-1.0,1.5,-0.5)$、$\hat u=(1.0,-0.8,2.0,-0.2)$ だった。$\hat\theta=\sum\hat v_i\hat u_i/\sum\hat v_i^2$ を求めよ（小数第 3 位まで）。
+    answer: 1.173
+    tolerance: 0.0005
+    hint: |
+      分子は $0.5+0.8+3.0+0.1$、分母は $0.25+1+2.25+0.25$ です。
+    explanation: |
+      $4.4/3.75\approx1.173$ です。$D$ と $Y$ の両方から $X$ で説明できる部分を除いた残差どうしを回帰しているので、交絡の影響が除かれています。

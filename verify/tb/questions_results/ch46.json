@@ -3,8 +3,16 @@
   "hash": "178fc6b498d0134c",
   "ok": true
  },
+ "q46-bootstrap-theory-2": {
+  "hash": "1bb27291e07f6333",
+  "ok": true
+ },
  "q46-empirical-process-1": {
   "hash": "78206b9f1f3b1af3",
+  "ok": true
+ },
+ "q46-empirical-process-2": {
+  "hash": "5b71e497835eed1a",
   "ok": true
  },
  "q46-glivenko-cantelli-theorem-1": {
@@ -23,8 +31,16 @@
   "hash": "fafe191a8fb15104",
   "ok": true
  },
+ "q46-lindeberg-feller-clt-2": {
+  "hash": "b4cf9f75e00a5b25",
+  "ok": true
+ },
  "q46-local-alternatives-1": {
   "hash": "a6f49a42fabbb977",
+  "ok": true
+ },
+ "q46-local-alternatives-2": {
+  "hash": "cb2180c130bf53ac",
   "ok": true
  },
  "q46-multivariate-clt-1": {

@@ -3,6 +3,10 @@
   "hash": "204ea016dbc21f8d",
   "ok": true
  },
+ "q54-dirichlet-process-2": {
+  "hash": "39114fe14939238e",
+  "ok": true
+ },
  "q54-gaussian-process-regression-1": {
   "hash": "27fc0dbbf8e12bd6",
   "ok": true
@@ -19,6 +23,10 @@
   "hash": "2b2875546f890f26",
   "ok": true
  },
+ "q54-hamiltonian-monte-carlo-2": {
+  "hash": "83787849d4e4e926",
+  "ok": true
+ },
  "q54-variational-inference-1": {
   "hash": "363caf1aaadc4572",
   "ok": true
@@ -33,6 +41,10 @@
  },
  "q54-waic-1": {
   "hash": "0f17b6f275cda084",
+  "ok": true
+ },
+ "q54-waic-2": {
+  "hash": "b8a887effe7ac726",
   "ok": true
  }
 }

@@ -15,8 +15,16 @@
   "hash": "41c4232ab6034681",
   "ok": true
  },
+ "q56-double-machine-learning-2": {
+  "hash": "fa2d7feb72f163cc",
+  "ok": true
+ },
  "q56-semiparametric-efficiency-1": {
   "hash": "bdf0d8a2f41e2871",
+  "ok": true
+ },
+ "q56-semiparametric-efficiency-2": {
+  "hash": "653a8eb5dd08f845",
   "ok": true
  }
 }

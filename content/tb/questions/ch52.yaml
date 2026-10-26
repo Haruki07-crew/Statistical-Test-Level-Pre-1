@@ -107,3 +107,17 @@ questions:
       2 乗の長さの期待値は、共分散行列のトレースです。
     explanation: |
       $p$ が $n$ に近いと $X^\top X$ の最小固有値が 0 に近づき、$1/\lambda_{\min}$ が誤差を支配します。説明変数が独立な標準正規なら、平均して $\sigma^2p/(n-p-1)$ になります。
+
+  # ---------- 重要度 B の 2 問目 ----------
+  - id: q52-lasso-theory-2
+    term: lasso-theory
+    level: 標準
+    type: numeric
+    question: |
+      誤差の SD $\sigma=1$、$n=400$、$p=1000$ のとき、ラッソの調整パラメータの目安 $\lambda=\sigma\sqrt{2\log p/n}$ を求めよ（小数第 3 位まで）。
+    answer: 0.186
+    tolerance: 0.0005
+    hint: |
+      $\log1000\approx6.908$ です。
+    explanation: |
+      $\sqrt{2\times6.908/400}\approx0.186$ です。ノイズと説明変数の偶然の相関の最大値がこの程度なので、それより大きい $\lambda$ をとって偶然の当てはまりを抑えます。理論の条件を確実に満たすにはこの 2 倍程度が必要ですが、係数の縮みも大きくなります。

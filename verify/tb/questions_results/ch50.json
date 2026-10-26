@@ -15,6 +15,10 @@
   "hash": "9fc62ab0ffd98512",
   "ok": true
  },
+ "q50-glmm-2": {
+  "hash": "0fc0f54392117ced",
+  "ok": true
+ },
  "q50-linear-mixed-model-1": {
   "hash": "6f6a5a4bfb06351c",
   "ok": true
@@ -29,6 +33,10 @@
  },
  "q50-reml-1": {
   "hash": "51918d405e5a0951",
+  "ok": true
+ },
+ "q50-reml-2": {
+  "hash": "6cb63a3eae9cb8fb",
   "ok": true
  }
 }

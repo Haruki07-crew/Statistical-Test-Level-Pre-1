@@ -15,6 +15,10 @@
   "hash": "f6e354ae28860b6f",
   "ok": true
  },
+ "q55-doubly-robust-estimator-2": {
+  "hash": "ac693e9812cf0832",
+  "ok": true
+ },
  "q55-inverse-probability-weighting-1": {
   "hash": "20b00bfc7cb0af5a",
   "ok": true
@@ -53,6 +57,10 @@
  },
  "q55-regression-discontinuity-design-1": {
   "hash": "e87914709db3aca2",
+  "ok": true
+ },
+ "q55-regression-discontinuity-design-2": {
+  "hash": "faf6091cbc1dd9f3",
   "ok": true
  }
 }

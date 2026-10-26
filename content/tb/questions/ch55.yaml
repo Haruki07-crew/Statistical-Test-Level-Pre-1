@@ -231,3 +231,30 @@ questions:
       処置群の「処置がなかった場合の期 1 の結果」を足して引きます。
     explanation: |
       平行トレンドが崩れると、2 群のトレンドの差がそのまま偏りになります（処置群だけ 1 期あたり 0.5 余分に伸びる例で、偏り 1.5）。
+
+  # ---------- 重要度 B の 2 問目 ----------
+  - id: q55-doubly-robust-estimator-2
+    term: doubly-robust-estimator
+    level: 標準
+    type: numeric
+    question: |
+      ある人が処置を受け（$T=1$）、結果は $Y=7$、傾向スコアのモデルの値 $\hat e=0.4$、結果のモデルの予測 $\hat\mu_1=5$、$\hat\mu_0=3$ だった。この人の AIPW の項 $\hat\mu_1-\hat\mu_0+\frac{T(Y-\hat\mu_1)}{\hat e}-\frac{(1-T)(Y-\hat\mu_0)}{1-\hat e}$ を求めよ。
+    answer: 7
+    tolerance: 0.0001
+    hint: |
+      $T=1$ なので最後の項は 0 です。
+    explanation: |
+      $5-3+(7-5)/0.4=2+5=7$ です。回帰の予測による効果 2 を、重み付けた残差 5 で補正しています。全員の項を平均したものが AIPW 推定値です。
+
+  - id: q55-regression-discontinuity-design-2
+    term: regression-discontinuity-design
+    level: 応用
+    type: numeric
+    question: |
+      ファジーな回帰不連続デザインで、閾値で結果 $Y$ の平均が 2.0 跳び、処置を受ける確率が 0.4 跳んだ。閾値での処置の局所的な効果（跳びの比）を求めよ。
+    answer: 5
+    tolerance: 0.0001
+    hint: |
+      閾値を操作変数とみたワルド推定量です。
+    explanation: |
+      $2.0/0.4=5$ です。閾値で処置を受けるようになった人（コンプライアー）についての効果で、閾値の操作変数推定量と同じ形です。

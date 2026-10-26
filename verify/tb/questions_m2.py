@@ -43,6 +43,7 @@ q.check("q52-concentration-inequality-3", abs(t52 - 4.60) < 0.005 and (zm > t52)
 Xf = rng.normal(size=(40, 6)); tr_ = np.trace(np.linalg.inv(Xf.T @ Xf))
 ers = [((np.linalg.lstsq(Xf, rng.normal(size=40), rcond=None)[0]) ** 2).sum() for _ in range(20000)]
 q.check("q52-high-dimensional-regression-3", abs(np.mean(ers) / tr_ - 1) < 0.03, f"固定した X で E‖β̂−β‖² / tr((XᵀX)⁻¹) = {np.mean(ers) / tr_:.3f}")
+q.num("q52-lasso-theory-2", np.sqrt(2 * np.log(1000) / 400))
 run(q)
 
 # ---------- 第53章 ----------
@@ -54,6 +55,8 @@ iv2 = {tuple((xs[:2] >= a) & (xs[:2] <= b)) for a in np.arange(0, 4, 0.5) for b 
 iv3 = {tuple((xs >= a) & (xs <= b)) for a in np.arange(0, 4, 0.5) for b in np.arange(0, 4, 0.5)}
 q.check("q53-vc-dimension-1", len(iv2) == 4 and (True, False, True) not in iv3 and chosen(q, "q53-vc-dimension-1") == "2", "2 点は細分、3 点の (1,0,1) は不可")
 q.concept("q53-empirical-risk-minimization-3", "3 つの差への分解と、ERM の定義・sup の定義だけで成り立つ（第53章の検算のシミュレーションで、超過リスクが 2×一様なずれ以下であることを確認済み）")
+from math import comb  # noqa: E402
+q.num("q53-vc-dimension-2", sum(comb(10, i) for i in range(4)))
 run(q)
 
 # ---------- 第54章 ----------
@@ -107,6 +110,12 @@ fs = rng.multivariate_normal([0, 0], [[1, kk(0.5, 0.2)], [kk(0.5, 0.2), 1]], 10 
 bslope = np.cov(fs[:, 0], ys3)[0, 1] / ys3.var()
 resid = fs[:, 0] - bslope * ys3
 q.check("q54-gaussian-process-regression-3", abs(bslope - kk(0.5, 0.2) / 1.25) < 0.003 and abs(resid.var() - (1 - kk(0.5, 0.2) ** 2 / 1.25)) < 0.003, "同時正規のシミュレーションで平均の係数と分散")
+th_, pm_, ep_ = 1.0, 0.0, 0.5
+p1_ = pm_ - ep_ / 2 * th_; th1_ = th_ + ep_ * p1_; p2_ = p1_ - ep_ / 2 * th1_
+q.num("q54-hamiltonian-monte-carlo-2", 0.5 * th1_ ** 2 + 0.5 * p2_ ** 2)
+q.check("q54-hamiltonian-monte-carlo-2", abs(p1_ + 0.25) < 1e-12 and abs(th1_ - 0.875) < 1e-12 and abs(p2_ + 0.46875) < 1e-12, "途中の値 −0.25・0.875・−0.46875")
+q.num("q54-dirichlet-process-2", 2 / (2 + 8))
+q.check("q54-waic-2", chosen(q, "q54-waic-2").startswith("正則なモデルでデータが多ければ"), "第54章の WAIC の例で WAIC 62.79 と AIC 62.52 が近いことを確認済み")
 run(q)
 
 # ---------- 第55章 ----------
@@ -145,6 +154,8 @@ from did_sim import did22, panel  # noqa: E402
 tr_, yp_ = panel()
 tr2_, yp2_ = panel(extra_trend=0.5)
 q.check("q55-difference-in-differences-3", abs(did22(tr_, yp_) - 3) < 0.05 and abs(did22(tr2_, yp2_) - did22(tr_, yp_) - 1.5) < 1e-9, "平行トレンドで ATT=3 を再現、崩れると 1.5 偏る")
+q.num("q55-doubly-robust-estimator-2", 5 - 3 + 1 * (7 - 5) / 0.4 - 0)
+q.num("q55-regression-discontinuity-design-2", 2.0 / 0.4)
 run(q)
 
 # ---------- 第56章 ----------
@@ -167,6 +178,13 @@ for _ in range(20000):
     sc = rng.exponential(size=20)
     ranks.append((sc[:19] < sc[19]).sum() + 1)
 q.check("q56-conformal-prediction-3", abs(np.mean(np.array(ranks) <= 18) - 0.9) < 0.006 and np.ptp(np.bincount(ranks)[1:] / 20000) < 0.01, "順位が一様・P(順位 ≤ 18) = 18/20")
+q.num("q56-semiparametric-efficiency-2", 1 / 0.2 + 1 / 0.8)
+tt = (rng.random((20000, 400)) < 0.2); yy2 = rng.normal(size=(20000, 400)) + 0.0 * tt
+dm = np.array([yy2[i][tt[i]].mean() - yy2[i][~tt[i]].mean() for i in range(20000)])
+q.check("q56-semiparametric-efficiency-2", abs(400 * dm.var() - 6.25) < 0.25, f"20% が処置の実験で n·V[平均の差] = {400 * dm.var():.2f}")
+vv = np.array([0.5, -1.0, 1.5, -0.5]); uu_ = np.array([1.0, -0.8, 2.0, -0.2])
+q.num("q56-double-machine-learning-2", (vv * uu_).sum() / (vv * vv).sum())
+q.check("q56-double-machine-learning-2", abs(np.linalg.lstsq(vv[:, None], uu_, rcond=None)[0][0] - 1.1733) < 1e-4, "原点を通る回帰の係数と一致")
 run(q)
 print(f"修士2年（第52〜56章）の問題の検算: NG のある章 {ng}")
 sys.exit(1 if ng else 0)

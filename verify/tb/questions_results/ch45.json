@@ -3,6 +3,10 @@
   "hash": "8e123370c032de0c",
   "ok": true
  },
+ "q45-borel-cantelli-lemma-2": {
+  "hash": "2e0fb38189f7b927",
+  "ok": true
+ },
  "q45-lebesgue-integral-expectation-1": {
   "hash": "d790d1eaa14d7688",
   "ok": true
@@ -29,6 +33,10 @@
  },
  "q45-radon-nikodym-theorem-1": {
   "hash": "d30cd18b7668d1fc",
+  "ok": true
+ },
+ "q45-radon-nikodym-theorem-2": {
+  "hash": "60b01e950362c596",
   "ok": true
  }
 }

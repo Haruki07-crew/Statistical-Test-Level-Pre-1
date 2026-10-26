@@ -141,3 +141,47 @@ questions:
       2 変量正規分布の条件付き平均・分散の公式を使います。
     explanation: |
       観測が複数なら、分母の数が行列 $K+\sigma_n^2I$ の逆行列に、$k(x_*,x_1)$ がベクトル $k_*$ に置き換わった一般の公式になります。分散に $y$ が入らないことも分かります。
+
+  # ---------- 重要度 B の 2 問目 ----------
+  - id: q54-hamiltonian-monte-carlo-2
+    term: hamiltonian-monte-carlo
+    level: 応用
+    type: numeric
+    question: |
+      $U(\theta)=\theta^2/2$（標準正規分布）で、$(\theta,p)=(1,0)$ からリープフロッグ法を刻み $\varepsilon=0.5$ で 1 ステップ進めた後のハミルトニアン $H=\theta^2/2+p^2/2$ を求めよ（小数第 4 位まで）。
+    answer: 0.4927
+    tolerance: 0.0001
+    hint: |
+      $p\leftarrow p-\frac\varepsilon2\theta$、$\theta\leftarrow\theta+\varepsilon p$、$p\leftarrow p-\frac\varepsilon2\theta$ の順です。
+    explanation: |
+      $p=-0.25$、$\theta=0.875$、$p=-0.25-0.25\times0.875=-0.46875$ で、$H=0.3828+0.1099\approx0.4927$。最初の $H=0.5$ との差は小さく（数値解の誤差）、採択確率は $\min\{1,e^{0.5-0.4927}\}=1$ です。
+
+  - id: q54-dirichlet-process-2
+    term: dirichlet-process
+    level: 標準
+    type: numeric
+    question: |
+      $G\sim\mathrm{DP}(\alpha=2,G_0)$ で 8 個の観測 $\theta_1,\dots,\theta_8$ を得た。事後分布の基底分布 $\frac{\alpha G_0+\sum\delta_{\theta_i}}{\alpha+n}$ で、$G_0$ に置かれる重みを求めよ。
+    answer: 0.2
+    tolerance: 0.0001
+    hint: |
+      重みは $\alpha/(\alpha+n)$ です。
+    explanation: |
+      $2/(2+8)=0.2$ で、残りの 0.8 は観測値（経験分布）に置かれます。データが増えるほど、事後分布は経験分布に近づきます。
+
+  - id: q54-waic-2
+    term: waic
+    level: 標準
+    type: choice
+    question: |
+      WAIC と AIC の関係として正しいものはどれか。
+    choices:
+      - "WAIC はつねに AIC と等しい"
+      - "正則なモデルでデータが多ければ、WAIC は AIC にほぼ等しくなる"
+      - "WAIC は真のモデルを選ぶ一致性を持つ規準である"
+      - "WAIC は事後分布を使わずに計算する"
+    answer: 1
+    hint: |
+      有効パラメータ数 $p_{\mathrm{WAIC}}$ は、正則なモデルでは何に近づくか。
+    explanation: |
+      正則なモデルでは $p_{\mathrm{WAIC}}$ がパラメータの数に近づき、WAIC は AIC とほぼ同じになります。WAIC の利点は、AIC の前提が崩れる特異なモデルにも使えることです。真のモデルを選ぶ一致性を目的にするなら BIC を使います。

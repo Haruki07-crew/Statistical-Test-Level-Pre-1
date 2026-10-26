@@ -208,3 +208,55 @@ questions:
       $nF_n(x)$ は二項分布に従います。
     explanation: |
       各点では不偏で、分散は $x$ が分布の中央（$F=1/2$）で最大 $1/(4n)$ になります。各点の収束は大数の法則から出ますが、グリベンコ・カンテリの定理はそれが $x$ について一様であることを言います。
+
+  # ---------- 重要度 B・C の 2 問目 ----------
+  - id: q46-lindeberg-feller-clt-2
+    term: lindeberg-feller-clt
+    level: 標準
+    type: numeric
+    question: |
+      $n=10000$ 個の連続な乱数の列で、それまでの最大値を更新する「記録」の回数 $R$ は、$P(I_i=1)=1/i$ の独立なベルヌーイ変数の和である。$R$ の分散 $\sum_i\frac1i(1-\frac1i)$ を求めよ（小数第 2 位まで）。
+    answer: 8.14
+    tolerance: 0.005
+    hint: |
+      平均は $\sum1/i\approx9.79$、$\sum1/i^2\approx1.64$ です。
+    explanation: |
+      $\sum1/i-\sum1/i^2\approx9.788-1.645=8.14$ です。分散が無限大に向かうので（ゆっくりですが）リンデベルグ条件が成り立ち、$R$ は正規分布に近づきます。
+
+  - id: q46-bootstrap-theory-2
+    term: bootstrap-theory
+    level: 標準
+    type: numeric
+    question: |
+      $n=10$ 個の異なる値の標本から復元抽出で 10 個を引くとき、再標本に含まれる**異なる**値の個数の期待値 $n\{1-(1-1/n)^n\}$ を求めよ（小数第 2 位まで）。
+    answer: 6.51
+    tolerance: 0.005
+    hint: |
+      各値が少なくとも 1 回選ばれる確率は $1-(1-1/n)^n$ です。
+    explanation: |
+      $10\times(1-0.9^{10})\approx6.51$ です。$n$ が大きいと約 63.2% の値だけが再標本に入り、残りは選ばれません（バギングの「袋の外」のデータはこの性質を使います）。
+
+  - id: q46-local-alternatives-2
+    term: local-alternatives
+    level: 応用
+    type: numeric
+    question: |
+      比率の検定 $H_0:p=0.5$（両側 5%）で、真の値が $p=0.55$ のとき検出力 80% を得るのに必要な $n$ を、漸近検出力の式 $\sqrt n\,|p-p_0|\sqrt{I}=z_{0.025}+z_{0.2}$（$I=1/\{p_0(1-p_0)\}$）から求めよ（整数に切り上げ）。
+    answer: 785
+    tolerance: 0.5
+    hint: |
+      $z_{0.025}+z_{0.2}\approx1.960+0.842=2.802$ です。
+    explanation: |
+      $n=2.802^2\times0.25/0.05^2\approx784.9$ なので、785 人です。片側の小さい項 $\Phi(-z-h\sqrt I)$ を無視した近似です。
+
+  - id: q46-empirical-process-2
+    term: empirical-process
+    level: 標準
+    type: truefalse
+    question: |
+      一様分布の経験過程 $\mathbb G_n(t)=\sqrt n\{F_n(t)-t\}$ の分散は、$t=0$ と $t=1$ で 0 になる。
+    answer: true
+    hint: |
+      $V[\mathbb G_n(t)]=t(1-t)$ です。
+    explanation: |
+      正しいです。$F_n(0)=0$、$F_n(1)=1$ は確率 1 で決まっているので、両端ではばらつきがありません。極限のブラウン橋も両端で 0 に固定されています。

@@ -146,3 +146,30 @@ questions:
       $X$ 自身を指示関数の積分で書きます。
     explanation: |
       非負なら $E[X]=\infty$ の場合も含めて成り立ちます。指数分布 $P(X>t)=e^{-\lambda t}$ なら $E[X]=1/\lambda$ がすぐに出ます。整数値なら $E[N]=\sum_{k\ge0}P(N>k)$ になります。
+
+  # ---------- 重要度 B の 2 問目 ----------
+  - id: q45-radon-nikodym-theorem-2
+    term: radon-nikodym-theorem
+    level: 標準
+    type: numeric
+    question: |
+      $P=U(0,1)$、$Q$ を密度 $2x$（$0<x<1$）の分布とする。測度の取り換え $E_Q[X]=E_P\big[X\,\frac{dQ}{dP}(X)\big]$ を使って $E_Q[X]$ を求めよ（小数第 4 位まで）。
+    answer: 0.6667
+    tolerance: 0.0001
+    hint: |
+      $dQ/dP(x)=2x$ なので、$E_P[2X^2]$ を計算します。
+    explanation: |
+      $E_P[2X^2]=2\times\frac13=\frac23\approx0.6667$ です。$Q$ の密度で直接 $\int_0^1x\cdot2x\,dx$ を計算しても同じです。重点サンプリングは、この式を逆向き（$Q$ から引いて $dP/dQ$ を掛ける）に使います。
+
+  - id: q45-borel-cantelli-lemma-2
+    term: borel-cantelli-lemma
+    level: 標準
+    type: numeric
+    question: |
+      独立な $U_n\sim U(0,1)$ で $A_n=\{U_n<n^{-1.5}\}$ とする。起こる回数 $\sum_n\mathbf 1_{A_n}$ の期待値 $\sum_{n\ge1}n^{-1.5}$ を求めよ（小数第 2 位まで）。
+    answer: 2.61
+    tolerance: 0.005
+    hint: |
+      ゼータ関数 $\zeta(1.5)\approx2.612$ です。
+    explanation: |
+      $\sum n^{-1.5}=\zeta(1.5)\approx2.61<\infty$ なので、第 1 補題から $A_n$ は確率 1 で有限回しか起こりません。期待値が有限なので、回数そのものも有限です。
