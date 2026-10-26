@@ -140,5 +140,13 @@ import yaml
 plan = yaml.safe_load((CONTENT / "plan.yaml").read_text(encoding="utf-8"))
 titles = {t["title"] for c in plan["chapters"] for t in c["terms"]}
 refs = re.findall(r"→ ([^\n]+)", text)
+S = "生存時間解析の理論"
+yy_ = np.array([10, 8, 6, 5, 3]); dd_ = np.array([1, 2, 1, 1, 2])
+check(S, "KM ≤ e^{−Λ̂}（数値例）", np.prod(1 - dd_ / yy_) <= np.exp(-(dd_ / yy_).sum()))
+l1_, l2_, l3_ = 0.1, 0.2, 0.05
+a1_, a2_, a3_ = rng.exponential(1 / l1_, 10 ** 6), rng.exponential(1 / l2_, 10 ** 6), rng.exponential(1 / l3_, 10 ** 6)
+mn_ = np.minimum(np.minimum(a1_, a2_), a3_)
+check(S, "累積発生関数（3 原因・t=4）", close(((mn_ <= 4) & (a1_ == mn_)).mean(), l1_ / 0.35 * (1 - np.exp(-0.35 * 4)), 0.002))
+
 check("全体", f"→ の参照 {len(refs)} 件", all(r.strip() in titles for r in refs), [r for r in refs if r.strip() not in titles])
 done("教科書の公式まとめ")

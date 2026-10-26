@@ -1,0 +1,58 @@
+chapter: 57
+questions:
+  # ---------- 計数過程とマルチンゲール (B) ----------
+  - id: q57-counting-process-martingale-1
+    term: counting-process-martingale
+    level: 標準
+    type: numeric
+    question: |
+      5 人の観測時間が 1, 2+, 4, 4, 7（+ は打ち切り）だった。ネルソン・アーレン推定量 $\hat\Lambda(4)=\sum_{t_j\le4}d_j/Y(t_j)$ を求めよ（小数第 4 位まで）。
+    answer: 0.8667
+    tolerance: 0.0001
+    hint: |
+      時点 1 のリスク集合は 5 人、時点 4 は（1 と 2+ が抜けて）3 人で、そこで 2 人にイベントが起こります。
+    explanation: |
+      $\hat\Lambda(4)=\frac15+\frac23\approx0.8667$ です。打ち切りの人（2+）は、時点 2 のあとリスク集合から抜けるだけで、イベントには数えません。
+
+  - id: q57-counting-process-martingale-2
+    term: counting-process-martingale
+    level: 標準
+    type: truefalse
+    question: |
+      同じデータについて、$e^{-\hat\Lambda(t)}$（ネルソン・アーレン推定量から作った生存関数）は、カプラン・マイヤー推定量 $\hat S(t)$ 以上になる。
+    answer: true
+    hint: |
+      $1-x\le e^{-x}$ を各時点の因子に使います。
+    explanation: |
+      正しいです。$\hat S(t)=\prod(1-d_j/Y_j)\le\prod e^{-d_j/Y_j}=e^{-\hat\Lambda(t)}$ です。リスク集合が大きいうちはほとんど差がなく、リスク集合が小さくなる裾で差が開きます。
+
+  # ---------- 競合リスク (B) ----------
+  - id: q57-competing-risks-1
+    term: competing-risks
+    level: 標準
+    type: numeric
+    question: |
+      原因 1 のハザードが 0.3、原因 2 のハザードが 0.1（どちらも一定）のとき、最終的に原因 1 でイベントが起こる確率 $\lim_{t\to\infty}F_1(t)$ を求めよ。
+    answer: 0.75
+    tolerance: 0.0001
+    hint: |
+      $F_1(t)=\frac{\lambda_1}{\lambda_1+\lambda_2}\{1-e^{-(\lambda_1+\lambda_2)t}\}$ です。
+    explanation: |
+      $0.3/(0.3+0.1)=0.75$ です。原因 2 を打ち切りとみなした 1 − KM は 1 に向かうので、原因 1 の確率を過大に見積もります。
+
+  - id: q57-competing-risks-2
+    term: competing-risks
+    level: 基本
+    type: choice
+    question: |
+      がんの再発の確率を推定するとき、再発前に他の原因で亡くなった人を打ち切りとして 1 − カプラン・マイヤーを使うと、どうなるか。
+    choices:
+      - "他の原因で亡くなる人がいない仮想の世界での再発の確率を推定することになり、実際の再発の確率より大きくなる"
+      - "実際の再発の確率より小さくなる"
+      - "累積発生関数と一致する"
+      - "打ち切りの扱いは結果に影響しない"
+    answer: 0
+    hint: |
+      打ち切りは「そのあとも観測を続ければイベントが起こりうる」という扱いです。
+    explanation: |
+      亡くなった人も「いずれ再発しうる」とみなすので、仮想の確率になり過大です。実際に再発する確率は累積発生関数（アーレン・ヨハンセン推定量）で推定します。

@@ -3020,3 +3020,15 @@ chapters:
     title: コンフォーマル予測
     importance: A
     status: verified
+- 'no': 57
+  title: 生存時間解析の理論
+  lead: 打ち切りのあるデータの推定量と検定を、計数過程とマルチンゲールで統一的に扱い、複数の原因が競合する場合の発生確率を学びます。前提は第32・40章です（修士2年の最後に置いたが、第45〜47章を読んだあとなら修士1年で学んでもよい）。
+  terms:
+  - id: counting-process-martingale
+    title: 計数過程とマルチンゲール（生存時間解析）
+    importance: B
+    status: verified
+  - id: competing-risks
+    title: 競合リスクと累積発生関数
+    importance: B
+    status: verified

@@ -10,7 +10,7 @@ kp: jdt-
 textbook: true
 kicker: 学部1年〜修士2年
 h1: 統計学の教科書
-lead: 学部1年のデータの見方から修士2年の高次元統計・因果推論まで、学年ごとの56章に {terms} 語の解説と {qs} 問の問題をまとめています。学部の部分は2級・準1級の辞典の解説を学ぶ順に並べ直したもので、大学院の部分はこの教科書のために書きました。
+lead: 学部1年のデータの見方から修士2年の高次元統計・因果推論まで、学年ごとの57章に {terms} 語の解説と {qs} 問の問題をまとめています。学部の部分は2級・準1級の辞典の解説を学ぶ順に並べ直したもので、大学院の部分はこの教科書のために書きました。
 others:
   - { label: 準1級の辞典, href: "../" }
   - { label: 2級の辞典, href: "../g2/" }
@@ -25,7 +25,7 @@ parts:
   - [学部3年, 19, 29]
   - [学部4年, 30, 44]
   - [修士1年, 45, 51]
-  - [修士2年, 52, 56]
+  - [修士2年, 52, 57]
 exam:
   n: 0
   sets: 0
@@ -51,8 +51,8 @@ steps:
     why: 測度論的確率論、漸近理論の発展、UMVUE と M 推定、決定理論、カーネル法と頑健統計、線形混合モデル、状態空間モデルです。論文で使われる道具を、定義から証明の筋道まで追います。
     keys: [probability-space, lebesgue-integral-expectation, stochastic-order-notation, multivariate-clt, glivenko-cantelli-theorem, lehmann-scheffe-theorem, m-estimator, sandwich-variance-estimator, admissibility, james-stein-estimator, kernel-density-estimation, influence-function, linear-mixed-model, kalman-filter]
   - t: 修士2年：現代統計学の発展
-    chs: [52, 53, 54, 55, 56]
-    why: 高次元統計と集中不等式、統計的学習理論、変分推論とガウス過程、潜在結果モデルにもとづく因果推論、セミパラメトリック推論とコンフォーマル予測です。修士論文の研究で、どの方法がどの仮定で正しいかを判断できることが目標です。
+    chs: [52, 53, 54, 55, 56, 57]
+    why: 高次元統計と集中不等式、統計的学習理論、変分推論とガウス過程、潜在結果モデルにもとづく因果推論、セミパラメトリック推論とコンフォーマル予測、生存時間解析の理論です。修士論文の研究で、どの方法がどの仮定で正しいかを判断できることが目標です。
     keys: [concentration-inequality, high-dimensional-regression, empirical-risk-minimization, variational-inference, gaussian-process-regression, potential-outcomes-framework, propensity-score, inverse-probability-weighting, difference-in-differences, conformal-prediction]
 tips:
   - <b>学年は目安です。</b>大学ごとに順番は違うので、上の「学習の順番」で自分の段階を選び、各章の最初にある「ねらいと前提」で、先に読むべき章を確かめます。

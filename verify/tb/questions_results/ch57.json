@@ -1,0 +1,18 @@
+{
+ "q57-competing-risks-1": {
+  "hash": "786f5426da2d2d9f",
+  "ok": true
+ },
+ "q57-competing-risks-2": {
+  "hash": "820430d6a1f8a9d8",
+  "ok": true
+ },
+ "q57-counting-process-martingale-1": {
+  "hash": "42350cce45436810",
+  "ok": true
+ },
+ "q57-counting-process-martingale-2": {
+  "hash": "73a0851a4887f92c",
+  "ok": true
+ }
+}
