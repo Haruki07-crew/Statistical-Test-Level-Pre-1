@@ -1,4 +1,8 @@
 {
+ "q46-bootstrap-theory-1": {
+  "hash": "178fc6b498d0134c",
+  "ok": true
+ },
  "q46-glivenko-cantelli-theorem-1": {
   "hash": "2efed9d4c0ae6fa0",
   "ok": true
@@ -9,6 +13,10 @@
  },
  "q46-lindeberg-feller-clt-1": {
   "hash": "fafe191a8fb15104",
+  "ok": true
+ },
+ "q46-local-alternatives-1": {
+  "hash": "a6f49a42fabbb977",
   "ok": true
  },
  "q46-multivariate-clt-1": {

@@ -109,3 +109,31 @@ questions:
     explanation: |
       正しいです。$F$ が連続なら $U_i=F(X_i)\sim U(0,1)$ で、$D_n$ は一様分布の標本の経験分布関数と $u$ の最大のずれと同じ分布になります。
       そのためコルモゴロフ・スミルノフ検定は、分布によらない臨界値を使えます（パラメータを推定した場合は別）。
+
+  # ---------- ブートストラップの理論 (B) ----------
+  - id: q46-bootstrap-theory-1
+    term: bootstrap-theory
+    level: 標準
+    type: numeric
+    question: |
+      $n=10$ 個の異なる値からなる標本を復元抽出で再標本化したとき、再標本の最大値が元の標本の最大値と一致する確率 $1-(1-1/n)^n$ を求めよ（小数第 3 位まで）。
+    answer: 0.651
+    tolerance: 0.0005
+    hint: |
+      再標本の 10 個のうち、少なくとも 1 個が元の最大値になる確率です。
+    explanation: |
+      $1-0.9^{10}\approx0.651$ です。$n\to\infty$ でも $1-e^{-1}\approx0.632$ に近づくだけで 0 になりません。一方、本当の最大値の分布は連続なので、最大値についてはそのままのブートストラップは正しい近似になりません。
+
+  # ---------- 局所対立仮説 (B) ----------
+  - id: q46-local-alternatives-1
+    term: local-alternatives
+    level: 標準
+    type: numeric
+    question: |
+      正則なモデルで、局所対立仮説 $\theta_n=\theta_0+h/\sqrt n$ のもとでのワルド検定（両側 5%）の漸近検出力 $\Phi(-1.96+h\sqrt I)+\Phi(-1.96-h\sqrt I)$ を、$h\sqrt I=3$ のとき求めよ（小数第 3 位まで）。
+    answer: 0.851
+    tolerance: 0.0005
+    hint: |
+      $\Phi(1.04)$ が主な項で、もう一方はほぼ 0 です。
+    explanation: |
+      $\Phi(1.04)+\Phi(-4.96)\approx0.851$ です。尤度比検定・スコア検定も、局所対立仮説のもとでは同じ漸近検出力になります。

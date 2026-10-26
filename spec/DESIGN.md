@@ -477,3 +477,14 @@ validate.py は、エラー（ビルドを止める）と警告（報告だけ�
 - **公式まとめ**：`content/g2/formulas.md`（検算は `verify/g2/formulas.py`）。
 - **検査**：`JD_LEVEL=g2 .venv/bin/python scripts/validate.py`（build.py が自動で実行）、画面は `verify/g2_smoke.mjs`（2級のホーム・用語・模擬試験の採点・記録のキー・準1級との行き来。共通の用語が 1 つもないときは、注意書きの確認を飛ばす）。
 - **図の追加・修正（2026-10-25）**：`power-curve` に左片側（`alt: less`）を追加した。同時確率の表の図（`joint-marginal`）で選んだ行の class を `jm-sel` に変えた（汎用の `.sel { display: flex }` とぶつかって行が崩れていたため。両方の級）。表の数字がスマホで途中で折り返さないよう、`.table-wrap` のセルは `overflow-wrap: normal` にした。
+
+## 16. 統計学の教科書（学部1年〜修士2年）のページ（2026-10-26）
+
+利用者の依頼で、2級・準1級に加えて 3 つ目のページ「統計学の教科書」を `docs/tb/index.html`（URL は `…/tb/`）として追加した（理由は DECISIONS.md の 2026-10-26 19:27〜）。
+
+- **級の切り替え**：`JD_LEVEL=tb`（`scripts/level.py`）。置き場所は `content/tb/`・`verify/tb/`・`docs/tb/`。`scripts/build.py` は 3 つのページを作り、`docs/sw.js` は 3 つのページを保存する。
+- **構成**：学年ごとの 6 部・56 章（`content/tb/plan.yaml`。`scripts/make_plan_tb.py` が作る。直接書き換えない）。学部1・2年（第1〜15章）は2級の解説、学部2〜4年（第16〜44章）は準1級の解説を、学ぶ順に並べ直して共通で使う（plan の `from: g2 / pre1`。同じ用語は先に学ぶ学年の側に 1 回だけ置き、準1級の `see`（補足のページ）は入れない）。修士1・2年（第45〜56章・45 語）は教科書のために書いた解説（`content/tb/chNN/`）。章ごとの「ねらいと前提」（plan の `lead`）を、一覧で章を開いたときに出す。
+- **共通の用語**：章と重要度は教科書のものに置き換え、関連用語は教科書にあるものだけを残す。元の辞典を示す注記（`site.yaml` の `shared_note`）を出す。問題は元の級の問題をすべての難易度で出す（`shared_q_levels`）。学部の用語 45 語には、修士の用語への「大学院での発展」リンクを出す（`content/tb/advanced.yaml`）。
+- **教科書で書いた用語**：見出しは「試験のポイント」の代わりに「学習のポイント」（validate.py の HEADINGS を級で切り替え、build.py は同じ節として扱う。節ボタンは「要点」）。字数の目安は準1級と同じ。数値の検算は `verify/tb/chNN.py`（共通部品 `verify/tb/tbcheck.py`。本文の数値と図の値をページから読み、正確な分布・数値積分・総当たり・シミュレーションで計算し直す。シミュレーションの図は同じ乱数で計算し直して一致を確かめる）。問題は `content/tb/questions/ch45〜56.yaml`（75 問、検算は `verify/tb/questions_m1.py`・`questions_m2.py`）。公式まとめは `content/tb/formulas.md`（修士の範囲、検算 `verify/tb/formulas.py`）。
+- **画面**：`site.yaml` の `textbook: true` で、ホームの「本番に向けて」（模擬試験・ロードマップ）と下のメニューの模試・ロードマップを出さない。勉強のコツは `tips`、見出しは `h1`、ほかの級へのリンクは `others`（3 つの級のホームで互いにリンク）。色は茶系（`:root[data-level="tb"]`）、学習記録のキーは `jdt-`。
+- **検査**：validate.py は、共通で使うほかの級の用語の題名・別名とも照合する（別名の重なりはエラー、題名がほかの用語の別名と同じときは警告）。画面は `verify/tb_smoke.mjs`（ホーム・学年のタブ・章のねらい・共通の用語の注記と章・教科書の用語の数式とはみ出し・問題・公式まとめ・発展のリンク・記録のキー・3 つの級の行き来）。

@@ -81,6 +81,14 @@ def gp(xs_, l):
 m_s, v_s = gp(0.5, 0.02)
 q.check("q54-gaussian-process-regression-2", abs(m_s) < 1e-6 and v_s > 0.999 and chosen(q, "q54-gaussian-process-regression-2").startswith("観測点の間で"), "ℓ=0.02 では間の点で平均 0・分散 1 に戻る")
 q.num("q54-waic-1", -2 * (-50.3 - 3.2))
+q.num("q54-dirichlet-process-1", sum(2 / (2 + i) for i in range(10)))
+cnt = []
+for _ in range(20000):
+    c_ = 0
+    for i in range(10):
+        c_ += rng.random() < 2 / (2 + i)
+    cnt.append(c_)
+q.check("q54-dirichlet-process-1", abs(np.mean(cnt) - 4.040) < 0.02, "新しいクラスターを作る事象のシミュレーション")
 run(q)
 
 # ---------- 第55章 ----------

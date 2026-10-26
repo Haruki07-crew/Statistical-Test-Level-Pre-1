@@ -111,4 +111,40 @@ mu = np.random.default_rng(5410).normal(m, np.sqrt(s2), 400000)
 L = stats.norm.logpdf(yv[None, :], mu[:, None], 1)
 check(T, "事後標本から計算した WAIC も 62.79 付近", close(-2 * (np.log(np.exp(L).mean(0)).sum() - L.var(0).sum()), 62.79, 0.02))
 check(T, "本文の値", all(s in body(T) for s in ("60.60", "62.79", "62.80", "62.52", "1.21")))
+T = "dirichlet-process"
+EK = lambda a, n: sum(a / (a + i) for i in range(n))
+p = chart(T)
+check(T, "図：E[K] = Σα/(α+i)", all(allclose(p["series"][j]["y"], [EK(a, n) for n in p["x"]], 6e-4) for j, a in enumerate((0.5, 1, 5))))
+rng4 = np.random.default_rng(54)
+
+
+def crp(a, n):
+    counts = []
+    for i in range(n):
+        pr = np.array(counts + [a], float)
+        kk = rng4.choice(len(pr), p=pr / pr.sum())
+        if kk == len(counts):
+            counts.append(1)
+        else:
+            counts[kk] += 1
+    return counts
+
+
+K = [len(crp(1, 100)) for _ in range(2000)]
+check(T, "例1 E[K]=5.19（log100+0.577≈5.18）・シミュレーション 5.17・n=1000 で 7.49",
+      close(EK(1, 100), 5.19, 0.005) and close(np.log(100) + 0.5772, 5.18, 0.005) and close(np.mean(K), 5.17, 0.005) and close(EK(1, 1000), 7.49, 0.005), np.mean(K))
+same = [crp(1, 2) for _ in range(20000)]
+v1 = np.random.default_rng(5).beta(1, 1, 200000)
+check(T, "例2 2 人が同じクラスター 1/(1+α)：α=1 で 0.5・α=5 で 0.17、w₁ の期待値も同じ", close(np.mean([len(c) == 1 for c in same]), 0.5, 0.01)
+      and close(1 / 6, 0.17, 0.005) and close(v1.mean(), 0.5, 0.005) and close(np.random.default_rng(6).beta(1, 5, 200000).mean(), 1 / 6, 0.003))
+# 有限分割でディリクレ分布：棒折りで作った G の G(A) の期待値が G₀(A)、分散が G₀(A)(1−G₀(A))/(α+1)
+a_, M = 2.0, 400
+rng5 = np.random.default_rng(7)
+vals = []
+for _ in range(4000):
+    V = rng5.beta(1, a_, M)
+    w = V * np.r_[1, np.cumprod(1 - V)[:-1]]
+    th = rng5.random(M)
+    vals.append(w[th < 0.3].sum())
+check(T, "棒折りの G(A) は Beta(αG₀(A), α(1−G₀(A)))：平均 0.3・分散 0.21/3=0.07", close(np.mean(vals), 0.3, 0.01) and close(np.var(vals), 0.07, 0.005), (np.mean(vals), np.var(vals)))
 done("第54章（ベイズ計算と発展的なベイズモデル）")

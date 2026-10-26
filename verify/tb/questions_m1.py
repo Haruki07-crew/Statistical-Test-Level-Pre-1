@@ -82,6 +82,12 @@ for _ in range(3000):
     a = np.sort(rng.exponential(1, 50)); Fa = 1 - np.exp(-a); b = np.sort(rng.normal(size=50)); Fb = stats.norm.cdf(b); i = np.arange(1, 51)
     D1.append(max((i / 50 - Fa).max(), (Fa - (i - 1) / 50).max())); D2.append(max((i / 50 - Fb).max(), (Fb - (i - 1) / 50).max()))
 q.check("q46-glivenko-cantelli-theorem-2", abs(np.quantile(D1, .95) - stats.kstwo(50).ppf(.95)) < 0.01 and abs(np.quantile(D2, .95) - stats.kstwo(50).ppf(.95)) < 0.01, "指数分布と正規分布で同じ分布（answer=true）")
+q.num("q46-bootstrap-theory-1", 1 - 0.9 ** 10)
+xb10 = np.arange(10.0)
+q.check("q46-bootstrap-theory-1", abs((xb10[rng.integers(0, 10, (200000, 10))].max(1) == 9).mean() - (1 - 0.9 ** 10)) < 0.004, "再標本のシミュレーション")
+zz46 = stats.norm.isf(0.025)
+q.num("q46-local-alternatives-1", stats.norm.cdf(-zz46 + 3) + stats.norm.cdf(-zz46 - 3))
+q.check("q46-local-alternatives-1", abs(stats.ncx2.sf(zz46 ** 2, 1, 9) - (stats.norm.cdf(-zz46 + 3) + stats.norm.cdf(-zz46 - 3))) < 1e-10, "非心カイ二乗（非心度 9）と一致")
 run(q)
 
 # ---------- 第47章 ----------
@@ -95,7 +101,7 @@ e4 = rng.exponential(3, (10 ** 6, 4))
 q.num("q47-basu-theorem-1", 2 / 20)
 q.check("q47-basu-theorem-1", abs((e4[:, 0] ** 2 / e4.sum(1) ** 2).mean() - 0.1) < 0.001 and abs(stats.beta(1, 3).moment(2) - 0.1) < 1e-12, "シミュレーションと Beta(1,3) の 2 次モーメント")
 q.num("q47-m-estimator-1", stats.laplace.var() / (1 / (4 * stats.laplace.pdf(0) ** 2)))
-lp = stats.laplace.rvs(size=(20000, 400), random_state=rng)
+lp = stats.laplace.rvs(size=(10000, 2000), random_state=rng)
 q.check("q47-m-estimator-1", abs(lp.mean(1).var() / np.median(lp, 1).var() - 2) < 0.15, "シミュレーション")
 # モデルの誤り：ポアソン回帰（切片だけ）で過分散のデータ → I^{-1} は小さすぎる
 y = rng.negative_binomial(2, 0.4, (20000, 200))  # 平均 3、分散 7.5

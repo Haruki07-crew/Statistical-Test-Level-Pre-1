@@ -87,4 +87,35 @@ xe = np.arange(1, 31.0)
 ratio = lambda z: ((z - z.mean()) ** 2).max() / ((z - z.mean()) ** 2).sum()
 check(T, "例2 ネーター比：x=2^i で 0 に向かわない・等間隔で小さい", ratio(xg) > 0.7 and ratio(xe) < 0.11, (ratio(xg), ratio(xe)))
 check(T, "本文の値", all(k in body(T) for k in ("7.485", "5.842", "2.417", "0.196", "0.202", "0.211", "0.206")))
+T = "bootstrap-theory"
+from boot_sim import coverage, max_fail  # noqa: E402
+p = chart(T)
+cv = [coverage(n=n) for n in p["x"]]
+check(T, "図：3 つの方法の被覆率（同じ乱数で計算し直す）", all(allclose(p["series"][i]["y"], [c[i] for c in cv], 6e-5) for i in range(3)))
+tab = {10: (0.912, 0.874, 0.944), 20: (0.918, 0.904, 0.946), 80: (0.941, 0.932, 0.940)}
+check(T, "例1 表の値", all(allclose(cv[p["x"].index(n)], v, 6e-4) for n, v in tab.items()))
+fr, th = max_fail()
+check(T, "例2 最大値の一致確率 1−(1−1/n)^n≈0.636・極限 0.632・シミュレーション 0.632", close(th, 0.636, 5e-4) and close(1 - np.exp(-1), 0.632, 5e-4) and close(fr, 0.632, 5e-4), (fr, th))
+xs = np.random.default_rng(462).exponential(1, (200000, 20))
+check(T, "指数分布では標本平均と標本 SD に正の相関（区間が外れやすい理由）", np.corrcoef(xs.mean(1), xs.std(1, ddof=1))[0, 1] > 0.5)
+u = np.random.default_rng(463).random((200000, 50))
+check(T, "n(θ−X(n))/θ はほぼ Exp(1)（平均 1）", close((50 * (1 - u.max(1))).mean(), 50 / 51, 0.01))
+
+T = "local-alternatives"
+z = stats.norm.isf(0.025)
+pw = lambda d: stats.norm.cdf(-z + d) + stats.norm.cdf(-z - d)
+p = chart(T)
+check(T, "図：漸近検出力 β(h) と β(h√(2/π))", allclose(p["series"][0]["y"], [pw(h) for h in p["x"]], 6e-5) and allclose(p["series"][1]["y"], [pw(h * np.sqrt(2 / np.pi)) for h in p["x"]], 6e-5))
+k = np.arange(401)
+rej = np.abs(k - 200) / 10 > 1.96
+check(T, "例1 漸近 0.516・正確 0.521・非心カイ二乗でも同じ", close(pw(2), 0.516, 5e-4) and close(stats.binom.pmf(k, 400, 0.55)[rej].sum(), 0.521, 5e-4) and close(stats.ncx2.sf(z * z, 1, 4), pw(2), 1e-10))
+rng2 = np.random.default_rng(1)
+xx = rng2.normal(2.5 / 10, 1, (20000, 100))
+tt = xx.mean(1) / (xx.std(1, ddof=1) / 10)
+pt = (np.abs(tt) > stats.t.isf(0.025, 99)).mean()
+sg = (np.abs((xx > 0).sum(1) - 50) / 5 > 1.96).mean()
+check(T, "例2 h=2.5：漸近 0.705・0.514、n=100 のシミュレーション 0.699・0.539、効率 2/π=0.637・π/2=1.57",
+      close(pw(2.5), 0.705, 5e-4) and close(pw(2.5 * np.sqrt(2 / np.pi)), 0.514, 5e-4) and close(pt, 0.699, 5e-4) and close(sg, 0.539, 5e-4)
+      and close(2 / np.pi, 0.637, 5e-4) and close(np.pi / 2, 1.57, 0.005), (pt, sg))
+check(T, "符号検定の実際の有意水準は 5% より大きい（|S−50| ≥ 10）", stats.binom.pmf(k[:101], 100, 0.5)[np.abs(k[:101] - 50) / 5 > 1.96].sum() > 0.05)
 done("第46章（漸近理論の発展）")

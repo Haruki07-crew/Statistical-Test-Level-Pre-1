@@ -1,4 +1,8 @@
 {
+ "q54-dirichlet-process-1": {
+  "hash": "204ea016dbc21f8d",
+  "ok": true
+ },
  "q54-gaussian-process-regression-1": {
   "hash": "27fc0dbbf8e12bd6",
   "ok": true
