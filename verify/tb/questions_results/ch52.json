@@ -7,12 +7,20 @@
   "hash": "ef2eb5aa137f7149",
   "ok": true
  },
+ "q52-concentration-inequality-3": {
+  "hash": "5de112b31e5c690d",
+  "ok": true
+ },
  "q52-high-dimensional-regression-1": {
   "hash": "afa7ee182902eb97",
   "ok": true
  },
  "q52-high-dimensional-regression-2": {
   "hash": "1a9e1ee64708b422",
+  "ok": true
+ },
+ "q52-high-dimensional-regression-3": {
+  "hash": "6c23719b04decfb5",
   "ok": true
  },
  "q52-lasso-theory-1": {

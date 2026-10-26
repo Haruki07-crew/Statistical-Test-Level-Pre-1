@@ -70,3 +70,40 @@ questions:
       $\mathrm{sign}(z)\max(|z|-\lambda,0)$ です。
     explanation: |
       $1.3-0.5=0.8$ です。$|z|\le0.5$ の係数は 0 になり、残った係数も $\lambda$ だけ縮みます。この縮みが、ラッソの係数を効果の大きさとして解釈しにくい理由です。
+
+  # ---------- 導出の問題 ----------
+  - id: q52-concentration-inequality-3
+    term: concentration-inequality
+    level: 応用
+    type: derivation
+    question: |
+      独立な標準正規変数 $Z_1,\dots,Z_p$ について、和集合上界と正規分布の裾の上界 $P(|Z|>t)\le2e^{-t^2/2}$ を使い、$P(\max_j|Z_j|>t)\le\delta$ となる $t$ を求めよ。
+    steps:
+      - |
+        和集合上界：$P(\max_j|Z_j|>t)\le\sum_jP(|Z_j|>t)\le2p\,e^{-t^2/2}$。
+      - |
+        $2p\,e^{-t^2/2}=\delta$ を解くと $t=\sqrt{2\log(2p/\delta)}$。
+    answer: |
+      $t=\sqrt{2\log(2p/\delta)}$
+    hint: |
+      最大値が $t$ を超えるのは、どれか 1 つが $t$ を超えるときです。
+    explanation: |
+      $p=1000$、$\delta=0.05$ なら $t\approx4.60$。変数の数が 1000 倍になっても $t$ は $\sqrt{\log p}$ でしか増えません。ラッソの調整パラメータの大きさ $\sigma\sqrt{\log p/n}$ はここから来ます。
+
+  - id: q52-high-dimensional-regression-3
+    term: high-dimensional-regression
+    level: 応用
+    type: derivation
+    question: |
+      $X$（$n\times p$、$p<n$）を固定した線形回帰 $y=X\beta+\varepsilon$、$\varepsilon\sim N(0,\sigma^2I)$ で、最小二乗推定量の誤差 $E\lVert\hat\beta-\beta\rVert^2$ を $X$ で表せ。
+    steps:
+      - |
+        $\hat\beta-\beta=(X^\top X)^{-1}X^\top\varepsilon$ なので、共分散は $\sigma^2(X^\top X)^{-1}$。
+      - |
+        $E\lVert\hat\beta-\beta\rVert^2=\mathrm{tr}\,\mathrm{Cov}(\hat\beta)=\sigma^2\,\mathrm{tr}\{(X^\top X)^{-1}\}=\sigma^2\sum_k1/\lambda_k$（$\lambda_k$ は $X^\top X$ の固有値）。
+    answer: |
+      $E\lVert\hat\beta-\beta\rVert^2=\sigma^2\,\mathrm{tr}\{(X^\top X)^{-1}\}$
+    hint: |
+      2 乗の長さの期待値は、共分散行列のトレースです。
+    explanation: |
+      $p$ が $n$ に近いと $X^\top X$ の最小固有値が 0 に近づき、$1/\lambda_{\min}$ が誤差を支配します。説明変数が独立な標準正規なら、平均して $\sigma^2p/(n-p-1)$ になります。

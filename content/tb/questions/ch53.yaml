@@ -48,3 +48,24 @@ questions:
       3 点 $x_1<x_2<x_3$ に「1, 0, 1」のラベルを付けられるかを考えます。
     explanation: |
       2 点ならどの付け方も区間で実現できますが、3 点で「両端が 1、真ん中が 0」は 1 つの区間では作れません。VC 次元は 2 です。
+
+  # ---------- 導出の問題 ----------
+  - id: q53-empirical-risk-minimization-3
+    term: empirical-risk-minimization
+    level: 応用
+    type: derivation
+    question: |
+      $\hat f$ を経験リスク $R_n$ の最小化、$f^*$ を $\mathcal F$ の中で期待リスク $R$ を最小にする関数とする。$R(\hat f)-R(f^*)\le2\sup_{f\in\mathcal F}|R_n(f)-R(f)|$ を示せ。
+    steps:
+      - |
+        $R(\hat f)-R(f^*)=\{R(\hat f)-R_n(\hat f)\}+\{R_n(\hat f)-R_n(f^*)\}+\{R_n(f^*)-R(f^*)\}$。
+      - |
+        $\hat f$ は $R_n$ の最小化なので、真ん中は 0 以下。
+      - |
+        残りの 2 つはそれぞれ $\sup_f|R_n(f)-R(f)|$ 以下。
+    answer: |
+      $R(\hat f)-R(f^*)\le2\sup_{f\in\mathcal F}\lvert R_n(f)-R(f)\rvert$
+    hint: |
+      $R_n(\hat f)$ と $R_n(f^*)$ を足して引きます。
+    explanation: |
+      右辺を集中不等式と和集合上界（有限個）や VC 次元（無限個）で抑えると、汎化誤差の上界が得られます。

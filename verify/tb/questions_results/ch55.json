@@ -7,6 +7,10 @@
   "hash": "51d1ee0cad114105",
   "ok": true
  },
+ "q55-difference-in-differences-3": {
+  "hash": "0aca9f1e6e103e56",
+  "ok": true
+ },
  "q55-doubly-robust-estimator-1": {
   "hash": "f6e354ae28860b6f",
   "ok": true
@@ -19,6 +23,10 @@
   "hash": "6abaca025b13a389",
   "ok": true
  },
+ "q55-inverse-probability-weighting-3": {
+  "hash": "50f5c119f9966c96",
+  "ok": true
+ },
  "q55-potential-outcomes-framework-1": {
   "hash": "99549fa5e225fd3c",
   "ok": true
@@ -27,12 +35,20 @@
   "hash": "606be3c4629d7b8e",
   "ok": true
  },
+ "q55-potential-outcomes-framework-3": {
+  "hash": "3c35fc73196cb5c1",
+  "ok": true
+ },
  "q55-propensity-score-1": {
   "hash": "f004fb1db57a14b1",
   "ok": true
  },
  "q55-propensity-score-2": {
   "hash": "389e56b2de0dac62",
+  "ok": true
+ },
+ "q55-propensity-score-3": {
+  "hash": "2e3d219ccfccdeb0",
   "ok": true
  },
  "q55-regression-discontinuity-design-1": {

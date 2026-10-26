@@ -57,3 +57,24 @@ questions:
       ネイマン直交性を持つのは「残差どうし」の推定方程式です。
     explanation: |
       $\hat u=Y-\hat\ell(X)$、$\hat v=D-\hat m(X)$ として $\hat\theta=\sum\hat v\hat u/\sum\hat v^2$ です。$D$ を残差化しないと直交性がなく、交絡が残ります（模擬データの例で偏り −0.51）。交差適合で、学習と評価に使うデータを分けます。
+
+  # ---------- 導出の問題 ----------
+  - id: q56-conformal-prediction-3
+    term: conformal-prediction
+    level: 応用
+    type: derivation
+    question: |
+      校正用のスコア $s_1,\dots,s_n$ と新しいスコア $s_{n+1}$ が交換可能で同点がないとき、$\hat q$ を $s_1,\dots,s_n$ の $k=\lceil(n+1)(1-\alpha)\rceil$ 番目に小さい値として、$P(s_{n+1}\le\hat q)\ge1-\alpha$ を示せ。
+    steps:
+      - |
+        交換可能なので、$s_{n+1}$ の $n+1$ 個の中での順位は $1,\dots,n+1$ のどれも確率 $1/(n+1)$。
+      - |
+        $s_{n+1}\le\hat q$ は「$s_{n+1}$ の順位が $k$ 以下」と同じ。
+      - |
+        $P(s_{n+1}\le\hat q)=\dfrac{k}{n+1}\ge\dfrac{(n+1)(1-\alpha)}{n+1}=1-\alpha$。
+    answer: |
+      $P(s_{n+1}\le\hat q)=\dfrac{\lceil(n+1)(1-\alpha)\rceil}{n+1}\ge1-\alpha$
+    hint: |
+      新しいスコアの順位がどの値も同じ確率であることを使います。
+    explanation: |
+      $k/(n+1)<1-\alpha+1/(n+1)$ なので、被覆率は上からも抑えられます。予測モデルの良し悪しは関係なく、交換可能性だけで成り立つことがこの方法の強みです。

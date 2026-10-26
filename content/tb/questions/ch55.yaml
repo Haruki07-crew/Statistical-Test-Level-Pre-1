@@ -150,3 +150,84 @@ questions:
       効果は閾値での回帰関数の跳びとして定義されます。
     explanation: |
       閾値 $c=60$ での $E[Y\mid X=x]$ の跳び、つまり $E[Y(1)-Y(0)\mid X=60]$ です。閾値から離れた人の効果は、追加の仮定なしには分かりません。
+
+  # ---------- 導出の問題 ----------
+  - id: q55-potential-outcomes-framework-3
+    term: potential-outcomes-framework
+    level: 応用
+    type: derivation
+    question: |
+      一致性・無交絡性 $(Y(0),Y(1))\perp T\mid X$・正値性のもとで、$E[Y(1)]=E\big[E[Y\mid T=1,X]\big]$ を導け。
+    steps:
+      - |
+        繰り返し期待値の法則より $E[Y(1)]=E\big[E[Y(1)\mid X]\big]$。
+      - |
+        無交絡性より $E[Y(1)\mid X]=E[Y(1)\mid T=1,X]$（正値性で、この条件付き期待値が定義できる）。
+      - |
+        一致性より、$T=1$ のとき $Y(1)=Y$ なので $E[Y(1)\mid T=1,X]=E[Y\mid T=1,X]$。
+    answer: |
+      $E[Y(1)]=E\big[E[Y\mid T=1,X]\big]$
+    hint: |
+      3 つの仮定を 1 つずつ使います。
+    explanation: |
+      右辺は観測データの分布だけで書けるので、平均処置効果 $E[Y(1)]-E[Y(0)]$ が「識別」されます。回帰・傾向スコア・IPW・二重頑健推定は、この式の推定の仕方の違いです。
+
+  - id: q55-propensity-score-3
+    term: propensity-score
+    level: 応用
+    type: derivation
+    question: |
+      傾向スコア $e(X)=P(T=1\mid X)$ について、バランシング性 $P(T=1\mid X,e(X))=P(T=1\mid e(X))$（つまり $T\perp X\mid e(X)$）を示せ。
+    steps:
+      - |
+        $e(X)$ は $X$ の関数なので、$P(T=1\mid X,e(X))=P(T=1\mid X)=e(X)$。
+      - |
+        $P(T=1\mid e(X))=E\big[P(T=1\mid X)\mid e(X)\big]=E[e(X)\mid e(X)]=e(X)$。
+      - |
+        2 つが等しいので、$e(X)$ を条件にすると $T$ の分布は $X$ によらない。
+    answer: |
+      $P(T=1\mid X,e(X))=P(T=1\mid e(X))=e(X)$
+    hint: |
+      繰り返し期待値の法則で $P(T=1\mid e(X))$ を計算します。
+    explanation: |
+      傾向スコアが同じ人の中では、処置群と対照群の共変量の分布が同じになるので、1 次元の $e(X)$ でマッチングや層別ができます。
+
+  - id: q55-inverse-probability-weighting-3
+    term: inverse-probability-weighting
+    level: 応用
+    type: derivation
+    question: |
+      一致性・無交絡性・正値性のもとで、$E\Big[\dfrac{TY}{e(X)}\Big]=E[Y(1)]$ を示せ。
+    steps:
+      - |
+        一致性より $TY=TY(1)$。条件付き期待値をとると $E\Big[\dfrac{TY(1)}{e(X)}\Bigm|X\Big]=\dfrac{E[TY(1)\mid X]}{e(X)}$。
+      - |
+        無交絡性より $E[TY(1)\mid X]=E[T\mid X]\,E[Y(1)\mid X]=e(X)E[Y(1)\mid X]$。
+      - |
+        よって $E[\cdot\mid X]=E[Y(1)\mid X]$、外側の期待値をとって $E[Y(1)]$。
+    answer: |
+      $E\Big[\dfrac{TY}{e(X)}\Big]=E[Y(1)]$
+    hint: |
+      $X$ で条件づけてから、無交絡性で $T$ と $Y(1)$ を分けます。
+    explanation: |
+      同様に $E[(1-T)Y/(1-e(X))]=E[Y(0)]$ で、差がホルビッツ・トンプソン型の IPW 推定量の期待値です。正値性（$e(X)>0$）がないと割り算ができません。
+
+  - id: q55-difference-in-differences-3
+    term: difference-in-differences
+    level: 標準
+    type: derivation
+    question: |
+      2 群 × 2 期で、平行トレンドの仮定 $E[Y_1(0)-Y_0(0)\mid G=1]=E[Y_1(0)-Y_0(0)\mid G=0]$ のもとで、DID の推定対象が処置群の平均処置効果 $E[Y_1(1)-Y_1(0)\mid G=1]$ になることを示せ（添字は期、処置群は期 1 だけ処置を受ける）。
+    steps:
+      - |
+        観測の平均で DID $=\{E[Y_1(1)\mid G=1]-E[Y_0(0)\mid G=1]\}-\{E[Y_1(0)\mid G=0]-E[Y_0(0)\mid G=0]\}$。
+      - |
+        第 1 項に $\pm E[Y_1(0)\mid G=1]$ を足して引くと $E[Y_1(1)-Y_1(0)\mid G=1]+E[Y_1(0)-Y_0(0)\mid G=1]$。
+      - |
+        平行トレンドより $E[Y_1(0)-Y_0(0)\mid G=1]$ は第 2 項と打ち消し合い、DID $=E[Y_1(1)-Y_1(0)\mid G=1]$。
+    answer: |
+      DID $=E[Y_1(1)-Y_1(0)\mid G=1]$（ATT）
+    hint: |
+      処置群の「処置がなかった場合の期 1 の結果」を足して引きます。
+    explanation: |
+      平行トレンドが崩れると、2 群のトレンドの差がそのまま偏りになります（処置群だけ 1 期あたり 0.5 余分に伸びる例で、偏り 1.5）。

@@ -37,6 +37,12 @@ q.check("q52-high-dimensional-regression-1", abs(np.mean(errs) - 29 / 30) < 0.05
 X = rng.normal(size=(30, 50)); y = rng.normal(size=30); b = np.linalg.pinv(X) @ y
 q.check("q52-high-dimensional-regression-2", np.allclose(X @ b, y), "p>n で残差 0（answer=true）")
 q.num("q52-lasso-theory-1", np.sign(1.3) * max(abs(1.3) - 0.5, 0))
+t52 = np.sqrt(2 * np.log(2 * 1000 / 0.05))
+zm = np.abs(rng.normal(size=(20000, 1000))).max(1)
+q.check("q52-concentration-inequality-3", abs(t52 - 4.60) < 0.005 and (zm > t52).mean() <= 0.05 and "4.60" in q.qs["q52-concentration-inequality-3"]["explanation"], f"t={t52:.3f}・超える割合 {(zm > t52).mean():.4f}")
+Xf = rng.normal(size=(40, 6)); tr_ = np.trace(np.linalg.inv(Xf.T @ Xf))
+ers = [((np.linalg.lstsq(Xf, rng.normal(size=40), rcond=None)[0]) ** 2).sum() for _ in range(20000)]
+q.check("q52-high-dimensional-regression-3", abs(np.mean(ers) / tr_ - 1) < 0.03, f"固定した X で E‖β̂−β‖² / tr((XᵀX)⁻¹) = {np.mean(ers) / tr_:.3f}")
 run(q)
 
 # ---------- 第53章 ----------
@@ -47,6 +53,7 @@ xs = np.array([1.0, 2.0, 3.0])
 iv2 = {tuple((xs[:2] >= a) & (xs[:2] <= b)) for a in np.arange(0, 4, 0.5) for b in np.arange(0, 4, 0.5)}
 iv3 = {tuple((xs >= a) & (xs <= b)) for a in np.arange(0, 4, 0.5) for b in np.arange(0, 4, 0.5)}
 q.check("q53-vc-dimension-1", len(iv2) == 4 and (True, False, True) not in iv3 and chosen(q, "q53-vc-dimension-1") == "2", "2 点は細分、3 点の (1,0,1) は不可")
+q.concept("q53-empirical-risk-minimization-3", "3 つの差への分解と、ERM の定義・sup の定義だけで成り立つ（第53章の検算のシミュレーションで、超過リスクが 2×一様なずれ以下であることを確認済み）")
 run(q)
 
 # ---------- 第54章 ----------
@@ -89,6 +96,17 @@ for _ in range(20000):
         c_ += rng.random() < 2 / (2 + i)
     cnt.append(c_)
 q.check("q54-dirichlet-process-1", abs(np.mean(cnt) - 4.040) < 0.02, "新しいクラスターを作る事象のシミュレーション")
+xo3 = 0.4
+lp3 = stats.norm.logpdf(xo3, 0, np.sqrt(2))
+m3_, s3_ = -0.3, 1.1
+elbo3 = -np.log(2 * np.pi) - 0.5 * ((xo3 - m3_) ** 2 + s3_ ** 2) - 0.5 * (m3_ ** 2 + s3_ ** 2) + 0.5 * np.log(2 * np.pi * np.e * s3_ ** 2)
+kl3 = np.log(np.sqrt(0.5) / s3_) + (s3_ ** 2 + (m3_ - xo3 / 2) ** 2) / (2 * 0.5) - 0.5
+q.check("q54-variational-inference-3", abs(elbo3 + kl3 - lp3) < 1e-10, "正規・正規モデルで log p(x) = ELBO + KL")
+kk = lambda a, b: np.exp(-(a - b) ** 2 / (2 * 0.3 ** 2))
+fs = rng.multivariate_normal([0, 0], [[1, kk(0.5, 0.2)], [kk(0.5, 0.2), 1]], 10 ** 6); ys3 = fs[:, 1] + rng.normal(0, 0.5, 10 ** 6)
+bslope = np.cov(fs[:, 0], ys3)[0, 1] / ys3.var()
+resid = fs[:, 0] - bslope * ys3
+q.check("q54-gaussian-process-regression-3", abs(bslope - kk(0.5, 0.2) / 1.25) < 0.003 and abs(resid.var() - (1 - kk(0.5, 0.2) ** 2 / 1.25)) < 0.003, "同時正規のシミュレーションで平均の係数と分散")
 run(q)
 
 # ---------- 第55章 ----------
@@ -115,6 +133,18 @@ q.check("q55-doubly-robust-estimator-1", chosen(q, "q55-doubly-robust-estimator-
 q.num("q55-difference-in-differences-1", (62 - 50) - (51 - 45))
 q.check("q55-difference-in-differences-2", chosen(q, "q55-difference-in-differences-2").startswith("施策がなければ"), "定義")
 q.check("q55-regression-discontinuity-design-1", chosen(q, "q55-regression-discontinuity-design-1").startswith("ちょうど 60 点付近"), "定義")
+from causal_sim import aipw, outcome, ps as ps_  # noqa: E402
+x1_, x2_, t_, y_, e_ = gen(n=300000, seed=31)
+m0_, m1_ = outcome(x1_, x2_, t_, y_)
+mu1_true = (1 + 2 + 0.5 * x1_ + 1.5 * x1_ + x2_ + 1.5 * x1_ ** 2).mean()
+q.check("q55-potential-outcomes-framework-3", abs(m1_.mean() - mu1_true) < 0.02, f"E[E[Y|T=1,X]] {m1_.mean():.3f} ≈ E[Y(1)] {mu1_true:.3f}")
+cellb = (e_ > 0.58) & (e_ < 0.62)
+q.check("q55-propensity-score-3", abs(t_[cellb].mean() - 0.6) < 0.01 and abs(x1_[cellb & (t_ == 1)].mean() - x1_[cellb & (t_ == 0)].mean()) < 0.03, "e(X)≈0.6 の人の処置の割合 0.6・X1 の平均が 2 群でほぼ等しい")
+q.check("q55-inverse-probability-weighting-3", abs((t_ * y_ / e_).mean() - mu1_true) < 0.03, f"E[TY/e(X)] {(t_ * y_ / e_).mean():.3f} ≈ E[Y(1)]")
+from did_sim import did22, panel  # noqa: E402
+tr_, yp_ = panel()
+tr2_, yp2_ = panel(extra_trend=0.5)
+q.check("q55-difference-in-differences-3", abs(did22(tr_, yp_) - 3) < 0.05 and abs(did22(tr2_, yp2_) - did22(tr_, yp_) - 1.5) < 1e-9, "平行トレンドで ATT=3 を再現、崩れると 1.5 偏る")
 run(q)
 
 # ---------- 第56章 ----------
@@ -132,6 +162,11 @@ q.check("q56-conformal-prediction-2", c[0] > 0.99 and c[-1] < 0.72 and abs(mc - 
 q.num("q56-semiparametric-efficiency-1", np.sqrt((1 / 0.5 + 1 / 0.5) / 400))
 q.check("q56-semiparametric-efficiency-1", abs(np.sqrt(1 / 200 + 1 / 200) - 0.1) < 1e-12, "平均の差の標準偏差と一致")
 q.check("q56-double-machine-learning-1", chosen(q, "q56-double-machine-learning-1").startswith("$Y$ と $D$ のそれぞれ"), "第56章の検算（直交しない推定は −0.51 偏る）と同じ")
+ranks = []
+for _ in range(20000):
+    sc = rng.exponential(size=20)
+    ranks.append((sc[:19] < sc[19]).sum() + 1)
+q.check("q56-conformal-prediction-3", abs(np.mean(np.array(ranks) <= 18) - 0.9) < 0.006 and np.ptp(np.bincount(ranks)[1:] / 20000) < 0.01, "順位が一様・P(順位 ≤ 18) = 18/20")
 run(q)
 print(f"修士2年（第52〜56章）の問題の検算: NG のある章 {ng}")
 sys.exit(1 if ng else 0)

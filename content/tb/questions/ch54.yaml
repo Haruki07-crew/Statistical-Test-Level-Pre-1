@@ -102,3 +102,42 @@ questions:
       $2/2+2/3+2/4+\cdots+2/11$ です。
     explanation: |
       $1+0.667+0.5+0.4+0.333+0.286+0.25+0.222+0.2+0.182\approx4.040$ です。$i$ 番目のデータが新しいクラスターを作る確率が $\alpha/(\alpha+i)$ なので、その和が期待値になります（中華料理店過程）。
+
+  # ---------- 導出の問題 ----------
+  - id: q54-variational-inference-3
+    term: variational-inference
+    level: 応用
+    type: derivation
+    question: |
+      任意の分布 $q(\theta)$ について、$\log p(x)=\mathrm{ELBO}(q)+\mathrm{KL}\big(q\,\Vert\,p(\theta\mid x)\big)$、$\mathrm{ELBO}(q)=E_q[\log p(x,\theta)]-E_q[\log q(\theta)]$ を導け。
+    steps:
+      - |
+        $\mathrm{KL}(q\Vert p(\cdot\mid x))=E_q[\log q(\theta)]-E_q[\log p(\theta\mid x)]$。
+      - |
+        $\log p(\theta\mid x)=\log p(x,\theta)-\log p(x)$ を代入すると $\mathrm{KL}=E_q[\log q]-E_q[\log p(x,\theta)]+\log p(x)$。
+      - |
+        移項して $\log p(x)=E_q[\log p(x,\theta)]-E_q[\log q]+\mathrm{KL}$。
+    answer: |
+      $\log p(x)=\mathrm{ELBO}(q)+\mathrm{KL}\big(q\Vert p(\theta\mid x)\big)$
+    hint: |
+      ベイズの定理 $p(\theta\mid x)=p(x,\theta)/p(x)$ を KL の中に入れます。
+    explanation: |
+      $\log p(x)$ は $q$ によらないので、ELBO を最大にすることは KL を最小にすることと同じです。KL $\ge0$ から ELBO $\le\log p(x)$ も分かります。
+
+  - id: q54-gaussian-process-regression-3
+    term: gaussian-process-regression
+    level: 標準
+    type: derivation
+    question: |
+      $f\sim\mathcal{GP}(0,k)$、観測 $y=f(x_1)+\varepsilon$（$\varepsilon\sim N(0,\sigma_n^2)$）が 1 個だけのとき、新しい点 $x_*$ での $f(x_*)$ の事後平均と事後分散を求めよ。
+    steps:
+      - |
+        $(f(x_*),y)$ は 2 変量正規で、$V[f(x_*)]=k(x_*,x_*)$、$V[y]=k(x_1,x_1)+\sigma_n^2$、$\mathrm{Cov}=k(x_*,x_1)$。
+      - |
+        正規分布の条件付き分布より、平均 $\dfrac{k(x_*,x_1)}{k(x_1,x_1)+\sigma_n^2}y$、分散 $k(x_*,x_*)-\dfrac{k(x_*,x_1)^2}{k(x_1,x_1)+\sigma_n^2}$。
+    answer: |
+      平均 $\dfrac{k(x_*,x_1)\,y}{k(x_1,x_1)+\sigma_n^2}$、分散 $k(x_*,x_*)-\dfrac{k(x_*,x_1)^2}{k(x_1,x_1)+\sigma_n^2}$
+    hint: |
+      2 変量正規分布の条件付き平均・分散の公式を使います。
+    explanation: |
+      観測が複数なら、分母の数が行列 $K+\sigma_n^2I$ の逆行列に、$k(x_*,x_1)$ がベクトル $k_*$ に置き換わった一般の公式になります。分散に $y$ が入らないことも分かります。
