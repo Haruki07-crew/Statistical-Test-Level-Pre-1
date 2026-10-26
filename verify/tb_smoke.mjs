@@ -68,6 +68,8 @@ for (const w of [375, 1280]) {
     const m = await mathOk(page);
     ok(!txt.includes('辞典」の解説を使っています') && txt.includes('学習のポイント') && m.err === 0 && m.raw === 0 && !m.over,
       `${w}px 教科書の用語 ${t.id}（注記なし・学習のポイント・数式エラー ${m.err}・残った TeX ${m.raw}・はみ出し ${m.over}）`);
+    const nq = data.questions.filter((x) => x.term === t.id).length;
+    ok(nq > 0 && (await page.$$('#sec-questions .qlist > *')).length > 0, `${w}px 教科書の用語 ${t.id} に問題が出る（${nq} 問）`);
     if (w === 375) await page.screenshot({ path: `${OUT}/term-${t.id}-${w}.png`, fullPage: true });
   }
   await page.goto(base + '/tb/#quiz'); await page.waitForSelector('.screen-h'); await sleep(1500);

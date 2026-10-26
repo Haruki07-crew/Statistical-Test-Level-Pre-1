@@ -1,0 +1,26 @@
+{
+ "q54-gaussian-process-regression-1": {
+  "hash": "27fc0dbbf8e12bd6",
+  "ok": true
+ },
+ "q54-gaussian-process-regression-2": {
+  "hash": "2f76778db980efb8",
+  "ok": true
+ },
+ "q54-hamiltonian-monte-carlo-1": {
+  "hash": "2b2875546f890f26",
+  "ok": true
+ },
+ "q54-variational-inference-1": {
+  "hash": "363caf1aaadc4572",
+  "ok": true
+ },
+ "q54-variational-inference-2": {
+  "hash": "eead280debfaf7e3",
+  "ok": true
+ },
+ "q54-waic-1": {
+  "hash": "0f17b6f275cda084",
+  "ok": true
+ }
+}

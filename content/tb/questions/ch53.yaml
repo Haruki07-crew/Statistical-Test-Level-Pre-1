@@ -1,0 +1,50 @@
+chapter: 53
+questions:
+  # ---------- 経験リスク最小化 (A) ----------
+  - id: q53-empirical-risk-minimization-1
+    term: empirical-risk-minimization
+    level: 標準
+    type: numeric
+    question: |
+      損失が $[0,1]$ に入るとき、50 個の候補のモデルについて、訓練データ 2000 個で、確率 95% 以上で成り立つ一様なずれの上界 $\sqrt{(\log|\mathcal F|+\log(2/\delta))/(2n)}$ を求めよ（小数第 4 位まで）。
+    answer: 0.0436
+    tolerance: 0.0001
+    hint: |
+      $|\mathcal F|=50$、$\delta=0.05$、$n=2000$ を代入します。
+    explanation: |
+      $\sqrt{(\log50+\log40)/4000}=\sqrt{(3.912+3.689)/4000}\approx0.0436$ です。経験リスクが最小のモデルの本当のリスクは、最良のモデルより高々 $2\times0.0436\approx0.087$ 大きいだけだと保証されます。
+
+  - id: q53-empirical-risk-minimization-2
+    term: empirical-risk-minimization
+    level: 標準
+    type: choice
+    question: |
+      関数の集まり $\mathcal F$ を大きく（複雑に）すると、超過リスクの 2 つの成分は一般にどう変わるか。
+    choices:
+      - "近似誤差も推定誤差も小さくなる"
+      - "近似誤差は小さくなり、推定誤差は大きくなる"
+      - "近似誤差は大きくなり、推定誤差は小さくなる"
+      - "どちらも変わらない"
+    answer: 1
+    hint: |
+      近似誤差は「$\mathcal F$ の中の最良」とベイズ誤差の差、推定誤差は「選んだもの」と「$\mathcal F$ の中の最良」の差です。
+    explanation: |
+      $\mathcal F$ が大きいほど良い関数を含む可能性が増えるので近似誤差は減りますが、訓練データに偶然合う関数も増えるので推定誤差（$\log|\mathcal F|$ や VC 次元の項）は増えます。学習理論での偏りと分散のトレードオフです。
+
+  # ---------- VC 次元 (B) ----------
+  - id: q53-vc-dimension-1
+    term: vc-dimension
+    level: 標準
+    type: choice
+    question: |
+      数直線上の区間の分類器 $\mathbf 1\{a\le x\le b\}$ の集まりの VC 次元はどれか。
+    choices:
+      - "1"
+      - "2"
+      - "3"
+      - "無限大"
+    answer: 1
+    hint: |
+      3 点 $x_1<x_2<x_3$ に「1, 0, 1」のラベルを付けられるかを考えます。
+    explanation: |
+      2 点ならどの付け方も区間で実現できますが、3 点で「両端が 1、真ん中が 0」は 1 つの区間では作れません。VC 次元は 2 です。

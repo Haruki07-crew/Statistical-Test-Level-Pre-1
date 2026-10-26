@@ -1,0 +1,42 @@
+{
+ "q55-difference-in-differences-1": {
+  "hash": "431f651d6288673e",
+  "ok": true
+ },
+ "q55-difference-in-differences-2": {
+  "hash": "51d1ee0cad114105",
+  "ok": true
+ },
+ "q55-doubly-robust-estimator-1": {
+  "hash": "f6e354ae28860b6f",
+  "ok": true
+ },
+ "q55-inverse-probability-weighting-1": {
+  "hash": "20b00bfc7cb0af5a",
+  "ok": true
+ },
+ "q55-inverse-probability-weighting-2": {
+  "hash": "6abaca025b13a389",
+  "ok": true
+ },
+ "q55-potential-outcomes-framework-1": {
+  "hash": "99549fa5e225fd3c",
+  "ok": true
+ },
+ "q55-potential-outcomes-framework-2": {
+  "hash": "606be3c4629d7b8e",
+  "ok": true
+ },
+ "q55-propensity-score-1": {
+  "hash": "f004fb1db57a14b1",
+  "ok": true
+ },
+ "q55-propensity-score-2": {
+  "hash": "389e56b2de0dac62",
+  "ok": true
+ },
+ "q55-regression-discontinuity-design-1": {
+  "hash": "e87914709db3aca2",
+  "ok": true
+ }
+}

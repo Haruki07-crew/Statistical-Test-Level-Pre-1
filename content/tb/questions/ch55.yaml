@@ -1,0 +1,152 @@
+chapter: 55
+questions:
+  # ---------- 潜在結果モデル (A) ----------
+  - id: q55-potential-outcomes-framework-1
+    term: potential-outcomes-framework
+    level: 標準
+    type: numeric
+    question: |
+      20 人のうち 10 人を無作為に処置に割り付けた実験で、処置群の結果の不偏分散が $s_1^2=8$、対照群が $s_0^2=6$ だった。平均の差のネイマンの分散推定値 $s_1^2/N_1+s_0^2/N_0$ を求めよ。
+    answer: 1.4
+    tolerance: 0.0001
+    hint: |
+      $N_1=N_0=10$ です。
+    explanation: |
+      $8/10+6/10=1.4$ です。本当の分散には $-S_\tau^2/N$（個体の効果のばらつき）の項がありますが推定できないので、この推定値は分散を大きめ（保守的）に見積もります。
+
+  - id: q55-potential-outcomes-framework-2
+    term: potential-outcomes-framework
+    level: 基本
+    type: choice
+    question: |
+      観察研究で平均処置効果を識別する仮定のうち、「どの共変量の値の人にも、処置を受ける人と受けない人の両方がいる」を表すものはどれか。
+    choices:
+      - "一致性（SUTVA）"
+      - "無交絡性"
+      - "正値性（重なり）"
+      - "単調性"
+    answer: 2
+    hint: |
+      $0<P(T=1\mid X=x)<1$ という条件です。
+    explanation: |
+      正値性（重なり）です。これが崩れると、比べる相手のいない $x$ が生じ、外挿に頼ることになります。無交絡性は「$X$ を固定すれば処置は無作為と同じ」、一致性は「観測される結果は受けた処置の潜在結果」という仮定です。
+
+  # ---------- 傾向スコア (A) ----------
+  - id: q55-propensity-score-1
+    term: propensity-score
+    level: 基本
+    type: truefalse
+    question: |
+      傾向スコアでマッチングすれば、観測していない交絡因子の影響も取り除ける。
+    answer: false
+    hint: |
+      傾向スコアは何から計算しますか。
+    explanation: |
+      誤りです。傾向スコアは観測した共変量から推定するので、それがそろうのは観測した共変量だけです。観測されていない交絡因子があれば、偏りは残ります（感度分析で影響の大きさを評価します）。
+
+  - id: q55-propensity-score-2
+    term: propensity-score
+    level: 標準
+    type: numeric
+    question: |
+      ある共変量の平均が処置群 52、対照群 48、標準偏差が処置群 10、対照群 6 だった。標準化平均差 $(\bar x_1-\bar x_0)/\sqrt{(s_1^2+s_0^2)/2}$ を求めよ（小数第 3 位まで）。
+    answer: 0.485
+    tolerance: 0.0005
+    hint: |
+      分母は $\sqrt{(100+36)/2}=\sqrt{68}$ です。
+    explanation: |
+      $4/\sqrt{68}\approx4/8.246\approx0.485$ です。目安の 0.1 を大きく超えているので、調整（マッチング・層別・重み付け）の後にバランスを確かめ直す必要があります。
+
+  # ---------- IPW (A) ----------
+  - id: q55-inverse-probability-weighting-1
+    term: inverse-probability-weighting
+    level: 基本
+    type: numeric
+    question: |
+      傾向スコアが $e(x)=0.9$ の人が処置を受けなかった（対照群）。この人の IPW の重み $1/(1-e(x))$ を求めよ。
+    answer: 10
+    tolerance: 0.0001
+    hint: |
+      対照群の人は「処置を受けない確率」の逆数で重み付けします。
+    explanation: |
+      $1/(1-0.9)=10$ です。処置を受けやすいのに受けなかった人は珍しいので、似た人の代表として大きな重みを持ちます。重みが極端に大きい人が多いと、推定が不安定になります。
+
+  - id: q55-inverse-probability-weighting-2
+    term: inverse-probability-weighting
+    level: 応用
+    type: numeric
+    question: |
+      4 人のデータ（処置 $T$、結果 $Y$、傾向スコア $e$）が $(1,10,0.5)$、$(1,8,0.8)$、$(0,6,0.5)$、$(0,5,0.2)$ である。ホルビッツ・トンプソン型の IPW 推定値 $\frac1n\sum\{T_iY_i/e_i-(1-T_i)Y_i/(1-e_i)\}$ を求めよ（小数第 4 位まで）。
+    answer: 2.9375
+    tolerance: 0.0001
+    hint: |
+      処置群は $Y/e$、対照群は $Y/(1-e)$ を計算して、差を 4 で割ります。
+    explanation: |
+      $\frac14\{10/0.5+8/0.8-6/0.5-5/0.8\}=\frac14(20+10-12-6.25)=2.9375$ です。重みを正規化した型では $30/3.25-18.25/3.25\approx3.615$ となり、小さな標本では 2 つの型の値がかなり違います。
+
+  # ---------- 二重頑健 (B) ----------
+  - id: q55-doubly-robust-estimator-1
+    term: doubly-robust-estimator
+    level: 標準
+    type: choice
+    question: |
+      AIPW（二重頑健）推定量が平均処置効果の一致推定量になるための条件として正しいものはどれか（無交絡性と正値性は成り立つとする）。
+    choices:
+      - "傾向スコアのモデルと結果のモデルの両方が正しいこと"
+      - "傾向スコアのモデルか結果のモデルの少なくとも一方が正しいこと"
+      - "結果のモデルが正しいことだけ"
+      - "どちらのモデルも正しくなくてよい"
+    answer: 1
+    hint: |
+      偏りは 2 つのモデルの誤差の積で書けます。
+    explanation: |
+      偏りは $E[(e^\circ-e)(\mu^\circ-\mu)/e]$ の形で、どちらかが正しければ 0 になります。両方が誤っていると偏りが残ります（模擬データの例で −0.082）。
+
+  # ---------- 差の差 (A) ----------
+  - id: q55-difference-in-differences-1
+    term: difference-in-differences
+    level: 基本
+    type: numeric
+    question: |
+      施策を導入した地域の平均が導入前 50・導入後 62、導入しなかった地域が導入前 45・導入後 51 だった。差の差の推定値を求めよ。
+    answer: 6
+    tolerance: 0.0001
+    hint: |
+      （処置群の前後の差）−（対照群の前後の差）です。
+    explanation: |
+      $(62-50)-(51-45)=12-6=6$ です。導入後の単純比較 $62-51=11$ はもともとの地域差 5 を、処置群の前後比較 12 は共通の変化 6 を含んでいます。
+
+  - id: q55-difference-in-differences-2
+    term: difference-in-differences
+    level: 標準
+    type: choice
+    question: |
+      差の差分析の「平行トレンドの仮定」の内容として正しいものはどれか。
+    choices:
+      - "処置群と対照群の導入前の水準が等しい"
+      - "施策がなければ、処置群と対照群の結果は同じだけ変化したはずである"
+      - "処置群と対照群の人数が等しい"
+      - "結果が時間とともに直線的に増える"
+    answer: 1
+    hint: |
+      DID が差し引くのは、水準の違いと共通の変化です。
+    explanation: |
+      平行トレンドは「水準」ではなく「変化」が同じという仮定です。導入前の複数の期で 2 群の差が一定かを見ると、もっともらしさを確かめられますが、導入後の反事実については検証できません。
+
+  # ---------- 回帰不連続 (B) ----------
+  - id: q55-regression-discontinuity-design-1
+    term: regression-discontinuity-design
+    level: 標準
+    type: choice
+    question: |
+      点数が 60 点以上なら奨学金を出す制度で、シャープな回帰不連続デザインが推定する効果はどれか。
+    choices:
+      - "全員の平均処置効果"
+      - "奨学金を受けた人全体の平均効果"
+      - "ちょうど 60 点付近の人の平均効果"
+      - "60 点未満の人に奨学金を出した場合の効果"
+    answer: 2
+    hint: |
+      効果は閾値での回帰関数の跳びとして定義されます。
+    explanation: |
+      閾値 $c=60$ での $E[Y\mid X=x]$ の跳び、つまり $E[Y(1)-Y(0)\mid X=60]$ です。閾値から離れた人の効果は、追加の仮定なしには分かりません。

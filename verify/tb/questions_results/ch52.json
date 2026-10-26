@@ -1,0 +1,22 @@
+{
+ "q52-concentration-inequality-1": {
+  "hash": "fca077615b779c64",
+  "ok": true
+ },
+ "q52-concentration-inequality-2": {
+  "hash": "ef2eb5aa137f7149",
+  "ok": true
+ },
+ "q52-high-dimensional-regression-1": {
+  "hash": "afa7ee182902eb97",
+  "ok": true
+ },
+ "q52-high-dimensional-regression-2": {
+  "hash": "1a9e1ee64708b422",
+  "ok": true
+ },
+ "q52-lasso-theory-1": {
+  "hash": "27ae3c4d6525ba1f",
+  "ok": true
+ }
+}

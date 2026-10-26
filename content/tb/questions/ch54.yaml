@@ -1,0 +1,90 @@
+chapter: 54
+questions:
+  # ---------- 変分推論 (A) ----------
+  - id: q54-variational-inference-1
+    term: variational-inference
+    level: 標準
+    type: numeric
+    question: |
+      事後分布が相関 $\rho=0.8$ の 2 変量正規分布（各周辺の分散 1）のとき、平均場の正規近似（各母数が独立な正規分布）の最適解の標準偏差を求めよ。
+    answer: 0.6
+    tolerance: 0.0001
+    hint: |
+      最適な平均場近似の各分散は $1-\rho^2$ です。
+    explanation: |
+      分散 $1-0.64=0.36$、標準偏差 $0.6$ です。本当の周辺の標準偏差 1 の 6 割しかなく、平均場近似は相関が強いほど不確かさを小さく見積もります。
+
+  - id: q54-variational-inference-2
+    term: variational-inference
+    level: 基本
+    type: truefalse
+    question: |
+      どんな分布 $q$ についても、ELBO は対数周辺尤度 $\log p(x)$ 以下である。
+    answer: true
+    hint: |
+      $\log p(x)=\mathrm{ELBO}(q)+\mathrm{KL}(q\|p(\theta\mid x))$ です。
+    explanation: |
+      正しいです。KL 情報量は 0 以上なので $\mathrm{ELBO}\le\log p(x)$ で、等号は $q$ が事後分布に一致するときです。「証拠（エビデンス）の下界」という名前の由来です。
+
+  # ---------- HMC (B) ----------
+  - id: q54-hamiltonian-monte-carlo-1
+    term: hamiltonian-monte-carlo
+    level: 標準
+    type: choice
+    question: |
+      HMC でリープフロッグ法を使う理由として正しいものはどれか。
+    choices:
+      - "ハミルトニアンを正確に保つので、採択の判定がいらないから"
+      - "時間を逆にたどれて体積を保つので、簡単な採択確率で詳細つり合いが成り立つから"
+      - "勾配を計算しなくてよいから"
+      - "離散の母数にも使えるから"
+    answer: 1
+    hint: |
+      数値解ではハミルトニアンは少しずれます。そのずれを補正するのが採択です。
+    explanation: |
+      リープフロッグ法は可逆でシンプレクティック（体積保存）なので、提案の密度の比が消え、採択確率が $\min\{1,e^{H-H^*}\}$ という簡単な形になります。ハミルトニアンは近似的にしか保たれないので、採択の判定は必要です。勾配を使うので、離散の母数には直接使えません。
+
+  # ---------- ガウス過程回帰 (A) ----------
+  - id: q54-gaussian-process-regression-1
+    term: gaussian-process-regression
+    level: 標準
+    type: numeric
+    question: |
+      事前分布 $f\sim\mathcal{GP}(0,k)$ で $k(x,x)=1$、観測誤差の分散 $\sigma_n^2=0.25$ とする。点 $x_1$ で 1 個だけ観測したとき、同じ点 $x_1$ での $f$ の事後分散を求めよ。
+    answer: 0.2
+    tolerance: 0.0001
+    hint: |
+      $V[f_*]=k(x_*,x_*)-k_*^\top(K+\sigma_n^2I)^{-1}k_*$ で、$K=k_*=1$ です。
+    explanation: |
+      $1-1/(1+0.25)=0.2$ です。観測値 $y$ がいくらであっても事後分散は同じで、観測の位置だけで決まります（事後平均は $y/1.25$）。
+
+  - id: q54-gaussian-process-regression-2
+    term: gaussian-process-regression
+    level: 標準
+    type: choice
+    question: |
+      RBF カーネルの長さスケール $\ell$ を小さくしすぎると、どうなりやすいか。
+    choices:
+      - "推定した関数がほぼ直線になる"
+      - "観測点の間で事前分布の平均（0）に戻り、区間も広がって予測が悪くなる"
+      - "事後分散がどこでも 0 になる"
+      - "周辺尤度がつねに大きくなる"
+    answer: 1
+    hint: |
+      $\ell$ は「どれだけ離れた点まで値が似ているか」です。
+    explanation: |
+      $\ell$ が小さいと、観測点から少し離れるだけで相関がなくなり、間の点では観測の情報が届かず、事後平均は 0 に、事後分散は事前分散に戻ります。周辺尤度は複雑すぎるモデルに罰則を課すので、ふつうは中くらいの $\ell$ で最大になります。
+
+  # ---------- WAIC (B) ----------
+  - id: q54-waic-1
+    term: waic
+    level: 基本
+    type: numeric
+    question: |
+      ベイズモデルの事後標本から、$\mathrm{lppd}=-50.3$、$p_{\mathrm{WAIC}}=3.2$ が得られた。$\mathrm{WAIC}=-2(\mathrm{lppd}-p_{\mathrm{WAIC}})$ を求めよ。
+    answer: 107
+    tolerance: 0.0001
+    hint: |
+      $-2\times(-50.3-3.2)$ です。
+    explanation: |
+      $-2\times(-53.5)=107$ です。値が小さいモデルほど予測が良いと判断します。$p_{\mathrm{WAIC}}=3.2$ は有効パラメータ数で、正則なモデルならパラメータの数に近い値になります。

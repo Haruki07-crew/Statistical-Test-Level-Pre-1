@@ -1,0 +1,59 @@
+chapter: 56
+questions:
+  # ---------- コンフォーマル予測 (A) ----------
+  - id: q56-conformal-prediction-1
+    term: conformal-prediction
+    level: 基本
+    type: numeric
+    question: |
+      校正用のデータが $n=99$ 個、$\alpha=0.1$ の分割コンフォーマル予測で、非適合度スコアの小さいほうから何番目の値を区間の幅 $\hat q$ に使うか（$k=\lceil(n+1)(1-\alpha)\rceil$）。
+    answer: 90
+    tolerance: 0.5
+    hint: |
+      $(99+1)\times0.9$ です。
+    explanation: |
+      $k=\lceil100\times0.9\rceil=90$ で、90 番目に小さいスコアを使います。新しい観測のスコアが 100 個の中で 90 番目以内に入る確率はちょうど $90/100=0.9$ です。
+
+  - id: q56-conformal-prediction-2
+    term: conformal-prediction
+    level: 標準
+    type: truefalse
+    question: |
+      分割コンフォーマル予測区間は、すべての $x$ で、新しい観測を確率 $1-\alpha$ 以上で含むことが保証される。
+    answer: false
+    hint: |
+      保証は「周辺の」被覆率か「条件付きの」被覆率か。
+    explanation: |
+      誤りです。保証されるのは $x$ について平均した（周辺の）被覆率です。不均一分散のある例では、誤差の小さい $x$ で 99% 以上、誤差の大きい $x$ で 70% 弱となり、平均すると 90% でした。
+
+  # ---------- セミパラメトリック効率 (B) ----------
+  - id: q56-semiparametric-efficiency-1
+    term: semiparametric-efficiency
+    level: 標準
+    type: numeric
+    question: |
+      無作為化実験（$e(X)=0.5$）で、両群の結果の条件付き分散が 1、処置効果が一定のとき、平均処置効果の効率限界 $E[\sigma_1^2/e+\sigma_0^2/(1-e)+(\tau(X)-\tau)^2]$ から、$n=400$ での標準偏差の下限 $\sqrt{\text{限界}/n}$ を求めよ。
+    answer: 0.1
+    tolerance: 0.0001
+    hint: |
+      限界は $1/0.5+1/0.5+0=4$ です。
+    explanation: |
+      $\sqrt{4/400}=0.1$ です。これは各群 200 人の平均の差の標準偏差 $\sqrt{1/200+1/200}=0.1$ と一致し、無作為化実験では単純な平均の差がこの場合に効率的であることが分かります。
+
+  # ---------- ダブル機械学習 (B) ----------
+  - id: q56-double-machine-learning-1
+    term: double-machine-learning
+    level: 標準
+    type: choice
+    question: |
+      部分線形モデル $Y=\theta D+g(X)+\varepsilon$ のダブル機械学習で、$\theta$ の推定に使うのはどれか。
+    choices:
+      - "$Y$ を $X$ で機械学習した残差を、$D$ そのものに回帰する"
+      - "$Y$ と $D$ のそれぞれを $X$ で機械学習した残差どうしを回帰する"
+      - "$Y$ を $D$ と $X$ で機械学習し、$D$ の重要度を $\theta$ とする"
+      - "$D$ を $X$ で機械学習した予測値を、$Y$ に回帰する"
+    answer: 1
+    hint: |
+      ネイマン直交性を持つのは「残差どうし」の推定方程式です。
+    explanation: |
+      $\hat u=Y-\hat\ell(X)$、$\hat v=D-\hat m(X)$ として $\hat\theta=\sum\hat v\hat u/\sum\hat v^2$ です。$D$ を残差化しないと直交性がなく、交絡が残ります（模擬データの例で偏り −0.51）。交差適合で、学習と評価に使うデータを分けます。
