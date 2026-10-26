@@ -2895,19 +2895,19 @@ chapters:
   - id: kalman-filter
     title: カルマンフィルタ（予測・更新・平滑化）
     importance: A
-    status: planned
+    status: verified
   - id: garch-model
     title: ARCH・GARCH モデル
     importance: A
-    status: planned
+    status: verified
   - id: var-model
     title: ベクトル自己回帰（VAR）モデル
     importance: A
-    status: planned
+    status: verified
   - id: cointegration
     title: 共和分
     importance: C
-    status: planned
+    status: verified
 - 'no': 52
   title: 高次元統計
   lead: 変数の数 p が標本の大きさ n と同じか大きいときの統計です。集中不等式でばらつきを評価し、ラッソの誤差の理論を学びます。前提は第30・45・46章です。
