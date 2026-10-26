@@ -3588,6 +3588,11 @@ window.MathJax = {
         return '<button type="button" class="rel-btn" data-go="' + r + '"' + (isWritten(r) ? '' : ' disabled title="準備中"') + '>' + esc(rp.title) + (isWritten(r) ? '' : '（準備中）') + '</button>';
       }).join('') + '</div></section>';
     }
+    if (t.adv && t.adv.length) {
+      h += '<section class="related"><h2>大学院での発展</h2><div class="related-list">' + t.adv.filter(function (r) { return PLAN[r]; }).map(function (r) {
+        return '<button type="button" class="rel-btn" data-go="' + r + '">第' + PLAN[r].chapter + '章 ' + esc(PLAN[r].title) + '</button>';
+      }).join('') + '</div></section>';
+    }
     var prev = neighbor(id, -1), next = neighbor(id, 1);
     h += '<nav class="pager" aria-label="同じ章の前後の用語">' +
       '<button type="button" data-go="' + (prev || '') + '"' + (prev ? '' : ' disabled') + '><small>← 前の用語</small>' + (prev ? esc(PLAN[prev].title) : '') + '</button>' +

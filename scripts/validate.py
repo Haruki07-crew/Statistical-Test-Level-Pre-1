@@ -462,6 +462,18 @@ def main():
                 print(f"[ERROR] notes.yaml: {tid} の注記は $ を使わず 120 字以内にする")
                 total_err += 1
 
+    # 教科書：学部の用語から修士の用語へのリンク（content/tb/advanced.yaml）。左は共通で使う用語、右は教科書で書いた用語
+    if not args.only and not args.chapter and (CONTENT / "advanced.yaml").exists():
+        adv = yaml.safe_load((CONTENT / "advanced.yaml").read_text(encoding="utf-8")) or {}
+        for k, v in adv.items():
+            if k not in plan_terms or not plan_terms[k][0][1].get("from"):
+                print(f"[ERROR] advanced.yaml: {k} は共通で使う用語ではありません")
+                total_err += 1
+            for x in v or []:
+                if x not in plan_terms or plan_terms[x][0][1].get("from"):
+                    print(f"[ERROR] advanced.yaml: {k} の発展 {x} は教科書で書いた用語ではありません")
+                    total_err += 1
+
     if not args.only:
         e, w, nf, nq = check_questions(plan_terms, args.chapter)
         print(f"問題ファイル {nf} 件 / 問題 {nq} 問 / エラー {e} 件 / 警告 {w} 件")

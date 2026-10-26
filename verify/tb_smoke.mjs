@@ -62,6 +62,11 @@ for (const w of [375, 1280]) {
     const crumb = await page.textContent('.crumb');
     ok(crumb.includes('第' + t.chapter + '章'), `${w}px ${t.id} の章が教科書の章（${crumb.trim()}）`);
   }
+  await page.goto(base + '/tb/#central-limit-theorem'); await page.waitForSelector('.term-title');
+  const advBtns = await page.$$eval('.related h2', (hs) => hs.filter((h) => h.textContent === '大学院での発展').map((h) => h.parentElement.querySelectorAll('button').length));
+  ok(advBtns.length === 1 && advBtns[0] === 2, `${w}px 学部の用語（中心極限定理）に「大学院での発展」のリンク（${advBtns}）`);
+  await page.click('.related button[data-go="multivariate-clt"]'); await page.waitForSelector('.term-title');
+  ok((await page.textContent('.term-title')).includes('多変量中心極限定理'), `${w}px 発展のリンクから修士の用語へ移れる`);
   for (const t of (w === 375 ? own : own.slice(0, 3))) {
     await page.goto(base + '/tb/#' + t.id); await page.waitForSelector('.term-title');
     const txt = await page.textContent('.article');

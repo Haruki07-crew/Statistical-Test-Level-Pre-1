@@ -314,6 +314,12 @@ def main():
                       for t in ch.get("terms") or []],
         })
     plan_ids = {t["id"] for ch in chapters for t in ch["terms"]}
+    # 教科書：学部の用語から修士の用語へのリンク（content/tb/advanced.yaml）
+    adv_path = CONTENT / "advanced.yaml"
+    if adv_path.exists():
+        for k, v in (yaml.safe_load(adv_path.read_text(encoding="utf-8")) or {}).items():
+            if k in terms:
+                terms[k]["adv"] = [x for x in v if x in terms]
     questions, qstat = load_questions(plan_ids, src_of, tuple(site.get("shared_q_levels") or ("基本",)))
     exams, estat = load_exams(plan_ids)
     data = {"chapters": chapters, "terms": terms, "questions": questions, "exams": exams, "roadmap": load_roadmap(plan_ids),
