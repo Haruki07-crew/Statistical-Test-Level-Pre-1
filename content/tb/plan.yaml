@@ -2991,12 +2991,12 @@ chapters:
   - id: semiparametric-efficiency
     title: セミパラメトリック効率と効率的影響関数
     importance: B
-    status: planned
+    status: verified
   - id: double-machine-learning
     title: ダブル機械学習（交差適合）
     importance: B
-    status: planned
+    status: verified
   - id: conformal-prediction
     title: コンフォーマル予測
     importance: A
-    status: planned
+    status: verified

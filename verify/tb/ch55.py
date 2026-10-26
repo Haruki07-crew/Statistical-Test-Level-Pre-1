@@ -143,4 +143,5 @@ check(T, "図：偏りの大きさ・SD・RMSE（同じ乱数で計算し直す�
       allclose(p["series"][0]["y"], rb, 6e-4) and allclose(p["series"][1]["y"], rs, 6e-4) and allclose(p["series"][2]["y"], rm, 6e-4)
       and p["x"][int(np.argmin(rm))] == 10 and close(np.mean(rr[10]) - 4, -0.22, 0.005) and close(np.mean(rr[30]) - 4, -5.38, 0.005))
 check(T, "本文の値", all(v in body(T) for v in ("29.86", "-6.14", "3.92", "3.99", "3.01", "-0.93")))
+check("semiparametric-efficiency", "第56章の比較の値：10 層の層別の SD 0.071・DR 0.035・IPW 0.094", close(sd["s10"], 0.071, 5e-4) and close(sd["dr_rr"], 0.035, 5e-4) and close(sd["ipw"], 0.094, 5e-4))
 done("第55章（因果推論の方法）")
