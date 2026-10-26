@@ -129,5 +129,72 @@ X12 = rng.normal(size=(400000, 12))
 q.num("q48-james-stein-estimator-2", 12 - 10 ** 2 / 10)
 q.check("q48-james-stein-estimator-2", abs(((((1 - 10 / (X12 ** 2).sum(1)))[:, None] * X12) ** 2).sum(1).mean() - 2) < 0.03, "シミュレーション")
 run(q)
-print(f"修士1年（第45〜48章）の問題の検算: NG のある章 {ng}")
+# ---------- 第49章 ----------
+q = Q(49)
+q.num("q49-kernel-density-estimation-1", 1.06 * 2 * 1000 ** -0.2)
+q.check("q49-kernel-density-estimation-2", abs(32 ** -0.2 - 0.5) < 1e-12 and abs(32 ** -0.8 - 1 / 16) < 1e-12 and chosen(q, "q49-kernel-density-estimation-2") == "バンド幅 1/2 倍、MISE 1/16 倍", "32^{-1/5}=1/2・32^{-4/5}=1/16")
+xk = np.array([0.5, 1.5, 2.2, 2.8, 3.6]); yk = np.array([1, 3, 4, 5, 9.0])
+q.num("q49-nadaraya-watson-estimator-1", yk[np.abs(xk - 2) <= 1].mean())
+from nadaraya_check import boundary_ratio  # noqa: E402
+r1, r2 = boundary_ratio()
+q.check("q49-nadaraya-watson-estimator-2", abs(r1 - 2) < 0.1 and r2 >= 3.8 and chosen(q, "q49-nadaraya-watson-estimator-2").startswith("境界では片側にしか"), f"h を半分にすると境界の偏りは NW で 1/{r1:.2f}、局所線形で 1/{r2:.2f}")
+q.num("q49-influence-function-1", 3 ** 2 - 1)
+eps = 1e-6
+mix_var = (1 - eps) * 1 + eps * 9 - (eps * 3) ** 2
+q.check("q49-influence-function-1", abs((mix_var - 1) / eps - 8) < 1e-3, "混合分布 (1−ε)N(0,1)+εδ₃ の分散の微分")
+from scipy.stats import trim_mean  # noqa: E402
+base = rng.normal(size=100)
+bad1 = np.r_[base[:90], np.full(10, 1e6)]
+bad2 = np.r_[base[:89], np.full(11, 1e6)]
+q.check("q49-influence-function-2", abs(trim_mean(bad1, 0.1)) < 5 and trim_mean(bad2, 0.1) > 1e3 and chosen(q, "q49-influence-function-2") == "0.1", "10 個の外れ値は除かれ、11 個で壊れる")
+q.num("q49-huber-estimator-1", min(1, 1.345 / 3))
+run(q)
+
+# ---------- 第50章 ----------
+q = Q(50)
+q.num("q50-linear-mixed-model-1", 6 * 4 / (6 * 4 + 12))
+uu = rng.normal(0, 2, (200000, 1)); yy = uu + rng.normal(0, np.sqrt(12), (200000, 6))
+bl = np.cov(uu[:, 0], yy.mean(1))[0, 1] / yy.mean(1).var()
+q.check("q50-linear-mixed-model-1", abs(bl - 2 / 3) < 0.01, f"E[u|ȳ] の傾き（回帰で）{bl:.4f}")
+q.num("q50-linear-mixed-model-2", 1 + 19 * 0.05)
+u2 = rng.normal(0, np.sqrt(0.05), (100000, 1)); y2 = u2 + rng.normal(0, np.sqrt(0.95), (100000, 20))
+q.check("q50-linear-mixed-model-2", abs(y2.mean(1).var() / (1 / 20) - 1.95) < 0.03, "シミュレーション")
+q.num("q50-reml-1", (0.75 * 30 - 10) / 5)
+q.check("q50-reml-1", (30 - 10) / 5 == 4, "REML は 4")
+from gee_sim import marginal_truth  # noqa: E402
+q.concept("q50-generalized-estimating-equations-1", "推定方程式の期待値が作業相関によらず 0（第50章の GEE のシミュレーションで独立の作業相関でも被覆率 0.95 を確認済み）")
+mt = marginal_truth(1.0)
+q.check("q50-generalized-estimating-equations-2", abs(mt - 0.662) < 0.002 and mt < 0.8 and chosen(q, "q50-generalized-estimating-equations-2") == "GEE の係数の絶対値のほうが小さい", f"母集団平均 {mt:.3f} < 個体ごと 0.8")
+run(q)
+
+# ---------- 第51章 ----------
+q = Q(51)
+Pp = 0.5 + 0.5; K = Pp / (Pp + 1)
+q.num("q51-kalman-filter-1", 10 + K * (12 - 10))
+q.num("q51-kalman-filter-2", (-1 + np.sqrt(5)) / 2)
+a_, P_ = 0.0, 1.0
+for _ in range(200):
+    Pp_ = P_ + 1; K_ = Pp_ / (Pp_ + 1); P_ = (1 - K_) * Pp_
+q.check("q51-kalman-filter-2", abs(K_ - 0.618) < 5e-4, "ゲインの反復が収束する値")
+q.num("q51-garch-model-1", np.log(0.5) / np.log(0.95))
+w_, al, be = 0.05, 0.1, 0.85
+N_ = 400000; zz = rng.normal(size=N_); rr = np.empty(N_); s2 = 1.0
+for t_ in range(N_):
+    rr[t_] = np.sqrt(s2) * zz[t_]; s2 = w_ + al * rr[t_] ** 2 + be * s2
+rr = rr[1000:]
+c1 = np.corrcoef(rr[:-1], rr[1:])[0, 1]; c2 = np.corrcoef(rr[:-1] ** 2, rr[1:] ** 2)[0, 1]
+q.check("q51-garch-model-2", abs(c1) < 0.01 and c2 > 0.1, f"r の自己相関 {c1:.4f}・r² の自己相関 {c2:.3f}（answer=false）")
+mats = [np.array([[0.9, 0.5], [0.1, 0.6]]), np.array([[1.0, 0.1], [0, 0.5]]), np.array([[0.5, 0.3], [0.2, 0.4]]), np.array([[0.6, 0.6], [0.6, 0.6]])]
+stat = [np.abs(np.linalg.eigvals(M)).max() < 1 for M in mats]
+q.check("q51-var-model-1", stat == [False, False, True, False] and q.qs["q51-var-model-1"]["answer"] == 2, f"固有値の最大 {[round(float(np.abs(np.linalg.eigvals(M)).max()), 3) for M in mats]}")
+A2 = np.linalg.matrix_power(np.array([[0.5, 0.2], [0.1, 0.6]]), 2)
+q.num("q51-var-model-2", A2[1, 0])
+rej = 0
+for _ in range(2000):
+    xw = np.cumsum(rng.normal(size=200)); yw = np.cumsum(rng.normal(size=200)); Xw = np.c_[np.ones(200), xw]
+    bw = np.linalg.lstsq(Xw, yw, rcond=None)[0]; ew = yw - Xw @ bw
+    rej += abs(bw[1] / np.sqrt((ew @ ew) / 198 / ((xw - xw.mean()) ** 2).sum())) > 1.96
+q.check("q51-cointegration-1", rej / 2000 > 0.75 and chosen(q, "q51-cointegration-1").startswith("傾きの t 検定が、関係がないのに"), f"有意になる割合 {rej / 2000:.3f}")
+run(q)
+print(f"修士1年（第45〜51章）の問題の検算: NG のある章 {ng}")
 sys.exit(1 if ng else 0)

@@ -1,0 +1,108 @@
+chapter: 49
+questions:
+  # ---------- カーネル密度推定 (A) ----------
+  - id: q49-kernel-density-estimation-1
+    term: kernel-density-estimation
+    level: 基本
+    type: numeric
+    question: |
+      標準偏差 $\hat\sigma=2$、$n=1000$ のデータに、正規カーネルで正規分布を基準にした規則 $h=1.06\,\hat\sigma n^{-1/5}$ を使う。バンド幅 $h$ を求めよ（小数第 2 位まで）。
+    answer: 0.53
+    tolerance: 0.005
+    hint: |
+      $1000^{-1/5}=10^{-3/5}\approx0.251$ です。
+    explanation: |
+      $h=1.06\times2\times1000^{-1/5}\approx2.12\times0.2512\approx0.53$ です。データが正規分布に近いときの目安で、山が複数ある分布では広すぎることがあります。
+
+  - id: q49-kernel-density-estimation-2
+    term: kernel-density-estimation
+    level: 標準
+    type: choice
+    question: |
+      カーネル密度推定で、標本の大きさを 32 倍にした。最適なバンド幅と、そのときの積分平均二乗誤差（MISE）はおよそ何倍になるか。
+    choices:
+      - "バンド幅 1/2 倍、MISE 1/16 倍"
+      - "バンド幅 1/32 倍、MISE 1/32 倍"
+      - "バンド幅 1/2 倍、MISE 1/32 倍"
+      - "バンド幅 1/√32 倍、MISE 1/32 倍"
+    answer: 0
+    hint: |
+      最適な $h\propto n^{-1/5}$、MISE $\propto n^{-4/5}$ です。
+    explanation: |
+      $32^{-1/5}=1/2$、$32^{-4/5}=1/16$ です。母数モデルなら誤差は $1/n$（1/32 倍）で減りますが、形を仮定しない推定では $n^{-4/5}$ と遅くなります。
+
+  # ---------- カーネル回帰 (A) ----------
+  - id: q49-nadaraya-watson-estimator-1
+    term: nadaraya-watson-estimator
+    level: 基本
+    type: numeric
+    question: |
+      データ $(x,y)=(0.5,1),(1.5,3),(2.2,4),(2.8,5),(3.6,9)$ に、一様カーネル（$|x-x_i|\le1$ の点に同じ重み）のナダラヤ・ワトソン推定量を使う。$x=2$ での推定値を求めよ。
+    answer: 4
+    tolerance: 0.0001
+    hint: |
+      $|x_i-2|\le1$ を満たす点だけの $y$ の平均です。
+    explanation: |
+      $x_i=1.5,\ 2.2,\ 2.8$ の 3 点が幅 1 以内に入り、推定値は $(3+4+5)/3=4$ です。
+
+  - id: q49-nadaraya-watson-estimator-2
+    term: nadaraya-watson-estimator
+    level: 標準
+    type: choice
+    question: |
+      データの範囲の端（境界）で、ナダラヤ・ワトソン推定量より局所線形回帰が好まれる理由として正しいものはどれか。
+    choices:
+      - "局所線形回帰は分散が 0 になるから"
+      - "境界では片側にしかデータがなく、傾きがあるとナダラヤ・ワトソンは偏りが O(h) になるが、局所線形回帰は O(h²) に保たれるから"
+      - "局所線形回帰はバンド幅を選ぶ必要がないから"
+      - "ナダラヤ・ワトソン推定量は境界で定義できないから"
+    answer: 1
+    hint: |
+      重み付き平均と重み付き直線の当てはめの違いを考えます。
+    explanation: |
+      境界では近くのデータが内側にしかないので、重み付き平均（NW）は内側の値に引っぱられ、偏りが $h$ に比例します。局所線形回帰は傾きも推定するので、この 1 次の偏りが消え、$O(h^2)$ のままです。回帰不連続デザインで局所線形回帰が標準なのもこのためです。
+
+  # ---------- 影響関数と破綻点 (A) ----------
+  - id: q49-influence-function-1
+    term: influence-function
+    level: 標準
+    type: numeric
+    question: |
+      分散 $T(F)=E[(X-\mu)^2]$ の影響関数は $\mathrm{IF}(x)=(x-\mu)^2-\sigma^2$ である。$F=N(0,1)$ のとき、$x=3$ での影響関数の値を求めよ。
+    answer: 8
+    tolerance: 0.0001
+    hint: |
+      $\mu=0$、$\sigma^2=1$ を代入します。
+    explanation: |
+      $\mathrm{IF}(3)=3^2-1=8$ です。$x$ が大きいほど 2 乗で大きくなる（有界でない）ので、標本分散は外れ値にとても敏感です。
+
+  - id: q49-influence-function-2
+    term: influence-function
+    level: 基本
+    type: choice
+    question: |
+      上下それぞれ 10% を除いて平均する 10% トリム平均の破綻点として正しいものはどれか。
+    choices:
+      - "0"
+      - "0.1"
+      - "0.2"
+      - "0.5"
+    answer: 1
+    hint: |
+      上側（または下側）の何割までなら、どんな値に置き換えても除かれるかを考えます。
+    explanation: |
+      片側 10% までの外れ値は除かれるので推定値は有界ですが、片側に 10% を超える外れ値があると、残った外れ値で推定値をいくらでも動かせます。破綻点は 0.1 です（平均は 0、中央値は 0.5）。
+
+  # ---------- フーバー (B) ----------
+  - id: q49-huber-estimator-1
+    term: huber-estimator
+    level: 基本
+    type: numeric
+    question: |
+      フーバー推定量（$k=1.345$、尺度 $s=1$）の反復再重み付け最小二乗法で、残差が $r=3$ の観測に付く重み $w=\min(1,ks/|r|)$ を求めよ（小数第 3 位まで）。
+    answer: 0.448
+    tolerance: 0.0005
+    hint: |
+      $|r|>ks$ なので、重みは $ks/|r|$ です。
+    explanation: |
+      $w=1.345/3\approx0.448$ です。残差が $k$ を超える観測は、残差が大きいほど重みが下がり、影響が $\pm k$ で頭打ちになります。

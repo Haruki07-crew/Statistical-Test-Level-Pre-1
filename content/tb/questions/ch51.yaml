@@ -1,0 +1,103 @@
+chapter: 51
+questions:
+  # ---------- カルマンフィルタ (A) ----------
+  - id: q51-kalman-filter-1
+    term: kalman-filter
+    level: 標準
+    type: numeric
+    question: |
+      ローカルレベルモデル（観測誤差の分散 1、水準の変化の分散 0.5）で、前の時点の推定が $a_{t-1}=10$、$P_{t-1}=0.5$ だった。観測 $y_t=12$ が来たときの更新後の推定値 $a_t$ を求めよ。
+    answer: 11
+    tolerance: 0.0001
+    hint: |
+      予測の分散 $P_{t|t-1}=P_{t-1}+0.5$、ゲイン $K=P_{t|t-1}/(P_{t|t-1}+1)$ です。
+    explanation: |
+      $P_{t|t-1}=1$、$K=1/2$ なので $a_t=10+0.5\times(12-10)=11$、$P_t=(1-0.5)\times1=0.5$ です。
+
+  - id: q51-kalman-filter-2
+    term: kalman-filter
+    level: 応用
+    type: numeric
+    question: |
+      ローカルレベルモデルで、水準の変化の分散と観測誤差の分散の比が $q=1$ のとき、定常状態のカルマンゲイン $K=(-q+\sqrt{q^2+4q})/2$ を求めよ（小数第 3 位まで）。
+    answer: 0.618
+    tolerance: 0.0005
+    hint: |
+      $q=1$ を代入します。
+    explanation: |
+      $K=(-1+\sqrt5)/2\approx0.618$（黄金比の逆数）です。定常状態ではフィルタは平滑化定数 0.618 の指数平滑法と同じになります。
+
+  # ---------- GARCH (A) ----------
+  - id: q51-garch-model-1
+    term: garch-model
+    level: 標準
+    type: numeric
+    question: |
+      GARCH(1,1) で $\alpha=0.10$、$\beta=0.85$ のとき、分散へのショックの半減期 $\log0.5/\log(\alpha+\beta)$ を求めよ（小数第 1 位まで）。
+    answer: 13.5
+    tolerance: 0.05
+    hint: |
+      $\alpha+\beta=0.95$ です。
+    explanation: |
+      $\log0.5/\log0.95\approx13.5$ 期です。$\alpha+\beta$ が 1 に近いほど、高いボラティリティが長く続きます。
+
+  - id: q51-garch-model-2
+    term: garch-model
+    level: 標準
+    type: truefalse
+    question: |
+      GARCH(1,1) に従う収益率 $r_t$ は自己相関が 0 なので、$r_t$ と $r_{t-1}$ は独立である。
+    answer: false
+    hint: |
+      $r_t^2$ と $r_{t-1}^2$ の関係を考えます。
+    explanation: |
+      誤りです。$r_t$ は無相関ですが、$\sigma_t^2$ が $r_{t-1}^2$ に依存するので、$r_t^2$ と $r_{t-1}^2$ には正の相関があり、独立ではありません。「無相関」と「独立」の違いの典型例です。
+
+  # ---------- VAR (A) ----------
+  - id: q51-var-model-1
+    term: var-model
+    level: 標準
+    type: choice
+    question: |
+      VAR(1) $y_t=Ay_{t-1}+\varepsilon_t$ が定常になる係数行列はどれか。
+    choices:
+      - '$\begin{pmatrix}0.9&0.5\\0.1&0.6\end{pmatrix}$'
+      - '$\begin{pmatrix}1.0&0.1\\0&0.5\end{pmatrix}$'
+      - '$\begin{pmatrix}0.5&0.3\\0.2&0.4\end{pmatrix}$'
+      - '$\begin{pmatrix}0.6&0.6\\0.6&0.6\end{pmatrix}$'
+    answer: 2
+    hint: |
+      固有値の絶対値がすべて 1 より小さいかを調べます。対角成分がすべて 1 未満でも定常とは限りません。
+    explanation: |
+      固有値は順に、約 $1.019$ と $0.481$、$1$ と $0.5$、$0.7$ と $0.2$、$1.2$ と $0$ です。すべて 1 未満なのは 3 番目だけです。1 番目は対角成分がどちらも 1 未満ですが、非対角成分のために固有値が 1 を超え、定常ではありません。
+
+  - id: q51-var-model-2
+    term: var-model
+    level: 標準
+    type: numeric
+    question: |
+      VAR(1) の係数行列が $A=\begin{pmatrix}0.5&0.2\\0.1&0.6\end{pmatrix}$ のとき、$y_1$ に 1 単位のショックが入ってから 2 期後の $y_2$ の応答（$A^2$ の (2,1) 成分）を求めよ。
+    answer: 0.11
+    tolerance: 0.0001
+    hint: |
+      $A^2$ の 2 行 1 列は $0.1\times0.5+0.6\times0.1$ です。
+    explanation: |
+      $(A^2)_{21}=0.1\times0.5+0.6\times0.1=0.11$ です。1 期後の応答 0.1 より少し大きく、$y_2$ が自分自身の持続性（0.6）でショックを持ち越していることが分かります。
+
+  # ---------- 共和分 (C) ----------
+  - id: q51-cointegration-1
+    term: cointegration
+    level: 標準
+    type: choice
+    question: |
+      互いに独立な 2 本のランダムウォークを、一方をもう一方に回帰した。起こりやすいことはどれか。
+    choices:
+      - "傾きの t 検定はほとんどの場合で有意にならない"
+      - "傾きの t 検定が、関係がないのに高い割合で有意になる"
+      - "残差は定常になり、共和分ありと判断される"
+      - "決定係数はつねにほぼ 0 になる"
+    answer: 1
+    hint: |
+      単位根のある系列どうしの回帰（見せかけの回帰）を考えます。
+    explanation: |
+      独立なランダムウォークどうしでも、t 検定は 5% 水準で 80% 以上の割合で有意になり、決定係数もかなり大きくなることがあります（見せかけの回帰）。残差には単位根が残るので、残差の単位根検定で共和分がないことを確かめる必要があります。

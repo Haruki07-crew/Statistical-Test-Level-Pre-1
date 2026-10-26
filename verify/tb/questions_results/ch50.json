@@ -1,0 +1,22 @@
+{
+ "q50-generalized-estimating-equations-1": {
+  "hash": "9f8d8e5bd1c3795c",
+  "ok": true
+ },
+ "q50-generalized-estimating-equations-2": {
+  "hash": "452298a24c648abb",
+  "ok": true
+ },
+ "q50-linear-mixed-model-1": {
+  "hash": "6f6a5a4bfb06351c",
+  "ok": true
+ },
+ "q50-linear-mixed-model-2": {
+  "hash": "6528080e1bc23c4e",
+  "ok": true
+ },
+ "q50-reml-1": {
+  "hash": "51918d405e5a0951",
+  "ok": true
+ }
+}

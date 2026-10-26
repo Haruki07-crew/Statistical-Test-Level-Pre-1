@@ -1,0 +1,30 @@
+{
+ "q51-cointegration-1": {
+  "hash": "9fe4d2661c0c2838",
+  "ok": true
+ },
+ "q51-garch-model-1": {
+  "hash": "336b07bbd70c204b",
+  "ok": true
+ },
+ "q51-garch-model-2": {
+  "hash": "bb9d7e10664649eb",
+  "ok": true
+ },
+ "q51-kalman-filter-1": {
+  "hash": "ad0bb86779b856ec",
+  "ok": true
+ },
+ "q51-kalman-filter-2": {
+  "hash": "51ca759b083398c7",
+  "ok": true
+ },
+ "q51-var-model-1": {
+  "hash": "e61e620b08e1401e",
+  "ok": true
+ },
+ "q51-var-model-2": {
+  "hash": "a587ce6845eafbfa",
+  "ok": true
+ }
+}

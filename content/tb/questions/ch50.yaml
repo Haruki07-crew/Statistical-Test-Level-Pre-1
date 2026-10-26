@@ -1,0 +1,72 @@
+chapter: 50
+questions:
+  # ---------- 線形混合モデル (A) ----------
+  - id: q50-linear-mixed-model-1
+    term: linear-mixed-model
+    level: 標準
+    type: numeric
+    question: |
+      ランダム切片モデルで、グループ間の分散 $\sigma_u^2=4$、グループ内の分散 $\sigma^2=12$ とする。観測が 6 個のグループの BLUP の縮小係数 $\lambda=n\sigma_u^2/(n\sigma_u^2+\sigma^2)$ を求めよ（小数第 3 位まで）。
+    answer: 0.667
+    tolerance: 0.0005
+    hint: |
+      $n=6$ を代入します。
+    explanation: |
+      $\lambda=24/(24+12)=2/3\approx0.667$ です。グループ平均と全体の平均の差を、この割合だけ残して予測します（観測が少ないほど全体の平均へ縮む）。級内相関は $4/16=0.25$ です。
+
+  - id: q50-linear-mixed-model-2
+    term: linear-mixed-model
+    level: 標準
+    type: numeric
+    question: |
+      1 クラスター 20 人、級内相関 $\rho=0.05$ のデータで、全員を独立とみなしたときに平均の分散を何倍過小に見積もるか（デザイン効果 $1+(m-1)\rho$）を求めよ。
+    answer: 1.95
+    tolerance: 0.0005
+    hint: |
+      $m=20$ を代入します。
+    explanation: |
+      $1+19\times0.05=1.95$ 倍です。級内相関が 0.05 と小さくても、クラスターが大きいと標準誤差は約 $\sqrt{1.95}\approx1.40$ 倍に効いてきます。
+
+  # ---------- REML (B) ----------
+  - id: q50-reml-1
+    term: reml
+    level: 標準
+    type: numeric
+    question: |
+      バランスのとれた一元配置の変量効果モデル（4 グループ × 5 観測）で、$MS_A=30$、$MS_E=10$ だった。最尤法（ML）による $\sigma_u^2$ の推定値 $\{(1-1/a)MS_A-MS_E\}/n$ を求めよ。
+    answer: 2.5
+    tolerance: 0.0001
+    hint: |
+      $a=4$、$n=5$ です。REML（分散分析法）なら $(MS_A-MS_E)/n$ です。
+    explanation: |
+      ML は $(0.75\times30-10)/5=2.5$、REML は $(30-10)/5=4$ です。グループが 4 つしかないので、ML は自由度の減少を考えない分だけ小さく見積もります。
+
+  # ---------- GEE (A) ----------
+  - id: q50-generalized-estimating-equations-1
+    term: generalized-estimating-equations
+    level: 標準
+    type: truefalse
+    question: |
+      GEE では、平均のモデルが正しければ、作業相関行列の指定が真の相関と違っていても、回帰係数の推定量は一致性を持つ。
+    answer: true
+    hint: |
+      推定方程式の期待値が 0 になる条件を考えます。
+    explanation: |
+      正しいです。推定方程式 $\sum D_i^\top V_i^{-1}(y_i-\mu_i)$ の期待値は、平均のモデルが正しければ $V_i$ によらず 0 です。作業相関が外れていても一致性は保たれ、標準誤差はサンドイッチ型で正しく求められます（効率は落ちることがあります）。
+
+  - id: q50-generalized-estimating-equations-2
+    term: generalized-estimating-equations
+    level: 応用
+    type: choice
+    question: |
+      施設ごとのばらつきがある 2 値データで、ロジスティックの GEE（母集団平均モデル）とランダム切片のロジスティック混合モデル（個体ごとのモデル）の処置効果の係数を比べる。一般に成り立つ関係はどれか。
+    choices:
+      - "2 つの係数は等しい"
+      - "GEE の係数の絶対値のほうが小さい"
+      - "GEE の係数の絶対値のほうが大きい"
+      - "GEE の係数は符号が逆になる"
+    answer: 1
+    hint: |
+      施設効果で平均すると、ロジットの尺度での効果はどうなるか。
+    explanation: |
+      非線形のリンクでは、個体ごとの効果を施設効果について平均すると、母集団平均の効果は 0 の方へ薄まります。施設間の SD が 1 の例では、個体ごとの 0.8 に対して母集団平均は約 0.66 でした。線形モデルなら 2 つは一致します。

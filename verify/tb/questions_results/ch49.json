@@ -1,0 +1,30 @@
+{
+ "q49-huber-estimator-1": {
+  "hash": "d003481c7eab5c43",
+  "ok": true
+ },
+ "q49-influence-function-1": {
+  "hash": "c9ba607485ef5f76",
+  "ok": true
+ },
+ "q49-influence-function-2": {
+  "hash": "1c9898334e6fffd7",
+  "ok": true
+ },
+ "q49-kernel-density-estimation-1": {
+  "hash": "8a9004a0c69e38dd",
+  "ok": true
+ },
+ "q49-kernel-density-estimation-2": {
+  "hash": "30519db415370f56",
+  "ok": true
+ },
+ "q49-nadaraya-watson-estimator-1": {
+  "hash": "5546d54daa72c33b",
+  "ok": true
+ },
+ "q49-nadaraya-watson-estimator-2": {
+  "hash": "8b5348c61c418312",
+  "ok": true
+ }
+}
