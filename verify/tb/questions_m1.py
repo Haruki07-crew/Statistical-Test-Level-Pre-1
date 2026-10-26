@@ -47,6 +47,10 @@ hs = 1 / (nn * np.log(nn))
 dd = hs.sum() - hs[: 10 ** 5 - 1].sum()
 q.check("q45-borel-cantelli-lemma-1", abs(dd - np.log(np.log(1e7) / np.log(1e5))) < 0.01 and "n\\log n" in chosen(q, "q45-borel-cantelli-lemma-1"),
         f"Σ1/(n log n) の 10⁵〜10⁷ の部分 {dd:.4f} は log log の差 {np.log(np.log(1e7) / np.log(1e5)):.4f} と一致（log log N で発散）。他は和が有限か独立でない")
+An = [sum(0.7 ** (k - 1) * 0.3 for k in range(1, m + 1)) for m in (1, 5, 20, 80)]
+q.check("q45-probability-space-3", all(np.diff(An) > 0) and abs(An[-1] - 1) < 1e-10, "A_m = {m 回目までに表} の確率が増えて 1 に近づく（下からの連続性の例）")
+q.check("q45-lebesgue-integral-expectation-3", abs(integrate.quad(lambda t: stats.gamma(2.5, scale=1.5).sf(t), 0, np.inf)[0] - 3.75) < 1e-6
+        and abs(sum(stats.geom(0.25).sf(k) for k in range(0, 400)) - 4) < 1e-9, "ガンマ分布と幾何分布で裾の公式を確かめる")
 run(q)
 
 # ---------- 第46章 ----------
@@ -91,6 +95,15 @@ q.check("q46-local-alternatives-1", abs(stats.ncx2.sf(zz46 ** 2, 1, 9) - (stats.
 q.num("q46-empirical-process-1", min(0.2, 0.7) - 0.2 * 0.7)
 uu46 = rng.random((200000, 1))
 q.check("q46-empirical-process-1", abs(np.cov((uu46[:, 0] <= 0.2), (uu46[:, 0] <= 0.7))[0, 1] - 0.06) < 0.002, "指示関数の共分散のシミュレーション")
+Xo = rng.normal(size=(20000, 500)) * 3
+Yo = rng.normal(size=(20000, 500)) / np.sqrt(np.arange(1, 501))
+prod = np.abs(Xo * Yo)
+q.check("q46-stochastic-order-notation-3", (prod[:, 499] > 0.1).mean() < (prod[:, 9] > 0.1).mean() and (prod[:, 499] > 0.1).mean() < 0.5, "O_p(1)×o_p(1) の確率が 0 へ")
+mm3 = rng.multinomial(200, [0.2, 0.3, 0.5], 400000) / 200
+q.check("q46-multivariate-clt-3", abs(np.cov(mm3[:, 0], mm3[:, 1])[0, 1] + 0.2 * 0.3 / 200) < 1e-5, "共分散 −p_jp_k/n")
+xg = rng.normal(size=(200000, 40))
+Fn = (xg <= 0.5).mean(1)
+q.check("q46-glivenko-cantelli-theorem-3", abs(Fn.mean() - stats.norm.cdf(0.5)) < 0.001 and abs(Fn.var() - stats.norm.cdf(0.5) * stats.norm.sf(0.5) / 40) < 1e-4, "期待値 F(x)・分散 F(1−F)/n")
 run(q)
 
 # ---------- 第47章 ----------
@@ -114,6 +127,16 @@ x3 = np.array([1, 2, 3.]); y3 = np.array([1, 3, 2.]); b3 = (x3 * y3).sum() / (x3
 q.num("q47-sandwich-variance-estimator-1", (x3 ** 2 * e3 ** 2).sum() / 14 ** 2)
 q.check("q47-sandwich-variance-estimator-1", abs((e3 ** 2).sum() / 2 / 14 - 0.0689) < 5e-5 and abs((x3 ** 2 * e3 ** 2).sum() - 10.7857) < 5e-5, "ふつうの分散 0.0689・Σx²e² 10.7857")
 q.check("q47-sandwich-variance-estimator-2", chosen(q, "q47-sandwich-variance-estimator-2").startswith("回帰係数の推定値は変わらず"), "係数は同じ最小二乗推定値")
+lam3, n3 = 1.4, 6
+T3 = rng.poisson(n3 * lam3, 10 ** 6)
+q.check("q47-lehmann-scheffe-theorem-3", abs(((1 - 1 / n3) ** T3).mean() - np.exp(-lam3)) < 0.002, "E[(1−1/n)^T] = e^{−λ}")
+nm = rng.normal(0, 2, (20000, 1000))
+q.check("q47-m-estimator-3", abs(1000 * np.median(nm, 1).var() - np.pi * 4 / 2) < 0.3, "N(0,4) の中央値の n·分散 ≈ πσ²/2 = 6.28")
+xh = rng.uniform(1, 3, (20000, 200)); eh = rng.normal(size=(20000, 200)) * xh
+bh = (xh * (2 * xh + eh)).sum(1) / (xh ** 2).sum(1)
+res = (2 * xh + eh) - bh[:, None] * xh
+vh = (xh ** 2 * res ** 2).sum(1) / ((xh ** 2).sum(1)) ** 2
+q.check("q47-sandwich-variance-estimator-3", abs(vh.mean() / bh.var() - 1) < 0.05, f"サンドイッチ型の平均 / 実際の分散 = {vh.mean() / bh.var():.3f}")
 run(q)
 
 # ---------- 第48章 ----------
@@ -137,7 +160,19 @@ q.num("q48-james-stein-estimator-1", 1 - 4 / 10)
 X12 = rng.normal(size=(400000, 12))
 q.num("q48-james-stein-estimator-2", 12 - 10 ** 2 / 10)
 q.check("q48-james-stein-estimator-2", abs(((((1 - 10 / (X12 ** 2).sum(1)))[:, None] * X12) ** 2).sum(1).mean() - 2) < 0.03, "シミュレーション")
+post3 = stats.gamma(4, scale=0.5)
+aa = np.linspace(0, 6, 6001)
+q.check("q48-loss-function-and-risk-3", abs(aa[np.argmin([post3.var() + (post3.mean() - a) ** 2 for a in aa])] - post3.mean()) < 1e-3
+        and abs(post3.expect(lambda t: (t - 1.7) ** 2) - (post3.var() + (post3.mean() - 1.7) ** 2)) < 1e-8, "E[(θ−a)²] = 分散 + (平均−a)²")
+gd = lambda n, d: (2 * (n - 1) + (n - 1 - d) ** 2) / d ** 2
+dd = np.linspace(2, 30, 28001)
+q.check("q48-admissibility-3", all(abs(dd[np.argmin(gd(n, dd))] - (n + 1)) < 2e-3 and abs(gd(n, n + 1) - 2 / (n + 1)) < 1e-12 for n in (5, 10, 20)), "最小は d=n+1、MSE 2σ⁴/(n+1)")
+pp = np.linspace(0, 1, 101)
+q.check("q48-minimax-estimator-3", all(np.ptp([(n * x * (1 - x) + n / 4 * (1 - 2 * x) ** 2) / (n + np.sqrt(n)) ** 2 for x in pp]) < 1e-14 for n in (9, 25, 100)), "a=√n/2 でリスクが一定")
+X7 = rng.normal(size=(400000, 7))
+q.check("q48-james-stein-estimator-3", abs(((((1 - 5 / (X7 ** 2).sum(1)))[:, None] * X7) ** 2).sum(1).mean() - 2) < 0.03 and abs((1 / (X7 ** 2).sum(1)).mean() - 1 / 5) < 0.003, "p=7 でもリスク 2、E[1/χ²₇]=1/5")
 run(q)
+
 # ---------- 第49章 ----------
 q = Q(49)
 q.num("q49-kernel-density-estimation-1", 1.06 * 2 * 1000 ** -0.2)
@@ -157,6 +192,15 @@ bad1 = np.r_[base[:90], np.full(10, 1e6)]
 bad2 = np.r_[base[:89], np.full(11, 1e6)]
 q.check("q49-influence-function-2", abs(trim_mean(bad1, 0.1)) < 5 and trim_mean(bad2, 0.1) > 1e3 and chosen(q, "q49-influence-function-2") == "0.1", "10 個の外れ値は除かれ、11 個で壊れる")
 q.num("q49-huber-estimator-1", min(1, 1.345 / 3))
+hh = 0.05
+f_ = stats.norm(0.3, 1)
+Ef = integrate.quad(lambda u: stats.norm.pdf(u) * f_.pdf(0.8 - hh * u), -10, 10)[0]
+f2 = f_.pdf(0.8) * (((0.8 - 0.3) ** 2) - 1)
+q.check("q49-kernel-density-estimation-3", abs((Ef - f_.pdf(0.8)) / (hh ** 2 / 2 * f2) - 1) < 0.01, "偏り / (h²/2·f'') ≈ 1（h=0.05）")
+xk3 = rng.random(30); yk3 = rng.normal(size=30); wk3 = stats.norm.pdf((0.5 - xk3) / 0.1)
+grid = np.linspace(-3, 3, 60001)
+q.check("q49-nadaraya-watson-estimator-3", abs(grid[np.argmin([(wk3 * (yk3 - a) ** 2).sum() for a in grid])] - (wk3 * yk3).sum() / wk3.sum()) < 2e-4, "重み付き 2 乗誤差の最小 = 重み付き平均")
+q.check("q49-influence-function-3", abs(((1 - 1e-4) * 1.0 + 1e-4 * 7.0 - 1.0) / 1e-4 - 6.0) < 1e-6, "μ=1, x=7 で IF=6")
 run(q)
 
 # ---------- 第50章 ----------
@@ -177,6 +221,10 @@ q.check("q50-generalized-estimating-equations-2", abs(mt - 0.662) < 0.002 and mt
 q.num("q50-glmm-1", 4 / (4 + np.pi ** 2 / 3))
 lat = rng.normal(0, 2, (200000, 1)) + stats.logistic.rvs(size=(200000, 2), random_state=rng)
 q.check("q50-glmm-1", abs(np.corrcoef(lat.T)[0, 1] - 0.549) < 0.005, "潜在変数（ランダム切片＋ロジスティック誤差）の相関のシミュレーション")
+su2_, s2_, n_ = 4.0, 9.0, 5
+uu3 = rng.normal(0, 2, 400000); yb3 = uu3 + rng.normal(0, 3, (400000, n_)).mean(1)
+q.check("q50-linear-mixed-model-3", abs(np.cov(uu3, yb3)[0, 1] / yb3.var() - n_ * su2_ / (n_ * su2_ + s2_)) < 0.005, "E[u|ȳ] の傾き = nσu²/(nσu²+σ²)")
+q.concept("q50-generalized-estimating-equations-3", "D_i, V_i が y によらないことから E[U]=0（第50章の GEE のシミュレーションで、独立の作業相関でも偏りが出ないことを確認済み）")
 run(q)
 
 # ---------- 第51章 ----------
@@ -207,6 +255,16 @@ for _ in range(2000):
     bw = np.linalg.lstsq(Xw, yw, rcond=None)[0]; ew = yw - Xw @ bw
     rej += abs(bw[1] / np.sqrt((ew @ ew) / 198 / ((xw - xw.mean()) ** 2).sum())) > 1.96
 q.check("q51-cointegration-1", rej / 2000 > 0.75 and chosen(q, "q51-cointegration-1").startswith("傾きの t 検定が、関係がないのに"), f"有意になる割合 {rej / 2000:.3f}")
+ok_ = True
+for qq in (0.25, 1.0, 3.0):
+    P__ = (qq + np.sqrt(qq * qq + 4 * qq)) / 2
+    ok_ &= abs(P__ ** 2 - qq * P__ - qq) < 1e-12 and abs(P__ / (P__ + 1) - (-qq + np.sqrt(qq * qq + 4 * qq)) / 2) < 1e-12
+q.check("q51-kalman-filter-3", ok_, "P²−qP−q=0 と K の 2 つの表し方が一致（q=0.25, 1, 3）")
+q.check("q51-garch-model-3", abs(rr.var() - 0.05 / (1 - 0.95)) < 0.08, f"シミュレーションの分散 {rr.var():.3f} ≈ ω/(1−α−β)=1")
+A3 = np.array([[0.5, 0.2], [0.1, 0.6]]); c3 = np.array([1.0, 0.5]); y3 = np.zeros(2)
+for _ in range(300):
+    y3 = c3 + A3 @ y3
+q.check("q51-var-model-3", np.allclose(y3, np.linalg.solve(np.eye(2) - A3, c3)) and np.allclose(np.linalg.solve(np.eye(2) - A3, c3), [2.778, 1.944], atol=5e-4), "反復の極限 = (I−A)⁻¹c")
 run(q)
 print(f"修士1年（第45〜51章）の問題の検算: NG のある章 {ng}")
 sys.exit(1 if ng else 0)

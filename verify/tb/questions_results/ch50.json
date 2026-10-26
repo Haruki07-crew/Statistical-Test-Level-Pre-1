@@ -7,6 +7,10 @@
   "hash": "452298a24c648abb",
   "ok": true
  },
+ "q50-generalized-estimating-equations-3": {
+  "hash": "733d3e6e1ce06d8e",
+  "ok": true
+ },
  "q50-glmm-1": {
   "hash": "9fc62ab0ffd98512",
   "ok": true
@@ -17,6 +21,10 @@
  },
  "q50-linear-mixed-model-2": {
   "hash": "6528080e1bc23c4e",
+  "ok": true
+ },
+ "q50-linear-mixed-model-3": {
+  "hash": "4ec1b4976013ebce",
   "ok": true
  },
  "q50-reml-1": {

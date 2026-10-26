@@ -106,3 +106,64 @@ questions:
       サンドイッチ型は推定量の分散の推定方法だけを取り換えます。
     explanation: |
       係数は同じ最小二乗推定値のままで、分散の推定だけを $(X^\top X)^{-1}(\sum e_i^2x_ix_i^\top)(X^\top X)^{-1}$ に替えます。そのため標準誤差と、それを使う t 値・p 値・信頼区間が変わります。
+
+  # ---------- 導出の問題 ----------
+  - id: q47-lehmann-scheffe-theorem-3
+    term: lehmann-scheffe-theorem
+    level: 応用
+    type: derivation
+    question: |
+      $X_1,\dots,X_n\sim Po(\lambda)$（独立、$n\ge2$）とする。$\delta=\mathbf 1\{X_1=0\}$ を十分統計量 $T=\sum X_i$ で条件づけて、$e^{-\lambda}$ の UMVUE を求めよ。
+    steps:
+      - |
+        $T=t$ が与えられたとき、$X_1\mid T=t\sim Bin(t,1/n)$（ポアソンの和で条件づけると二項分布）。
+      - |
+        $E[\delta\mid T=t]=P(X_1=0\mid T=t)=(1-1/n)^t$。
+      - |
+        $T$ は完備十分統計量で、$(1-1/n)^T$ は不偏（ラオ・ブラックウェル化で偏りは変わらない）なので、レーマン・シェフェの定理より UMVUE。
+    answer: |
+      $\Big(1-\dfrac1n\Big)^T$
+    hint: |
+      $X_1$ と $\sum_{i\ge2}X_i$ は独立なポアソン分布です。
+    explanation: |
+      確かめ：$E[(1-1/n)^T]=e^{n\lambda\{(1-1/n)-1\}}=e^{-\lambda}$（ポアソン分布の確率母関数）。最尤推定量 $e^{-\bar X}$ とは別のもので、こちらは不偏です。
+
+  - id: q47-m-estimator-3
+    term: m-estimator
+    level: 応用
+    type: derivation
+    question: |
+      密度 $f$ が中央値 $m$ の近くで連続で $f(m)>0$ とする。標本中央値を $\psi(x,\theta)=\mathrm{sign}(x-\theta)$ の M 推定量とみて、漸近分散 $B/A^2$ を求めよ。
+    steps:
+      - |
+        $E[\psi(X,\theta)]=P(X>\theta)-P(X<\theta)=1-2F(\theta)$ なので、$A=\frac{\partial}{\partial\theta}E[\psi]\big|_{\theta=m}=-2f(m)$。
+      - |
+        $B=E[\psi(X,m)^2]=1$（$\psi=\pm1$）。
+      - |
+        漸近分散 $B/A^2=1/\{4f(m)^2\}$。
+    answer: |
+      $\sqrt n(\hat m-m)\xrightarrow{d}N\Big(0,\ \dfrac{1}{4f(m)^2}\Big)$
+    hint: |
+      $\psi$ が微分できないので、$A$ は期待値 $E[\psi(X,\theta)]$ を $\theta$ で微分して求めます。
+    explanation: |
+      正規分布 $N(\mu,\sigma^2)$ なら $f(m)=1/(\sqrt{2\pi}\sigma)$ で、漸近分散は $\pi\sigma^2/2$。平均の $\sigma^2$ に比べた効率は $2/\pi\approx0.64$ です。
+
+  - id: q47-sandwich-variance-estimator-3
+    term: sandwich-variance-estimator
+    level: 応用
+    type: derivation
+    question: |
+      切片のない回帰 $y_i=\beta x_i+\varepsilon_i$（$E[\varepsilon_i\mid x_i]=0$、分散は $i$ ごとに違ってよい）の最小二乗推定量 $\hat\beta$ について、M 推定量の公式 $A^{-1}BA^{-1}/n$ からサンドイッチ型の分散推定量を導け。
+    steps:
+      - |
+        推定方程式は $\psi_i(\beta)=x_i(y_i-\beta x_i)$。$A=E[\partial\psi/\partial\beta]=-E[x^2]$、$B=E[x^2\varepsilon^2]$。
+      - |
+        標本の平均で置き換えると $\hat A=-\frac1n\sum x_i^2$、$\hat B=\frac1n\sum x_i^2e_i^2$（$e_i$ は残差）。
+      - |
+        $\hat A^{-1}\hat B\hat A^{-1}/n=\dfrac{\frac1n\sum x_i^2e_i^2}{(\frac1n\sum x_i^2)^2}\cdot\dfrac1n=\dfrac{\sum x_i^2e_i^2}{(\sum x_i^2)^2}$。
+    answer: |
+      $\hat V(\hat\beta)=\dfrac{\sum_ix_i^2e_i^2}{\big(\sum_ix_i^2\big)^2}$
+    hint: |
+      $A$ は推定方程式の微分の期待値、$B$ は推定方程式の 2 乗の期待値です。
+    explanation: |
+      分散が一定なら $E[x^2\varepsilon^2]=\sigma^2E[x^2]$ となり、ふつうの $\sigma^2/\sum x_i^2$ に一致します。分散が $x$ とともに大きいと、$x$ の大きい観測の残差が重く効きます。

@@ -101,3 +101,62 @@ questions:
       単位根のある系列どうしの回帰（見せかけの回帰）を考えます。
     explanation: |
       独立なランダムウォークどうしでも、t 検定は 5% 水準で 80% 以上の割合で有意になり、決定係数もかなり大きくなることがあります（見せかけの回帰）。残差には単位根が残るので、残差の単位根検定で共和分がないことを確かめる必要があります。
+
+  # ---------- 導出の問題 ----------
+  - id: q51-kalman-filter-3
+    term: kalman-filter
+    level: 応用
+    type: derivation
+    question: |
+      ローカルレベルモデル（観測誤差の分散 1、水準の変化の分散 $q$）で、予測の分散 $P=P_{t|t-1}$ が定常になるとき、$P$ の満たす方程式と定常のカルマンゲインを求めよ。
+    steps:
+      - |
+        更新後の分散は $P_t=(1-K)P=\frac{P}{P+1}$（$K=P/(P+1)$）。
+      - |
+        次の予測の分散は $P_t+q$ なので、定常なら $P=\frac{P}{P+1}+q$、つまり $P^2-qP-q=0$。
+      - |
+        $P=\frac{q+\sqrt{q^2+4q}}2$、$K=\frac P{P+1}=\frac{-q+\sqrt{q^2+4q}}2$。
+    answer: |
+      $P^2-qP-q=0$、$K=\dfrac{-q+\sqrt{q^2+4q}}{2}$
+    hint: |
+      「更新 → 予測」を 1 周しても分散が変わらない、という式を立てます。
+    explanation: |
+      $K$ が $P/(P+1)$ と $\frac{-q+\sqrt{q^2+4q}}2$ の両方で表せることは、$P^2=q(P+1)$ から確かめられます。定常状態のフィルタは指数平滑法と同じです。
+
+  - id: q51-garch-model-3
+    term: garch-model
+    level: 標準
+    type: derivation
+    question: |
+      GARCH(1,1) $\sigma_t^2=\omega+\alpha r_{t-1}^2+\beta\sigma_{t-1}^2$（$r_t=\sigma_tz_t$、$E[z_t^2]=1$）が弱定常のとき、無条件分散 $E[r_t^2]$ を求めよ。
+    steps:
+      - |
+        $E[r_t^2]=E[\sigma_t^2]E[z_t^2]=E[\sigma_t^2]$（$z_t$ は過去と独立）。
+      - |
+        定常なら $E[\sigma_t^2]=\omega+\alpha E[r_{t-1}^2]+\beta E[\sigma_{t-1}^2]=\omega+(\alpha+\beta)E[\sigma^2]$。
+      - |
+        $E[\sigma^2]=\omega/(1-\alpha-\beta)$（$\alpha+\beta<1$ が必要）。
+    answer: |
+      $E[r_t^2]=\dfrac{\omega}{1-\alpha-\beta}$
+    hint: |
+      両辺の期待値をとり、定常性から $E[\sigma_t^2]=E[\sigma_{t-1}^2]$ とおきます。
+    explanation: |
+      $\alpha+\beta\ge1$ では無条件分散が存在しません。分散の予測が無条件分散に $(\alpha+\beta)^{h-1}$ の速さで戻ることも、同じ漸化式から導けます。
+
+  - id: q51-var-model-3
+    term: var-model
+    level: 標準
+    type: derivation
+    question: |
+      定常な VAR(1) $y_t=c+Ay_{t-1}+\varepsilon_t$（$E[\varepsilon_t]=0$）の平均 $\mu=E[y_t]$ を求めよ。
+    steps:
+      - |
+        両辺の期待値をとると $\mu=c+A\mu$（定常なので $E[y_t]=E[y_{t-1}]=\mu$）。
+      - |
+        $(I-A)\mu=c$。定常なら $A$ の固有値はすべて絶対値 1 未満なので $I-A$ は正則。
+    answer: |
+      $\mu=(I-A)^{-1}c$
+    hint: |
+      定常性から、期待値が時点によらないことを使います。
+    explanation: |
+      $A=\begin{pmatrix}0.5&0.2\\0.1&0.6\end{pmatrix}$、$c=(1,0.5)^\top$ なら $\mu\approx(2.778,1.944)$ です。予測 $c+A\hat y$ をくり返すと、この平均に近づきます。

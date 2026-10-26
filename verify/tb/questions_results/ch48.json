@@ -7,12 +7,20 @@
   "hash": "bc8d8b3f273ec163",
   "ok": true
  },
+ "q48-admissibility-3": {
+  "hash": "3dab5bc597083986",
+  "ok": true
+ },
  "q48-james-stein-estimator-1": {
   "hash": "9a69753c3a4538c5",
   "ok": true
  },
  "q48-james-stein-estimator-2": {
   "hash": "67120ef989333489",
+  "ok": true
+ },
+ "q48-james-stein-estimator-3": {
+  "hash": "21405b3563270dcb",
   "ok": true
  },
  "q48-loss-function-and-risk-1": {
@@ -23,12 +31,20 @@
   "hash": "aa248edc16e59d3b",
   "ok": true
  },
+ "q48-loss-function-and-risk-3": {
+  "hash": "77db263724251787",
+  "ok": true
+ },
  "q48-minimax-estimator-1": {
   "hash": "f739b0cf04c20a6e",
   "ok": true
  },
  "q48-minimax-estimator-2": {
   "hash": "8fb8f53efdf809f7",
+  "ok": true
+ },
+ "q48-minimax-estimator-3": {
+  "hash": "47138a51ba577df7",
   "ok": true
  }
 }

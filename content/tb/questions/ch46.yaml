@@ -151,3 +151,60 @@ questions:
       ブラウン橋の共分散は $\min(s,t)-st$ です。
     explanation: |
       $\min(0.2,0.7)-0.2\times0.7=0.2-0.14=0.06$ です。$\mathbf 1\{U\le0.2\}$ と $\mathbf 1\{U\le0.7\}$ の共分散と同じで、経験過程 $\sqrt n\{F_n(t)-t\}$ の共分散はどの $n$ でもこの値です。
+
+  # ---------- 導出の問題 ----------
+  - id: q46-stochastic-order-notation-3
+    term: stochastic-order-notation
+    level: 応用
+    type: derivation
+    question: |
+      $X_n=O_p(1)$、$Y_n=o_p(1)$ のとき、$X_nY_n=o_p(1)$ を示せ。
+    steps:
+      - |
+        $\varepsilon,\eta>0$ を固定する。$O_p(1)$ より、ある $M$ と $N_1$ があって $n\ge N_1$ で $P(|X_n|>M)<\eta/2$。
+      - |
+        $o_p(1)$ より、ある $N_2$ があって $n\ge N_2$ で $P(|Y_n|>\varepsilon/M)<\eta/2$。
+      - |
+        $|X_nY_n|>\varepsilon$ なら $|X_n|>M$ か $|Y_n|>\varepsilon/M$ なので、$n\ge\max(N_1,N_2)$ で $P(|X_nY_n|>\varepsilon)<\eta$。
+    answer: |
+      $X_nY_n=o_p(1)$（$O_p(1)\cdot o_p(1)=o_p(1)$）
+    hint: |
+      $X_n$ が大きい事象と、$Y_n$ が大きい事象に分けます。
+    explanation: |
+      スラツキーの定理の中心になる計算です。デルタ法の残りの項 $(\bar X-\mu)\times o_p(1)$ を $o_p(n^{-1/2})$ と評価するときにも使います。
+
+  - id: q46-multivariate-clt-3
+    term: multivariate-clt
+    level: 標準
+    type: derivation
+    question: |
+      $n$ 回の独立な試行で、カテゴリ $j$ の出る確率を $p_j$ とする。カテゴリ $j\ne k$ の標本割合の共分散 $\mathrm{Cov}(\hat p_j,\hat p_k)$ を求めよ。
+    steps:
+      - |
+        1 回の試行の指示変数 $Z_j,Z_k$ は同時に 1 にならないので $E[Z_jZ_k]=0$、$\mathrm{Cov}(Z_j,Z_k)=0-p_jp_k$。
+      - |
+        $\hat p_j=\frac1n\sum_iZ_{ij}$ で試行は独立なので、$\mathrm{Cov}(\hat p_j,\hat p_k)=\frac1{n^2}\cdot n\cdot(-p_jp_k)$。
+    answer: |
+      $\mathrm{Cov}(\hat p_j,\hat p_k)=-\dfrac{p_jp_k}{n}$
+    hint: |
+      1 回の試行で 2 つのカテゴリが同時に起こることはありません。
+    explanation: |
+      多変量中心極限定理の共分散行列 $\Sigma=\mathrm{diag}(p)-pp^\top$ の非対角成分です。同じ調査の 2 つの割合の差の分散に、$+2p_jp_k/n$ の項として入ります。
+
+  - id: q46-glivenko-cantelli-theorem-3
+    term: glivenko-cantelli-theorem
+    level: 基本
+    type: derivation
+    question: |
+      経験分布関数 $F_n(x)=\frac1n\sum\mathbf 1\{X_i\le x\}$ の、固定した $x$ での期待値と分散を求めよ。
+    steps:
+      - |
+        $\mathbf 1\{X_i\le x\}$ は成功確率 $F(x)$ のベルヌーイ変数で、$nF_n(x)\sim Bin(n,F(x))$。
+      - |
+        $E[F_n(x)]=F(x)$、$V[F_n(x)]=F(x)\{1-F(x)\}/n$。
+    answer: |
+      $E[F_n(x)]=F(x)$、$V[F_n(x)]=\dfrac{F(x)\{1-F(x)\}}{n}$
+    hint: |
+      $nF_n(x)$ は二項分布に従います。
+    explanation: |
+      各点では不偏で、分散は $x$ が分布の中央（$F=1/2$）で最大 $1/(4n)$ になります。各点の収束は大数の法則から出ますが、グリベンコ・カンテリの定理はそれが $x$ について一様であることを言います。

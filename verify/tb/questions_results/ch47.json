@@ -11,6 +11,10 @@
   "hash": "f719c7aadc96df9d",
   "ok": true
  },
+ "q47-lehmann-scheffe-theorem-3": {
+  "hash": "b772ba949224a819",
+  "ok": true
+ },
  "q47-m-estimator-1": {
   "hash": "f08a7f36dfeb7d8f",
   "ok": true
@@ -19,12 +23,20 @@
   "hash": "0a2752f3ca695a5c",
   "ok": true
  },
+ "q47-m-estimator-3": {
+  "hash": "ff6d7c6ddb344041",
+  "ok": true
+ },
  "q47-sandwich-variance-estimator-1": {
   "hash": "b91e157f9b7142d9",
   "ok": true
  },
  "q47-sandwich-variance-estimator-2": {
   "hash": "d3c9b419ae174d68",
+  "ok": true
+ },
+ "q47-sandwich-variance-estimator-3": {
+  "hash": "03513f4bf41a3abd",
   "ok": true
  }
 }

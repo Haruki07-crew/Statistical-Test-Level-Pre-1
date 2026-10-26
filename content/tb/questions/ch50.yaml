@@ -84,3 +84,42 @@ questions:
       ロジスティック分布の分散は $\pi^2/3\approx3.29$ です。
     explanation: |
       $4/(4+3.290)\approx0.549$ です。同じグループの 2 つの観測の、潜在的な連続変数の相関にあたります。個体差がこれだけ大きいと、母集団平均の効果は個体ごとの効果よりかなり小さくなります。
+
+  # ---------- 導出の問題 ----------
+  - id: q50-linear-mixed-model-3
+    term: linear-mixed-model
+    level: 応用
+    type: derivation
+    question: |
+      ランダム切片モデル $y_{ij}=\mu+u_i+\varepsilon_{ij}$（$u_i\sim N(0,\sigma_u^2)$、$\varepsilon_{ij}\sim N(0,\sigma^2)$、$j=1,\dots,n_i$）で、$\mu$ を既知として $E[u_i\mid y_{i1},\dots,y_{in_i}]$ を求めよ。
+    steps:
+      - |
+        $u_i$ と $\bar y_i$ は同時正規で、$\bar y_i$ は十分（$u_i$ に関する情報はグループ平均にまとまる）。$\mathrm{Cov}(u_i,\bar y_i)=\sigma_u^2$、$V[\bar y_i]=\sigma_u^2+\sigma^2/n_i$。
+      - |
+        正規分布の条件付き期待値より $E[u_i\mid\bar y_i]=\dfrac{\sigma_u^2}{\sigma_u^2+\sigma^2/n_i}(\bar y_i-\mu)$。
+    answer: |
+      $E[u_i\mid y_i]=\lambda_i(\bar y_i-\mu)$、$\lambda_i=\dfrac{n_i\sigma_u^2}{n_i\sigma_u^2+\sigma^2}$
+    hint: |
+      2 変量正規分布の条件付き期待値 $\mathrm{Cov}/\mathrm{Var}\times$（偏差）を使います。
+    explanation: |
+      これが BLUP の縮小係数です。$\mu$ を GLS 推定値に置き換えたものが、実際に使う予測量になります。
+
+  - id: q50-generalized-estimating-equations-3
+    term: generalized-estimating-equations
+    level: 応用
+    type: derivation
+    question: |
+      GEE の推定方程式 $U(\beta)=\sum_iD_i^\top V_i^{-1}\{y_i-\mu_i(\beta)\}$ が、平均のモデル $E[y_i\mid x_i]=\mu_i(\beta_0)$ が正しければ、作業相関 $R(\alpha)$ によらず $E[U(\beta_0)]=0$ となることを示せ。
+    steps:
+      - |
+        $D_i$ と $V_i$ は $x_i$ と $\beta,\alpha$ だけの関数で、$y_i$ を含まない。
+      - |
+        $E[U(\beta_0)\mid x]=\sum_iD_i^\top V_i^{-1}E[y_i-\mu_i(\beta_0)\mid x_i]=0$。
+      - |
+        よって $E[U(\beta_0)]=0$。$V_i$ が真の共分散と違っていてもこの計算は変わらない。
+    answer: |
+      $E[U(\beta_0)]=0$（作業相関によらない）
+    hint: |
+      重みの行列 $D_i^\top V_i^{-1}$ は $y$ によらない定数として扱えます。
+    explanation: |
+      期待値 0 の推定方程式の解は（正則条件のもとで）一致推定量になるので、作業相関を誤っても係数は一致性を保ちます。効率は作業相関が真に近いほど良くなります。

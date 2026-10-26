@@ -11,6 +11,10 @@
   "hash": "1c9898334e6fffd7",
   "ok": true
  },
+ "q49-influence-function-3": {
+  "hash": "8f6bfcd482f64f80",
+  "ok": true
+ },
  "q49-kernel-density-estimation-1": {
   "hash": "8a9004a0c69e38dd",
   "ok": true
@@ -19,12 +23,20 @@
   "hash": "30519db415370f56",
   "ok": true
  },
+ "q49-kernel-density-estimation-3": {
+  "hash": "ba96f429f21ae1d9",
+  "ok": true
+ },
  "q49-nadaraya-watson-estimator-1": {
   "hash": "5546d54daa72c33b",
   "ok": true
  },
  "q49-nadaraya-watson-estimator-2": {
   "hash": "8b5348c61c418312",
+  "ok": true
+ },
+ "q49-nadaraya-watson-estimator-3": {
+  "hash": "d7efcdc111020de7",
   "ok": true
  }
 }

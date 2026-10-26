@@ -105,3 +105,44 @@ questions:
       $\sum1/n^2$ と $\sum2^{-n}$ は有限なので、第 1 補題から有限回しか起こりません。
       $\sum1/(n\log n)$ は（ゆっくりですが）発散し、$A_n$ は独立なので、第 2 補題から確率 1 で無限回起こります。
       最後の選択肢は和が発散しますが、同じ $U_1$ を使っていて独立でなく、$U_1>0$ なら有限回しか起こりません。
+
+  # ---------- 導出の問題 ----------
+  - id: q45-probability-space-3
+    term: probability-space
+    level: 応用
+    type: derivation
+    question: |
+      確率測度の可算加法性から、**下からの連続性**「$A_1\subset A_2\subset\cdots$ なら $P(\bigcup_nA_n)=\lim_nP(A_n)$」を導け。
+    steps:
+      - |
+        $B_1=A_1$、$B_n=A_n\setminus A_{n-1}$（$n\ge2$）とおくと、$B_n$ は互いに素で、$\bigcup_{k\le n}B_k=A_n$、$\bigcup_nB_n=\bigcup_nA_n$。
+      - |
+        可算加法性から $P(\bigcup_nA_n)=\sum_{k=1}^\infty P(B_k)=\lim_n\sum_{k=1}^nP(B_k)$。
+      - |
+        有限加法性から $\sum_{k=1}^nP(B_k)=P(A_n)$。よって $P(\bigcup_nA_n)=\lim_nP(A_n)$。
+    answer: |
+      $P\big(\bigcup_nA_n\big)=\lim_{n\to\infty}P(A_n)$
+    hint: |
+      増えていく集合を、互いに素な「増えた分」$A_n\setminus A_{n-1}$ に分けます。
+    explanation: |
+      無限個の和の確率を、有限個の確率の極限で計算できることを保証する性質です。補集合をとれば上からの連続性（$A_n\downarrow A$ なら $P(A_n)\downarrow P(A)$）も得られ、「いつまでも表が出ない確率は 0」のような計算に使います。
+
+  - id: q45-lebesgue-integral-expectation-3
+    term: lebesgue-integral-expectation
+    level: 応用
+    type: derivation
+    question: |
+      非負の確率変数 $X$ について、裾の公式 $E[X]=\int_0^\infty P(X>t)\,dt$ を導け。
+    steps:
+      - |
+        $X(\omega)=\int_0^{X(\omega)}dt=\int_0^\infty\mathbf 1\{X(\omega)>t\}\,dt$ と書く。
+      - |
+        両辺の期待値をとり、被積分関数が非負なのでトネリの定理（単調収束定理）で積分の順序を入れ換える：$E[X]=\int_0^\infty E[\mathbf 1\{X>t\}]\,dt$。
+      - |
+        $E[\mathbf 1\{X>t\}]=P(X>t)$。
+    answer: |
+      $E[X]=\int_0^\infty P(X>t)\,dt$
+    hint: |
+      $X$ 自身を指示関数の積分で書きます。
+    explanation: |
+      非負なら $E[X]=\infty$ の場合も含めて成り立ちます。指数分布 $P(X>t)=e^{-\lambda t}$ なら $E[X]=1/\lambda$ がすぐに出ます。整数値なら $E[N]=\sum_{k\ge0}P(N>k)$ になります。

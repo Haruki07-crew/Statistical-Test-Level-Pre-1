@@ -15,6 +15,10 @@
   "hash": "3f415ed31ad9513f",
   "ok": true
  },
+ "q46-glivenko-cantelli-theorem-3": {
+  "hash": "858dca784580e6cb",
+  "ok": true
+ },
  "q46-lindeberg-feller-clt-1": {
   "hash": "fafe191a8fb15104",
   "ok": true
@@ -31,12 +35,20 @@
   "hash": "32746f95805d6943",
   "ok": true
  },
+ "q46-multivariate-clt-3": {
+  "hash": "7d44d5ce40d48b6f",
+  "ok": true
+ },
  "q46-stochastic-order-notation-1": {
   "hash": "25e560d4d1560246",
   "ok": true
  },
  "q46-stochastic-order-notation-2": {
   "hash": "35d067b7316b3427",
+  "ok": true
+ },
+ "q46-stochastic-order-notation-3": {
+  "hash": "899a0f34432e5518",
   "ok": true
  }
 }

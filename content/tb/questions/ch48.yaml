@@ -116,3 +116,80 @@ questions:
     explanation: |
       $$R=p-(p-2)^2\cdot\frac1{p-2}=p-(p-2)=2$$
       次元 $p$ によらず 2 で、$X$ のリスク $p=12$ の 6 分の 1 です。
+
+  # ---------- 導出の問題 ----------
+  - id: q48-loss-function-and-risk-3
+    term: loss-function-and-risk
+    level: 標準
+    type: derivation
+    question: |
+      2 乗損失 $L(\theta,a)=(\theta-a)^2$ のもとで、事後期待損失を最小にする $a$（ベイズ規則）が事後平均であることを示せ。
+    steps:
+      - |
+        事後平均を $m=E[\theta\mid x]$ とすると、$E[(\theta-a)^2\mid x]=E[(\theta-m)^2\mid x]+(m-a)^2$（交差項は $E[\theta-m\mid x]=0$ で消える）。
+      - |
+        第 1 項は $a$ によらない（事後分散）ので、$(m-a)^2$ を最小にする $a=m$ が最小。
+    answer: |
+      $a^*=E[\theta\mid x]$（事後平均）
+    hint: |
+      $\theta-a=(\theta-m)+(m-a)$ と分けます。
+    explanation: |
+      最小値は事後分散 $V[\theta\mid x]$ です。各 $x$ で事後期待損失を最小にすれば、ベイズリスク（その平均）も最小になります。
+
+  - id: q48-admissibility-3
+    term: admissibility
+    level: 応用
+    type: derivation
+    question: |
+      $SS/\sigma^2\sim\chi^2_{n-1}$ のとき、$\sigma^2$ の推定量 $SS/d$ の平均二乗誤差を求め、それを最小にする $d$ を導け。
+    steps:
+      - |
+        $E[SS]=(n-1)\sigma^2$、$V[SS]=2(n-1)\sigma^4$。
+      - |
+        $\mathrm{MSE}=V[SS/d]+(E[SS/d]-\sigma^2)^2=\sigma^4\dfrac{2(n-1)+(n-1-d)^2}{d^2}$。
+      - |
+        $g(d)=\{2(n-1)+(n-1-d)^2\}/d^2$ を微分して 0 とおくと $d=n+1$。
+    answer: |
+      $\mathrm{MSE}=\sigma^4\dfrac{2(n-1)+(n-1-d)^2}{d^2}$、最小は $d=n+1$（MSE $=2\sigma^4/(n+1)$）
+    hint: |
+      MSE ＝ 分散 ＋ 偏りの 2 乗。
+    explanation: |
+      $d=n+1$ の推定量は、すべての $\sigma^2$ で不偏分散（$d=n-1$、MSE $2\sigma^4/(n-1)$）より MSE が小さいので、2 乗損失のもとで不偏分散は非許容です。
+
+  - id: q48-minimax-estimator-3
+    term: minimax-estimator
+    level: 応用
+    type: derivation
+    question: |
+      $X\sim Bin(n,p)$ で、推定量 $(X+a)/(n+2a)$ の 2 乗損失のリスクが $p$ によらなくなる $a$ を求めよ。
+    steps:
+      - |
+        リスクは $\dfrac{np(1-p)+a^2(1-2p)^2}{(n+2a)^2}$。分子を展開すると $(4a^2-n)p^2+(n-4a^2)p+a^2$。
+      - |
+        $p$ の項が消えるのは $4a^2=n$、つまり $a=\sqrt n/2$。そのときリスクは $a^2/(n+2a)^2=\dfrac1{4(\sqrt n+1)^2}$。
+    answer: |
+      $a=\dfrac{\sqrt n}2$、リスク $\dfrac1{4(\sqrt n+1)^2}$
+    hint: |
+      リスクを $p$ の 2 次式として展開します。
+    explanation: |
+      この推定量は事前分布 $\mathrm{Beta}(\sqrt n/2,\sqrt n/2)$ のベイズ規則で、リスクが一定なのでミニマックスです。
+
+  - id: q48-james-stein-estimator-3
+    term: james-stein-estimator
+    level: 応用
+    type: derivation
+    question: |
+      $X\sim N_p(0,I)$（真の $\theta=0$）、$p\ge3$ のとき、ジェームズ・スタイン推定量 $\delta=(1-(p-2)/\lVert X\rVert^2)X$ のリスク $E\lVert\delta\rVert^2$ を求めよ。
+    steps:
+      - |
+        $\lVert\delta\rVert^2=\big(1-\frac{p-2}{\lVert X\rVert^2}\big)^2\lVert X\rVert^2=\lVert X\rVert^2-2(p-2)+\frac{(p-2)^2}{\lVert X\rVert^2}$。
+      - |
+        $\lVert X\rVert^2\sim\chi^2_p$ で $E[\lVert X\rVert^2]=p$、$E[1/\chi^2_p]=1/(p-2)$。
+      - |
+        $E\lVert\delta\rVert^2=p-2(p-2)+(p-2)=2$。
+    answer: |
+      $E\lVert\delta-\theta\rVert^2=2$（$p$ によらない）
+    hint: |
+      2 乗を展開し、カイ二乗分布の逆数の期待値を使います。
+    explanation: |
+      $X$ そのもののリスクは $p$ なので、$p=10$ なら 5 分の 1 です。一般の $\theta$ では $p-(p-2)^2E[1/\lVert X\rVert^2]$ で、これもつねに $p$ より小さくなります。

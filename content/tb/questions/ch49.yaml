@@ -106,3 +106,60 @@ questions:
       $|r|>ks$ なので、重みは $ks/|r|$ です。
     explanation: |
       $w=1.345/3\approx0.448$ です。残差が $k$ を超える観測は、残差が大きいほど重みが下がり、影響が $\pm k$ で頭打ちになります。
+
+  # ---------- 導出の問題 ----------
+  - id: q49-kernel-density-estimation-3
+    term: kernel-density-estimation
+    level: 応用
+    type: derivation
+    question: |
+      対称なカーネル $K$（$\int K=1$、$\int uK(u)du=0$、$\mu_2=\int u^2K(u)du$）によるカーネル密度推定 $\hat f_h(x)$ の偏りが、$h\to0$ で $\frac{h^2}2\mu_2f''(x)$ に近いことを示せ。
+    steps:
+      - |
+        $E[\hat f_h(x)]=\int\frac1hK\big(\frac{x-y}h\big)f(y)\,dy=\int K(u)f(x-hu)\,du$（$y=x-hu$ と置換）。
+      - |
+        $f(x-hu)=f(x)-huf'(x)+\frac{h^2u^2}2f''(x)+o(h^2)$ と展開する。
+      - |
+        $\int K=1$、$\int uK=0$ より $E[\hat f_h(x)]=f(x)+\frac{h^2}2\mu_2f''(x)+o(h^2)$。
+    answer: |
+      偏り $=E[\hat f_h(x)]-f(x)\approx\dfrac{h^2}{2}\mu_2f''(x)$
+    hint: |
+      変数を置換してから、$f$ をテイラー展開します。
+    explanation: |
+      山の頂上（$f''<0$）では低く、谷（$f''>0$）では高く推定されます。分散 $R(K)f(x)/(nh)$ との釣り合いで、最適な $h\propto n^{-1/5}$ が決まります。
+
+  - id: q49-nadaraya-watson-estimator-3
+    term: nadaraya-watson-estimator
+    level: 標準
+    type: derivation
+    question: |
+      ナダラヤ・ワトソン推定量が、重み付きの 2 乗誤差 $\sum_iK_h(x-X_i)(Y_i-a)^2$ を $a$ について最小にした値（局所定数の当てはめ）であることを示せ。
+    steps:
+      - |
+        $a$ で微分して 0 とおくと $-2\sum_iK_h(x-X_i)(Y_i-a)=0$。
+      - |
+        $a=\dfrac{\sum_iK_h(x-X_i)Y_i}{\sum_iK_h(x-X_i)}$ で、これはナダラヤ・ワトソン推定量。
+    answer: |
+      $\hat m_{NW}(x)=\arg\min_a\sum_iK_h(x-X_i)(Y_i-a)^2$
+    hint: |
+      重み付きの平均は、重み付き 2 乗誤差を最小にする定数です。
+    explanation: |
+      定数 $a$ の代わりに直線 $a+b(X_i-x)$ を当てはめると局所線形回帰になります。直線にすることで境界の偏りが小さくなります。
+
+  - id: q49-influence-function-3
+    term: influence-function
+    level: 標準
+    type: derivation
+    question: |
+      平均 $T(F)=\int x\,dF(x)$ の影響関数を、定義 $\lim_{\varepsilon\downarrow0}\{T((1-\varepsilon)F+\varepsilon\delta_x)-T(F)\}/\varepsilon$ から求めよ。
+    steps:
+      - |
+        $T((1-\varepsilon)F+\varepsilon\delta_x)=(1-\varepsilon)\mu+\varepsilon x$（$\mu=T(F)$）。
+      - |
+        $\{(1-\varepsilon)\mu+\varepsilon x-\mu\}/\varepsilon=x-\mu$。
+    answer: |
+      $\mathrm{IF}(x)=x-\mu$
+    hint: |
+      混合分布の平均は、平均の混合です。
+    explanation: |
+      $x$ について有界でないので、1 つの外れ値で平均をいくらでも動かせます。$E[\mathrm{IF}^2]=\sigma^2$ は平均の漸近分散と一致します。

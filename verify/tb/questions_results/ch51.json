@@ -11,6 +11,10 @@
   "hash": "bb9d7e10664649eb",
   "ok": true
  },
+ "q51-garch-model-3": {
+  "hash": "f3923d122b1da037",
+  "ok": true
+ },
  "q51-kalman-filter-1": {
   "hash": "ad0bb86779b856ec",
   "ok": true
@@ -19,12 +23,20 @@
   "hash": "51ca759b083398c7",
   "ok": true
  },
+ "q51-kalman-filter-3": {
+  "hash": "944ea7004cbccfe3",
+  "ok": true
+ },
  "q51-var-model-1": {
   "hash": "e61e620b08e1401e",
   "ok": true
  },
  "q51-var-model-2": {
   "hash": "a587ce6845eafbfa",
+  "ok": true
+ },
+ "q51-var-model-3": {
+  "hash": "495f0a73e5ff1421",
   "ok": true
  }
 }
