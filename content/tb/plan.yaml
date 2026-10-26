@@ -2859,19 +2859,19 @@ chapters:
   - id: kernel-density-estimation
     title: カーネル密度推定とバンド幅
     importance: A
-    status: planned
+    status: verified
   - id: nadaraya-watson-estimator
     title: カーネル回帰（ナダラヤ・ワトソン推定量と局所線形回帰）
     importance: A
-    status: planned
+    status: verified
   - id: influence-function
     title: 影響関数と破綻点
     importance: A
-    status: planned
+    status: verified
   - id: huber-estimator
     title: フーバーの M 推定量
     importance: B
-    status: planned
+    status: verified
 - 'no': 50
   title: 線形混合モデルと相関のあるデータ
   lead: 同じ人を繰り返し測る・学校ごとに集まるなど、観測どうしが独立でないデータのモデルです。変量効果・REML・GEE を学びます。前提は第25・27章です。
@@ -2879,21 +2879,21 @@ chapters:
   - id: linear-mixed-model
     title: 線形混合モデル
     importance: A
-    status: planned
+    status: verified
   - id: reml
     title: 制限付き最尤法（REML）
     importance: B
-    status: planned
+    status: verified
   - id: generalized-estimating-equations
     title: 一般化推定方程式（GEE）
     importance: A
-    status: planned
+    status: verified
 - 'no': 51
   title: 時系列と状態空間モデル
   lead: 状態空間モデルとカルマンフィルタ、変動の大きさが変わる GARCH モデル、多変量の VAR モデルと共和分です。前提は第38章です。
   terms:
   - id: kalman-filter
-    title: カルマンフィルタ
+    title: カルマンフィルタ（予測・更新・平滑化）
     importance: A
     status: planned
   - id: garch-model

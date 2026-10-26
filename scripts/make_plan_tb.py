@@ -85,7 +85,7 @@ GRAD = [
         ("linear-mixed-model", "線形混合モデル", "A"), ("reml", "制限付き最尤法（REML）", "B"),
         ("generalized-estimating-equations", "一般化推定方程式（GEE）", "A")]),
     ("時系列と状態空間モデル", "状態空間モデルとカルマンフィルタ、変動の大きさが変わる GARCH モデル、多変量の VAR モデルと共和分です。前提は第38章です。", [
-        ("kalman-filter", "カルマンフィルタ", "A"), ("garch-model", "ARCH・GARCH モデル", "A"),
+        ("kalman-filter", "カルマンフィルタ（予測・更新・平滑化）", "A"), ("garch-model", "ARCH・GARCH モデル", "A"),
         ("var-model", "ベクトル自己回帰（VAR）モデル", "A"), ("cointegration", "共和分", "C")]),
     # 修士2年
     ("高次元統計", "変数の数 p が標本の大きさ n と同じか大きいときの統計です。集中不等式でばらつきを評価し、ラッソの誤差の理論を学びます。前提は第30・45・46章です。", [
