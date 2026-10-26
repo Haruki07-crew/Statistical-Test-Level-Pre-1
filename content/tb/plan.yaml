@@ -2915,15 +2915,15 @@ chapters:
   - id: concentration-inequality
     title: 集中不等式（ヘフディングの不等式）
     importance: A
-    status: planned
+    status: verified
   - id: high-dimensional-regression
     title: 高次元の回帰（p > n）
     importance: A
-    status: planned
+    status: verified
   - id: lasso-theory
     title: ラッソの理論（スパース性と誤差の上界）
     importance: B
-    status: planned
+    status: verified
 - 'no': 53
   title: 統計的学習理論
   lead: 予測の誤差を、学習に使ったデータでの誤差と「関数の集まりの複雑さ」で上から抑える理論です。前提は第41・52章です。
