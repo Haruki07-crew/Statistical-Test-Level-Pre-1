@@ -2963,27 +2963,27 @@ chapters:
   - id: potential-outcomes-framework
     title: 潜在結果モデル（ルービンの因果モデル）
     importance: A
-    status: planned
+    status: verified
   - id: propensity-score
     title: 傾向スコア
     importance: A
-    status: planned
+    status: verified
   - id: inverse-probability-weighting
     title: 逆確率重み付け（IPW）推定量
     importance: A
-    status: planned
+    status: verified
   - id: doubly-robust-estimator
     title: 二重頑健推定量
     importance: B
-    status: planned
+    status: verified
   - id: difference-in-differences
     title: 差の差（DID）分析
     importance: A
-    status: planned
+    status: verified
   - id: regression-discontinuity-design
     title: 回帰不連続デザイン
     importance: B
-    status: planned
+    status: verified
 - 'no': 56
   title: セミパラメトリック推論と予測の不確実性
   lead: 関心のある母数以外を自由にしたモデルでの効率の限界、機械学習を使った推定（ダブル機械学習）、分布を仮定しない予測区間（コンフォーマル予測）です。
