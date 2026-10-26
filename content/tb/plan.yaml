@@ -2779,39 +2779,39 @@ chapters:
   - id: probability-space
     title: 確率空間とσ-加法族
     importance: A
-    status: planned
+    status: verified
   - id: lebesgue-integral-expectation
     title: ルベーグ積分と期待値（収束定理）
     importance: A
-    status: planned
+    status: verified
   - id: radon-nikodym-theorem
     title: ラドン・ニコディムの定理と密度
     importance: B
-    status: planned
+    status: verified
   - id: borel-cantelli-lemma
     title: ボレル・カンテリの補題
     importance: B
-    status: planned
+    status: verified
 - 'no': 46
   title: 漸近理論の発展
   lead: 確率のオーダー記法、多変量の中心極限定理、独立でも同じ分布でもない和の中心極限定理、経験分布の一様収束を学びます。第19章の続きです。
   terms:
   - id: stochastic-order-notation
-    title: 確率のオーダー記法（O_p と o_p）
+    title: 確率のオーダー記法（Oₚ と oₚ）
     importance: A
-    status: planned
+    status: verified
   - id: multivariate-clt
     title: 多変量中心極限定理とクラメール・ウォルドの方法
     importance: A
-    status: planned
+    status: verified
   - id: lindeberg-feller-clt
     title: リンデベルグ・フェラーの中心極限定理
     importance: B
-    status: planned
+    status: verified
   - id: glivenko-cantelli-theorem
     title: グリベンコ・カンテリの定理
     importance: A
-    status: planned
+    status: verified
 - 'no': 47
   title: 推定の理論の発展
   lead: 一様最小分散不偏推定量の一意性、補助統計量との独立性、そしてモデルが正しくないときにも使える M 推定とサンドイッチ分散です。第20章の続きです。

@@ -70,7 +70,7 @@ GRAD = [
         ("probability-space", "確率空間とσ-加法族", "A"), ("lebesgue-integral-expectation", "ルベーグ積分と期待値（収束定理）", "A"),
         ("radon-nikodym-theorem", "ラドン・ニコディムの定理と密度", "B"), ("borel-cantelli-lemma", "ボレル・カンテリの補題", "B")]),
     ("漸近理論の発展", "確率のオーダー記法、多変量の中心極限定理、独立でも同じ分布でもない和の中心極限定理、経験分布の一様収束を学びます。第19章の続きです。", [
-        ("stochastic-order-notation", "確率のオーダー記法（O_p と o_p）", "A"), ("multivariate-clt", "多変量中心極限定理とクラメール・ウォルドの方法", "A"),
+        ("stochastic-order-notation", "確率のオーダー記法（Oₚ と oₚ）", "A"), ("multivariate-clt", "多変量中心極限定理とクラメール・ウォルドの方法", "A"),
         ("lindeberg-feller-clt", "リンデベルグ・フェラーの中心極限定理", "B"), ("glivenko-cantelli-theorem", "グリベンコ・カンテリの定理", "A")]),
     ("推定の理論の発展", "一様最小分散不偏推定量の一意性、補助統計量との独立性、そしてモデルが正しくないときにも使える M 推定とサンドイッチ分散です。第20章の続きです。", [
         ("lehmann-scheffe-theorem", "レーマン・シェフェの定理", "A"), ("basu-theorem", "バスの定理と補助統計量", "B"),
