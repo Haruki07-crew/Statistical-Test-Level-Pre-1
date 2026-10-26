@@ -72,6 +72,10 @@ for (const w of [375, 1280]) {
     ok(nq > 0 && (await page.$$('#sec-questions .qlist > *')).length > 0, `${w}px 教科書の用語 ${t.id} に問題が出る（${nq} 問）`);
     if (w === 375) await page.screenshot({ path: `${OUT}/term-${t.id}-${w}.png`, fullPage: true });
   }
+  await page.goto(base + '/tb/#formulas'); await page.waitForSelector('.article');
+  const fm = await mathOk(page);
+  const nsec = (await page.$$('.article section.sec')).length, nlink = (await page.$$('.article .f-link[data-go]')).length;
+  ok(nsec >= 9 && nlink >= 10 && fm.err === 0 && fm.raw === 0 && !fm.over, `${w}px 公式まとめ（節 ${nsec}・用語へのリンク ${nlink}・数式エラー ${fm.err}・はみ出し ${fm.over}）`);
   await page.goto(base + '/tb/#quiz'); await page.waitForSelector('.screen-h'); await sleep(1500);
   const keys = await page.evaluate(() => Object.keys(localStorage));
   ok(keys.includes('jdt-data') && !keys.includes('jd-data') && !keys.includes('jd2-data'), `${w}px 教科書の記録は jdt-data（キー: ${keys.join(', ')}）`);
