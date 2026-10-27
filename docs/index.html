@@ -1761,7 +1761,7 @@ window.MathJax = {
   });
 
   // scatter-data: { series: [{ label, x: [...], y: [...] }]（または x, y を直接）, xlabel, ylabel, fit: 1 で全体の回帰直線, fitEach: 1 で系列ごとの回帰直線,
-  //   means: 1 で全体の平均の位置に点線, xmin/xmax/ymin/ymax } データを直接渡す散布図。下に相関係数（と回帰直線）を出す
+  //   means: 1 で全体の平均の位置に点線, hline: 0 で y=0 などの横線（残差プロット）, noR: 1 で相関係数を出さない, xmin/xmax/ymin/ymax } データを直接渡す散布図。下に相関係数（と回帰直線）を出す
   reg('scatter-data', function (a, p, c) {
     var pal = [c.c1, c.c2, c.c3, c.muted], S = p.series || [{ label: p.label || '', x: p.x || [], y: p.y || [] }];
     var allx = [], ally = [], ds = [], info = [];
@@ -1782,6 +1782,7 @@ window.MathJax = {
     if (p.fitEach) S.forEach(function (s, i) { var xs = s.x.map(Number); line(stats(xs, s.y.map(Number)), pal[i % 4], (s.label || '') + 'の回帰直線', Math.min.apply(null, xs), Math.max.apply(null, xs)); });
     var all = stats(allx, ally);
     if (p.fit) line(all, S.length > 1 ? c.muted : c.c2, '回帰直線', lo, hi);
+    if (p.hline != null) ds.push(a.lineDs('', [{ x: lo, y: Number(p.hline) }, { x: hi, y: Number(p.hline) }], c.muted, { borderWidth: 1, pointRadius: 0 }));
     if (p.means) {
       var ylo = p.ymin != null ? Number(p.ymin) : Math.min.apply(null, ally), yhi = p.ymax != null ? Number(p.ymax) : Math.max.apply(null, ally);
       ds.push(a.lineDs('平均', [{ x: all.mx, y: ylo }, { x: all.mx, y: yhi }, { x: NaN, y: NaN }, { x: lo, y: all.my }, { x: hi, y: all.my }], c.muted, { borderDash: [2, 3], borderWidth: 1, pointRadius: 0 }));
@@ -1791,6 +1792,7 @@ window.MathJax = {
     o.plugins.tooltip.callbacks.label = function (ctx) { return '(' + a.fmt(ctx.parsed.x) + ', ' + a.fmt(ctx.parsed.y) + ')'; };
     o.plugins.legend.labels.filter = function (it) { return it.text && it.text !== '平均'; };
     a.chart('', { data: { datasets: ds }, options: o });
+    if (p.noR) { a.info.textContent = 'n = ' + allx.length; return; }
     a.info.textContent = (S.length > 1 ? info.join('　') + '　全体：' : '') + 'r = ' + a.fmt(all.r, 3) + (p.fit ? '（回帰直線 ' + eq(all) + '）' : '') + '　n = ' + allx.length;
   });
 
