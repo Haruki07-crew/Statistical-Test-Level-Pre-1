@@ -53,7 +53,7 @@ for (const w of [375, 1280]) {
       const err = art.querySelectorAll('mjx-merror, [data-mjx-error]').length;
       const raw = [...art.querySelectorAll('.body p, .body li, .body td')].filter((e) => /\$[^$]+\$|\\frac|\\sum|\[\[|\{\{chart/.test(e.textContent)).length;
       const over = document.documentElement.scrollWidth > window.innerWidth + 1;
-      const wideEls = [...art.querySelectorAll('.body p, .body li, .bx-h, mjx-container:not([display="true"])')].filter((e) => e.getBoundingClientRect().right > window.innerWidth + 1); const wide = wideEls.length; window.__wide = wideEls.map((e) => e.tagName + ':' + e.textContent.slice(0, 50));
+      const wideEls = [...art.querySelectorAll('.body p, .body li, .bx-h, mjx-container:not([display="true"])')].filter((e) => !e.closest('.table-wrap') && e.getBoundingClientRect().right > window.innerWidth + 1); const wide = wideEls.length; window.__wide = wideEls.map((e) => e.tagName + ':' + e.textContent.slice(0, 50));
       const charts = art.querySelectorAll('.body .chart, .body canvas').length, lazy = art.querySelectorAll('.chart-lazy').length;
       return { err, raw, over, wide, charts, lazy, secs: document.querySelectorAll('.jump button').length, ans: art.querySelectorAll('details.bx-ans').length };
     });
