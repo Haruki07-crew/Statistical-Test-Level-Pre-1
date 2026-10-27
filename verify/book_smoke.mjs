@@ -42,7 +42,8 @@ for (const w of [375, 1280]) {
     await page.goto(url + '#book/' + c.k);
     await sleep(300);
     await mathDone(page);
-    // 下まで少しずつ送り、図と数式を描かせる
+    // 解答をすべて開いてから（たたんだ中の数式のはみ出しも測るため）、下まで少しずつ送り、図と数式を描かせる
+    await page.$$eval('details.bx-ans', (ds) => ds.forEach((d) => { d.open = true; }));
     const H = await page.$eval('#detail', (d) => d.scrollHeight);
     for (let y = 0; y < H; y += 700) { await page.$eval('#detail', (d, yy) => { d.scrollTop = yy; }, y); await sleep(120); }
     await sleep(600);
@@ -62,11 +63,14 @@ for (const w of [375, 1280]) {
     ok(!r.over && r.wide === 0, `${w}px ${c.k} 横のはみ出し（ページ ${r.over}・要素 ${r.wide}）${await page.evaluate(() => JSON.stringify(window.__wide))}`);
     ok(r.lazy === 0 && (nch === 0 || r.charts > 0), `${w}px ${c.k} 図 ${nch} 個（描画 ${r.charts}・未描画 ${r.lazy}）`);
     ok(r.secs >= 3, `${w}px ${c.k} 節へ移動のボタン ${r.secs}`);
-    // 解答を開く
+    // 解答の開閉（クリックで閉じて、もう一度開く）
     if (r.ans) {
       await page.$eval('details.bx-ans summary', (s) => { s.scrollIntoView(); s.click(); });
-      await sleep(200);
-      ok(await page.$eval('details.bx-ans', (d) => d.open), `${w}px ${c.k} 解答が開く`);
+      await sleep(150);
+      const closed = await page.$eval('details.bx-ans', (d) => !d.open);
+      await page.$eval('details.bx-ans summary', (s) => s.click());
+      await sleep(150);
+      ok(closed && await page.$eval('details.bx-ans', (d) => d.open), `${w}px ${c.k} 解答の開閉`);
     }
     if (w === 375 && c === pub[0]) await page.screenshot({ path: `${OUT}/${c.k}_end_${w}.png` });
     // 図の画像（章を指定したときはすべての図、指定しないときは最初の章の 1 枚目）

@@ -259,6 +259,13 @@ def check_chapter(p, level, plan_terms, customs):
         err.append("$$ の数が奇数です")
     if not (paths(level)["verify"] / "book" / p.name.replace(".md", ".py")).exists():
         warn.append("検算のスクリプト verify/…/book/" + p.name.replace(".md", ".py") + " がありません（検算に通るまで公開されません）")
+    # スマホ幅（375px）で 1 行に収まらない長さのインライン数式（おおよその目安：記号を除いた長さ 26 字超）
+    for m in re.finditer(r"(?<!\$)\$([^$\n]+?)\$(?!\$)", re.sub(r"\$\$.*?\$\$", "", body, flags=re.S)):
+        tex = re.sub(r"\\(?:frac|dfrac|tfrac)", "", m.group(1))
+        tex = re.sub(r"\\(mathrm|text|operatorname|left|right|,|;|quad|qquad|displaystyle)", "", tex)
+        tex = re.sub(r"\\[A-Za-z]+", "x", tex)
+        if len(re.sub(r"[{}\s^_]", "", tex)) > 22:
+            warn.append(f"長いインライン数式（スマホではみ出すおそれ）: ${m.group(1)[:60]}$")
     n = len(re.sub(r"\$\$.*?\$\$|\$[^$\n]*\$|\s", "", body, flags=re.S))
     if n < 4000:
         warn.append(f"本文が短めです（{n} 字）")
