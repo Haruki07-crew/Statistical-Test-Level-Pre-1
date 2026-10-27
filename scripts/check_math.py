@@ -69,6 +69,11 @@ def texts():
                     for i, s in enumerate(v if isinstance(v, list) else [v]):
                         if isinstance(s, str):
                             yield f"{p.relative_to(ROOT)} {q.get('id')} {k}{'[%d]' % i if isinstance(v, list) else ''}", s
+    for p in sorted((CONTENT / "book").glob("ch*.md")):   # 教科書：囲みの行・リンク・図の指定を外した本文で調べる
+        _, body = split_front(p.read_text(encoding="utf-8"))
+        body = re.sub(r"^:::.*$|^\{\{chart.*\}\}$", "", body, flags=re.M)
+        body = re.sub(r"\[\[([a-z0-9-]+)(?:\|([^\]]+))?\]\]", lambda m: m.group(2) or m.group(1), body)
+        yield f"{p.relative_to(ROOT)}", body
     r = CONTENT / "roadmap.yaml"
     if r.exists():
         data = yaml.safe_load(r.read_text(encoding="utf-8")) or {}

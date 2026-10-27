@@ -68,12 +68,17 @@ def restore_math(h, store):
 MD = markdown.Markdown(extensions=["tables", "sane_lists"])
 
 
-def render_body(body):
+def md_html(body):
+    """Markdown（数式つき）を HTML にする。節には分けない（教科書の囲みの中身などに使う）。"""
     prot, store = protect_math(body)
     MD.reset()
     h = MD.convert(prot)
     h = restore_math(h, store)
-    h = h.replace("<table>", '<div class="table-wrap"><table>').replace("</table>", "</table></div>")
+    return h.replace("<table>", '<div class="table-wrap"><table>').replace("</table>", "</table></div>")
+
+
+def render_body(body):
+    h = md_html(body)
     # 節ごとに <section> で包む
     parts = re.split(r"<h2>(.*?)</h2>", h)
     out = [parts[0]] if parts[0].strip() else []
@@ -320,12 +325,15 @@ def main():
         for k, v in (yaml.safe_load(adv_path.read_text(encoding="utf-8")) or {}).items():
             if k in terms:
                 terms[k]["adv"] = [x for x in v if x in terms]
+    # 教科書（章ごとの本文）。検算に通った章だけ本文を入れる
+    from book import load_book
+    book, bstat = load_book(LEVEL, set(terms), md_html)
     questions, qstat = load_questions(plan_ids, src_of, tuple(site.get("shared_q_levels") or ("基本",)))
     exams, estat = load_exams(plan_ids)
     data = {"chapters": chapters, "terms": terms, "questions": questions, "exams": exams, "roadmap": load_roadmap(plan_ids),
-            "formulas": render_formulas({t["title"]: t["id"] for ch in chapters for t in ch["terms"] if t["id"] in terms}),
+            "book": book, "formulas": render_formulas({t["title"]: t["id"] for ch in chapters for t in ch["terms"] if t["id"] in terms}),
             "site": {k: site[k] for k in ("level", "name", "kicker", "lead", "kp", "other", "others", "parts", "steps", "exam",
-                                          "textbook", "h1", "shared_note", "tips") if site.get(k) is not None}}
+                                          "textbook", "h1", "shared_note", "tips", "book_lead") if site.get(k) is not None}}
     data_json = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
 
     tpl = (SRC / "template.html").read_text(encoding="utf-8")
@@ -356,6 +364,7 @@ def main():
     print(f"問題 合計: 公開 {len(questions)} / 全問 {qa}（検算に通っていない問題は公開しない）")
     print("模擬試験（小問 / 検算OK / 見直しOK / 自動検査エラー）: " + ("  ".join(f"set{k:02d} {v[0]}/{v[1]}/{v[2]}/{v[3]}" for k, v in sorted(estat.items())) or "なし"))
     print(f"模擬試験 公開: {len(exams)} セット（3段階の確認に通ったセットだけ）")
+    print(f"教科書: 公開 {bstat['pub']} / 全 {bstat['all']} 章（検算に通っていない章は目次に「準備中」と出す）")
     size = OUT.stat().st_size
     print(f"出力: {OUT.relative_to(ROOT)}  {size / 1024 / 1024:.2f} MB" + ("  （5MB超）" if size > 5 * 1024 * 1024 else ""))
 

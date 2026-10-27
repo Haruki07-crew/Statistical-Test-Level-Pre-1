@@ -716,3 +716,42 @@ m.mj-miss { color: var(--muted); font-size: .9em; }
   .ex-weak li { grid-template-columns: minmax(0, 1fr) auto; }
   .ex-weak li .ex-bar { grid-column: 1 / -1; }
 }
+
+/* ===== 教科書（章ごとの本文） ===== */
+.bk-back { display: inline-block; margin: 12px 0 0 max(16px, 4vw); font-size: .88rem; text-decoration: none; }
+.book .term-title { display: flex; flex-direction: column; gap: 2px; }
+.bk-chno { font-size: .85rem; color: var(--accent); font-weight: 700; letter-spacing: .04em; }
+.book .body { font-size: 1.02rem; line-height: 1.95; }
+.book .body h3 { font-size: 1rem; margin: 1.8em 0 .5em; }
+.bk-goals { margin: 14px 0 0; padding: 12px 16px; border-radius: 10px; background: var(--accent-soft); }
+.bk-goals ul { margin: 4px 0 0; padding-left: 1.3em; }
+.bk-goals li { margin: .2em 0; }
+.bk-pre { margin: 8px 0 0; font-size: .88rem; color: var(--muted); }
+.bx { margin: 1.3em 0; padding: 10px 16px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); }
+.bx-h { margin: 0 0 4px; font-size: .92rem; line-height: 1.6; }
+.bx-h b { color: var(--accent); margin-right: 2px; }
+.bx-b > :first-child { margin-top: .2em; }
+.bx-b > :last-child { margin-bottom: .2em; }
+.bx-def, .bx-thm { border-left: 4px solid var(--accent); }
+.bx-thm { background: var(--surface); }
+.bx-ex, .bx-prob { border-left: 4px solid var(--imp-a); }
+.bx-ex .bx-h b, .bx-prob .bx-h b { color: var(--imp-a); }
+.bx-point { border: 0; background: var(--accent-soft); }
+.bx-warn { border-left: 4px solid var(--imp-a); background: var(--surface); }
+.bx-adv, .bx-col { border-style: dashed; }
+.bx-adv .bx-h b, .bx-col .bx-h b, .bx-eg .bx-h b { color: var(--muted); }
+details.bx-ans { margin-top: -.7em; border-top-left-radius: 0; border-top-right-radius: 0; border-left: 4px solid var(--line); }
+details.bx-ans summary { cursor: pointer; min-height: 40px; display: flex; align-items: center; font-size: .9rem; font-weight: 700; color: var(--accent); }
+.bk-end { display: grid; gap: 0; justify-items: start; margin-top: 2em; }
+.book-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.bk-row { display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 8px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg); color: var(--fg); text-decoration: none; line-height: 1.45; }
+a.bk-row:hover { border-color: var(--accent); }
+.bk-row.off { opacity: .55; }
+.bk-no { flex: none; min-width: 2.6em; font-family: var(--mono); font-weight: 700; color: var(--accent); }
+.bk-t { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.bk-t small { color: var(--muted); font-size: .76rem; }
+.bk-done { flex: none; width: 22px; height: 22px; color: var(--accent); }
+.bk-done svg { width: 22px; height: 22px; }
+.pager a.pg { display: block; min-height: 56px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); text-align: left; font-size: .88rem; line-height: 1.4; color: var(--fg); text-decoration: none; }
+.pager a.pg:last-child { text-align: right; }
+.pager a.pg[aria-disabled="true"] { visibility: hidden; }

@@ -7,6 +7,9 @@
   var CHAPTERS = DATA.chapters;
   var QS = DATA.questions || [];
   var FORMULAS = DATA.formulas || '';
+  // 教科書（章ごとの本文）。html がない章は検算前で、目次に「準備中」と出す
+  var BOOK = DATA.book || [], BOOKBY = {};
+  BOOK.forEach(function (c, i) { c.i = i; BOOKBY[c.k] = c; });
   // 級ごとの設定（build.py が DATA.site に入れる。準1級は省略された項目に下の既定値を使う）
   var SITE = DATA.site || {}, NAME = SITE.name || '準1級 用語辞典', EXN = (SITE.exam && SITE.exam.n) || 25;
   var PARTS = SITE.parts || [
@@ -32,13 +35,14 @@
   var DB_KEY = K('jd-data'), DB_VERSION = 1;
   function isObj(x) { return x && typeof x === 'object' && !Array.isArray(x); }
   function num(x, def) { return typeof x === 'number' && isFinite(x) ? x : def; }
-  function emptyDB() { return { v: DB_VERSION, memo: {}, bm: {}, notes: {}, recent: [], ans: {}, days: {}, searches: [], font: 'm', exam: '', qbm: {}, mock: { hist: [], cur: null } }; }
+  function emptyDB() { return { v: DB_VERSION, memo: {}, bm: {}, notes: {}, recent: [], ans: {}, days: {}, searches: [], font: 'm', exam: '', qbm: {}, mock: { hist: [], cur: null }, book: {} }; }
   // 型の合わない値は捨てて、使える部分だけ残す
   function sanitize(d) {
     var out = emptyDB();
     if (!isObj(d)) return out;
     if (isObj(d.memo)) Object.keys(d.memo).forEach(function (k) { if (d.memo[k]) out.memo[k] = num(d.memo[k], 1); });
     if (isObj(d.bm)) Object.keys(d.bm).forEach(function (k) { if (d.bm[k]) out.bm[k] = num(d.bm[k], 1); });
+    if (isObj(d.book)) Object.keys(d.book).forEach(function (k) { if (d.book[k]) out.book[k] = num(d.book[k], 1); });
     if (isObj(d.qbm)) Object.keys(d.qbm).forEach(function (k) { if (d.qbm[k]) out.qbm[k] = num(d.qbm[k], 1); });
     if (isObj(d.notes)) Object.keys(d.notes).forEach(function (k) {
       var n = d.notes[k];
@@ -618,6 +622,16 @@
       (ex !== null ? '<a href="#stats" class="hs"><b>' + (ex >= 0 ? ex + '<small>日</small>' : '—') + '</b><span>試験まで</span></a>'
         : '<a href="#stats" class="hs hs-set"><b>＋</b><span>試験日を設定</span></a>') +
       '</div>';
+    // 教科書の続き
+    var bpub = BOOK.filter(function (c) { return c.html; });
+    if (bpub.length) {
+      var bl = BOOKBY[load('jd-book-last', '')], bnext = bl && bl.html ? bl : bpub.filter(function (c) { return !DB.book[c.k]; })[0] || bpub[0];
+      var bdone = bpub.filter(function (c) { return DB.book[c.k]; }).length;
+      h += '<section class="home-sec"><h2 class="home-h">教科書で読む<small>' + bdone + ' / ' + BOOK.length + ' 章 読了</small></h2>' +
+        '<p class="screen-sub">用語を1つずつ引く辞典とは別に、章ごとに頭から順に読み通す本文です。例題と章末問題つき。</p><div class="home-cards">' +
+        '<a class="home-card" href="#book/' + bnext.k + '"><small>' + (bl ? '続きから読む' : '最初の章から') + '</small><b>' + bookNo(bnext) + ' ' + esc(bnext.t) + '</b></a>' +
+        '<a class="home-card" href="#book"><small>目次</small><b>全 ' + BOOK.length + ' 章</b></a></div></section>';
+    }
     // 今日のメニュー
     var nx = nextTerms(3);
     h += '<section class="home-sec"><h2 class="home-h">今日のメニュー<small>15〜30分の目安</small></h2><ol class="menu">' +
@@ -1700,6 +1714,74 @@
     renderList();
   });
 
+  // ---------- 教科書 ----------
+  // 章の番号。統計学の教科書で2級・準1級の章を共通で使うときは、同じ章に入る2つ目から「16-2」のように枝番を付ける
+  function bookNo(c) {
+    var same = BOOK.filter(function (x) { return x.no === c.no; });
+    return '第' + c.no + '章' + (same.length > 1 ? '-' + (same.indexOf(c) + 1) : '');
+  }
+  function renderBookToc() {
+    clearDetail();
+    var pub = BOOK.filter(function (c) { return c.html; }), done = pub.filter(function (c) { return DB.book[c.k]; }).length;
+    var last = BOOKBY[load('jd-book-last', '')];
+    var h = '<div class="article screen book-toc"><h1 class="screen-h">教科書</h1>' +
+      '<p class="screen-sub">' + esc(SITE.book_lead || '章ごとに、導入・定義・導き方・例題・まとめ・章末問題の順で、頭から読み通せるように書いた本文です。用語のくわしい解説は、本文の青いリンクから辞典のページへ移れます。') + '</p>' +
+      '<p class="screen-sub">公開 <b>' + pub.length + '</b> / ' + BOOK.length + ' 章・読み終えた章 <b>' + done + '</b>' + (pub.length < BOOK.length ? '（「準備中」の章は、本文を書いて数値の検算に通ったものから順に公開します）' : '') + '</p>';
+    if (last && last.html) h += '<div class="home-cards"><a class="home-card" href="#book/' + last.k + '"><small>続きから読む</small><b>' + bookNo(last) + ' ' + esc(last.t) + '</b></a></div>';
+    PARTS.forEach(function (pt) {
+      var cs = BOOK.filter(function (c) { return c.no >= pt[1] && c.no <= pt[2]; });
+      if (!cs.length) return;
+      h += '<section class="book-part"><h2 class="home-h">' + esc(pt[0]) + '</h2><ol class="book-list">' + cs.map(function (c) {
+        var inner = '<span class="bk-no">' + bookNo(c).replace('第', '').replace('章', '') + '</span><span class="bk-t"><b>' + esc(c.t) + '</b>' +
+          (c.src ? '<small>' + esc(c.src) + 'と共通</small>' : '') + (c.html ? '<small>約 ' + c.min + ' 分</small>' : '<small>準備中</small>') + '</span>' +
+          (DB.book[c.k] ? '<span class="bk-done" aria-label="読み終えた">' + CHECK_SVG + '</span>' : '');
+        return '<li>' + (c.html ? '<a class="bk-row" href="#book/' + c.k + '">' + inner + '</a>' : '<span class="bk-row off">' + inner + '</span>') + '</li>';
+      }).join('') + '</ol></section>';
+    });
+    h += '</div>';
+    detailEl.innerHTML = h;
+    detailEl.scrollTop = 0;
+  }
+  function bookPool(c) {
+    return QS.filter(function (q) { return (c.terms || []).indexOf(q.term) >= 0; });
+  }
+  function renderBookChapter(c) {
+    clearDetail();
+    if (!c.html) { renderBookToc(); return; }
+    save('jd-book-last', c.k);
+    var part = PARTS.filter(function (pt) { return c.no >= pt[1] && c.no <= pt[2]; })[0];
+    var pubs = BOOK.filter(function (x) { return x.html; }), pi = pubs.indexOf(c), prev = pubs[pi - 1], next = pubs[pi + 1];
+    var pool = bookPool(c);
+    var h = '<a class="bk-back" href="#book">← 目次</a><div class="article book">' +
+      '<p class="crumb"><a href="#book">教科書</a>' + (part ? '　' + esc(part[0]) : '') + (c.src ? '　（' + esc(c.src) + 'と共通）' : '') + '</p>' +
+      '<h1 class="term-title"><span class="bk-chno">' + bookNo(c) + '</span>' + esc(c.t) + '</h1>' +
+      '<p class="term-meta">読む目安 約 ' + c.min + ' 分' + (c.terms.length ? '　・　出てくる用語 ' + c.terms.length + ' 語' : '') + '</p>' +
+      '<div class="bk-goals"><p class="bx-h"><b>この章のねらい</b></p><ul>' + c.goals.map(function (g) { return '<li>' + g + '</li>'; }).join('') + '</ul>' +
+      (c.pre ? '<p class="bk-pre"><b>前提：</b>' + esc(c.pre) + '</p>' : '') + '</div>' +
+      '<nav class="jump" aria-label="節へ移動"></nav><div class="body">' + c.html + '</div>';
+    if (c.terms.length) h += '<section class="related"><h2>この章の用語（辞典へ）</h2><div class="related-list">' + c.terms.map(function (id) { return termBtn(id); }).join('') + '</div></section>';
+    h += '<div class="bk-end">' +
+      '<button type="button" class="big-btn' + (DB.book[c.k] ? ' ghost' : '') + '" data-book-read="' + c.k + '">' + (DB.book[c.k] ? '読み終えた ✓（取り消す）' : 'この章を読み終えた') + '</button>' +
+      (pool.length ? '<button type="button" class="big-btn ghost" data-book-quiz="' + c.k + '">この章の用語の問題を解く（' + Math.min(10, pool.length) + ' 問／全 ' + pool.length + ' 問から）</button>' : '') + '</div>';
+    h += '<nav class="pager" aria-label="前後の章">' +
+      '<a class="pg" ' + (prev ? 'href="#book/' + prev.k + '"' : 'aria-disabled="true"') + '><small>← 前の章</small>' + (prev ? bookNo(prev) + ' ' + esc(prev.t) : '') + '</a>' +
+      '<a class="pg" ' + (next ? 'href="#book/' + next.k + '"' : 'aria-disabled="true"') + '><small>次の章 →</small>' + (next ? bookNo(next) + ' ' + esc(next.t) : '') + '</a></nav></div>';
+    detailEl.innerHTML = h;
+    var jump = detailEl.querySelector('.jump');
+    jump.innerHTML = Array.prototype.map.call(detailEl.querySelectorAll('.body > .sec'), function (s) {
+      return '<button type="button" data-jump="' + s.dataset.sec + '">' + esc(s.querySelector('h2').textContent.replace(/^[\d.]+\s*/, '')) + '</button>';
+    }).join('');
+    Array.prototype.forEach.call(detailEl.querySelectorAll('.body .chart-lazy[data-chart]'), function (el) {
+      var m = /^([a-z0-9-]*):(\d+)$/.exec(el.dataset.chart), spec = null;
+      if (m) spec = m[1] ? (TERMS[m[1]] && TERMS[m[1]].charts[Number(m[2])]) : c.charts[Number(m[2])];
+      if (spec) { el.__spec = spec; lazy(el); } else el.remove();
+    });
+    detailEl.scrollTop = 0;
+    showMathAll(detailEl.querySelectorAll('.term-title, .bk-goals, .sec'));
+    showMath(detailEl);
+    spySetup();
+  }
+
   // ---------- 公式まとめ ----------
   function renderFormulas() {
     clearDetail();
@@ -1721,6 +1803,22 @@
     var b = e.target.closest('button, a');
     if (!b) return;
     if (b.hasAttribute('data-back')) { backToList(); return; }
+    if (b.dataset.bookRead) {
+      var bk = b.dataset.bookRead;
+      if (DB.book[bk]) delete DB.book[bk]; else DB.book[bk] = Date.now();
+      persist(true);
+      b.className = 'big-btn' + (DB.book[bk] ? ' ghost' : '');
+      b.textContent = DB.book[bk] ? '読み終えた ✓（取り消す）' : 'この章を読み終えた';
+      return;
+    }
+    if (b.dataset.bookQuiz) {
+      var bc = BOOKBY[b.dataset.bookQuiz], bpool = shuffle(bookPool(bc));
+      if (!bpool.length) return;
+      setMode('quiz');
+      startSession('quiz', bpool.slice(0, 10), bookNo(bc) + ' ' + bc.t);
+      if (location.hash !== '#quiz') { ignoreNextRoute = true; location.hash = '#quiz'; }
+      return;
+    }
     if (b.dataset.goch) { go('#ch' + pad2(b.dataset.goch)); return; }
     if (b.dataset.go !== undefined && b.dataset.go !== '') { state.fromList = false; go('#' + b.dataset.go); return; }
     if (b.dataset.jump) {
@@ -1857,6 +1955,13 @@
       else if (em[2] === 'result') renderExamResult(no, em[3] ? Number(em[3]) : 0);
       else renderExamStart(no);
       document.title = '模擬試験｜' + NAME;
+      return;
+    }
+    var bk = /^book(?:\/([a-z0-9-]+))?$/.exec(h);
+    if (bk) {
+      setMode('book');
+      if (bk[1] && BOOKBY[bk[1]]) { renderBookChapter(BOOKBY[bk[1]]); document.title = bookNo(BOOKBY[bk[1]]) + ' ' + BOOKBY[bk[1]].t + '｜' + NAME; }
+      else { renderBookToc(); document.title = '教科書｜' + NAME; }
       return;
     }
     if (h === 'roadmap') {

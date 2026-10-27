@@ -474,6 +474,20 @@ def main():
                     print(f"[ERROR] advanced.yaml: {k} の発展 {x} は教科書で書いた用語ではありません")
                     total_err += 1
 
+    # 教科書（章ごとの本文 content/<級>/book/chNN.md）
+    if not args.only and not args.chapter:
+        from book import book_dir, check_chapter
+        bfiles = sorted(book_dir(LEVEL).glob("ch*.md"))
+        for p in bfiles:
+            e, w = check_chapter(p, LEVEL, plan_terms, customs)
+            for x in e:
+                print(f"[ERROR] {p.relative_to(ROOT)}: {x}")
+            for x in w:
+                print(f"[WARN]  {p.relative_to(ROOT)}: {x}")
+            total_err += len(e)
+            total_warn += len(w)
+        print(f"教科書の章 {len(bfiles)} 件を検査")
+
     if not args.only:
         e, w, nf, nq = check_questions(plan_terms, args.chapter)
         print(f"問題ファイル {nf} 件 / 問題 {nq} 問 / エラー {e} 件 / 警告 {w} 件")
