@@ -267,6 +267,6 @@ def check_chapter(p, level, plan_terms, customs):
         if len(re.sub(r"[{}\s^_]", "", tex)) > 22:
             warn.append(f"長いインライン数式（スマホではみ出すおそれ）: ${m.group(1)[:60]}$")
     n = len(re.sub(r"\$\$.*?\$\$|\$[^$\n]*\$|\s", "", body, flags=re.S))
-    if n < 4000:
+    if n < 3000:
         warn.append(f"本文が短めです（{n} 字）")
     return err, warn
