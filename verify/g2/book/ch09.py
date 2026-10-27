@@ -1,0 +1,82 @@
+"""2級 教科書 第9章「確率分布」の数値の検算（scipy の分布と、シミュレーション・総当たりで確かめる）。"""
+from math import comb, exp
+
+import numpy as np
+from bookcheck import Book
+from scipy import stats as st
+
+b = Book("g2", 9)
+B = st.binom(20, 0.05)
+b.num("P(X=0)", B.pmf(0), "0.358")
+b.num("P(X=1)", B.pmf(1), "0.377")
+b.num("P(X≥2)", 1 - B.cdf(1), "0.264")
+b.num("E", B.mean(), "1")
+b.num("V", B.var(), "0.95")
+for k, (bs, ps) in enumerate(zip(["0.0496", "0.1491", "0.2242", "0.2244"], ["0.0498", "0.1494", "0.2240", "0.2240"])):
+    b.num(f"B(1000,0.003) k={k}", st.binom(1000, 0.003).pmf(k), bs)
+    b.num(f"Po(3) k={k}", st.poisson(3).pmf(k), ps)
+b.num("e^-3", exp(-3), "0.0498")
+b.num("e^-3（丸め）", exp(-3), "0.050")
+b.num("P(X≤2) Po(3)", st.poisson(3).cdf(2), "0.423")
+b.check("8.5 e^-3 = P(X≤2)", abs(8.5 * exp(-3) - st.poisson(3).cdf(2)) < 1e-12, "")
+rng = np.random.default_rng(9)
+b.check("再生性（シミュレーション）：Po(3)+Po(3) の平均と分散 ≈ 6", abs((rng.poisson(3, 10 ** 6) + rng.poisson(3, 10 ** 6)).var() - 6) < 0.05, "")
+b.num("6 が出るまで平均", 1 / (1 / 6), "6")
+b.num("6 回で一度も 6 が出ない", (5 / 6) ** 6, "0.335")
+g = rng.geometric(1 / 6, 10 ** 6)
+b.check("無記憶性（シミュレーション）", abs(np.mean(g[g > 4] > 7) - np.mean(g > 3)) < 0.005, (np.mean(g[g > 4] > 7), np.mean(g > 3)))
+b.num("負の二項 r=3 の期待値", 3 / (1 / 6), "18")
+# 超幾何
+H = st.hypergeom(20, 4, 5)
+b.num("16C5", comb(16, 5), "4368")
+b.num("20C5", comb(20, 5), "15504")
+b.num("P(X=0)", H.pmf(0), "0.282")
+b.num("E", H.mean(), "1")
+b.num("V", H.var(), "0.632")
+b.check("V = np(1-p)(N-n)/(N-1)", abs(H.var() - 5 * 0.2 * 0.8 * 15 / 19) < 1e-12, "")
+b.num("二項 P(X=0)", 0.8 ** 5, "0.328")
+b.num("二項 V", 5 * 0.2 * 0.8, "0.8")
+# 一様・指数
+b.num("一様の分散", 100 / 12, "8.33")
+b.num("P(X>2) 指数", exp(-1), "0.368")
+b.num("P(X≤3)", 1 - exp(-1.5), "0.777")
+b.num("無記憶性", exp(-2.5) / exp(-1.5), "0.368")
+b.check("指数の P(X>t) = ポアソンの P(0 回)", abs(st.expon(scale=2).sf(2) - st.poisson(0.5 * 2).pmf(0)) < 1e-12, "")
+# 正規
+for k, s in [(1, "68.3"), (2, "95.4"), (3, "99.7")]:
+    b.num(f"±{k}σ %", (st.norm.cdf(k) - st.norm.cdf(-k)) * 100, s)
+b.num("P(Z≥1.645)", st.norm.sf(1.645), "0.05")
+b.num("P(Z≥1.96)", st.norm.sf(1.96), "0.025")
+b.num("P(Z≥2.576)", st.norm.sf(2.576), "0.005")
+b.num("P(Z≥1.5)", st.norm.sf(1.5), "0.0668")
+b.num("161〜179", 1 - 2 * 0.0668, "0.8664")
+b.check("161〜179（正確な値も 0.866）", abs(st.norm(170, 6).cdf(179) - st.norm(170, 6).cdf(161) - 0.8664) < 1e-3, "")
+b.num("P(Z≥1.2816)", st.norm.sf(1.2816), "0.10")
+b.num("上位 10%", 170 + 1.2816 * 6, "177.7")
+b.num("6.7%", st.norm.sf(1.5) * 100, "6.7")
+b.num("86.6%", (1 - 2 * st.norm.sf(1.5)) * 100, "86.6")
+b.num("合計点の sd", np.sqrt(16 + 9), "5")
+b.num("P(Z≥2)", st.norm.sf(2), "0.0228")
+x = rng.normal(60, 4, 10 ** 6) + rng.normal(75, 3, 10 ** 6)
+b.check("合計点（シミュレーション）P(≥145) ≈ 0.0228", abs(np.mean(x >= 145) - 0.0228) < 0.001, np.mean(x >= 145))
+# 2 変量正規
+b.num("条件付き期待値", 172 + 0.5 * (182 - 170), "178")
+b.num("条件付き sd", 6 * np.sqrt(1 - 0.25), "5.20")
+xy = rng.multivariate_normal([170, 172], [[36, 18], [18, 36]], size=2 * 10 ** 6)
+sel = xy[np.abs(xy[:, 0] - 182) < 0.5, 1]
+b.check("2 変量正規（シミュレーション）", abs(sel.mean() - 178) < 0.1 and abs(sel.std() - 5.196) < 0.1, (sel.mean(), sel.std()))
+# 章末問題
+G = st.binom(10, 0.25)
+b.num("問1 V", G.var(), "1.875")
+b.num("問1 0.25^3 0.75^7", 0.25 ** 3 * 0.75 ** 7, "0.002086")
+b.num("問1 P(X=3)", G.pmf(3), "0.250")
+b.num("問1 120×0.002086", 120 * 0.002086, "0.250")
+b.num("問2", st.poisson(3).pmf(0), "0.0498")
+b.num("問3 e^-2", exp(-2), "0.135")
+b.num("問4 平均", 50 * 4 + 20, "220")
+b.num("問4 分散", 4 * 4 + 9, "25")
+b.num("問4 確率", st.norm.sf((230 - 220) / 5), "0.0228")
+w = rng.normal(50, 2, (10 ** 6, 4)).sum(1) + rng.normal(20, 3, 10 ** 6)
+b.check("問4（シミュレーション）", abs(np.mean(w > 230) - 0.0228) < 0.001, np.mean(w > 230))
+b.num("問4 誤った分散", 16 * 4, "64")
+b.done()
