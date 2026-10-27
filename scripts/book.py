@@ -177,11 +177,40 @@ def src_titles():
     return out
 
 
+CH_REF = re.compile(r"(2級の|準1級の)?第(\s*)(\d+)((?:\s*[・〜]\s*\d+)*)(\s*)章")
+
+
+def renumber(text, src, nums):
+    """共通で使う章の本文の「第 N 章」を、元の級の番号からこの級の通し番号に直す（統計学の教科書用）。
+    nums: {元の級: {元の章番号: この級での章番号}}。「2級の第 N 章」のように級を書いた参照も、その級の対応で直す。"""
+    def sub(m):
+        lv = {"2級の": "g2", "準1級の": "pre1"}.get(m.group(1) or "", src)
+        table = nums.get(lv, {})
+        parts = re.split(r"(\s*[・〜]\s*)", m.group(3) + m.group(4))
+        out = []
+        for i, s in enumerate(parts):
+            if i % 2 == 0:
+                n = table.get(int(s))
+                if n is None:
+                    return m.group(0)
+                if len(out) >= 2 and out[-2] == str(n):  # 2 つの元の章が同じ章になったときは 1 つにまとめる
+                    out.pop()
+                    continue
+                out.append(str(n))
+            else:
+                out.append(s.strip())
+        return "第" + m.group(2) + "".join(out) + m.group(5) + "章"
+    return CH_REF.sub(sub, text)
+
+
 def load_book(level, terms, md_html):
     """build.py 用。検算に通り、内容が検算時から変わっていない章だけ本文を入れる（ほかは「準備中」として目次にだけ出す）。"""
     titles, stitles = all_titles(), src_titles()
     res = {lv: load_results(lv) for lv in ("pre1", "g2", "tb")}
     chs, stat = [], {"all": 0, "pub": 0}
+    nums = {}
+    for _, src, no, here in entries(level):
+        nums.setdefault(src, {})[no] = here
     for key, src, no, here in entries(level):
         p = book_dir(src) / f"ch{no:02d}.md"
         stat["all"] += 1
@@ -192,8 +221,13 @@ def load_book(level, terms, md_html):
         if p.exists() and r and r.get("ok") and r.get("hash") == file_hash(p):
             html, links, n, fm = render_chapter(p, no, terms, titles, md_html)
             own = [t for t in fm.get("terms") or [] if t in terms]
-            item.update({"html": html, "goals": [md_html(g).removeprefix("<p>").removesuffix("</p>") for g in fm.get("goals") or []],
-                         "pre": fm.get("prereq", ""), "terms": own + [t for t in links if t not in own],
+            goals = [md_html(g).removeprefix("<p>").removesuffix("</p>") for g in fm.get("goals") or []]
+            pre = fm.get("prereq", "")
+            if src != level:
+                html, pre = renumber(html, src, nums), renumber(pre, src, nums)
+                goals = [renumber(g, src, nums) for g in goals]
+            item.update({"html": html, "goals": goals,
+                         "pre": pre, "terms": own + [t for t in links if t not in own],
                          "charts": fm.get("charts") or [], "min": max(5, round(n / 450))})
             if fm.get("title"):
                 item["t"] = fm["title"]
