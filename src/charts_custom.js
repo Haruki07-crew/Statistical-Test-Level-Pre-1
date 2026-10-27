@@ -60,14 +60,15 @@
       var tot = vals.reduce(function (s, v) { return s + v; }, 0), acc = 0;
       ds.push(a.lineDs('累積割合', vals.map(function (v) { acc += v; return acc / tot; }), c.c2, { yAxisID: 'y2', pointRadius: 3 }));
     }
-    var o = opts(a, c, { xType: 'category', legend: ds.length > 1, yTitle: p.ylabel, xTitle: p.xlabel });
+    var o = opts(a, c, { xType: 'category', legend: ds.length > 1, yTitle: p.ylabel, xTitle: p.xlabel, ymin: p.ymin != null ? Number(p.ymin) : undefined, ymax: p.ymax != null ? Number(p.ymax) : undefined });
     if (p.cumulative) o.scales.y2 = { position: 'right', min: 0, max: 1, grid: { display: false }, ticks: { color: c.muted } };
     a.chart('', { data: { labels: labels, datasets: ds }, options: o });
   });
   // line-data: { x: [...], series: [{ label, y: [...] }], xlabel, ylabel }
   reg('line-data', function (a, p, c) {
     var pal = [c.c1, c.c2, c.c3, c.muted], xs = (p.x || []).map(Number);
-    var ds = (p.series || []).map(function (s, i) { return a.lineDs(s.label || '', pts(xs, s.y.map(Number)), pal[i % 4], { pointRadius: 2 }); });
+    // y に null を書いた点は描かない（移動平均の両端など）
+    var ds = (p.series || []).map(function (s, i) { return a.lineDs(s.label || '', pts(xs, s.y.map(function (v) { return v == null ? NaN : Number(v); })), pal[i % 4], { pointRadius: 2, borderDash: s.dash ? [6, 4] : undefined }); });
     a.chart('', { data: { datasets: ds }, options: opts(a, c, { legend: ds.length > 1, ymin: p.ymin != null ? p.ymin : null, xTitle: p.xlabel, yTitle: p.ylabel }) });
   });
 

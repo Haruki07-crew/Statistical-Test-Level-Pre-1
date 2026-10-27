@@ -9,8 +9,8 @@
 | joint-marginal | 同時確率の表と周辺・条件付き分布 | table: [[...]], rowLabels, colLabels, rowName, colName |
 | mean-inequality | AM ≥ GM ≥ HM を数直線に | a(2), b(8) |
 | mgf-curve | M(t) と t=0 での接線 | family: poisson\|binom\|norm\|expon, lambda, n, p, mu, sigma, rate |
-| bar-data | データを直接渡す棒グラフ（スクリープロット等） | labels: [...], values: [...], xlabel, ylabel, cumulative: true で累積割合の線 |
-| line-data | データを直接渡す折れ線 | x: [...], series: [{label, y: [...]}], xlabel, ylabel |
+| bar-data | データを直接渡す棒グラフ（スクリープロット等） | labels: [...], values: [...], xlabel, ylabel, cumulative: true で累積割合の線, ymin・ymax（負の値があるとき ymin） |
+| line-data | データを直接渡す折れ線 | x: [...], series: [{label, y: [...]（null の点は描かない）, dash: 1 で点線}], xlabel, ylabel, ymin |
 | scatter-data | データを直接渡す散布図（相関係数を表示） | series: [{label, x: [...], y: [...]}]（1 系列なら x, y を直接）, xlabel, ylabel, fit: 1 回帰直線, fitEach: 1 系列ごとの回帰直線, means: 1 平均の点線, hline: 0 横線, noR: 1 相関係数を出さない, xmin, xmax, ymin, ymax |
 | logistic-curve | ロジスティック曲線 | beta0(0), beta1(1), xmin(-8), xmax(8), probit: 1 でプロビットを重ねる |
 | box-cox | Box-Cox 変換の曲線 | lambda(0.5), xmax(4) |
