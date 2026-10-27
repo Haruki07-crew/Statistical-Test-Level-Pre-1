@@ -11,6 +11,7 @@
 | mgf-curve | M(t) と t=0 での接線 | family: poisson\|binom\|norm\|expon, lambda, n, p, mu, sigma, rate |
 | bar-data | データを直接渡す棒グラフ（スクリープロット等） | labels: [...], values: [...], xlabel, ylabel, cumulative: true で累積割合の線 |
 | line-data | データを直接渡す折れ線 | x: [...], series: [{label, y: [...]}], xlabel, ylabel |
+| scatter-data | データを直接渡す散布図（相関係数を表示） | series: [{label, x: [...], y: [...]}]（1 系列なら x, y を直接）, xlabel, ylabel, fit: 1 回帰直線, fitEach: 1 系列ごとの回帰直線, means: 1 平均の点線, xmin, xmax, ymin, ymax |
 | logistic-curve | ロジスティック曲線 | beta0(0), beta1(1), xmin(-8), xmax(8), probit: 1 でプロビットを重ねる |
 | box-cox | Box-Cox 変換の曲線 | lambda(0.5), xmax(4) |
 | clt-sim | 中心極限定理のシミュレーション | base: expon\|unif\|bernoulli\|poisson\|chi2, n(5), reps(3000), p(0.2), lambda(1) |

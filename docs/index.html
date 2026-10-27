@@ -1760,6 +1760,40 @@ window.MathJax = {
     a.chart('', { data: { datasets: ds }, options: opts(a, c, { legend: ds.length > 1, ymin: p.ymin != null ? p.ymin : null, xTitle: p.xlabel, yTitle: p.ylabel }) });
   });
 
+  // scatter-data: { series: [{ label, x: [...], y: [...] }]（または x, y を直接）, xlabel, ylabel, fit: 1 で全体の回帰直線, fitEach: 1 で系列ごとの回帰直線,
+  //   means: 1 で全体の平均の位置に点線, xmin/xmax/ymin/ymax } データを直接渡す散布図。下に相関係数（と回帰直線）を出す
+  reg('scatter-data', function (a, p, c) {
+    var pal = [c.c1, c.c2, c.c3, c.muted], S = p.series || [{ label: p.label || '', x: p.x || [], y: p.y || [] }];
+    var allx = [], ally = [], ds = [], info = [];
+    function eq(st) { return 'ŷ = ' + a.fmt(st.a, 3) + (st.b < 0 ? ' − ' : ' + ') + a.fmt(Math.abs(st.b), 3) + 'x'; }
+    function stats(xs, ys) {
+      var mx = mean(xs), my = mean(ys), sxy = 0, sxx = 0, syy = 0;
+      xs.forEach(function (x, i) { sxy += (x - mx) * (ys[i] - my); sxx += (x - mx) * (x - mx); syy += (ys[i] - my) * (ys[i] - my); });
+      return { mx: mx, my: my, r: sxy / Math.sqrt(sxx * syy), b: sxy / sxx, a: my - sxy / sxx * mx };
+    }
+    S.forEach(function (s, i) {
+      var xs = s.x.map(Number), ys = s.y.map(Number);
+      allx = allx.concat(xs); ally = ally.concat(ys);
+      ds.push(a.lineDs(s.label || '', pts(xs, ys), pal[i % 4], { showLine: false, pointRadius: 4, pointHoverRadius: 6 }));
+      if (S.length > 1) { var st = stats(xs, ys); info.push((s.label || '系列' + (i + 1)) + '：r = ' + a.fmt(st.r, 3) + (p.fitEach ? '（' + eq(st) + '）' : '')); }
+    });
+    var lo = p.xmin != null ? Number(p.xmin) : Math.min.apply(null, allx), hi = p.xmax != null ? Number(p.xmax) : Math.max.apply(null, allx);
+    function line(st, col, label, l, h) { ds.push(a.lineDs(label, [{ x: l, y: st.a + st.b * l }, { x: h, y: st.a + st.b * h }], col, { borderDash: [6, 4], pointRadius: 0 })); }
+    if (p.fitEach) S.forEach(function (s, i) { var xs = s.x.map(Number); line(stats(xs, s.y.map(Number)), pal[i % 4], (s.label || '') + 'の回帰直線', Math.min.apply(null, xs), Math.max.apply(null, xs)); });
+    var all = stats(allx, ally);
+    if (p.fit) line(all, S.length > 1 ? c.muted : c.c2, '回帰直線', lo, hi);
+    if (p.means) {
+      var ylo = p.ymin != null ? Number(p.ymin) : Math.min.apply(null, ally), yhi = p.ymax != null ? Number(p.ymax) : Math.max.apply(null, ally);
+      ds.push(a.lineDs('平均', [{ x: all.mx, y: ylo }, { x: all.mx, y: yhi }, { x: NaN, y: NaN }, { x: lo, y: all.my }, { x: hi, y: all.my }], c.muted, { borderDash: [2, 3], borderWidth: 1, pointRadius: 0 }));
+    }
+    var o = opts(a, c, { legend: S.length > 1, xmin: p.xmin, xmax: p.xmax, ymin: p.ymin != null ? Number(p.ymin) : null, ymax: p.ymax, xTitle: p.xlabel, yTitle: p.ylabel });
+    o.interaction = { mode: 'nearest', intersect: true };
+    o.plugins.tooltip.callbacks.label = function (ctx) { return '(' + a.fmt(ctx.parsed.x) + ', ' + a.fmt(ctx.parsed.y) + ')'; };
+    o.plugins.legend.labels.filter = function (it) { return it.text && it.text !== '平均'; };
+    a.chart('', { data: { datasets: ds }, options: o });
+    a.info.textContent = (S.length > 1 ? info.join('　') + '　全体：' : '') + 'r = ' + a.fmt(all.r, 3) + (p.fit ? '（回帰直線 ' + eq(all) + '）' : '') + '　n = ' + allx.length;
+  });
+
   // ---------- 第12章 ----------
   // obs-exp-bar: { labels, observed, expected, ddof } 観測度数と期待度数、カイ二乗適合度
   reg('obs-exp-bar', function (a, p, c) {

@@ -35,7 +35,12 @@ class Book:
         return ok
 
     def has(self, s):
-        return re.search(r"(?<![\d.])" + re.escape(s) + r"(?![\d])", self.body) is not None
+        """本文に s があるか。数式の $ と、マイナス記号の書き方（− と -）の違いは無視して探す。"""
+        pat = r"(?<![\d.])" + re.escape(s) + r"(?![\d])"
+        if re.search(pat, self.body):
+            return True
+        norm = lambda t: t.replace("$", "").replace("−", "-")
+        return re.search(r"(?<![\d.])" + re.escape(norm(s)) + r"(?![\d])", norm(self.body)) is not None
 
     def num(self, what, value, shown, tol=None):
         """value を計算した値、shown を本文に書いた数字（文字列）として照合する。"""

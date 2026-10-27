@@ -69,8 +69,11 @@ for (const w of [375, 1280]) {
       ok(await page.$eval('details.bx-ans', (d) => d.open), `${w}px ${c.k} 解答が開く`);
     }
     if (w === 375 && c === pub[0]) await page.screenshot({ path: `${OUT}/${c.k}_end_${w}.png` });
-    const ch1 = await page.$('.book .chart');
-    if (ch1 && (c === pub[0] || ONLY.length)) { await ch1.scrollIntoViewIfNeeded(); await sleep(300); await ch1.screenshot({ path: `${OUT}/${c.k}_chart_${w}.png` }); }
+    // 図の画像（章を指定したときはすべての図、指定しないときは最初の章の 1 枚目）
+    const figs = await page.$$('.book .chart');
+    for (let i = 0; i < figs.length && (ONLY.length || (c === pub[0] && i === 0)); i++) {
+      await figs[i].scrollIntoViewIfNeeded(); await sleep(300); await figs[i].screenshot({ path: `${OUT}/${c.k}_chart${i + 1}_${w}.png` });
+    }
     await page.$eval('#detail', (d) => { d.scrollTop = 0; });
     await page.screenshot({ path: `${OUT}/${c.k}_${w}.png` });
   }
